@@ -3,21 +3,8 @@ import Combine
 
 extension UserDefaults {
 
-    /// Publisher to observe the changes to the dismissal state of the Blaze section on My Store screen.
-    var hasDismissedBlazeSectionOnMyStorePublisher: AnyPublisher<Bool, Never> {
-        ServiceLocator.stores.site
-            .combineLatest(self.publisher(for: \.hasDismissedBlazeSectionOnMyStore))
-            .map { [weak self] (site, hasDismissed) -> Bool in
-                guard let self, let site else {
-                    return false
-                }
-                return self.hasDismissedBlazeSectionOnMyStore(for: site.siteID)
-            }
-            .eraseToAnyPublisher()
-    }
-
     /// Expose value for `hasDismissedBlazeSectionOnMyStore` to be observable through KVO.
-    @objc private var hasDismissedBlazeSectionOnMyStore: Bool {
+    @objc var hasDismissedBlazeSectionOnMyStore: Bool {
         get {
             bool(forKey: Key.hasDismissedBlazeSectionOnMyStore.rawValue)
         }

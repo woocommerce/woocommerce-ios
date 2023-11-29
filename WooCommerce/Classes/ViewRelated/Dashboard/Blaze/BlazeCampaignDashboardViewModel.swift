@@ -256,8 +256,14 @@ private extension BlazeCampaignDashboardViewModel {
             }
             .store(in: &subscriptions)
 
-        userDefaults.hasDismissedBlazeSectionOnMyStorePublisher
+        userDefaults.publisher(for: \.hasDismissedBlazeSectionOnMyStore)
             .dropFirst() // ignores first event because data is already loaded initially.
+            .map { [weak self] hasDismissed -> Bool in
+                guard let self else {
+                    return false
+                }
+                return self.userDefaults.hasDismissedBlazeSectionOnMyStore(for: self.siteID)
+            }
             .removeDuplicates()
             .sink { [weak self] hasDismissed in
                 guard let self else { return }

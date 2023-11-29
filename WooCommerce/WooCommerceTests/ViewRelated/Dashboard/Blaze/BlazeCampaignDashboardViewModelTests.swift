@@ -26,7 +26,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: .fake().copy(siteID: sampleSiteID)))
+        stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -818,7 +818,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     func test_dismissBlazeSection_sets_state_to_empty() async throws {
         // Given
-        ServiceLocator.setStores(stores) // injecting because we need access through service locator in user defaults
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))

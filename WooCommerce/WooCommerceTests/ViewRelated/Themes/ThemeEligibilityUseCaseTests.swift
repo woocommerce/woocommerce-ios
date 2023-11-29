@@ -14,7 +14,6 @@ class ThemeEligibilityUseCaseTests: XCTestCase {
         let isEligibleForLightweightStorefront = checker.isEligible(site: site)
 
         // Then
-
         XCTAssertFalse(isEligibleForLightweightStorefront)
     }
 
@@ -28,7 +27,6 @@ class ThemeEligibilityUseCaseTests: XCTestCase {
         let isEligibleForLightweightStorefront = checker.isEligible(site: site)
 
         // Then
-
         XCTAssertFalse(isEligibleForLightweightStorefront)
     }
 
@@ -42,7 +40,6 @@ class ThemeEligibilityUseCaseTests: XCTestCase {
         let isEligibleForLightweightStorefront = checker.isEligible(site: site)
 
         // Then
-
         XCTAssertTrue(isEligibleForLightweightStorefront)
     }
 }

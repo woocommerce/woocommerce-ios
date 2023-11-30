@@ -341,6 +341,7 @@ final class ProductMapperTests: XCTestCase {
             .init(id: 1, name: "Color", option: "blue"),
             .init(id: 0, name: "Logo", option: "Yes")
         ])
+        XCTAssertTrue(bundledItem.pricedIndividually)
     }
 
     /// Test that products with the `composite` product type are properly parsed.

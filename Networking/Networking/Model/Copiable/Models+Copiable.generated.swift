@@ -1569,7 +1569,8 @@ extension Networking.ProductBundleItem {
         overridesVariations: CopiableProp<Bool> = .copy,
         allowedVariations: CopiableProp<[Int64]> = .copy,
         overridesDefaultVariationAttributes: CopiableProp<Bool> = .copy,
-        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy
+        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy,
+        pricedIndividually: CopiableProp<Bool> = .copy
     ) -> Networking.ProductBundleItem {
         let bundledItemID = bundledItemID ?? self.bundledItemID
         let productID = productID ?? self.productID
@@ -1584,6 +1585,7 @@ extension Networking.ProductBundleItem {
         let allowedVariations = allowedVariations ?? self.allowedVariations
         let overridesDefaultVariationAttributes = overridesDefaultVariationAttributes ?? self.overridesDefaultVariationAttributes
         let defaultVariationAttributes = defaultVariationAttributes ?? self.defaultVariationAttributes
+        let pricedIndividually = pricedIndividually ?? self.pricedIndividually
 
         return Networking.ProductBundleItem(
             bundledItemID: bundledItemID,
@@ -1598,7 +1600,8 @@ extension Networking.ProductBundleItem {
             overridesVariations: overridesVariations,
             allowedVariations: allowedVariations,
             overridesDefaultVariationAttributes: overridesDefaultVariationAttributes,
-            defaultVariationAttributes: defaultVariationAttributes
+            defaultVariationAttributes: defaultVariationAttributes,
+            pricedIndividually: pricedIndividually
         )
     }
 }

@@ -26,4 +26,23 @@ public struct WordPressTheme: Decodable, Equatable, GeneratedCopiable, Generated
         self.name = name
         self.demoURI = demoURI
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        description = try container.decode(String.self, forKey: .description)
+        name = try container.decode(String.self, forKey: .name)
+        demoURI = try container.decodeIfPresent(String.self, forKey: .demoURI) ??
+        (try container.decodeIfPresent(String.self, forKey: .themeURI)) ?? ""
+    }
+}
+
+private extension WordPressTheme {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case description
+        case name
+        case demoURI = "demo_uri"
+        case themeURI = "theme_uri"
+    }
 }

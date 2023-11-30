@@ -8,8 +8,8 @@ public enum WordPressThemeAction: Action {
     /// Retrieves the suggested themes for a site.
     ///
     /// - `onCompletion`: invoked when the sync operation finishes.
-    ///     - `result.success(Bool)`: value indicates whether there are further pages to retrieve.
-    ///     - `result.failure(Error)`: error indicates issues syncing the specified page.
+    ///     - `result.success([WordPressTheme])`: list of suggested themes.
+    ///     - `result.failure(Error)`: error indicates issues loading themes.
     ///
-    case fetchSuggestedThemes(onCompletion: (Result<[WordPressTheme], Error>) -> Void)
+    case loadSuggestedThemes(onCompletion: (Result<[WordPressTheme], Error>) -> Void)
 }

@@ -1,0 +1,69 @@
+{
+  "data": {
+    "deposit": {
+      "last_paid": [
+        {
+          "id": "po_1Ny2TfFz6mcKuCueGefQoVJL",
+          "date": 1696550400000,
+          "type": "deposit",
+          "amount": 5214,
+          "status": "paid",
+          "bankAccount": "STRIPE TEST BANK •••• 5432 (EUR)",
+          "currency": "eur",
+          "automatic": true,
+          "fee": 0,
+          "fee_percentage": 0,
+          "created": 1696550400
+        }
+      ],
+      "next_scheduled": [
+        {
+          "id": "wcpay_estimated_weekly_eur_1701820800",
+          "date": 1701820800000,
+          "type": "deposit",
+          "amount": 2018,
+          "status": "estimated",
+          "bankAccount": "STRIPE TEST BANK •••• 5432 (EUR)",
+          "currency": "eur",
+          "automatic": true,
+          "fee": 0,
+          "fee_percentage": 0,
+          "created": 1701820800
+        }
+      ],
+      "last_manual_deposits": []
+    },
+    "balance": {
+      "pending": [
+        {
+          "amount": 2018,
+          "currency": "eur",
+          "source_types": {
+            "card": 2018
+          },
+          "deposits_count": 1
+        }
+      ],
+      "available": [
+        {
+          "amount": 0,
+          "currency": "eur",
+          "source_types": {
+            "card": 0
+          }
+        }
+      ],
+      "instant": []
+    },
+    "account": {
+      "deposits_enabled": true,
+      "deposits_blocked": false,
+      "deposits_schedule": {
+        "delay_days": 7,
+        "interval": "weekly",
+        "weekly_anchor": "wednesday"
+      },
+      "default_currency": "gbp"
+    }
+  }
+}

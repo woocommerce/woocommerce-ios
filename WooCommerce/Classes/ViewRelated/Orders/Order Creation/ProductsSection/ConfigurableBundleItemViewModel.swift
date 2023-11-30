@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 
@@ -45,7 +46,10 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     }
     @Published private(set) var selectableVariationAttributeViewModels: [ConfigurableVariableBundleAttributePickerViewModel] = []
 
-    @Published var errorMessage: String?
+    // MARK: - Validation
+    /// The actual quantity when being counted for the bundle. When the item is optional and not selected, the quantity is considered 0.
+    @Published private(set) var quantityInBundle: Decimal = 0
+    @Published private(set) var errorMessage: String?
 
     private let product: Product
     private let bundleItem: ProductBundleItem
@@ -115,6 +119,8 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         }
         observeSelectedStateForProductRowViewModelIfOptional()
         observeSelectedVariationForSelectableAttributes()
+        observeStatesForValidationErrorMessage()
+        observeQuantityAndOptionalSelectedStatesForQuantityInBundle()
     }
 
     func createVariationSelectorViewModel() {
@@ -129,46 +135,6 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
             self.variationSelectorViewModel = nil
             self.analytics.track(event: .Orders.orderFormBundleProductConfigurationChanged(changedField: .variation))
         })
-    }
-
-    /// Validates the configuration of the bundle item based on the quantity and variation requirements.
-    /// The validation error is set to the `errorMessage` Published variable so the view can display the message.
-    /// Ref: Pe5pgL-3Vd-p2#validation-of-bundle-configuration
-    /// - Returns: A boolean that indicates whether the configuration is valid.
-    func validate() -> Bool {
-        errorMessage = nil
-
-         // The bundle configuration is always considered valid if not selected.
-        guard isIncludedInBundle && quantity > 0 else {
-            return true
-        }
-
-        guard quantity >= bundleItem.minQuantity else {
-            errorMessage = createInvalidQuantityErrorMessage()
-            return false
-        }
-
-        if let maxQuantity = bundleItem.maxQuantity, quantity > maxQuantity {
-            errorMessage = createInvalidQuantityErrorMessage()
-            return false
-        }
-
-        // If this is not a variable product, it's considered valid after the quantity check.
-        guard variableProductSettings != nil else {
-            return true
-        }
-
-        guard selectedVariation != nil else {
-            errorMessage = Localization.ErrorMessage.missingVariation
-            return false
-        }
-
-        guard variationAttributes.count == product.attributesForVariations.count else {
-            errorMessage = Localization.ErrorMessage.variationMissingAttributes
-            return false
-        }
-
-        return true
     }
 }
 
@@ -215,6 +181,58 @@ private extension ConfigurableBundleItemViewModel {
             return selectableAttributeViewModels
         }
         .assign(to: &$selectableVariationAttributeViewModels)
+    }
+
+    /// Validates the configuration of the bundle item based on the quantity and variation requirements.
+    /// The validation error is set to the `errorMessage` Published variable so the view can display the message.
+    /// Ref: Pe5pgL-3Vd-p2#validation-of-bundle-configuration
+    func observeStatesForValidationErrorMessage() {
+        Publishers.CombineLatest4($isOptionalAndSelected, $quantity, $selectedVariation, $selectableVariationAttributeViewModels)
+            .map { [weak self] isOptionalAndSelected, quantity, selectedVariation, selectableVariationAttributeViewModels -> String? in
+                guard let self else { return nil }
+
+                // The bundle configuration is always considered valid if not selected.
+                let isIncludedInBundle = isOptional ? isOptionalAndSelected: true
+                guard isIncludedInBundle && quantity > 0 else {
+                    return nil
+                }
+
+                guard quantity >= bundleItem.minQuantity else {
+                    return createInvalidQuantityErrorMessage()
+                }
+
+                if let maxQuantity = bundleItem.maxQuantity, quantity > maxQuantity {
+                    return createInvalidQuantityErrorMessage()
+                }
+
+                // If this is not a variable product, it's considered valid after the quantity check.
+                guard variableProductSettings != nil else {
+                    return nil
+                }
+
+                guard selectedVariation != nil else {
+                    return Localization.ErrorMessage.missingVariation
+                }
+
+                let variationAttributes = (selectedVariation?.attributes ?? []) + selectableVariationAttributeViewModels.compactMap { $0.selectedAttribute }
+                guard variationAttributes.count == product.attributesForVariations.count else {
+                    return Localization.ErrorMessage.variationMissingAttributes
+                }
+
+                return nil
+            }
+            .assign(to: &$errorMessage)
+    }
+
+    func observeQuantityAndOptionalSelectedStatesForQuantityInBundle() {
+        Publishers.CombineLatest($isOptionalAndSelected, $quantity)
+            .map { [weak self] isOptionalAndSelected, quantity -> Decimal in
+                guard let self else { return 0 }
+
+                let isIncludedInBundle = isOptional ? isOptionalAndSelected: true
+                return isIncludedInBundle ? quantity: 0
+            }
+            .assign(to: &$quantityInBundle)
     }
 }
 

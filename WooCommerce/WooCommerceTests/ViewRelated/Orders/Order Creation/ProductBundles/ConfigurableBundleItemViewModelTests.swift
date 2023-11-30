@@ -319,6 +319,56 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isIncludedInBundle)
     }
 
+    // MARK: - `quantityInBundle`
+
+    func test_quantityInBundle_is_0_for_optional_item_when_quantity_is_non_zero_and_isOptionalAndSelected_is_false() {
+        // Given
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: true),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // When
+        viewModel.quantity = 8
+        viewModel.isOptionalAndSelected = false
+
+        // Then
+        XCTAssertEqual(viewModel.quantityInBundle, 0)
+    }
+
+    func test_quantityInBundle_is_non_zero_for_optional_item_when_isOptionalAndSelected_is_true() {
+        // Given
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: true),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // When
+        viewModel.quantity = 8
+        viewModel.isOptionalAndSelected = true
+
+        // Then
+        XCTAssertEqual(viewModel.quantityInBundle, 8)
+    }
+
+    func test_quantityInBundle_is_non_zero_for_required_item() {
+        // Given
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: false),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // When
+        viewModel.quantity = 8
+        viewModel.isOptionalAndSelected = false
+
+        // Then
+        XCTAssertEqual(viewModel.quantityInBundle, 8)
+    }
+
     // MARK: - Analytics
 
     func test_selecting_variation_tracks_orderFormBundleProductConfigurationChanged_event() throws {

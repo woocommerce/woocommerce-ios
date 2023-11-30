@@ -282,13 +282,13 @@ private extension ConfigurableBundleItemViewModel {
                 "configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat",
                 value: "The quantity of %1$@ needs to be at least %2$@.",
                 comment: "Error message when setting a bundle item's quantity with a minimum quantity rule. " +
-                "%1$@ is the variable product name. %2$@ is the minimum quantity."
+                "%1$@ is the product name. %2$@ is the minimum quantity."
             )
             static let invalidQuantityWithMinAndMaxQuantityRulesFormat = NSLocalizedString(
                 "configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat",
                 value: "The quantity of %1$@ needs to be within %2$@ and %3$@.",
                 comment: "Error message when setting a bundle item's quantity with minimum and maximum quantity rules. " +
-                "%1$@ is the variable product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity"
+                "%1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity"
             )
             static let missingVariationFormat = NSLocalizedString(
                 "configureBundleItemError.missingVariationFormat",

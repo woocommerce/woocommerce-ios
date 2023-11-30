@@ -430,6 +430,7 @@
 		DEDA8DAD2B1846FF0076BF0F /* WordPressThemeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DAC2B1846FF0076BF0F /* WordPressThemeAction.swift */; };
 		DEDA8DAF2B1847C80076BF0F /* WordPressThemeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DAE2B1847C80076BF0F /* WordPressThemeStore.swift */; };
 		DEDA8DB12B184A660076BF0F /* MockWordPressThemeRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DB02B184A660076BF0F /* MockWordPressThemeRemote.swift */; };
+		DEDA8DB32B184B950076BF0F /* WordPressThemeStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DB22B184B950076BF0F /* WordPressThemeStoreTests.swift */; };
 		DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */; };
 		DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */; };
 		DEFD6D972644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */; };
@@ -906,6 +907,7 @@
 		DEDA8DAC2B1846FF0076BF0F /* WordPressThemeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeAction.swift; sourceTree = "<group>"; };
 		DEDA8DAE2B1847C80076BF0F /* WordPressThemeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeStore.swift; sourceTree = "<group>"; };
 		DEDA8DB02B184A660076BF0F /* MockWordPressThemeRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWordPressThemeRemote.swift; sourceTree = "<group>"; };
+		DEDA8DB22B184B950076BF0F /* WordPressThemeStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeStoreTests.swift; sourceTree = "<group>"; };
 		DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginAction.swift; sourceTree = "<group>"; };
 		DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStore.swift; sourceTree = "<group>"; };
 		DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1619,6 +1621,7 @@
 				EEB4E2CE29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift */,
 				0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */,
 				0286A1BB2A0CC4120099EF94 /* FeatureFlagStoreTests.swift */,
+				DEDA8DB22B184B950076BF0F /* WordPressThemeStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -2436,6 +2439,7 @@
 				DEDA8DB12B184A660076BF0F /* MockWordPressThemeRemote.swift in Sources */,
 				0391C13D29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
+				DEDA8DB32B184B950076BF0F /* WordPressThemeStoreTests.swift in Sources */,
 				45182D2327B55F9C00B4C05C /* InboxNotesStoreTests.swift in Sources */,
 				03FBDA2A263296C400ACE257 /* CouponStoreTests.swift in Sources */,
 				02E7FFD92562234F00C53030 /* MockShippingLabelRemote.swift in Sources */,

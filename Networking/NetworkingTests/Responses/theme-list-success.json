@@ -1,0 +1,211 @@
+{
+    "themes": [
+        {
+            "menu_order": -110,
+            "author": "Organic Themes",
+            "id": "organic-stax",
+            "description": "STAX is a premium block theme for the WordPress full-site editor. The design is clean, versatile, and totally customizable. Additionally, the setup wizard provides a super simple installation process — so your site will appear exactly as the demo within moments of activation. ",
+            "stylesheet": "organic-stax",
+            "name": "STAX",
+            "author_uri": "https://organicthemes.com/",
+            "demo_uri": "https://stax.organicthemes.com/",
+            "screenshot": "https://theme.files.wordpress.com/2023/02/stax-featured.jpg",
+            "theme_type": "managed-external",
+            "product_details": [
+                {
+                    "product_id": 10025,
+                    "product_slug": "wp_mp_theme_organic_stax_yearly"
+                },
+                {
+                    "product_id": 10026,
+                    "product_slug": "wp_mp_theme_organic_stax_monthly"
+                }
+            ],
+            "taxonomies": {
+                "theme_column": [
+                    {
+                        "name": "One Column",
+                        "slug": "one-column",
+                        "term_id": "1450969"
+                    },
+                    {
+                        "name": "Two Columns",
+                        "slug": "two-columns",
+                        "term_id": "2600855"
+                    }
+                ],
+                "theme_feature": [
+                    {
+                        "name": "Custom Menu",
+                        "slug": "custom-menu",
+                        "term_id": "4349195"
+                    },
+                    {
+                        "name": "Full Width Template",
+                        "slug": "full-width-template",
+                        "term_id": "43438937"
+                    },
+                    {
+                        "name": "RTL Language Support",
+                        "slug": "rtl-language-support",
+                        "term_id": "23177744"
+                    },
+                    {
+                        "name": "Featured Images",
+                        "slug": "featured-images",
+                        "term_id": "3895381"
+                    },
+                    {
+                        "name": "Accessibility Ready",
+                        "slug": "accessibility-ready",
+                        "term_id": "158289315"
+                    },
+                    {
+                        "name": "Threaded Comments",
+                        "slug": "threaded-comments",
+                        "term_id": "5371426"
+                    },
+                    {
+                        "name": "Block Editor Styles",
+                        "slug": "block-editor-styles",
+                        "term_id": "685452039"
+                    },
+                    {
+                        "name": "Full Site Editing",
+                        "slug": "full-site-editing",
+                        "term_id": "686035051"
+                    }
+                ],
+                "theme_mobile-friendly": [
+                    {
+                        "name": "Mobile-Friendly",
+                        "slug": "mobile-friendly",
+                        "term_id": "350456"
+                    }
+                ],
+                "theme_subject": [
+                    {
+                        "name": "Store",
+                        "slug": "store",
+                        "term_id": "40550"
+                    }
+                ]
+            },
+            "style_variations": [],
+            "soft_launched": false
+        },
+        {
+            "menu_order": -63,
+            "author": "Themes Kingdom",
+            "id": "nokul",
+            "description": "Nokul is a tasty block WordPress theme that will help your pastries and doughs take center stage and get the attention they deserve. Thanks to Nokul’s seamless design, your website visitors will enjoy adding your products to cart and will keep coming back.",
+            "stylesheet": "nokul",
+            "name": "Nokul",
+            "author_uri": "https://themeskingdom.com/",
+            "demo_uri": "https://nokul.themeskingdom.com/",
+            "screenshot": "https://theme.files.wordpress.com/2023/03/nokul2.jpg",
+            "theme_type": "managed-external",
+            "product_details": [
+                {
+                    "product_id": 10046,
+                    "product_slug": "wp_mp_theme_nokul_yearly"
+                },
+                {
+                    "product_id": 10047,
+                    "product_slug": "wp_mp_theme_nokul_monthly"
+                }
+            ],
+            "taxonomies": {
+                "theme_column": [
+                    {
+                        "name": "One Column",
+                        "slug": "one-column",
+                        "term_id": "1450969"
+                    },
+                    {
+                        "name": "Two Columns",
+                        "slug": "two-columns",
+                        "term_id": "2600855"
+                    },
+                    {
+                        "name": "Three Columns",
+                        "slug": "three-columns",
+                        "term_id": "5624304"
+                    },
+                    {
+                        "name": "Four Columns",
+                        "slug": "four-columns",
+                        "term_id": "6130973"
+                    },
+                    {
+                        "name": "Left Sidebar",
+                        "slug": "left-sidebar",
+                        "term_id": "1637027"
+                    },
+                    {
+                        "name": "Right Sidebar",
+                        "slug": "right-sidebar",
+                        "term_id": "1637034"
+                    }
+                ],
+                "theme_feature": [
+                    {
+                        "name": "Custom Colors",
+                        "slug": "custom-colors",
+                        "term_id": "2184596"
+                    },
+                    {
+                        "name": "Custom Menu",
+                        "slug": "custom-menu",
+                        "term_id": "4349195"
+                    },
+                    {
+                        "name": "Full Width Template",
+                        "slug": "full-width-template",
+                        "term_id": "43438937"
+                    },
+                    {
+                        "name": "RTL Language Support",
+                        "slug": "rtl-language-support",
+                        "term_id": "23177744"
+                    },
+                    {
+                        "name": "Featured Images",
+                        "slug": "featured-images",
+                        "term_id": "3895381"
+                    },
+                    {
+                        "name": "Threaded Comments",
+                        "slug": "threaded-comments",
+                        "term_id": "5371426"
+                    },
+                    {
+                        "name": "Site Logo",
+                        "slug": "site-logo",
+                        "term_id": "7533351"
+                    },
+                    {
+                        "name": "Block Editor Styles",
+                        "slug": "block-editor-styles",
+                        "term_id": "685452039"
+                    },
+                    {
+                        "name": "Full Site Editing",
+                        "slug": "full-site-editing",
+                        "term_id": "686035051"
+                    }
+                ],
+                "theme_subject": [
+                    {
+                        "name": "Store",
+                        "slug": "store",
+                        "term_id": "40550"
+                    }
+                ]
+            },
+            "style_variations": [],
+            "soft_launched": false
+        }
+    ],
+    "found": 2
+}

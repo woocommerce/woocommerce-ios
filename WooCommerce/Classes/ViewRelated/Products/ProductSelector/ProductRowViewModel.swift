@@ -56,7 +56,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Whether the product is priced individually. Defaults to `true`.
     ///
-    /// Used when a product is part of a bundle, to control how the price is displayed (as part of the bundle price or in addition to it).
+    /// Used to control how the price is displayed, e.g. when a product is part of a bundle.
     ///
     let pricedIndividually: Bool
 
@@ -172,7 +172,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     }
 
-    /// Formatted price label based on a product's price, quantity, and whether it is priced individually.
+    /// Formatted price label based on a product's price and quantity.
     /// Reads as '8 x $10.00'
     ///
     var priceQuantityLine: String {

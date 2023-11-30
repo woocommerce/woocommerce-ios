@@ -13,7 +13,7 @@ final class WordPressThemeListMapperTests: XCTestCase {
         XCTAssertEqual(item.id, "tsubaki")
         XCTAssertEqual(item.name, "Tsubaki")
         // swiftlint:disable:next line_length
-        XCTAssertEqual(item.description, "Tsubaki")
+        XCTAssertEqual(item.description, "Tsubaki puts the spotlight on your products and your customers.  This theme leverages WooCommerce to provide you with intuitive product navigation and the patterns you need to master digital merchandising.")
         XCTAssertEqual(item.demoURI, "https://tsubakidemo.wpcomstaging.com/")
     }
 }

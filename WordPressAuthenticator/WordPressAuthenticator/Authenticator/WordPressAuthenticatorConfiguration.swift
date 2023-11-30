@@ -96,6 +96,9 @@ public struct WordPressAuthenticatorConfiguration {
     /// If enabled, displays the new carousel.
     let enableUnifiedCarousel: Bool
 
+    /// Flag for the Passkeys, or WebAuthn, login.
+    let enablePasskeys: Bool
+
     /// Flag for the unified login/signup flows.
     /// If disabled, the "Continue With WordPress" button in the login prologue is shown first.
     /// If enabled, the "Enter your existing site address" button in the login prologue is shown first.
@@ -190,6 +193,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
                  enableUnifiedCarousel: Bool = false,
+                 enablePasskeys: Bool = true,
                  displayHintButtons: Bool = true,
                  continueWithSiteAddressFirst: Bool = false,
                  enableSiteCredentialsLoginForSelfHostedSites: Bool = false,
@@ -225,6 +229,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
         self.enableUnifiedCarousel = enableUnifiedCarousel
+        self.enablePasskeys = enablePasskeys
         self.displayHintButtons = displayHintButtons
         self.enableSignupWithGoogle = enableSignupWithGoogle
         self.continueWithSiteAddressFirst = continueWithSiteAddressFirst

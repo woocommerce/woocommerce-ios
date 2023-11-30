@@ -278,11 +278,17 @@ extension ProductVariationFormViewModel {
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?) {
+    func updateShippingSettings(weight: String?,
+                                dimensions: ProductDimensions,
+                                // `oneTimeShipping` is ignored as this setting is not applicable for variation
+                                // this needs to be set on the parent product
+                                oneTimeShipping: Bool?,
+                                shippingClass: String?,
+                                shippingClassID: Int64?) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(weight: weight,
-                                                 dimensions: dimensions,
-                                                 shippingClass: shippingClass ?? "",
-                                                 shippingClassID: shippingClassID ?? 0),
+                                                                                                                  dimensions: dimensions,
+                                                                                                                  shippingClass: shippingClass ?? "",
+                                                                                                                  shippingClassID: shippingClassID ?? 0),
                                                          parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,

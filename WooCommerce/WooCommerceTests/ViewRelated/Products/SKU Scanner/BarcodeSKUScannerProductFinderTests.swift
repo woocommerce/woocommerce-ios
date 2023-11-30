@@ -33,7 +33,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
     func test_findProduct_when_there_is_an_error_then_passes_and_tracks_it() async {
         // Given
-        let source = WooAnalyticsEvent.Orders.BarcodeScanningSource.orderCreation
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.orderCreation
         let productNotFoundError = ProductLoadError.notFound
         let symbology = BarcodeSymbology.aztec
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
@@ -63,7 +63,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
     func test_findProduct_when_sku_matches_barcode_then_returns_product() async {
         // Given
-        let source = WooAnalyticsEvent.Orders.BarcodeScanningSource.orderList
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.orderList
         let returningProduct = Product.fake()
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {

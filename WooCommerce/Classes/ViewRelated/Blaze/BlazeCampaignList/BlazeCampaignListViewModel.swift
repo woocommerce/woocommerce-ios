@@ -26,7 +26,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     /// Tracks whether the intro view has been presented.
     private var didShowIntroView = false
 
-    private let siteID: Int64
+    let siteID: Int64
     let siteURL: String
     private let stores: StoresManager
     private let storageManager: StorageManagerType

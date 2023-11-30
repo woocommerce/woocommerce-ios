@@ -21,6 +21,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let productCreationAI: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
+    private let isLightweightStorefrontEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -40,7 +41,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          betterCustomerSelectionInOrder: Bool = false,
          productCreationAI: Bool = false,
          productBundles: Bool = false,
-         productBundlesInOrderForm: Bool = false) {
+         productBundlesInOrderForm: Bool = false,
+         isLightweightStorefrontEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -60,6 +62,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.productCreationAI = productCreationAI
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
+        self.isLightweightStorefrontEnabled = isLightweightStorefrontEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -100,6 +103,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return productBundles
         case .productBundlesInOrderForm:
             return productBundlesInOrderForm
+        case .lightweightStorefront:
+            return isLightweightStorefrontEnabled
         default:
             return false
         }

@@ -2,7 +2,11 @@
 
 16.5
 -----
-
+- [*] Payments: WooPayments merchants can swipe between currencies in the Deposit Summary on the Payments menu [https://github.com/woocommerce/woocommerce-ios/pull/11309]
+- [**] Shipping Labels: Fixed issue presenting the printing view for customs forms. [https://github.com/woocommerce/woocommerce-ios/pull/11288]
+- [*] Now, merchants can manage "One time shipping" setting for a subscription product. [https://github.com/woocommerce/woocommerce-ios/pull/11310]
+- [**] My Store: The Blaze section is now dismissible. [https://github.com/woocommerce/woocommerce-ios/pull/11308]
+- [internal] Product Subscriptions: Handle yearly Synchronise renewals case while enabling One time shipping setting. [https://github.com/woocommerce/woocommerce-ios/pull/11312]
 
 16.4
 -----

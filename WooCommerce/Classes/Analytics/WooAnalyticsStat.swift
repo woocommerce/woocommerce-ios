@@ -183,6 +183,7 @@ public enum WooAnalyticsStat: String {
     case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
     case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
     case blazeIntroDisplayed = "blaze_intro_displayed"
+    case blazeViewDismissed = "blaze_view_dismissed"
 
     // MARK: Products Onboarding Events
     //
@@ -615,6 +616,7 @@ public enum WooAnalyticsStat: String {
     case productListAddProductTapped = "product_list_add_product_button_tapped"
     case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
     case productListShareButtonTapped = "product_list_share_button_tapped"
+    case productListProductBarcodeScanningTapped = "product_list_product_barcode_scanning_tapped"
 
     // MARK: Product List Bulk Editing Events
     //

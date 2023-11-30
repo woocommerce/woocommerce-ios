@@ -109,7 +109,7 @@
             {
                 "id": 4210,
                 "key": "_subscription_payment_sync_date",
-                "value": "0"
+                "value": "3"
             },
             {
                 "id": 4211,
@@ -154,7 +154,7 @@
             {
                 "id": 4222,
                 "key": "_subscription_one_time_shipping",
-                "value": "no"
+                "value": "yes"
             }
         ],
         "stock_status": "outofstock",

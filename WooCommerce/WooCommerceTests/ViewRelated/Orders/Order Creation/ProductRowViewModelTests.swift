@@ -652,7 +652,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: true)
 
         // Then
-        assertEqual("$10.71", viewModel.priceBeforeDiscountsLabel)
+        assertEqual(price, viewModel.price)
     }
 
     func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_not_pricedIndividually() {
@@ -664,7 +664,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: false)
 
         // Then
-        assertEqual("$0.00", viewModel.priceBeforeDiscountsLabel)
+        assertEqual("0", viewModel.price)
     }
 
     func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {

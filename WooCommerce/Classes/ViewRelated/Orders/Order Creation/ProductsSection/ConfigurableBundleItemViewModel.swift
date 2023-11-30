@@ -46,6 +46,13 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     }
     @Published private(set) var selectableVariationAttributeViewModels: [ConfigurableVariableBundleAttributePickerViewModel] = []
 
+    /// Tracks the selection option for each variation attribute manually because any changes on
+    /// `ConfigurableVariableBundleAttributePickerViewModel`'s observable property does not trigger an update in the
+    /// `selectableVariationAttributeViewModels` observation.
+    @Published private var selectableVariationOptionsByName: [String: ProductVariationAttribute?] = [:]
+    private var selectableVariationOptionsSubscriptions: Set<AnyCancellable> = []
+    private var selectableVariationAttributeViewModelsSubscription: AnyCancellable?
+
     // MARK: - Validation
     /// The actual quantity when being counted for the bundle. When the item is optional and not selected, the quantity is considered 0.
     @Published private(set) var quantityInBundle: Decimal = 0
@@ -121,6 +128,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         observeSelectedVariationForSelectableAttributes()
         observeStatesForValidationErrorMessage()
         observeQuantityAndOptionalSelectedStatesForQuantityInBundle()
+        observeSelectableVariationAttributesForSelectedOptions()
     }
 
     func createVariationSelectorViewModel() {
@@ -187,8 +195,8 @@ private extension ConfigurableBundleItemViewModel {
     /// The validation error is set to the `errorMessage` Published variable so the view can display the message.
     /// Ref: Pe5pgL-3Vd-p2#validation-of-bundle-configuration
     func observeStatesForValidationErrorMessage() {
-        Publishers.CombineLatest4($isOptionalAndSelected, $quantity, $selectedVariation, $selectableVariationAttributeViewModels)
-            .map { [weak self] isOptionalAndSelected, quantity, selectedVariation, selectableVariationAttributeViewModels -> String? in
+        Publishers.CombineLatest4($isOptionalAndSelected, $quantity, $selectedVariation, $selectableVariationOptionsByName)
+            .map { [weak self] isOptionalAndSelected, quantity, selectedVariation, selectableVariationOptionsByName -> String? in
                 guard let self else { return nil }
 
                 // The bundle configuration is always considered valid if not selected.
@@ -214,8 +222,8 @@ private extension ConfigurableBundleItemViewModel {
                     return String(format: Localization.ErrorMessage.missingVariationFormat, product.name)
                 }
 
-                let variationAttributes = (selectedVariation?.attributes ?? []) + selectableVariationAttributeViewModels.compactMap { $0.selectedAttribute }
-                guard variationAttributes.count == product.attributesForVariations.count else {
+                let variationAttributesCount = (selectedVariation?.attributes ?? []).count + selectableVariationOptionsByName.values.compactMap { $0 }.count
+                guard variationAttributesCount == product.attributesForVariations.count else {
                     return String(format: Localization.ErrorMessage.variationMissingAttributesFormat, product.name)
                 }
 
@@ -233,6 +241,25 @@ private extension ConfigurableBundleItemViewModel {
                 return isIncludedInBundle ? quantity: 0
             }
             .assign(to: &$quantityInBundle)
+    }
+
+    func observeSelectableVariationAttributesForSelectedOptions() {
+        selectableVariationAttributeViewModelsSubscription = $selectableVariationAttributeViewModels
+            .sink { [weak self] viewModels in
+                self?.observeSelectableVariationAttributeSelectionOptions(viewModels: viewModels)
+            }
+    }
+
+    func observeSelectableVariationAttributeSelectionOptions(viewModels: [ConfigurableVariableBundleAttributePickerViewModel]) {
+        selectableVariationOptionsByName = [:]
+        selectableVariationOptionsSubscriptions = []
+
+        viewModels.forEach { viewModel in
+            viewModel.$selectedAttribute.sink { [weak self] selectedAttribute in
+                self?.selectableVariationOptionsByName[viewModel.name] = selectedAttribute
+            }
+            .store(in: &selectableVariationOptionsSubscriptions)
+        }
     }
 }
 

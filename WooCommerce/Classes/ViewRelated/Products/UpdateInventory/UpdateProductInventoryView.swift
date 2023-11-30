@@ -68,14 +68,27 @@ struct UpdateProductInventoryView: View {
                         Spacer()
 
                         Group {
-                            Button(Localization.updateQuantityButtonTitle) {}
-                                .buttonStyle(PrimaryButtonStyle())
-                                .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
+                            Button(Localization.updateQuantityButtonTitle) {
+                                Task { @MainActor in
+                                    await viewModel.onTapUpdateStockQuantity()
+                                    dismiss()
+                                }
+                            }
 
-                            Button(Localization.increaseStockOnceButtonTitle) {}
-                                .buttonStyle(PrimaryButtonStyle())
-                                .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
+                            .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
+
+                            Button(Localization.increaseStockOnceButtonTitle) {
+                                Task { @MainActor in
+                                    await viewModel.onTapIncreaseStockQuantityOnce()
+                                    dismiss()
+                                }
+                            }
+                            .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
+
+                            ProgressView()
+                                .renderedIf(viewModel.updateQuantityButtonMode == .loading)
                         }
+                        .buttonStyle(PrimaryButtonStyle())
                         .disabled(!viewModel.enableQuantityButton)
                         .padding(.bottom, Layout.mediumSpacing)
 

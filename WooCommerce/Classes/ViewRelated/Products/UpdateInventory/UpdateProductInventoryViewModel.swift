@@ -89,10 +89,12 @@ extension ProductVariation: InventoryItem {
     }
 }
 
+@MainActor
 final class UpdateProductInventoryViewModel: ObservableObject {
     enum UpdateQuantityButtonMode {
         case increaseOnce
         case customQuantity
+        case loading
     }
 
     let inventoryItem: InventoryItem
@@ -139,12 +141,33 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         inventoryItem.imageURL
     }
 
+    func onTapIncreaseStockQuantityOnce() async {
+        guard let quantityDecimal = Decimal(string: quantity) else {
+            return
+        }
+
+        let newQuantity = quantityDecimal + 1
+        quantity = newQuantity.formatted()
+
+        try? await updateStockQuantity(with: newQuantity)
+    }
+
     func onTapUpdateStockQuantity() async {
         guard let quantityDecimal = Decimal(string: quantity) else {
             return
         }
 
+        try? await updateStockQuantity(with: quantityDecimal)
+    }
+}
+
+private extension UpdateProductInventoryViewModel {
+    func updateStockQuantity(with newQuantity: Decimal) async throws {
+        updateQuantityButtonMode = .loading
+
         // TODO: Handle error
-        try? await inventoryItem.updateStockQuantity(with: quantityDecimal, stores: stores)
+        try? await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
+
+        updateQuantityButtonMode = .increaseOnce
     }
 }

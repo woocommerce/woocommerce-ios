@@ -32,6 +32,8 @@ public struct WordPressTheme: Decodable, Equatable, GeneratedCopiable, Generated
         id = try container.decode(String.self, forKey: .id)
         description = try container.decode(String.self, forKey: .description)
         name = try container.decode(String.self, forKey: .name)
+        /// We want to reuse the response for WPCom V1.1 themes/mine/ which doesn't have `demo_uri`
+        /// so this is decoding can fail silently with an empty string as the default value.
         demoURI = try container.decodeIfPresent(String.self, forKey: .demoURI) ?? ""
     }
 }

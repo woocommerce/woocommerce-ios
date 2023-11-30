@@ -149,7 +149,7 @@ private struct CollapsibleProductRowCard: View {
                         Text(viewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)
                             .foregroundColor(Color(.text))
-                        Text(viewModel.stockQuantityLabel)
+                        Text(viewModel.orderProductDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
                         Text(viewModel.skuLabel)

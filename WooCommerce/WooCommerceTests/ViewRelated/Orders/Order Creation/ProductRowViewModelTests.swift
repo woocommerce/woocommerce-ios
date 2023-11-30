@@ -310,6 +310,32 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.secondaryProductDetailsLabel, ProductType.bundle.description)
     }
 
+    func test_orderProductDetailsLabel_is_stock_status_for_non_configurable_product() {
+        // Given
+        let stockStatus = ProductStockStatus.inStock
+        let product = Product.fake().copy(stockStatusKey: stockStatus.rawValue)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        assertEqual(stockStatus.description, viewModel.orderProductDetailsLabel)
+    }
+
+    func test_orderProductDetailsLabel_contains_product_type_and_stock_status_for_configurable_bundle_product() {
+        // Given
+        let stockStatus = ProductStockStatus.inStock
+        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, stockStatusKey: stockStatus.rawValue, bundledItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
+
+        // Then
+        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(ProductType.bundle.description), "Label should contain product type (Bundle)")
+        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
+    }
+
     func test_increment_and_decrement_quantity_have_step_value_of_one() {
         // Given
         let product = Product.fake()

@@ -213,6 +213,16 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: " • ")
     }
 
+    /// Label showing product details for a product in an order. Can include product type (if the row is configurable) and stock status.
+    ///
+    var orderProductDetailsLabel: String {
+        let stockLabel = createStockText()
+        return [productTypeLabel, stockLabel]
+            .compactMap({ $0 })
+            .filter { $0.isNotEmpty }
+            .joined(separator: " • ")
+    }
+
     private let productTypeLabel: String?
 
     /// Label showing product SKU

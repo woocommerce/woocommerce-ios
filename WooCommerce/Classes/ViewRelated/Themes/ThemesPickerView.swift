@@ -20,7 +20,6 @@ struct ThemesPickerView: View {
                 Spacer()
                     .frame(height: 40)
 
-                // Title label.
                 Text(Localization.chooseThemeHeading)
                     .bold()
                     .largeTitleStyle()
@@ -29,7 +28,6 @@ struct ThemesPickerView: View {
                 Spacer()
                     .frame(height: 16)
 
-                // Subtitle label.
                 Text(Localization.chooseThemeSubtitle)
                     .subheadlineStyle()
                     .padding(.horizontal, Layout.contentPadding)
@@ -46,22 +44,38 @@ struct ThemesPickerView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: Layout.imageWidth * scale, height: Layout.imageHeight * scale)
                                     .cornerRadius(Layout.cornerRadius)
-                                    .shadow(radius: Layout.shadowRadius, x: 0, y: 3)
+                                    .shadow(radius: Layout.shadowRadius, x: 0, y: Layout.shadowYOffset)
                                     .padding(.init(
                                         top: Layout.imageVerticalPadding,
                                         leading: Layout.imageHorizontalPadding,
                                         bottom: Layout.imageVerticalPadding,
                                         trailing: Layout.imageHorizontalPadding)
                                     )
-
                             }
                         }
+
+                        VStack {
+                            Text(Localization.lastMessageHeading)
+                                .bold()
+                                .bodyStyle()
+                                .padding(.horizontal, Layout.contentPadding)
+
+                            Spacer()
+                                .frame(height: Layout.contentPadding)
+
+                            Text(Localization.lastMessageContent)
+                                .subheadlineStyle()
+                                    .multilineTextAlignment(.center)
+                                .padding(.horizontal, Layout.contentPadding)
+                        }.frame(
+                            width: Layout.imageWidth * scale,
+                            height: Layout.imageHeight * scale
+                        )
                     }
                 }
 
                 Spacer()
             }
-
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -93,10 +107,11 @@ private extension ThemesPickerView {
         static let contentPadding: CGFloat = 16
         static let imageHorizontalPadding: CGFloat = 8
         static let imageVerticalPadding: CGFloat = 8
-        static let imageWidth: CGFloat = 225
-        static let imageHeight: CGFloat = 450
+        static let imageWidth: CGFloat = 250
+        static let imageHeight: CGFloat = 500
         static let cornerRadius: CGFloat = 8
         static let shadowRadius: CGFloat = 2
+        static let shadowYOffset: CGFloat = 3
     }
 
     private enum Localization {
@@ -107,15 +122,27 @@ private extension ThemesPickerView {
         )
 
         static let chooseThemeHeading = NSLocalizedString(
-        "ThemesPickerView.chooseThemeHeading",
-        value: "Choose a theme",
-        comment: "Main heading on the theme carousel screen."
+            "ThemesPickerView.chooseThemeHeading",
+            value: "Choose a theme",
+            comment: "Main heading on the theme carousel screen."
         )
 
         static let chooseThemeSubtitle = NSLocalizedString(
-        "ThemesPickerView.chooseThemeSubtitle",
-        value: "You can always change it later in the settings.",
-        comment: "Subtitle on the theme carousel screen."
+            "ThemesPickerView.chooseThemeSubtitle",
+            value: "You can always change it later in the settings.",
+            comment: "Subtitle on the theme carousel screen."
+        )
+
+        static let lastMessageHeading = NSLocalizedString(
+            "ThemesPickerView.lastMessageHeading",
+            value: "Looking for more?",
+            comment: "The heading of the message shown at the end of carousel"
+        )
+
+        static let lastMessageContent = NSLocalizedString(
+            "ThemesPickerView.lastMessageContent",
+            value: "Once your store is set up, find your perfect theme in the WooCommerce Theme Store.",
+            comment: "The content of the message shown at the end of carousel"
         )
     }
 

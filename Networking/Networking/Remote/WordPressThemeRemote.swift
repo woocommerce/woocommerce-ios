@@ -28,7 +28,7 @@ public final class WordPressThemeRemote: Remote, WordPressThemeRemoteProtocol {
 
     public func loadCurrentTheme(siteID: Int64) async throws -> WordPressTheme {
         let path = Paths.currentThemePath(for: siteID)
-        let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .get, path: path)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         return try await enqueue(request, mapper: WordPressThemeMapper())
     }
 }

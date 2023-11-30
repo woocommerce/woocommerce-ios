@@ -7,6 +7,8 @@ final class WordPressThemeRemoteTests: XCTestCase {
     ///
     private var network: MockNetwork!
 
+    private let sampleSiteID: Int64 = 123
+
     override func setUp() {
         super.setUp()
         network = MockNetwork()
@@ -19,7 +21,7 @@ final class WordPressThemeRemoteTests: XCTestCase {
 
     // MARK: - loadSuggestedThemes tests
 
-    func test_loadSuggestedThemes_returns_parsed_campaigns() async throws {
+    func test_loadSuggestedThemes_returns_parsed_themes() async throws {
         // Given
         let remote = WordPressThemeRemote(network: network)
 
@@ -50,6 +52,45 @@ final class WordPressThemeRemoteTests: XCTestCase {
         do {
             // When
             _ = try await remote.loadSuggestedThemes()
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
+    // MARK: - loadCurrentTheme tests
+
+    func test_loadCurrentTheme_returns_parsed_theme() async throws {
+        // Given
+        let remote = WordPressThemeRemote(network: network)
+
+        let suffix = "sites/\(sampleSiteID)/themes/mine"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "theme-mine-success")
+
+        // When
+        let theme = try await remote.loadCurrentTheme(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(theme.id, "maywood")
+        XCTAssertEqual(theme.name, "Maywood")
+        XCTAssertEqual(theme.description, "Maywood is a refined theme designed for restaurants and food-related businesses seeking a modern look.")
+        XCTAssertEqual(theme.demoURI, "")
+    }
+
+    func test_loadCurrentTheme_properly_relays_networking_errors() async {
+        // Given
+        let remote = WordPressThemeRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/themes/mine"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.loadCurrentTheme(siteID: sampleSiteID)
 
             // Then
             XCTFail("Request should fail")

@@ -21,6 +21,9 @@ public final class WordPressThemeRemote: Remote, WordPressThemeRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .get, path: path, parameters: parameters)
         let mapper = WordPressThemeListMapper()
         return try await enqueue(request, mapper: mapper)
+            .filter { theme in
+                Values.filteredThemeIDs.contains(theme.id)
+            }
     }
 }
 
@@ -38,5 +41,6 @@ private extension WordPressThemeRemote {
     enum Values {
         static let suggestedThemeFilter = "subject:store"
         static let maximumThemeCount = 100
+        static let filteredThemeIDs = ["tsubaki", "tazza", "amulet", "zaino", "thriving-artist", "attar"]
     }
 }

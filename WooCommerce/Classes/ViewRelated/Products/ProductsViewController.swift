@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import WordPressUI
 import Yosemite
 import Combine
@@ -286,13 +287,22 @@ private extension ProductsViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            guard let self = self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
-            self?.navigationItem.configureLeftBarButtonItemAsLoader()
+            self.navigationItem.configureLeftBarButtonItemAsLoader()
 
             Task {
-                await self?.viewModel.handleScannedBarcode(scannedBarcode)
-                self?.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+
+                do {
+                    let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
+                    self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
+                                                                                          siteID: self.viewModel.siteID)),
+                                 animated: true)
+                } catch {
+                    // TODO: Show error notices
+                }
             }
 
         }, onPermissionsDenied: {
@@ -766,7 +776,7 @@ private extension ProductsViewController {
                 self?.tableView.updateHeaderHeight()
             },
             onTroubleshootButtonPressed: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
             },

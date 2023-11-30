@@ -10,11 +10,11 @@ final class WordPressThemeListMapperTests: XCTestCase {
         XCTAssertEqual(themes.count, 2)
 
         let item = try XCTUnwrap(themes.first)
-        XCTAssertEqual(item.id, "organic-stax")
-        XCTAssertEqual(item.name, "STAX")
+        XCTAssertEqual(item.id, "tsubaki")
+        XCTAssertEqual(item.name, "Tsubaki")
         // swiftlint:disable:next line_length
-        XCTAssertEqual(item.description, "STAX is a premium block theme for the WordPress full-site editor. The design is clean, versatile, and totally customizable. Additionally, the setup wizard provides a super simple installation process — so your site will appear exactly as the demo within moments of activation. ")
-        XCTAssertEqual(item.demoURI, "https://stax.organicthemes.com/")
+        XCTAssertEqual(item.description, "Tsubaki")
+        XCTAssertEqual(item.demoURI, "https://tsubakidemo.wpcomstaging.com/")
     }
 }
 

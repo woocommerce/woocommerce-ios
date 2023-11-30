@@ -1,49 +1,67 @@
 {
     "themes": [
         {
-            "menu_order": -110,
-            "author": "Organic Themes",
-            "id": "organic-stax",
-            "description": "STAX is a premium block theme for the WordPress full-site editor. The design is clean, versatile, and totally customizable. Additionally, the setup wizard provides a super simple installation process — so your site will appear exactly as the demo within moments of activation. ",
-            "stylesheet": "organic-stax",
-            "name": "STAX",
-            "author_uri": "https://organicthemes.com/",
-            "demo_uri": "https://stax.organicthemes.com/",
-            "screenshot": "https://theme.files.wordpress.com/2023/02/stax-featured.jpg",
-            "theme_type": "managed-external",
-            "product_details": [
-                {
-                    "product_id": 10025,
-                    "product_slug": "wp_mp_theme_organic_stax_yearly"
-                },
-                {
-                    "product_id": 10026,
-                    "product_slug": "wp_mp_theme_organic_stax_monthly"
-                }
-            ],
+            "menu_order": -57,
+            "author": "Automattic",
+            "id": "tsubaki",
+            "description": "Tsubaki puts the spotlight on your products and your customers.  This theme leverages WooCommerce to provide you with intuitive product navigation and the patterns you need to master digital merchandising.",
+            "stylesheet": "premium/tsubaki",
+            "name": "Tsubaki",
+            "author_uri": "https://automattic.com/",
+            "demo_uri": "https://tsubakidemo.wpcomstaging.com/",
+            "screenshot": "https://i0.wp.com/s2.wp.com/wp-content/themes/premium/tsubaki/screenshot.png?ssl=1",
+            "theme_type": "hosted-internal",
+            "download_uri": "https://public-api.wordpress.com/rest/v1/themes/download/tsubaki.zip",
+            "price": "US$50",
             "taxonomies": {
+                "theme_subject": [
+                    {
+                        "name": "Business",
+                        "slug": "business",
+                        "term_id": "179"
+                    },
+                    {
+                        "name": "Store",
+                        "slug": "store",
+                        "term_id": "40550"
+                    }
+                ],
+                "theme_style": [
+                    {
+                        "name": "Clean",
+                        "slug": "clean",
+                        "term_id": "9519"
+                    },
+                    {
+                        "name": "Modern",
+                        "slug": "modern",
+                        "term_id": "4690"
+                    }
+                ],
+                "theme_color": [
+                    {
+                        "name": "Black",
+                        "slug": "black",
+                        "term_id": "59007"
+                    },
+                    {
+                        "name": "White",
+                        "slug": "white",
+                        "term_id": "7052"
+                    }
+                ],
                 "theme_column": [
                     {
                         "name": "One Column",
                         "slug": "one-column",
                         "term_id": "1450969"
-                    },
-                    {
-                        "name": "Two Columns",
-                        "slug": "two-columns",
-                        "term_id": "2600855"
                     }
                 ],
                 "theme_feature": [
                     {
-                        "name": "Custom Menu",
-                        "slug": "custom-menu",
-                        "term_id": "4349195"
-                    },
-                    {
-                        "name": "Full Width Template",
-                        "slug": "full-width-template",
-                        "term_id": "43438937"
+                        "name": "Custom Colors",
+                        "slug": "custom-colors",
+                        "term_id": "2184596"
                     },
                     {
                         "name": "RTL Language Support",
@@ -56,16 +74,6 @@
                         "term_id": "3895381"
                     },
                     {
-                        "name": "Accessibility Ready",
-                        "slug": "accessibility-ready",
-                        "term_id": "158289315"
-                    },
-                    {
-                        "name": "Threaded Comments",
-                        "slug": "threaded-comments",
-                        "term_id": "5371426"
-                    },
-                    {
                         "name": "Block Editor Styles",
                         "slug": "block-editor-styles",
                         "term_id": "685452039"
@@ -76,18 +84,11 @@
                         "term_id": "686035051"
                     }
                 ],
-                "theme_mobile-friendly": [
+                "theme_software_set": [
                     {
-                        "name": "Mobile-Friendly",
-                        "slug": "mobile-friendly",
-                        "term_id": "350456"
-                    }
-                ],
-                "theme_subject": [
-                    {
-                        "name": "Store",
-                        "slug": "store",
-                        "term_id": "40550"
+                        "name": "woo-on-plans",
+                        "slug": "woo-on-plans",
+                        "term_id": "755216234"
                     }
                 ]
             },

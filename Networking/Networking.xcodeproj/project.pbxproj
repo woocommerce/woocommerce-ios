@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -862,6 +862,7 @@
 		DED91DE52AD64B2900CDCC53 /* BlazeRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE42AD64B2900CDCC53 /* BlazeRemote.swift */; };
 		DED91DE72AD64ED500CDCC53 /* BlazeRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE62AD64ED500CDCC53 /* BlazeRemoteTests.swift */; };
 		DEDA8D9B2B05BEF80076BF0F /* CreateProductVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D9A2B05BEF80076BF0F /* CreateProductVariationTests.swift */; };
+		DEDA8DA12B182E850076BF0F /* WordPressTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */; };
 		DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEDA4432975003800F845AB /* settings-general-without-data.json */; };
 		DEEF8E6529C832B500D47411 /* wordpress-site-info-with-auth-url.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */; };
 		DEEF8E6829C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */; };
@@ -1875,6 +1876,7 @@
 		DED91DE42AD64B2900CDCC53 /* BlazeRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeRemote.swift; sourceTree = "<group>"; };
 		DED91DE62AD64ED500CDCC53 /* BlazeRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeRemoteTests.swift; sourceTree = "<group>"; };
 		DEDA8D9A2B05BEF80076BF0F /* CreateProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateProductVariationTests.swift; sourceTree = "<group>"; };
+		DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressTheme.swift; sourceTree = "<group>"; };
 		DEEDA4432975003800F845AB /* settings-general-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general-without-data.json"; sourceTree = "<group>"; };
 		DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wordpress-site-info-with-auth-url.json"; sourceTree = "<group>"; };
 		DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneTimeApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
@@ -2559,6 +2561,7 @@
 				B990FA912AA1EBC600496375 /* TaxRate.swift */,
 				EE078D8E2AD2E65400C1199E /* JWToken.swift */,
 				DED91DDC2AD62DCB00CDCC53 /* BlazeCampaign.swift */,
+				DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -4309,6 +4312,7 @@
 				D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
 				261C466B2A6738EE00734070 /* AppicationPasswordEncoder.swift in Sources */,
+				DEDA8DA12B182E850076BF0F /* WordPressTheme.swift in Sources */,
 				2665032A261F41510079A159 /* ProductAddOn.swift in Sources */,
 				020D07BE23D8570800FD9580 /* MediaListMapper.swift in Sources */,
 				0359EA1327AAC6D00048DE2D /* WCPayCardPaymentDetails.swift in Sources */,

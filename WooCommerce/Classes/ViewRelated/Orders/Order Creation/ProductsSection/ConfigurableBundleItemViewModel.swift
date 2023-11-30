@@ -222,8 +222,8 @@ private extension ConfigurableBundleItemViewModel {
                     return String(format: Localization.ErrorMessage.missingVariationFormat, product.name)
                 }
 
-                let variationAttributesCount = (selectedVariation?.attributes ?? []).count + selectableVariationOptionsByName.values.compactMap { $0 }.count
-                guard variationAttributesCount == product.attributesForVariations.count else {
+                let variationAttributes = (selectedVariation?.attributes ?? []) + selectableVariationOptionsByName.compactMap { $0.value }
+                guard variationAttributes.count == product.attributesForVariations.count else {
                     return String(format: Localization.ErrorMessage.variationMissingAttributesFormat, product.name)
                 }
 

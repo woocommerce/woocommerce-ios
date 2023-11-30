@@ -5,9 +5,6 @@ import Codegen
 ///
 public struct WordPressTheme: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
 
-    /// Name of the theme's author
-    public let author: String
-
     /// ID of the theme
     public let id: String
 
@@ -20,12 +17,10 @@ public struct WordPressTheme: Decodable, Equatable, GeneratedCopiable, Generated
     /// URI of the demo site for the theme
     public let demoURI: String
 
-    public init(author: String,
-                id: String,
+    public init(id: String,
                 description: String,
                 name: String,
                 demoURI: String) {
-        self.author = author
         self.id = id
         self.description = description
         self.name = name

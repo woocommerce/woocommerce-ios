@@ -2298,7 +2298,6 @@ extension Networking.WordPressTheme {
     ///
     public static func fake() -> Networking.WordPressTheme {
         .init(
-            author: .fake(),
             id: .fake(),
             description: .fake(),
             name: .fake(),

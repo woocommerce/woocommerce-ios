@@ -3102,20 +3102,17 @@ extension Networking.WordPressMedia {
 
 extension Networking.WordPressTheme {
     public func copy(
-        author: CopiableProp<String> = .copy,
         id: CopiableProp<String> = .copy,
         description: CopiableProp<String> = .copy,
         name: CopiableProp<String> = .copy,
         demoURI: CopiableProp<String> = .copy
     ) -> Networking.WordPressTheme {
-        let author = author ?? self.author
         let id = id ?? self.id
         let description = description ?? self.description
         let name = name ?? self.name
         let demoURI = demoURI ?? self.demoURI
 
         return Networking.WordPressTheme(
-            author: author,
             id: id,
             description: description,
             name: name,

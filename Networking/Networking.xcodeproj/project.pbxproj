@@ -865,6 +865,7 @@
 		DEDA8DA12B182E850076BF0F /* WordPressTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */; };
 		DEDA8DA32B18323E0076BF0F /* WordPressThemeListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DA22B18323E0076BF0F /* WordPressThemeListMapper.swift */; };
 		DEDA8DA52B1839320076BF0F /* theme-list-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DEDA8DA42B1839320076BF0F /* theme-list-success.json */; };
+		DEDA8DA72B18399D0076BF0F /* WordPressThemeListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */; };
 		DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEDA4432975003800F845AB /* settings-general-without-data.json */; };
 		DEEF8E6529C832B500D47411 /* wordpress-site-info-with-auth-url.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */; };
 		DEEF8E6829C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */; };
@@ -1881,6 +1882,7 @@
 		DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressTheme.swift; sourceTree = "<group>"; };
 		DEDA8DA22B18323E0076BF0F /* WordPressThemeListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeListMapper.swift; sourceTree = "<group>"; };
 		DEDA8DA42B1839320076BF0F /* theme-list-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-list-success.json"; sourceTree = "<group>"; };
+		DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeListMapperTests.swift; sourceTree = "<group>"; };
 		DEEDA4432975003800F845AB /* settings-general-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general-without-data.json"; sourceTree = "<group>"; };
 		DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wordpress-site-info-with-auth-url.json"; sourceTree = "<group>"; };
 		DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneTimeApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
@@ -3246,6 +3248,7 @@
 				EEA1E2012AC18CD700A37ADD /* AIProductMapperTests.swift */,
 				EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */,
 				DED91DE22AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift */,
+				DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -4544,6 +4547,7 @@
 				028F3F942B0DF9A800F8E227 /* OrderEncoderTests.swift in Sources */,
 				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,
 				2685C102263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift in Sources */,
+				DEDA8DA72B18399D0076BF0F /* WordPressThemeListMapperTests.swift in Sources */,
 				02616F8C292132800095BC00 /* SiteRemoteTests.swift in Sources */,
 				EEFAA579295D2FC7003583BE /* RESTRequestTests.swift in Sources */,
 				B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */,

@@ -32,8 +32,7 @@ public struct WordPressTheme: Decodable, Equatable, GeneratedCopiable, Generated
         id = try container.decode(String.self, forKey: .id)
         description = try container.decode(String.self, forKey: .description)
         name = try container.decode(String.self, forKey: .name)
-        demoURI = try container.decodeIfPresent(String.self, forKey: .demoURI) ??
-        (try container.decodeIfPresent(String.self, forKey: .themeURI)) ?? ""
+        demoURI = try container.decodeIfPresent(String.self, forKey: .demoURI) ?? ""
     }
 }
 
@@ -43,6 +42,5 @@ private extension WordPressTheme {
         case description
         case name
         case demoURI = "demo_uri"
-        case themeURI = "theme_uri"
     }
 }

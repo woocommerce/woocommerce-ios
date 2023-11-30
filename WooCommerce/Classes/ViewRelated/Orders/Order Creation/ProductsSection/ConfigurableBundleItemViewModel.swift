@@ -211,12 +211,12 @@ private extension ConfigurableBundleItemViewModel {
                 }
 
                 guard selectedVariation != nil else {
-                    return Localization.ErrorMessage.missingVariation
+                    return String(format: Localization.ErrorMessage.missingVariationFormat, product.name)
                 }
 
                 let variationAttributes = (selectedVariation?.attributes ?? []) + selectableVariationAttributeViewModels.compactMap { $0.selectedAttribute }
                 guard variationAttributes.count == product.attributesForVariations.count else {
-                    return Localization.ErrorMessage.variationMissingAttributes
+                    return String(format: Localization.ErrorMessage.variationMissingAttributesFormat, product.name)
                 }
 
                 return nil
@@ -268,9 +268,9 @@ private extension ConfigurableBundleItemViewModel {
         let minQuantityString = NumberFormatter.localizedString(from: bundleItem.minQuantity as NSDecimalNumber, number: .decimal)
         if let maxQuantity = bundleItem.maxQuantity {
             let maxQuantityString = NumberFormatter.localizedString(from: maxQuantity as NSDecimalNumber, number: .decimal)
-            return String(format: Localization.ErrorMessage.invalidQuantityWithMinAndMaxQuantityRules, minQuantityString, maxQuantityString)
+            return String(format: Localization.ErrorMessage.invalidQuantityWithMinAndMaxQuantityRulesFormat, product.name, minQuantityString, maxQuantityString)
         } else {
-            return String(format: Localization.ErrorMessage.invalidQuantityWithMinQuantityRule, minQuantityString)
+            return String(format: Localization.ErrorMessage.invalidQuantityWithMinQuantityRuleFormat, product.name, minQuantityString)
         }
     }
 }
@@ -278,25 +278,29 @@ private extension ConfigurableBundleItemViewModel {
 private extension ConfigurableBundleItemViewModel {
     enum Localization {
         enum ErrorMessage {
-            static let invalidQuantityWithMinQuantityRule = NSLocalizedString(
-                "configureBundleItemError.invalidQuantityWithMinQuantityRule",
-                value: "The quantity needs to be at least %1$@",
-                comment: "Error message when setting a bundle item's quantity with a minimum quantity rule."
+            static let invalidQuantityWithMinQuantityRuleFormat = NSLocalizedString(
+                "configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat",
+                value: "The quantity of %1$@ needs to be at least %2$@.",
+                comment: "Error message when setting a bundle item's quantity with a minimum quantity rule. " +
+                "%1$@ is the product name. %2$@ is the minimum quantity."
             )
-            static let invalidQuantityWithMinAndMaxQuantityRules = NSLocalizedString(
-                "configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules",
-                value: "The quantity needs to be within %1$@ and %2$@",
-                comment: "Error message when setting a bundle item's quantity with minimum and maximum quantity rules."
+            static let invalidQuantityWithMinAndMaxQuantityRulesFormat = NSLocalizedString(
+                "configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat",
+                value: "The quantity of %1$@ needs to be within %2$@ and %3$@.",
+                comment: "Error message when setting a bundle item's quantity with minimum and maximum quantity rules. " +
+                "%1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity"
             )
-            static let missingVariation = NSLocalizedString(
-                "configureBundleItemError.missingVariation",
-                value: "Please select a variation",
-                comment: "Error message when a variable bundle item is missing a variation."
+            static let missingVariationFormat = NSLocalizedString(
+                "configureBundleItemError.missingVariationFormat",
+                value: "Choose a variation for %1$@.",
+                comment: "Error message format when a variable bundle item is missing a variation. " +
+                "%1$@ is the variable product name."
             )
-            static let variationMissingAttributes = NSLocalizedString(
-                "configureBundleItemError.variationMissingAttributes",
-                value: "Please select an option for all variation attributes",
-                comment: "Error message when a variable bundle item is missing some attributes."
+            static let variationMissingAttributesFormat = NSLocalizedString(
+                "configureBundleItemError.variationMissingAttributesFormat",
+                value: "Choose an option for all variation attributes for %1$@.",
+                comment: "Error message format when a variable bundle item is missing some attributes. " +
+                "%1$@ is the variable product name."
             )
         }
     }

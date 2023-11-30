@@ -154,7 +154,7 @@ class PasswordViewController: LoginViewController {
             }
             displayError(message: displayMessage, moveVoiceOverFocus: true)
         } else {
-            displayError(nsError, sourceTag: sourceTag)
+            displayError(error, sourceTag: sourceTag)
         }
     }
 
@@ -304,7 +304,7 @@ private extension PasswordViewController {
                 present(alert, animated: true, completion: nil)
             default:
                 tracker.track(failure: error.localizedDescription)
-                displayError(error as NSError, sourceTag: sourceTag)
+                displayError(error, sourceTag: sourceTag)
             }
         }
         updateLoadingUI(isRequestingMagicLink: false)

@@ -1,6 +1,5 @@
 #import "LoginFacade.h"
 #import "NSURL+IDN.h"
-#import "WordPressComOAuthClientFacade.h"
 #import "WordPressXMLRPCAPIFacade.h"
 #import "WPAuthenticator-Swift.h"
 @import WordPressKit;
@@ -47,7 +46,7 @@
             [self.delegate finishedLoginWithGoogleIDToken:token authToken:authToken];
         }
         [self trackSuccess];
-    } needsMultiFactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo){
+    } needsMultifactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo){
         if ([self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {
             [self.delegate needsMultifactorCodeForUserID:userID andNonceInfo:nonceInfo];
         }
@@ -74,21 +73,21 @@
         [self.delegate displayLoginMessage:NSLocalizedString(@"Connecting to WordPress.com", nil)];
     }
 
-    [self.wordpressComOAuthClientFacade authenticateSocialLoginUser:userID
-                                                           authType:authType
-                                                        twoStepCode:twoStepCode
-                                                       twoStepNonce:twoStepNonce
-                                                            success:^(NSString *authToken) {
-                                                                if ([self.delegate respondsToSelector:@selector(finishedLoginWithNonceAuthToken:)]) {
-                                                                    [self.delegate finishedLoginWithNonceAuthToken:authToken];
-                                                                }
-                                                                [self trackSuccess];
-                                                            } failure:^(NSError *error) {
-                                                                [self track:WPAnalyticsStatLoginFailed error:error];
-                                                                if ([self.delegate respondsToSelector:@selector(displayRemoteError:)]) {
-                                                                    [self.delegate displayRemoteError:error];
-                                                                }
-                                                            }];
+    [self.wordpressComOAuthClientFacade authenticateWithSocialLoginUser:userID
+                                                               authType:authType
+                                                            twoStepCode:twoStepCode
+                                                           twoStepNonce:twoStepNonce
+                                                                success:^(NSString *authToken) {
+                                                                    if ([self.delegate respondsToSelector:@selector(finishedLoginWithNonceAuthToken:)]) {
+                                                                        [self.delegate finishedLoginWithNonceAuthToken:authToken];
+                                                                    }
+                                                                    [self trackSuccess];
+                                                                } failure:^(NSError *error) {
+                                                                    [self track:WPAnalyticsStatLoginFailed error:error];
+                                                                    if ([self.delegate respondsToSelector:@selector(displayRemoteError:)]) {
+                                                                        [self.delegate displayRemoteError:error];
+                                                                    }
+                                                                }];
 }
 
 - (void)signInToWordpressDotCom:(LoginFields *)loginFields
@@ -102,7 +101,7 @@
             [self.delegate finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.requiredMultifactor];
         }
         [self trackSuccess];
-    } needsMultiFactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo) {
+    } needsMultifactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo) {
         if (nonceInfo == nil && [self.delegate respondsToSelector:@selector(needsMultifactorCode)]) {
             [self.delegate needsMultifactorCode];
         } else if (nonceInfo != nil && [self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {

@@ -402,7 +402,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                                                 // username instead.
                                                 strongSelf.showSelfHostedUsernamePasswordAndError(error)
                                         } else {
-                                            strongSelf.displayError(error as NSError, sourceTag: strongSelf.sourceTag)
+                                            strongSelf.displayError(error, sourceTag: strongSelf.sourceTag)
                                         }
         })
     }

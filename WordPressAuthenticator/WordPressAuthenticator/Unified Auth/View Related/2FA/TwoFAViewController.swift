@@ -139,7 +139,7 @@ final class TwoFAViewController: LoginViewController {
             }
             displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
         } else {
-            displayError(error as NSError, sourceTag: sourceTag)
+            displayError(error, sourceTag: sourceTag)
         }
     }
 

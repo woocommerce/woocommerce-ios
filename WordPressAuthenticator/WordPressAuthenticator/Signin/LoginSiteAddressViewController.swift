@@ -185,7 +185,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 self.displayError(message: msg, moveVoiceOverFocus: true)
 
             } else {
-                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.displayError(error, sourceTag: self.sourceTag)
             }
         })
     }

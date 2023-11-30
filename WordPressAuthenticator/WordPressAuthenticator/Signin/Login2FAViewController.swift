@@ -328,7 +328,7 @@ extension Login2FAViewController {
             }
             displayError(message: bad2FAMessage)
         } else {
-            displayError(error as NSError, sourceTag: sourceTag)
+            displayError(error, sourceTag: sourceTag)
         }
     }
 }

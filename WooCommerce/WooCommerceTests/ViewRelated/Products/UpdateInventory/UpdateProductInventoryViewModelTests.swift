@@ -3,6 +3,7 @@ import Yosemite
 import Fakes
 @testable import WooCommerce
 
+@MainActor
 final class UpdateProductInventoryViewModelTests: XCTestCase {
     private var viewModel: UpdateProductInventoryViewModel!
     let siteID: Int64 = 1
@@ -103,5 +104,116 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         waitUntil {
             viewModel.name == name
         }
+    }
+
+    func test_onTapIncreaseStockQuantityOnce_with_a_product_then_increases_the_amount_and_sends_action() async throws {
+        // Given
+        let previousStockQuantity: Decimal = 5
+        var passedStockQuantity: Decimal?
+        let product = Product.fake().copy(siteID: siteID, stockQuantity: previousStockQuantity)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(passingProduct, onCompletion):
+                passedStockQuantity = passingProduct.stockQuantity
+                onCompletion(.success((product.copy(stockQuantity: previousStockQuantity + 1))))
+            default:
+                break
+            }
+        }
+
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores)
+
+        // When
+        viewModel.quantity = previousStockQuantity.formatted()
+        await viewModel.onTapIncreaseStockQuantityOnce()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, passedStockQuantity?.formatted())
+        XCTAssertEqual(passedStockQuantity, previousStockQuantity + 1)
+        XCTAssertEqual(viewModel.updateQuantityButtonMode, .increaseOnce)
+    }
+
+    func test_onTapIncreaseStockQuantityOnce_with_a_variation_then_increases_the_amount_and_sends_action() async throws {
+        // Given
+        let previousStockQuantity: Decimal = 5
+        var passedStockQuantity: Decimal?
+        let stockQuantity = Decimal(12)
+        let variation = ProductVariation.fake().copy(siteID: siteID, stockQuantity: stockQuantity)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .updateProductVariation(passingVariation, onCompletion):
+                passedStockQuantity = passingVariation.stockQuantity
+                onCompletion(.success((variation.copy(stockQuantity: previousStockQuantity + 1))))
+            default:
+                break
+            }
+        }
+
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID, stores: stores)
+
+        // When
+        viewModel.quantity = previousStockQuantity.formatted()
+        await viewModel.onTapIncreaseStockQuantityOnce()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, passedStockQuantity?.formatted())
+        XCTAssertEqual(passedStockQuantity, previousStockQuantity + 1)
+        XCTAssertEqual(viewModel.updateQuantityButtonMode, .increaseOnce)
+    }
+
+    func test_onTapUpdateStockQuantity_with_a_product_then_sends_action() async throws {
+        // Given
+        let stockQuantity: Decimal = 23
+        var passedStockQuantity: Decimal?
+        let product = Product.fake().copy(siteID: siteID, stockQuantity: 12)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(passingProduct, onCompletion):
+                passedStockQuantity = passingProduct.stockQuantity
+                onCompletion(.success((product.copy(stockQuantity: stockQuantity))))
+            default:
+                break
+            }
+        }
+
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores)
+
+        // When
+        viewModel.quantity = stockQuantity.formatted()
+        await viewModel.onTapUpdateStockQuantity()
+
+        // Then
+        XCTAssertEqual(passedStockQuantity, stockQuantity)
+        XCTAssertEqual(viewModel.updateQuantityButtonMode, .increaseOnce)
+    }
+
+    func test_onTapUpdateStockQuantity_with_a_variation_then_sends_action() async throws {
+        // Given
+        let stockQuantity: Decimal = 23
+        var passedStockQuantity: Decimal?
+        let variation = ProductVariation.fake().copy(siteID: siteID, stockQuantity: stockQuantity)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .updateProductVariation(passingProduct, onCompletion):
+                passedStockQuantity = passingProduct.stockQuantity
+                onCompletion(.success((variation.copy(stockQuantity: stockQuantity))))
+            default:
+                break
+            }
+        }
+
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID, stores: stores)
+
+        // When
+        viewModel.quantity = stockQuantity.formatted()
+        await viewModel.onTapUpdateStockQuantity()
+
+        // Then
+        XCTAssertEqual(passedStockQuantity, stockQuantity)
+        XCTAssertEqual(viewModel.updateQuantityButtonMode, .increaseOnce)
     }
 }

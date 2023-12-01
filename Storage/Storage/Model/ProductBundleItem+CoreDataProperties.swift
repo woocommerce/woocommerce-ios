@@ -22,6 +22,7 @@ extension ProductBundleItem {
     @NSManaged public var allowedVariations: [Int64]?
     @NSManaged public var product: Product?
     @NSManaged public var defaultVariationAttributes: NSOrderedSet?
+    @NSManaged public var pricedIndividually: Bool
 }
 
 // MARK: Generated accessors for defaultVariationAttributes

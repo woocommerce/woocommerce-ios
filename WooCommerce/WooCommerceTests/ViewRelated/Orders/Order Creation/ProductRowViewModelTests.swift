@@ -310,6 +310,48 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.secondaryProductDetailsLabel, ProductType.bundle.description)
     }
 
+    func test_orderProductDetailsLabel_is_stock_status_for_non_configurable_product() {
+        // Given
+        let stockStatus = ProductStockStatus.inStock
+        let product = Product.fake().copy(stockStatusKey: stockStatus.rawValue)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        assertEqual(stockStatus.description, viewModel.orderProductDetailsLabel)
+    }
+
+    func test_orderProductDetailsLabel_contains_attributes_and_stock_status_for_non_configurable_product_variation() {
+        // Given
+        let stockStatus = ProductStockStatus.inStock
+        let variationAttribute = "Blue"
+        let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: variationAttribute)],
+                                                     stockStatus: stockStatus)
+        let attributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
+
+        // When
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: true, displayMode: .attributes(attributes))
+
+        // Then
+        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(variationAttribute), "Label should contain variation attribute")
+        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
+    }
+
+    func test_orderProductDetailsLabel_contains_product_type_and_stock_status_for_configurable_bundle_product() {
+        // Given
+        let stockStatus = ProductStockStatus.inStock
+        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, stockStatusKey: stockStatus.rawValue, bundledItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
+
+        // Then
+        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(ProductType.bundle.description), "Label should contain product type (Bundle)")
+        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
+    }
+
     func test_increment_and_decrement_quantity_have_step_value_of_one() {
         // Given
         let product = Product.fake()
@@ -628,6 +670,43 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // Then
         assertEqual("8 × $10.71", viewModel.priceQuantityLine)
+    }
+
+    func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine_for_product_not_pricedIndividually() {
+        // Given
+        let price = "10.71"
+        let quantity: Decimal = 8
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: false, pricedIndividually: false)
+
+        // Then
+        assertEqual("8 × $0.00", viewModel.priceQuantityLine)
+    }
+
+    func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_pricedIndividually() {
+        // Given
+        let price = "10.71"
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: true)
+
+        // Then
+        assertEqual(price, viewModel.price)
+    }
+
+    func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_not_pricedIndividually() {
+        // Given
+        let price = "10.71"
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: false)
+
+        // Then
+        assertEqual("0", viewModel.price)
     }
 
     func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {

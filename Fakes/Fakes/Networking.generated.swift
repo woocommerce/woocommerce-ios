@@ -1027,7 +1027,8 @@ extension Networking.ProductBundleItem {
             overridesVariations: .fake(),
             allowedVariations: .fake(),
             overridesDefaultVariationAttributes: .fake(),
-            defaultVariationAttributes: .fake()
+            defaultVariationAttributes: .fake(),
+            pricedIndividually: .fake()
         )
     }
 }
@@ -2290,6 +2291,18 @@ extension Networking.WordPressMedia {
             alt: .fake(),
             details: .fake(),
             title: .fake()
+        )
+    }
+}
+extension Networking.WordPressTheme {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WordPressTheme {
+        .init(
+            id: .fake(),
+            description: .fake(),
+            name: .fake(),
+            demoURI: .fake()
         )
     }
 }

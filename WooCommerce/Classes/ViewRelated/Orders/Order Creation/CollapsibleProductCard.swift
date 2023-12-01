@@ -59,7 +59,7 @@ struct CollapsibleProductCard: View {
                                               flow: flow,
                                               shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                               shouldDisallowDiscounts: shouldDisallowDiscounts,
-                                              onAddDiscount: onAddDiscount) // TODO: #11250 Update design of child items in product bundle
+                                              onAddDiscount: onAddDiscount)
                     Divider().padding(.horizontal)
                 }
             }
@@ -149,7 +149,7 @@ private struct CollapsibleProductRowCard: View {
                         Text(viewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)
                             .foregroundColor(Color(.text))
-                        Text(viewModel.stockQuantityLabel)
+                        Text(viewModel.orderProductDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
                         Text(viewModel.skuLabel)
@@ -312,6 +312,9 @@ struct CollapsibleProductCardPriceSummary: View {
             }
             if let price = viewModel.priceBeforeDiscountsLabel {
                 Text(price)
+                    .if(!viewModel.pricedIndividually) {
+                        $0.foregroundColor(.secondary)
+                    }
             }
         }
     }

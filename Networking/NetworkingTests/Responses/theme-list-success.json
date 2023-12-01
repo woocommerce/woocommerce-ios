@@ -1,0 +1,212 @@
+{
+    "themes": [
+        {
+            "menu_order": -57,
+            "author": "Automattic",
+            "id": "tsubaki",
+            "description": "Tsubaki puts the spotlight on your products and your customers.  This theme leverages WooCommerce to provide you with intuitive product navigation and the patterns you need to master digital merchandising.",
+            "stylesheet": "premium/tsubaki",
+            "name": "Tsubaki",
+            "author_uri": "https://automattic.com/",
+            "demo_uri": "https://tsubakidemo.wpcomstaging.com/",
+            "screenshot": "https://i0.wp.com/s2.wp.com/wp-content/themes/premium/tsubaki/screenshot.png?ssl=1",
+            "theme_type": "hosted-internal",
+            "download_uri": "https://public-api.wordpress.com/rest/v1/themes/download/tsubaki.zip",
+            "price": "US$50",
+            "taxonomies": {
+                "theme_subject": [
+                    {
+                        "name": "Business",
+                        "slug": "business",
+                        "term_id": "179"
+                    },
+                    {
+                        "name": "Store",
+                        "slug": "store",
+                        "term_id": "40550"
+                    }
+                ],
+                "theme_style": [
+                    {
+                        "name": "Clean",
+                        "slug": "clean",
+                        "term_id": "9519"
+                    },
+                    {
+                        "name": "Modern",
+                        "slug": "modern",
+                        "term_id": "4690"
+                    }
+                ],
+                "theme_color": [
+                    {
+                        "name": "Black",
+                        "slug": "black",
+                        "term_id": "59007"
+                    },
+                    {
+                        "name": "White",
+                        "slug": "white",
+                        "term_id": "7052"
+                    }
+                ],
+                "theme_column": [
+                    {
+                        "name": "One Column",
+                        "slug": "one-column",
+                        "term_id": "1450969"
+                    }
+                ],
+                "theme_feature": [
+                    {
+                        "name": "Custom Colors",
+                        "slug": "custom-colors",
+                        "term_id": "2184596"
+                    },
+                    {
+                        "name": "RTL Language Support",
+                        "slug": "rtl-language-support",
+                        "term_id": "23177744"
+                    },
+                    {
+                        "name": "Featured Images",
+                        "slug": "featured-images",
+                        "term_id": "3895381"
+                    },
+                    {
+                        "name": "Block Editor Styles",
+                        "slug": "block-editor-styles",
+                        "term_id": "685452039"
+                    },
+                    {
+                        "name": "Full Site Editing",
+                        "slug": "full-site-editing",
+                        "term_id": "686035051"
+                    }
+                ],
+                "theme_software_set": [
+                    {
+                        "name": "woo-on-plans",
+                        "slug": "woo-on-plans",
+                        "term_id": "755216234"
+                    }
+                ]
+            },
+            "style_variations": [],
+            "soft_launched": false
+        },
+        {
+            "menu_order": -63,
+            "author": "Themes Kingdom",
+            "id": "nokul",
+            "description": "Nokul is a tasty block WordPress theme that will help your pastries and doughs take center stage and get the attention they deserve. Thanks to Nokul’s seamless design, your website visitors will enjoy adding your products to cart and will keep coming back.",
+            "stylesheet": "nokul",
+            "name": "Nokul",
+            "author_uri": "https://themeskingdom.com/",
+            "demo_uri": "https://nokul.themeskingdom.com/",
+            "screenshot": "https://theme.files.wordpress.com/2023/03/nokul2.jpg",
+            "theme_type": "managed-external",
+            "product_details": [
+                {
+                    "product_id": 10046,
+                    "product_slug": "wp_mp_theme_nokul_yearly"
+                },
+                {
+                    "product_id": 10047,
+                    "product_slug": "wp_mp_theme_nokul_monthly"
+                }
+            ],
+            "taxonomies": {
+                "theme_column": [
+                    {
+                        "name": "One Column",
+                        "slug": "one-column",
+                        "term_id": "1450969"
+                    },
+                    {
+                        "name": "Two Columns",
+                        "slug": "two-columns",
+                        "term_id": "2600855"
+                    },
+                    {
+                        "name": "Three Columns",
+                        "slug": "three-columns",
+                        "term_id": "5624304"
+                    },
+                    {
+                        "name": "Four Columns",
+                        "slug": "four-columns",
+                        "term_id": "6130973"
+                    },
+                    {
+                        "name": "Left Sidebar",
+                        "slug": "left-sidebar",
+                        "term_id": "1637027"
+                    },
+                    {
+                        "name": "Right Sidebar",
+                        "slug": "right-sidebar",
+                        "term_id": "1637034"
+                    }
+                ],
+                "theme_feature": [
+                    {
+                        "name": "Custom Colors",
+                        "slug": "custom-colors",
+                        "term_id": "2184596"
+                    },
+                    {
+                        "name": "Custom Menu",
+                        "slug": "custom-menu",
+                        "term_id": "4349195"
+                    },
+                    {
+                        "name": "Full Width Template",
+                        "slug": "full-width-template",
+                        "term_id": "43438937"
+                    },
+                    {
+                        "name": "RTL Language Support",
+                        "slug": "rtl-language-support",
+                        "term_id": "23177744"
+                    },
+                    {
+                        "name": "Featured Images",
+                        "slug": "featured-images",
+                        "term_id": "3895381"
+                    },
+                    {
+                        "name": "Threaded Comments",
+                        "slug": "threaded-comments",
+                        "term_id": "5371426"
+                    },
+                    {
+                        "name": "Site Logo",
+                        "slug": "site-logo",
+                        "term_id": "7533351"
+                    },
+                    {
+                        "name": "Block Editor Styles",
+                        "slug": "block-editor-styles",
+                        "term_id": "685452039"
+                    },
+                    {
+                        "name": "Full Site Editing",
+                        "slug": "full-site-editing",
+                        "term_id": "686035051"
+                    }
+                ],
+                "theme_subject": [
+                    {
+                        "name": "Store",
+                        "slug": "store",
+                        "term_id": "40550"
+                    }
+                ]
+            },
+            "style_variations": [],
+            "soft_launched": false
+        }
+    ],
+    "found": 2
+}

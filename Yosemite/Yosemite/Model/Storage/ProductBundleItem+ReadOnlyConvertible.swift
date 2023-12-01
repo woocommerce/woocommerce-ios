@@ -21,6 +21,7 @@ extension Storage.ProductBundleItem: ReadOnlyConvertible {
         overridesVariations = bundleItem.overridesVariations
         allowedVariations = bundleItem.allowedVariations
         overridesDefaultVariationAttributes = bundleItem.overridesDefaultVariationAttributes
+        pricedIndividually = bundleItem.pricedIndividually
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -40,7 +41,8 @@ extension Storage.ProductBundleItem: ReadOnlyConvertible {
                                  overridesVariations: overridesVariations,
                                  allowedVariations: allowedVariations ?? [],
                                  overridesDefaultVariationAttributes: overridesDefaultVariationAttributes,
-                                 defaultVariationAttributes: defaultVariationAttributes)
+                                 defaultVariationAttributes: defaultVariationAttributes,
+                                 pricedIndividually: pricedIndividually)
     }
 }
 

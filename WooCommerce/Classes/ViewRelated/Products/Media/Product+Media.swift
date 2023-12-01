@@ -14,8 +14,19 @@ extension Product {
 
     /// Returns the URL of the first image, if available. Otherwise, nil is returned.
     var imageURL: URL? {
-        guard let productImageURLString = images.first?.src,
-              let encodedProductImageURLString = productImageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+        images.first?.imageURL
+    }
+}
+
+extension ProductVariation {
+    var imageURL: URL? {
+        image?.imageURL
+    }
+}
+
+private extension ProductImage {
+    var imageURL: URL? {
+        guard let encodedProductImageURLString = src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             return nil
         }
         return URL(string: encodedProductImageURLString)

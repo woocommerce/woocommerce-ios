@@ -6,6 +6,8 @@ import Codegen
 public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
     public let itemID: Int64
     public let name: String
+
+    /// The product ID of a product order item, or the ID of the variable product if the order item is a product variation.
     public let productID: Int64
     public let variationID: Int64
     public let quantity: Decimal
@@ -31,6 +33,7 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
     /// Item ID of parent `OrderItem`, if any.
     ///
     /// An `OrderItem` can have a parent if, for example, it is a bundled item within a product bundle.
+    /// Note that this reflects a parent-child relationship between items in an order; it is not the parent variable product of a product variation in an order.
     ///
     public let parent: Int64?
 

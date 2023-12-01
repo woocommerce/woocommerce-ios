@@ -13,17 +13,9 @@ struct ConfigurableBundleProductView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(alignment: .leading) {
                 ScrollView {
                     VStack(spacing: Layout.noSpacing) {
-                        if let validationErrorMessage = viewModel.validationErrorMessage {
-                            Group {
-                                Text(validationErrorMessage)
-                                    .errorStyle()
-                            }
-                            .padding()
-                        }
-
                         if let loadProductsErrorMessage = viewModel.loadProductsErrorMessage {
                             Group {
                                 Text(loadProductsErrorMessage)
@@ -56,10 +48,11 @@ struct ConfigurableBundleProductView: View {
                     }
                 }
 
+                ConfigurableBundleNoticeView(validationState: viewModel.validationState)
+                    .padding(.horizontal, insets: .init(top: 0, leading: Layout.defaultPadding, bottom: 0, trailing: Layout.defaultPadding))
+                    .renderedIf(viewModel.showsValidationNotice)
+
                 Button(Localization.save) {
-                    guard viewModel.validate() else {
-                        return
-                    }
                     viewModel.configure()
                     presentation.wrappedValue.dismiss()
                 }

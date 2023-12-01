@@ -1569,7 +1569,8 @@ extension Networking.ProductBundleItem {
         overridesVariations: CopiableProp<Bool> = .copy,
         allowedVariations: CopiableProp<[Int64]> = .copy,
         overridesDefaultVariationAttributes: CopiableProp<Bool> = .copy,
-        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy
+        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy,
+        pricedIndividually: CopiableProp<Bool> = .copy
     ) -> Networking.ProductBundleItem {
         let bundledItemID = bundledItemID ?? self.bundledItemID
         let productID = productID ?? self.productID
@@ -1584,6 +1585,7 @@ extension Networking.ProductBundleItem {
         let allowedVariations = allowedVariations ?? self.allowedVariations
         let overridesDefaultVariationAttributes = overridesDefaultVariationAttributes ?? self.overridesDefaultVariationAttributes
         let defaultVariationAttributes = defaultVariationAttributes ?? self.defaultVariationAttributes
+        let pricedIndividually = pricedIndividually ?? self.pricedIndividually
 
         return Networking.ProductBundleItem(
             bundledItemID: bundledItemID,
@@ -1598,7 +1600,8 @@ extension Networking.ProductBundleItem {
             overridesVariations: overridesVariations,
             allowedVariations: allowedVariations,
             overridesDefaultVariationAttributes: overridesDefaultVariationAttributes,
-            defaultVariationAttributes: defaultVariationAttributes
+            defaultVariationAttributes: defaultVariationAttributes,
+            pricedIndividually: pricedIndividually
         )
     }
 }
@@ -3096,6 +3099,27 @@ extension Networking.WordPressMedia {
             alt: alt,
             details: details,
             title: title
+        )
+    }
+}
+
+extension Networking.WordPressTheme {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        demoURI: CopiableProp<String> = .copy
+    ) -> Networking.WordPressTheme {
+        let id = id ?? self.id
+        let description = description ?? self.description
+        let name = name ?? self.name
+        let demoURI = demoURI ?? self.demoURI
+
+        return Networking.WordPressTheme(
+            id: id,
+            description: description,
+            name: name,
+            demoURI: demoURI
         )
     }
 }

@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 104 (Release 16.5.0.0)
+- @rachelmcr 2023-11-29
+    - Added `pricedIndividually` attribute to `ProductBundleItem` entitity.
+
 ## Model 103 (Release 16.5.0.0)
 - @selanthiraiyan 2023-11-27
     - Added `oneTimeShipping` attribute to `ProductSubscription` entity.

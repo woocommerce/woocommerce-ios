@@ -870,6 +870,9 @@
 		DEDA8DA72B18399D0076BF0F /* WordPressThemeListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */; };
 		DEDA8DA92B183D5D0076BF0F /* WordPressThemeRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DA82B183D5D0076BF0F /* WordPressThemeRemote.swift */; };
 		DEDA8DAB2B18407D0076BF0F /* WordPressThemeRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DAA2B18407D0076BF0F /* WordPressThemeRemoteTests.swift */; };
+		DEDA8DB52B187DE40076BF0F /* WordPressThemeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */; };
+		DEDA8DB72B187E770076BF0F /* theme-mine-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DEDA8DB62B187E770076BF0F /* theme-mine-success.json */; };
+		DEDA8DB92B187EC90076BF0F /* WordPressThemeMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */; };
 		DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEDA4432975003800F845AB /* settings-general-without-data.json */; };
 		DEEF8E6529C832B500D47411 /* wordpress-site-info-with-auth-url.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */; };
 		DEEF8E6829C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */; };
@@ -1891,6 +1894,9 @@
 		DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeListMapperTests.swift; sourceTree = "<group>"; };
 		DEDA8DA82B183D5D0076BF0F /* WordPressThemeRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeRemote.swift; sourceTree = "<group>"; };
 		DEDA8DAA2B18407D0076BF0F /* WordPressThemeRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeRemoteTests.swift; sourceTree = "<group>"; };
+		DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeMapper.swift; sourceTree = "<group>"; };
+		DEDA8DB62B187E770076BF0F /* theme-mine-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-mine-success.json"; sourceTree = "<group>"; };
+		DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeMapperTests.swift; sourceTree = "<group>"; };
 		DEEDA4432975003800F845AB /* settings-general-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general-without-data.json"; sourceTree = "<group>"; };
 		DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wordpress-site-info-with-auth-url.json"; sourceTree = "<group>"; };
 		DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneTimeApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
@@ -2585,6 +2591,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DEDA8DB62B187E770076BF0F /* theme-mine-success.json */,
 				DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */,
 				DEDA8DA42B1839320076BF0F /* theme-list-success.json */,
 				EE28C7D72AC17960004A69F4 /* generate-product-failure.json */,
@@ -3099,6 +3106,7 @@
 				EE839C252ABEF9C900049545 /* AIProductMapper.swift */,
 				EE078D902AD2EFBA00C1199E /* JWTokenMapper.swift */,
 				DEDA8DA22B18323E0076BF0F /* WordPressThemeListMapper.swift */,
+				DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -3261,6 +3269,7 @@
 				EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */,
 				DED91DE22AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift */,
 				DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */,
+				DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -3740,6 +3749,7 @@
 				EEA6583E2966B41E00112DF0 /* products-load-all-without-data.json in Resources */,
 				68F48B1328E3E5750045C15B /* wc-analytics-customers.json in Resources */,
 				D88D5A41230BC5DA007B6E01 /* reviews-all.json in Resources */,
+				DEDA8DB72B187E770076BF0F /* theme-mine-success.json in Resources */,
 				74C947862193A6C70024CB60 /* comment-moderate-unapproved.json in Resources */,
 				3105472C262E303400C5C02B /* wcpay-payment-intent-unknown-status.json in Resources */,
 				B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */,
@@ -4414,6 +4424,7 @@
 				029BA53B255DFABD006171FD /* ShippingLabelPrintDataMapper.swift in Sources */,
 				0359EA0D27AAC5F80048DE2D /* WCPayChargeStatus.swift in Sources */,
 				CE430674234BA6AD0073CBFF /* RefundMapper.swift in Sources */,
+				DEDA8DB52B187DE40076BF0F /* WordPressThemeMapper.swift in Sources */,
 				2676F4CE290AE6BB00C7A15B /* EntityIDMapper.swift in Sources */,
 				CE0A0F1B223989670075ED8D /* ProductsRemote.swift in Sources */,
 				0359EA1527AAC7460048DE2D /* WCPayCardBrand.swift in Sources */,
@@ -4460,6 +4471,7 @@
 				4513382227A8409000AE5E78 /* InboxNotesRemoteTests.swift in Sources */,
 				025F9A252B020F1900B91F1D /* MockURLProtocol.swift in Sources */,
 				45E461BE26837DB900011BF2 /* DataRemoteTests.swift in Sources */,
+				DEDA8DB92B187EC90076BF0F /* WordPressThemeMapperTests.swift in Sources */,
 				CEC4BF8F234E382F008D9195 /* RefundMapperTests.swift in Sources */,
 				020D0C03291504DE00BB3DCE /* UnauthenticatedRequestTests.swift in Sources */,
 				24F98C5E2502EDCF00F49B68 /* BundleWooTests.swift in Sources */,

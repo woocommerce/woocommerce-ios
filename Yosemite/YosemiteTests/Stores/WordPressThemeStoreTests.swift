@@ -29,6 +29,8 @@ final class WordPressThemeStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - loadSuggestedThemes tests
+
     func test_loadSuggestedThemes_returns_themes_on_success() throws {
         // Given
         remote.whenLoadingSuggestedTheme(thenReturn: .success([.fake().copy(id: "tsubaki")]))
@@ -62,6 +64,49 @@ final class WordPressThemeStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             store.onAction(WordPressThemeAction.loadSuggestedThemes(onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - loadCurrentTheme tests
+
+    func test_loadCurrentTheme_returns_theme_on_success() throws {
+        // Given
+        remote.whenLoadingCurrentTheme(thenReturn: .success(.fake().copy(name: "Tsubaki")))
+        let store = WordPressThemeStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(WordPressThemeAction.loadCurrentTheme(siteID: 123, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let theme = try result.get()
+        XCTAssertEqual(theme.name, "Tsubaki")
+    }
+
+    func test_loadCurrentTheme_returns_error_on_failure() throws {
+        // Given
+        remote.whenLoadingCurrentTheme(thenReturn: .failure(NetworkError.timeout()))
+        let store = WordPressThemeStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(WordPressThemeAction.loadCurrentTheme(siteID: 123, onCompletion: { result in
                 promise(result)
             }))
         }

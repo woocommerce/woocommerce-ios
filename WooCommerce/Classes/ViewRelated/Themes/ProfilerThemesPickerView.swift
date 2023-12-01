@@ -10,16 +10,12 @@ struct ProfilerThemesPickerView: View {
 
         ScrollView {
             VStack(alignment: .leading) {
-                Spacer()
-                    .frame(height: Layout.contentVerticalSpacing)
-
                 Text(Localization.chooseThemeHeading)
                     .bold()
                     .largeTitleStyle()
                     .padding(.horizontal, Layout.contentPadding)
-
-                Spacer()
-                    .frame(height: Layout.contentPadding)
+                    .padding(.top, Layout.contentVerticalSpacing)
+                    .padding(.bottom, Layout.contentPadding)
 
                 Text(Localization.chooseThemeSubtitle)
                     .subheadlineStyle()

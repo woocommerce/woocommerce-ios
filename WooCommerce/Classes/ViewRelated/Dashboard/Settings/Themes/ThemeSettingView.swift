@@ -27,6 +27,9 @@ struct ThemeSettingView: View {
 
     init(viewModel: ThemeSettingViewModel) {
         self.viewModel = viewModel
+        Task {
+            await viewModel.updateCurrentThemeName()
+        }
     }
 
     var body: some View {
@@ -37,8 +40,12 @@ struct ThemeSettingView: View {
                         Text(Localization.themeRow)
                             .bodyStyle()
                         Spacer()
-                        Text("Tsubaki")
-                            .secondaryBodyStyle()
+                        if viewModel.loadingCurrentTheme {
+                            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                        } else {
+                            Text(viewModel.currentThemeName)
+                                .secondaryBodyStyle()
+                        }
                     }
                 }
 

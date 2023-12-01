@@ -1,1 +1,9 @@
-We're excited to announce some new updates to our WooCommerce app! You can now create or edit subscription products with ease! We've also made some tweaks to the order form to ensure bundled items are added/updated correctly when dealing with optional & non-selected variable items. Plus, we've rearranged the Dashboard for better navigation - the Blaze section is now conveniently located under the Stats. Enjoy the enhanced experience!
+- [*] Payments: WooPayments merchants can swipe between currencies in the Deposit Summary on the Payments menu [https://github.com/woocommerce/woocommerce-ios/pull/11309]
+- [**] Shipping Labels: Fixed issue presenting the printing view for customs forms. [https://github.com/woocommerce/woocommerce-ios/pull/11288]
+- [*] Now, merchants can manage "One time shipping" setting for a subscription product. [https://github.com/woocommerce/woocommerce-ios/pull/11310]
+- [**] My Store: The Blaze section is now dismissible. [https://github.com/woocommerce/woocommerce-ios/pull/11308]
+- [internal] Product Subscriptions: Handle yearly Synchronise renewals case while enabling One time shipping setting. [https://github.com/woocommerce/woocommerce-ios/pull/11312]
+- [internal] Order form: Updated design for product bundles and their bundled items in order creation/editing, to more clearly show the hierarchy and bundled item prices. [https://github.com/woocommerce/woocommerce-ios/pull/11321]
+- [internal] Update Shimmer dependency to avoid high CPU and memory use crashing the app when built with Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11320]
+- [internal] Fix issue with scrolling some views when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11335]
+

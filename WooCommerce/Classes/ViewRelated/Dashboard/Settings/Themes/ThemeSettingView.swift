@@ -36,7 +36,7 @@ struct ThemeSettingView: View {
         NavigationView {
             Form {
                 Section(Localization.currentSection) {
-                    HStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
                         Text(Localization.themeRow)
                             .bodyStyle()
                         Spacer()

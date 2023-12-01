@@ -22,7 +22,6 @@ struct ProfilerThemesPickerView: View {
                     .padding(.horizontal, Layout.contentPadding)
 
                 Spacer()
-                    .frame(height: Layout.contentVerticalSpacing)
 
                 ThemesCarouselView(
                     lastMessageHeading: Localization.lastMessageHeading,

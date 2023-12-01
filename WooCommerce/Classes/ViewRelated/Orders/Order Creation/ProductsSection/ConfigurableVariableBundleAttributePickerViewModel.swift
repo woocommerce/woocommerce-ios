@@ -17,12 +17,7 @@ final class ConfigurableVariableBundleAttributePickerViewModel: ObservableObject
     @Published var selectedOption: String
 
     /// Optionally selected variation attribute from the picker UI.
-    var selectedAttribute: ProductVariationAttribute? {
-        guard attribute.options.contains(selectedOption) else {
-            return nil
-        }
-        return .init(id: attribute.attributeID, name: attribute.name, option: selectedOption)
-    }
+    @Published private(set) var selectedAttribute: ProductVariationAttribute?
 
     /// Provides the view info about the attribute, like the name and options.
     private let attribute: ProductAttribute
@@ -30,5 +25,14 @@ final class ConfigurableVariableBundleAttributePickerViewModel: ObservableObject
     init(attribute: ProductAttribute, selectedOption: String?) {
         self.attribute = attribute
         self.selectedOption = selectedOption ?? ""
+
+        $selectedOption
+            .compactMap { selectedOption in
+                guard attribute.options.contains(selectedOption) else {
+                    return nil
+                }
+                return .init(id: attribute.attributeID, name: attribute.name, option: selectedOption)
+            }
+            .assign(to: &$selectedAttribute)
     }
 }

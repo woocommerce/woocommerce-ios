@@ -586,8 +586,8 @@ final class EditableOrderViewModel: ObservableObject {
 
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
-            let parent = allProducts.first(where: { $0.productID == item.parent })
-            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
+            let variableProduct = allProducts.first(where: { $0.productID == item.productID })
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
             return ProductRowViewModel(id: item.itemID,
                                        productVariation: variation,
                                        discount: passingDiscountValue,

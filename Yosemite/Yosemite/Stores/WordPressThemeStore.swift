@@ -32,7 +32,7 @@ public final class WordPressThemeStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: BlazeAction.self)
+        dispatcher.register(processor: self, for: WordPressThemeAction.self)
     }
 
     /// Receives and executes Actions.

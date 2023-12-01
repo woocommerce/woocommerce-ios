@@ -1,6 +1,7 @@
 import SwiftUI
 import Kingfisher
 
+/// View for picking themes in the store creation flow.
 struct ProfilerThemesPickerView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0

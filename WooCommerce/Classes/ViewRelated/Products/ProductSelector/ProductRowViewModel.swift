@@ -218,7 +218,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     var orderProductDetailsLabel: String {
         let attributesLabel: String? = {
-            guard case let .attributes(attributes) = self.variationDisplayMode else {
+            guard case let .attributes(attributes) = variationDisplayMode else {
                 return nil
             }
             return createAttributesText(from: attributes)

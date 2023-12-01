@@ -74,7 +74,8 @@ extension FancyAlertViewController {
     ///
     /// - Returns: A FancyAlertViewController instance.
     ///
-    static func alertForError(_ error: NSError, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
+    static func alertForError(_ originalError: Error, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
+        let error = originalError as NSError
         var message = error.localizedDescription
 
         WPAuthenticatorLogError(message)

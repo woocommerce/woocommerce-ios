@@ -580,7 +580,7 @@ private extension GetStartedViewController {
             let signInError = SignInError(error: error, source: source) ?? error
             guard let authenticationDelegate = WordPressAuthenticator.shared.delegate,
                   authenticationDelegate.shouldHandleError(signInError) else {
-                displayError(error as NSError, sourceTag: sourceTag)
+                displayError(error, sourceTag: sourceTag)
                 return
             }
 
@@ -621,7 +621,7 @@ private extension GetStartedViewController {
                 }
 
                 self.tracker.track(failure: error.localizedDescription)
-                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.displayError(error, sourceTag: self.sourceTag)
                 self.configureSubmitButton(animating: false)
         })
     }
@@ -664,7 +664,7 @@ private extension GetStartedViewController {
 
                 self.tracker.track(failure: error.localizedDescription)
 
-                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.displayError(error, sourceTag: self.sourceTag)
                 self.configureViewLoading(false)
         })
     }

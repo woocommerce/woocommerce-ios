@@ -196,7 +196,7 @@ private extension VerifyEmailViewController {
 
                 self.tracker.track(failure: error.localizedDescription)
 
-                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.displayError(error, sourceTag: self.sourceTag)
                 self.configureViewLoading(false)
         })
     }

@@ -139,7 +139,7 @@ final class TwoFAViewController: LoginViewController {
             }
             displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
         } else {
-            displayError(error as NSError, sourceTag: sourceTag)
+            displayError(error, sourceTag: sourceTag)
         }
     }
 
@@ -485,8 +485,7 @@ private extension TwoFAViewController {
 
         rows.append(.alternateInstructions)
         rows.append(.sendCode)
-
-        if #available(iOS 16, *), loginFields.nonceInfo?.nonceWebauthn != nil {
+        if #available(iOS 16, *), WordPressAuthenticator.shared.configuration.enablePasskeys, loginFields.nonceInfo?.nonceWebauthn != nil {
             rows.append(.enterSecurityKey)
         }
     }

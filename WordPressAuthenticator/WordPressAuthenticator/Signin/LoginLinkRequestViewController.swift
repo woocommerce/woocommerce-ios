@@ -117,7 +117,7 @@ class LoginLinkRequestViewController: LoginViewController {
                 guard let strongSelf = self else {
                     return
                 }
-                strongSelf.displayError(error as NSError, sourceTag: strongSelf.sourceTag)
+                strongSelf.displayError(error, sourceTag: strongSelf.sourceTag)
                 strongSelf.configureLoading(false)
         })
     }

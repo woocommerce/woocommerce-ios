@@ -71,9 +71,9 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
 
     /// Displays a login error in an attractive dialog
     ///
-    func displayError(_ error: NSError, sourceTag: WordPressSupportSourceTag) {
+    func displayError(_ error: Error, sourceTag: WordPressSupportSourceTag) {
         let presentingController = navigationController ?? self
-        let controller = FancyAlertViewController.alertForError(error as NSError, loginFields: loginFields, sourceTag: sourceTag)
+        let controller = FancyAlertViewController.alertForError(error, loginFields: loginFields, sourceTag: sourceTag)
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = self
         presentingController.present(controller, animated: true, completion: nil)

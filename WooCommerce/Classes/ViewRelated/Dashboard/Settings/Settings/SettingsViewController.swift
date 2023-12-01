@@ -430,7 +430,11 @@ private extension SettingsViewController {
     }
 
     func showThemeSettings() {
-        // TODO
+        guard let site = stores.sessionManager.defaultSite else {
+            return
+        }
+        let controller = ThemeSettingHostingController(siteID: site.siteID)
+        present(controller, animated: true)
     }
 
     func privacyWasPressed() {

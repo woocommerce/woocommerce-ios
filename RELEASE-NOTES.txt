@@ -9,6 +9,7 @@
 - [internal] Product Subscriptions: Handle yearly Synchronise renewals case while enabling One time shipping setting. [https://github.com/woocommerce/woocommerce-ios/pull/11312]
 - [internal] Update Shimmer dependency to avoid high CPU and memory use crashing the app when built with Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11320]
 - [internal] Fix issue with scrolling some views when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11335]
+- [*] Animate display of the onboarding notice in the payments menu [https://github.com/woocommerce/woocommerce-ios/pull/11339]
 
 16.4
 -----

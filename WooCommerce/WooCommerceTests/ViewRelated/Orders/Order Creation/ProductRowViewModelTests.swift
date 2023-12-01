@@ -630,7 +630,7 @@ final class ProductRowViewModelTests: XCTestCase {
         assertEqual("8 × $10.71", viewModel.priceQuantityLine)
     }
 
-    func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine_for_product_not_pricedIndividually() throws {
+    func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine_for_product_not_pricedIndividually() {
         // Given
         let price = "10.71"
         let quantity: Decimal = 8

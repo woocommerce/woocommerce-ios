@@ -41,7 +41,7 @@ public final class WordPressThemeStore: Store {
     ///
     override public func onAction(_ action: Action) {
         guard let action = action as? WordPressThemeAction else {
-            assertionFailure("BlazeStore received an unsupported action")
+            assertionFailure("WordPressThemeStore received an unsupported action")
             return
         }
 

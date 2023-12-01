@@ -31,6 +31,8 @@ struct ThemesCarouselView: View {
                 ForEach(themesInfo, id: \.name) { theme in
                     if let themeUrl = getThemeUrl(themeUrl: theme.url) {
                         ThemeImage(url: themeUrl)
+                    } else {
+                        ThemeName(name: theme.name)
                     }
                 }
 

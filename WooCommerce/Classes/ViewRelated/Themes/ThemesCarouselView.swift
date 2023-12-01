@@ -73,12 +73,7 @@ private struct ThemeImage: View {
             .frame(width: Layout.imageWidth * scale, height: Layout.imageHeight * scale)
             .cornerRadius(Layout.cornerRadius)
             .shadow(radius: Layout.shadowRadius, x: 0, y: Layout.shadowYOffset)
-            .padding(.init(
-                top: Layout.imageVerticalPadding,
-                leading: Layout.imageHorizontalPadding,
-                bottom: Layout.imageVerticalPadding,
-                trailing: Layout.imageHorizontalPadding)
-            )
+            .padding(Layout.imagePadding)
     }
 }
 
@@ -95,12 +90,7 @@ private struct ThemeName: View {
             shade: .shade0))
         .cornerRadius(Layout.cornerRadius)
         .shadow(radius: Layout.shadowRadius, x: 0, y: Layout.shadowYOffset)
-        .padding(.init(
-            top: Layout.imageVerticalPadding,
-            leading: Layout.imageHorizontalPadding,
-            bottom: Layout.imageVerticalPadding,
-            trailing: Layout.imageHorizontalPadding)
-        )
+        .padding(Layout.imagePadding)
     }
 }
 
@@ -113,8 +103,7 @@ private extension ThemesCarouselView {
 
 private enum Layout {
     static let contentPadding: CGFloat = 16
-    static let imageHorizontalPadding: CGFloat = 8
-    static let imageVerticalPadding: CGFloat = 8
+    static let imagePadding: CGFloat = 8
     static let imageWidth: CGFloat = 250
     static let imageHeight: CGFloat = 500
     static let cornerRadius: CGFloat = 8

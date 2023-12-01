@@ -2305,6 +2305,7 @@
 		DEDA8D992B04643E0076BF0F /* ProductSubscription+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D982B04643E0076BF0F /* ProductSubscription+Empty.swift */; };
 		DEDA8D9D2B1609DE0076BF0F /* UserDefaults+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D9C2B1609DE0076BF0F /* UserDefaults+Blaze.swift */; };
 		DEDA8D9F2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D9E2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift */; };
+		DEDA8DBC2B1983570076BF0F /* ThemeSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */; };
 		DEDAE30B2A0B523F00F9635F /* LocalNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */; };
 		DEDAE30D2A12091500F9635F /* UpgradePlanCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
@@ -4903,6 +4904,7 @@
 		DEDA8D982B04643E0076BF0F /* ProductSubscription+Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSubscription+Empty.swift"; sourceTree = "<group>"; };
 		DEDA8D9C2B1609DE0076BF0F /* UserDefaults+Blaze.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Blaze.swift"; sourceTree = "<group>"; };
 		DEDA8D9E2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBlazeTests.swift; sourceTree = "<group>"; };
+		DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingView.swift; sourceTree = "<group>"; };
 		DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationTests.swift; sourceTree = "<group>"; };
 		DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlanCoordinatingController.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
@@ -10305,6 +10307,7 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				DEDA8DBA2B19833E0076BF0F /* Themes */,
 				DE68979D2A8F7C8C00154588 /* AccountSettings */,
 				02ACD2592852E11700EC928E /* CloseAccountCoordinator.swift */,
 				0239305F2918F35600B2632F /* Domains */,
@@ -11087,6 +11090,14 @@
 				DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */,
 			);
 			path = BlazeCampaignList;
+			sourceTree = "<group>";
+		};
+		DEDA8DBA2B19833E0076BF0F /* Themes */ = {
+			isa = PBXGroup;
+			children = (
+				DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */,
+			);
+			path = Themes;
 			sourceTree = "<group>";
 		};
 		DEE4BBCA27FED9390002C818 /* ProductListSelector */ = {
@@ -13637,6 +13648,7 @@
 				03582BE2299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift in Sources */,
 				02F36F472978349500D97EA0 /* DomainPurchaseSuccessView.swift in Sources */,
 				B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */,
+				DEDA8DBC2B1983570076BF0F /* ThemeSettingView.swift in Sources */,
 				03825FE92A97B63800363BDA /* AdaptiveImage.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
 				CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */,

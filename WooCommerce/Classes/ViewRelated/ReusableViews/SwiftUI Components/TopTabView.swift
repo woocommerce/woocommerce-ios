@@ -18,6 +18,8 @@ struct TopTabView: View {
     @State private var selectedTab = 0
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
+    @GestureState private var dragState: DragState = .inactive
+    @State private var contentSize: CGSize = .zero
 
     @Binding var showTabs: Bool
 
@@ -46,10 +48,14 @@ struct TopTabView: View {
                                             withAnimation {
                                                 selectedTab = index
                                                 tabs[selectedTab].onSelected?()
-                                                underlineOffset = calculateOffset(index: index)
-                                                scrollViewProxy.scrollTo(index, anchor: .center)
                                             }
                                         }
+                                        .onChange(of: selectedTab, perform: { newSelectedTab in
+                                            withAnimation {
+                                                scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
+                                                underlineOffset = calculateOffset(index: newSelectedTab)
+                                            }
+                                        })
                                         .accessibilityAddTraits(.isButton)
                                         .accessibilityAddTraits(selectedTab == index ? [.isSelected, .isHeader] : [])
                                 }
@@ -58,12 +64,15 @@ struct TopTabView: View {
                                     Color.clear.onAppear {
                                         if index < tabWidths.count {
                                             tabWidths[index] = geometry.size.width
-                                            if index == selectedTab {
-                                                underlineOffset = calculateOffset(index: index)
-                                            }
                                         }
                                     }
                                 })
+                            }
+                            .onAppear {
+                                withAnimation {
+                                    scrollViewProxy.scrollTo(selectedTab, anchor: .center)
+                                    underlineOffset = calculateOffset(index: selectedTab)
+                                }
                             }
                         }
                         .padding(.horizontal, Layout.tabPadding)
@@ -80,8 +89,72 @@ struct TopTabView: View {
                 Divider()
             }
 
-            // Display Content for selected tab
-            tabs[safe: selectedTab]?.view
+            // Display all the tabs in an HStack, each tab the same width as the TopTabView
+            // This GeometryReader is used to set the width and drag offsets for swiping between views
+            GeometryReader { geometry in
+                HStack(spacing: 0) {
+                    ForEach(0..<tabs.count, id: \.self) { index in
+                        // Tab content as passed to the TopTabView at init
+                        tabs[index].view
+                            .frame(width: geometry.size.width)
+                    }
+                }
+                .background(
+                    // Use a background GeometryReader to get the height of the tab content.
+                    // This is used later as the height of the top-level GeometryReader, to override the default
+                    // behaviour of setting the frame to zero (and hiding the content.)
+                    GeometryReader { contentGeometry in
+                        Color.clear
+                        .onAppear {
+                            contentSize = contentGeometry.size
+                        }
+                        .onChange(of: contentGeometry.size) { newSize in
+                            contentSize = newSize
+                        }
+                    })
+                .offset(x: self.dragOffset(width: geometry.size.width))
+                .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))
+                // Allows swipes to be started on any part of the content view area, not just occupied space e.g. Text.
+                .contentShape(Rectangle())
+                // The gesture could be simultaneous with an external scroll view
+                .simultaneousGesture(
+                    DragGesture()
+                        .updating($dragState) { drag, state, transaction in
+                            let isHorizontalDrag = abs(drag.translation.width) > abs(drag.translation.height)
+                            if isHorizontalDrag {
+                                state = .dragging(translation: drag.translation)
+                            }
+                        }
+                        .onEnded { drag in
+                            // We use `predictedEndTranslation` to account for velocity as the user ends the drag
+                            // For fast, short swipes, this will likely be higher than `translation`, and lead to a
+                            // more natural feeling animation.
+                            let horizontalAmount = drag.predictedEndTranslation.width as CGFloat
+                            let threshold: CGFloat = geometry.size.width / 2
+                            let newIndex: Int
+                            if horizontalAmount > threshold {
+                                // A swipe more than 50% to the right: move back
+                                newIndex = max(selectedTab - 1, 0)
+                            } else if horizontalAmount < -threshold {
+                                // A swipe more than 50% to the left: move forward
+                                newIndex = min(selectedTab + 1, tabs.count - 1)
+                            } else {
+                                newIndex = selectedTab
+                            }
+
+                            // Notifiy the new tab that it's been selected, but only if it's changed
+                            if newIndex != selectedTab {
+                                tabs[newIndex].onSelected?()
+                            }
+
+                            // Update the selected tab to the new index
+                            withAnimation(.easeOut) {
+                                selectedTab = newIndex
+                            }
+                        }
+                )
+            }
+            .frame(height: contentSize.height)
         }
     }
 
@@ -96,6 +169,38 @@ struct TopTabView: View {
     private func calculateOffset(index: Int) -> CGFloat {
         // Takes all preceeding tab widths, and adds appropriate spacing to each side to get the overall offset
         return tabWidths.prefix(index).reduce(0, +) + CGFloat(index) * (Layout.tabPadding * 2)
+    }
+
+    private func dragOffset(width: CGFloat) -> CGFloat {
+        if dragState.isActive {
+            let offset = -CGFloat(selectedTab) * width + dragState.translation.width
+            return offset
+        } else {
+            return -CGFloat(selectedTab) * width
+        }
+    }
+
+    enum DragState {
+        case inactive
+        case dragging(translation: CGSize)
+
+        var translation: CGSize {
+            switch self {
+            case .inactive:
+                return .zero
+            case .dragging(let translation):
+                return translation
+            }
+        }
+
+        var isActive: Bool {
+            switch self {
+            case .inactive:
+                return false
+            case .dragging:
+                return true
+            }
+        }
     }
 
     private enum Layout {

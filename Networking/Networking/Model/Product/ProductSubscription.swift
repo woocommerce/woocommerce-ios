@@ -99,6 +99,8 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
             .init(key: CodingKeys.trialLength.rawValue, value: trialLength),
             .init(key: CodingKeys.trialPeriod.rawValue, value: trialPeriod.rawValue),
             .init(key: CodingKeys.oneTimeShipping.rawValue, value: oneTimeShipping ? Constants.yes : Constants.no)
+            /// We are not encoding `paymentSyncDate` and `paymentSyncMonth` as we don't support editing yet.
+            /// When we support editing we may have to encode these values into dict if the subscription is yearly.
         ]
     }
 }
@@ -143,4 +145,23 @@ private enum Constants {
 private struct SubscriptionPaymentSyncDate: Decodable {
     let day: String
     let month: String
+
+    /// Custom decoding to handle String and Int types
+    ///
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        day = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                       forKey: .day,
+                                                       alternativeTypes: [.integer(transform: {  String($0) })]) ?? ""
+
+        month = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                       forKey: .month,
+                                                       alternativeTypes: [.integer(transform: {  String($0) })]) ?? ""
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case day
+        case month
+    }
 }

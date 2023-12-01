@@ -319,6 +319,87 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isIncludedInBundle)
     }
 
+    // MARK: - `quantityInBundle`
+
+    func test_quantityInBundle_is_0_for_optional_item_when_quantity_is_non_zero_and_isOptionalAndSelected_is_false() {
+        // Given
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: true),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // When
+        viewModel.quantity = 8
+        viewModel.isOptionalAndSelected = false
+
+        // Then
+        XCTAssertEqual(viewModel.quantityInBundle, 0)
+    }
+
+    func test_quantityInBundle_is_non_zero_for_optional_item_when_isOptionalAndSelected_is_true() {
+        // Given
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: true),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // When
+        viewModel.quantity = 8
+        viewModel.isOptionalAndSelected = true
+
+        // Then
+        XCTAssertEqual(viewModel.quantityInBundle, 8)
+    }
+
+    func test_quantityInBundle_is_non_zero_for_required_item() {
+        // Given
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: false),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // When
+        viewModel.quantity = 8
+        viewModel.isOptionalAndSelected = false
+
+        // Then
+        XCTAssertEqual(viewModel.quantityInBundle, 8)
+    }
+
+    // MARK: - Validation
+
+    func test_errorMessage_becomes_nil_after_selecting_options_for_all_selectable_variation_attributes() {
+        // Given
+        let variableProduct = createVariableProduct().copy(attributes: [
+            .fake().copy(name: "Color", variation: true, options: ["Indigo", "Cyan"]),
+            .fake().copy(name: "Ice level", variation: true, options: ["Less", "Full"])
+        ])
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(defaultQuantity: 1, isOptional: false),
+                                                        product: variableProduct,
+                                                        variableProductSettings: .init(allowedVariations: [], defaultAttributes: []),
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil,
+                                                        analytics: analytics)
+        viewModel.createVariationSelectorViewModel()
+
+        // When selecting a variation with only 1 attribute
+        let selectedVariation = ProductVariation.fake().copy(attributes: [.fake().copy(name: "Ice level", option: "Full")])
+        viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(selectedVariation, .fake())
+
+        // Then there is an error on a missing attribute option
+        XCTAssertNotNil(viewModel.errorMessage)
+        XCTAssertEqual(viewModel.selectableVariationAttributeViewModels.count, 1)
+
+        // When selecting an option for the selectable attribute
+        viewModel.selectableVariationAttributeViewModels.first?.selectedOption = "Cyan"
+
+        // Then there is no validation error anymore
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
     // MARK: - Analytics
 
     func test_selecting_variation_tracks_orderFormBundleProductConfigurationChanged_event() throws {

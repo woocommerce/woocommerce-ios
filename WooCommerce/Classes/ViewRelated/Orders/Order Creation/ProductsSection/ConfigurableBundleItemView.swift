@@ -26,11 +26,6 @@ struct ConfigurableBundleItemView: View {
                 ProductRow(viewModel: viewModel.productRowViewModel)
             }
 
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-                    .errorStyle()
-            }
-
             HStack(spacing: 0) {
                 // Indentation from the checkmark image.
                 Spacer()

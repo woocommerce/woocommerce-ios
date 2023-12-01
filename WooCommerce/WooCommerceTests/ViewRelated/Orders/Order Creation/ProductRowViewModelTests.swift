@@ -630,6 +630,43 @@ final class ProductRowViewModelTests: XCTestCase {
         assertEqual("8 × $10.71", viewModel.priceQuantityLine)
     }
 
+    func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine_for_product_not_pricedIndividually() {
+        // Given
+        let price = "10.71"
+        let quantity: Decimal = 8
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: false, pricedIndividually: false)
+
+        // Then
+        assertEqual("8 × $0.00", viewModel.priceQuantityLine)
+    }
+
+    func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_pricedIndividually() {
+        // Given
+        let price = "10.71"
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: true)
+
+        // Then
+        assertEqual(price, viewModel.price)
+    }
+
+    func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_not_pricedIndividually() {
+        // Given
+        let price = "10.71"
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: false)
+
+        // Then
+        assertEqual("0", viewModel.price)
+    }
+
     func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
         let price = "2.50"
         let discount: Decimal = 0.50

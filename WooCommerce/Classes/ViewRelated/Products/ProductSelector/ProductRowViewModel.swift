@@ -54,6 +54,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private(set) var price: String?
 
+    /// Whether the product is priced individually. Defaults to `true`.
+    ///
+    /// Used to control how the price is displayed, e.g. when a product is part of a bundle.
+    ///
+    let pricedIndividually: Bool
+
     /// Product stock status
     ///
     private let stockStatus: ProductStockStatus
@@ -305,6 +311,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
+         pricedIndividually: Bool = true,
          childProductRows: [ProductRowViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -329,6 +336,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
+        self.pricedIndividually = pricedIndividually
         self.childProductRows = childProductRows
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
@@ -349,6 +357,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     pricedIndividually: Bool = true,
                      childProductRows: [ProductRowViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
@@ -360,6 +369,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let price: String?
         if product.productType == .variable {
             price = nil
+        } else if !pricedIndividually {
+            price = "0"
         } else {
             price = product.price
         }
@@ -425,6 +436,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  pricedIndividually: pricedIndividually,
                   childProductRows: childProductRows,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
@@ -445,6 +457,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -460,7 +473,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   productOrVariationID: productVariation.productVariationID,
                   name: name,
                   sku: productVariation.sku,
-                  price: productVariation.price,
+                  price: pricedIndividually ? productVariation.price : "0",
                   discount: discount,
                   stockStatusKey: productVariation.stockStatus.rawValue,
                   stockQuantity: productVariation.stockQuantity,
@@ -471,6 +484,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  pricedIndividually: pricedIndividually,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,

@@ -3136,6 +3136,27 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(newBundleOrderItem.bundleConfiguration, [.fake().copy(bundledItemID: 2, productID: 5, quantity: 5, isOptionalAndSelected: false)])
         XCTAssertEqual(newBundleOrderItem.quantity, 1)
     }
+
+    func test_createProductRowViewModel_correctly_sets_pricedIndividually_for_product_bundle_row() throws {
+        // Given
+        let bundledItems = [ProductBundleItem.fake().copy(productID: 2, pricedIndividually: false),
+                            ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
+        let product = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
+        storageManager.insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
+                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 1)
+        let childItems = [OrderItem.fake().copy(productID: 2, quantity: 1),
+                          OrderItem.fake().copy(productID: 3, quantity: 1)]
+        let productRow = viewModel.createProductRowViewModel(for: orderItem, childItems: childItems, canChangeQuantity: true)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(productRow).pricedIndividually)
+        XCTAssertFalse(try XCTUnwrap(productRow?.childProductRows[0]).pricedIndividually)
+        XCTAssertTrue(try XCTUnwrap(productRow?.childProductRows[1]).pricedIndividually)
+    }
 }
 
 private extension EditableOrderViewModelTests {

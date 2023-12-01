@@ -98,7 +98,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         Task { @MainActor in
             _ = try? await dependencies.systemStatusService.synchronizeSystemInformation(siteID: siteID)
             await updateOutputProperties()
-            InPersonPaymentsMenuViewController().registerUserActivity()
+            InPersonPaymentsMenuViewController().createUserActivity().becomeCurrent()
         }
     }
 

@@ -30,14 +30,14 @@ struct ThemesCarouselView: View {
                 // Demo for correct state
                 ForEach(themesInfo, id: \.name) { theme in
                     if let themeUrl = getThemeUrl(themeUrl: theme.url) {
-                        ThemeImage(url: themeUrl)
+                        themeImage(url: themeUrl)
                     } else {
-                        ThemeName(name: theme.name)
+                        themeNameCard(name: theme.name)
                     }
                 }
 
                 // Demo for error state
-                ThemeName(name: themesInfo[0].name)
+                themeNameCard(name: themesInfo[0].name)
 
                 // Demo for last message content
                 VStack {
@@ -62,25 +62,18 @@ struct ThemesCarouselView: View {
     }
 }
 
-private struct ThemeImage: View {
-    let url: URL
-    @ScaledMetric private var scale: CGFloat = 1.0
-
-    var body: some View {
+private extension ThemesCarouselView {
+    func themeImage(url: URL) -> some View {
         KFImage(url)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: Layout.imageWidth * scale, height: Layout.imageHeight * scale)
+            .frame(width: Layout.imageWidth, height: Layout.imageHeight)
             .cornerRadius(Layout.cornerRadius)
             .shadow(radius: Layout.shadowRadius, x: 0, y: Layout.shadowYOffset)
             .padding(Layout.imagePadding)
     }
-}
 
-private struct ThemeName: View {
-    let name: String
-
-    var body: some View {
+    func themeNameCard(name: String) -> some View {
         VStack {
             Text(name)
         }
@@ -95,20 +88,22 @@ private struct ThemeName: View {
 }
 
 private extension ThemesCarouselView {
+    private enum Layout {
+        static let contentPadding: CGFloat = 16
+        static let imagePadding: CGFloat = 8
+        static let imageWidth: CGFloat = 250
+        static let imageHeight: CGFloat = 500
+        static let cornerRadius: CGFloat = 8
+        static let shadowRadius: CGFloat = 2
+        static let shadowYOffset: CGFloat = 3
+    }
+}
+
+private extension ThemesCarouselView {
     private func getThemeUrl(themeUrl: String) -> URL? {
         let urlStr = "https://s0.wp.com/mshots/v1/https://\(themeUrl)?demo=true/?w=1200&h=2400&vpw=400&vph=800"
         return URL(string: urlStr)
     }
-}
-
-private enum Layout {
-    static let contentPadding: CGFloat = 16
-    static let imagePadding: CGFloat = 8
-    static let imageWidth: CGFloat = 250
-    static let imageHeight: CGFloat = 500
-    static let cornerRadius: CGFloat = 8
-    static let shadowRadius: CGFloat = 2
-    static let shadowYOffset: CGFloat = 3
 }
 
 struct ThemesCarouselView_Previews: PreviewProvider {

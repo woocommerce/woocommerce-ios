@@ -2306,6 +2306,7 @@
 		DEDA8D9D2B1609DE0076BF0F /* UserDefaults+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D9C2B1609DE0076BF0F /* UserDefaults+Blaze.swift */; };
 		DEDA8D9F2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D9E2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift */; };
 		DEDA8DBC2B1983570076BF0F /* ThemeSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */; };
+		DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */; };
 		DEDAE30B2A0B523F00F9635F /* LocalNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */; };
 		DEDAE30D2A12091500F9635F /* UpgradePlanCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
@@ -4905,6 +4906,7 @@
 		DEDA8D9C2B1609DE0076BF0F /* UserDefaults+Blaze.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Blaze.swift"; sourceTree = "<group>"; };
 		DEDA8D9E2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBlazeTests.swift; sourceTree = "<group>"; };
 		DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingView.swift; sourceTree = "<group>"; };
+		DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingViewModel.swift; sourceTree = "<group>"; };
 		DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationTests.swift; sourceTree = "<group>"; };
 		DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlanCoordinatingController.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
@@ -11096,6 +11098,7 @@
 			isa = PBXGroup;
 			children = (
 				DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */,
+				DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */,
 			);
 			path = Themes;
 			sourceTree = "<group>";
@@ -13097,6 +13100,7 @@
 				AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
 				B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */,
+				DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */,
 				68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */,
 				D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */,
 				02ECD1E424FF5E0B00735BE5 /* AddProductCoordinator.swift in Sources */,

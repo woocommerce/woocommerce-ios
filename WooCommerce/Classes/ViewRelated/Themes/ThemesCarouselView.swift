@@ -39,24 +39,8 @@ struct ThemesCarouselView: View {
                 // Demo for error state
                 themeNameCard(name: themesInfo[0].name)
 
-                // Demo for last message content
-                VStack {
-                    Text(lastMessageHeading)
-                        .bold()
-                        .bodyStyle()
-                        .padding(.horizontal, Layout.contentPadding)
-
-                    Spacer()
-                        .frame(height: Layout.contentPadding)
-
-                    Text(lastMessageContent)
-                        .subheadlineStyle()
-                            .multilineTextAlignment(.center)
-                        .padding(.horizontal, Layout.contentPadding)
-                }.frame(
-                    width: Layout.imageWidth * scale,
-                    height: Layout.imageHeight * scale
-                )
+                // Message at the end of the carousel
+                lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
             }
         }
     }
@@ -85,6 +69,36 @@ private extension ThemesCarouselView {
         .shadow(radius: Layout.shadowRadius, x: 0, y: Layout.shadowYOffset)
         .padding(Layout.imagePadding)
     }
+
+    func lastMessageCard(heading: String, message: String) -> some View {
+        ZStack {
+            GeometryReader { geometry in
+                ScrollView(.vertical) {
+                    VStack {
+                        Spacer()
+                        Text(lastMessageHeading)
+                            .foregroundColor(Color(.secondaryLabel))
+                            .bold()
+                            .bodyStyle()
+                            .padding(.horizontal, Layout.contentPadding)
+
+                        Spacer()
+                            .frame(height: Layout.contentPadding)
+
+                        Text(lastMessageContent)
+                            .foregroundColor(Color(.secondaryLabel))
+                            .subheadlineStyle()
+                                .multilineTextAlignment(.center)
+                            .padding(.horizontal, Layout.contentPadding)
+                        Spacer()
+                    }
+                    .frame(width: geometry.size.width)
+                    .frame(minHeight: geometry.size.height)
+                }
+            }
+        }
+        .frame(width: Layout.imageWidth, height: Layout.imageHeight)
+    }
 }
 
 private extension ThemesCarouselView {
@@ -110,7 +124,7 @@ struct ThemesCarouselView_Previews: PreviewProvider {
     static var previews: some View {
         ThemesCarouselView(
             lastMessageHeading: "Heading example",
-            lastMessageContent: "Message content example here which can be long."
+            lastMessageContent: "Message content example here which can be pretty long if needed."
         )
     }
 }

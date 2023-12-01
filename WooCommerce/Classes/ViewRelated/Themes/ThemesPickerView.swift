@@ -18,7 +18,7 @@ struct ThemesPickerView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 Spacer()
-                    .frame(height: 40)
+                    .frame(height: Layout.contentVerticalSpacing)
 
                 Text(Localization.chooseThemeHeading)
                     .bold()
@@ -26,14 +26,14 @@ struct ThemesPickerView: View {
                     .padding(.horizontal, Layout.contentPadding)
 
                 Spacer()
-                    .frame(height: 16)
+                    .frame(height: Layout.contentPadding)
 
                 Text(Localization.chooseThemeSubtitle)
                     .subheadlineStyle()
                     .padding(.horizontal, Layout.contentPadding)
 
                 Spacer()
-                    .frame(height: 40)
+                    .frame(height: Layout.contentVerticalSpacing)
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack() {
@@ -80,7 +80,7 @@ struct ThemesPickerView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(Localization.skipButtonTitle) {
-                    // todo
+                    // TODO: Setup toolbar.
                 }
             }
         }
@@ -105,6 +105,7 @@ struct ThemesPickerView_Previews: PreviewProvider {
 private extension ThemesPickerView {
     private enum Layout {
         static let contentPadding: CGFloat = 16
+        static let contentVerticalSpacing: CGFloat = 40
         static let imageHorizontalPadding: CGFloat = 8
         static let imageVerticalPadding: CGFloat = 8
         static let imageWidth: CGFloat = 250

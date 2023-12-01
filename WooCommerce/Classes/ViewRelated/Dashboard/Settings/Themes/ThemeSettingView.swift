@@ -2,7 +2,12 @@ import SwiftUI
 
 final class ThemeSettingHostingController: UIHostingController<ThemeSettingView> {
     init(siteID: Int64) {
-        super.init(rootView: ThemeSettingView())
+        let viewModel = ThemeSettingViewModel(siteID: siteID)
+        super.init(rootView: ThemeSettingView(viewModel: viewModel))
+
+        rootView.onDismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -13,6 +18,17 @@ final class ThemeSettingHostingController: UIHostingController<ThemeSettingView>
 /// View for selecting a new theme for the current site.
 ///
 struct ThemeSettingView: View {
+
+    @ObservedObject private var viewModel: ThemeSettingViewModel
+
+    /// Triggered when the Cancel button is tapped.
+    /// To be update from the hosting controller.
+    var onDismiss: () -> Void = {}
+
+    init(viewModel: ThemeSettingViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         NavigationView {
             Form {
@@ -35,9 +51,7 @@ struct ThemeSettingView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancelButton) {
-                        // TODO: dismiss view
-                    }
+                    Button(Localization.cancelButton, action: onDismiss)
                 }
             }
             .navigationTitle(Localization.title)
@@ -83,8 +97,6 @@ private extension ThemeSettingView {
 struct ThemeSettingView_Previews: PreviewProvider {
 
     static var previews: some View {
-        Group {
-            ThemeSettingView()
-        }
+        ThemeSettingView(viewModel: .init(siteID: 123))
     }
 }

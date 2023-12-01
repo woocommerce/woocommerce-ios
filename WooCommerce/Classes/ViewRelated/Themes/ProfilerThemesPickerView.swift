@@ -62,31 +62,31 @@ private extension ProfilerThemesPickerView {
 
     private enum Localization {
         static let skipButtonTitle = NSLocalizedString(
-            "ThemesPickerView.skipButtonTitle",
+            "themesPickerView.skipButtonTitle",
             value: "Skip",
             comment: "Title of the button to skip theme carousel screen."
         )
 
         static let chooseThemeHeading = NSLocalizedString(
-            "ThemesPickerView.chooseThemeHeading",
+            "themesPickerView.chooseThemeHeading",
             value: "Choose a theme",
             comment: "Main heading on the theme carousel screen."
         )
 
         static let chooseThemeSubtitle = NSLocalizedString(
-            "ThemesPickerView.chooseThemeSubtitle",
+            "themesPickerView.chooseThemeSubtitle",
             value: "You can always change it later in the settings.",
             comment: "Subtitle on the theme carousel screen."
         )
 
         static let lastMessageHeading = NSLocalizedString(
-            "ThemesPickerView.lastMessageHeading",
+            "themesPickerView.lastMessageHeading",
             value: "Looking for more?",
             comment: "The heading of the message shown at the end of carousel"
         )
 
         static let lastMessageContent = NSLocalizedString(
-            "ThemesPickerView.lastMessageContent",
+            "themesPickerView.lastMessageContent",
             value: "Once your store is set up, find your perfect theme in the WooCommerce Theme Store.",
             comment: "The content of the message shown at the end of carousel"
         )

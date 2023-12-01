@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-25 08:58:16+0000 */
+/* Translation-Revision-Date: 2023-11-29 13:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -64,9 +64,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "最後の4桁が%2$@の %1$@ カード";
-
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
-"%1$@ every %2$@" = "%2$@毎に %1$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ (%2$@ を除く)";
@@ -3211,9 +3208,6 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "試験用の機能";
 
-/* Label for the expiry setting in the subscription settings screen. */
-"Expire after" = "有効期限";
-
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "有効期限: %@";
 
@@ -3298,9 +3292,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fees and shipping lines */
 "Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "料金と配送料の詳細が完全ではありません。\nすべての情報を編集するには、WooCommerce ストア管理で注文を表示します。";
-
-/* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "料金の返金";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "バリエーションを取得しています…";
@@ -3422,9 +3413,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "1年目は無料";
-
-/* Label for the free trial setting in the subscription settings screen. */
-"Free trial" = "無料お試し";
 
 /* Country option for a site address. */
 "French Guiana" = "フランス領ギアナ";
@@ -5095,8 +5083,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Bolded message confirming that no payment has been taken when the upgrade failed. */
 "No payment has been taken" = "支払いはされていません";
 
-/* Display label when a subscription has no price.
-   Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "価格未設定";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -5128,9 +5115,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "利用できる配送料金がありません";
 
-/* Display label when a subscription has no signup fee. */
-"No signup fee" = "登録費用なし";
-
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "この端末で対応している連絡方法はありません。";
 
@@ -5142,9 +5126,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No text detected message on the add product from image form. */
 "No text detected. Please select another packaging photo or enter product details manually." = "テキストが検出されませんでした。 別のパッケージ写真を選択するか、商品の詳細を手動で入力してください。";
-
-/* Display label when a subscription has no trial period. */
-"No trial period" = "無料お試しなし";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "生成するバリエーションはありません";
@@ -6275,9 +6256,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Refund Details section title */
 "Refund Details" = "返金詳細";
 
-/* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "料金を返金";
-
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "返金ラベル (%1$@)";
 
@@ -7180,9 +7158,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "@%1$@ にログイン中";
 
-/* Label for the signup fee setting in the subscription settings screen. */
-"Signup fee" = "登録費用";
-
 /* Display label for simple product type. */
 "Simple" = "シンプル";
 
@@ -7511,9 +7486,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "サポートリクエストを送信";
 
-/* Display label for simple subscription product type.
-   Title for Subscription row in the product form screen.
-   Title for the subscription settings in a subscription product. */
+/* Display label for simple subscription product type. */
 "Subscription" = "定期購入";
 
 /* Subscription title with subscription number. Reads like: 'Subscription #123' */
@@ -7521,9 +7494,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "定期購入ステータス";
-
-/* Label for the subscription price setting in the subscription settings screen. */
-"Subscription price" = "購読価格";
 
 /* Subscriptions section title
    Title for the Subscriptions / Upgrades view
@@ -8112,9 +8082,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader service experiences an unexpected software error. */
 "The system experienced an unexpected software error" = "システムで予期しないソフトウェアエラーが発生しました";
 
-/* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "システムは別のコマンドを実行中です。もう一度お試しください。";
-
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "現在、サイトのシステムステータスレポートを取得できません。 もう一度お試しください。";
 
@@ -8655,9 +8622,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when communication with the card reader is disrupted. */
 "Unable to communicate with reader - please try again" = "リーダーと通信できません。もう一度お試しください。";
-
-/* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "カードリーダーが正しく検出されなかったため、接続できません。もう一度お試しください。";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
 "Unable to connect to card reader - the card reader is already in use" = "このカードリーダーは使用中のため接続できません。";
@@ -9635,9 +9599,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the quantity rules screen. */
 "You can edit quantity rules in the web dashboard" = "ウェブダッシュボードで数量ルールが編集可能に";
 
-/* Info notice at the bottom of the subscription settings screen. */
-"You can edit subscription settings in the web dashboard" = "ウェブダッシュボードでサブスクリプションの設定を編集できます";
-
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "「メニュー」>「設定」にドメイン設定があります。";
 
@@ -9652,9 +9613,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "ウェブダッシュボードではバリエーションのあるサブスクリプションのみを追加できます";
-
-/* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "ストア管理で料金の払い戻しを受けられます";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "荷物の配送に使用されていない配送ラベルの返金をリクエストできます。\n処理には少なくとも14日かかります。";
@@ -9840,20 +9798,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[詳細はこちら。](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to delete the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.deleteButton" = "カスタム金額を削除";
+
 /* Button title to confirm the custom amount on the add custom amount view in orders. */
 "addCustomAmount.doneButton" = "カスタム金額を追加";
 
 /* Button title to confirm the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.editButton" = "カスタム金額を編集";
 
-/* Title for the charge taxes toggle in the custom amounts screen. */
-"addCustomAmountView.chargeTaxesToggle.title" = "税金を請求";
-
-/* Placeholder for entering an custom amount through a percentage */
-"addCustomAmountView.percentageTextField.placeholder" = "パーセンテージを入力";
+/* Title above the amount field on the add custom amount view in orders. */
+"addCustomAmountPercentageView.amount.title" = "金額";
 
 /* Title for entering an custom amount through a percentage */
-"addCustomAmountView.percentageTextField.title" = "または注文合計に対するパーセンテージ (%1$@) を入力します。";
+"addCustomAmountPercentageView.percentageTextField.title" = "注文合計に対するパーセンテージを入力する";
+
+/* Title for the charge taxes toggle in the custom amounts screen. */
+"addCustomAmountView.chargeTaxesToggle.title" = "税金を請求";
 
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "WooCommerce をクイック起動";
@@ -9946,6 +9907,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "日";
 
+/* Title for Subscription expiry row in the product form screen. */
+"defaultProductFormTableViewModel.expireAfter" = "有効期限";
+
+/* Display label when a subscription never expires. */
+"defaultProductFormTableViewModel.neverExpire" = "期限なし";
+
 /* Display label when a subscription has no trial period.
    Title for Subscription Free Trial row in the product form screen. */
 "defaultProductFormTableViewModel.noFreeTrial" = "無料お試し";
@@ -9955,6 +9922,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "登録費用: %1$@";
+
+/* Accessibility label for the collapse chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.hide" = "デポジットの詳細を非表示";
+
+/* Accessibility label for the expand chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.show" = "デポジットの詳細を表示";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eコマース";
@@ -10032,6 +10005,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "カードリーダー";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.depositSummary.loading.accessibilityLabel" = "残高を読み込んでいます…";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
 "menu.payments.inPersonPayments.learnMore.link" = "さらに詳しく";
@@ -10105,6 +10081,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "カスタム金額";
+
+/* Button title for the fixed amount option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle" = "定額";
+
+/* Button title for the percentage option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "注文合計に対するパーセンテージ";
+
+/* Title text of the confirmation dialog that shows the add custom amounts options. */
+"orderForm.customAmounts.addOptionsDialogTitle" = "カスタム金額をどのように追加しますか ?";
 
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "カスタム金額";
@@ -10190,14 +10175,17 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
-/* Action to configure a product row in the product selector. */
-"productSelector.configureProductRow" = "設定";
-
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "評価回数%ld回";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "評価回数1回";
+
+/* Title on the refund screen that lists the custom amounts total cost */
+"refundCustomAmountsDetails.totalTitle" = "カスタム金額の返金";
+
+/* Title of the switch in the IssueRefund screen to refund customAmounts */
+"refundIssue.customAmounts.title" = "カスタム金額を返金";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "支払いが完了しました";
@@ -10256,6 +10244,19 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "今日の統計情報を取得できません";
+
+/* Title of the button to save subscription's expire after info. */
+"subscriptionExpiryView.done" = "完了";
+
+/* Title for the expire after row in add or edit subscription expire after info screen.
+   Title for the Subscription expire after screen of the subscription product. */
+"subscriptionExpiryView.expireAfter" = "有効期限";
+
+/* Subtitle text to explain subscription expire after value. */
+"subscriptionExpiryView.expireAfterSubtitle" = "この時間が経過するとサブスクリプションは自動的に期限切れになります。 この期間は同期された最初の更新日までに提供される無料お試しまたは無料期間に追加されます。";
+
+/* Title for the Expire after screen of the subscription product. */
+"subscriptionExpiryView.neverExpire" = "期限なし";
 
 /* Title of the button to save subscription's free trial info. */
 "subscriptionTrialView.done" = "完了";

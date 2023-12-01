@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-20 17:54:05+0000 */
+/* Translation-Revision-Date: 2023-11-28 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -64,9 +64,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "Carte %1$@ se terminant %2$@";
-
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
-"%1$@ every %2$@" = "%1$@ renouvelables après %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ sauf %2$@";
@@ -3211,9 +3208,6 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "Fonctionnalités expérimentales";
 
-/* Label for the expiry setting in the subscription settings screen. */
-"Expire after" = "Expire après";
-
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "Expire après : %@";
 
@@ -3298,9 +3292,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fees and shipping lines */
 "Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "Les détails des frais et de la livraison sont incomplets.\nPour modifier tous les détails, affichez la commande dans la section Administration de votre boutique WooCommerce.";
-
-/* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Frais remboursés";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Extraction des variantes en cours...";
@@ -3422,9 +3413,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "Gratuit la première année ";
-
-/* Label for the free trial setting in the subscription settings screen. */
-"Free trial" = "Essai gratuit";
 
 /* Country option for a site address. */
 "French Guiana" = "Guyane française";
@@ -5095,8 +5083,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Bolded message confirming that no payment has been taken when the upgrade failed. */
 "No payment has been taken" = "Aucun paiement n’a été effectué";
 
-/* Display label when a subscription has no price.
-   Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Aucun prix défini";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -5128,9 +5115,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "Aucun tarif d’expédition disponible";
 
-/* Display label when a subscription has no signup fee. */
-"No signup fee" = "Pas de frais d’inscription";
-
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "Aucun mode de paiement par contact n’est pris en charge sur cet appareil.";
 
@@ -5142,9 +5126,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No text detected message on the add product from image form. */
 "No text detected. Please select another packaging photo or enter product details manually." = "Aucun texte détecté. Sélectionnez une autre photo de l’emballage ou entrez manuellement les détails du produit.";
-
-/* Display label when a subscription has no trial period. */
-"No trial period" = "Pas de période d’essai";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Aucune variante à générer";
@@ -6275,9 +6256,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Refund Details section title */
 "Refund Details" = "Détails du remboursement";
 
-/* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Remboursement de frais";
-
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "Étiquette de remboursement (%1$@)";
 
@@ -7180,9 +7158,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Connecté en tant que @%1$@";
 
-/* Label for the signup fee setting in the subscription settings screen. */
-"Signup fee" = "Frais d’inscription";
-
 /* Display label for simple product type. */
 "Simple" = "Simple";
 
@@ -7511,9 +7486,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Envoyer votre demande d&rsquo;aide";
 
-/* Display label for simple subscription product type.
-   Title for Subscription row in the product form screen.
-   Title for the subscription settings in a subscription product. */
+/* Display label for simple subscription product type. */
 "Subscription" = "Abonnement";
 
 /* Subscription title with subscription number. Reads like: 'Subscription #123' */
@@ -7521,9 +7494,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "État de l’abonnement";
-
-/* Label for the subscription price setting in the subscription settings screen. */
-"Subscription price" = "Prix de l’abonnement";
 
 /* Subscriptions section title
    Title for the Subscriptions / Upgrades view
@@ -8112,9 +8082,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader service experiences an unexpected software error. */
 "The system experienced an unexpected software error" = "Le système a rencontré une erreur logicielle inattendue";
 
-/* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "Le système est occupé à exécuter une autre commande. Veuillez réessayer";
-
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Il est momentanément impossible d’extraire le rapport sur l’état du système pour votre site. Veuillez réessayer.";
 
@@ -8655,9 +8622,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when communication with the card reader is disrupted. */
 "Unable to communicate with reader - please try again" = "Impossible de communiquer avec le lecteur. Veuillez réessayer";
-
-/* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Impossible de se connecter au lecteur de cartes. Le lecteur de cartes n’a pas été détecté correctement. Veuillez réessayer";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
 "Unable to connect to card reader - the card reader is already in use" = "Impossible de se connecter au lecteur de cartes. Le lecteur de cartes est en cours d’utilisation";
@@ -9635,9 +9599,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the quantity rules screen. */
 "You can edit quantity rules in the web dashboard" = "Vous pouvez modifier les règles de quantité dans le tableau de bord Web";
 
-/* Info notice at the bottom of the subscription settings screen. */
-"You can edit subscription settings in the web dashboard" = "Vous pouvez modifier les paramètres d’abonnement dans le tableau de bord Web.";
-
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Vous trouverez les réglages du domaine dans menu > réglages";
 
@@ -9652,9 +9613,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "Vous ne pouvez ajouter que des abonnements variables dans le tableau de bord Web.";
-
-/* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "Vous pouvez rembourser les frais depuis la page administration de votre boutique";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "Vous pouvez demander le remboursement d’une étiquette d’expédition qui n’a pas été utilisée pour expédier un colis.\nCela prendra au moins 14 jours.";
@@ -9840,20 +9798,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Lire la suite.](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to delete the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.deleteButton" = "Supprimer le montant personnalisé";
+
 /* Button title to confirm the custom amount on the add custom amount view in orders. */
 "addCustomAmount.doneButton" = "Ajouter un montant personnalisé";
 
 /* Button title to confirm the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.editButton" = "Ajouter un montant personnalisé";
 
-/* Title for the charge taxes toggle in the custom amounts screen. */
-"addCustomAmountView.chargeTaxesToggle.title" = "Facturer les taxes";
-
-/* Placeholder for entering an custom amount through a percentage */
-"addCustomAmountView.percentageTextField.placeholder" = "Saisir le pourcentage";
+/* Title above the amount field on the add custom amount view in orders. */
+"addCustomAmountPercentageView.amount.title" = "Montant";
 
 /* Title for entering an custom amount through a percentage */
-"addCustomAmountView.percentageTextField.title" = "Ou saisissez le pourcentage du total de la commande (%1$@)";
+"addCustomAmountPercentageView.percentageTextField.title" = "Saisir le pourcentage du total de la commande";
+
+/* Title for the charge taxes toggle in the custom amounts screen. */
+"addCustomAmountView.chargeTaxesToggle.title" = "Facturer les taxes";
 
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "Lancement rapide de WooCommerce";
@@ -9946,6 +9907,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "jours";
 
+/* Title for Subscription expiry row in the product form screen. */
+"defaultProductFormTableViewModel.expireAfter" = "Expire après";
+
+/* Display label when a subscription never expires. */
+"defaultProductFormTableViewModel.neverExpire" = "N’expire jamais";
+
 /* Display label when a subscription has no trial period.
    Title for Subscription Free Trial row in the product form screen. */
 "defaultProductFormTableViewModel.noFreeTrial" = "Essai gratuit";
@@ -9955,6 +9922,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Frais d’inscription : %1$@";
+
+/* Accessibility label for the collapse chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.hide" = "Masquer les détails du dépôt";
+
+/* Accessibility label for the expand chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.show" = "Afficher les détails du dépôt";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
@@ -10032,6 +10005,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "Lecteurs de carte";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.depositSummary.loading.accessibilityLabel" = "Chargement des soldes…";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
 "menu.payments.inPersonPayments.learnMore.link" = "En savoir plus";
@@ -10105,6 +10081,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Montants personnalisés";
+
+/* Button title for the fixed amount option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle" = "Montant fixe";
+
+/* Button title for the percentage option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "Pourcentage du total de la commande";
+
+/* Title text of the confirmation dialog that shows the add custom amounts options. */
+"orderForm.customAmounts.addOptionsDialogTitle" = "Comment souhaitez-vous ajouter votre montant personnalisé ?";
 
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Montants personnalisés";
@@ -10190,14 +10175,17 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
-/* Action to configure a product row in the product selector. */
-"productSelector.configureProductRow" = "Configurer";
-
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "évalué %ld fois";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "évalué une fois";
+
+/* Title on the refund screen that lists the custom amounts total cost */
+"refundCustomAmountsDetails.totalTitle" = "Remboursement des montants personnalisés";
+
+/* Title of the switch in the IssueRefund screen to refund customAmounts */
+"refundIssue.customAmounts.title" = "Rembourser les montants personnalisés";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Paiement effectué";
@@ -10256,6 +10244,19 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Impossible de récupérer les statistiques du jour";
+
+/* Title of the button to save subscription's expire after info. */
+"subscriptionExpiryView.done" = "Terminé";
+
+/* Title for the expire after row in add or edit subscription expire after info screen.
+   Title for the Subscription expire after screen of the subscription product. */
+"subscriptionExpiryView.expireAfter" = "Expire après";
+
+/* Subtitle text to explain subscription expire after value. */
+"subscriptionExpiryView.expireAfterSubtitle" = "Fait automatiquement expirer l’abonnement après cette durée. Cette durée s’ajoute à tout essai gratuit ou à toute durée accordée avant une première date de renouvellement synchronisée.";
+
+/* Title for the Expire after screen of the subscription product. */
+"subscriptionExpiryView.neverExpire" = "N’expire jamais";
 
 /* Title of the button to save subscription's free trial info. */
 "subscriptionTrialView.done" = "Terminé";

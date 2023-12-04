@@ -24,7 +24,7 @@ struct CashPaymentTenderView: View {
                                     viewModel.customerCash = ""
                                 }
 
-                            Text("Enter your customer cash and we calculate the change for you. Tapping on Tender will mark your order as complete.")
+                            Text("Enter your customer paid cash and we'll calculate the change for you. Tapping on Tender will mark your order as complete.")
                                 .footnoteStyle()
 
                             Divider()
@@ -38,7 +38,10 @@ struct CashPaymentTenderView: View {
 
                             Spacer()
 
-                            Button("Tender") {}
+                            Button("Tender") {
+                                viewModel.onTenderButtonTapped()
+                                dismiss()
+                            }
                                 .buttonStyle(PrimaryButtonStyle())
                                 .disabled(!viewModel.tenderButtonIsEnabled)
                             Button("Cancel", role: .destructive) {

@@ -6,6 +6,7 @@ import WooFoundation
 final class CashPaymentTenderViewModel: ObservableObject {
     let formattedTotal: String
     let currencyFormatter: CurrencyFormatter
+    let onOrderPaid: (() -> Void)
 
     @Published var tenderButtonIsEnabled: Bool = true
     @Published var dueChange: String = ""
@@ -26,10 +27,16 @@ final class CashPaymentTenderViewModel: ObservableObject {
     }
 
     init(formattedTotal: String,
+         onOrderPaid: @escaping (() -> Void),
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.formattedTotal = formattedTotal
+        self.onOrderPaid = onOrderPaid
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
         customerCash = formattedTotal
+    }
+
+    func onTenderButtonTapped() {
+        onOrderPaid()
     }
 }
 

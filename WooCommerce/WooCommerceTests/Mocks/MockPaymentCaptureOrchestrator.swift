@@ -40,6 +40,12 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                    onCompletion)
     }
 
+    var spyDidCallRetryPayment = false
+    func retryPayment(for order: Yosemite.Order,
+                      onCompletion: @escaping (Result<WooCommerce.CardPresentCapturedPaymentData, Error>) -> Void) {
+        spyDidCallRetryPayment = true
+    }
+
     var spyDidCallCancelPayment = false
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         spyDidCallCancelPayment = true

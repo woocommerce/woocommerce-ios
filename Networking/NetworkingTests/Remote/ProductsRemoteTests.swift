@@ -44,7 +44,7 @@ final class ProductsRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedProduct = Product(siteID: sampleSiteID,
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
                                       productID: 3007,
                                       name: "Product",
                                       slug: "product",
@@ -107,6 +107,7 @@ final class ProductsRemoteTests: XCTestCase {
                                       groupedProducts: [],
                                       menuOrder: 0,
                                       addOns: [],
+                                      isSampleItem: false,
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
@@ -156,7 +157,7 @@ final class ProductsRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedProduct = Product(siteID: sampleSiteID,
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
                                       productID: 3007,
                                       name: "Product",
                                       slug: "product",
@@ -219,6 +220,7 @@ final class ProductsRemoteTests: XCTestCase {
                                       groupedProducts: [],
                                       menuOrder: 0,
                                       addOns: [],
+                                      isSampleItem: false,
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
@@ -705,7 +707,7 @@ final class ProductsRemoteTests: XCTestCase {
         await assertThrowsError({ _ = try await remote.loadNumberOfProducts(siteID: 7) },
                                 errorAssert: {
             // Then
-            $0 as? NetworkError == .notFound
+            $0 as? NetworkError == .notFound()
         })
     }
 }
@@ -715,7 +717,7 @@ final class ProductsRemoteTests: XCTestCase {
 private extension ProductsRemoteTests {
 
     func sampleProduct() -> Product {
-        return Product(siteID: sampleSiteID,
+        Product.fake().copy(siteID: sampleSiteID,
                        productID: sampleProductID,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
@@ -783,6 +785,7 @@ private extension ProductsRemoteTests {
                        groupedProducts: [],
                        menuOrder: 0,
                        addOns: [],
+                       isSampleItem: false,
                        bundleStockStatus: .inStock,
                        bundleStockQuantity: nil,
                        bundledItems: [],

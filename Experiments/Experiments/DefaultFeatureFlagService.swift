@@ -11,26 +11,19 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         let isUITesting = CommandLine.arguments.contains("-ui_testing")
 
         switch featureFlag {
-        case .barcodeScanner:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            // We have a crash with this feature flag enabled. See https://github.com/woocommerce/woocommerce-ios/issues/10815
+            return false
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .promptToEnableCodInIppOnboarding:
-            return true
         case .searchProductsBySKU:
             return true
-        case .inAppPurchases:
+        case .inAppPurchasesDebugMenu:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .justInTimeMessagesOnDashboard:
-            return true
-        case .IPPInAppFeedbackBanner:
-            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -43,10 +36,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
-        case .tapToPayOnIPhoneMilestone2:
-            return true
-        case .tapToPayBadge:
-            return true
         case .domainSettings:
             return true
         case .jetpackSetupWithApplicationPassword:
@@ -60,8 +49,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
-            return true
-        case .readOnlySubscriptions:
             return true
         case .productDescriptionAI:
             return true
@@ -77,17 +64,27 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .euShippingNotification:
             return true
-        case .sdkLessGoogleSignIn:
-            return true
         case .shareProductAI:
-            return true
-        case .ordersWithCouponsM4:
             return true
         case .betterCustomerSelectionInOrder:
             return true
-        case .manualTaxesInOrderM2:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .hazmatShipping:
+            return true
+        case .productCreationAI:
+            return true
+        case .giftCardInOrderForm:
+            return true
+        case .wooPaymentsDepositsOverviewInPaymentsMenu:
+            return true
+        case .tapToPayOnIPhoneInUK:
+            return true
+        case .productBundlesInOrderForm:
+            return true
+        case .customLoginUIForAccountCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .lightweightStorefront:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .scanToUpdateInventory:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

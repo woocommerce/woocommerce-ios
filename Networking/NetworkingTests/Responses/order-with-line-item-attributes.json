@@ -8,6 +8,7 @@
         "version": "4.7.0",
         "status": "processing",
         "currency": "USD",
+        "currency_symbol": "$",
         "date_created": "2020-10-28T13:23:18",
         "date_created_gmt": "2020-10-28T05:23:18",
         "date_modified": "2020-10-28T13:23:21",

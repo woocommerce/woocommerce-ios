@@ -94,6 +94,7 @@ private extension CustomerSelectorViewController {
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(presentNewCustomerDetailsFlow))
+        navigationItem.rightBarButtonItem?.accessibilityIdentifier = AccessibilityIdentifier.addCustomerDetailsPlusButton
     }
 
     func configureActivityIndicator() {
@@ -225,5 +226,9 @@ private extension CustomerSelectorViewController {
         static let genericFetchCustomersError = NSLocalizedString(
             "Failed to fetch the customers data. Please try again later.",
             comment: "Error message in the Add Customer to order screen when getting the customers information")
+    }
+
+    enum AccessibilityIdentifier {
+        static let addCustomerDetailsPlusButton = "add-customer-details-plus-button"
     }
 }

@@ -45,8 +45,8 @@ struct FeedbackView: View {
         }
         .padding(Layout.contentInsets)
         .background(
-            RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .foregroundColor(backgroundColor)
+            backgroundColor
+                .cornerRadius(Layout.cornerRadius)
         )
         .onChange(of: vote) { newValue in
             if let newValue {

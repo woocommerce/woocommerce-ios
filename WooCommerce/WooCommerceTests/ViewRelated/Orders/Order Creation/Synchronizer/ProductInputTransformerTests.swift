@@ -33,6 +33,27 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.total, "9.99")
     }
 
+    func test_update_with_a_new_product_when_input_has_different_base_subtotal_than_price_then_it_uses_base_subtotal() throws {
+        // Given
+        let baseSubtotal: Decimal = 8
+        let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0, baseSubtotal: baseSubtotal)
+        let originalOrder = OrderFactory.emptyNewOrder
+
+        // When
+        let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // Then
+        let item = try XCTUnwrap(updatedOrder.items.first)
+        XCTAssertEqual(item.itemID, input.id)
+        XCTAssertEqual(item.quantity, input.quantity)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.variationID, 0)
+        XCTAssertEqual(item.price, 9.99)
+        XCTAssertEqual(item.subtotal, "\(baseSubtotal)")
+        XCTAssertEqual(item.total, "\(baseSubtotal)")
+    }
+
     func test_updateMultipleItems_when_sending_multiple_new_inputs_then_adds_multiple_items_to_an_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
@@ -84,6 +105,27 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "9.99")
         XCTAssertEqual(item.total, "9.99")
+    }
+
+    func test_update_with_a_new_product_variation_when_input_has_different_base_subtotal_than_price_then_it_uses_base_subtotal() throws {
+        // Given
+        let baseSubtotal: Decimal = 8
+        let productVariation = ProductVariation.fake().copy(productID: sampleProductID, productVariationID: sampleProductVariationID, price: "9.99")
+        let input = OrderSyncProductInput(product: .variation(productVariation), quantity: 1, discount: 0, baseSubtotal: baseSubtotal)
+        let originalOrder = OrderFactory.emptyNewOrder
+
+        // When
+        let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // Then
+        let item = try XCTUnwrap(updatedOrder.items.first)
+        XCTAssertEqual(item.itemID, input.id)
+        XCTAssertEqual(item.quantity, input.quantity)
+        XCTAssertEqual(item.productID, productVariation.productID)
+        XCTAssertEqual(item.variationID, productVariation.productVariationID)
+        XCTAssertEqual(item.price, 9.99)
+        XCTAssertEqual(item.subtotal, "\(baseSubtotal)")
+        XCTAssertEqual(item.total, "\(baseSubtotal)")
     }
 
     func test_updateMultipleItems_when_sending_multiple_new_product_variation_inputs_then_adds_multiple_items_to_an_order() throws {
@@ -158,6 +200,27 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.total, "19.98")
     }
 
+    func test_update_product_with_new_quantity_when_item_has_different_subtotal_than_price_then_it_uses_base_subtotal() throws {
+        // Given
+        let baseSubtotal: Decimal = 8
+        let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // When
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2, discount: 0, baseSubtotal: baseSubtotal)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // Then
+        let item = try XCTUnwrap(update2.items.first)
+        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.price, 9.99)
+        XCTAssertEqual(item.subtotal, "\(baseSubtotal * 2)")
+        XCTAssertEqual(item.total, "\(baseSubtotal * 2)")
+    }
+
     func test_sending_a_product_with_a_discount_input_updates_item_on_order() throws {
         // Given
         let price: Decimal = 9.99
@@ -178,6 +241,29 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.price as Decimal, price)
         XCTAssertEqual(item.subtotal, "\(item.price)")
         XCTAssertEqual(item.total, "\(price - discount)")
+    }
+
+    func test_update_product_with_a_discount_when_item_has_different_base_subtotal_than_price_then_it_uses_base_subtotal() throws {
+        // Given
+        let baseSubtotal: Decimal = 8
+        let price: Decimal = 9.99
+        let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let discount: Decimal = 1
+
+        // When
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 1, baseSubtotal: baseSubtotal)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // Then
+        let item = try XCTUnwrap(update2.items.first)
+        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.price as Decimal, price)
+        XCTAssertEqual(item.subtotal, "\(baseSubtotal)")
+        XCTAssertEqual(item.total, "\(baseSubtotal - discount)")
     }
 
     func test_updating_a_product_with_a_removed_discount_input_updates_item_on_order() throws {
@@ -346,5 +432,35 @@ class ProductInputTransformerTests: XCTestCase {
         // Then
         let item = try XCTUnwrap(orderUpdate.items.first)
         XCTAssertEqual(item.quantity, productInput2.quantity)
+    }
+
+    func test_order_item_with_bundle_configuration_of_variable_and_simple_items_are_transformed_when_updateing_OrderSyncProductInput() throws {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let simpleBundledItem = BundledProductConfiguration(bundledItemID: 1,
+                                                            productOrVariation: .product(id: 6),
+                                                            quantity: 2,
+                                                            isOptionalAndSelected: true)
+        let variableBundledItem = BundledProductConfiguration(bundledItemID: 2,
+                                                              productOrVariation: .variation(productID: 25, variationID: 72, attributes: [
+                                                                .init(id: 1, name: "Color", option: "Clear")
+                                                              ]),
+                                                              quantity: 3,
+                                                              isOptionalAndSelected: nil)
+        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0, bundleConfiguration: [
+            simpleBundledItem, variableBundledItem
+        ])
+
+        // When
+        let orderUpdate = ProductInputTransformer.update(input: productInput, on: .fake(), shouldUpdateOrDeleteZeroQuantities: .update)
+
+        // Then
+        let item = try XCTUnwrap(orderUpdate.items.first)
+        XCTAssertEqual(item.bundleConfiguration, [
+            .init(bundledItemID: 1, productID: 6, quantity: 2, isOptionalAndSelected: true, variationID: nil, variationAttributes: nil),
+            .init(bundledItemID: 2, productID: 25, quantity: 3, isOptionalAndSelected: nil, variationID: 72, variationAttributes: [
+                .init(id: 1, name: "Color", option: "Clear")
+            ]),
+        ])
     }
 }

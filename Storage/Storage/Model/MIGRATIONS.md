@@ -2,6 +2,40 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 104 (Release 16.5.0.0)
+- @rachelmcr 2023-11-29
+    - Added `pricedIndividually` attribute to `ProductBundleItem` entitity.
+
+## Model 103 (Release 16.5.0.0)
+- @selanthiraiyan 2023-11-27
+    - Added `oneTimeShipping` attribute to `ProductSubscription` entity.
+- @selanthiraiyan 2023-11-28
+    - Added `paymentSyncDate` attribute to `ProductSubscription` entity.
+- @selanthiraiyan 2023-11-29
+    - Added `paymentSyncMonth` attribute to `ProductSubscription` entity.
+
+## Model 102 (Release 16.2.0.0)
+- @jaclync 2023-11-15
+    - Added `bundleMinSize` and `bundleMaxSize` attributes to `Product` entity.
+
+## Model 101 (Release 16.1.0.0)
+- @hafizrahman 2023-11-02
+    - Added `productID` attribute to `BlazeCampaign` entity.
+
+## Model 100 (Release 15.8.0.0)
+- @itsmeichigo 2023-10-11
+    - Added new entity `BlazeCampaign`
+
+## Model 99 (Release 15.7.0.0)
+- @jaclync 2023-09-27
+    - Added `minQuantity`, `maxQuantity`, `defaultQuantity`, `isOptional`, `allowedVariations`, `overridesDefaultVariationAttributes`, `overridesVariations` attributes and `defaultVariationAttributes` relationship to `ProductBundleItem` entity.
+
+## Model 98 (Release 15.4.0.0)
+- @hihuongdo 2023-09-15
+    - Added `isSampleItem` attribute to `Product` entity.
+- @selanthiraiyan 2023-09-14
+    - Added `isAIAssitantFeatureActive` attribute to `Site` entity.
+    
 ## Model 97 (Release 15.3.0.0)
 - @cvargascasaseca 2023-09-06
     - Added custom class to Transformables in `TaxRate` entity.

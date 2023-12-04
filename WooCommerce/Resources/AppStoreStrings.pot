@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v15.2-whats-new"
+msgctxt "v16.4-whats-new"
 msgid ""
-"We're excited to introduce a new update for our app! This version includes a fix for minor UI issues in the store creation profiler flow to enhance your user experience. Additionally, you can now see the order tax rates, get more information about them, and even navigate to wp-admin to change them. Update now for a better experience!\n"
+"We're excited to announce some new updates to our WooCommerce app! You can now create or edit subscription products with ease! We've also made some tweaks to the order form to ensure bundled items are added/updated correctly when dealing with optional & non-selected variable items. Plus, we've rearranged the Dashboard for better navigation - the Blaze section is now conveniently located under the Stats. Enjoy the enhanced experience!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

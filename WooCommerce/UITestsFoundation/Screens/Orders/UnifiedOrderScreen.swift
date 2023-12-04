@@ -25,20 +25,28 @@ public final class UnifiedOrderScreen: ScreenObject {
         $0.buttons["new-order-add-product-button"]
     }
 
+    private let addCustomAmountButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["new-order-add-custom-amount-button"]
+    }
+
     private let addCustomerDetailsButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["Add Customer Details"]
+        $0.buttons["Add Customer Details"]
     }
 
     private let addShippingButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["add-shipping-button"]
     }
 
-    private let addFeeButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["add-fee-button"]
-    }
-
     private let addNoteButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["add-customer-note-button"]
+    }
+
+    private let fixedAmountButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["custom-amount-fixed-button"]
+    }
+
+    private let percentageOfTotalButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["custom-amount-percentage-button"]
     }
 
     private var createButton: XCUIElement { createButtonGetter(app) }
@@ -59,6 +67,10 @@ public final class UnifiedOrderScreen: ScreenObject {
     ///
     private var addProductButton: XCUIElement { addProductButtonGetter(app) }
 
+    /// Add Custom Amount button in Product section.
+    ///
+    private var addCustomAmountButton: XCUIElement { addCustomAmountButtonGetter(app) }
+
     /// Add Customer Details button in the Customer Details section.
     ///
     private var addCustomerDetailsButton: XCUIElement { addCustomerDetailsButtonGetter(app) }
@@ -67,13 +79,17 @@ public final class UnifiedOrderScreen: ScreenObject {
     ///
     private var addShippingButton: XCUIElement { addShippingButtonGetter(app) }
 
-    /// Add Fee button in the Payment section.
-    ///
-    private var addFeeButton: XCUIElement { addFeeButtonGetter(app) }
-
     /// Add Note button in the Customer Note section.
     ///
     private var addNoteButton: XCUIElement { addNoteButtonGetter(app) }
+
+    /// Fixed Amount in Custom Amount sheet.
+    ///
+    private var fixedAmountButton: XCUIElement { fixedAmountButtonGetter(app) }
+
+    /// Percentage of Order Total Button in Custom Amount ssheet.
+    ///
+    private var percentageOfTotalButton: XCUIElement { percentageOfTotalButtonGetter(app) }
 
     public enum Flow {
         case creation
@@ -116,9 +132,13 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Opens the Customer Details screen.
     /// - Returns: Customer Details screen object.
-    public func openCustomerDetailsScreen() throws -> CustomerDetailsScreen {
+    public func openCustomerDetailsScreen() throws -> AddCustomerDetailsScreen {
+        // Swipe up to get the addCustomerDetailsButton in view.
+        // There's no condition for this because somehow button.exists, button.isHittable and button.isEnabled
+        // all returns true even when the button is not fully in view
+        app.swipeUp()
         addCustomerDetailsButton.tap()
-        return try CustomerDetailsScreen()
+        return try AddCustomerDetailsScreen()
     }
 
     /// Opens the Add Shipping screen.
@@ -128,11 +148,16 @@ public final class UnifiedOrderScreen: ScreenObject {
         return try AddShippingScreen()
     }
 
-    /// Opens the Add Fee screen.
-    /// - Returns: Add Fee screen object.
-    public func openAddFeeScreen() throws -> AddFeeScreen {
-        addFeeButton.tap()
-        return try AddFeeScreen()
+    /// Opens the Add Custom Amount screen.
+    /// - Returns: Add Custom Amount screen object.
+    public func openAddCustomAmountScreen() throws -> AddCustomAmountScreen {
+        addCustomAmountButton.tap()
+        selectFixedAmount()
+        return try AddCustomAmountScreen()
+    }
+
+    private func selectFixedAmount() {
+        fixedAmountButton.waitAndTap()
     }
 
     /// Opens the Customer Note screen.
@@ -176,6 +201,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// - Returns: Unified Order screen object.
     public func addCustomerDetails(name: String) throws -> UnifiedOrderScreen {
         return try openCustomerDetailsScreen()
+            .tapAddCustomerDetailsPlusButton()
             .enterCustomerDetails(name: name)
     }
 
@@ -191,20 +217,23 @@ public final class UnifiedOrderScreen: ScreenObject {
             .confirmShippingDetails()
     }
 
-    /// Adds a fee on the Add Fee screen.
+    /// Adds a fee on the Custom Amount screen.
     /// - Parameters:
-    ///   - amount: Amount (in the store currency) to add as a fee.
+    ///   - amount: Amount (in the store currency) to add as a custom amount.
     /// - Returns: Unified Order screen object.
-    public func addFee(amount: String) throws -> UnifiedOrderScreen {
-        return try openAddFeeScreen()
-            .enterFixedFee(amount: amount)
-            .confirmFee()
+    public func addCustomAmount(amount: String) throws -> UnifiedOrderScreen {
+        return try openAddCustomAmountScreen()
+            .enterCustomAmount(amount: amount)
+            .addCustomAmountTap()
     }
 
     /// Adds a note on the Customer Note screen.
     /// - Parameter text: Text to enter as the customer note.
     /// - Returns: Unified Order screen object.
     public func addCustomerNote(_ text: String) throws -> UnifiedOrderScreen {
+        // Add Customer note button is the lowermost element on the screen
+        // Adding a swipeup for better stability on iPad.
+        app.swipeUp()
         return try openCustomerNoteScreen()
             .enterNote(text)
             .confirmNote()

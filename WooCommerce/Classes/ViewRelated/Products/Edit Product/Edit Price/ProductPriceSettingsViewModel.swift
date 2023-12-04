@@ -14,6 +14,11 @@ protocol ProductPriceSettingsViewModelOutput {
     var dateOnSaleEnd: Date? { get }
     var taxStatus: ProductTaxStatus { get }
     var taxClass: TaxClass? { get }
+
+    var subscriptionPeriod: SubscriptionPeriod? { get }
+    var subscriptionPeriodInterval: String? { get }
+    var subscriptionPeriodDescription: String? { get }
+    var subscriptionSignupFee: String? { get }
 }
 
 /// Handles actions related to the price settings data.
@@ -34,6 +39,8 @@ protocol ProductPriceSettingsActionHandler {
     func handleScheduleSaleChange(isEnabled: Bool)
     func handleSaleStartDateChange(_ date: Date)
     func handleSaleEndDateChange(_ date: Date?)
+    func handleSubscriptionPeriodChange(interval: String, period: SubscriptionPeriod)
+    func handleSubscriptionSignupFeeChange(_ fee: String?)
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void)
@@ -49,6 +56,11 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     //
     private(set) var regularPrice: String?
     private(set) var salePrice: String?
+
+    private(set) var subscriptionPeriodDescription: String?
+    private(set) var subscriptionPeriod: SubscriptionPeriod?
+    private(set) var subscriptionPeriodInterval: String?
+    private(set) var subscriptionSignupFee: String?
 
     private(set) var dateOnSaleStart: Date?
     private(set) var dateOnSaleEnd: Date?
@@ -93,6 +105,11 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         regularPrice = product.regularPrice
         salePrice = product.salePrice
 
+        subscriptionPeriod = product.subscription?.period
+        subscriptionPeriodInterval = product.subscription?.periodInterval
+        subscriptionPeriodDescription = product.subscriptionPeriodDescription
+        subscriptionSignupFee = product.subscription?.signUpFee
+
         // If the product sale start date is nil and the sale end date is not in the past, defaults the sale start date to today.
         if let saleEndDate = product.dateOnSaleEnd, product.dateOnSaleStart == nil &&
             Date().startOfDay(timezone: timezoneForScheduleSaleDates) <= saleEndDate.startOfDay(timezone: timezoneForScheduleSaleDates) {
@@ -116,10 +133,17 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
     var sections: [Section] {
         // Price section
-        let priceSection = Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice])
+        let priceRows: [Row] = {
+            if product.subscription == nil {
+                return [.price]
+            }
+            return [.price, .subscriptionPeriod, .subscriptionSignupFee]
+        }()
+
+        let priceSection = Section(title: Strings.priceSectionTitle, rows: priceRows)
 
         // Sales section
-        var saleScheduleRows: [Row] = [.scheduleSale]
+        var saleScheduleRows: [Row] = [.salePrice, .scheduleSale]
         if dateOnSaleStart != nil || dateOnSaleEnd != nil {
             saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
             if datePickerSaleFromVisible {
@@ -133,7 +157,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
                 saleScheduleRows.append(.removeSaleTo)
             }
         }
-        let salesSection = Section(title: nil, rows: saleScheduleRows)
+        let salesSection = Section(title: Strings.saleSectionTitle, rows: saleScheduleRows)
 
         switch product {
         case is EditableProductModel:
@@ -227,6 +251,15 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         }
     }
 
+    func handleSubscriptionPeriodChange(interval: String, period: SubscriptionPeriod) {
+        subscriptionPeriodDescription = String.formatSubscriptionPeriodDescription(period: period, interval: interval)
+        subscriptionPeriod = period
+        subscriptionPeriodInterval = interval
+    }
+
+    func handleSubscriptionSignupFeeChange(_ fee: String?) {
+        self.subscriptionSignupFee = fee
+    }
     // MARK: - Navigation actions
 
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void) {
@@ -239,7 +272,16 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             return
         }
 
-        onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges())
+        onCompletion(regularPrice,
+                     subscriptionPeriod,
+                     subscriptionPeriodInterval,
+                     subscriptionSignupFee,
+                     salePrice,
+                     dateOnSaleStart,
+                     dateOnSaleEnd,
+                     taxStatus,
+                     taxClass,
+                     hasUnsavedChanges())
     }
 
     func hasUnsavedChanges() -> Bool {
@@ -254,7 +296,9 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             dateOnSaleStart != originalDateOnSaleStart ||
             dateOnSaleEnd != product.dateOnSaleEnd ||
             taxStatus.rawValue != product.taxStatusKey ||
-            newTaxClass != originalTaxClass {
+            newTaxClass != originalTaxClass ||
+            subscriptionPeriodDescription != product.subscriptionPeriodDescription ||
+            priceSettingsValidator.getDecimalPrice(subscriptionSignupFee) != priceSettingsValidator.getDecimalPrice(product.subscription?.signUpFee) {
             return true
         }
 
@@ -265,6 +309,11 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
 extension ProductPriceSettingsViewModel {
     enum Strings {
         static let priceSectionTitle = NSLocalizedString("Price", comment: "Section header title for product price")
+        static let saleSectionTitle = NSLocalizedString(
+            "productPriceSettingsViewModel.saleSectionTitle",
+            value: "Sale",
+            comment: "Section header title for product sale price"
+        )
         static let taxSectionTitle = NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings")
         static let standardTaxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
     }

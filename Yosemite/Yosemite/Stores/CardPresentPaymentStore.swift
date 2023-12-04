@@ -85,10 +85,15 @@ public final class CardPresentPaymentStore: Store {
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
-        case .checkDeviceSupport(let siteID, let cardReaderType, let discoveryMethod, let completion):
+        case .checkDeviceSupport(let siteID,
+                                 let cardReaderType,
+                                 let discoveryMethod,
+                                 let minimumOperatingSystemVersionOverride,
+                                 let completion):
             checkDeviceSupport(siteID: siteID,
                                cardReaderType: cardReaderType,
                                discoveryMethod: discoveryMethod,
+                               minimumOperatingSystemVersionOverride: minimumOperatingSystemVersionOverride,
                                onCompletion: completion)
         case .startCardReaderDiscovery(let siteID, let discoveryMethod, let onReaderDiscovered, let onError):
             startCardReaderDiscovery(siteID: siteID,
@@ -110,6 +115,12 @@ public final class CardPresentPaymentStore: Store {
                            onCardReaderMessage: event,
                            onProcessingCompletion: processPaymentCompletion,
                            onCompletion: completion)
+        case .retryPayment(let siteID, let orderID, let event, let processPaymentCompletion, let completion):
+            retryActivePayment(siteID: siteID,
+                               orderID: orderID,
+                               onCardReaderMessage: event,
+                               onProcessingCompletion: processPaymentCompletion,
+                               onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
         case .refundPayment(let parameters, let onCardReaderMessage, let completion):
@@ -137,9 +148,14 @@ private extension CardPresentPaymentStore {
     func checkDeviceSupport(siteID: Int64,
                             cardReaderType: CardReaderType,
                             discoveryMethod: CardReaderDiscoveryMethod,
+                            minimumOperatingSystemVersionOverride: OperatingSystemVersion?,
                             onCompletion: (Bool) -> Void) {
         prepareConfigProvider(siteID: siteID)
-        onCompletion(cardReaderService.checkSupport(for: cardReaderType, configProvider: commonReaderConfigProvider, discoveryMethod: discoveryMethod))
+        onCompletion(cardReaderService.checkSupport(
+            for: cardReaderType,
+            configProvider: commonReaderConfigProvider,
+            discoveryMethod: discoveryMethod,
+            minimumOperatingSystemVersionOverride: minimumOperatingSystemVersionOverride))
     }
 
     func prepareConfigProvider(siteID: Int64) {
@@ -256,36 +272,69 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        paymentCancellable = cardReaderService.capturePayment(parameters)
-            .handleEvents(receiveOutput: { intent in
-                onProcessingCompletion(intent)
-            })
-            .flatMap { intent in
-                Publishers.CombineLatest(
-                    self.cardReaderService.waitForInsertedCardToBeRemoved()
-                        .handleEvents(receiveOutput: {
-                            onCardReaderMessage(.cardRemovedAfterClientSidePaymentCapture)
-                        })
-                        .map { intent },
-                    self.captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: intent)
-                )
+        paymentCancellable = handlePaymentEvents(from: cardReaderService.capturePayment(parameters),
+                                                 readerEventsSubscription: readerEventsSubscription,
+                                                 siteID: siteID,
+                                                 orderID: orderID,
+                                                 onCardReaderMessage: onCardReaderMessage,
+                                                 onProcessingCompletion: onProcessingCompletion,
+                                                 onCompletion: onCompletion)
+    }
+
+    private func handlePaymentEvents(from paymentEventPublisher: AnyPublisher<PaymentIntent, Error>,
+                                     readerEventsSubscription: AnyCancellable,
+                                     siteID: Int64,
+                                     orderID: Int64,
+                                     onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                                     onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                                     onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) -> AnyCancellable? {
+        return paymentEventPublisher.handleEvents(receiveOutput: { intent in
+            onProcessingCompletion(intent)
+        })
+        .flatMap { intent in
+            Publishers.CombineLatest(
+                self.cardReaderService.waitForInsertedCardToBeRemoved()
+                    .handleEvents(receiveOutput: {
+                        onCardReaderMessage(.cardRemovedAfterClientSidePaymentCapture)
+                    })
+                    .map { intent },
+                self.captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: intent)
+            )
+        }
+        .sink { completion in
+            readerEventsSubscription.cancel()
+            switch completion {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            default:
+                break
             }
-            .sink { completion in
-                readerEventsSubscription.cancel()
-                switch completion {
-                case .failure(let error):
-                    onCompletion(.failure(error))
-                default:
-                    break
-                }
-            } receiveValue: { intent, captureOrderPaymentResult in
-                switch captureOrderPaymentResult {
-                case .success:
-                    onCompletion(.success(intent))
-                case .failure(let error):
-                    onCompletion(.failure(error))
-                }
+        } receiveValue: { intent, captureOrderPaymentResult in
+            switch captureOrderPaymentResult {
+            case .success:
+                onCompletion(.success(intent))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
+        }
+    }
+
+    func retryActivePayment(siteID: Int64,
+                            orderID: Int64,
+                            onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                            onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                            onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
+        let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
+            onCardReaderMessage(event)
+        }
+
+        paymentCancellable = handlePaymentEvents(from: cardReaderService.retryActivePaymentIntent(),
+                                                 readerEventsSubscription: readerEventsSubscription,
+                                                 siteID: siteID,
+                                                 orderID: orderID,
+                                                 onCardReaderMessage: onCardReaderMessage,
+                                                 onProcessingCompletion: onProcessingCompletion,
+                                                 onCompletion: onCompletion)
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {

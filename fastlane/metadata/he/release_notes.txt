@@ -1,1 +1,1 @@
-Did you know that you can create and use discount coupons in the app? כדאי לנסות! This release includes a fix that ensures coupons can be created on all devices. תודה שבחרת ב-WooCommerce Payments.
+שמחים להכריז על עדכונים חדשים באפליקציה של WooCommerce! מעכשיו אפשר ליצור או לערוך בקלות סוגי מינויים! בנוסף, הכנסנו שיפורים בטופס ההזמנה כדי להבטיח הוספה/עדכון נכונים של חבילות מוצרים כאשר מדובר בפריטים עם וריאציות – אופציונליים וללא בחירה. ועוד: שינינו את פריסת לוח הבקרה כדי לייעל את הניווט. מעכשיו המקטע Blaze מוצב במיקום נוח, תחת 'נתונים סטטיסטיים'. שימוש נעים בחוויה המשופרת!

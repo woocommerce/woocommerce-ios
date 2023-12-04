@@ -1,7 +1,8 @@
 import SwiftUI
+import WooFoundation
 
 struct InPersonPaymentsCountryNotSupportedStripe: View {
-    let countryCode: String
+    let countryCode: CountryCode
     let analyticReason: String
 
     var body: some View {
@@ -19,8 +20,8 @@ struct InPersonPaymentsCountryNotSupportedStripe: View {
     }
 
     var title: String {
-        guard let countryName = Locale.current.localizedString(forRegionCode: countryCode) else {
-            DDLogError("In-Person Payments unsupported in country code \(countryCode), which can't be localized")
+        guard let countryName = Locale.current.localizedString(forRegionCode: countryCode.rawValue) else {
+            DDLogError("In-Person Payments unsupported in country code \(countryCode.rawValue), which can't be localized")
             return Localization.titleUnknownCountry
         }
         return String(format: Localization.title, countryName)
@@ -47,8 +48,8 @@ private enum Localization {
 struct InPersonPaymentsCountryNotSupportedStripe_Previews: PreviewProvider {
     static var previews: some View {
         // Valid country code
-        InPersonPaymentsCountryNotSupportedStripe(countryCode: "ES", analyticReason: "")
+        InPersonPaymentsCountryNotSupportedStripe(countryCode: .ES, analyticReason: "")
         // Invalid country code
-        InPersonPaymentsCountryNotSupportedStripe(countryCode: "OO", analyticReason: "")
+        InPersonPaymentsCountryNotSupportedStripe(countryCode: .unknown, analyticReason: "")
     }
 }

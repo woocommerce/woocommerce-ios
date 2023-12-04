@@ -95,16 +95,10 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
-    /// URL of the default store.
+    /// Unique WooCommerce Store UUID.
+    /// Do not confuse with `defaultStoreID` which is in fact the WPCom `siteID`.
     ///
-    var defaultStoreURL: String? {
-        switch defaultCredentials {
-        case .none:
-            return nil
-        case .some(let wrapped):
-            return wrapped.siteAddress
-        }
-    }
+    var defaultStoreUUID: String?
 
     /// Roles for the default Store Site.
     ///
@@ -166,6 +160,7 @@ final class SessionManager: SessionManagerProtocol {
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
+        defaultStoreUUID = nil
         defaultSite = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
@@ -175,6 +170,9 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         defaults[.storeProfilerAnswers] = nil
+        defaults[.aiPromptTone] = nil
+        defaults[.hasDisplayedTipAfterBlazeCampaignCreation] = nil
+        defaults[.hasDismissedBlazeSectionOnMyStore] = nil
     }
 
     /// Deletes application password

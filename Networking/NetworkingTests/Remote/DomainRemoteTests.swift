@@ -37,7 +37,7 @@ final class DomainRemoteTests: XCTestCase {
         // Given
         let remote = DomainRemote(network: network)
 
-        await assertThrowsError({_ = try await remote.loadFreeDomainSuggestions(query: "domain")}, errorAssert: { ($0 as? NetworkError) == .notFound })
+        await assertThrowsError({_ = try await remote.loadFreeDomainSuggestions(query: "domain")}, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `loadPaidDomainSuggestions`
@@ -62,7 +62,7 @@ final class DomainRemoteTests: XCTestCase {
         // Given
         let remote = DomainRemote(network: network)
 
-        await assertThrowsError({_ = try await remote.loadPaidDomainSuggestions(query: "domain")}, errorAssert: { ($0 as? NetworkError) == .notFound })
+        await assertThrowsError({_ = try await remote.loadPaidDomainSuggestions(query: "domain")}, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `loadDomainProducts`
@@ -88,7 +88,7 @@ final class DomainRemoteTests: XCTestCase {
         // Given
         let remote = DomainRemote(network: network)
 
-        await assertThrowsError({_ = try await remote.loadDomainProducts()}, errorAssert: { ($0 as? NetworkError) == .notFound })
+        await assertThrowsError({_ = try await remote.loadDomainProducts()}, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `loadDomains`
@@ -116,7 +116,7 @@ final class DomainRemoteTests: XCTestCase {
         // Given
         let remote = DomainRemote(network: network)
 
-        await assertThrowsError({_ = try await remote.loadDomains(siteID: 23)}, errorAssert: { ($0 as? NetworkError) == .notFound })
+        await assertThrowsError({_ = try await remote.loadDomains(siteID: 23)}, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `loadDomainContactInfo`
@@ -147,7 +147,7 @@ final class DomainRemoteTests: XCTestCase {
         // Given
         let remote = DomainRemote(network: network)
 
-        await assertThrowsError({ _ = try await remote.loadDomainContactInfo() }, errorAssert: { ($0 as? NetworkError) == .notFound })
+        await assertThrowsError({ _ = try await remote.loadDomainContactInfo() }, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `validateDomainContactInfo`
@@ -185,6 +185,6 @@ final class DomainRemoteTests: XCTestCase {
         let remote = DomainRemote(network: network)
 
         await assertThrowsError({_ = try await remote.validate(domainContactInfo: .fake(), domain: "")},
-                                errorAssert: { ($0 as? NetworkError) == .notFound })
+                                errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 }

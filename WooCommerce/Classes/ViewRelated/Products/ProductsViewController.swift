@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import WordPressUI
 import Yosemite
 import Combine
@@ -19,6 +20,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
+
+    private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
                                                                                                 cellClass: ProductsTabProductTableViewCell.self,
@@ -95,10 +98,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var topBannerView: TopBannerView?
 
-    /// Hosting controller for the banner to highlight the Blaze feature.
-    /// 
-    private var blazeBannerHostingController: BlazeBannerHostingController?
-
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
@@ -162,7 +161,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                 resultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
-                                                  productType: filters.productType)
+                                                  productType: filters.promotableProductType?.productType)
 
                 /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
                 tableView.reloadData()
@@ -226,7 +225,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureStorePlanBannerPresenter()
         registerTableViewCells()
 
-        observeBlazeBannerVisibility()
         showTopBannerViewIfNeeded()
         syncProductsSettings()
     }
@@ -281,7 +279,38 @@ private extension ProductsViewController {
     }
 
     @objc func scanProducts() {
-        // TODO-2407: scan barcodes for products
+        ServiceLocator.analytics.track(.productListProductBarcodeScanningTapped)
+
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                                                      onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            guard let self = self else { return }
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
+
+            self.navigationItem.configureLeftBarButtonItemAsLoader()
+
+            Task {
+                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+
+                do {
+                    let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
+                    self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
+                                                                                          siteID: self.viewModel.siteID)),
+                                 animated: true)
+                } catch {
+                    // TODO: Show error notices
+                }
+            }
+
+        }, onPermissionsDenied: {
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
+                                                                                                           reason: .cameraAccessNotPermitted))
+        })
+        barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
+        productSKUBarcodeScannerCoordinator.start()
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {
@@ -505,31 +534,17 @@ private extension ProductsViewController {
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
 
+        configureNavigationBarLeftButtonItems()
         configureNavigationBarRightButtonItems()
+    }
+
+    func configureNavigationBarLeftButtonItems() {
+        configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
     }
 
     func configureNavigationBarRightButtonItems() {
         var rightBarButtonItems = [UIBarButtonItem]()
         rightBarButtonItems.append(addProductButton)
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) {
-            let buttonItem: UIBarButtonItem = {
-                let button = UIBarButtonItem(image: .scanImage,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(scanProducts))
-                button.accessibilityTraits = .button
-                button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
-                button.accessibilityHint = NSLocalizedString(
-                    "Scans barcodes that are associated with a product SKU for stock management.",
-                    comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
-                )
-                button.accessibilityIdentifier = "product-scan-button"
-
-                return button
-            }()
-            rightBarButtonItems.append(buttonItem)
-        }
 
         let searchItem: UIBarButtonItem = {
             let button = UIBarButtonItem(image: .searchBarButtonItemImage,
@@ -561,7 +576,7 @@ private extension ProductsViewController {
         }()
         rightBarButtonItems.append(bulkEditItem)
 
-        navigationItem.leftBarButtonItem = nil
+
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }
 
@@ -730,8 +745,6 @@ private extension ProductsViewController {
         if let error = dataLoadingError {
             requestAndShowErrorTopBannerView(for: error)
         }
-
-        updateBlazeBannerVisibility()
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
@@ -763,7 +776,7 @@ private extension ProductsViewController {
                 self?.tableView.updateHeaderHeight()
             },
             onTroubleshootButtonPressed: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
             },
@@ -795,7 +808,7 @@ private extension ProductsViewController {
         let predicate = NSPredicate.createProductPredicate(siteID: siteID,
                                                            stockStatus: filters.stockStatus,
                                                            productStatus: filters.productStatus,
-                                                           productType: filters.productType)
+                                                           productType: filters.promotableProductType?.productType)
 
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
@@ -834,7 +847,6 @@ private extension ProductsViewController {
     func reloadTableAndView() {
         showOrHideToolbar()
         addOrRemoveOverlay()
-        updateBlazeBannerVisibility()
         tableView.reloadData()
     }
 
@@ -861,59 +873,6 @@ private extension ProductsViewController {
                 self?.syncingCoordinator.resynchronize()
             }
         }
-    }
-
-    func observeBlazeBannerVisibility() {
-        viewModel.$shouldShowBlazeBanner
-            .removeDuplicates()
-            .combineLatest($dataLoadingError)
-            .sink { [weak self] shouldShow, loadingError in
-                guard let self else { return }
-                if shouldShow, loadingError == nil {
-                    self.showBlazeBanner()
-                } else {
-                    self.hideBlazeBanner()
-                }
-            }
-            .store(in: &subscriptions)
-    }
-
-    func updateBlazeBannerVisibility() {
-        Task { @MainActor in
-            await viewModel.updateBlazeBannerVisibility()
-        }
-    }
-
-    func showBlazeBanner() {
-        guard blazeBannerHostingController == nil else {
-            return
-        }
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return
-        }
-        let hostingController = BlazeBannerHostingController(site: site, entryPoint: .products, containerViewController: self, dismissHandler: { [weak self] in
-            self?.viewModel.hideBlazeBanner()
-        })
-        guard let bannerView = hostingController.view else {
-            return
-        }
-        bannerView.translatesAutoresizingMaskIntoConstraints = false
-        topBannerContainerView.updateSubview(bannerView)
-        updateTableHeaderViewHeight()
-        addChild(hostingController)
-        hostingController.didMove(toParent: self)
-        blazeBannerHostingController = hostingController
-    }
-
-    func hideBlazeBanner() {
-        guard let blazeBannerHostingController,
-              blazeBannerHostingController.parent == self else { return }
-
-        blazeBannerHostingController.willMove(toParent: nil)
-        blazeBannerHostingController.view.removeFromSuperview()
-        blazeBannerHostingController.removeFromParent()
-        self.blazeBannerHostingController = nil
-        updateTableHeaderViewHeight()
     }
 }
 
@@ -1197,6 +1156,32 @@ private extension ProductsViewController {
         emptyStateViewController.removeFromParent()
         self.emptyStateViewController = nil
     }
+
+    func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
+              UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            navigationItem.leftBarButtonItem = nil
+            return
+        }
+
+        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+    }
+
+    func createAddOrderByProductScanningButtonItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .scanImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(scanProducts))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
+        button.accessibilityHint = NSLocalizedString(
+            "Scans barcodes that are associated with a product SKU for stock management.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
+        )
+        button.accessibilityIdentifier = "product-scan-button"
+
+        return button
+    }
 }
 
 // MARK: - Sync'ing Helpers
@@ -1215,7 +1200,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                  pageSize: pageSize,
                                  stockStatus: filters.stockStatus,
                                  productStatus: filters.productStatus,
-                                 productType: filters.productType,
+                                 productType: filters.promotableProductType?.productType,
                                  productCategory: filters.productCategory,
                                  sortOrder: sortOrder) { [weak self] result in
                                     guard let self = self else {
@@ -1228,7 +1213,12 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                         DDLogError("⛔️ Error synchronizing products: \(error)")
                                         self.dataLoadingError = error
                                     case .success:
-                                        ServiceLocator.analytics.track(.productListLoaded)
+                                        ServiceLocator.analytics.track(
+                                            event: .ProductsList.productListLoaded(
+                                                isEligibleForSubscriptions:
+                                                    viewModel.isEligibleForSubscriptions
+                                            )
+                                        )
                                     }
 
                                     self.transitionToResultsUpdatedState()
@@ -1246,7 +1236,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                                               sort: sort?.rawValue,
                                                               stockStatusFilter: filters.stockStatus,
                                                               productStatusFilter: filters.productStatus,
-                                                              productTypeFilter: filters.productType,
+                                                              productTypeFilter: filters.promotableProductType?.productType,
                                                               productCategoryFilter: filters.productCategory) { (error) in
         }
         ServiceLocator.stores.dispatch(action)
@@ -1263,9 +1253,10 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                         self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
                     }
 
+                    let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
                     self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
                                                                        productStatus: settings.productStatusFilter,
-                                                                       productType: settings.productTypeFilter,
+                                                                       promotableProductType: promotableProductType,
                                                                        productCategory: settings.productCategoryFilter,
                                                                        numberOfActiveFilters: settings.numberOfActiveFilters())
 

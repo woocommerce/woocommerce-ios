@@ -26,7 +26,7 @@ public enum CardReaderServiceError: Error {
 
     /// Error thrown when the order payment fails to be captured with a known payment method.
     /// The payment method is currently used for analytics.
-    case paymentCaptureWithPaymentMethod(underlyingError: Error, paymentMethod: PaymentMethod)
+    case paymentCaptureWithPaymentMethod(underlyingError: UnderlyingError, paymentMethod: PaymentMethod)
 
     /// Error thrown while cancelling a payment
     case paymentCancellation(underlyingError: UnderlyingError = .internalServiceError)
@@ -45,6 +45,18 @@ public enum CardReaderServiceError: Error {
 
     /// The user has denied the app permission to use Bluetooth
     case bluetoothDenied
+
+    case retryNotPossibleNoActivePayment
+
+    case retryNotPossibleActivePaymentCancelled
+
+    case retryNotPossibleActivePaymentSucceeded
+
+    case retryNotPossibleProcessingInProgress
+
+    case retryNotPossibleRequiresAction
+
+    case retryNotPossibleUnknownCause
 }
 
 extension CardReaderServiceError: LocalizedError {
@@ -63,12 +75,25 @@ extension CardReaderServiceError: LocalizedError {
                 .softwareUpdate(let underlyingError, _):
             return underlyingError.errorDescription
         case .paymentCaptureWithPaymentMethod(underlyingError: let underlyingError, paymentMethod: _):
-            return (underlyingError as? UnderlyingError)?.errorDescription ?? underlyingError.localizedDescription
+            return underlyingError.errorDescription ?? underlyingError.localizedDescription
         case .bluetoothDenied:
             return NSLocalizedString(
                 "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",
                 comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
             )
+        case .retryNotPossibleNoActivePayment,
+                .retryNotPossibleActivePaymentCancelled,
+                .retryNotPossibleProcessingInProgress,
+                .retryNotPossibleRequiresAction,
+                .retryNotPossibleUnknownCause:
+            return NSLocalizedString(
+                "We were unable to retry the payment – please start again.",
+                comment: "Explanation in the alert presented when a retry of a payment fails"
+            )
+        case .retryNotPossibleActivePaymentSucceeded:
+            return NSLocalizedString(
+                "This payment has already been completed – please check the order details.",
+                comment: "Explanation in the alert shown when a retry fails because the payment already completed")
         }
     }
 }

@@ -26,6 +26,7 @@ public enum CardPresentPaymentAction: Action {
     case checkDeviceSupport(siteID: Int64,
                             cardReaderType: CardReaderType,
                             discoveryMethod: CardReaderDiscoveryMethod,
+                            minimumOperatingSystemVersionOverride: OperatingSystemVersion?,
                             onCompletion: (Bool) -> Void)
 
     /// Start the Card Reader discovery process.
@@ -64,6 +65,12 @@ public enum CardPresentPaymentAction: Action {
 
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
+
+    case retryPayment(siteID: Int64,
+                      orderID: Int64,
+                      onCardReaderMessage: (CardReaderEvent) -> Void,
+                      onProcessingCompletion: (PaymentIntent) -> Void,
+                      onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
     /// Refund payment of an order, client side. Only for use on Interac payments
     ///

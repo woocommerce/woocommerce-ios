@@ -110,7 +110,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         // Given
         let siteURL = "https://test.com/"
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
-        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout())
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
@@ -130,14 +130,14 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
                 exp.fulfill()
             }
         }
-        await waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        await fulfillment(of: [exp], timeout: Constants.expectationTimeout)
     }
 
     func test_shouldRetry_returns_true_for_REST_request() throws {
         // Given
         let siteURL = "https://test.com/"
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
-        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout())
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
@@ -153,7 +153,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         // Given
         let siteURL = "https://test.com/"
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: siteURL)
-        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout())
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: false)
 
@@ -192,10 +192,10 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
             mockApplicationPassword = mockGeneratedPassword
             return mockGeneratedPassword
         }
-        throw mockGenerationError ?? NetworkError.notFound
+        throw mockGenerationError ?? NetworkError.notFound()
     }
 
     func deletePassword() async throws {
-        throw mockDeletionError ?? NetworkError.notFound
+        throw mockDeletionError ?? NetworkError.notFound()
     }
 }

@@ -48,20 +48,25 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
         }
     }
 
-    let url: URL
+    let viewModel: AuthenticatedWebViewModel
 
-    /// Optional URL or part of URL to trigger exit
-    ///
-    var urlToTriggerExit: String?
+    init(isPresented: Binding<Bool>,
+             viewModel: AuthenticatedWebViewModel) {
+            self._isPresented = isPresented
+            self.viewModel = viewModel
+        }
 
-    /// Callback that will be triggered if the destination url containts the `urlToTriggerExit`
-    ///
-    var exitTrigger: (() -> Void)?
-
-    func makeUIViewController(context: Context) -> AuthenticatedWebViewController {
-        let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
+    init(isPresented: Binding<Bool>,
+             url: URL,
+             urlToTriggerExit: String? = nil,
+             exitTrigger: (() -> Void)? = nil) {
+            self._isPresented = isPresented
+            viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
                                                          urlToTriggerExit: urlToTriggerExit,
                                                          exitTrigger: exitTrigger)
+        }
+
+    func makeUIViewController(context: Context) -> AuthenticatedWebViewController {
         return AuthenticatedWebViewController(viewModel: viewModel)
     }
 
@@ -74,7 +79,7 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
 struct AuthenticatedWebView_Previews: PreviewProvider {
     static var previews: some View {
         AuthenticatedWebView(isPresented: .constant(true),
-                             url: URL(string: "https://www.woocommerce.com")!)
+                             url: URL(string: "https://www.woo.com")!)
     }
 }
 #endif

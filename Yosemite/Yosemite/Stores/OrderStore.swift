@@ -62,14 +62,14 @@ public class OrderStore: Store {
         case .updateOrderStatus(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
 
-        case let .updateOrder(siteID, order, fields, onCompletion):
-            updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
+        case let .updateOrder(siteID, order, giftCard, fields, onCompletion):
+            updateOrder(siteID: siteID, order: order, giftCard: giftCard, fields: fields, onCompletion: onCompletion)
         case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
             updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
             createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
-        case let .createOrder(siteID, order, onCompletion):
-            createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
+        case let .createOrder(siteID, order, giftCard, onCompletion):
+            createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
 
         case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, taxable, orderNote, email, onCompletion):
             updateSimplePaymentsOrder(siteID: siteID,
@@ -333,7 +333,7 @@ private extension OrderStore {
                                    taxable: Bool,
                                    onCompletion: @escaping (Result<Order, Error>) -> Void) {
         let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
-        remote.createOrder(siteID: siteID, order: order, fields: [.status, .feeLines]) { [weak self] result in
+        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines]) { [weak self] result in
             switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored
@@ -383,12 +383,12 @@ private extension OrderStore {
         let updatedOrder = originalOrder.copy(orderID: orderID, customerNote: orderNote, billingAddress: newBillingAddress, fees: [newFee])
         let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees, .status]
 
-        updateOrder(siteID: siteID, order: updatedOrder, fields: updateFields, onCompletion: onCompletion)
+        updateOrder(siteID: siteID, order: updatedOrder, giftCard: nil, fields: updateFields, onCompletion: onCompletion)
     }
 
     /// Creates a manual order with the provided order details.
     ///
-    func createOrder(siteID: Int64, order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func createOrder(siteID: Int64, order: Order, giftCard: String?, onCompletion: @escaping (Result<Order, Error>) -> Void) {
         let fields: [OrdersRemote.CreateOrderField] = [.status,
                                                        .items,
                                                        .billingAddress,
@@ -399,19 +399,9 @@ private extension OrderStore {
                                                        .customerNote]
         remote.createOrder(siteID: siteID,
                            order: order,
+                           giftCard: giftCard,
                            fields: fields) { [weak self] result in
-            switch result {
-            case .success(let order):
-                // Auto-draft orders are temporary and should not be stored
-                guard order.status != .autoDraft else {
-                    return onCompletion(result)
-                }
-                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
-                    onCompletion(result)
-                })
-            case .failure:
-                onCompletion(result)
-            }
+            self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
         }
     }
 
@@ -437,20 +427,36 @@ private extension OrderStore {
 
     /// Updates the specified fields from an order.
     ///
-    func updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
-            switch result {
-            case .success(let order):
-                // Auto-draft orders are temporary and should not be stored
-                guard order.status != .autoDraft else {
-                    return onCompletion(result)
-                }
-                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
-                    onCompletion(result)
-                })
-            case .failure:
-                onCompletion(result)
+    func updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        /// When an order item has a remote ID and bundle configuration, the order's line items need to be updated in the following way:
+        /// - Set the original order item with the bundle configuration quantity to 0, and remove the bundle configuration
+        /// - Create a new order item with the bundle configuration
+        /// - Remove the child order items by setting the quantity to 0
+        let itemIDsWithBundleConfiguration = order.items.filter { !$0.bundleConfiguration.isEmpty }.map { $0.itemID }
+        let items: [OrderItem] = {
+            guard fields.contains(.items) && !itemIDsWithBundleConfiguration.isEmpty else {
+                return order.items
             }
+
+            return order.items.flatMap { orderItem -> [OrderItem] in
+                // Removes the bundled item if its parent order item has bundle configuration.
+                // Excluding the order item does not work, setting its quantity to zero is required.
+                if let parentItemID = orderItem.parent, itemIDsWithBundleConfiguration.contains(parentItemID) {
+                    return [orderItem.copy(quantity: 0)]
+                }
+
+                // Returns the original order item if it doesn't have bundle configuration.
+                guard !orderItem.bundleConfiguration.isEmpty && orderItem.itemID != .zero else {
+                    return [orderItem]
+                }
+                let existingOrderItemWithBundleConfig = orderItem.copy(quantity: 0, bundleConfiguration: [])
+                let newOrderItemWithBundleConfig = orderItem.copy(itemID: 0)
+                return [existingOrderItemWithBundleConfig, newOrderItemWithBundleConfig]
+            }
+        }()
+
+        remote.updateOrder(from: siteID, order: order.copy(items: items), giftCard: giftCard, fields: fields) { [weak self] result in
+            self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
         }
     }
 
@@ -462,7 +468,7 @@ private extension OrderStore {
         // Optimistically update the stored order.
         let backupOrder = upsertStoredOrder(readOnlyOrder: order)
 
-        remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
+        remote.updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { [weak self] result in
             guard case .failure = result else {
                 onCompletion(.success(order))
                 return
@@ -653,6 +659,36 @@ private extension OrderStore {
 // MARK: - Storage: Orders
 //
 private extension OrderStore {
+    func handleCreateOrUpdateOrderResult(_ result: Result<Order, Error>, giftCard: String?, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        switch result {
+            case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+
+                if let giftCard, order.appliedGiftCards.contains(where: { $0.code == giftCard }) == false {
+                    return onCompletion(.failure(GiftCardError.notApplied))
+                }
+
+                upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure(let error):
+                if let dotcomError = error as? DotcomError,
+                   case let .unknown(code, message) = dotcomError {
+                    switch code {
+                        case "woocommerce_rest_gift_card_cannot_apply":
+                            return onCompletion(.failure(GiftCardError.cannotApply(reason: message)))
+                        case "woocommerce_rest_gift_card_cannot_parse_data":
+                            return onCompletion(.failure(GiftCardError.invalid(reason: message)))
+                        default:
+                            return onCompletion(result)
+                    }
+                }
+                onCompletion(result)
+        }
+    }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
@@ -689,5 +725,15 @@ private extension OrderStore {
 extension OrderStore {
     enum MarkOrderAsPaidLocallyError: Error {
         case orderNotFoundInStorage
+    }
+
+    public enum GiftCardError: Error, Equatable {
+        /// When the gift card cannot be applied (e.g. the order total is 0).
+        case cannotApply(reason: String?)
+        /// When the gift card is invalid (e.g. invalid code).
+        case invalid(reason: String?)
+        /// When the input gift card code isn't included in the updated order response while the request is successful.
+        /// This can happen when the gift card has 0 balance and the order total is positive.
+        case notApplied
     }
 }

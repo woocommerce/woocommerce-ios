@@ -28,7 +28,7 @@ namespace :dependencies do
     task :install do
       puts 'Bundler not found in PATH, installing to vendor'
       ENV['GEM_HOME'] = File.join(PROJECT_DIR, 'vendor', 'gems')
-      ENV['PATH'] = File.join(PROJECT_DIR, 'vendor', 'gems', 'bin') + ":#{ENV['PATH']}"
+      ENV['PATH'] = File.join(PROJECT_DIR, 'vendor', 'gems', 'bin') + ":#{ENV.fetch('PATH', nil)}"
       sh 'gem install bundler' unless command?('bundler')
     end
     CLOBBER << 'vendor/gems'
@@ -109,7 +109,7 @@ namespace :dependencies do
             Dir.chdir(tmpdir) do
               sh "git checkout --quiet #{SWIFTLINT_VERSION}"
               sh 'git submodule --quiet update --init --recursive'
-              FileUtils.remove_entry_secure(swiftlint_path) if Dir.exist?(swiftlint_path)
+              FileUtils.rm_rf(swiftlint_path)
               FileUtils.mkdir_p(swiftlint_path)
               sh "make prefix_install PREFIX='#{swiftlint_path}'"
             end
@@ -178,7 +178,7 @@ end
 
 desc 'Run all code generation tasks'
 task :generate do
-  %w[Hardware Networking Storage Yosemite WooCommerce].each do |prefix|
+  %w[Hardware Networking Storage Yosemite WooCommerce WooFoundation].each do |prefix|
     puts "\n\nGenerating Copiable for #{prefix}..."
     puts '=' * 100
 
@@ -187,7 +187,7 @@ task :generate do
 
   puts "\n\nDONE. Generated Copiable for all projects."
 
-  %w[Hardware Networking Yosemite].each do |prefix|
+  %w[Hardware Networking Yosemite WooFoundation].each do |prefix|
     puts "\n\nGenerating Fakes for #{prefix}..."
     puts '=' * 100
 
@@ -198,12 +198,12 @@ task :generate do
 end
 
 def fold(label)
-  puts "travis_fold:start:#{label}" if is_travis?
+  puts "travis_fold:start:#{label}" if travis?
   yield
-  puts "travis_fold:end:#{label}" if is_travis?
+  puts "travis_fold:end:#{label}" if travis?
 end
 
-def is_travis?
+def travis?
   !ENV['TRAVIS'].nil?
 end
 
@@ -252,9 +252,7 @@ def xcodebuild(*build_cmds)
   cmd += " -configuration #{xcode_configuration}"
   cmd += ' '
   cmd += build_cmds.map(&:to_s).join(' ')
-  unless ENV['verbose']
-    cmd += ' | bundle exec xcpretty -f `bundle exec xcpretty-travis-formatter` && exit ${PIPESTATUS[0]}'
-  end
+  cmd += ' | bundle exec xcpretty -f `bundle exec xcpretty-travis-formatter` && exit ${PIPESTATUS[0]}' unless ENV['verbose']
   sh(cmd)
 end
 
@@ -281,7 +279,7 @@ def check_dependencies_hook
   ENV['DRY_RUN'] = '1'
   begin
     Rake::Task['dependencies'].invoke
-  rescue Exception => e
+  rescue StandardError => e
     puts e.message
     exit 1
   end

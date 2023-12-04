@@ -104,7 +104,7 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
 private extension StoreOnboardingPaymentsSetupCoordinator {
     enum Localization {
         static let wcPayWebviewTitle = NSLocalizedString(
-            "WooCommerce Payments",
+            "WooPayments",
             comment: "Title of the webview for WCPay setup from onboarding."
         )
         static let paymentsWebviewTitle = NSLocalizedString(

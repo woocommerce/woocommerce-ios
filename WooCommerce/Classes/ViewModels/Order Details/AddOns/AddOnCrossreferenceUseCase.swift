@@ -1,6 +1,9 @@
 import Foundation
 import Yosemite
 
+/// For stores with Product Add-Ons plugin version 5.0.2+, add-ons are retrieved from `_pao_ids` metadata field in the order item.
+/// This cross-reference implementation is for backward compatibility and we can consider removing this when the majority of the stores have
+/// the plugin version that supports the `_pao_ids` metadata.
 /// Use case to cross-reference an order's items's attributes with a product's addOns list and with the site's global add-ons.
 /// To figure out which attributes of the order are real add-ons.
 ///
@@ -26,10 +29,12 @@ struct AddOnCrossreferenceUseCase {
 
     /// Returns the attributes of an `orderItem` that are `addOns` by cross-referencing the attribute name with the add-on name.
     ///
-    func addOnsAttributes() -> [OrderItemAttribute] {
+    func addOns() -> [OrderItemProductAddOn] {
         orderItemAttributes.filter { attribute in
             let addOnName = extractAddOnName(from: attribute)
             return addOnNameExistsInProductAddOns(addOnName) || addOnNameExistsInGlobalAddOns(addOnName)
+        }.map {
+            OrderItemProductAddOn(addOnID: nil, key: $0.name, value: $0.value)
         }
     }
 

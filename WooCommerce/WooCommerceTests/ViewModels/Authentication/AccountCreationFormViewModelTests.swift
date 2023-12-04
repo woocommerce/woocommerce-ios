@@ -17,7 +17,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics)
+        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, onExistingEmail: { _ in }, completionHandler: {})
     }
 
     override func tearDown() {
@@ -79,16 +79,11 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         mockAccountCreationSuccess(result: .init(authToken: "token", username: "username"))
         XCTAssertFalse(stores.isAuthenticated)
 
-        do {
-            // When
-            try await viewModel.createAccount()
+        // When
+        await viewModel.createAccount()
 
-            // Then
-            XCTAssertTrue(stores.isAuthenticated)
-
-        } catch {
-            XCTFail("Function should not throw an error")
-        }
+        // Then
+        XCTAssertTrue(stores.isAuthenticated)
     }
 
     func test_createAccount_password_failure_sets_passwordErrorMessage() async {
@@ -97,14 +92,13 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(stores.isAuthenticated)
         XCTAssertNil(viewModel.passwordErrorMessage)
 
-        do {
-            try await viewModel.createAccount()
+        // When
+        viewModel.transitionToPasswordField()
+        await viewModel.createAccount()
 
-            XCTFail("Function should have thrown an error")
-        } catch {
-            XCTAssertFalse(stores.isAuthenticated)
-            XCTAssertEqual(viewModel.passwordErrorMessage, "too complex to guess")
-        }
+        // Then
+        XCTAssertFalse(stores.isAuthenticated)
+        XCTAssertEqual(viewModel.passwordErrorMessage, "too complex to guess")
     }
 
     func test_createAccount_invalidEmail_failure_sets_emailErrorMessage() async {
@@ -113,62 +107,36 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.emailErrorMessage)
 
         // When
-        do {
-            try await viewModel.createAccount()
+        await viewModel.createAccount()
 
-            XCTFail("Function should have thrown an error")
-        } catch {
-            // Then
-            XCTAssertNotNil(viewModel.emailErrorMessage)
-        }
+        // Then
+        XCTAssertNotNil(viewModel.emailErrorMessage)
     }
 
-    func test_emailSubmissionHandler_is_triggered_when_account_creation_fails_with_emailExists() async {
+    func test_shouldTransitionToPasswordField_is_updated_to_true_when_account_creation_fails_with_invalidPassword() async {
         // Given
-        var emailExists = false
-        var submittedEmail: String?
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { email, exists in
-            emailExists = exists
-            submittedEmail = email
-        })
-        mockAccountCreationFailure(error: .emailExists)
-        viewModel.email = "test@example.com"
-
-        // When
-        do {
-            try await viewModel.createAccount()
-
-            XCTFail("Function should have thrown an error")
-        } catch {
-            // Then
-            XCTAssertNil(viewModel.emailErrorMessage)
-            XCTAssertTrue(emailExists)
-            XCTAssertEqual(submittedEmail, "test@example.com")
-        }
-    }
-
-    func test_emailSubmissionHandler_is_triggered_when_account_creation_fails_with_invalidPassword() async {
-        // Given
-        var emailExists = false
-        var submittedEmail: String?
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { email, exists in
-            emailExists = exists
-            submittedEmail = email
-        })
         mockAccountCreationFailure(error: .invalidPassword(message: ""))
         viewModel.email = "test@example.com"
+        XCTAssertFalse(viewModel.shouldTransitionToPasswordField)
 
         // When
-        do {
-            try await viewModel.createAccount()
+        await viewModel.createAccount()
 
-            XCTFail("Function should have thrown an error")
-        } catch {
-            // Then
-            XCTAssertNil(viewModel.emailErrorMessage)
-            XCTAssertFalse(emailExists)
-            XCTAssertEqual(submittedEmail, "test@example.com")
-        }
+        // Then
+        XCTAssertNil(viewModel.emailErrorMessage)
+        XCTAssertTrue(viewModel.shouldTransitionToPasswordField)
+    }
+
+    func test_transitionToPasswordField_updates_currentField_to_password() {
+        // Given
+        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, onExistingEmail: { _ in }, completionHandler: {})
+        XCTAssertEqual(viewModel.currentField, .email)
+
+        // When
+        viewModel.transitionToPasswordField()
+
+        // Then
+        XCTAssertEqual(viewModel.currentField, .password)
     }
 
     func test_passwordErrorMessage_is_cleared_after_changing_password_input() async {
@@ -176,7 +144,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         mockAccountCreationFailure(error: .invalidPassword(message: "too complex to guess"))
 
         // When
-        try? await viewModel.createAccount()
+        await viewModel.createAccount()
         viewModel.password = "simple password"
 
         // Then
@@ -190,7 +158,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         mockAccountCreationFailure(error: .emailExists)
 
         // When
-        try? await viewModel.createAccount()
+        await viewModel.createAccount()
         viewModel.email = "real@woo.com"
 
         // Then
@@ -206,7 +174,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         mockAccountCreationSuccess(result: .init(authToken: "", username: ""))
 
         // When
-        try? await viewModel.createAccount()
+        await viewModel.createAccount()
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_success"])
@@ -217,33 +185,32 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         mockAccountCreationFailure(error: .emailExists)
 
         // When
-        try? await viewModel.createAccount()
+        await viewModel.createAccount()
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_failed"])
     }
 
-    func test_createAccount_failure_with_invalid_password_is_not_tracked_if_emailSubmissionHandler_is_available() async {
+    func test_createAccount_failure_with_invalid_password_is_not_tracked_if_currentField_is_email() async {
         // Given
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { _, _ in })
         mockAccountCreationFailure(error: .invalidPassword(message: nil))
         viewModel.email = "test@example.com"
 
         // When
-        try? await viewModel.createAccount()
+        await viewModel.createAccount()
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted"])
     }
 
-    func test_createAccount_failure_with_invalid_password_is_tracked_if_emailSubmissionHandler_is_not_available() async {
+    func test_createAccount_failure_with_invalid_password_is_tracked_if_currentField_is_password() async {
         // Given
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics)
         mockAccountCreationFailure(error: .invalidPassword(message: nil))
         viewModel.email = "test@example.com"
 
         // When
-        try? await viewModel.createAccount()
+        viewModel.transitionToPasswordField()
+        await viewModel.createAccount()
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_failed"])

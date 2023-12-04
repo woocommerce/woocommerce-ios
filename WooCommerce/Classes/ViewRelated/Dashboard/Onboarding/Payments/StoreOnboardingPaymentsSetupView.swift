@@ -149,7 +149,7 @@ private extension StoreOnboardingPaymentsSetupView.Task {
         switch self {
         case .wcPay:
             return NSLocalizedString(
-                "WooCommerce Payments",
+                "WooPayments",
                 comment: "Highlighted header text on the store onboarding WCPay setup screen."
             )
         case .payments:
@@ -178,7 +178,7 @@ private extension StoreOnboardingPaymentsSetupView.Task {
         switch self {
         case .wcPay:
             return NSLocalizedString(
-                "By using WooCommerce Payments you agree to be bound by our " +
+                "By using WooPayments you agree to be bound by our " +
                 "[Terms of Service](https://wordpress.com/tos) and acknowledge that " +
                 "you have read our [Privacy Policy](https://automattic.com/privacy/).",
                 comment: "Details on the store onboarding WCPay setup screen."
@@ -192,17 +192,12 @@ private extension StoreOnboardingPaymentsSetupView.Task {
     }
 
     var learnMoreURL: URL {
-        let urlString: String
         switch self {
         case .wcPay:
-            urlString = "https://woocommerce.com/document/woocommerce-payments/startup-guide"
+            return WooConstants.URLs.wooPaymentsStartupGuide.asURL()
         case .payments:
-            urlString = "https://woocommerce.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
+            return WooConstants.URLs.wooCorePaymentOptions.asURL()
         }
-        guard let url = URL(string: urlString) else {
-            fatalError("Unexpected URL: \(urlString)")
-        }
-        return url
     }
 }
 

@@ -33,6 +33,7 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
                     url: viewModel.learnMoreURL,
                     formatText: Localization.cashOnDeliveryLearnMore,
                     tappedAnalyticEvent: viewModel.learnMoreEvent))
+            .padding(.vertical, Constants.learnMorePadding)
         }
     }
 }
@@ -40,7 +41,7 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
-            configuration: CardPresentPaymentsConfiguration(country: "US"),
+            configuration: CardPresentPaymentsConfiguration(country: .US),
             plugin: .wcPay,
             analyticReason: "",
             completion: {})
@@ -78,4 +79,5 @@ private enum Localization {
 
 private enum Constants {
     static let imageHeight: CGFloat = 140.0
+    static let learnMorePadding: CGFloat = 8
 }

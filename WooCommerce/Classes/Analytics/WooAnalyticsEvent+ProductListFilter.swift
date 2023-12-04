@@ -4,6 +4,7 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let source = "source"
             static let filters = "filters"
+            static let type = "type"
         }
 
         /// Tracked when the user taps on the button to filter products.
@@ -20,6 +21,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productFilterListShowProductsButtonTapped,
                               properties: [Key.source: source.rawValue,
                                            Key.filters: filters.analyticsDescription])
+        }
+
+        static func productFilterListExploreButtonTapped(type: PromotableProductType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productFilterListExploreButtonTapped, properties: [Key.type: type.rawValue])
         }
     }
 }

@@ -13,7 +13,8 @@ final class ProductVariationsViewModel {
     ///
     private(set) var formType: ProductFormType
 
-    init(stores: StoresManager = ServiceLocator.stores, formType: ProductFormType) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         formType: ProductFormType) {
         self.stores = stores
         self.formType = formType
     }
@@ -59,19 +60,9 @@ extension ProductVariationsViewModel {
         product.attributesForVariations.isEmpty
     }
 
-    /// Defines if screen should show the options to generate new variations.
-    ///
-    /// Generating variations is currently disabled for variable subscription products.
-    ///
-    func shouldAllowGeneration(for product: Product) -> Bool {
-        product.productType != .variableSubscription
-    }
-
     /// Defines if screen should allow bulk editing.
     ///
-    /// Bulk editing is currently disabled for variable subscription products.
-    ///
     func shouldAllowBulkEditing(for product: Product) -> Bool {
-        product.productType != .variableSubscription
+        return product.variations.isNotEmpty
     }
 }

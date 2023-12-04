@@ -8,19 +8,14 @@ AllCops:
 Metrics/BlockLength:
   Exclude:
     - fastlane/Fastfile
+    - Podfile
+    - Rakefile
 
 Metrics/MethodLength:
-  Max: 20
-
-Style/AsciiComments:
-  Exclude:
-    - fastlane/Fastfile
+  Max: 30
 
 Layout/LineLength:
-  Exclude:
-    - fastlane/Fastfile
-    - Podfile
+  Max: 180
 
-Naming/FileName:
-  Exclude:
-    - fastlane/Matchfile
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never

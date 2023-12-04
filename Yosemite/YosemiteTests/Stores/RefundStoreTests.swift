@@ -270,7 +270,7 @@ class RefundStoreTests: XCTestCase {
         refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
 
-        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", error: NetworkError.notFound())
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID,
                                                  orderID: sampleOrderID,
                                                  refundID: sampleRefundID) { (refund, error) in
@@ -491,7 +491,7 @@ class RefundStoreTests: XCTestCase {
         // Given
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(refundID: sampleRefundID), in: viewStorage)
-        network.simulateError(requestUrlSuffix: "refunds", error: NetworkError.timeout) // Relay error if remote request is made
+        network.simulateError(requestUrlSuffix: "refunds", error: NetworkError.timeout()) // Relay error if remote request is made
 
         // When
         let retrieveError: Error? = waitFor { promise in

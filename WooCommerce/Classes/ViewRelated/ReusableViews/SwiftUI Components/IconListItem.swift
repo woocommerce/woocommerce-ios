@@ -67,8 +67,10 @@ struct IconListItem: View {
             VStack(alignment: .leading, spacing: Layout.innerSpacing) {
                 Text(title)
                     .headlineStyle()
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(subtitle)
                     .secondaryBodyStyle()
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer()
         }

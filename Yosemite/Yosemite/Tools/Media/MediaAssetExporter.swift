@@ -29,6 +29,7 @@ final class MediaAssetExporter: MediaExporter {
         self.mediaDirectoryType = mediaDirectoryType
     }
 
+    @MainActor
     func export() async throws -> UploadableMedia {
         switch asset.mediaType {
             case .image:
@@ -38,6 +39,7 @@ final class MediaAssetExporter: MediaExporter {
         }
     }
 
+    @MainActor
     private func exportImage(forAsset asset: PHAsset) async throws -> UploadableMedia {
         guard asset.mediaType == .image else {
             throw AssetExportError.expectedPHAssetImageType

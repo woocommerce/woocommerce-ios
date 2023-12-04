@@ -17,7 +17,7 @@ extension MockStoreOnboardingTasksRemote: StoreOnboardingTasksRemoteProtocol {
     func loadOnboardingTasks(siteID: Int64) async throws -> [StoreOnboardingTask] {
         guard let result = loadOnboardingTasks else {
             XCTFail("Could not find result for loading onboarding tasks.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }

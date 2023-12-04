@@ -1,9 +1,108 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.5
+-----
+- [*] Payments: WooPayments merchants can swipe between currencies in the Deposit Summary on the Payments menu [https://github.com/woocommerce/woocommerce-ios/pull/11309]
+- [**] Shipping Labels: Fixed issue presenting the printing view for customs forms. [https://github.com/woocommerce/woocommerce-ios/pull/11288]
+- [*] Now, merchants can manage "One time shipping" setting for a subscription product. [https://github.com/woocommerce/woocommerce-ios/pull/11310]
+- [**] My Store: The Blaze section is now dismissible. [https://github.com/woocommerce/woocommerce-ios/pull/11308]
+- [internal] Product Subscriptions: Handle yearly Synchronise renewals case while enabling One time shipping setting. [https://github.com/woocommerce/woocommerce-ios/pull/11312]
+- [internal] Order form: Updated design for product bundles and their bundled items in order creation/editing, to more clearly show the hierarchy and bundled item prices. [https://github.com/woocommerce/woocommerce-ios/pull/11321]
+- [internal] Update Shimmer dependency to avoid high CPU and memory use crashing the app when built with Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11320]
+- [internal] Fix issue with scrolling some views when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11335]
+
+16.4
+-----
+- [internal] Adds `store_id` to track events. [https://github.com/woocommerce/woocommerce-ios/pull/11227]
+- [Internal] Payments: Updated StripeTerminal pod to 3.1.0 [https://github.com/woocommerce/woocommerce-ios/pull/11080]
+- [internal] Payments: Restored analytics for Payments Menu after SwiftUI rewrite [https://github.com/woocommerce/woocommerce-ios/pull/11262]
+- [***] Merchants can now create or edit subscription products. [https://github.com/woocommerce/woocommerce-ios/issues/11183]
+- [*] Order form: when adding/updating a bundle with an optional & non-selected variable item, any other bundled items should be added/updated properly. [https://github.com/woocommerce/woocommerce-ios/pull/11254]
+- [internal] Order form: Fix a bug where the wrong product details appeared when adding a discount to a product in an order. [https://github.com/woocommerce/woocommerce-ios/pull/11280]
+- [*] Now the Blaze section in the Dashboard (My store tab) is displayed under the Stats. Before, it was on top of the view. [https://github.com/woocommerce/woocommerce-ios/pull/11275]
+
+16.3
+-----
+- [internal] Payments Menu: rewritten in SwiftUI [https://github.com/woocommerce/woocommerce-ios/pull/11169]
+- [*] Orders: users can now calculate a custom amount based on the order total percentage. [https://github.com/woocommerce/woocommerce-ios/pull/11154]
+- [*] Orders: users can now decide whether their custom amounts are taxable or not. [https://github.com/woocommerce/woocommerce-ios/pull/11156]
+- [*] Order form: the merchant can now configure a bundle product (quantity and variation attributes of the bundled products). Testing plan: pe5pgL-3Ze-p2 [https://github.com/woocommerce/woocommerce-ios/pull/11186]
+- [internal] Updated all `woocommerce.com` URLs to use `woo.com` domain [https://github.com/woocommerce/woocommerce-ios/pull/11182]
+
+16.2
+-----
+- [**] Orders: order details show custom amounts on their own section. Other fields are re-designed towards a cleaner look. [https://github.com/woocommerce/woocommerce-ios/pull/11097]
+- [*] Add support for Universal Links in the woo.com domain [https://github.com/woocommerce/woocommerce-ios/pull/11098]
+- [*] Order form: when adding a product/variation by scanning a barcode, only the product/variation with the exact SKU should be added to the order. [https://github.com/woocommerce/woocommerce-ios/pull/11089]
+
+16.1
+-----
+- [**] Orders: order creation sections are optimised for a simpler and more intuitive flow. [https://github.com/woocommerce/woocommerce-ios/pull/11042]
+- [*] Payments: Fix Tap to Pay reconnection on foreground, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11054]
+- [*] Payments: Fix Tap to Pay reconnection on fresh launch, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11056]
+- [*] Orders: Fix a bug that shows the wrong customer screen during the order creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/11053]
+- [*] Orders: All order edit buttons render now with the pencil system image to make them consistent. [https://github.com/woocommerce/woocommerce-ios/pull/11048]
+
+16.0
+-----
+- [*] Optimized Blaze experience in My store. Improved Blaze campaign creation and list screens. [https://github.com/woocommerce/woocommerce-ios/pull/10969, https://github.com/woocommerce/woocommerce-ios/pull/10959]
+- [*] Orders: Fixed UI issue where an incorrect tooltip is displayed during Order Creation [https://github.com/woocommerce/woocommerce-ios/pull/10998]
+- [*] Orders: Fixed UI issue showing incorrect discounted total product value in certain cases [https://github.com/woocommerce/woocommerce-ios/pull/11016]
+- [*] Fix a crash on launch related to Core Data and Tracks [https://github.com/woocommerce/woocommerce-ios/pull/10994]
+- [*] Login: Fixed issue checking site info for some users. [https://github.com/woocommerce/woocommerce-ios/pull/11006]
+- [**] Orders: Users can now add custom amounts to orders. [https://github.com/woocommerce/woocommerce-ios/pull/11022]
+- [*] Payments: hide the `Set up Tap to Pay` button in About Tap to Pay when set up is complete [https://github.com/woocommerce/woocommerce-ios/pull/11025]
+
+15.9
+-----
+- [***] User can now use their stored passkeys to log in into WordPress.com [https://github.com/woocommerce/woocommerce-ios/pull/10904]
+- [***] Payments: UK-based merchants can take payments using Tap to Pay on iPhone [https://github.com/woocommerce/woocommerce-ios/pull/10957]
+- [*] App login links are now handled when the onboarding screen is shown. [https://github.com/woocommerce/woocommerce-ios/pull/10974]
+
+15.8
+-----
+- [*] Users can now navigate to other orders without leaving the Order Detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10849]
+- [*] The Set up Tap to Pay on iPhone row in the Payments menu now reflects when you've completed set up for the current device and store [https://github.com/woocommerce/woocommerce-ios/pull/10923]
+- [*] The Set up Tap to Pay on iPhone Learn More button opens more details about Tap to Pay [https://github.com/woocommerce/woocommerce-ios/pull/10934]
+- [internal] Use minimumAllowedChargeAmount, not 0.50, for the Try a Payment flow [https://github.com/woocommerce/woocommerce-ios/pull/10937]
+- [*] Changes to the Payments menu to make it clearer [https://github.com/woocommerce/woocommerce-ios/pull/10936]
+- [*] Order creation: We updated the UX by allowing direct product discounts to be added, and improved the Product Discount screen [https://github.com/woocommerce/woocommerce-ios/pull/10929]
+
+15.7
+-----
+- [*] Generate new tags/categories while creating product using AI. [https://github.com/woocommerce/woocommerce-ios/pull/10864]
+- [*] Fix: in order details where an order item is a variable product with attributes and has add-ons, the variation attributes are shown now. [https://github.com/woocommerce/woocommerce-ios/pull/10877]
+
+15.6
+-----
+- [**] Taxes in orders: Users can now store the tax rate's location to add it automatically to a new order customer's address. [https://github.com/woocommerce/woocommerce-ios/pull/10802]
+- [**] WPCOM stores and self-hosted stores with Jetpack AI plugin can now create products using AI. [https://github.com/woocommerce/woocommerce-ios/pull/10812]
+- [*] Order form: the merchant can apply a gift card to an order. [https://github.com/woocommerce/woocommerce-ios/pull/10759]
+
+15.5
+-----
+- [*] Store creation: Start store creation flow after a new WPCOM account sign up. [https://github.com/woocommerce/woocommerce-ios/pull/10729]
+- [*] Different orders with the same gift card code applied should all show the gift card info in order details now. [https://github.com/woocommerce/woocommerce-ios/pull/10719]
+- [*] Enabled product description and product sharing AI features for self-hosted sites with Jetpack AI plugin. [https://github.com/woocommerce/woocommerce-ios/pull/10747]
+- [*] Order form: the applied gift cards are shown below the coupon section. [https://github.com/woocommerce/woocommerce-ios/pull/10743]
+
+15.4
+-----
+- [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
+- [*] Taxes in orders: Add empty state design for the Tax Rate selector. [https://github.com/woocommerce/woocommerce-ios/pull/10665]
+- [*] Added protection against accidental double-charging with In-Person Payments in poor network conditions [https://github.com/woocommerce/woocommerce-ios/pull/10647]
+- [**] Improved retry handling for In-Person Payments that fail [https://github.com/woocommerce/woocommerce-ios/pull/10673]
+- [*] See more of your order by long pressing an order push notification. [https://github.com/woocommerce/woocommerce-ios/pull/10658]
+- [*] Order details: product add-ons for a line item are shown in separate lines for better readability. [https://github.com/woocommerce/woocommerce-ios/pull/10661]
+- [**] Product categories now can be deleted as part of the product editing flow. [https://github.com/woocommerce/woocommerce-ios/pull/10643]
+- [**] Product categories can now be updated as part of the product editing flow. [https://github.com/woocommerce/woocommerce-ios/pull/10648]
+
 15.3
 -----
 - [internal] Add `site_url` to Tracks events [https://github.com/woocommerce/woocommerce-ios/pull/10610]
 - [Internal] Some internal changes were made to the image upload feature to support image processing in the app, no app changes are expected. [https://github.com/woocommerce/woocommerce-ios/pull/10631]
+- [**] Taxes in orders: Users can now select the tax rate's location to add it to the order customer's address. [https://github.com/woocommerce/woocommerce-ios/pull/10651]
+- [*] Automatically show the media selector sheet on the product images screen when there are no pre-existing images. [https://github.com/woocommerce/woocommerce-ios/pull/10644]
 
 15.2
 -----

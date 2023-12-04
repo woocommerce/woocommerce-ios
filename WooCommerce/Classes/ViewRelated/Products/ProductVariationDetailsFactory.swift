@@ -37,6 +37,7 @@ private extension ProductVariationDetailsFactory {
                                         productImageUploader: ProductImageUploaderProtocol) -> UIViewController {
         let vc: UIViewController
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
+                                                                  parentProductType: parentProduct.productType,
                                                                   allAttributes: parentProduct.attributes,
                                                                   parentProductSKU: parentProduct.sku,
                                                                   parentProductDisablesQuantityRules: parentProduct.combineVariationQuantities)

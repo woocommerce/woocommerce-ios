@@ -3,13 +3,14 @@ import SwiftUI
 struct InPersonPaymentsLearnMore: View {
     @Environment(\.customOpenURL) var customOpenURL
 
-    private let viewModel: LearnMoreViewModel
+    @ObservedObject private var viewModel: LearnMoreViewModel
+    private let showInfoIcon: Bool
 
-    init(viewModel: LearnMoreViewModel = LearnMoreViewModel()) {
+    init(viewModel: LearnMoreViewModel = LearnMoreViewModel(),
+         showInfoIcon: Bool = true) {
         self.viewModel = viewModel
+        self.showInfoIcon = showInfoIcon
     }
-
-    private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
 
     var body: some View {
         HStack(spacing: 16) {
@@ -17,13 +18,19 @@ struct InPersonPaymentsLearnMore: View {
                 .resizable()
                 .foregroundColor(Color(.neutral(.shade60)))
                 .frame(width: iconSize, height: iconSize)
+                .accessibilityHidden(true)
+                .renderedIf(showInfoIcon)
             AttributedText(viewModel.learnMoreAttributedString)
         }
-            .padding(.vertical, Constants.verticalPadding)
-            .onTapGesture {
-                viewModel.learnMoreTapped()
-                customOpenURL?(viewModel.url)
-            }
+        .accessibilityHint(viewModel.learnMoreAttributedString.string)
+        .accessibilityAction(named: Localization.toggleEnableCashOnDeliveryLearnMoreAccessibilityAction) {
+            viewModel.learnMoreTapped()
+            customOpenURL?(viewModel.url)
+        }
+        .onTapGesture {
+            viewModel.learnMoreTapped()
+            customOpenURL?(viewModel.url)
+        }
     }
 
     var iconSize: CGFloat {
@@ -31,13 +38,21 @@ struct InPersonPaymentsLearnMore: View {
     }
 }
 
-private enum Constants {
-    static let verticalPadding: CGFloat = 8
-}
-
 struct InPersonPaymentsLearnMore_Previews: PreviewProvider {
     static var previews: some View {
         InPersonPaymentsLearnMore()
             .padding()
+    }
+}
+
+
+
+extension InPersonPaymentsLearnMore {
+    enum Localization {
+        static let toggleEnableCashOnDeliveryLearnMoreAccessibilityAction = NSLocalizedString(
+            "menu.payments.payInPerson.learnMore.link.accessibilityAction",
+            value: "Learn more",
+            comment: "Title for the accessibility action to open the learn more screen, showing information " +
+            "about adding Pay in Person to their checkout.")
     }
 }

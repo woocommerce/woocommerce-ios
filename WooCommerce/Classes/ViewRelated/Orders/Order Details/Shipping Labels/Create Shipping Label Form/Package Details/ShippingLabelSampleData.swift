@@ -17,6 +17,7 @@ enum ShippingLabelSampleData {
                      number: "963",
                      status: .processing,
                      currency: "USD",
+                     currencySymbol: "",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
                      dateModified: date(with: "2018-04-03T23:05:14"),
@@ -103,7 +104,8 @@ private extension ShippingLabelSampleData {
                               totalTax: "1.20",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
@@ -120,7 +122,8 @@ private extension ShippingLabelSampleData {
                               totalTax: "0.00",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         return [item1, item2]
     }

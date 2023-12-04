@@ -46,6 +46,8 @@ final class SetUpTapToPayTryPaymentPromptViewController: UIHostingController<Set
 
 struct SetUpTapToPayPaymentPromptView: View {
     @ObservedObject var viewModel: SetUpTapToPayTryPaymentPromptViewModel
+    @State var paymentFlowFinished: Bool = false
+
     weak var rootViewController: UIViewController?
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -78,7 +80,7 @@ struct SetUpTapToPayPaymentPromptView: View {
                 .padding()
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(Localization.setUpTryPaymentPromptDescription)
+            Text(String(format: Localization.setUpTryPaymentPromptDescription, viewModel.formattedPaymentAmount))
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding()
@@ -95,9 +97,14 @@ struct SetUpTapToPayPaymentPromptView: View {
                 viewModel.skipTapped()
             })
             .buttonStyle(SecondaryButtonStyle())
+            if let summaryViewModel = viewModel.summaryViewModel {
+                LazyNavigationLink(destination: paymentFlow(summaryViewModel: summaryViewModel), isActive: $viewModel.summaryActive) {
+                    EmptyView()
+                }
 
-            LazyNavigationLink(destination: paymentFlow(), isActive: $viewModel.summaryActive) {
-                EmptyView()
+                LazyNavigationLink(destination: completedOrder(summaryViewModel: summaryViewModel), isActive: $paymentFlowFinished) {
+                    EmptyView()
+                }
             }
         }
         .padding()
@@ -105,33 +112,46 @@ struct SetUpTapToPayPaymentPromptView: View {
 
     /// Returns a `SimplePaymentsSummary` instance when the view model is available.
     ///
-    private func paymentFlow() -> some View {
-        WooNavigationSheet(viewModel: WooNavigationSheetViewModel(navigationTitle: Localization.setUpTryPaymentPromptTitle,
-                                                                  done: {
-            paymentFlowDismissed()
-            viewModel.dismiss?()
-        })) {
-            if let summaryViewModel = viewModel.summaryViewModel {
-                SimplePaymentsSummary(
-                    dismiss: {
-                        showOrder(orderID: summaryViewModel.orderID, siteID: summaryViewModel.siteID)
-                    },
-                    rootViewController: rootViewController?.navigationController,
-                    viewModel: summaryViewModel.simplePaymentSummaryViewModel)
+    private func paymentFlow(summaryViewModel: TryAPaymentSummaryViewModel) -> some View {
+        SimplePaymentsSummary(
+            dismiss: {
+                viewModel.summaryActive = false
+                paymentFlowFinished = true
+            },
+            rootViewController: rootViewController?.navigationController,
+            viewModel: summaryViewModel.simplePaymentSummaryViewModel)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    paymentFlowDismissed()
+                    viewModel.dismiss?()
+                },
+                       label: {
+                    Text(Localization.doneButton)
+                })
             }
-            EmptyView()
         }
+        .navigationBarHidden(false)
     }
 
     private func paymentFlowDismissed() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: .tapToPayTryAPayment))
     }
 
-    private func showOrder(orderID: Int64, siteID: Int64) {
-        let orderViewController = OrderLoaderViewController(orderID: orderID, siteID: siteID)
-        orderViewController.addCloseNavigationBarButton(title: Localization.doneButton)
-        rootViewController?.navigationController?.navigationBar.isHidden = false
-        rootViewController?.navigationController?.setViewControllers([orderViewController], animated: true)
+    private func completedOrder(summaryViewModel: TryAPaymentSummaryViewModel) -> some View {
+        OrderLoaderView(orderID: summaryViewModel.orderID, siteID: summaryViewModel.siteID)
+            .navigationTitle(Localization.paymentCompleteNavigationTitle)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        viewModel.dismiss?()
+                    },
+                           label: {
+                        Text(Localization.doneButton)
+                    })
+                }
+            }
+            .navigationBarBackButtonHidden()
     }
 }
 
@@ -147,15 +167,15 @@ private enum Constants {
 private extension SetUpTapToPayPaymentPromptView {
     enum Localization {
         static let setUpTryPaymentPromptTitle = NSLocalizedString(
-            "Try a payment",
+            "Would you like to try a payment",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that " +
             "Tap to Pay on iPhone is ready"
         )
 
         static let setUpTryPaymentPromptDescription = NSLocalizedString(
-            "Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your " +
-            "debit or credit card: you can refund it when you're done.",
-            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Description"
+            "Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done.",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced " +
+            "with the amount of the trial payment, in the store's currency."
         )
 
         static let tryAPaymentButton = NSLocalizedString(
@@ -165,7 +185,7 @@ private extension SetUpTapToPayPaymentPromptView {
         )
 
         static let skipButton = NSLocalizedString(
-            "Skip",
+            "Return to Payments",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip " +
             "to the trial payment and dismiss the Set up Tap to Pay on iPhone flow"
         )
@@ -179,6 +199,13 @@ private extension SetUpTapToPayPaymentPromptView {
             "Done",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow " +
             "> Review Order > Done button")
+
+        static let paymentCompleteNavigationTitle = NSLocalizedString(
+            "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title",
+            value: "Payment Complete",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant " +
+            "is shown an order confirmation screen, showing their payment was successful and allowing them to refund " +
+            "themselves. This is the navigation bar title for that screen.")
     }
 }
 

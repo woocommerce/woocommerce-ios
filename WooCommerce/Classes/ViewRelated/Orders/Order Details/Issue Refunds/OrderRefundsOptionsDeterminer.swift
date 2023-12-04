@@ -25,6 +25,15 @@ protocol OrderRefundsOptionsDeterminerProtocol {
     /// - Returns: A boolean indicating whether there is still something to be refunded from that order
     ///
     func isAnythingToRefund(from order: Order, with refunds: [Refund], currencyFormatter: CurrencyFormatter) -> Bool
+
+    /// Determines whether refunding custom amounts should be enabled by default.
+    ///
+    /// - Parameters:
+    ///   - order: the order to be analyzed
+    ///
+    /// - Returns: A boolean indicating whether custom amounts should be refunded by default
+    ///
+    func shouldRefundCustomAmountsByDefault(from order: Order) -> Bool
 }
 
 final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol {
@@ -71,5 +80,11 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
             // Return the item with the updated quantity to refund
             return RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
         }
+    }
+
+    func shouldRefundCustomAmountsByDefault(from order: Order) -> Bool {
+        let thereIsOnlyCustomAmountsToRefund = order.items.isEmpty && order.fees.isNotEmpty
+
+        return thereIsOnlyCustomAmountsToRefund
     }
 }

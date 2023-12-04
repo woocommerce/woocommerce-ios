@@ -115,7 +115,7 @@ private extension IssueRefundViewController {
     }
 
     func feesSwitchChanged() {
-        viewModel.toggleRefundFees()
+        viewModel.toggleRefundCustomAmounts()
     }
 
     func quantityButtonPressed(sender: UITableViewCell) {
@@ -154,7 +154,7 @@ private extension IssueRefundViewController {
         tableView.registerNib(for: RefundItemTableViewCell.self)
         tableView.registerNib(for: RefundProductsTotalTableViewCell.self)
         tableView.registerNib(for: RefundShippingDetailsTableViewCell.self)
-        tableView.registerNib(for: RefundFeesDetailsTableViewCell.self)
+        tableView.registerNib(for: RefundCustomAmountsDetailsTableViewCell.self)
         tableView.registerNib(for: SwitchTableViewCell.self)
         tableView.registerNib(for: ImageAndTitleAndTextTableViewCell.self)
     }
@@ -248,7 +248,7 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel)
             return cell
-        case let viewModel as IssueRefundViewModel.FeesSwitchViewModel:
+        case let viewModel as IssueRefundViewModel.CustomAmountsSwitchViewModel:
             let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
             cell.title = viewModel.title
             cell.isOn = viewModel.isOn
@@ -256,8 +256,8 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
                 self?.feesSwitchChanged()
             }
             return cell
-        case let viewModel as RefundFeesDetailsViewModel:
-            let cell = tableView.dequeueReusableCell(RefundFeesDetailsTableViewCell.self, for: indexPath)
+        case let viewModel as RefundCustomAmountsDetailsViewModel:
+            let cell = tableView.dequeueReusableCell(RefundCustomAmountsDetailsTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel)
             return cell
         case let viewModel as ImageAndTitleAndTextTableViewCell.ViewModel:

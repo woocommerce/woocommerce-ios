@@ -217,7 +217,8 @@ extension MockObjectGraph {
             totalTax: "0",
             attributes: [],
             addOns: [],
-            parent: nil
+            parent: nil,
+            bundleConfiguration: []
         )
     }
 }
@@ -310,8 +311,11 @@ extension MockObjectGraph {
             groupedProducts: [],
             menuOrder: 0,
             addOns: [],
+            isSampleItem: false,
             bundleStockStatus: nil,
             bundleStockQuantity: nil,
+            bundleMinSize: nil,
+            bundleMaxSize: nil,
             bundledItems: [],
             compositeComponents: [],
             subscription: nil,
@@ -347,6 +351,7 @@ extension MockObjectGraph {
             number: "\(number)",
             status: status,
             currency: "USD",
+            currencySymbol: "$",
             customerNote: nil,
             dateCreated: Calendar.current.date(byAdding: .day, value: daysOld * -1, to: Date()) ?? Date(),
             dateModified: Date(),

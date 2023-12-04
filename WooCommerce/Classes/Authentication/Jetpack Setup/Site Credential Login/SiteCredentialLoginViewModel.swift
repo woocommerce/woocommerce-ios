@@ -26,7 +26,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
         loginFields.username = username
         loginFields.password = password
         loginFields.siteAddress = siteURL
-        loginFields.meta.userIsDotCom = false
+        loginFields.userIsDotCom = false
         return loginFields
     }
 

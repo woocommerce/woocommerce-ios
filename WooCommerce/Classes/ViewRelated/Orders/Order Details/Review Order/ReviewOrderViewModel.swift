@@ -183,21 +183,18 @@ extension ReviewOrderViewModel {
         products.first(where: { $0.productID == item.productID })
     }
 
-    /// Filter addons for an order item
-    ///
-    func filterAddons(for item: AggregateOrderItem) -> [OrderItemAttribute] {
-        let product = filterProduct(for: item)
-        guard let product = product, showAddOns else {
-            return []
-        }
-        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
+    /// Product add-ons for an order item
+    /// - Parameter item: order item with optional add-ons from Product Add-Ons plugin
+    /// - Returns: an array of add-ons if available.
+    func addOns(for item: AggregateOrderItem) -> [OrderItemProductAddOn] {
+        item.addOns.isNotEmpty ? item.addOns: filterAddons(for: item)
     }
 
     /// Product Details cell view model for an order item
     ///
     func productDetailsCellViewModel(for item: AggregateOrderItem) -> ProductDetailsCellViewModel {
         let product = filterProduct(for: item)
-        let addOns = filterAddons(for: item)
+        let addOns = showAddOns ? addOns(for: item): []
         let isChildWithParent = AggregateDataHelper.isChildItemWithParent(item, in: aggregateOrderItems)
         return ProductDetailsCellViewModel(aggregateItem: item,
                                            currency: order.currency,
@@ -471,5 +468,17 @@ private extension ReviewOrderViewModel {
         try? shippingLabelResultsController.performFetch()
         try? addOnGroupResultsController.performFetch()
         try? refundResultsController.performFetch()
+    }
+}
+
+private extension ReviewOrderViewModel {
+    /// Filter addons for an order item
+    ///
+    func filterAddons(for item: AggregateOrderItem) -> [OrderItemProductAddOn] {
+        let product = filterProduct(for: item)
+        guard let product else {
+            return []
+        }
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOns()
     }
 }

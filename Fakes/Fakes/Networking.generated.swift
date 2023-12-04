@@ -4,7 +4,36 @@
 import Yosemite
 import Networking
 import Hardware
+import WooFoundation
 
+extension Networking.AIProduct {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.AIProduct {
+        .init(
+            name: .fake(),
+            description: .fake(),
+            shortDescription: .fake(),
+            virtual: .fake(),
+            shipping: .fake(),
+            tags: .fake(),
+            price: .fake(),
+            categories: .fake()
+        )
+    }
+}
+extension Networking.AIProduct.Shipping {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.AIProduct.Shipping {
+        .init(
+            length: .fake(),
+            weight: .fake(),
+            width: .fake(),
+            height: .fake()
+        )
+    }
+}
 extension Networking.APNSDevice {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -43,10 +72,10 @@ extension Networking.AccountSettings {
         )
     }
 }
-extension AddOnDisplay {
+extension Networking.AddOnDisplay {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> AddOnDisplay {
+    public static func fake() -> Networking.AddOnDisplay {
         .dropdown
     }
 }
@@ -63,31 +92,31 @@ extension Networking.AddOnGroup {
         )
     }
 }
-extension AddOnPriceType {
+extension Networking.AddOnPriceType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> AddOnPriceType {
+    public static func fake() -> Networking.AddOnPriceType {
         .flatFee
     }
 }
-extension AddOnRestrictionsType {
+extension Networking.AddOnRestrictionsType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> AddOnRestrictionsType {
+    public static func fake() -> Networking.AddOnRestrictionsType {
         .any_text
     }
 }
-extension AddOnTitleFormat {
+extension Networking.AddOnTitleFormat {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> AddOnTitleFormat {
+    public static func fake() -> Networking.AddOnTitleFormat {
         .label
     }
 }
-extension AddOnType {
+extension Networking.AddOnType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> AddOnType {
+    public static func fake() -> Networking.AddOnType {
         .multipleChoice
     }
 }
@@ -127,10 +156,28 @@ extension Networking.Announcement {
         )
     }
 }
-extension CompositeComponentOptionType {
+extension Networking.BlazeCampaign {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> CompositeComponentOptionType {
+    public static func fake() -> Networking.BlazeCampaign {
+        .init(
+            siteID: .fake(),
+            campaignID: .fake(),
+            productID: .fake(),
+            name: .fake(),
+            uiStatus: .fake(),
+            contentImageURL: .fake(),
+            contentClickURL: .fake(),
+            totalImpressions: .fake(),
+            totalClicks: .fake(),
+            totalBudget: .fake()
+        )
+    }
+}
+extension Networking.CompositeComponentOptionType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.CompositeComponentOptionType {
         .productIDs
     }
 }
@@ -177,10 +224,10 @@ extension Networking.Coupon {
         )
     }
 }
-extension Coupon.DiscountType {
+extension Networking.Coupon.DiscountType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Coupon.DiscountType {
+    public static func fake() -> Networking.Coupon.DiscountType {
         .percent
     }
 }
@@ -204,7 +251,8 @@ extension Networking.CreateProductVariation {
             salePrice: .fake(),
             attributes: .fake(),
             description: .fake(),
-            image: .fake()
+            image: .fake(),
+            subscription: .fake()
         )
     }
 }
@@ -243,10 +291,10 @@ extension Networking.DomainContactInfo {
         )
     }
 }
-extension DotcomError {
+extension Networking.DotcomError {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> DotcomError {
+    public static func fake() -> Networking.DotcomError {
         .empty
     }
 }
@@ -475,6 +523,7 @@ extension Networking.Order {
             number: .fake(),
             status: .fake(),
             currency: .fake(),
+            currencySymbol: .fake(),
             customerNote: .fake(),
             dateCreated: .fake(),
             dateModified: .fake(),
@@ -531,10 +580,10 @@ extension Networking.OrderFeeLine {
         )
     }
 }
-extension OrderFeeTaxStatus {
+extension Networking.OrderFeeTaxStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> OrderFeeTaxStatus {
+    public static func fake() -> Networking.OrderFeeTaxStatus {
         .taxable
     }
 }
@@ -569,7 +618,8 @@ extension Networking.OrderItem {
             totalTax: .fake(),
             attributes: .fake(),
             addOns: .fake(),
-            parent: .fake()
+            parent: .fake(),
+            bundleConfiguration: .fake()
         )
     }
 }
@@ -581,6 +631,20 @@ extension Networking.OrderItemAttribute {
             metaID: .fake(),
             name: .fake(),
             value: .fake()
+        )
+    }
+}
+extension Networking.OrderItemBundleItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderItemBundleItem {
+        .init(
+            bundledItemID: .fake(),
+            productID: .fake(),
+            quantity: .fake(),
+            isOptionalAndSelected: .fake(),
+            variationID: .fake(),
+            variationAttributes: .fake()
         )
     }
 }
@@ -712,10 +776,10 @@ extension Networking.OrderStatus {
         )
     }
 }
-extension OrderStatusEnum {
+extension Networking.OrderStatusEnum {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> OrderStatusEnum {
+    public static func fake() -> Networking.OrderStatusEnum {
         .autoDraft
     }
 }
@@ -860,8 +924,11 @@ extension Networking.Product {
             groupedProducts: .fake(),
             menuOrder: .fake(),
             addOns: .fake(),
+            isSampleItem: .fake(),
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
+            bundleMinSize: .fake(),
+            bundleMaxSize: .fake(),
             bundledItems: .fake(),
             compositeComponents: .fake(),
             subscription: .fake(),
@@ -936,10 +1003,10 @@ extension Networking.ProductAttributeTerm {
         )
     }
 }
-extension ProductBackordersSetting {
+extension Networking.ProductBackordersSetting {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductBackordersSetting {
+    public static func fake() -> Networking.ProductBackordersSetting {
         .allowed
     }
 }
@@ -952,21 +1019,30 @@ extension Networking.ProductBundleItem {
             productID: .fake(),
             menuOrder: .fake(),
             title: .fake(),
-            stockStatus: .fake()
+            stockStatus: .fake(),
+            minQuantity: .fake(),
+            maxQuantity: .fake(),
+            defaultQuantity: .fake(),
+            isOptional: .fake(),
+            overridesVariations: .fake(),
+            allowedVariations: .fake(),
+            overridesDefaultVariationAttributes: .fake(),
+            defaultVariationAttributes: .fake(),
+            pricedIndividually: .fake()
         )
     }
 }
-extension ProductBundleItemStockStatus {
+extension Networking.ProductBundleItemStockStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductBundleItemStockStatus {
+    public static func fake() -> Networking.ProductBundleItemStockStatus {
         .inStock
     }
 }
-extension ProductCatalogVisibility {
+extension Networking.ProductCatalogVisibility {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductCatalogVisibility {
+    public static func fake() -> Networking.ProductCatalogVisibility {
         .visible
     }
 }
@@ -1073,10 +1149,10 @@ extension Networking.ProductReview {
         )
     }
 }
-extension ProductReviewStatus {
+extension Networking.ProductReviewStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductReviewStatus {
+    public static func fake() -> Networking.ProductReviewStatus {
         .approved
     }
 }
@@ -1094,17 +1170,17 @@ extension Networking.ProductShippingClass {
         )
     }
 }
-extension ProductStatus {
+extension Networking.ProductStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductStatus {
+    public static func fake() -> Networking.ProductStatus {
         .published
     }
 }
-extension ProductStockStatus {
+extension Networking.ProductStockStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductStockStatus {
+    public static func fake() -> Networking.ProductStockStatus {
         .inStock
     }
 }
@@ -1119,7 +1195,10 @@ extension Networking.ProductSubscription {
             price: .fake(),
             signUpFee: .fake(),
             trialLength: .fake(),
-            trialPeriod: .fake()
+            trialPeriod: .fake(),
+            oneTimeShipping: .fake(),
+            paymentSyncDate: .fake(),
+            paymentSyncMonth: .fake()
         )
     }
 }
@@ -1135,17 +1214,17 @@ extension Networking.ProductTag {
         )
     }
 }
-extension ProductTaxStatus {
+extension Networking.ProductTaxStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductTaxStatus {
+    public static func fake() -> Networking.ProductTaxStatus {
         .taxable
     }
 }
-extension ProductType {
+extension Networking.ProductType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ProductType {
+    public static func fake() -> Networking.ProductType {
         .simple
     }
 }
@@ -1358,10 +1437,10 @@ extension Networking.ShippingLabelAddressVerification {
         )
     }
 }
-extension ShippingLabelAddressVerification.ShipType {
+extension Networking.ShippingLabelAddressVerification.ShipType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelAddressVerification.ShipType {
+    public static func fake() -> Networking.ShippingLabelAddressVerification.ShipType {
         .origin
     }
 }
@@ -1427,10 +1506,10 @@ extension Networking.ShippingLabelCustomsForm {
         )
     }
 }
-extension ShippingLabelCustomsForm.ContentsType {
+extension Networking.ShippingLabelCustomsForm.ContentsType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelCustomsForm.ContentsType {
+    public static func fake() -> Networking.ShippingLabelCustomsForm.ContentsType {
         .merchandise
     }
 }
@@ -1449,17 +1528,17 @@ extension Networking.ShippingLabelCustomsForm.Item {
         )
     }
 }
-extension ShippingLabelCustomsForm.NonDeliveryOption {
+extension Networking.ShippingLabelCustomsForm.NonDeliveryOption {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelCustomsForm.NonDeliveryOption {
+    public static func fake() -> Networking.ShippingLabelCustomsForm.NonDeliveryOption {
         .`return`
     }
 }
-extension ShippingLabelCustomsForm.RestrictionType {
+extension Networking.ShippingLabelCustomsForm.RestrictionType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelCustomsForm.RestrictionType {
+    public static func fake() -> Networking.ShippingLabelCustomsForm.RestrictionType {
         .none
     }
 }
@@ -1487,6 +1566,7 @@ extension Networking.ShippingLabelPackageSelected {
             height: .fake(),
             weight: .fake(),
             isLetter: .fake(),
+            hazmatCategory: .fake(),
             customsForm: .fake()
         )
     }
@@ -1503,17 +1583,17 @@ extension Networking.ShippingLabelPackagesResponse {
         )
     }
 }
-extension ShippingLabelPaperSize {
+extension Networking.ShippingLabelPaperSize {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelPaperSize {
+    public static func fake() -> Networking.ShippingLabelPaperSize {
         .a4
     }
 }
-extension ShippingLabelPaymentCardType {
+extension Networking.ShippingLabelPaymentCardType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelPaymentCardType {
+    public static func fake() -> Networking.ShippingLabelPaymentCardType {
         .amex
     }
 }
@@ -1593,10 +1673,10 @@ extension Networking.ShippingLabelRefund {
         )
     }
 }
-extension ShippingLabelRefundStatus {
+extension Networking.ShippingLabelRefundStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelRefundStatus {
+    public static func fake() -> Networking.ShippingLabelRefundStatus {
         .pending
     }
 }
@@ -1611,10 +1691,10 @@ extension Networking.ShippingLabelSettings {
         )
     }
 }
-extension ShippingLabelStatus {
+extension Networking.ShippingLabelStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelStatus {
+    public static func fake() -> Networking.ShippingLabelStatus {
         .purchased
     }
 }
@@ -1669,6 +1749,7 @@ extension Networking.Site {
             isSiteOwner: .fake(),
             frameNonce: .fake(),
             plan: .fake(),
+            isAIAssistantFeatureActive: .fake(),
             isJetpackThePluginInstalled: .fake(),
             isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
@@ -1725,10 +1806,10 @@ extension Networking.SitePlugin {
         )
     }
 }
-extension SitePluginStatusEnum {
+extension Networking.SitePluginStatusEnum {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> SitePluginStatusEnum {
+    public static func fake() -> Networking.SitePluginStatusEnum {
         .active
     }
 }
@@ -1746,10 +1827,10 @@ extension Networking.SiteSetting {
         )
     }
 }
-extension SiteSettingGroup {
+extension Networking.SiteSettingGroup {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> SiteSettingGroup {
+    public static func fake() -> Networking.SiteSettingGroup {
         .general
     }
 }
@@ -1789,10 +1870,10 @@ extension Networking.SiteVisitStatsItem {
         )
     }
 }
-extension StatGranularity {
+extension Networking.StatGranularity {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> StatGranularity {
+    public static func fake() -> Networking.StatGranularity {
         .day
     }
 }
@@ -1806,10 +1887,10 @@ extension Networking.StateOfACountry {
         )
     }
 }
-extension StatsGranularityV4 {
+extension Networking.StatsGranularityV4 {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> StatsGranularityV4 {
+    public static func fake() -> Networking.StatsGranularityV4 {
         .hourly
     }
 }
@@ -1840,17 +1921,17 @@ extension Networking.Subscription {
         )
     }
 }
-extension SubscriptionPeriod {
+extension Networking.SubscriptionPeriod {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> SubscriptionPeriod {
+    public static func fake() -> Networking.SubscriptionPeriod {
         .day
     }
 }
-extension SubscriptionStatus {
+extension Networking.SubscriptionStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> SubscriptionStatus {
+    public static func fake() -> Networking.SubscriptionStatus {
         .pending
     }
 }
@@ -1975,24 +2056,24 @@ extension Networking.WCAnalyticsCustomer {
         )
     }
 }
-extension WCPayAccountStatusEnum {
+extension Networking.WCPayAccountStatusEnum {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> WCPayAccountStatusEnum {
+    public static func fake() -> Networking.WCPayAccountStatusEnum {
         .complete
     }
 }
-extension WCPayCardBrand {
+extension Networking.WCPayCardBrand {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> WCPayCardBrand {
+    public static func fake() -> Networking.WCPayCardBrand {
         .amex
     }
 }
-extension WCPayCardFunding {
+extension Networking.WCPayCardFunding {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> WCPayCardFunding {
+    public static func fake() -> Networking.WCPayCardFunding {
         .credit
     }
 }
@@ -2053,32 +2134,148 @@ extension Networking.WCPayCharge {
         )
     }
 }
-extension WCPayChargeStatus {
+extension Networking.WCPayChargeStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> WCPayChargeStatus {
+    public static func fake() -> Networking.WCPayChargeStatus {
         .succeeded
     }
 }
-extension WCPayPaymentIntentStatusEnum {
+extension Networking.WCPayPaymentIntentStatusEnum {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> WCPayPaymentIntentStatusEnum {
+    public static func fake() -> Networking.WCPayPaymentIntentStatusEnum {
         .requiresPaymentMethod
     }
 }
-extension WCPayPaymentMethodDetails {
+extension Networking.WCPayPaymentMethodDetails {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> WCPayPaymentMethodDetails {
+    public static func fake() -> Networking.WCPayPaymentMethodDetails {
         .unknown
     }
 }
-extension WCPayPaymentMethodType {
+extension Networking.WCPayPaymentMethodType {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> WCPayPaymentMethodType {
+    public static func fake() -> Networking.WCPayPaymentMethodType {
         .card
+    }
+}
+extension Networking.WooPaymentsAccountDepositSummary {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsAccountDepositSummary {
+        .init(
+            depositsEnabled: .fake(),
+            depositsBlocked: .fake(),
+            depositsSchedule: .fake(),
+            defaultCurrency: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsBalance {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsBalance {
+        .init(
+            amount: .fake(),
+            currency: .fake(),
+            depositsCount: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsCurrencyBalances {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsCurrencyBalances {
+        .init(
+            pending: .fake(),
+            available: .fake(),
+            instant: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsCurrencyDeposits {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsCurrencyDeposits {
+        .init(
+            lastPaid: .fake(),
+            nextScheduled: .fake(),
+            lastManualDeposits: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsDeposit {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDeposit {
+        .init(
+            id: .fake(),
+            date: .fake(),
+            type: .fake(),
+            amount: .fake(),
+            status: .fake(),
+            bankAccount: .fake(),
+            currency: .fake(),
+            automatic: .fake(),
+            fee: .fake(),
+            feePercentage: .fake(),
+            created: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsDepositInterval {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDepositInterval {
+        .daily
+    }
+}
+extension Networking.WooPaymentsDepositStatus {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDepositStatus {
+        .estimated
+    }
+}
+extension Networking.WooPaymentsDepositType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDepositType {
+        .withdrawal
+    }
+}
+extension Networking.WooPaymentsDepositsOverview {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDepositsOverview {
+        .init(
+            deposit: .fake(),
+            balance: .fake(),
+            account: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsDepositsSchedule {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDepositsSchedule {
+        .init(
+            delayDays: .fake(),
+            interval: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsManualDeposit {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsManualDeposit {
+        .init(
+            currency: .fake(),
+            date: .fake()
+        )
     }
 }
 extension Networking.WordPressMedia {
@@ -2094,6 +2291,18 @@ extension Networking.WordPressMedia {
             alt: .fake(),
             details: .fake(),
             title: .fake()
+        )
+    }
+}
+extension Networking.WordPressTheme {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WordPressTheme {
+        .init(
+            id: .fake(),
+            description: .fake(),
+            name: .fake(),
+            demoURI: .fake()
         )
     }
 }

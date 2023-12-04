@@ -9,6 +9,7 @@ struct InPersonPaymentsOnboardingError: View {
     let learnMore: Bool
     let analyticReason: String
     var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
+    var secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
 
     var body: some View {
         VStack {
@@ -26,10 +27,15 @@ struct InPersonPaymentsOnboardingError: View {
             if let buttonViewModel = buttonViewModel {
                 Button(buttonViewModel.text, action: buttonViewModel.action)
                     .buttonStyle(PrimaryButtonStyle())
-                    .padding(.bottom, 24.0)
+                    .padding(.bottom, secondaryButtonViewModel == nil ? 24.0 : 0)
+            }
+            if let secondaryButtonViewModel = secondaryButtonViewModel {
+                Button(secondaryButtonViewModel.text, action: secondaryButtonViewModel.action)
+                    .buttonStyle(SecondaryButtonStyle())
             }
             if learnMore {
                 InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
+                    .padding(.vertical, 8)
             }
         }.padding()
     }

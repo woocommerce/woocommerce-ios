@@ -258,6 +258,85 @@ final class JetpackSetupViewModelTests: XCTestCase {
     }
 
     // MARK: - API calls
+    func test_startSetup_triggers_connection_step_if_connectionOnly_is_true() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, stores: stores)
+        let testConnectionURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize"))
+
+        var triggeredRetrieveJetpackPluginDetails = false
+        var triggeredInstallation = false
+        var triggeredActivation = false
+        var triggeredConnection = false
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                triggeredRetrieveJetpackPluginDetails = true
+                completion(.success(.fake()))
+            case .installJetpackPlugin(let completion):
+                completion(.success(()))
+                triggeredInstallation = true
+            case .activateJetpackPlugin(let completion):
+                completion(.success(()))
+                triggeredActivation = true
+            case .fetchJetpackConnectionURL(let completion):
+                completion(.success(testConnectionURL))
+                triggeredConnection = true
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertFalse(triggeredRetrieveJetpackPluginDetails)
+        XCTAssertFalse(triggeredInstallation)
+        XCTAssertFalse(triggeredActivation)
+        XCTAssertTrue(triggeredConnection)
+    }
+
+    func test_startSetup_triggers_installation_steps_if_connectionOnly_is_false() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores)
+        let testConnectionURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize"))
+
+        var triggeredRetrieveJetpackPluginDetails = false
+        var triggeredInstallation = false
+        var triggeredActivation = false
+        var triggeredConnection = false
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                triggeredRetrieveJetpackPluginDetails = true
+                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                completion(.failure(error))
+            case .installJetpackPlugin(let completion):
+                completion(.success(()))
+                triggeredInstallation = true
+            case .activateJetpackPlugin(let completion):
+                completion(.success(()))
+                triggeredActivation = true
+            case .fetchJetpackConnectionURL(let completion):
+                completion(.success(testConnectionURL))
+                triggeredConnection = true
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.startSetup()
+
+        // Then
+        XCTAssertTrue(triggeredRetrieveJetpackPluginDetails)
+        XCTAssertTrue(triggeredInstallation)
+        XCTAssertTrue(triggeredActivation)
+        XCTAssertTrue(triggeredConnection)
+    }
+
     func test_startSetup_triggers_jetpack_installation_if_retrieving_details_fails_with_404() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

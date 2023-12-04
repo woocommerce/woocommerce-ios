@@ -5,7 +5,7 @@ import Storage
 // MARK: - ProductCategoryStore
 //
 public final class ProductCategoryStore: Store {
-    private let remote: ProductCategoriesRemote
+    private let remote: ProductCategoriesRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
@@ -13,6 +13,14 @@ public final class ProductCategoryStore: Store {
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductCategoriesRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: ProductCategoriesRemoteProtocol) {
+        self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -35,8 +43,14 @@ public final class ProductCategoryStore: Store {
             synchronizeAllProductCategories(siteID: siteID, fromPageNumber: fromPageNumber, onCompletion: onCompletion)
         case .addProductCategory(siteID: let siteID, name: let name, parentID: let parentID, onCompletion: let onCompletion):
             addProductCategory(siteID: siteID, name: name, parentID: parentID, onCompletion: onCompletion)
+        case .addProductCategories(siteID: let siteID, names: let names, parentID: let parentID, onCompletion: let onCompletion):
+            addProductCategories(siteID: siteID, names: names, parentID: parentID, onCompletion: onCompletion)
         case .synchronizeProductCategory(siteID: let siteID, categoryID: let CategoryID, onCompletion: let onCompletion):
             synchronizeProductCategory(siteID: siteID, categoryID: CategoryID, onCompletion: onCompletion)
+        case let .updateProductCategory(category, onCompletion):
+            updateProductCategory(category, onCompletion: onCompletion)
+        case let .deleteProductCategory(siteID, categoryID, onCompletion):
+            deleteProductCategory(siteID: siteID, categoryID: categoryID, onCompletion: onCompletion)
         }
     }
 }
@@ -112,6 +126,24 @@ private extension ProductCategoryStore {
         }
     }
 
+    /// Create new product categories associated with a given Site ID.
+    ///
+    func addProductCategories(siteID: Int64,
+                              names: [String],
+                              parentID: Int64?,
+                              onCompletion: @escaping (Result<[ProductCategory], Error>) -> Void) {
+        remote.createProductCategories(for: siteID, names: names, parentID: parentID) { [weak self] result in
+            switch result {
+            case .success(let productCategories):
+                self?.upsertStoredProductCategoriesInBackground(productCategories, siteID: siteID) {
+                    onCompletion(.success(productCategories))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     /// Loads a remote product category associated with the given Category ID and Site ID
     ///
     func synchronizeProductCategory(siteID: Int64, categoryID: Int64, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
@@ -138,6 +170,35 @@ private extension ProductCategoryStore {
         let storage = storageManager.viewStorage
         storage.deleteUnusedProductCategories(siteID: siteID)
         storage.saveIfNeeded()
+    }
+
+    /// Updates an existing product category.
+    ///
+    func updateProductCategory(_ category: ProductCategory, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let updatedCategory = try await remote.updateProductCategory(category)
+                upsertStoredProductCategoriesInBackground([updatedCategory], siteID: updatedCategory.siteID) {
+                    onCompletion(.success(updatedCategory))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Deletes an existing product category.
+    ///
+    func deleteProductCategory(siteID: Int64, categoryID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
+                deleteUnusedStoredProductCategories(siteID: siteID)
+                onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 

@@ -12,7 +12,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
     func testOneActiveFilter() {
         let filters = FilterProductListViewModel.Filters(stockStatus: nil,
                                                          productStatus: .draft,
-                                                         productType: nil,
+                                                         promotableProductType: nil,
                                                          productCategory: nil,
                                                          numberOfActiveFilters: 0)
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
@@ -22,7 +22,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
     func testTwoActiveFilters() {
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .published,
-                                                         productType: nil,
+                                                         promotableProductType: nil,
                                                          productCategory: nil,
                                                          numberOfActiveFilters: 0)
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
@@ -32,7 +32,9 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
     func testThreeActiveFilters() {
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .published,
-                                                         productType: .variable,
+                                                         promotableProductType: PromotableProductType(productType: .variable,
+                                                                                                      isAvailable: true,
+                                                                                                      promoteUrl: nil),
                                                          productCategory: nil,
                                                          numberOfActiveFilters: 0)
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
@@ -43,7 +45,9 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
         let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .published,
-                                                         productType: .variable,
+                                                         promotableProductType: PromotableProductType(productType: .variable,
+                                                                                                      isAvailable: true,
+                                                                                                      promoteUrl: nil),
                                                          productCategory: filterProductCategory,
                                                          numberOfActiveFilters: 0)
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
@@ -56,7 +60,7 @@ private extension FilterProductListViewModel_numberOfActiveFiltersTests {
         return [
             FilterProductListViewModel.ProductListFilter.stockStatus.createViewModel(filters: filters),
             FilterProductListViewModel.ProductListFilter.productStatus.createViewModel(filters: filters),
-            FilterProductListViewModel.ProductListFilter.productType.createViewModel(filters: filters),
+            FilterProductListViewModel.ProductListFilter.productType(siteID: 123).createViewModel(filters: filters),
             FilterProductListViewModel.ProductListFilter.productCategory(siteID: 0).createViewModel(filters: filters)
         ]
     }

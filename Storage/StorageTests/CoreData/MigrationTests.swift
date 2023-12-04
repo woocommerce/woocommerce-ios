@@ -2163,7 +2163,7 @@ final class MigrationTests: XCTestCase {
         let sourceContainer = try startPersistentContainer("Model 95")
         let sourceContext = sourceContainer.viewContext
 
-        let taxRate = insertTaxRate(to: sourceContext, forModel: 95)
+        _ = insertTaxRate(to: sourceContext, forModel: 95)
         try sourceContext.save()
 
         // When
@@ -2182,7 +2182,7 @@ final class MigrationTests: XCTestCase {
         let sourceContainer = try startPersistentContainer("Model 96")
         let sourceContext = sourceContainer.viewContext
 
-        let taxRate = insertTaxRate(to: sourceContext, forModel: 96)
+        _ = insertTaxRate(to: sourceContext, forModel: 96)
         try sourceContext.save()
 
         // When
@@ -2194,6 +2194,288 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(migratedTaxRateEntity?.value(forKey: "postcodes") as? [String], ["1234"])
         XCTAssertEqual(migratedTaxRateEntity?.value(forKey: "cities") as? [String], ["Miami"])
+    }
+
+    func test_migrating_from_97_to_98_adds_new_isAIAssitantFeatureActive_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 97")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["isAIAssitantFeatureActive"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 98")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSiteEntity = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let isAIAssitantFeatureActive = try XCTUnwrap(migratedSiteEntity.value(forKey: "isAIAssitantFeatureActive") as? Bool)
+        XCTAssertFalse(isAIAssitantFeatureActive, "Confirm expected property exists, and is false by default.")
+    }
+
+    func test_migrating_from_97_to_98_adds_new_isSampleItem_attribute_to_product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 97")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 97)
+        try sourceContext.save()
+
+        XCTAssertNil(product.entity.attributesByName["isSampleItem"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 98")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductEntity = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        let isSampleItem = try XCTUnwrap(migratedProductEntity.value(forKey: "isSampleItem") as? Bool)
+        XCTAssertFalse(isSampleItem, "Confirm expected property exists, and is false by default.")
+    }
+
+    func test_migrating_from_98_to_99_adds_new_attributes_to_ProductBundleItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 98")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 98)
+
+        // Inserts a new ProductBundleItem and add it to Product.
+        let bundledItem = insertProductBundleItem(to: sourceContext)
+        product.setValue(NSOrderedSet(array: [bundledItem]), forKey: "bundledItems")
+        try sourceContext.save()
+
+        XCTAssertNil(bundledItem.entity.attributesByName["minQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["maxQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["defaultQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["isOptional"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["overridesVariations"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["overridesDefaultVariationAttributes"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["allowedVariations"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.relationshipsByName["defaultVariationAttributes"], "Precondition. Relationship does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 99")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        let migratedBundledItem = try XCTUnwrap(targetContext.first(entityName: "ProductBundleItem"))
+
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductBundleItem"), 1)
+
+        // ProductBundleItem has the expected default values for the new attributes.
+        XCTAssertEqual(migratedBundledItem.value(forKey: "minQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "maxQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "defaultQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "isOptional") as? Bool, true)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "overridesVariations") as? Bool, false)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "overridesDefaultVariationAttributes") as? Bool, false)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "allowedVariations") as? [Int64], nil)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "defaultVariationAttributes") as? [GenericAttribute], nil)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "product") as? NSManagedObject, migratedProduct)
+
+        // Product's relationship to ProductBundleItem exists.
+        XCTAssertEqual(migratedProduct.value(forKey: "bundledItems") as? NSOrderedSet, NSOrderedSet(array: [migratedBundledItem]))
+    }
+
+    func test_migrating_from_99_to_100_adds_BlazeCampaign_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 99")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. `BlazeCampaign` should not exist in Model 73
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeCampaign", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 100")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `BlazeCampaign` should exist in Model 100
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeCampaign", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaign"), 0)
+
+        // Insert a new BlazeCampaign
+        let campaign = insertBlazeCampaign(to: targetContext, forModel: 100)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaign"), 1)
+
+        // Check all attributes
+        XCTAssertEqual(campaign.value(forKey: "campaignID") as? Int64, 1)
+        XCTAssertEqual(campaign.value(forKey: "siteID") as? Int64, 1)
+        XCTAssertEqual(campaign.value(forKey: "contentClickURL") as? String, "https://example.com/products/1")
+        XCTAssertEqual(campaign.value(forKey: "contentImageURL") as? String, "https://example.com/products/1/thumbnail.png")
+        XCTAssertEqual(campaign.value(forKey: "name") as? String, "Product")
+        XCTAssertEqual(campaign.value(forKey: "rawStatus") as? String, "approved")
+        XCTAssertEqual(campaign.value(forKey: "totalBudget") as? Double, 150)
+        XCTAssertEqual(campaign.value(forKey: "totalClicks") as? Int64, 11)
+        XCTAssertEqual(campaign.value(forKey: "totalImpressions") as? Int64, 33)
+    }
+
+    func test_migrating_from_100_to_101_adds_productID_to_BlazeCampaign() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 100")
+        let sourceContext = sourceContainer.viewContext
+
+        let campaign = insertBlazeCampaign(to: sourceContext, forModel: 100)
+
+        try sourceContext.save()
+
+        XCTAssertNil(campaign.entity.attributesByName["productID"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 101")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedCampaign = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaign"))
+
+        // BlazeCampaign has the expected default value for the new attribute.
+        let productID = migratedCampaign.value(forKey: "productID") as? NSNumber
+        XCTAssertNil(productID, "Confirm expected property exists and is nil by default.")
+
+        // For model 101, saved BlazeCampaign with specific product ID has the expected product ID value.
+        let newCampaign = insertBlazeCampaign(to: targetContext, forModel: 101)
+        try targetContext.save()
+        XCTAssertEqual(newCampaign.value(forKey: "productID") as? NSNumber, .init(value: 123))
+    }
+
+    func test_migrating_from_101_to_102_adds_bundleMinSize_and_bundleMaxSize_to_Product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 101")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 101)
+
+        try sourceContext.save()
+
+        XCTAssertNil(product.entity.attributesByName["bundleMinSize"], "Precondition. Property does not exist.")
+        XCTAssertNil(product.entity.attributesByName["bundleMaxSize"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 102")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        // The new properties are nil by default.
+        XCTAssertNil(migratedProduct.value(forKey: "bundleMinSize") as? NSDecimalNumber, "Confirm expected property exists and is nil by default.")
+        XCTAssertNil(migratedProduct.value(forKey: "bundleMaxSize") as? NSDecimalNumber, "Confirm expected property exists and is nil by default.")
+
+        migratedProduct.setValue(2, forKey: "bundleMinSize")
+        migratedProduct.setValue(6, forKey: "bundleMaxSize")
+        try targetContext.save()
+        XCTAssertEqual(migratedProduct.value(forKey: "bundleMinSize") as? NSDecimalNumber, 2)
+        XCTAssertEqual(migratedProduct.value(forKey: "bundleMaxSize") as? NSDecimalNumber, 6)
+    }
+
+    func test_migrating_from_102_to_103_adds_new_oneTimeShipping_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 102")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSubscription = insertProductSubscription(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(productSubscription.entity.attributesByName["oneTimeShipping"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 103")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductSubscriptionEntity = try XCTUnwrap(targetContext.first(entityName: "ProductSubscription"))
+
+        let oneTimeShipping = try XCTUnwrap(migratedProductSubscriptionEntity.value(forKey: "oneTimeShipping") as? Bool)
+        XCTAssertFalse(oneTimeShipping, "Confirm expected property exists, and is false by default.")
+    }
+
+    func test_migrating_from_102_to_103_adds_new_paymentSyncDate_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 102")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSubscription = insertProductSubscription(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(productSubscription.entity.attributesByName["paymentSyncDate"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 103")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductSubscriptionEntity = try XCTUnwrap(targetContext.first(entityName: "ProductSubscription"))
+
+        let paymentSyncDate = try XCTUnwrap(migratedProductSubscriptionEntity.value(forKey: "paymentSyncDate") as? String)
+        XCTAssertEqual(paymentSyncDate, "", "Confirm expected property exists, and is empty by default.")
+
+        // When
+        migratedProductSubscriptionEntity.setValue("30", forKey: "paymentSyncDate")
+        try targetContext.save()
+
+        // Then
+        XCTAssertEqual(migratedProductSubscriptionEntity.value(forKey: "paymentSyncDate") as? String, "30")
+    }
+
+    func test_migrating_from_102_to_103_adds_new_paymentSyncMonth_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 102")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSubscription = insertProductSubscription(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(productSubscription.entity.attributesByName["paymentSyncMonth"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 103")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductSubscriptionEntity = try XCTUnwrap(targetContext.first(entityName: "ProductSubscription"))
+
+        let paymentSyncMonth = try XCTUnwrap(migratedProductSubscriptionEntity.value(forKey: "paymentSyncMonth") as? String)
+        XCTAssertEqual(paymentSyncMonth, "", "Confirm expected property exists, and is empty by default.")
+
+        // When
+        migratedProductSubscriptionEntity.setValue("02", forKey: "paymentSyncMonth")
+        try targetContext.save()
+
+        // Then
+        XCTAssertEqual(migratedProductSubscriptionEntity.value(forKey: "paymentSyncMonth") as? String, "02")
+    }
+
+    func test_migrating_from_103_to_104_adds_new_pricedIndividually_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 103")
+        let sourceContext = sourceContainer.viewContext
+
+        let productBundleItem = insertProductBundleItem(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(productBundleItem.entity.attributesByName["pricedIndividually"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 104")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductBundleItemEntity = try XCTUnwrap(targetContext.first(entityName: "ProductBundleItem"))
+
+        // The new attribute is false by default.
+        let pricedIndividually = try XCTUnwrap(migratedProductBundleItemEntity.value(forKey: "pricedIndividually") as? Bool)
+        XCTAssertFalse(pricedIndividually, "Confirm expected property exists, and is false by default.")
     }
 }
 
@@ -2367,7 +2649,7 @@ private extension MigrationTests {
             "amount": "2.00",
             "code": "2off2021",
             "usedBy": ["me@example.com"],
-            "emailRestrictions": ["*@woocommerce.com"],
+            "emailRestrictions": ["*@woo.com"],
             "siteID": 1212,
             "products": [1231, 111],
             "excludedProducts": [19182, 192],
@@ -2403,7 +2685,7 @@ private extension MigrationTests {
             "name": "renew-subscription",
             "label": "Renew Subscription",
             "status": "actioned",
-            "url": "https://woocommerce.com/products/woocommerce-bookings/"
+            "url": "https://woo.com/products/woocommerce-bookings/"
         ])
     }
 
@@ -2889,5 +3171,32 @@ private extension MigrationTests {
         }
 
         return taxRate
+    }
+
+    /// Inserts a `BlazeCampaign` entity, providing default values for the required properties.
+    @discardableResult
+    func insertBlazeCampaign(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let campaign = context.insert(entityName: "BlazeCampaign", properties: [
+            "campaignID": 1,
+            "contentClickURL": "https://example.com/products/1",
+            "contentImageURL": "https://example.com/products/1/thumbnail.png",
+            "name": "Product",
+            "rawStatus": "approved",
+            "totalBudget": 150,
+            "totalClicks": 11,
+            "totalImpressions": 33
+        ])
+
+        // Required since model 100
+        if modelVersion >= 100 {
+            campaign.setValue(1, forKey: "siteID")
+        }
+
+        // Required since model 101
+        if modelVersion >= 101 {
+            campaign.setValue(NSNumber(value: 123), forKey: "productID")
+        }
+
+        return campaign
     }
 }

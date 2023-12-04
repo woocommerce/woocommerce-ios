@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import Storage
+import Experiments
 
 final class NewTaxRateSelectorViewModel: ObservableObject {
     private let wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol
@@ -14,6 +15,12 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
     /// Storage to fetch tax rates
     private let storageManager: StorageManagerType
+
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
+    private let featureFlagService: FeatureFlagService
 
     @Published private(set) var taxRateViewModels: [TaxRateViewModel] = []
 
@@ -30,12 +37,14 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
     /// View models for placeholder rows. Strings are visible to the user as it is shimmering (loading)
     let placeholderRowViewModels: [TaxRateViewModel] = [Int64](0..<3).map { index in
-        TaxRateViewModel(id: index, title: "placeholder", rate: "10%")
+        TaxRateViewModel(id: index, title: "placeholder", rate: "10%", showChevron: true)
     }
 
     init(siteID: Int64,
          onTaxRateSelected: @escaping (Yosemite.TaxRate) -> Void,
          wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol = WPAdminTaxSettingsURLProvider(),
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
@@ -44,6 +53,8 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.paginationTracker = PaginationTracker(pageFirstIndex: 1, pageSize: 25)
+        self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         configureResultsController()
         configurePaginationTracker()
@@ -68,12 +79,29 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         paginationTracker.ensureNextPageIsSynced()
     }
 
-    func onRowSelected(with index: Int) {
-        guard let taxRate = resultsController.fetchedObjects[safe: index] else {
+    func onRowSelected(with index: Int, storeSelectedTaxRate: Bool) {
+        analytics.track(.taxRateSelectorTaxRateTapped, withProperties: ["auto_tax_rate_enabled": storeSelectedTaxRate])
+
+        guard let taxRateViewModel = taxRateViewModels[safe: index],
+              let taxRate = resultsController.fetchedObjects.first(where: { $0.id == taxRateViewModel.id }) else {
             return
         }
 
+        if storeSelectedTaxRate {
+            stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: taxRate.id, siteID: siteID))
+        }
+
         onTaxRateSelected(taxRate)
+    }
+
+    func onRefreshAction() {
+        taxRateViewModels = []
+        transitionToSyncingState()
+        paginationTracker.resync(reason: nil)
+    }
+
+    func onShowWebView() {
+        analytics.track(.taxRateSelectorEditInAdminTapped)
     }
 }
 
@@ -136,15 +164,12 @@ private extension NewTaxRateSelectorViewModel {
 
     /// Updates row view models and sync state.
     func updateResults() {
-        taxRateViewModels = resultsController.fetchedObjects.map {
-            var title = $0.name
-            let titleSuffix = "\($0.country) \($0.state) \($0.postcodes.joined(separator: ",")) \($0.cities.joined(separator: ","))"
-
-            if titleSuffix.trimmingCharacters(in: .whitespaces).isNotEmpty {
-                title.append(" • \(titleSuffix)")
-            }
-
-            return TaxRateViewModel(id: $0.id, title: title, rate: Double($0.rate)?.percentFormatted() ?? "")
+        taxRateViewModels = resultsController.fetchedObjects
+        .filter {
+            $0.hasAddress
+        }
+        .map {
+            TaxRateViewModel(taxRate: $0)
         }
         transitionToResultsUpdatedState()
     }
@@ -173,5 +198,11 @@ extension NewTaxRateSelectorViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = taxRateViewModels.isNotEmpty ? .results: .empty
+    }
+}
+
+private extension Yosemite.TaxRate {
+    var hasAddress: Bool {
+        city.isNotEmpty || cities.isNotEmpty || postcodes.isNotEmpty || postcodes.isNotEmpty || state.isNotEmpty || country.isNotEmpty
     }
 }

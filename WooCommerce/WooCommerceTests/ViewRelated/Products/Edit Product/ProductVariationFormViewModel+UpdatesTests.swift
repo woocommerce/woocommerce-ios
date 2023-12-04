@@ -38,6 +38,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
                                                     slug: "2-days")
         viewModel.updateShippingSettings(weight: newWeight,
                                          dimensions: newDimensions,
+                                         oneTimeShipping: nil,
                                          shippingClass: newShippingClass.slug,
                                          shippingClassID: newShippingClass.shippingClassID)
 
@@ -52,7 +53,8 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 
     func testUpdatingPriceSettings() {
         // Arrange
-        let productVariation = MockProductVariation().productVariation()
+        let subscription = ProductSubscription.fake().copy(period: .day, periodInterval: "1")
+        let productVariation = MockProductVariation().productVariation().copy(subscription: subscription)
         let model = EditableProductVariationModel(productVariation: productVariation)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
@@ -65,6 +67,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         let newTaxStatus = ProductTaxStatus.taxable
         let newTaxClass = TaxClass(siteID: productVariation.siteID, name: "Reduced rate", slug: "reduced-rate")
         viewModel.updatePriceSettings(regularPrice: newRegularPrice,
+                                      subscriptionPeriod: .month,
+                                      subscriptionPeriodInterval: "2",
+                                      subscriptionSignupFee: "0.99",
                                       salePrice: newSalePrice,
                                       dateOnSaleStart: newDateOnSaleStart,
                                       dateOnSaleEnd: newDateOnSaleEnd,
@@ -78,6 +83,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.dateOnSaleEnd, newDateOnSaleEnd)
         XCTAssertEqual(viewModel.productModel.taxStatusKey, newTaxStatus.rawValue)
         XCTAssertEqual(viewModel.productModel.taxClass, newTaxClass.slug)
+        XCTAssertEqual(viewModel.productModel.subscription?.period, .month)
+        XCTAssertEqual(viewModel.productModel.subscription?.periodInterval, "2")
+        XCTAssertEqual(viewModel.productModel.subscription?.signUpFee, "0.99")
     }
 
     func testUpdatingInventorySettings() {

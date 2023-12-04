@@ -10,8 +10,8 @@ import StripeTerminal
 // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html
 
 final class CardReaderServiceErrorTests: XCTestCase {
-    func test_stripe_error_busy_maps_to_busy() {
-        XCTAssertEqual(.busy, domainError(stripeCode: 1000))
+    func test_stripe_reader_busy_error_maps_to_expected_error() {
+        XCTAssertEqual(.readerBusy, domainError(stripeCode: 3010))
     }
 
     func test_stripe_not_connected_to_reader_maps_to_expected_error() {
@@ -22,12 +22,8 @@ final class CardReaderServiceErrorTests: XCTestCase {
         XCTAssertEqual(.alreadyConnectedToReader, domainError(stripeCode: 1110))
     }
 
-    func test_stripe_process_invalid_payment_intent_maps_to_expected_error() {
-        XCTAssertEqual(.processInvalidPaymentIntent, domainError(stripeCode: 1530))
-    }
-
-    func test_stripe_cant_connect_to_undiscovered_reader_maps_to_expected_error() {
-        XCTAssertEqual(.connectingToUndiscoveredReader, domainError(stripeCode: 1580))
+    func test_stripe_confirm_invalid_payment_intent_maps_to_expected_error() {
+        XCTAssertEqual(.confirmInvalidPaymentIntent, domainError(stripeCode: 1530))
     }
 
     func test_stripe_unsupported_sdk_maps_to_expected_error() {

@@ -12,8 +12,11 @@ struct ProductInputTransformer {
         let discount: Decimal
         let productID: Int64
         let variationID: Int64?
+        let baseSubtotal: Decimal?
+
         private var subTotalDecimal: Decimal {
-            price * quantity
+            // Base subtotal has priority. Base subtotal and price can be different e.g. if the price includes tax (subtotal does not).
+            (baseSubtotal ?? price) * quantity
         }
 
         var subtotal: String {
@@ -131,14 +134,20 @@ private extension ProductInputTransformer {
             switch input.product {
             case .product(let product):
                 let price: Decimal = Decimal(string: product.price) ?? .zero
-                return OrderItemParameters(quantity: input.quantity, price: price, discount: input.discount, productID: product.productID, variationID: nil)
+                return OrderItemParameters(quantity: input.quantity,
+                                           price: price,
+                                           discount: input.discount,
+                                           productID: product.productID,
+                                           variationID: nil,
+                                           baseSubtotal: input.baseSubtotal)
             case .variation(let variation):
                 let price: Decimal = Decimal(string: variation.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity,
                                            price: price,
                                            discount: input.discount,
                                            productID: variation.productID,
-                                           variationID: variation.productVariationID)
+                                           variationID: variation.productVariationID,
+                                           baseSubtotal: input.baseSubtotal)
             }
         }()
 
@@ -157,6 +166,24 @@ private extension ProductInputTransformer {
                          totalTax: "",
                          attributes: [],
                          addOns: [],
-                         parent: nil)
+                         parent: nil,
+                         bundleConfiguration: input.bundleConfiguration.map {
+            switch $0.productOrVariation {
+                case let .product(productID):
+                    return .init(bundledItemID: $0.bundledItemID,
+                                 productID: productID,
+                                 quantity: $0.quantity,
+                                 isOptionalAndSelected: $0.isOptionalAndSelected,
+                                 variationID: nil,
+                                 variationAttributes: nil)
+                case let .variation(productID, variationID, attributes):
+                    return .init(bundledItemID: $0.bundledItemID,
+                                 productID: productID,
+                                 quantity: $0.quantity,
+                                 isOptionalAndSelected: $0.isOptionalAndSelected,
+                                 variationID: variationID,
+                                 variationAttributes: attributes)
+            }
+        })
     }
 }

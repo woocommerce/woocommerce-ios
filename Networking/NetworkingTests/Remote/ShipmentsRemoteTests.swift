@@ -67,7 +67,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Load shipment tracking information contains errors")
 
-        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
         remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
             XCTAssertNil(shipmentTrackings)
             XCTAssertNotNil(error)
@@ -152,7 +152,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Create shipment tracking information contains errors")
 
-        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
 
         remote.createShipmentTracking(for: sampleSiteID,
                                       orderID: sampleOrderID,
@@ -248,7 +248,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Create shipment tracking information contains errors")
 
-        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
 
         remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
                                                         orderID: sampleOrderID,
@@ -336,7 +336,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Create shipment tracking information contains errors")
 
-        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
 
         remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "1111") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
@@ -413,7 +413,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Load shipment tracking providers information contains errors")
 
-        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", error: NetworkError.notFound())
 
         remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
             XCTAssertNil(shipmentTrackingGroups)

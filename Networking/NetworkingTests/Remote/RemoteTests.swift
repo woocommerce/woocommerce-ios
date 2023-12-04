@@ -32,9 +32,7 @@ final class RemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
-            guard case NetworkError.notFound? = error,
-                  let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-            else {
+            guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
                 XCTFail()
                 return
             }
@@ -87,17 +85,14 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
 
         // When
-        let result = waitFor { promise in
+        _ = waitFor { promise in
             remote.enqueue(self.request, mapper: mapper).sink { result in
                 promise(result)
             }.store(in: &self.cancellables)
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure)
-        guard case NetworkError.notFound = error,
-              let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-        else {
+        guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
             XCTFail()
             return
         }
@@ -188,7 +183,7 @@ final class RemoteTests: XCTestCase {
             XCTAssertEqual(error, .requestFailed)
         }
 
-        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+        await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
@@ -590,7 +585,7 @@ final class RemoteTests: XCTestCase {
         do {
             _ = try await remote.enqueue(request, mapper: mapper)
         } catch {
-            wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+            await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
             let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
@@ -620,7 +615,7 @@ final class RemoteTests: XCTestCase {
         do {
             let _: [String] = try await remote.enqueue(request)
         } catch {
-            wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+            await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
             let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
@@ -654,7 +649,7 @@ final class RemoteTests: XCTestCase {
                 promise(result)
             }
         }
-        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+        await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
         // Then
         XCTAssertTrue(result.isFailure)
@@ -664,6 +659,361 @@ final class RemoteTests: XCTestCase {
         let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
+    }
+
+    // MARK: Mapping `NetworkError`
+
+    /// Verifies that `enqueue:mapper:` (with `Result`) maps an error from `responseData` when error has proper response data
+    ///
+    func test_enqueue_request_with_result_throws_DotcomError_from_NetworkError_with_response_data() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        let errorsWithResponse: [NetworkError] = [
+            .notFound(response: data),
+            .timeout(response: data),
+            .unacceptableStatusCode(statusCode: 403, response: data)
+        ]
+        for error in errorsWithResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: Result<Any, Error> = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper) { result in
+                    promise(result)
+                }
+            }
+
+            // Then
+            XCTAssertTrue(result.isFailure)
+            XCTAssertTrue(try XCTUnwrap(result.failure) is DotcomError)
+        }
+    }
+
+    /// Verifies that `enqueue:mapper:` (with `Result`) throws same error when NetworkError does not have proper response data
+    ///
+    func test_enqueue_request_with_result_throws_same_errors_for_NetworkError_without_response_data() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let errorsWithoutResponse: [NetworkError] = [
+            .notFound(),
+            .timeout(),
+            .unacceptableStatusCode(statusCode: 500, response: nil),
+            .invalidURL,
+            .invalidCookieNonce
+        ]
+
+        for error in errorsWithoutResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: Result<Any, Error> = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper) { result in
+                    promise(result)
+                }
+            }
+
+            // Then
+            XCTAssertTrue(result.isFailure)
+            XCTAssertTrue(try XCTUnwrap(result.failure) as? NetworkError == error)
+        }
+    }
+
+    /// Verifies that `enqueuePublisher` maps an error from `responseData` when error has proper response data
+    ///
+    func test_enqueuePublisher_throws_DotcomError_from_NetworkError_with_response() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        let errorsWithResponse: [NetworkError] = [
+            .notFound(response: data),
+            .timeout(response: data),
+            .unacceptableStatusCode(statusCode: 403, response: data)
+        ]
+        for error in errorsWithResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: Result<Any, Error> = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper).sink { result in
+                    promise(result)
+                }.store(in: &self.cancellables)
+            }
+
+            // Then
+            XCTAssertTrue(result.isFailure)
+            XCTAssertTrue(try XCTUnwrap(result.failure) is DotcomError)
+        }
+    }
+
+    /// Verifies that `enqueuePublisher` throws same error when NetworkError does not have response data.
+    ///
+    func test_enqueuePublisher_throws_same_error_for_NetworkError_without_response_data() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let errorsWithoutResponse: [NetworkError] = [
+            .notFound(),
+            .timeout(),
+            .unacceptableStatusCode(statusCode: 500, response: nil),
+            .invalidURL,
+            .invalidCookieNonce
+        ]
+
+        for error in errorsWithoutResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: Result<Any, Error> = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper).sink { result in
+                    promise(result)
+                }.store(in: &self.cancellables)
+            }
+
+            // Then
+            XCTAssertTrue(result.isFailure)
+            XCTAssertTrue(try XCTUnwrap(result.failure) as? NetworkError == error)
+        }
+    }
+
+    /// Verifies that `enqueue` async version maps an error from `responseData` when error has proper response data.
+    ///
+    func test_enqueue_async_throws_DotcomError_from_NetworkError_with_proper_response_data() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        let errorsWithResponse: [NetworkError] = [
+            .notFound(response: data),
+            .timeout(response: data),
+            .unacceptableStatusCode(statusCode: 403, response: data)
+        ]
+
+        for error in errorsWithResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            do {
+                _ = try await remote.enqueue(request)
+            } catch {
+                // Then
+                XCTAssertTrue(error is DotcomError)
+            }
+        }
+    }
+
+    /// Verifies that `enqueue` async version throws same error when NetworkError doesn't have proper response data
+    ///
+    func test_enqueue_async_throws_same_error_for_NetworkError_without_response_data() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let errorsWithoutResponse: [NetworkError] = [
+            .notFound(),
+            .timeout(),
+            .unacceptableStatusCode(statusCode: 500, response: nil),
+            .invalidURL,
+            .invalidCookieNonce
+        ]
+
+        for otherError in errorsWithoutResponse {
+            network.simulateError(requestUrlSuffix: "something", error: otherError)
+            // When
+            do {
+                _ = try await remote.enqueue(request)
+            } catch {
+                // Then
+                XCTAssertTrue(error as? NetworkError == otherError)
+            }
+        }
+    }
+
+    /// Verifies that `enqueue` async version with return type maps an error from `responseData` when error has proper response data
+    ///
+    func test_enqueue_async_with_return_type_throws_DotcomError_from_NetworkError_with_proper_response_data() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        let errorsWithResponse: [NetworkError] = [
+            .notFound(response: data),
+            .timeout(response: data),
+            .unacceptableStatusCode(statusCode: 403, response: data)
+        ]
+
+        for error in errorsWithResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            do {
+                let _: String = try await remote.enqueue(request)
+            } catch {
+                // Then
+                XCTAssertTrue(error is DotcomError)
+            }
+        }
+    }
+
+    /// Verifies that `enqueue` async version with return type throws same error when NetworkError does not have proper response data
+    ///
+    ///
+    func test_enqueue_async_with_return_type_throws_same_error_for_NetworkError_without_proper_response_data() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let errorsWithoutResponse: [NetworkError] = [
+            .notFound(),
+            .timeout(),
+            .unacceptableStatusCode(statusCode: 500, response: nil),
+            .invalidURL,
+            .invalidCookieNonce
+        ]
+
+        for otherError in errorsWithoutResponse {
+            network.simulateError(requestUrlSuffix: "something", error: otherError)
+            // When
+            do {
+                let _: String = try await remote.enqueue(request)
+            } catch {
+                // Then
+                XCTAssertTrue(error as? NetworkError == otherError)
+            }
+        }
+    }
+
+    /// Verifies that `enqueue` async version maps an error from `responseData` when error has proper response data
+    ///
+    func test_enqueueWithMapper_async_throws_DotcomError_from_NetworkError_with_proper_response_data() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        let errorsWithResponse: [NetworkError] = [
+            .notFound(response: data),
+            .timeout(response: data),
+            .unacceptableStatusCode(statusCode: 403, response: data)
+        ]
+
+        for error in errorsWithResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            do {
+                _ = try await remote.enqueue(request, mapper: mapper)
+            } catch {
+                XCTAssertTrue(error is DotcomError)
+            }
+        }
+    }
+
+
+    /// Verifies that `enqueue` async version throws same error when NetworkError does not have proper response data
+    ///
+    func test_enqueueWithMapper_async_throws_same_error_for_NetworkError_without_proper_response_data() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let errorsWithoutResponse: [NetworkError] = [
+            .notFound(),
+            .timeout(),
+            .unacceptableStatusCode(statusCode: 500, response: nil),
+            .invalidURL,
+            .invalidCookieNonce
+        ]
+
+        for otherError in errorsWithoutResponse {
+            network.simulateError(requestUrlSuffix: "something", error: otherError)
+            // When
+            do {
+                _ = try await remote.enqueue(request, mapper: mapper)
+            } catch {
+                XCTAssertTrue(error as? NetworkError == otherError)
+            }
+        }
+    }
+
+    /// Verifies that `enqueue:mapper:` maps an error from `responseData` when error has proper response data
+    ///
+    func test_enqueue_request_throws_DotcomError_from_NetworkError_with_proper_response_data() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        let errorsWithResponse: [NetworkError] = [
+            .notFound(response: data),
+            .timeout(response: data),
+            .unacceptableStatusCode(statusCode: 403, response: data)
+        ]
+
+        for error in errorsWithResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: (Any?, Error?) = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper) { (output: Any?, error: Error?) in
+                    promise((output, error))
+                }
+            }
+
+            // Then
+            XCTAssertNil(result.0)
+            XCTAssertNotNil(result.1)
+            XCTAssertTrue(result.1 is DotcomError)
+        }
+    }
+
+    /// Verifies that `enqueue:mapper:` throws same error when NetworkError does not have proper response data
+    ///
+    func test_enqueue_request_throws_same_error_for_NetworkError_without_proper_response_data() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let errorsWithoutResponse: [NetworkError] = [
+            .notFound(),
+            .timeout(),
+            .unacceptableStatusCode(statusCode: 500, response: nil),
+            .invalidURL,
+            .invalidCookieNonce
+        ]
+
+        for error in errorsWithoutResponse {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: (Any?, Error?) = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper) { (output: Any?, error: Error?) in
+                    promise((output, error))
+                }
+            }
+
+            // Then
+            XCTAssertNil(result.0)
+            XCTAssertNotNil(result.1)
+            XCTAssertTrue(result.1 as? NetworkError == error)
+        }
     }
 }
 

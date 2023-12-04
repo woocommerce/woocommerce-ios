@@ -5,6 +5,7 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private let defaultSiteID: Int64 = 122
     private let defaultOrderID: Int64 = 322
@@ -26,8 +27,19 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         mockPaymentOrchestrator = MockPaymentCaptureOrchestrator()
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
+
+        let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .retrieveOrder(_, _, let completion):
+                completion(order, nil)
+            default:
+                break
+            }
+        }
+
         useCase = CollectOrderPaymentUseCase(siteID: defaultSiteID,
-                                             order: .fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5"),
+                                             order: order,
                                              formattedAmount: "1.5",
                                              rootViewController: .init(),
                                              onboardingPresenter: onboardingPresenter,
@@ -55,7 +67,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         assertEqual(.foundReader, mockAnalyticsTracker.spyPaymentCancelationSource)
     }
 
-    func test_collectPayment_processing_completion_tracks_payment_success_event() throws {
+    func test_collectPayment_processing_completion_tracks_payment_success_event() async throws {
         // Given
         let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
@@ -79,8 +91,9 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     // MARK: - Failure cases
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
+        let order = Order.fake().copy(total: "0.49")
         let useCase = CollectOrderPaymentUseCase(siteID: 122,
-                                                 order: .fake().copy(total: "0.49"),
+                                                 order: order,
                                                  formattedAmount: "0.49",
                                                  rootViewController: .init(),
                                                  onboardingPresenter: onboardingPresenter,
@@ -88,21 +101,37 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                  stores: stores,
                                                  paymentOrchestrator: mockPaymentOrchestrator,
                                                  alertsPresenter: alertsPresenter,
+                                                 preflightController: mockPreflightController,
                                                  analyticsTracker: mockAnalyticsTracker)
 
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .retrieveOrder(_, _, let completion):
+                completion(order, nil)
+            default:
+                break
+            }
+        }
+
         // When
-        waitFor { [weak self] promise in
+        let errorAlert: CardPresentModalNonRetryableError = waitFor { [weak self] promise in
+            guard let self = self else { return }
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                guard let viewModel = viewModel as? CardPresentModalNonRetryableError else {
+                    return
+                }
+                promise(viewModel)
+            }
+
             useCase.collectPayment(
                 using: .bluetoothScan,
-                onFailure: { _ in
-                    promise(())
-                },
+                onFailure: { _ in },
                 onCancel: {},
                 onPaymentCompletion: {},
                 onCompleted: {})
-            let errorAlert = self?.alertsPresenter.spyPresentedAlertViewModels.last(where: { $0 is CardPresentModalNonRetryableError })
-            errorAlert?.didTapPrimaryButton(in: nil)
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
+        errorAlert.didTapPrimaryButton(in: nil)
 
         // Then
         XCTAssert(mockAnalyticsTracker.didCallTrackPaymentFailure)
@@ -119,8 +148,13 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                                                                     receiptParameters: .fake()))
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            if case let .markOrderAsPaidLocally(siteID, orderID, _, _) = action {
+            switch action {
+            case .retrieveOrder(_, _, let completion):
+                completion(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5"), nil)
+            case .markOrderAsPaidLocally(let siteID, let orderID, _, _):
                 markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
+            default:
+                break
             }
         }
 
@@ -147,8 +181,13 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                                                                     receiptParameters: .fake()))
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            if case let .markOrderAsPaidLocally(siteID, orderID, _, _) = action {
+            switch action {
+            case .retrieveOrder(_, _, let completion):
+                completion(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5"), nil)
+            case .markOrderAsPaidLocally(let siteID, let orderID, _, _):
                 markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
+            default:
+                break
             }
         }
 
@@ -181,7 +220,7 @@ private extension CollectOrderPaymentUseCaseTests {
 
 private extension CollectOrderPaymentUseCaseTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US")
+        static let configuration = CardPresentPaymentsConfiguration(country: .US)
         static let cardReaderModel: String = "WISEPAD_3"
         static let paymentGatewayAccount: String = "woocommerce-payments"
     }

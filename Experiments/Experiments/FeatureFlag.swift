@@ -30,43 +30,20 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsOnboardingM1
 
-    /// Enable IPP reader manuals consolidation screen
-    ///
-    case consolidatedCardReaderManuals
-
-    /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
-    ///
-    case promptToEnableCodInIppOnboarding
-
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU
 
-    /// Enables In-app purchases for buying Hosted WooCommerce plans
+    /// Makes the Experimental Feature toggle for the Debug In-app purchases menu visible.
+    /// This should not be turned on in production builds. This doesn't make any difference to the availabliity of plan purchases via IAP.
     ///
-    case inAppPurchases
+    case inAppPurchasesDebugMenu
 
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
     /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
     /// so `.alpha` builds must be excluded.
     ///
     case tapToPayOnIPhone
-
-    /// Enables Tap to Pay on iPhone Milestone 2 (Tap to Pay deeplinks, JITM deeplink handling, JITM customisation) on eligible devices.
-    ///
-    case tapToPayOnIPhoneMilestone2
-
-    /// Enables badging the route to Set up Tap to Pay on iPhone on eligible devices
-    ///
-    case tapToPayBadge
-
-    /// Just In Time Messages on Dashboard
-    ///
-    case justInTimeMessagesOnDashboard
-
-    /// IPP in-app feedback banner
-    ///
-    case IPPInAppFeedbackBanner
 
     // MARK: - Performance Monitoring
     //
@@ -135,10 +112,6 @@ public enum FeatureFlag: Int {
     ///
     case compositeProducts
 
-    /// Enables read-only support for the Subscriptions extension in product and order details
-    ///
-    case readOnlySubscriptions
-
     /// Enables generating product description using AI from product description editor.
     ///
     case productDescriptionAI
@@ -167,26 +140,51 @@ public enum FeatureFlag: Int {
     ///
     case euShippingNotification
 
-    /// Do not use the Google SDK when authenticating through a Google account.
-    ///
-    case sdkLessGoogleSignIn
-
     /// Enables generating share product content using AI
     ///
     case shareProductAI
-
-    /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
-    case ordersWithCouponsM4
 
     /// Enables the improvements in the customer selection logic when creating an order
     /// 
     case betterCustomerSelectionInOrder
 
-    /// Enables the improvements related to taxes in the order flows (Milestone 2)
-    ///
-    case manualTaxesInOrderM2
-
     /// Enables the hazmat shipping selection during the Shipping Labels package details
     ///
     case hazmatShipping
+
+    /// Enables product creation with AI.
+    ///
+    case productCreationAI
+
+    /// Enables gift card support in order creation/editing
+    ///
+    case giftCardInOrderForm
+
+    /// Enables the Woo Payments Deposits item in the Payments menu
+    ///
+    case wooPaymentsDepositsOverviewInPaymentsMenu
+
+    /// Enables Tap to Pay for UK Woo Payments stores
+    /// 
+    case tapToPayOnIPhoneInUK
+
+    /// Enables bundle product configuration support in order creation/editing.
+    ///
+    case productBundlesInOrderForm
+
+    /// Enables the custom login UI when user enters an existing email address during account creation.
+    ///
+    case customLoginUIForAccountCreation
+
+    /// Enables creating Subscription products
+    ///
+    case subscriptionProducts
+
+    /// Enables lightweight storefront project
+    ///
+    case lightweightStorefront
+
+    /// Enables the Scan to Update Inventory feature.
+    ///
+    case scanToUpdateInventory
 }

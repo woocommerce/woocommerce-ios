@@ -75,6 +75,8 @@ struct ProductDetailsCellViewModel {
     ///
     let sku: String?
 
+    let addOns: AddOnsViewModel
+
     /// Wether the item has add-ons associated to it.
     ///
     let hasAddOns: Bool
@@ -94,6 +96,7 @@ struct ProductDetailsCellViewModel {
                  price: NSDecimalNumber?,
                  skuText: String?,
                  attributes: [VariationAttributeViewModel],
+                 addOns: AddOnsViewModel,
                  hasAddOns: Bool,
                  isChildProduct: Bool) {
         self.imageURL = imageURL
@@ -120,8 +123,13 @@ struct ProductDetailsCellViewModel {
                 return String()
             }
             let itemPrice = currencyFormatter.formatAmount(price, with: currency) ?? String()
-            return Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)
+            return Localization.subtitle(quantity: quantity,
+                                         price: itemPrice,
+                                         attributes: attributes,
+                                         addOns: addOns)
         }()
+
+        self.addOns = addOns
 
         self.isChildProduct = isChildProduct
     }
@@ -143,6 +151,7 @@ struct ProductDetailsCellViewModel {
                   price: item.price,
                   skuText: item.sku,
                   attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
+                  addOns: .init(addOns: item.addOns),
                   hasAddOns: hasAddOns,
                   isChildProduct: isChildWithParent)
     }
@@ -164,6 +173,7 @@ struct ProductDetailsCellViewModel {
                   price: aggregateItem.price,
                   skuText: aggregateItem.sku,
                   attributes: aggregateItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
+                  addOns: .init(addOns: aggregateItem.addOns),
                   hasAddOns: hasAddOns,
                   isChildProduct: isChildWithParent)
     }
@@ -183,6 +193,7 @@ struct ProductDetailsCellViewModel {
                   price: refundedItem.price,
                   skuText: refundedItem.sku,
                   attributes: [], // Attributes are not supported for a refund item yet.
+                  addOns: .init(addOns: []),
                   hasAddOns: false, // AddOns are not supported for a refund item yet.
                   isChildProduct: false) // Parent/child relationships are not supported for a refund item.
     }
@@ -194,17 +205,26 @@ private extension ProductDetailsCellViewModel {
     enum Localization {
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
         static let subtitleFormat =
-            NSLocalizedString("%1$@ x %2$@", comment: "In Order Details,"
-                                + " the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”."
-                                + " The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).")
+            NSLocalizedString("%1$@ × %2$@", comment: "In Order Details,"
+                              + " the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”."
+                              + " The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00)."
+                              + " Please take care to use the multiplication symbol ×, not a letter x, where appropriate.")
         static let subtitleWithAttributesFormat =
-            NSLocalizedString("%1$@・%2$@ x %3$@", comment: "In Order Details > product details: if the product has attributes,"
-                                + " the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”."
-                                + " The %1$@ is the list of attributes (e.g. from variation)."
-                                + " The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).")
-        static func subtitle(quantity: String, price: String, attributes: [VariationAttributeViewModel]) -> String {
-            let attributesText = attributes.map { $0.nameOrValue }.joined(separator: ", ")
-            if attributes.isEmpty {
+            NSLocalizedString("%1$@・%2$@ × %3$@", comment: "In Order Details > product details: if the product has attributes,"
+                              + " the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”."
+                              + " The %1$@ is the list of attributes (e.g. from variation)."
+                              + " The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00)."
+                              + " Please take care to use the multiplication symbol ×, not a letter x, where appropriate.")
+        static func subtitle(quantity: String, price: String, attributes: [VariationAttributeViewModel], addOns: AddOnsViewModel) -> String {
+            // Only the attributes that are not in the order item add-ons are shown since add-ons are displayed separately.
+            let nonAddOnAttributes: [VariationAttributeViewModel] = {
+                let addOns = addOns.addOns
+                return attributes.filter { attribute in
+                    !addOns.contains(where: { $0.key == attribute.name && $0.value == attribute.value })
+                }
+            }()
+            let attributesText = nonAddOnAttributes.map { $0.nameOrValue }.joined(separator: ", ")
+            if nonAddOnAttributes.isEmpty {
                 return String.localizedStringWithFormat(subtitleFormat, quantity, price)
             } else {
                 return String.localizedStringWithFormat(subtitleWithAttributesFormat, attributesText, quantity, price)

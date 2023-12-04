@@ -7,6 +7,7 @@ protocol CardReaderSupportDetermining {
     func hasPreviousTapToPayUsage() async -> Bool
     func siteSupportsLocalMobileReader() -> Bool
     func deviceSupportsLocalMobileReader() async -> Bool
+    func firstTapToPayTransactionDate() async -> Date?
     var locationIsAuthorized: Bool { get }
 }
 
@@ -49,14 +50,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
 
     @MainActor
     func hasPreviousTapToPayUsage() async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID,
-                                                                                    cardReaderType: .appleBuiltIn) { date in
-                continuation.resume(returning: date != nil)
-            }
-
-            self.stores.dispatch(action)
-        }
+        await firstTapToPayTransactionDate() != nil
     }
 
     func siteSupportsLocalMobileReader() -> Bool {
@@ -66,12 +60,27 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     @MainActor
     func deviceSupportsLocalMobileReader() async -> Bool {
         await withCheckedContinuation { continuation in
-            let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
-                                                                     cardReaderType: .appleBuiltIn,
-                                                                     discoveryMethod: .localMobile) { result in
-                continuation.resume(returning: result)
-            }
+            let action = CardPresentPaymentAction.checkDeviceSupport(
+                siteID: siteID,
+                cardReaderType: .appleBuiltIn,
+                discoveryMethod: .localMobile,
+                minimumOperatingSystemVersionOverride: configuration.minimumOperatingSystemVersionForTapToPay) { result in
+                    continuation.resume(returning: result)
+                }
             stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    func firstTapToPayTransactionDate() async -> Date? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(
+                siteID: siteID,
+                cardReaderType: .appleBuiltIn) { date in
+                    continuation.resume(returning: date)
+            }
+
+            self.stores.dispatch(action)
         }
     }
 }

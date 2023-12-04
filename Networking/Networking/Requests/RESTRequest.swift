@@ -103,6 +103,6 @@ struct RESTRequest: Request {
 
 extension RESTRequest {
     enum Settings {
-        static let basePath = "wp-json"
+        static let basePath = "?rest_route="
     }
 }

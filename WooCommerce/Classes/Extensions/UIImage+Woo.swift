@@ -86,6 +86,12 @@ extension UIImage {
         .init(named: "sparkles")!
     }
 
+    /// Calendar clock Image
+    ///
+    static var calendarClock: UIImage {
+        .init(systemName: "calendar.badge.clock")!
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {
@@ -251,6 +257,10 @@ extension UIImage {
         UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
 
+    static var bankIcon: UIImage {
+        UIImage(systemName: "building.columns")?.withRenderingMode(.alwaysTemplate) ?? .emptyBoxImage
+    }
+
     static var scanToPayIcon: UIImage {
         UIImage(systemName: "qrcode.viewfinder")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
@@ -318,6 +328,12 @@ extension UIImage {
         UIImage(named: "woo-empty-inbox-notes")!
     }
 
+    /// Empty Tax Rates Icon
+    ///
+    static var emptyTaxRatesImage: UIImage {
+        UIImage(named: "woo-empty-tax-rates")!
+    }
+
     /// Empty Products Icon
     ///
     static var emptyProductsImage: UIImage {
@@ -372,6 +388,19 @@ extension UIImage {
     static var externalProductImage: UIImage {
         return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
     }
+
+    /// Subscription Product
+    ///
+    static var subscriptionProductImage: UIImage {
+        return UIImage(systemName: "repeat")!
+    }
+
+    /// Subscription Product
+    ///
+    static var variableSubscriptionProductImage: UIImage {
+        return UIImage(systemName: "square.3.layers.3d")!
+    }
+
 
     /// Filter Icon
     ///
@@ -432,6 +461,13 @@ extension UIImage {
     ///
     static var houseImage: UIImage {
         UIImage.gridicon(.house)
+    }
+
+    /// Hourglass Image
+    ///
+    static var hourglass: UIImage {
+        let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .medium)
+        return UIImage(systemName: "hourglass", withConfiguration: config)!
     }
 
     /// House Outlined Image
@@ -709,6 +745,12 @@ extension UIImage {
     ///
     static var shoppingCartPurpleIcon: UIImage {
         return UIImage(named: "icon-shopping-cart-purple")!
+    }
+
+    /// Bordered Custom Amount
+    ///
+    static var borderedCustomAmount: UIImage {
+        return UIImage(named: "icon-bordered-custom-amount")!
     }
 
     /// Credit card
@@ -1396,6 +1438,10 @@ extension UIImage {
 
     static var unlimitedProductsIcon: UIImage {
         UIImage(imageLiteralResourceName: "unlimited-products-icon")
+    }
+
+    static var feedbackOutlineIcon: UIImage {
+        UIImage(named: "icon-feedback-outline")!
     }
 }
 

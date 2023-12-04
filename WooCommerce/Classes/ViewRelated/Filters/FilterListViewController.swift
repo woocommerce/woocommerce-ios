@@ -221,7 +221,8 @@ private extension FilterListViewController {
             case .staticOptions(let options):
                 let command = StaticListSelectorCommand(navigationBarTitle: selected.title,
                                                         data: options,
-                                                        selected: selected.selectedValue)
+                                                        selected: selected.selectedValue,
+                                                        hostViewController: self)
                 self.selectedFilterValueSubscription = command.onItemSelected.sink { selectedValueAction($0) }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
@@ -348,15 +349,20 @@ private extension FilterListViewController {
 
         let data: [FilterType]
 
+        /// Parent view controller. Used to launch the promoted url web view.
+        ///
+        private weak var hostViewController: UIViewController?
+
         private let onItemSelectedSubject = PassthroughSubject<FilterType, Never>()
         var onItemSelected: AnyPublisher<FilterType, Never> {
             onItemSelectedSubject.eraseToAnyPublisher()
         }
 
-        init(navigationBarTitle: String, data: [FilterType], selected: FilterType) {
+        init(navigationBarTitle: String, data: [FilterType], selected: FilterType, hostViewController: UIViewController? = nil) {
             self.navigationBarTitle = navigationBarTitle
             self.data = data
             self.selected = selected
+            self.hostViewController = hostViewController
         }
 
         func isSelected(model: FilterType) -> Bool {
@@ -364,6 +370,11 @@ private extension FilterListViewController {
         }
 
         func handleSelectedChange(selected: FilterType, viewController: ViewController) {
+            // Do not allow selection for an unavailable promotable type.
+            if let promotable = selected as? PromotableProductType, !promotable.isAvailable {
+                return
+            }
+
             onItemSelectedSubject.send(selected)
             self.selected = selected
         }
@@ -371,6 +382,32 @@ private extension FilterListViewController {
         func configureCell(cell: BasicTableViewCell, model: FilterType) {
             cell.textLabel?.text = model.description
             cell.accessibilityIdentifier = model.description
+            cell.accessoryView = nil
+
+            if let promotable = model as? PromotableProductType, !promotable.isAvailable {
+                cell.accessoryView = createPromoteButton(promotableType: promotable)
+            }
+        }
+
+        func createPromoteButton(promotableType: PromotableProductType) -> UIButton {
+            var configuration = UIButton.Configuration.tinted()
+            configuration.cornerStyle = .small
+            configuration.baseForegroundColor = .primary
+            configuration.baseBackgroundColor = .primary
+            configuration.buttonSize = .mini
+            configuration.title = NSLocalizedString("Explore", comment: "Button title to explore an extension that isn't installed")
+
+            let action = UIAction { action in
+                if let url = promotableType.promoteUrl, let viewController = self.hostViewController {
+                    WebviewHelper.launch(url, with: viewController)
+                    ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListExploreButtonTapped(type: promotableType))
+                }
+            }
+
+            let button = UIButton(configuration: configuration, primaryAction: action)
+            button.sizeToFit()
+
+            return button
         }
     }
 }

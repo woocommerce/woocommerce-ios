@@ -152,6 +152,10 @@ public class AppSettingsStore: Store {
             setJetpackBenefitsBannerLastDismissedTime(time: time)
         case .loadJetpackBenefitsBannerVisibility(currentTime: let currentTime, calendar: let calendar, onCompletion: let onCompletion):
             loadJetpackBenefitsBannerVisibility(currentTime: currentTime, calendar: calendar, onCompletion: onCompletion)
+        case .setStoreID(let siteID, let id):
+            setStoreID(siteID: siteID, id: id)
+        case .getStoreID(let siteID, let onCompletion):
+            getStoreID(siteID: siteID, onCompletion: onCompletion)
         case .setTelemetryAvailability(siteID: let siteID, isAvailable: let isAvailable):
             setTelemetryAvailability(siteID: siteID, isAvailable: isAvailable)
         case .setTelemetryLastReportedTime(siteID: let siteID, time: let time):
@@ -196,6 +200,10 @@ public class AppSettingsStore: Store {
             getLocalAnnouncementVisibility(announcement: announcement, onCompletion: onCompletion)
         case .setLocalAnnouncementDismissed(let announcement, let onCompletion):
             setLocalAnnouncementDismissed(announcement: announcement, onCompletion: onCompletion)
+        case .setSelectedTaxRateID(let taxRateId, let siteID):
+            setSelectedTaxRateID(with: taxRateId, siteID: siteID)
+        case .loadSelectedTaxRateID(let siteID, let onCompletion):
+            loadSelectedTaxRateID(with: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -762,6 +770,19 @@ private extension AppSettingsStore {
         }
     }
 
+    // Store unique identifier
+
+    func setStoreID(siteID: Int64, id: String?) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(storeID: id)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func getStoreID(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.storeID)
+    }
+
     // Telemetry data
 
     func setTelemetryAvailability(siteID: Int64, isAvailable: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
@@ -859,6 +880,27 @@ private extension AppSettingsStore {
         let timeRangeRawValue = storeSettings.lastSelectedStatsTimeRange
         let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
         onCompletion(timeRange)
+    }
+}
+
+// MARK: - Tax Rate
+
+private extension AppSettingsStore {
+    func setSelectedTaxRateID(with id: Int64?, siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+
+        let updatedSettings: GeneralStoreSettings
+        if let taxRateID = id {
+            updatedSettings = storeSettings.copy(selectedTaxRateID: id)
+        } else {
+            updatedSettings = storeSettings.erasingSelectedTaxRateID()
+        }
+
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadSelectedTaxRateID(with siteID: Int64, onCompletion: (Int64?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).selectedTaxRateID)
     }
 }
 

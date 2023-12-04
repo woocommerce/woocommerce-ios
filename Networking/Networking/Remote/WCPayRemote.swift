@@ -116,6 +116,22 @@ extension WCPayRemote {
     }
 }
 
+// MARK: - Deposits
+//
+extension WCPayRemote {
+    public func loadDepositsOverview(for siteID: Int64) async throws -> WooPaymentsDepositsOverview {
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.depositsOverview,
+                                     availableAsRESTRequest: true)
+
+        let mapper = WooPaymentsDepositsOverviewMapper()
+
+        return try await enqueue(request, mapper: mapper)
+    }
+}
+
 // MARK: - Constants!
 //
 private extension WCPayRemote {
@@ -127,6 +143,7 @@ private extension WCPayRemote {
         static let createCustomer = "create_customer"
         static let locations = "payments/terminal/locations/store"
         static let charges = "payments/charges"
+        static let depositsOverview = "payments/deposits/overview-all"
     }
 
     enum AccountParameterKeys {

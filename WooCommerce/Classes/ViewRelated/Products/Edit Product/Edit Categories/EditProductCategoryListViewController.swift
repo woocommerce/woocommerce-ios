@@ -26,7 +26,8 @@ final class EditProductCategoryListViewController: UIViewController {
 
         let productCategoryListViewModel = ProductCategoryListViewModel(siteID: product.siteID,
                                                                         selectedCategories: product.categories)
-        productCategoryListViewController = ProductCategoryListViewController(viewModel: productCategoryListViewModel)
+        let configuration = ProductCategoryListViewController.Configuration(updateEnabled: true)
+        productCategoryListViewController = ProductCategoryListViewController(viewModel: productCategoryListViewModel, configuration: configuration)
         viewModel = EditProductCategoryListViewModel(product: product,
                                                      baseProductCategoryListViewModel: productCategoryListViewController.viewModel,
                                                      completion: completion)
@@ -69,7 +70,8 @@ private extension EditProductCategoryListViewController {
     }
 
     func configureTitle() {
-        title = viewModel.addCategoryButtonTitle
+        title = viewModel.screenTitle
+        view.backgroundColor = .listBackground
     }
 
     func configureProductCategoryListView() {
@@ -118,12 +120,13 @@ extension EditProductCategoryListViewController {
 
     @objc private func addButtonTapped() {
         ServiceLocator.analytics.track(.productCategorySettingsAddButtonTapped)
-        let addCategoryViewController = AddProductCategoryViewController(siteID: siteID) { [weak self] (newCategory) in
+        let viewModel = AddEditProductCategoryViewModel(siteID: siteID) { [weak self] (newCategory) in
             defer {
                 self?.dismiss(animated: true, completion: nil)
             }
             self?.viewModel.addAndSelectNewCategory(category: newCategory)
         }
+        let addCategoryViewController = AddEditProductCategoryViewController(viewModel: viewModel)
         let navController = WooNavigationController(rootViewController: addCategoryViewController)
         present(navController, animated: true, completion: nil)
     }

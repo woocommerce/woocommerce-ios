@@ -19,6 +19,7 @@ public enum OrderFactory {
               number: "",
               status: status,
               currency: "",
+              currencySymbol: "",
               customerNote: "",
               dateCreated: Date(),
               dateModified: Date(),
@@ -61,11 +62,11 @@ public enum OrderFactory {
 
     /// Creates a fee line suitable to be used within a new order.
     ///
-    public static func newOrderFee(total: String) -> OrderFeeLine {
+    public static func newOrderFee(total: String, name: String? = nil, taxStatus: OrderFeeTaxStatus = .taxable) -> OrderFeeLine {
         OrderFeeLine(feeID: 0,
-                     name: "Fee",
+                     name: name ?? "Fee",
                      taxClass: "",
-                     taxStatus: .taxable,
+                     taxStatus: taxStatus,
                      total: total,
                      totalTax: "",
                      taxes: [],
@@ -96,4 +97,10 @@ public enum OrderFactory {
     /// References a new empty order with constants `Date` values.
     ///
     public static let emptyNewOrder = Order.empty
+}
+
+public extension OrderFeeLine {
+    var isDeleted: Bool {
+        self == OrderFactory.deletedFeeLine(self)
+    }
 }

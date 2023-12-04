@@ -27,10 +27,16 @@ public final class SystemStatusStore: Store {
         }
 
         switch action {
-        case .synchronizeSystemPlugins(let siteID, let onCompletion):
-            synchronizeSystemPlugins(siteID: siteID, completionHandler: onCompletion)
+        case .synchronizeSystemInformation(let siteID, let onCompletion):
+            synchronizeSystemInformation(siteID: siteID, completionHandler: onCompletion)
         case .fetchSystemPlugin(let siteID, let systemPluginName, let onCompletion):
-            fetchSystemPlugin(siteID: siteID, systemPluginName: systemPluginName, completionHandler: onCompletion)
+            fetchSystemPlugin(siteID: siteID, systemPluginNameList: [systemPluginName], completionHandler: onCompletion)
+        case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
+            fetchSystemPlugin(siteID: siteID, systemPluginNameList: systemPluginNameList, completionHandler: onCompletion)
+        case .fetchSystemPluginWithPath(let siteID, let pluginPath, let onCompletion):
+            fetchSystemPluginWithPath(siteID: siteID,
+                                      pluginPath: pluginPath,
+                                      onCompletion: onCompletion)
         case .fetchSystemStatusReport(let siteID, let onCompletion):
             fetchSystemStatusReport(siteID: siteID, completionHandler: onCompletion)
         }
@@ -40,14 +46,16 @@ public final class SystemStatusStore: Store {
 // MARK: - Network request
 //
 private extension SystemStatusStore {
-    func synchronizeSystemPlugins(siteID: Int64, completionHandler: @escaping (Result<[SystemPlugin], Error>) -> Void) {
-        remote.loadSystemPlugins(for: siteID) { [weak self] result in
-            guard let self = self else { return }
+    func synchronizeSystemInformation(siteID: Int64, completionHandler: @escaping (Result<SystemInformation, Error>) -> Void) {
+        remote.loadSystemInformation(for: siteID) { [weak self] result in
+            guard let self else { return }
             switch result {
-            case .success(let systemPlugins):
-                self.upsertSystemPluginsInBackground(siteID: siteID, readonlySystemPlugins: systemPlugins) { [weak self]_ in
+            case .success(let systemInformation):
+                self.updateStoreID(siteID: siteID, readonlySystemInformation: systemInformation)
+                self.upsertSystemPluginsInBackground(siteID: siteID, readonlySystemInformation: systemInformation) { [weak self] _ in
                     guard let self else { return }
-                    completionHandler(.success(self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }))
+                    let systemPlugins = self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
+                    completionHandler(.success(.init(storeID: systemInformation.environment?.storeID, systemPlugins: systemPlugins)))
                 }
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -64,13 +72,15 @@ private extension SystemStatusStore {
 //
 private extension SystemStatusStore {
 
-    /// Updates or inserts Readonly `SystemPlugin` entities in background.
+    /// Updates or inserts Readonly system information in background.
     /// Triggers `completionHandler` on main thread.
     ///
-    func upsertSystemPluginsInBackground(siteID: Int64, readonlySystemPlugins: [SystemPlugin], completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func upsertSystemPluginsInBackground(siteID: Int64,
+                                         readonlySystemInformation: SystemStatus,
+                                         completionHandler: @escaping (Result<Void, Error>) -> Void) {
         let writerStorage = storageManager.writerDerivedStorage
         writerStorage.perform {
-            self.upsertSystemPlugins(siteID: siteID, readonlySystemPlugins: readonlySystemPlugins, in: writerStorage)
+            self.upsertSystemPlugins(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: writerStorage)
         }
 
         storageManager.saveDerivedType(derivedStorage: writerStorage) {
@@ -80,10 +90,33 @@ private extension SystemStatusStore {
         }
     }
 
-    /// Updates or inserts Readonly `SystemPlugin` entities in specified storage.
+    /// Updates the store id from the system information.
+    ///
+    func updateStoreID(siteID: Int64, readonlySystemInformation: SystemStatus) {
+        let action = AppSettingsAction.setStoreID(siteID: siteID, id: readonlySystemInformation.environment?.storeID)
+        dispatcher.dispatch(action)
+    }
+
+    /// Updates or inserts Readonly sistem plugins from the read only system information in specified storage.
     /// Also removes stale plugins that no longer exist in remote plugin list.
     ///
-    func upsertSystemPlugins(siteID: Int64, readonlySystemPlugins: [SystemPlugin], in storage: StorageType) {
+    func upsertSystemPlugins(siteID: Int64, readonlySystemInformation: SystemStatus, in storage: StorageType) {
+        /// Active and in-active plugins share identical structure, but are stored in separate parts of the remote response
+        /// (and without an active attribute in the response). So... we use the same decoder for active and in-active plugins
+        /// and here we apply the correct value for active (or not)
+        ///
+        let readonlySystemPlugins: [SystemPlugin] = {
+            let activePlugins = readonlySystemInformation.activePlugins.map {
+                $0.copy(active: true)
+            }
+
+            let inactivePlugins = readonlySystemInformation.inactivePlugins.map {
+                $0.copy(active: false)
+            }
+
+            return activePlugins + inactivePlugins
+        }()
+
         readonlySystemPlugins.forEach { readonlySystemPlugin in
             // load or create new StorageSystemPlugin matching the readonly one
             let storageSystemPlugin: StorageSystemPlugin = {
@@ -101,11 +134,21 @@ private extension SystemStatusStore {
         storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
     }
 
-    /// Retrieve `SystemPlugin` entitie of a specified storage by siteID and systemPluginName
+    /// Retrieve a `SystemPlugin` entity from storage whose name matches any name from the provided name list.
+    /// Useful when a plugin has had multiple names.
     ///
-    func fetchSystemPlugin(siteID: Int64, systemPluginName: String, completionHandler: @escaping (SystemPlugin?) -> Void) {
+    func fetchSystemPlugin(siteID: Int64, systemPluginNameList: [String], completionHandler: @escaping (SystemPlugin?) -> Void) {
         let viewStorage = storageManager.viewStorage
-        let systemPlugin = viewStorage.loadSystemPlugin(siteID: siteID, name: systemPluginName)?.toReadOnly()
-        completionHandler(systemPlugin)
+        for systemPluginName in systemPluginNameList {
+            if let systemPlugin = viewStorage.loadSystemPlugin(siteID: siteID, name: systemPluginName)?.toReadOnly() {
+                return completionHandler(systemPlugin)
+            }
+        }
+        completionHandler(nil)
+    }
+
+    func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: @escaping (SystemPlugin?) -> Void) {
+        let viewStorage = storageManager.viewStorage
+        onCompletion(viewStorage.loadSystemPlugin(siteID: siteID, path: pluginPath)?.toReadOnly())
     }
 }

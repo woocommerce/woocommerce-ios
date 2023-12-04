@@ -94,17 +94,30 @@
                     "taxes": [],
                     "meta_data": []
                 }],
-                "fee_lines": [{
-                    "id": 1,
-                    "name": "Fee",
-                    "tax_class": "",
-                    "tax_status": "taxable",
-                    "amount": "2.34",
-                    "total": "2.34",
-                    "total_tax": "0.00",
-                    "taxes": [],
-                    "meta_data": []
-                }],
+                "fee_lines": [
+                    {
+                        "id": 1,
+                        "name": "Fee",
+                        "tax_class": "",
+                        "tax_status": "taxable",
+                        "amount": "2.34",
+                        "total": "2.34",
+                        "total_tax": "0.00",
+                        "taxes": [],
+                        "meta_data": []
+                    },
+                    {
+                        "id": 2,
+                        "name": "Custom amount",
+                        "tax_class": "",
+                        "tax_status": "taxable",
+                        "amount": "2",
+                        "total": "2",
+                        "total_tax": "0.00",
+                        "taxes": [],
+                        "meta_data": []
+                    }
+                ],
                 "coupon_lines": [],
                 "refunds": [],
                 "date_created_gmt": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",

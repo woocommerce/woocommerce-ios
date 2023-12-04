@@ -188,6 +188,7 @@ private extension AggregateDataHelperTests {
                            sku: "",
                            total: 0,
                            attributes: [],
+                           addOns: [],
                            parent: nil)
     }
 
@@ -238,6 +239,7 @@ private extension AggregateDataHelperTests {
             sku: "HOODIE-HAPPY-NINJA",
             total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
             attributes: [],
+            addOns: [],
             parent: nil
         )
 
@@ -251,6 +253,7 @@ private extension AggregateDataHelperTests {
             sku: "T-SHIRT-NINJA-SILHOUETTE",
             total: currencyFormatter.convertToDecimal("-18.00") ?? NSDecimalNumber.zero,
             attributes: [],
+            addOns: [],
             parent: nil
         )
 
@@ -264,6 +267,7 @@ private extension AggregateDataHelperTests {
             sku: "HOODIE-SHIP-YOUR-IDEA-BLACK-L",
             total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
             attributes: testOrderItemAttributes,
+            addOns: [],
             parent: nil
         )
 
@@ -277,6 +281,7 @@ private extension AggregateDataHelperTests {
             sku: "HOODIE-WOO-LOGO",
             total: currencyFormatter.convertToDecimal("-63.00") ?? NSDecimalNumber.zero,
             attributes: [],
+            addOns: [],
             parent: nil
         )
 
@@ -290,6 +295,7 @@ private extension AggregateDataHelperTests {
             sku: "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
             total: currencyFormatter.convertToDecimal("-81.00") ?? NSDecimalNumber.zero,
             attributes: [],
+            addOns: [],
             parent: nil
         )
 

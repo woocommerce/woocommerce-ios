@@ -4,7 +4,7 @@ import WooFoundation
 
 /// View model for `ProductInOrder`.
 ///
-final class ProductInOrderViewModel: Identifiable {
+final class ProductInOrderViewModel: Identifiable, ObservableObject {
     /// Encapsulates the necessary information to execute adding discounts to products
     /// 
     struct DiscountConfiguration {
@@ -80,7 +80,7 @@ final class ProductInOrderViewModel: Identifiable {
     }()
 
     func onAddDiscountTapped() {
-        analytics.track(event: .Orders.productDiscountAddButtonTapped())
+        analytics.track(event: .Orders.productDiscountAdd(type: discountDetailsViewModel.feeOrDiscountType ))
     }
 
     func onEditDiscountTapped() {

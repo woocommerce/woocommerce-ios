@@ -73,18 +73,25 @@ final class AddProductFromImageViewModel: ObservableObject {
     }
 
     private let siteID: Int64
+    private let productName: String?
     private let stores: StoresManager
     private let imageTextScanner: ImageTextScannerProtocol
     private let analytics: Analytics
 
+    /// Language used in the scanned texts
+    ///
+    private var languageIdentifiedUsingAI: String?
+
     init(siteID: Int64,
          source: AddProductCoordinator.Source,
+         productName: String?,
          stores: StoresManager = ServiceLocator.stores,
          imageTextScanner: ImageTextScannerProtocol = ImageTextScanner(),
          analytics: Analytics = ServiceLocator.analytics,
          onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.siteID = siteID
         self.stores = stores
+        self.productName = productName
         self.addProductSource = source
         self.imageTextScanner = imageTextScanner
         self.analytics = analytics
@@ -152,6 +159,7 @@ private extension AddProductFromImageViewModel {
         // Reset scanned texts and generated content from previous image
         scannedTexts = []
         [nameViewModel, descriptionViewModel].forEach { $0.reset() }
+        languageIdentifiedUsingAI = nil
         textDetectionErrorMessage = nil
 
         Task { @MainActor in
@@ -185,28 +193,64 @@ private extension AddProductFromImageViewModel {
         guard scannedTexts.isNotEmpty else {
             return
         }
-        switch await generateProductDetails(from: scannedTexts) {
-            case .success(let details):
-                nameViewModel.onSuggestion(details.name)
-                descriptionViewModel.onSuggestion(details.description)
-                analytics.track(event: .AddProductFromImage.detailsGenerated(
-                    source: addProductSource,
-                    language: details.language,
-                    selectedTextCount: selectedScannedTexts.count
-                ))
-            case .failure(let error):
-                textGenerationErrorMessage = Localization.defaultError
+
+        do {
+            let language = try await identifyLanguage(from: scannedTexts)
+            let details = try await generateProductDetails(from: scannedTexts,
+                                                           language: language)
+            nameViewModel.onSuggestion(details.name)
+            descriptionViewModel.onSuggestion(details.description)
+            analytics.track(event: .AddProductFromImage.detailsGenerated(
+                source: addProductSource,
+                language: language,
+                selectedTextCount: selectedScannedTexts.count
+            ))
+        } catch {
+            if case let IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: underlyingError) = error {
+                DDLogError("⛔️ Error identifying language: \(error)")
+                textGenerationErrorMessage = underlyingError.localizedDescription
+            } else {
                 DDLogError("⛔️ Error generating product details from scanned text: \(error)")
+                textGenerationErrorMessage = Localization.defaultError
                 analytics.track(event: .AddProductFromImage.detailGenerationFailed(source: addProductSource, error: error))
+            }
         }
     }
 
-    func generateProductDetails(from scannedTexts: [String]) async -> Result<ProductDetailsFromScannedTexts, Error> {
-        await withCheckedContinuation { continuation in
+    func generateProductDetails(from scannedTexts: [String],
+                                language: String) async throws -> ProductDetailsFromScannedTexts {
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateProductDetails(siteID: siteID,
-                                                                 scannedTexts: scannedTexts) { result in
-                continuation.resume(returning: result)
+                                                                 productName: productName,
+                                                                 scannedTexts: scannedTexts,
+                                                                 language: language) { result in
+                continuation.resume(with: result)
             })
+        }
+    }
+
+    @MainActor
+    func identifyLanguage(from scannedTexts: [String]) async throws -> String {
+        if let languageIdentifiedUsingAI,
+           languageIdentifiedUsingAI.isNotEmpty {
+            return languageIdentifiedUsingAI
+        }
+
+        do {
+            let language = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
+                                                               string: scannedTexts.joined(separator: ","),
+                                                               feature: .productDetailsFromScannedTexts,
+                                                               completion: { result in
+                    continuation.resume(with: result)
+                }))
+            }
+            analytics.track(event: .AddProductFromImage.identifiedLanguage(language))
+            self.languageIdentifiedUsingAI = language
+            return language
+        } catch {
+            analytics.track(event: .AddProductFromImage.identifyLanguageFailed(error: error))
+            throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)
         }
     }
 

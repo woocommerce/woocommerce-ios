@@ -1251,6 +1251,23 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundSystemPlugin, systemPlugin2)
     }
 
+    func test_loadSystemPlugin_by_siteID_and_path() throws {
+        // Given
+        let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.plugin = "woocommerce-payments/woocommerce-payments.php"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.plugin = "woocommerce-gift-cards/woocommerce-gift-cards.php"
+        systemPlugin2.siteID = sampleSiteID
+
+        // When
+        let foundSystemPlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce-gift-cards/woocommerce-gift-cards.php"))
+
+        // Then
+        XCTAssertEqual(foundSystemPlugin, systemPlugin2)
+    }
+
     func test_load_WCPayCharge_by_siteID_and_chargeID() throws {
         // Given
         let charge1 = storage.insertNewObject(ofType: WCPayCharge.self)

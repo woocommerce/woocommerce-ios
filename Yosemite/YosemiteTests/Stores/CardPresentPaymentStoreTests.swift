@@ -671,6 +671,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let action = CardPresentPaymentAction.checkDeviceSupport(siteID: sampleSiteID,
                                                                  cardReaderType: .appleBuiltIn,
                                                                  discoveryMethod: .localMobile,
+                                                                 minimumOperatingSystemVersionOverride: nil,
                                                                  onCompletion: { _ in })
 
         cardPresentStore.onAction(action)
@@ -682,11 +683,26 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let action = CardPresentPaymentAction.checkDeviceSupport(siteID: sampleSiteID,
                                                                  cardReaderType: .chipper,
                                                                  discoveryMethod: .bluetoothScan,
+                                                                 minimumOperatingSystemVersionOverride: nil,
                                                                  onCompletion: { _ in })
 
         cardPresentStore.onAction(action)
 
         assertEqual(.bluetoothScan, mockCardReaderService.spyCheckSupportDiscoveryMethod)
         assertEqual(.chipper, mockCardReaderService.spyCheckSupportCardReaderType)
+    }
+
+    func test_checkDeviceSupport_action_passes_operating_system_override_version_to_service() {
+        let expectedVersion = OperatingSystemVersion(majorVersion: 16, minorVersion: 4, patchVersion: 0)
+        let action = CardPresentPaymentAction.checkDeviceSupport(
+            siteID: sampleSiteID,
+            cardReaderType: .appleBuiltIn,
+            discoveryMethod: .localMobile,
+            minimumOperatingSystemVersionOverride: expectedVersion,
+            onCompletion: { _ in })
+
+        cardPresentStore.onAction(action)
+
+        XCTAssertNotNil(mockCardReaderService.spyCheckSupportMinimumOperatingSystemVersionOverride)
     }
 }

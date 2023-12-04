@@ -113,6 +113,20 @@ class CurrencyFormatterTests: XCTestCase {
         XCTAssertNil(actualResult)
     }
 
+    func test_formatAmount_when_zero_input_then_zero_result() {
+        let zeroInput = Decimal.zero
+        let result = CurrencyFormatter(currencySettings: sampleCurrencySettings).formatAmount(zeroInput)
+
+        XCTAssertEqual(result, "$0.00")
+    }
+
+    func test_formatAmount_when_non_numeric_input_then_zero_result() {
+        let nonNumericInput = "-"
+        let result = CurrencyFormatter(currencySettings: sampleCurrencySettings).formatAmount(nonNumericInput)
+
+        XCTAssertEqual(result, "$0.00")
+    }
+
     /// Verifies that negative numbers are successfully converted into a decimal
     ///
     func testNegativeNumbersSuccessfullyConvertToDecimal() {

@@ -81,7 +81,7 @@ private extension OneTimeApplicationPasswordUseCase {
 
 private extension OneTimeApplicationPasswordUseCase {
     enum Path {
-        static let applicationPasswords = "/wp-json/wp/v2/users/me/application-passwords/"
-        static let introspect = "/wp-json/wp/v2/users/me/application-passwords/introspect"
+        static let applicationPasswords = "/?rest_route=/wp/v2/users/me/application-passwords/"
+        static let introspect = "/?rest_route=/wp/v2/users/me/application-passwords/introspect"
     }
 }

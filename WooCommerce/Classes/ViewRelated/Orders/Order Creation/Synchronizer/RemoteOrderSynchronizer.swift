@@ -21,6 +21,12 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
         $order
     }
 
+    @Published private(set) var giftCardToApply: String?
+
+    var giftCardToApplyPublisher: Published<String?>.Publisher {
+        $giftCardToApply
+    }
+
     // MARK: Inputs
 
     var setStatus = PassthroughSubject<OrderStatusEnum, Never>()
@@ -33,11 +39,17 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setShipping =  PassthroughSubject<ShippingLine?, Never>()
 
-    var setFee = PassthroughSubject<OrderFeeLine?, Never>()
+    var addFee = PassthroughSubject<OrderFeeLine, Never>()
+
+    var removeFee = PassthroughSubject<OrderFeeLine, Never>()
+
+    var updateFee = PassthroughSubject<OrderFeeLine, Never>()
 
     var addCoupon = PassthroughSubject<String, Never>()
 
     var removeCoupon = PassthroughSubject<String, Never>()
+
+    let setGiftCard = PassthroughSubject<String?, Never>()
 
     var setNote = PassthroughSubject<String?, Never>()
 
@@ -91,22 +103,23 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     /// Commits all changes to the remote order.
     ///
-    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>, _ usesGiftCard: Bool) -> Void) {
+        let usesGiftCard = giftCardToApply != nil
         Just(order)
             .flatMap { order -> AnyPublisher<Order, Error> in
                 if order.orderID == .zero {
-                    return self.createOrderRemotely(order, type: .commit) // Create order if it hasn't been created
+                    return self.createOrderRemotely(order, type: .commit, includesGiftCard: true) // Create order if it hasn't been created
                 } else {
-                    return self.updateOrderRemotely(order, type: .commit) // Update order if it has been created.
+                    return self.updateOrderRemotely(order, type: .commit, includesGiftCard: true) // Update order if it has been created.
                 }
             }
             .sink { finished in
                 // We can let the whole chain fail because a new one is created in each `commitAllChanges` call.
                 if case .failure(let error) = finished {
-                    onCompletion(.failure(error))
+                    onCompletion(.failure(error), usesGiftCard)
                 }
             } receiveValue: { order in
-                onCompletion(.success(order))
+                onCompletion(.success(order), usesGiftCard)
             }
             .store(in: &subscriptions)
     }
@@ -195,10 +208,36 @@ private extension RemoteOrderSynchronizer {
             }
             .store(in: &subscriptions)
 
-        setFee.withLatestFrom(orderPublisher)
+        addFee.withLatestFrom(orderPublisher)
+            .map { [weak self] feeLineInput, order -> Order in
+                guard let self = self else { return order }
+                let updatedOrder = FeesInputTransformer.append(input: feeLineInput, on: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
+            }
+            .sink { [weak self] order in
+                self?.order = order
+                self?.orderSyncTrigger.send(order)
+            }
+            .store(in: &subscriptions)
+
+        updateFee.withLatestFrom(orderPublisher)
             .map { [weak self] feeLineInput, order -> Order in
                 guard let self = self else { return order }
                 let updatedOrder = FeesInputTransformer.update(input: feeLineInput, on: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
+            }
+            .sink { [weak self] order in
+                self?.order = order
+                self?.orderSyncTrigger.send(order)
+            }
+            .store(in: &subscriptions)
+
+        removeFee.withLatestFrom(orderPublisher)
+            .map { [weak self] feeLineInput, order -> Order in
+                guard let self = self else { return order }
+                let updatedOrder = FeesInputTransformer.remove(input: feeLineInput, from: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
@@ -230,6 +269,17 @@ private extension RemoteOrderSynchronizer {
             .sink { [weak self] order in
                 self?.order = order
                 self?.orderSyncTrigger.send(order)
+            }
+            .store(in: &subscriptions)
+
+        setGiftCard.withLatestFrom(orderPublisher)
+            .sink { [weak self] code, order in
+                self?.giftCardToApply = code
+                // Only syncs the order to apply the gift card right away in the editing flow.
+                // In the creation flow, the gift card is applied when the user taps the Create CTA to create an order.
+                if case .editing = flow {
+                    self?.orderSyncTrigger.send(order)
+                }
             }
             .store(in: &subscriptions)
 
@@ -286,9 +336,9 @@ private extension RemoteOrderSynchronizer {
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing(blocking: true) // Creating an order is always a blocking operation
 
-                return self.createOrderRemotely(order, type: .sync)
+                return self.createOrderRemotely(order, type: .sync, includesGiftCard: false)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
-                        self?.state = .error(error)
+                        self?.state = .error(error, usesGiftCard: false)
                         return Empty().eraseToAnyPublisher()
                     }
                     .eraseToAnyPublisher()
@@ -309,17 +359,19 @@ private extension RemoteOrderSynchronizer {
                 $0.orderID != .zero
             }
             .handleEvents(receiveOutput: { order in
-                // Set a `blocking` state if the order contains new lines
-                self.state = .syncing(blocking: order.containsLocalLines())
+                // Set a `blocking` state if the order contains new lines or bundle configurations.
+                self.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
             })
             .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
 
                 let syncType: OperationType = flow == .creation ? .sync : .commit
-                return self.updateOrderRemotely(order, type: syncType)
+                let includesGiftCard = flow != .creation
+                let hasGiftCard = giftCardToApply != nil
+                return self.updateOrderRemotely(order, type: syncType, includesGiftCard: includesGiftCard)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
-                        self?.state = .error(error)
+                        self?.state = .error(error, usesGiftCard: includesGiftCard && hasGiftCard)
                         return Empty().eraseToAnyPublisher()
                     }
                     .eraseToAnyPublisher()
@@ -335,17 +387,22 @@ private extension RemoteOrderSynchronizer {
     /// Returns a publisher that creates an order remotely, configured for the given operation type.
     /// The later emitted order is delivered with the latest selected status.
     ///
-    func createOrderRemotely(_ order: Order, type: OperationType) -> AnyPublisher<Order, Error> {
+    func createOrderRemotely(_ order: Order, type: OperationType, includesGiftCard: Bool) -> AnyPublisher<Order, Error> {
         Future<Order, Error> { [weak self] promise in
             guard let self = self else { return }
 
+            let giftCard = includesGiftCard ? self.giftCardToApply: nil
+
             let apiOrderStatus = self.orderStatus(for: type)
             let draftOrder = order.copy(status: apiOrderStatus).sanitizingLocalItems()
-            let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder) { [weak self] result in
+            let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder, giftCard: giftCard) { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {
                 case .success(let remoteOrder):
+                    if giftCard != nil {
+                        self.giftCardToApply = nil
+                    }
                     let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
                     promise(.success(newLocalOrder))
 
@@ -361,17 +418,24 @@ private extension RemoteOrderSynchronizer {
     /// Returns a publisher that updates an order remotely, configured for the given operation type
     /// The later emitted order is delivered with the latest selected status.
     ///
-    func updateOrderRemotely(_ order: Order, type: OperationType) -> AnyPublisher<Order, Error> {
+    func updateOrderRemotely(_ order: Order, type: OperationType, includesGiftCard: Bool) -> AnyPublisher<Order, Error> {
         Future<Order, Error> { [weak self] promise in
             guard let self = self else { return }
 
             let operationUpdateFields = self.orderUpdateFields(for: type)
             let orderToSubmit = order.sanitizingLocalItems()
-            let action = OrderAction.updateOrder(siteID: self.siteID, order: orderToSubmit, fields: operationUpdateFields) { [weak self] result in
+            let giftCard = includesGiftCard ? self.giftCardToApply: nil
+            let action = OrderAction.updateOrder(siteID: self.siteID,
+                                                 order: orderToSubmit,
+                                                 giftCard: giftCard,
+                                                 fields: operationUpdateFields) { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {
                 case .success(let remoteOrder):
+                    if giftCard != nil {
+                        self.giftCardToApply = nil
+                    }
                     let newLocalOrder = self.updateOrderWithLocalState(targetOrder: remoteOrder, localOrder: self.order)
                     promise(.success(newLocalOrder))
 
@@ -492,5 +556,11 @@ private extension Order {
             return item.copy(itemID: .zero, subtotal: "", total: "")
         }
         return copy(items: sanitizedItems)
+    }
+
+    /// Returns true if the order contains any items with bundle configuration updates.
+    ///
+    func containsBundleConfigurations() -> Bool {
+        items.map { $0.bundleConfiguration.isNotEmpty }.contains(true)
     }
 }

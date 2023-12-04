@@ -29,6 +29,8 @@ final class SetUpTapToPayCompleteViewController: UIHostingController<SetUpTapToP
 struct SetUpTapToPayCompleteView: View {
     @ObservedObject var viewModel: SetUpTapToPayCompleteViewModel
 
+    @State var showingAboutTapToPay: Bool = false
+
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
     var isCompact: Bool {
@@ -74,12 +76,24 @@ struct SetUpTapToPayCompleteView: View {
                 .padding()
                 .fixedSize(horizontal: false, vertical: true)
 
-            Button(Localization.doneButton, action: {
+            Button(Localization.continueButton, action: {
                 viewModel.doneTapped()
             })
             .buttonStyle(PrimaryButtonStyle())
+
+            InPersonPaymentsLearnMore(
+                viewModel: LearnMoreViewModel(
+                    formatText: Localization.learnMore,
+                    tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
+            .padding(.vertical, Constants.learnMorePadding)
+            .customOpenURL(action: { _ in
+                showingAboutTapToPay = true
+            })
         }
         .padding()
+        .sheet(isPresented: $showingAboutTapToPay) {
+            AboutTapToPayViewInNavigationView(viewModel: AboutTapToPayViewModel(shouldAlwaysHideSetUpTapToPayButton: true))
+        }
     }
 }
 
@@ -88,6 +102,7 @@ private enum Constants {
     static let maxCompactImageHeight: CGFloat = 80
     static let imageFontSize: CGFloat = 120
     static let compactImageFontSize: CGFloat = 40
+    static let learnMorePadding: CGFloat = 8
 }
 
 // MARK: - Localization
@@ -107,15 +122,23 @@ private extension SetUpTapToPayCompleteView {
         )
 
         static let setUpCompleteDetail = NSLocalizedString(
-            "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from " +
-            "Order Details. Choose Tap to Pay on iPhone as the payment method.",
+            "Choose Tap to Pay on iPhone from the Collect Payment options in Order Details Menu → Payments.",
             comment: "Settings > Set up Tap to Pay on iPhone > Complete > Detail"
         )
 
-        static let doneButton = NSLocalizedString(
-            "Done",
+        static let continueButton = NSLocalizedString(
+            "Continue",
             comment: "Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the " +
             "next for testing Tap to Pay on iPhone"
+        )
+
+        static let learnMore = NSLocalizedString(
+            "%1$@ about accepting payments with Tap to Pay on iPhone.",
+            comment: """
+                     A label prompting users to learn more about Tap to Pay on iPhone"
+                     %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                     which should be translated separately and considered part of this sentence.
+                     """
         )
     }
 }

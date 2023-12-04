@@ -1,4 +1,5 @@
 import Yosemite
+import protocol Experiments.FeatureFlagService
 
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction: Equatable {
@@ -6,6 +7,7 @@ enum ProductFormEditAction: Equatable {
     case linkedProductsPromo(viewModel: FeatureAnnouncementCardViewModel)
     case name(editable: Bool)
     case description(editable: Bool)
+    case promoteWithBlaze
     case priceSettings(editable: Bool, hideSeparator: Bool)
     case reviews
     case productType(editable: Bool)
@@ -35,7 +37,8 @@ enum ProductFormEditAction: Equatable {
     // Composite products only
     case components(actionable: Bool)
     // Subscription products only
-    case subscription(actionable: Bool)
+    case subscriptionFreeTrial(editable: Bool)
+    case subscriptionExpiry(editable: Bool)
     // Variable Subscription products only
     case noVariationsWarning
     case quantityRules
@@ -54,6 +57,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     private let product: EditableProductModel
     private let formType: ProductFormType
+    private let canPromoteWithBlaze: Bool
     private let editable: Bool
     private let addOnsFeatureEnabled: Bool
     private let variationsPrice: VariationsPrice
@@ -66,28 +70,27 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     }
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
-    private let isSubscriptionProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
          formType: ProductFormType,
+         canPromoteWithBlaze: Bool = false,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
-         isSubscriptionProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
+        self.canPromoteWithBlaze = canPromoteWithBlaze
         self.editable = formType != .readonly
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
-        self.isSubscriptionProductsEnabled = isSubscriptionProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
     }
 
@@ -102,11 +105,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         && product.upsellIDs.isEmpty
         && product.crossSellIDs.isEmpty
 
+        let shouldShowPromoteWithBlaze = canPromoteWithBlaze
+
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
             shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: newLinkedProductsPromoViewModel) : nil,
             .name(editable: editable),
-            shouldShowDescriptionRow ? .description(editable: editable): nil
+            shouldShowDescriptionRow ? .description(editable: editable): nil,
+            shouldShowPromoteWithBlaze ? .promoteWithBlaze : nil
         ]
         return actions.compactMap { $0 }
     }
@@ -145,7 +151,7 @@ private extension ProductFormActionsFactory {
         case .subscription:
             return allSettingsSectionActionsForSubscriptionProduct()
         case .variableSubscription:
-            return isSubscriptionProductsEnabled ? allSettingsSectionActionsForVariableSubscriptionProduct() : allSettingsSectionActionsForNonCoreProduct()
+            return allSettingsSectionActionsForVariableSubscriptionProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()
         }
@@ -297,52 +303,63 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
-        let subscriptionOrPriceRow: ProductFormEditAction? = {
-            if isSubscriptionProductsEnabled {
-                return .subscription(actionable: true)
-            } else if !product.regularPrice.isNilOrEmpty {
-                return .priceSettings(editable: false, hideSeparator: false)
-            } else {
-                return nil
-            }
-        }()
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+        let canEditProductType = editable
+        let shouldShowDownloadableProduct = product.downloadable
+        let shouldShowShippingSettingsRow = product.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [
-            subscriptionOrPriceRow,
+            .priceSettings(editable: editable, hideSeparator: false),
+            .subscriptionFreeTrial(editable: editable),
+            .subscriptionExpiry(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
-            .inventorySettings(editable: false),
+            shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
+            .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
+            shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: canEditProductType)
         ]
         return actions.compactMap { $0 }
     }
 
     func allSettingsSectionActionsForVariableSubscriptionProduct() -> [ProductFormEditAction] {
-        let shouldShowNoVariationsWarning = product.product.variations.isEmpty
-        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowReviewsRow = product.reviewsAllowed
+        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
-        let actions: [ProductFormEditAction?] = [
-            shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
-            shouldShowAttributesRow ? .attributes(editable: editable) : nil,
-            shouldShowReviewsRow ? .reviews: nil,
-            .inventorySettings(editable: false),
-            shouldShowQuantityRulesRow ? .quantityRules : nil,
-            .categories(editable: editable),
-            .addOns(editable: editable),
-            .tags(editable: editable),
-            .shortDescription(editable: editable),
-            .linkedProducts(editable: editable),
-            .productType(editable: false)
-        ]
+        let actions: [ProductFormEditAction?] = {
+            let canEditProductType = editable
+            let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+            let shouldShowNoPriceWarningRow: Bool = {
+                let variationsHaveNoPriceSet = variationsPrice == .notSet
+                let productHasNoPriceSet = variationsPrice == .unknown && product.product.variations.isNotEmpty && product.product.price.isEmpty
+                return canEditProductType && (variationsHaveNoPriceSet || productHasNoPriceSet)
+            }()
+
+            return [
+                .variations(hideSeparator: shouldShowNoPriceWarningRow),
+                shouldShowNoPriceWarningRow ? .noPriceWarning : nil,
+                shouldShowAttributesRow ? .attributes(editable: editable) : nil,
+                shouldShowReviewsRow ? .reviews: nil,
+                .shippingSettings(editable: editable),
+                .inventorySettings(editable: canEditInventorySettingsRow),
+                shouldShowQuantityRulesRow ? .quantityRules : nil,
+                .addOns(editable: editable),
+                .categories(editable: editable),
+                .tags(editable: editable),
+                .shortDescription(editable: editable),
+                .linkedProducts(editable: editable),
+                .productType(editable: canEditProductType)
+            ]
+        }()
+
         return actions.compactMap { $0 }
     }
 
@@ -376,6 +393,12 @@ private extension ProductFormActionsFactory {
         switch action {
         case .priceSettings:
             // The price settings action is always visible in the settings section.
+            return true
+        case .subscriptionFreeTrial:
+            // The Free trial row is always visible in the settings section for a subscription product.
+            return true
+        case .subscriptionExpiry:
+            // The expiry is always visible in the settings section for a subscription product.
             return true
         case .reviews:
             // The reviews action is always visible in the settings section.
@@ -431,9 +454,6 @@ private extension ProductFormActionsFactory {
             return true
         case .components:
             // The components row is always visible in the settings section for a composite product.
-            return true
-        case .subscription:
-            // The subscription row is always visible in the settings section for a subscription product.
             return true
         case .noVariationsWarning:
             // Always visible when available

@@ -29,6 +29,7 @@
     },
     "refunds" : [],
     "currency" : "USD",
+    "currency_symbol": "$",
     "parent_id" : 0,
     "line_items" : [
       {

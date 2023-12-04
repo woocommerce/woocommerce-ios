@@ -103,6 +103,8 @@ private extension ProductFormTableViewDataSource {
             configureLearnMoreAI(cell: cell)
         case .separator:
             configureSeparator(cell: cell)
+        case .promoteWithBlaze:
+            configurePromoteWithBlaze(cell: cell)
         }
     }
     func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
@@ -277,13 +279,31 @@ private extension ProductFormTableViewDataSource {
         cell.hideSeparator()
     }
 
+    func configurePromoteWithBlaze(cell: UITableViewCell) {
+        guard let cell = cell as? LeftImageTableViewCell else {
+            fatalError("Unexpected table view cell for the promote with Blaze cell")
+        }
+        let title = NSLocalizedString(
+            "productFormTableViewDataSource.promoteWithBlazeButton",
+            value: "Promote with Blaze",
+            comment: "Label for button on product form to open Blaze flow"
+        )
+
+        cell.configure(
+            image: .blaze.resize(to: Constants.blazeButtonIconSize),
+            text: title,
+            textColor: .accent
+        )
+        cell.hideSeparator()
+    }
+
     func configureSeparator(cell: UITableViewCell) {
         guard let cell = cell as? SpacerTableViewCell else {
             fatalError("Unexpected table view cell for the separator cell")
         }
         cell.selectionStyle = .none
         cell.backgroundColor = .listBackground
-        cell.showSeparator()
+        cell.hideSeparator()
         cell.configure(height: Constants.settingsHeaderHeight)
     }
 
@@ -328,7 +348,8 @@ private extension ProductFormTableViewDataSource {
              .attributes(let viewModel, _),
              .bundledProducts(let viewModel, _),
              .components(let viewModel, _),
-             .subscription(let viewModel, _),
+             .subscriptionFreeTrial(let viewModel, _),
+             .subscriptionExpiry(let viewModel, _),
              .quantityRules(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         case .reviews(let viewModel, let ratingCount, let averageRating):
@@ -397,6 +418,7 @@ private extension ProductFormTableViewDataSource {
         static let learnMoreTextHeight: CGFloat = 16
         static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: 4, right: 0)
         static let settingsHeaderHeight = CGFloat(16)
+        static let blazeButtonIconSize = CGSize(width: 20, height: 20)
     }
     enum Localization {
         static let legalText = NSLocalizedString(

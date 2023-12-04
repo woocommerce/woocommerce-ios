@@ -69,6 +69,7 @@ final class AggregateDataHelper {
                 sku: item.sku,
                 total: total,
                 attributes: attributes,
+                addOns: matchingOrderItem?.addOns ?? [],
                 parent: parent
             )
         }
@@ -98,6 +99,7 @@ final class AggregateDataHelper {
                 sku: item.sku,
                 total: total,
                 attributes: item.attributes,
+                addOns: item.addOns,
                 parent: item.parent
             )
         }
@@ -134,6 +136,7 @@ final class AggregateDataHelper {
                 sku: item.sku,
                 total: total,
                 attributes: item.attributes,
+                addOns: item.addOns,
                 parent: item.parent
             )
         }

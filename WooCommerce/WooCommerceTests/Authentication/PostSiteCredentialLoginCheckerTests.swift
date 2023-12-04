@@ -50,7 +50,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
 
     func test_error_alert_is_displayed_when_application_password_cannot_be_fetched() {
         // Given
-        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout)
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout())
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
         var isSuccess = false
 
@@ -95,7 +95,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let roleCheckUseCase = MockRoleEligibilityUseCase()
-        roleCheckUseCase.errorToReturn = .unknown(error: NetworkError.timeout)
+        roleCheckUseCase.errorToReturn = .unknown(error: NetworkError.timeout())
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
                                                      roleEligibilityUseCase: roleCheckUseCase)
         var isSuccess = false
@@ -186,7 +186,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
             case .fetchSiteInfo(_, let completion):
-                completion(.failure(NetworkError.timeout))
+                completion(.failure(NetworkError.timeout()))
             default:
                 break
             }
@@ -243,10 +243,10 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
             mockApplicationPassword = mockGeneratedPassword
             return mockGeneratedPassword
         }
-        throw mockGenerationError ?? NetworkError.notFound
+        throw mockGenerationError ?? NetworkError.notFound()
     }
 
     func deletePassword() async throws {
-        throw mockDeletionError ?? NetworkError.notFound
+        throw mockDeletionError ?? NetworkError.notFound()
     }
 }

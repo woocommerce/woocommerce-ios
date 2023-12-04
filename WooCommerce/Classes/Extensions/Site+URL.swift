@@ -25,6 +25,14 @@ extension Site {
     func pluginSettingsSectionURL(from plugin: CardPresentPaymentsPlugin) -> String {
         adminURL + "admin.php?page=wc-settings&tab=checkout&section=" + plugin.setupURLSectionPath
     }
+
+    /// Returns the plugin URL from wp-admin that handles pending tasks or requirements during onboarding.
+    /// Both WCPay and Stripe use the same URL.
+    ///
+    func cardPresentPluginHasPendingTasksURL() -> String {
+        return adminURL + "admin.php?page=wc-admin&path=%2Fpayments%2Foverview"
+    }
+
     /// Returns the WooCommerce admin URL, or attempts to construct it from the site URL.
     ///
     func adminURLWithFallback() -> URL? {

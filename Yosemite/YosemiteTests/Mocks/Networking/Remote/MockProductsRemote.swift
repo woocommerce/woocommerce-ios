@@ -39,6 +39,10 @@ final class MockProductsRemote {
     /// The results to return based on the given site ID in `loadNumberOfProducts`.
     private var loadNumberOfProductsResultsBySiteID = [Int64: Result<Int64, Error>]()
 
+    private var searchProductsResultsByQuery = [String: Result<[Product], Error>]()
+
+    private var searchProductsBySKUResultsBySKU = [String: Result<[Product], Error>]()
+
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
 
@@ -85,6 +89,18 @@ final class MockProductsRemote {
     ///
     func whenLoadingNumberOfProducts(siteID: Int64, thenReturn result: Result<Int64, Error>) {
         loadNumberOfProductsResultsBySiteID[siteID] = result
+    }
+
+    /// Set the value passed to the `completion` block if `searchProducts()` is called.
+    ///
+    func whenSearchingProducts(query: String, thenReturn result: Result<[Product], Error>) {
+        searchProductsResultsByQuery[query] = result
+    }
+
+    /// Set the value passed to the `completion` block if `searchProductsBySKU()` is called.
+    ///
+    func whenSearchingProductsBySKU(sku: String, thenReturn result: Result<[Product], Error>) {
+        searchProductsBySKUResultsBySKU[sku] = result
     }
 }
 
@@ -187,6 +203,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         searchProductWithProductType = productType
         searchProductWithProductStatus = productStatus
         searchProductWithProductCategory = productCategory
+        if let result = searchProductsResultsByQuery[keyword] {
+            completion(result)
+        }
     }
 
     func searchProductsBySKU(for siteID: Int64,
@@ -194,7 +213,11 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                              pageNumber: Int,
                              pageSize: Int,
                              completion: @escaping (Result<[Product], Error>) -> Void) {
-        // no-op
+        if let result = searchProductsBySKUResultsBySKU[keyword] {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find result for SKU \(keyword)")
+        }
     }
 
     func searchSku(for siteID: Int64, sku: String, completion: @escaping (Result<String, Error>) -> Void) {
@@ -236,7 +259,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64 {
         guard let result = loadNumberOfProductsResultsBySiteID[siteID] else {
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         do {
             let numberOfProducts = try result.get()

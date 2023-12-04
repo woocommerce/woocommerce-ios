@@ -30,6 +30,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         newVariationsPriceSubject.eraseToAnyPublisher()
     }
 
+    /// Emits a void value informing when Blaze eligibility is computed
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
+        blazeEligiblityUpdateSubject.eraseToAnyPublisher()
+    }
+
     /// The latest product value.
     var productModel: EditableProductModel {
         product
@@ -38,6 +43,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// The original product value.
     var originalProductModel: EditableProductModel {
         originalProduct
+    }
+
+    /// Whether the "Promote with Blaze" button should show Blaze intro view first or not when tapped.
+    var shouldShowBlazeIntroView: Bool {
+        blazeCampaignResultsController.isEmpty
     }
 
     /// The form type could change from .add to .edit after creation.
@@ -50,10 +60,22 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
+    private let blazeEligiblityUpdateSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
     private var isEligibleForBlaze: Bool = false
+
+    private var hasActiveBlazeCampaign: Bool = false
+
+    /// Blaze campaign ResultsController.
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
+        let predicate = NSPredicate(format: "siteID == %lld", product.siteID)
+        let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
+                                                                        matching: predicate,
+                                                                        sortedBy: [])
+        return resultsController
+    }()
 
     /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
     /// Assigning this value will recreate the `actionsFactory` property.
@@ -195,6 +217,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     var onProductCreated: (Product) -> Void = { _ in }
 
+    /// Keeps a strong reference to the use case to wait for callback closures.
+    ///
+    private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -221,6 +247,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         queryAddOnsFeatureState()
         updateVariationsPriceState()
+        configureResultsController()
         updateBlazeEligibility()
     }
 
@@ -273,8 +300,9 @@ extension ProductFormViewModel {
         return isSitePublic && formType != .add && productHasLinkToShare
     }
 
+    /// Merchants can promote a product with Blaze if product and site are eligible, and there's no existing Blaze campaign for the product.
     func canPromoteWithBlaze() -> Bool {
-        isEligibleForBlaze
+        isEligibleForBlaze && !hasActiveBlazeCampaign
     }
 
     func canDeleteProduct() -> Bool {
@@ -302,17 +330,36 @@ extension ProductFormViewModel {
     }
 
     func updatePriceSettings(regularPrice: String?,
+                             subscriptionPeriod: SubscriptionPeriod?,
+                             subscriptionPeriodInterval: String?,
+                             subscriptionSignupFee: String?,
                              salePrice: String?,
                              dateOnSaleStart: Date?,
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
+        // Sets "Expire after" to "0" (i.e. Never expire)
+        // if the subscription period or interval is changed
+        let subscriptionLength: String? = {
+            if product.subscription?.period != subscriptionPeriod || product.subscription?.periodInterval != subscriptionPeriodInterval {
+                return "0"
+            } else {
+                return product.subscription?.length
+            }
+        }()
+
+        let subscription = product.subscription?.copy(length: subscriptionLength,
+                                                      period: subscriptionPeriod,
+                                                      periodInterval: subscriptionPeriodInterval,
+                                                      price: regularPrice,
+                                                      signUpFee: subscriptionSignupFee)
         product = EditableProductModel(product: product.product.copy(dateOnSaleStart: dateOnSaleStart,
                                                                      dateOnSaleEnd: dateOnSaleEnd,
                                                                      regularPrice: regularPrice,
                                                                      salePrice: salePrice,
                                                                      taxStatusKey: taxStatus.rawValue,
-                                                                     taxClass: taxClass?.slug))
+                                                                     taxClass: taxClass?.slug,
+                                                                     subscription: subscription))
     }
 
     func updateProductType(productType: BottomSheetProductType) {
@@ -324,9 +371,12 @@ extension ProductFormViewModel {
         if productType == .affiliate {
             manageStock = false
         }
+
+        let subscription = productType == .subscription ? ProductSubscription.empty : nil
         product = EditableProductModel(product: product.product.copy(productTypeKey: productType.productType.rawValue,
                                                                      virtual: productType.isVirtual,
-                                                                     manageStock: manageStock))
+                                                                     manageStock: manageStock,
+                                                                     subscription: subscription))
     }
 
     func updateInventorySettings(sku: String?,
@@ -343,11 +393,17 @@ extension ProductFormViewModel {
                                                                      soldIndividually: soldIndividually))
     }
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?) {
+    func updateShippingSettings(weight: String?,
+                                dimensions: ProductDimensions,
+                                oneTimeShipping: Bool?,
+                                shippingClass: String?,
+                                shippingClassID: Int64?) {
+        let subscription = product.subscription?.copy(oneTimeShipping: oneTimeShipping)
         product = EditableProductModel(product: product.product.copy(weight: weight,
                                                                      dimensions: dimensions,
                                                                      shippingClass: shippingClass ?? "",
-                                                                     shippingClassID: shippingClassID ?? 0))
+                                                                     shippingClassID: shippingClassID ?? 0,
+                                                                     subscription: subscription))
     }
 
     func updateProductCategories(_ categories: [ProductCategory]) {
@@ -451,6 +507,30 @@ extension ProductFormViewModel {
         let action = ProductAction.replaceProductLocally(product: newProduct, onCompletion: {})
         stores.dispatch(action)
     }
+
+    func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod) {
+        let oneTimeShipping: Bool? = {
+            guard let subscription = product.subscription else {
+                return nil
+            }
+
+            // One time shipping can be turned on only if there is no Free trial
+            guard trialLength.isEmpty || trialLength == "0" else {
+                return false
+            }
+
+            return subscription.oneTimeShipping
+        }()
+        let subscription = product.subscription?.copy(trialLength: trialLength,
+                                                      trialPeriod: trialPeriod,
+                                                      oneTimeShipping: oneTimeShipping ?? nil)
+        product = EditableProductModel(product: product.product.copy(subscription: subscription))
+    }
+
+    func updateSubscriptionExpirySettings(length: String) {
+        let subscription = product.subscription?.copy(length: length)
+        product = EditableProductModel(product: product.product.copy(subscription: subscription))
+    }
 }
 
 // MARK: Remote actions
@@ -464,7 +544,7 @@ extension ProductFormViewModel {
             let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
             return EditableProductModel(product: productWithStatusUpdated)
         }()
-        let remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
+
         switch formType {
         case .add:
             let productIDBeforeSave = productModel.productID
@@ -508,7 +588,7 @@ extension ProductFormViewModel {
     }
 
     func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
-        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+
         remoteActionUseCase.duplicateProduct(originalProduct: product,
                                              password: password) { [weak self] result in
             guard let self = self else { return }
@@ -524,7 +604,7 @@ extension ProductFormViewModel {
     }
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
-        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+
         remoteActionUseCase.deleteProduct(product: product) { result in
             switch result {
             case .success:
@@ -681,11 +761,12 @@ private extension ProductFormViewModel {
         stores.dispatch(action)
     }
 
-    /// Recreates `actionsFactory` with the latest `product`, `formType`, and `isAddOnsFeatureEnabled` information.
+    /// Recreates `actionsFactory` with the latest `product`, `formType`, `canPromoteWithBlaze` and `isAddOnsFeatureEnabled` information.
     ///
     func updateActionsFactory() {
         actionsFactory = ProductFormActionsFactory(product: product,
                                                    formType: formType,
+                                                   canPromoteWithBlaze: canPromoteWithBlaze(),
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
                                                    isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
@@ -701,6 +782,47 @@ private extension ProductFormViewModel {
         Task { @MainActor in
             let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
             isEligibleForBlaze = isEligible
+            updateActionsFactory()
+            blazeEligiblityUpdateSubject.send()
         }
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        blazeCampaignResultsController.onDidChangeContent = { [weak self] in
+            self?.updateBlazeCampaignResult()
+
+        }
+        blazeCampaignResultsController.onDidResetContent = { [weak self] in
+            self?.updateBlazeCampaignResult()
+        }
+
+        do {
+            try blazeCampaignResultsController.performFetch()
+            updateBlazeCampaignResult()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateBlazeCampaignResult() {
+        hasActiveBlazeCampaign = hasBlazeCampaign()
+    }
+}
+
+// MARK: Blaze
+//
+private extension ProductFormViewModel {
+    /// Check whether there is already an existing campaign for the current Product, that also has one of these statuses:
+    /// - created (in moderation),
+    /// - approved,
+    /// - scheduled, or
+    /// - active.
+    func hasBlazeCampaign() -> Bool {
+        let campaigns = blazeCampaignResultsController.fetchedObjects
+        return campaigns.contains(where: {
+            ($0.productID == product.productID) &&
+            ($0.status == .created || $0.status == .approved || $0.status == .scheduled || $0.status == .active)
+        })
     }
 }

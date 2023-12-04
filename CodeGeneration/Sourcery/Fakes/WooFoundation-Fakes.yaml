@@ -1,0 +1,7 @@
+project:
+    file: ../../../WooFoundation/WooFoundation.xcodeproj
+    target:
+        name: WooFoundation
+templates:
+    - Fakes.swifttemplate
+output: ../../../Fakes/Fakes/WooFoundation.generated.swift

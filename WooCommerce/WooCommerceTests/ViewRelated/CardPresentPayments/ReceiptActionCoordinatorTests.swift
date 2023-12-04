@@ -35,11 +35,11 @@ final class ReceiptActionCoordinatorTests: XCTestCase {
 
         // When
         await ReceiptActionCoordinator.printReceipt(for: order,
-                                              params: params,
-                                              countryCode: "CA",
-                                              cardReaderModel: "WISEPAD_3",
-                                              stores: storesManager,
-                                              analytics: WooAnalytics(analyticsProvider: analytics))
+                                                    params: params,
+                                                    countryCode: .CA,
+                                                    cardReaderModel: "WISEPAD_3",
+                                                    stores: storesManager,
+                                                    analytics: WooAnalytics(analyticsProvider: analytics))
 
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.receiptPrintTapped.rawValue}))
@@ -68,10 +68,10 @@ final class ReceiptActionCoordinatorTests: XCTestCase {
 
         // When
         await ReceiptActionCoordinator.printReceipt(for: order,
-                                              params: params,
-                                              countryCode: "CA",
-                                              cardReaderModel: nil,
-                                              stores: storesManager, analytics: ServiceLocator.analytics)
+                                                    params: params,
+                                                    countryCode: .CA,
+                                                    cardReaderModel: nil,
+                                                    stores: storesManager, analytics: ServiceLocator.analytics)
 
         //Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)
@@ -122,11 +122,11 @@ extension ReceiptActionCoordinatorTests {
 
         // When
         await ReceiptActionCoordinator.printReceipt(for: order,
-                                              params: params,
-                                              countryCode: "CA",
-                                              cardReaderModel: cardReaderModel,
-                                              stores: storesManager,
-                                              analytics: WooAnalytics(analyticsProvider: analytics))
+                                                    params: params,
+                                                    countryCode: .CA,
+                                                    cardReaderModel: cardReaderModel,
+                                                    stores: storesManager,
+                                                    analytics: WooAnalytics(analyticsProvider: analytics))
 
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == analytic.rawValue}))
@@ -160,7 +160,6 @@ extension CardPresentTransactionDetails {
                             expYear: Int = 31,
                             cardholderName: String? = nil,
                             brand: CardBrand = .unknown,
-                            fingerprint: String = "y29834",
                             generatedCard: String? = "1230",
                             receipt: ReceiptDetails? = nil,
                             emvAuthData: String? = nil) -> CardPresentTransactionDetails {
@@ -169,7 +168,6 @@ extension CardPresentTransactionDetails {
                                       expYear: expYear,
                                       cardholderName: cardholderName,
                                       brand: brand,
-                                      fingerprint: fingerprint,
                                       generatedCard: generatedCard,
                                       receipt: receipt,
                                       emvAuthData: emvAuthData)

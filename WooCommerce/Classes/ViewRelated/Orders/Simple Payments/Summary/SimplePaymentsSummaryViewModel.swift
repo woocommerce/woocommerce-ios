@@ -107,6 +107,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     private let currencyFormatter: CurrencyFormatter
 
+    /// Store Currency Settings
+    ///
+    private var currencySettings: CurrencySettings {
+        ServiceLocator.currencySettings
+    }
+
     /// Store ID
     ///
     private let siteID: Int64
@@ -232,7 +238,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                                            orderID: orderID,
                                                            feeID: feeID,
                                                            status: .pending, // Force .pending status to properly generate the payment link in the next screen.
-                                                           amount: providedAmount,
+                                                           amount: removeCurrencySymbolFromAmount(providedAmount),
                                                            taxable: enableTaxes,
                                                            orderNote: noteContent,
                                                            email: email.isEmpty ? nil : email) { [weak self] result in
@@ -267,6 +273,21 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
 // MARK: Helpers
 private extension SimplePaymentsSummaryViewModel {
+    /// Strips the currency symbol from the formatted amount
+    ///
+    func removeCurrencySymbolFromAmount(_ amount: String) -> String {
+        let minusSign: String = NumberFormatter().minusSign
+
+        let currencyCode = currencySettings.currencyCode
+        let currencySymbol = currencySettings.symbol(from: currencyCode)
+        let amountWithoutSymbol = amount.replacingOccurrences(of: currencySymbol, with: "")
+
+        let formattedAmount = currencyFormatter.formatCurrency(using: amountWithoutSymbol,
+                                                               currencyPosition: currencySettings.currencyPosition,
+                                                               currencySymbol: "",
+                                                               isNegative: providedAmount.hasPrefix(minusSign))
+        return formattedAmount
+    }
     /// Loads the current taxes toggle state.
     ///
     func loadCurrentTaxesToggleState() {

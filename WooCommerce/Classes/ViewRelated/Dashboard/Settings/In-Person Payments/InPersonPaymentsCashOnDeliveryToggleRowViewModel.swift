@@ -2,7 +2,12 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject {
+protocol InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol {
+    func refreshState()
+    var selectedPlugin: CardPresentPaymentsPlugin? { get set }
+}
+
+final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol {
 
     // MARK: - Dependencies
     struct Dependencies {
@@ -87,6 +92,15 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject {
         return ResultsController<StoragePaymentGateway>(storageManager: storageManager,
                                                         matching: predicate,
                                                         sortedBy: [])
+    }
+
+    func refreshState() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID) { _ in }
+        stores.dispatch(action)
     }
 
     private func updateCashOnDeliveryEnabledState() {
@@ -184,6 +198,14 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject {
         WebviewHelper.launch(learnMoreURL, with: viewController)
         analytics.track(.paymentsHubCashOnDeliveryToggleLearnMoreTapped)
     }
+
+    var learnMoreViewModel: LearnMoreViewModel {
+        LearnMoreViewModel(
+            url: learnMoreURL,
+            linkText: Localization.toggleEnableCashOnDeliveryLearnMoreLink,
+            formatText: Localization.toggleEnableCashOnDeliveryLearnMoreFormat,
+            tappedAnalyticEvent: learnMoreTappedEvent)
+    }
 }
 
 // MARK: - Analytics
@@ -221,6 +243,11 @@ private extension InPersonPaymentsCashOnDeliveryToggleRowViewModel {
                                                       source: .paymentsHub)
         analytics.track(event: event)
     }
+
+    var learnMoreTappedEvent: WooAnalyticsEvent {
+        Event.cashOnDeliveryToggleLearnMoreTapped(countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                  source: .paymentsHub)
+    }
 }
 
 private enum Localization {
@@ -235,4 +262,17 @@ private enum Localization {
     static let cashOnDeliveryFailureNoticeRetryTitle = NSLocalizedString(
         "Retry",
         comment: "Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails")
+
+    static let toggleEnableCashOnDeliveryLearnMoreFormat = NSLocalizedString(
+        "menu.payments.payInPerson.learnMore.description",
+        value: "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
+        comment: "A label prompting users to learn more about adding Pay in Person to their checkout. " +
+        "%1$@ is a placeholder that always replaced with \"Learn more\" string, " +
+        "which should be translated separately and considered part of this sentence.")
+
+    static let toggleEnableCashOnDeliveryLearnMoreLink = NSLocalizedString(
+        "menu.payments.payInPerson.learnMore.link",
+        value: "Learn more",
+        comment: "The \"Learn more\" string replaces the placeholder in a label prompting users to learn " +
+        "more about adding Pay in Person to their checkout. ")
 }

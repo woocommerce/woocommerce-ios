@@ -24,6 +24,8 @@ public enum ProductAction: Action {
 
     /// Searches products that contain a given keyword.
     ///
+    /// - Parameter onCompletion: called when sync completes, returns an error or a boolean that indicates whether there might be more products from search.
+    ///
     case searchProducts(siteID: Int64,
                         keyword: String,
                         filter: ProductSearchFilter = .all,
@@ -34,23 +36,23 @@ public enum ProductAction: Action {
                         productType: ProductType? = nil,
                         productCategory: ProductCategory? = nil,
                         excludedProductIDs: [Int64] = [],
-                        onCompletion: (Result<Void, Error>) -> Void)
+                        onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Synchronizes the Products matching the specified criteria.
     ///
     /// - Parameter onCompletion: called when sync completes, returns an error or a boolean that indicates whether there might be more products to sync.
     ///
     case synchronizeProducts(siteID: Int64,
-        pageNumber: Int,
-        pageSize: Int,
-        stockStatus: ProductStockStatus?,
-        productStatus: ProductStatus?,
-        productType: ProductType?,
-        productCategory: ProductCategory?,
-        sortOrder: ProductsSortOrder,
-        excludedProductIDs: [Int64] = [],
-        shouldDeleteStoredProductsOnFirstPage: Bool = true,
-        onCompletion: (Result<Bool, Error>) -> Void)
+                             pageNumber: Int,
+                             pageSize: Int,
+                             stockStatus: ProductStockStatus?,
+                             productStatus: ProductStatus?,
+                             productType: ProductType?,
+                             productCategory: ProductCategory?,
+                             sortOrder: ProductsSortOrder,
+                             excludedProductIDs: [Int64] = [],
+                             shouldDeleteStoredProductsOnFirstPage: Bool = true,
+                             onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Retrieves the specified Product.
     ///
@@ -62,10 +64,10 @@ public enum ProductAction: Action {
     ///                           indicates whether there might be more products to fetch.
     ///
     case retrieveProducts(siteID: Int64,
-        productIDs: [Int64],
-        pageNumber: Int = ProductsRemote.Default.pageNumber,
-        pageSize: Int = ProductsRemote.Default.pageSize,
-        onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+                          productIDs: [Int64],
+                          pageNumber: Int = ProductsRemote.Default.pageNumber,
+                          pageSize: Int = ProductsRemote.Default.pageSize,
+                          onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
     /// Retrieves the first Product with exact-match SKU
     ///
@@ -125,6 +127,13 @@ public enum ProductAction: Action {
                           feature: GenerativeContentRemoteFeature,
                           completion: (Result<String, Error>) -> Void)
 
+    /// Generates a product name with Jetpack AI given the keywords
+    ///
+    case generateProductName(siteID: Int64,
+                             keywords: String,
+                             language: String,
+                             completion: (Result<String, Error>) -> Void)
+
     /// Generates a product description with Jetpack AI given the name and features.
     ///
     case generateProductDescription(siteID: Int64,
@@ -142,11 +151,42 @@ public enum ProductAction: Action {
                                        language: String,
                                        completion: (Result<String, Error>) -> Void)
 
-    /// Generates product details (e.g. name and description) with Jetpack AI given the scanned texts from an image.
+    /// Generates product details (e.g. name and description) with Jetpack AI given the scanned texts from an image and optional product name .
     ///
-    case generateProductDetails(siteID: Int64, scannedTexts: [String], completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
+    case generateProductDetails(siteID: Int64,
+                                productName: String?,
+                                scannedTexts: [String],
+                                language: String,
+                                completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
 
     /// Fetches the total number of products in the site given the site ID.
     ///
     case fetchNumberOfProducts(siteID: Int64, completion: (Result<Int64, Error>) -> Void)
+
+
+    /// Generates a AIProduct using AI
+    ///
+    /// - Parameter siteID: Site ID for which the product is generated for
+    /// - Parameter productName: Product name to input for AI
+    /// - Parameter keywords: Keywords describing the product to input for AI
+    /// - Parameter language: Language to generate the product details
+    /// - Parameter tone: Tone of AI - Represented by `AIToneVoice`
+    /// - Parameter currencySymbol: Currency symbol to generate product price
+    /// - Parameter dimensionUnit: Weight unit to generate product dimensions
+    /// - Parameter weightUnit: Weight unit to generate product weight
+    /// - Parameter categories: Existing categories
+    /// - Parameter tags: Existing tags
+    /// - Parameter completion: Completion closure
+    ///
+    case generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag],
+                           completion: (Result<AIProduct, Error>) -> Void)
 }

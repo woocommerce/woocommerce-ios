@@ -119,6 +119,45 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    // MARK: - Batch creation of categories
+
+    func test_createProductCategories_returns_product_categories_on_success() throws {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/categories/batch", filename: "product-categories-created")
+
+        // When
+        let result: Result<[ProductCategory], Error> = waitFor { promise in
+            remote.createProductCategories(for: self.sampleSiteID, names: ["Headphone"], parentID: 0) { aResult in
+                promise(aResult)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let categories = try XCTUnwrap(result.get())
+        XCTAssertEqual(categories.first?.name, "Headphone")
+    }
+
+    func test_createProductCategories_properly_relays_errors() throws {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "products/categories/batch", error: error)
+
+        // When
+        let result: Result<[ProductCategory], Error> = waitFor {promise in
+            remote.createProductCategories(for: self.sampleSiteID, names: ["Headphone"], parentID: 0) { aResult in
+                promise(aResult)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
     func test_loadProductCategory_then_returns_parsed_ProductCategory() {
         // Given
         let remote = ProductCategoriesRemote(network: network)
@@ -162,5 +201,68 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         // Then
         XCTAssertNil(try? result?.get())
         XCTAssertNotNil(result?.failure)
+    }
+
+    // MARK: - Update product category
+    func test_updateProductCategory_success_returns_parsed_ProductCategory() async throws {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+        let category = ProductCategory.fake().copy(categoryID: 44, siteID: 123)
+
+        network.simulateResponse(requestUrlSuffix: "products/categories/\(category.categoryID)", filename: "category")
+
+        // When
+        let updatedCategory = try await remote.updateProductCategory(category)
+
+        // Then
+        XCTAssertEqual(updatedCategory.name, "Dress")
+    }
+
+    func test_updateProductCategory_failure_relays_networking_error() async throws {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+        let category = ProductCategory.fake().copy(categoryID: 44)
+
+        network.simulateError(requestUrlSuffix: "products/categories/\(category.categoryID)", error: NetworkError.notFound())
+
+        // When
+        do {
+            _ = try await remote.updateProductCategory(category)
+            XCTFail("Request should fail!")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, .notFound())
+        }
+    }
+
+    // MARK: - Delete product category
+    func test_deleteProductCategory_success_does_not_throw_error() async throws {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+        let categoryID: Int64 = 44
+        let siteID: Int64 = 123
+
+        network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "generic_success_data")
+
+        // Then the following should not throw error:
+        try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
+    }
+
+    func test_deleteProductCategory_failure_relays_networking_error() async throws {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+        let categoryID: Int64 = 44
+        let siteID: Int64 = 123
+
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound())
+
+        // When
+        do {
+            try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
+            XCTFail("Request should fail!")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, .notFound())
+        }
     }
 }

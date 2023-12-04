@@ -275,6 +275,50 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.storeProfilerAnswers])
     }
 
+    /// Verifies that `aiPromptTone` is set to `nil` upon reset
+    ///
+    func test_aiPromptTone_is_set_to_nil_upon_reset() throws {
+        // Given
+        let siteID: Int64 = 123
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.convincing.rawValue]
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults.aiTone(for: siteID)), .convincing)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.aiPromptTone])
+    }
+
+    /// Verifies that `hasDisplayedTipAfterBlazeCampaignCreation` is set to `nil` upon reset
+    ///
+    func test_hasDisplayedTipAfterBlazeCampaignCreation_is_set_to_nil_upon_reset() throws {
+        // Given
+        let siteID: Int64 = 123
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.hasDisplayedTipAfterBlazeCampaignCreation] = ["\(siteID)": true]
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults.hasDisplayedTipAfterBlazeCampaignCreation(for: siteID)))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.hasDisplayedTipAfterBlazeCampaignCreation])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

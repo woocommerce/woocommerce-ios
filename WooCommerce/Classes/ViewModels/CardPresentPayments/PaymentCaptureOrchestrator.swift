@@ -17,12 +17,15 @@ protocol PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
-                        onPreparingReader: () -> Void,
+                        onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void)
+
+    func retryPayment(for order: Order,
+                      onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void)
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void)
 
@@ -30,6 +33,8 @@ protocol PaymentCaptureOrchestrating {
 
     func saveReceipt(for order: Order, params: CardPresentReceiptParameters)
 }
+
+
 
 /// Orchestrates the sequence of actions required to capture a payment:
 /// 1. Triggers the `preparingReader` alert
@@ -56,17 +61,24 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         self.celebration = celebration
     }
 
+    private var handlersForActivePayment: PaymentHandlers? = nil
+
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
-                        onPreparingReader: () -> Void,
+                        onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        handlersForActivePayment = PaymentHandlers(onPreparingReader: onPreparingReader,
+                                                   onWaitingForInput: onWaitingForInput,
+                                                   onProcessingMessage: onProcessingMessage,
+                                                   onDisplayMessage: onDisplayMessage,
+                                                   onProcessingCompletion: onProcessingCompletion)
         onPreparingReader()
 
         let parameters = paymentParameters(order: order,
@@ -93,8 +105,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     onProcessingMessage()
-                default:
-                    break
+                case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                    DDLogInfo("💳 Unhandled card reader event received: \(event)")
                 }
             },
             onProcessingCompletion: { intent in
@@ -111,6 +123,44 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         )
 
         stores.dispatch(paymentAction)
+    }
+
+    func retryPayment(for order: Order,
+                      onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        guard let handlers = handlersForActivePayment else {
+            return onCompletion(.failure(PaymentCaptureOrchestratorError.couldNotRetryPayment))
+        }
+
+        handlers.onPreparingReader()
+
+        let retryPaymentAction = CardPresentPaymentAction.retryPayment(
+            siteID: order.siteID,
+            orderID: order.orderID,
+            onCardReaderMessage: { event in
+                switch event {
+                case .waitingForInput(let inputMethods):
+                    handlers.onWaitingForInput(inputMethods)
+                case .displayMessage(let message):
+                    handlers.onDisplayMessage(message)
+                case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
+                    handlers.onProcessingMessage()
+                case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                    DDLogInfo("💳 Unhandled card reader event received during retry: \(event)")
+                }
+            },
+            onProcessingCompletion: { intent in
+                handlers.onProcessingCompletion(intent)
+            },
+            onCompletion: { [weak self] result in
+                self?.allowPassPresentation()
+                self?.completePaymentIntentCapture(
+                    order: order,
+                    captureResult: result,
+                    onCompletion: onCompletion
+                )
+            })
+
+        stores.dispatch(retryPaymentAction)
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -206,6 +256,7 @@ private extension PaymentCaptureOrchestrator {
             saveReceipt(for: order, params: receiptParameters)
             onCompletion(.success(.init(paymentMethod: paymentMethod,
                                         receiptParameters: receiptParameters)))
+            self.handlersForActivePayment = nil
         }
     }
 
@@ -236,7 +287,7 @@ private extension PaymentCaptureOrchestrator {
     }
 
     private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {
-        guard country.uppercased() == SiteAddress.CountryCode.CA.rawValue else {
+        guard country.uppercased() == CountryCode.CA.rawValue else {
             return nil
         }
 
@@ -289,5 +340,29 @@ private extension PaymentCaptureOrchestrator {
             comment: "Message included in emailed receipts. " +
             "Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} " +
             "Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number")
+    }
+}
+
+private enum PaymentCaptureOrchestratorError: LocalizedError {
+    case couldNotRetryPayment
+
+    var errorDescription: String? {
+        switch self {
+        case .couldNotRetryPayment:
+            return NSLocalizedString(
+                "There was an error retrying this payment. Please go back and start again.",
+                comment: "Error shown when there's an unrecoverable issue while retrying a payment, and it needs to be" +
+                "restarted from the beginning.")
+        }
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
+    struct PaymentHandlers {
+        let onPreparingReader: () -> Void
+        let onWaitingForInput: (CardReaderInput) -> Void
+        let onProcessingMessage: () -> Void
+        let onDisplayMessage: (String) -> Void
+        let onProcessingCompletion: (PaymentIntent) -> Void
     }
 }

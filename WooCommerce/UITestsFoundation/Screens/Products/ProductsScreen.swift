@@ -3,6 +3,10 @@ import XCTest
 
 public final class ProductsScreen: ScreenObject {
 
+    private let productsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
+        $0.navigationBars["Products"]
+    }
+
     private let productAddButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["product-add-button"]
     }
@@ -44,7 +48,11 @@ public final class ProductsScreen: ScreenObject {
         tabBar = try TabNavComponent(app: app)
 
         try super.init(
-            expectedElementGetters: [ productAddButtonGetter, productSearchButtonGetter ],
+            expectedElementGetters: [
+                productsNavigationBarGetter,
+                productAddButtonGetter,
+                productSearchButtonGetter
+            ],
             app: app
         )
     }
@@ -104,6 +112,8 @@ public final class ProductsScreen: ScreenObject {
     }
 
     public func tapProductType(productType: String) throws -> SingleProductScreen {
+        // Swipe up to get all the list in view
+        app.tables.firstMatch.swipeUp()
         let productTypeLabel = NSPredicate(format: "label CONTAINS[c] %@", productType)
         app.staticTexts.containing(productTypeLabel).firstMatch.tap()
         return try SingleProductScreen()

@@ -19,7 +19,8 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        product = Product.fake()
+        let subscription = ProductSubscription.fake()
+        product = Product.fake().copy(subscription: subscription)
         model = EditableProductModel(product: product)
         mockProductImageUploader = MockProductImageUploader()
         productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
@@ -57,6 +58,9 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         viewModel.updateShortDescription(product.shortDescription ?? "")
         viewModel.updateProductSettings(ProductSettings(from: product, password: nil))
         viewModel.updatePriceSettings(regularPrice: product.regularPrice,
+                                      subscriptionPeriod: product.subscription?.period,
+                                      subscriptionPeriodInterval: product.subscription?.periodInterval,
+                                      subscriptionSignupFee: product.subscription?.signUpFee,
                                       salePrice: product.salePrice,
                                       dateOnSaleStart: product.dateOnSaleStart,
                                       dateOnSaleEnd: product.dateOnSaleEnd,
@@ -70,6 +74,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                           stockStatus: product.productStockStatus)
         viewModel.updateShippingSettings(weight: product.weight,
                                          dimensions: product.dimensions,
+                                         oneTimeShipping: product.subscription?.oneTimeShipping,
                                          shippingClass: product.shippingClass,
                                          shippingClassID: product.shippingClassID)
         viewModel.updateProductCategories(product.categories)
@@ -175,7 +180,47 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingPriceSettings() {
         // When
-        viewModel.updatePriceSettings(regularPrice: "999999", salePrice: "888888", dateOnSaleStart: nil, dateOnSaleEnd: nil, taxStatus: .none, taxClass: nil)
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_has_unsaved_changes_from_editing_subscription_period_settings() {
+        // When
+        viewModel.updatePriceSettings(regularPrice: "",
+                                      subscriptionPeriod: .month,
+                                      subscriptionPeriodInterval: "1",
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_has_unsaved_changes_from_editing_subscription_signup_fee() {
+        // When
+        viewModel.updatePriceSettings(regularPrice: "",
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
+                                      subscriptionSignupFee: "0.99",
+                                      salePrice: "",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
 
         // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -200,6 +245,19 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         // When
         viewModel.updateShippingSettings(weight: "88888",
                                          dimensions: product.dimensions,
+                                         oneTimeShipping: product.subscription?.oneTimeShipping,
+                                         shippingClass: product.shippingClass,
+                                         shippingClassID: product.shippingClassID)
+
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_has_unsaved_changes_from_editing_oneTimeShipping() {
+        // When
+        viewModel.updateShippingSettings(weight: product.weight,
+                                         dimensions: product.dimensions,
+                                         oneTimeShipping: true,
                                          shippingClass: product.shippingClass,
                                          shippingClassID: product.shippingClassID)
 
@@ -238,5 +296,136 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    // MARK: Expire after
+
+    func test_updatePriceSettings_sets_length_to_zero_when_subscription_period_changes() throws {
+        // Given
+        let product = Product.fake().copy(subscription: .fake().copy(period: .week,
+                                                                     periodInterval: "1",
+                                                                     trialLength: "4",
+                                                                     trialPeriod: .month))
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                    formType: .edit,
+                                    productImageActionHandler: productImageActionHandler)
+
+        // When
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: .day,
+                                      subscriptionPeriodInterval: "1",
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertEqual(subscription.length, "0")
+    }
+
+    func test_updatePriceSettings_sets_length_to_zero_when_subscription_periodInterval_changes() throws {
+        // Given
+        let product = Product.fake().copy(subscription: .fake().copy(period: .day,
+                                                                     periodInterval: "1",
+                                                                     trialLength: "4",
+                                                                     trialPeriod: .month))
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                    formType: .edit,
+                                    productImageActionHandler: productImageActionHandler)
+
+        // When
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: .day,
+                                      subscriptionPeriodInterval: "2",
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertEqual(subscription.length, "0")
+    }
+
+    func test_updatePriceSettings_does_not_change_length_when_subscription_period_and_periodInterval_changes() throws {
+        // Given
+        let product = Product.fake().copy(subscription: .fake().copy(length: "5",
+                                                                     period: .day,
+                                                                     periodInterval: "1",
+                                                                     trialLength: "4",
+                                                                     trialPeriod: .month))
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                    formType: .edit,
+                                    productImageActionHandler: productImageActionHandler)
+
+        // When
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: .day,
+                                      subscriptionPeriodInterval: "1",
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertEqual(subscription.length, "5")
+    }
+
+    // MARK: Free trial
+
+    func test_updateSubscriptionFreeTrialSettings_changes_oneTimeShipping_to_false_when_there_is_free_trial() throws {
+        // Given
+        let product = Product.fake().copy(subscription: .fake().copy(period: .week,
+                                                                     periodInterval: "1",
+                                                                     trialLength: "0",
+                                                                     trialPeriod: .month,
+                                                                     oneTimeShipping: true))
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                    formType: .edit,
+                                    productImageActionHandler: productImageActionHandler)
+
+        // When
+        viewModel.updateSubscriptionFreeTrialSettings(trialLength: "1", trialPeriod: .month)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertFalse(subscription.oneTimeShipping)
+    }
+
+    func test_updateSubscriptionFreeTrialSettings_does_not_change_oneTimeShipping_when_there_is_no_free_trial() throws {
+        // Given
+        let product = Product.fake().copy(subscription: .fake().copy(period: .week,
+                                                                     periodInterval: "1",
+                                                                     trialLength: "0",
+                                                                     trialPeriod: .month,
+                                                                     oneTimeShipping: true))
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                    formType: .edit,
+                                    productImageActionHandler: productImageActionHandler)
+
+        // When
+        viewModel.updateSubscriptionFreeTrialSettings(trialLength: "0", trialPeriod: .year)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertTrue(subscription.oneTimeShipping)
     }
 }

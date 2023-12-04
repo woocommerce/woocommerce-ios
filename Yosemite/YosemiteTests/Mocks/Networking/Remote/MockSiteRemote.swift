@@ -56,7 +56,7 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func createSite(name: String, flow: SiteCreationFlow) async throws -> SiteCreationResponse {
         guard let result = createSiteResult else {
             XCTFail("Could not find result for creating a site.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
 
         return try result.get()
@@ -65,7 +65,7 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func launchSite(siteID: Int64) async throws {
         guard let result = launchSiteResult else {
             XCTFail("Could not find result for launching a site.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
 
         return try result.get()
@@ -74,7 +74,7 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func enableFreeTrial(siteID: Int64) async throws {
         guard let result = enableFreeTrialResult else {
             XCTFail("Could not find result for enabling a trial.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
 
         return try result.get()
@@ -83,7 +83,7 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func uploadStoreProfilerAnswers(siteID: Int64, answers: Networking.StoreProfilerAnswers) async throws {
         guard let result = uploadStoreProfilerAnswersResult else {
             XCTFail("Could not find result for upload store profiler answers.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
 
         return try result.get()
@@ -92,7 +92,7 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func loadSite(siteID: Int64) async throws -> Site {
         guard let result = loadSiteResult else {
             XCTFail("Could not find result for loading a site.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
 
         return try result.get()
@@ -101,7 +101,7 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func updateSiteTitle(siteID: Int64, title: String) async throws {
         guard let result = updateSiteTitleResult else {
             XCTFail("Could not find result for updating site title")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }

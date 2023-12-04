@@ -100,9 +100,9 @@ final class DashboardViewController: UIViewController {
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
 
-    /// Hosting controller for the banner to highlight the Blaze feature.
+    /// Hosting controller for the Blaze Campaign View.
     ///
-    private var blazeBannerHostingController: BlazeBannerHostingController?
+    private var blazeCampaignHostingController: BlazeCampaignDashboardViewHostingController?
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
@@ -165,7 +165,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
-        observeBlazeBannerVisibility()
+        observeBlazeCampaignViewVisibility()
         configureStorePlanBannerPresenter()
         presentPrivacyBannerIfNeeded()
 
@@ -360,15 +360,15 @@ private extension DashboardViewController {
         containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
     }
 
-    func addViewBelowOnboardingCard(_ contentView: UIView) {
+    func addViewBelowStats(_ contentView: UIView) {
         let indexOfHeader = containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1
-        let indexAfterOnboardingCard: Int = {
-            if let onboardingView {
-                return (containerStackView.arrangedSubviews.firstIndex(of: onboardingView) ?? indexOfHeader) + 1
+        let indexAfterStats: Int = {
+            if let storeStatsAndTopPerformersViewControllerView = self.storeStatsAndTopPerformersViewController.view {
+                return (containerStackView.arrangedSubviews.firstIndex(of: storeStatsAndTopPerformersViewControllerView) ?? indexOfHeader) + 1
             }
             return indexOfHeader + 1
         }()
-        containerStackView.insertArrangedSubview(contentView, at: indexAfterOnboardingCard)
+        containerStackView.insertArrangedSubview(contentView, at: indexAfterStats)
     }
 
     func configureStackView() {
@@ -783,56 +783,50 @@ private extension DashboardViewController {
     }
 }
 
-// MARK: - Blaze banner
+// MARK: - Blaze campaign view
 extension DashboardViewController {
-    func observeBlazeBannerVisibility() {
-        viewModel.$showBlazeBanner.removeDuplicates()
-            .sink { [weak self] showsBlazeBanner in
+    func observeBlazeCampaignViewVisibility() {
+        viewModel.$showBlazeCampaignView.removeDuplicates()
+            .sink { [weak self] showBlazeCampaignView in
                 guard let self else { return }
-                if showsBlazeBanner {
-                    self.showBlazeBanner()
+                if showBlazeCampaignView {
+                    self.showBlazeCampaignView()
                 } else {
-                    self.removeBlazeBanner()
+                    self.removeBlazeCampaignView()
                 }
             }
             .store(in: &subscriptions)
 
-        Task { @MainActor in
-            await viewModel.updateBlazeBannerVisibility()
+        Task { @MainActor [weak self] in
+            await self?.viewModel.reloadBlazeCampaignView()
         }
     }
 
-    func showBlazeBanner() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+    func showBlazeCampaignView() {
+        if blazeCampaignHostingController != nil {
+            removeBlazeCampaignView()
+        }
+        let hostingController = BlazeCampaignDashboardViewHostingController(
+            viewModel: viewModel.blazeCampaignDashboardViewModel,
+            parentNavigationController: navigationController
+        )
+        guard let campaignView = hostingController.view else {
             return
         }
-        if blazeBannerHostingController != nil {
-            removeBlazeBanner()
-        }
-        let hostingController = BlazeBannerHostingController(
-            site: site,
-            entryPoint: .myStore,
-            containerViewController: self,
-            dismissHandler: { [weak self] in
-            self?.viewModel.hideBlazeBanner()
-        })
-        guard let bannerView = hostingController.view else {
-            return
-        }
-        bannerView.translatesAutoresizingMaskIntoConstraints = false
-        addViewBelowOnboardingCard(bannerView)
+        campaignView.translatesAutoresizingMaskIntoConstraints = false
+        addViewBelowStats(campaignView)
         addChild(hostingController)
         hostingController.didMove(toParent: self)
-        blazeBannerHostingController = hostingController
+        blazeCampaignHostingController = hostingController
     }
 
-    func removeBlazeBanner() {
-        guard let blazeBannerHostingController,
-              blazeBannerHostingController.parent == self else { return }
-        blazeBannerHostingController.willMove(toParent: nil)
-        blazeBannerHostingController.view.removeFromSuperview()
-        blazeBannerHostingController.removeFromParent()
-        self.blazeBannerHostingController = nil
+    func removeBlazeCampaignView() {
+        guard let blazeCampaignHostingController,
+              blazeCampaignHostingController.parent == self else { return }
+        blazeCampaignHostingController.willMove(toParent: nil)
+        blazeCampaignHostingController.view.removeFromSuperview()
+        blazeCampaignHostingController.removeFromParent()
+        self.blazeCampaignHostingController = nil
     }
 }
 
@@ -938,7 +932,7 @@ private extension DashboardViewController {
                 await self?.viewModel.reloadStoreOnboardingTasks()
             }
             group.addTask { [weak self] in
-                await self?.viewModel.updateBlazeBannerVisibility()
+                await self?.viewModel.reloadBlazeCampaignView()
             }
         }
     }
@@ -958,7 +952,7 @@ private extension DashboardViewController {
             self.updateUI(site: site)
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
-                await self?.viewModel.updateBlazeBannerVisibility()
+                await self?.viewModel.reloadBlazeCampaignView()
             }
         }.store(in: &subscriptions)
     }

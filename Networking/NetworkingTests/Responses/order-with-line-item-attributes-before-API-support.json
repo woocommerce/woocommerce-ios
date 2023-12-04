@@ -8,6 +8,7 @@
         "status": "processing",
         "order_key": "abc123",
         "currency": "GBP",
+        "currency_symbol": "$",
         "date_created": "2020-10-29T07:38:03",
         "date_created_gmt": "2020-10-29T07:38:03",
         "date_modified": "2020-10-29T07:38:03",

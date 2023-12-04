@@ -23,11 +23,11 @@ workspace 'WooCommerce.xcworkspace'
 ## =====================================
 ##
 def aztec
-  pod 'WordPress-Editor-iOS', '~> 1.11.0'
+  pod 'WordPress-Editor-iOS', '~> 1.19.9'
 end
 
 def tracks
-  pod 'Automattic-Tracks-iOS', '~> 2.4'
+  pod 'Automattic-Tracks-iOS', '~> 3.0'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
@@ -51,7 +51,7 @@ def cocoa_lumberjack
 end
 
 def stripe_terminal
-  pod 'StripeTerminal', '~> 2.19.1'
+  pod 'StripeTerminal', '~> 3.1.0'
 end
 
 def networking_pods
@@ -83,9 +83,9 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 6.4.0'
-#     pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
-  # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: 'trunk'
+  pod 'WordPressAuthenticator', '~> 7.3'
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   wordpress_shared
@@ -120,6 +120,15 @@ end
 # ==========
 #
 target 'StoreWidgetsExtension' do
+  project 'WooCommerce/WooCommerce.xcodeproj'
+  tracks
+  keychain
+end
+
+# Notification Content Target
+# ==========
+#
+target 'NotificationExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   tracks
   keychain
@@ -345,9 +354,7 @@ post_install do |installer|
     end
     target.build_configurations.each do |configuration|
       pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
-      if pod_ios_deployment_target <= app_ios_deployment_target
-        configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
-      end
+      configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' if pod_ios_deployment_target <= app_ios_deployment_target
     end
   end
 
@@ -373,15 +380,4 @@ post_install do |installer|
     end
   end
   # rubocop:enable Style/CombinableLoops
-
-  # Xcode 15 beta 8 Cocoapods issue:
-  # https://github.com/CocoaPods/CocoaPods/issues/12012
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      xcconfig_path = config.base_configuration_reference.real_path
-      xcconfig = File.read(xcconfig_path)
-      xcconfig_mod = xcconfig.gsub(/DT_TOOLCHAIN_DIR/, "TOOLCHAIN_DIR")
-      File.open(xcconfig_path, "w") { |file| file << xcconfig_mod }
-    end
-  end
 end

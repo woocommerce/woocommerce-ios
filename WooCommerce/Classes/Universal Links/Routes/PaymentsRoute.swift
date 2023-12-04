@@ -1,34 +1,31 @@
 import Foundation
-import Experiments /// Remove when `.tapToPayOnIPhoneMilestone2` is removed
 
 /// Links supported URLs with a /payments root path to various destinations in the Payments Hub Menu
 /// 
 struct PaymentsRoute: Route {
-    private let deepLinkForwarder: DeepLinkForwarder
-    private let featureFlagService: FeatureFlagService // Temporary for testing with `tapToPayOnIPhoneMilestone2` enabled
+    private let deepLinkNavigator: DeepLinkNavigator
 
-    init(deepLinkForwarder: DeepLinkForwarder, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.deepLinkForwarder = deepLinkForwarder
-        self.featureFlagService = featureFlagService
+    init(deepLinkNavigator: DeepLinkNavigator) {
+        self.deepLinkNavigator = deepLinkNavigator
     }
 
     func canHandle(subPath: String) -> Bool {
-        return HubMenuCoordinator.DeepLinkDestination(paymentsDeepLinkSubPath: subPath, featureFlagService: featureFlagService) != nil
+        return deepLinkDestination(for: subPath) != nil
     }
 
     func perform(for subPath: String, with parameters: [String: String]) -> Bool {
-        guard let destination = HubMenuCoordinator.DeepLinkDestination(paymentsDeepLinkSubPath: subPath, featureFlagService: featureFlagService) else {
+        guard let destination = deepLinkDestination(for: subPath) else {
             return false
         }
 
-        deepLinkForwarder.forwardHubMenuDeepLink(to: destination)
+        deepLinkNavigator.navigate(to: destination)
 
         return true
     }
 }
 
-private extension HubMenuCoordinator.DeepLinkDestination {
-    init?(paymentsDeepLinkSubPath: String, featureFlagService: FeatureFlagService) {
+private extension PaymentsRoute {
+    func deepLinkDestination(for paymentsDeepLinkSubPath: String) -> (any DeepLinkDestinationProtocol)? {
         guard paymentsDeepLinkSubPath.hasPrefix(Constants.paymentsRoot) else {
             return nil
         }
@@ -37,23 +34,13 @@ private extension HubMenuCoordinator.DeepLinkDestination {
             .removingPrefix(Constants.paymentsRoot)
             .removingPrefix("/")
 
-        /// Before Tap to Pay Milestone 2, we only support deeplinks directly to the Payments menu root
-        guard featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2) else {
-            if destinationSubPath == "" {
-                self = .paymentsMenu
-                return
-            } else {
-                return nil
-            }
-        }
-
         switch destinationSubPath {
         case "":
-            self = .paymentsMenu
+            return HubMenuDestination.paymentsMenu
         case "collect-payment":
-            self = .simplePayments
+            return PaymentsMenuDestination.collectPayment
         case "tap-to-pay":
-            self = .tapToPayOnIPhone
+            return PaymentsMenuDestination.tapToPay
         default:
             return nil
         }

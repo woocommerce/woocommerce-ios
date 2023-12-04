@@ -33,6 +33,10 @@ class DefaultStoresManager: StoresManager {
     ///
     private var applicationPasswordGenerationFailureObserver: NSObjectProtocol?
 
+    /// Observes invalid WPCOM token notification
+    ///
+    private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
+
     /// NotificationCenter
     ///
     private let notificationCenter: NotificationCenter
@@ -151,16 +155,27 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()
+        listenToWPCOMInvalidWPCOMTokenNotification()
 
         return self
     }
 
-    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
+    /// De-authenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
     ///
     func listenToApplicationPasswordGenerationFailureNotification() {
         applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
                                                                                       object: nil,
                                                                                       queue: .main) { [weak self] note in
+            _ = self?.deauthenticate()
+        }
+    }
+
+    /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
+    ///
+    func listenToWPCOMInvalidWPCOMTokenNotification() {
+        invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
+                                                                               object: nil,
+                                                                               queue: .main) { [weak self] note in
             _ = self?.deauthenticate()
         }
     }
@@ -481,18 +496,21 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Synchronizes all system plugins for the store with specified ID
+    /// Synchronizes all system information for the store with specified ID.
+    /// When finished, loads the store uuid into the session.
     ///
     @MainActor
-    func synchronizeSystemPlugins(siteID: Int64) async -> [SystemPlugin]? {
+    func synchronizeSystemInformation(siteID: Int64) async -> SystemInformation? {
         await withCheckedContinuation { continuation in
-            dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
+            dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { [weak self] result in
                 switch result {
-                    case let .success(plugins):
-                        continuation.resume(returning: plugins)
-                    case let .failure(error):
-                        DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
-                        continuation.resume(returning: nil)
+                case let .success(systemInformation):
+                    DDLogInfo("🟢 Successfully synced system information")
+                    self?.loadStoreUUID(siteID: siteID)
+                    continuation.resume(returning: systemInformation)
+                case let .failure(error):
+                    DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
+                    continuation.resume(returning: nil)
                 }
             })
         }
@@ -510,6 +528,16 @@ private extension DefaultStoresManager {
             if let error = result.failure {
                 DDLogError("⛔️ Failed to sync site plugins for siteID: \(siteID). Error: \(error)")
             }
+        }
+        dispatch(action)
+    }
+
+    /// Loads the stored `storeUUID` from the `AppSettings` store.
+    ///
+    func loadStoreUUID(siteID: Int64) {
+        let action = AppSettingsAction.getStoreID(siteID: siteID) { [weak self] storeUUID in
+            self?.sessionManager.defaultStoreUUID = storeUUID
+            DDLogInfo("🟢 Loaded Store UUID: " + (String(describing: storeUUID)))
         }
         dispatch(action)
     }
@@ -560,7 +588,7 @@ private extension DefaultStoresManager {
         }
 
         if siteID == WooConstants.placeholderStoreID,
-           let url = sessionManager.defaultStoreURL {
+           let url = sessionManager.defaultCredentials?.siteAddress {
             restoreSessionSite(with: url)
         } else {
             restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
@@ -573,15 +601,16 @@ private extension DefaultStoresManager {
         synchronizePaymentGateways(siteID: siteID)
         synchronizeAddOnsGroups(siteID: siteID)
         synchronizeSitePlugins(siteID: siteID)
+        loadStoreUUID(siteID: siteID)
 
         sendTelemetryIfNeeded(siteID: siteID)
 
         Task { @MainActor in
             // Order statuses and system plugins syncing are required outside of snapshot tracking.
             async let orderStatuses = retrieveOrderStatus(with: siteID)
-            async let systemPlugins = synchronizeSystemPlugins(siteID: siteID)
+            async let systemInformation = synchronizeSystemInformation(siteID: siteID)
 
-            trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemPlugins)
+            trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
         }
     }
 

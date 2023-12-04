@@ -34,7 +34,14 @@
       "was_ecommerce_trial": true,
       "plan": {
           "product_id": 1008,
-          "product_slug": "business-bundle"
+          "product_slug": "business-bundle",
+          "features": {
+              "active": [
+                  "akismet",
+                  "donations",
+                  "ai-assistant"
+              ]
+          }
       },
       "options": {
         "timezone": "",
@@ -274,7 +281,6 @@
         "is_automated_transfer": false,
         "is_wpcom_store": false,
         "woocommerce_is_active": false,
-        "can_blaze": false,
         "design_type": null,
         "site_goals": null,
         "jetpack_connection_active_plugins": [

@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import Experiments
+import WooFoundation
 
 final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel {
     @Published var state: CardPresentPaymentOnboardingState
@@ -143,7 +144,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
 }
 
 private extension InPersonPaymentsViewModel {
-    var countryCode: String {
+    var countryCode: CountryCode {
         CardPresentConfigurationLoader().configuration.countryCode
     }
 
@@ -151,10 +152,16 @@ private extension InPersonPaymentsViewModel {
         guard state.shouldTrackOnboardingStepEvents else {
             return
         }
-        ServiceLocator.analytics
-            .track(event: .InPersonPayments
-                .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
-                                                   countryCode: countryCode))
+        switch state {
+        case .completed, .enabled:
+            ServiceLocator.analytics
+                .track(.cardPresentOnboardingCompleted)
+        default:
+            ServiceLocator.analytics
+                .track(event: .InPersonPayments
+                    .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
+                                                       countryCode: countryCode))
+        }
     }
 
     func trackSkipped(state: CardPresentPaymentOnboardingState, remindLater: Bool) {

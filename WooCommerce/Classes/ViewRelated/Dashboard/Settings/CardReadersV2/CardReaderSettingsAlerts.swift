@@ -230,7 +230,7 @@ private extension CardReaderSettingsAlerts {
     }
 
     func preparingReader(from: UIViewController, cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalPreparingReader(cancelAction: cancel)
+        CardPresentModalPreparingForPayment(cancelAction: cancel)
     }
 
     func setViewModelAndPresent(from: UIViewController, viewModel: CardPresentPaymentsModalViewModel) {

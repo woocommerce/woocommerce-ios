@@ -25,7 +25,6 @@ extension Storage.GeneralAppSettings {
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
         isInAppPurchasesSwitchEnabled: CopiableProp<Bool> = .copy,
-        isTapToPayOnIPhoneSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
@@ -38,7 +37,6 @@ extension Storage.GeneralAppSettings {
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
         let isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled ?? self.isInAppPurchasesSwitchEnabled
-        let isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled ?? self.isTapToPayOnIPhoneSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
@@ -52,7 +50,6 @@ extension Storage.GeneralAppSettings {
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
-            isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
@@ -66,14 +63,17 @@ extension Storage.GeneralAppSettings {
 
 extension Storage.GeneralStoreSettings {
     public func copy(
+        storeID: NullableCopiableProp<String> = .copy,
         isTelemetryAvailable: CopiableProp<Bool> = .copy,
         telemetryLastReportedTime: NullableCopiableProp<Date> = .copy,
         areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy,
         preferredInPersonPaymentGateway: NullableCopiableProp<String> = .copy,
         skippedCashOnDeliveryOnboardingStep: CopiableProp<Bool> = .copy,
         lastSelectedStatsTimeRange: CopiableProp<String> = .copy,
-        firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy
+        firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy,
+        selectedTaxRateID: NullableCopiableProp<Int64> = .copy
     ) -> Storage.GeneralStoreSettings {
+        let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
         let areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled ?? self.areSimplePaymentTaxesEnabled
@@ -81,15 +81,18 @@ extension Storage.GeneralStoreSettings {
         let skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep ?? self.skippedCashOnDeliveryOnboardingStep
         let lastSelectedStatsTimeRange = lastSelectedStatsTimeRange ?? self.lastSelectedStatsTimeRange
         let firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType ?? self.firstInPersonPaymentsTransactionsByReaderType
+        let selectedTaxRateID = selectedTaxRateID ?? self.selectedTaxRateID
 
         return Storage.GeneralStoreSettings(
+            storeID: storeID,
             isTelemetryAvailable: isTelemetryAvailable,
             telemetryLastReportedTime: telemetryLastReportedTime,
             areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled,
             preferredInPersonPaymentGateway: preferredInPersonPaymentGateway,
             skippedCashOnDeliveryOnboardingStep: skippedCashOnDeliveryOnboardingStep,
             lastSelectedStatsTimeRange: lastSelectedStatsTimeRange,
-            firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType
+            firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
+            selectedTaxRateID: selectedTaxRateID
         )
     }
 }

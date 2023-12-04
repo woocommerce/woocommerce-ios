@@ -25,6 +25,14 @@ final class MockGenerativeContentRemote {
     func whenIdentifyingLanguage(thenReturn result: Result<String, Error>) {
         identifyLanguageResult = result
     }
+
+    /// The results to return in `generateAIProduct`.
+    private var generateAIProduct: Result<AIProduct, Error>?
+
+    /// Returns the value when `generateProduct` is called.
+    func whenGeneratingAIProduct(thenReturn result: Result<AIProduct, Error>) {
+        generateAIProduct = result
+    }
 }
 
 extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
@@ -35,7 +43,7 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
         generateTextFeature = feature
         guard let result = generateTextResult else {
             XCTFail("Could not find result for generating text.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -47,7 +55,24 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
         identifyLanguageFeature = feature
         guard let result = identifyLanguageResult else {
             XCTFail("Could not find result for generating text.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
+        }
+        return try result.get()
+    }
+
+    func generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag]) async throws -> AIProduct {
+        guard let result = generateAIProduct else {
+            XCTFail("Could not find result for generating product.")
+            throw NetworkError.notFound()
         }
         return try result.get()
     }

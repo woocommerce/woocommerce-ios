@@ -1,7 +1,8 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
-/// View model for `ProductsViewController`. Only stores logic related to Bulk Editing.
+/// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.
 ///
 class ProductListViewModel {
 
@@ -11,21 +12,20 @@ class ProductListViewModel {
 
     let siteID: Int64
     private let stores: StoresManager
-    private let userDefaults: UserDefaults
-    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
-
-    @Published private(set) var shouldShowBlazeBanner = false
 
     private(set) var selectedProducts: Set<Product> = .init()
 
+    private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
+
+    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         userDefaults: UserDefaults = .standard,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
         self.siteID = siteID
         self.stores = stores
-        self.userDefaults = userDefaults
-        self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
+        self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
     }
 
     var selectedProductsCount: Int {
@@ -159,61 +159,20 @@ class ProductListViewModel {
         }
         stores.dispatch(batchAction)
     }
-}
 
-// MARK: - Blaze banner visibility
-extension ProductListViewModel {
-    /// Checks for Blaze eligibility and user defaults to show the banner if necessary.
+    /// Whether site has Woo Subscriptions extension enabled
     ///
-    @MainActor
-    func updateBlazeBannerVisibility() async {
-        shouldShowBlazeBanner = await isBlazeBannerVisible()
+    var isEligibleForSubscriptions: Bool {
+        wooSubscriptionProductsEligibilityChecker.isSiteEligible()
     }
 
-    private func isBlazeBannerVisible() async -> Bool {
-        async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
-        async let storeHasPublishedProducts = (try? checkIfStoreHasProducts(siteID: siteID, status: .published)) ?? false
-        async let storeHasAnyOrders = (try? checkIfStoreHasOrders(siteID: siteID)) ?? false
-        guard await(isSiteEligible, storeHasPublishedProducts, storeHasAnyOrders) == (true, true, false) else {
-            return false
+    func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> SKUSearchResult {
+        do {
+            return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .productList)
+        } catch {
+            DDLogInfo("SKU search failed with error: \(error)")
+            throw error
+            // TODO: Show error notice
         }
-        return !userDefaults.hasDismissedBlazeBanner(for: siteID)
-    }
-
-    @MainActor
-    private func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus? = nil) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: { result in
-                switch result {
-                case .success(let hasProducts):
-                    continuation.resume(returning: hasProducts)
-                case .failure(let error):
-                    DDLogError("⛔️ Product list — Error fetching products to show the Blaze banner: \(error)")
-                    continuation.resume(throwing: error)
-                }
-            }))
-        }
-    }
-
-    @MainActor
-    private func checkIfStoreHasOrders(siteID: Int64) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: siteID, onCompletion: { result in
-                switch result {
-                case .success(let hasOrders):
-                    continuation.resume(returning: hasOrders)
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error fetching order to show the Blaze banner: \(error)")
-                    continuation.resume(throwing: error)
-                }
-            }))
-        }
-    }
-
-    /// Hides the banner and updates the user defaults to not show the banner again.
-    ///
-    func hideBlazeBanner() {
-        shouldShowBlazeBanner = false
-        userDefaults.setBlazeBannerDismissed(for: siteID)
     }
 }

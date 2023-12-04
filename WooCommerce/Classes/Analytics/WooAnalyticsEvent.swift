@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// This struct represents an analytics event. It is a combination of `WooAnalyticsStat` and
 /// its properties.
@@ -357,10 +358,16 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationDetailViewQuantityRulesTapped, properties: [:])
         }
 
-        /// Tracks when the merchant taps the Subscriptions row for a product variation.
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
         ///
-        static func subscriptionsTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productVariationViewSubscriptionsTapped, properties: [:])
+        static func freeTrialSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationViewSubscriptionFreeTrialTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationViewSubscriptionExpirationDateTapped, properties: [:])
         }
     }
 }
@@ -392,6 +399,12 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     /// Namespace
     enum ProductDetail {
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let hasChangedData = "has_changed_data"
+        }
+
         static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
                                                                            "has_minmax_quantity_rules": hasMinMaxQuantityRules])
@@ -421,16 +434,40 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewComponentsTapped, properties: [:])
         }
 
-        /// Tracks when the merchant taps the Subscriptions row (applicable for subscription-type products only).
-        ///
-        static func subscriptionsTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionsTapped, properties: [:])
-        }
-
         /// Tracks when the merchant taps the Quantity Rules row.
         ///
         static func quantityRulesTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewQuantityRulesTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func freeTrialSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionFreeTrialTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionExpirationDateTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription expiration details screen is closed.
+        ///
+        static func expirationDetailsScreenClosed(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .productSubscriptionExpirationDoneButtonTapped,
+                properties: [Keys.hasChangedData: hasChangedData]
+            )
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial screen is closed.
+        ///
+        static func freeTrialDetailsScreenClosed(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .productSubscriptionFreeTrialDoneButtonTapped,
+                properties: [Keys.hasChangedData: hasChangedData]
+            )
         }
     }
 }
@@ -472,15 +509,6 @@ extension WooAnalyticsEvent {
             case variation
         }
 
-        enum BarcodeScanningSource: String {
-            case orderCreation = "order_creation"
-            case orderList = "order_list"
-        }
-
-        enum BarcodeScanningFailureReason: String {
-            case cameraAccessNotPermitted = "camera_access_not_permitted"
-        }
-
         enum OrderProductAdditionVia: String {
             case scanning
             case manually
@@ -490,19 +518,37 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
         }
 
+        /// The raw value is the analytics event property value.
+        enum BundleProductConfigurationSource: String {
+            case productCard = "product_card"
+            case productSelector = "product_selector"
+        }
+
+        /// The raw value is the analytics event property value.
+        enum BundleProductConfigurationChangedField: String {
+            case quantity
+            case variation
+        }
+
         private enum Keys {
+            static let changedField = "changed_field"
             static let flow = "flow"
             static let hasDifferentShippingDetails = "has_different_shipping_details"
             static let orderStatus = "order_status"
             static let productCount = "product_count"
+            static let customAmountsCount = "custom_amounts_count"
+            static let hasAddOns = "has_addons"
+            static let hasBundleProductConfiguration = "has_bundle_configuration"
             static let hasCustomerDetails = "has_customer_details"
             static let hasFees = "has_fees"
             static let hasShippingMethod = "has_shipping_method"
+            static let isGiftCardRemoved = "removed"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
+            static let productTypes = "product_types"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
@@ -510,10 +556,10 @@ extension WooAnalyticsEvent {
             static let addedVia = "added_via"
             static let isFilterActive = "is_filter_active"
             static let searchFilter = "search_filter"
-            static let barcodeFormat = "barcode_format"
-            static let reason = "reason"
             static let couponsCount = "coupons_count"
             static let type = "type"
+            static let usesGiftCard = "use_gift_card"
+            static let taxStatus = "tax_status"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -529,14 +575,11 @@ extension WooAnalyticsEvent {
         }
 
         static func orderProductsLoaded(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> WooAnalyticsEvent {
-            let productIDs = order.items.map { $0.productID }
-            let productTypes = productIDs.compactMap { productID in
-                products.first(where: { $0.productID == productID })?.productType.rawValue
-            }.uniqued().joined(separator: ",")
+            let productTypes = productTypes(order: order, products: products)
             let hasAddOns = hasAddOns(order: order, products: products, addOnGroups: addOnGroups)
-            return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: ["id": order.orderID,
-                                                                                  "product_types": productTypes,
-                                                                                  "has_addons": hasAddOns])
+            return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: [Keys.orderID: order.orderID,
+                                                                                  Keys.productTypes: productTypes,
+                                                                                  Keys.hasAddOns: hasAddOns])
         }
 
         private static func hasAddOns(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> Bool {
@@ -544,15 +587,25 @@ extension WooAnalyticsEvent {
                 guard let product = products.first(where: { $0.productID == item.productID }) else {
                     continue
                 }
+                if item.addOns.isNotEmpty {
+                    return true
+                }
                 let itemHasAddOns = AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes,
                                                                product: product,
                                                                addOnGroups: addOnGroups)
-                    .addOnsAttributes().isNotEmpty
+                    .addOns().isNotEmpty
                 if itemHasAddOns {
                     return true
                 }
             }
             return false
+        }
+
+        private static func productTypes(order: Order, products: [Product]) -> String {
+            let productIDs = order.items.map { $0.productID }
+            return productIDs.compactMap { productID in
+                products.first(where: { $0.productID == productID })?.productType.rawValue
+            }.uniqued().sorted().joined(separator: ",")
         }
 
         static func orderAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {
@@ -563,33 +616,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationProductBarcodeScanningTapped, properties: [:])
         }
 
-        static func barcodeScanningSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
-        }
-
-        static func barcodeScanningFailure(from source: BarcodeScanningSource, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
-                                                                              Keys.reason: reason.rawValue])
-        }
-
-        static func orderProductSearchViaSKUSuccess(from source: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source])
-        }
-
-        static func orderProductSearchViaSKUFailure(from source: String,
-                                                    symbology: BarcodeSymbology? = nil,
-                                                    reason: String) -> WooAnalyticsEvent {
-
-            var properties = [Keys.source: source,
-                              Keys.reason: reason]
-
-            if let symbology = symbology {
-                properties[Keys.barcodeFormat] = symbology.rawValue
-            }
-
-            return WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: properties)
-        }
-
         static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
                 Keys.hasMultipleShippingLines: hasMultipleShippingLines,
@@ -597,12 +623,17 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderProductAdd(flow: Flow, source: BarcodeScanningSource, addedVia: OrderProductAdditionVia, productCount: Int = 1) -> WooAnalyticsEvent {
+        static func orderProductAdd(flow: Flow,
+                                    source: BarcodeScanning.Source,
+                                    addedVia: OrderProductAdditionVia,
+                                    productCount: Int = 1,
+                                    includesBundleProductConfiguration: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [
                 Keys.flow: flow.rawValue,
                 Keys.productCount: Int64(productCount),
                 Keys.source: source.rawValue,
-                Keys.addedVia: addedVia.rawValue
+                Keys.addedVia: addedVia.rawValue,
+                Keys.hasBundleProductConfiguration: includesBundleProductConfiguration
             ])
         }
 
@@ -621,8 +652,12 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderFeeAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderFeeAdd(flow: Flow, taxStatus: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue, Keys.taxStatus: taxStatus])
+        }
+
+        static func orderFeeUpdate(flow: Flow, taxStatus: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeUpdate, properties: [Keys.flow: flow.rawValue, Keys.taxStatus: taxStatus])
         }
 
         static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {
@@ -690,22 +725,27 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderStatusChange, properties: properties.compactMapValues { $0 })
         }
 
-        static func orderCreateButtonTapped(status: OrderStatusEnum,
+        static func orderCreateButtonTapped(order: Order,
+                                            status: OrderStatusEnum,
                                             productCount: Int,
+                                            customAmountsCount: Int,
                                             hasCustomerDetails: Bool,
                                             hasFees: Bool,
-                                            hasShippingMethod: Bool) -> WooAnalyticsEvent {
+                                            hasShippingMethod: Bool,
+                                            products: [Product]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
+                Keys.customAmountsCount: Int64(customAmountsCount),
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
-                Keys.hasShippingMethod: hasShippingMethod
+                Keys.hasShippingMethod: hasShippingMethod,
+                Keys.productTypes: productTypes(order: order, products: products)
             ])
         }
 
-        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount]
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64, usesGiftCard: Bool) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount, Keys.usesGiftCard: usesGiftCard]
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
                 properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
@@ -714,16 +754,18 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
         }
 
-        static func orderCreationFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderCreationFailed(usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationFailed, properties: [
+                Keys.usesGiftCard: usesGiftCard,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])
         }
 
-        static func orderSyncFailed(flow: Flow, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderSyncFailed(flow: Flow, usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
                 Keys.flow: flow.rawValue,
+                Keys.usesGiftCard: usesGiftCard,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])
@@ -761,6 +803,18 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        static func orderFormAddGiftCardCTAShown(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormAddGiftCardCTAShown, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderFormAddGiftCardCTATapped(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormAddGiftCardCTATapped, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderFormGiftCardSet(flow: Flow, isRemoved: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormGiftCardSet, properties: [Keys.flow: flow.rawValue, Keys.isGiftCardRemoved: isRemoved])
+        }
+
         /// Tracked when the user taps to collect a payment
         ///
         static func collectPaymentTapped() -> WooAnalyticsEvent {
@@ -784,6 +838,38 @@ extension WooAnalyticsEvent {
         ///
         static func giftCardsShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailsGiftCardShown, properties: [:])
+        }
+
+        /// Tracked when the Configure button is shown in the order form.
+        ///
+        static func orderFormBundleProductConfigureCTAShown(flow: Flow, source: BundleProductConfigurationSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormBundleProductConfigureCTAShown, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.source: source.rawValue
+            ])
+        }
+
+        /// Tracked when the Configure button is tapped in the order form.
+        ///
+        static func orderFormBundleProductConfigureCTATapped(flow: Flow, source: BundleProductConfigurationSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormBundleProductConfigureCTATapped, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.source: source.rawValue
+            ])
+        }
+
+        /// Tracked the user changes any field for any bundle item in the configuration form from the order form.
+        ///
+        static func orderFormBundleProductConfigurationChanged(changedField: BundleProductConfigurationChangedField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormBundleProductConfigurationChanged, properties: [
+                Keys.changedField: changedField.rawValue
+            ])
+        }
+
+        /// Tracked when the user taps to save a valid bundle product configuration from the order form.
+        ///
+        static func orderFormBundleProductConfigurationSaveTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormBundleProductConfigurationSaveTapped, properties: [:])
         }
     }
 }
@@ -1252,10 +1338,10 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func cardReaderSelectTypeShown(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func cardReaderSelectTypeShown(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSelectTypeShown,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
@@ -1268,10 +1354,10 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func cardReaderSelectTypeBuiltInTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func cardReaderSelectTypeBuiltInTapped(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSelectTypeBuiltInTapped,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
@@ -1284,10 +1370,10 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func cardReaderSelectTypeBluetoothTapped(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func cardReaderSelectTypeBluetoothTapped(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSelectTypeBluetoothTapped,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
@@ -1299,10 +1385,10 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func manageCardReadersBuiltInReaderAutoDisconnect(forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func manageCardReadersBuiltInReaderAutoDisconnect(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .manageCardReadersBuiltInReaderAutoDisconnect,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
@@ -1316,12 +1402,12 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///
         static func cardReaderAutomaticDisconnect(cardReaderModel: String?,
-                                                  forGatewayID: String?, countryCode: String,
+                                                  forGatewayID: String?, countryCode: CountryCode,
                                                   connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderAutomaticDisconnect,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.connectionType: connectionType
                               ]
@@ -1337,12 +1423,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderDiscoveryFailed(forGatewayID: String?,
                                               error: Error,
-                                              countryCode: String,
+                                              countryCode: CountryCode,
                                               siteID: Int64,
                                               connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription,
                                 Keys.siteID: siteID,
@@ -1361,12 +1447,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderConnectionSuccess(forGatewayID: String?,
                                                 batteryLevel: Float?,
-                                                countryCode: String,
+                                                countryCode: CountryCode,
                                                 cardReaderModel: String?,
                                                 connectionType: String) -> WooAnalyticsEvent {
             var properties = [
                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                Keys.countryCode: countryCode,
+                Keys.countryCode: countryCode.rawValue,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                 Keys.connectionType: connectionType
             ]
@@ -1388,14 +1474,14 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderConnectionFailed(forGatewayID: String?,
                                                error: Error,
-                                               countryCode: String,
+                                               countryCode: CountryCode,
                                                cardReaderModel: String?,
                                                siteID: Int64,
                                                connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription,
                                 Keys.siteID: siteID,
@@ -1412,11 +1498,11 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func cardReaderDisconnectTapped(forGatewayID: String?, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func cardReaderDisconnectTapped(forGatewayID: String?, countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDisconnectTapped,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
                               ]
             )
@@ -1432,12 +1518,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderSoftwareUpdateTapped(forGatewayID: String?,
                                                    updateType: SoftwareUpdateTypeProperty,
-                                                   countryCode: String,
+                                                   countryCode: CountryCode,
                                                    cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateTapped,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -1454,12 +1540,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderSoftwareUpdateStarted(forGatewayID: String?,
                                                     updateType: SoftwareUpdateTypeProperty,
-                                                    countryCode: String,
+                                                    countryCode: CountryCode,
                                                     cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateStarted,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -1478,13 +1564,13 @@ extension WooAnalyticsEvent {
         static func cardReaderSoftwareUpdateFailed(forGatewayID: String?,
                                                    updateType: SoftwareUpdateTypeProperty,
                                                    error: Error,
-                                                   countryCode: String,
+                                                   countryCode: CountryCode,
                                                    cardReaderModel: String
         ) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateFailed,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue,
                                 Keys.errorDescription: error.localizedDescription
@@ -1502,12 +1588,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderSoftwareUpdateSuccess(forGatewayID: String?,
                                                     updateType: SoftwareUpdateTypeProperty,
-                                                    countryCode: String,
+                                                    countryCode: CountryCode,
                                                     cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateSuccess,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -1524,12 +1610,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderSoftwareUpdateCancelTapped(forGatewayID: String?,
                                                          updateType: SoftwareUpdateTypeProperty,
-                                                         countryCode: String,
+                                                         countryCode: CountryCode,
                                                          cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCancelTapped,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -1546,12 +1632,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardReaderSoftwareUpdateCanceled(forGatewayID: String?,
                                                      updateType: SoftwareUpdateTypeProperty,
-                                                     countryCode: String,
+                                                     countryCode: CountryCode,
                                                      cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSoftwareUpdateCanceled,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
@@ -1568,7 +1654,7 @@ extension WooAnalyticsEvent {
         ///
         static func collectPaymentFailed(forGatewayID: String?,
                                          error: Error,
-                                         countryCode: String,
+                                         countryCode: CountryCode,
                                          cardReaderModel: String?,
                                          siteID: Int64) -> WooAnalyticsEvent {
             let paymentMethod: PaymentMethod? = {
@@ -1598,7 +1684,7 @@ extension WooAnalyticsEvent {
             }()
             let properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.cardReaderModel: cardReaderModel,
-                Keys.countryCode: countryCode,
+                Keys.countryCode: countryCode.rawValue,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                 Keys.paymentMethodType: paymentMethod?.analyticsValue,
                 Keys.errorDescription: errorDescription,
@@ -1616,14 +1702,14 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///
         static func collectPaymentCanceled(forGatewayID: String?,
-                                           countryCode: String,
+                                           countryCode: CountryCode,
                                            cardReaderModel: String?,
                                            cancellationSource: CancellationSource,
                                            siteID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.cancellationSource: cancellationSource.rawValue,
                                 Keys.siteID: siteID
@@ -1638,6 +1724,7 @@ extension WooAnalyticsEvent {
             case searchingForReader = "searching_for_reader"
             case foundReader = "found_reader"
             case foundSeveralReaders = "found_several_readers"
+            case paymentValidatingOrder = "payment_validating_order"
             case paymentPreparingReader = "payment_preparing_reader"
             case paymentWaitingForInput = "payment_waiting_for_input"
             case connectionError = "connection_error"
@@ -1654,7 +1741,7 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///
         static func collectPaymentSuccess(forGatewayID: String?,
-                                          countryCode: String,
+                                          countryCode: CountryCode,
                                           paymentMethod: PaymentMethod,
                                           cardReaderModel: String?,
                                           millisecondsSinceOrderAddNew: Int64?,
@@ -1662,7 +1749,7 @@ extension WooAnalyticsEvent {
                                           siteID: Int64) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                Keys.countryCode: countryCode,
+                Keys.countryCode: countryCode.rawValue,
                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                 Keys.paymentMethodType: paymentMethod.analyticsValue,
                 Keys.siteID: siteID
@@ -1689,13 +1776,13 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///
         static func collectInteracPaymentSuccess(gatewayID: String?,
-                                                 countryCode: String,
+                                                 countryCode: CountryCode,
                                                  cardReaderModel: String?,
                                                  siteID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectInteracPaymentSuccess,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
                                 Keys.siteID: siteID
                               ])
@@ -1709,13 +1796,13 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///
         static func interacRefundSuccess(gatewayID: String?,
-                                         countryCode: String,
+                                         countryCode: CountryCode,
                                          cardReaderModel: String?,
                                          siteID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .interacRefundSuccess,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
                                 Keys.siteID: siteID
                               ])
@@ -1731,13 +1818,13 @@ extension WooAnalyticsEvent {
         ///
         static func interacRefundFailed(error: Error,
                                         gatewayID: String?,
-                                        countryCode: String,
+                                        countryCode: CountryCode,
                                         cardReaderModel: String?,
                                         siteID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .interacRefundFailed,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
                                 Keys.siteID: siteID
                               ],
@@ -1752,13 +1839,13 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///
         static func interacRefundCanceled(gatewayID: String?,
-                                          countryCode: String,
+                                          countryCode: CountryCode,
                                           cardReaderModel: String?,
                                           siteID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .interacRefundCanceled,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
                                 Keys.siteID: siteID
                               ])
@@ -1768,10 +1855,10 @@ extension WooAnalyticsEvent {
         ///
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func cardPresentOnboardingLearnMoreTapped(reason: String, countryCode: String) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingLearnMoreTapped(reason: String, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason
                               ])
         }
@@ -1782,10 +1869,10 @@ extension WooAnalyticsEvent {
         ///   - reason: the reason why the onboarding is not completed.
         ///   - countryCode: the country code of the store.
         ///
-        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: String) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason
                               ])
         }
@@ -1797,10 +1884,10 @@ extension WooAnalyticsEvent {
         ///   - remindLater: whether the user will see this onboarding step again
         ///   - countryCode: the country code of the store.
         ///
-        static func cardPresentOnboardingStepSkipped(reason: String, remindLater: Bool, countryCode: String) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingStepSkipped(reason: String, remindLater: Bool, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingStepSkipped,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
                                 Keys.remindLater: remindLater
                               ])
@@ -1812,10 +1899,10 @@ extension WooAnalyticsEvent {
         ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
         ///   - countryCode: the country code of the store.
         ///
-        static func cardPresentOnboardingCtaTapped(reason: String, countryCode: String) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingCtaTapped(reason: String, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCtaTapped,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason
                               ])
         }
@@ -1825,12 +1912,12 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - reason: the reason why the onboarding step was shown (effectively the name of the step)
         ///   - countryCode: the country code of the store
-        ///   - error: the logged error
+        ///   - error: the logged error response from the API, if any.
         ///
-        static func cardPresentOnboardingCtaFailed(reason: String, countryCode: String, error: Error) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingCtaFailed(reason: String, countryCode: CountryCode, error: Error? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCtaFailed,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
                               ], error: error)
         }
@@ -1846,10 +1933,10 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - source: the screen which the enable attempt was made on     
         ///
-        static func enableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
+        static func enableCashOnDeliverySuccess(countryCode: CountryCode, source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .enableCashOnDeliverySuccess,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.source: source.rawValue
                               ])
         }
@@ -1860,12 +1947,12 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - source: the screen which the enable attempt was made on
         ///
-        static func enableCashOnDeliveryFailed(countryCode: String,
+        static func enableCashOnDeliveryFailed(countryCode: CountryCode,
                                                error: Error?,
                                                source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .enableCashOnDeliveryFailed,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.source: source.rawValue
                               ],
                               error: error)
@@ -1877,12 +1964,21 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - source: the screen which the disable attempt was made on
         ///
-        static func disableCashOnDeliverySuccess(countryCode: String, source: CashOnDeliverySource) -> WooAnalyticsEvent {
+        static func disableCashOnDeliverySuccess(countryCode: CountryCode, source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .disableCashOnDeliverySuccess,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.source: source.rawValue
                               ])
+        }
+
+        static func cashOnDeliveryToggleLearnMoreTapped(countryCode: CountryCode,
+                                                        source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            return WooAnalyticsEvent(statName: .paymentsHubCashOnDeliveryToggleLearnMoreTapped,
+                                     properties: [
+                                        Keys.countryCode: countryCode.rawValue,
+                                        Keys.source: source.rawValue
+                                     ])
         }
 
         /// Tracked when the Cash on Delivery Payment Gateway disabling fails, e.g. from the toggle on the Payments hub menu.
@@ -1891,12 +1987,12 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - source: the screen which the disable attempt was made on
         ///
-        static func disableCashOnDeliveryFailed(countryCode: String,
+        static func disableCashOnDeliveryFailed(countryCode: CountryCode,
                                                error: Error?,
                                                source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .disableCashOnDeliveryFailed,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.source: source.rawValue
                               ],
                               error: error)
@@ -1908,10 +2004,10 @@ extension WooAnalyticsEvent {
         ///   - enabled: the reason why the onboarding step was shown (effectively the name of the step.)
         ///   - countryCode: the country code of the store.
         ///
-        static func paymentsHubCashOnDeliveryToggled(enabled: Bool, countryCode: String) -> WooAnalyticsEvent {
+        static func paymentsHubCashOnDeliveryToggled(enabled: Bool, countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .paymentsHubCashOnDeliveryToggled,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.enabled: enabled
                               ])
         }
@@ -1919,19 +2015,19 @@ extension WooAnalyticsEvent {
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func receiptViewTapped(countryCode: String) -> WooAnalyticsEvent {
+        static func receiptViewTapped(countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptViewTapped,
-                              properties: [Keys.countryCode: countryCode])
+                              properties: [Keys.countryCode: countryCode.rawValue])
         }
 
         /// Tracked when the user taps on the "Email receipt" button after successfully collecting a payment to email a receipt.
         /// - Parameter countryCode: the country code of the store.
         /// - Parameter cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailTapped(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptEmailTapped(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailTapped,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.cardReaderModel: cardReaderModel
                               ].compactMapValues { $0 })
         }
@@ -1942,10 +2038,10 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailFailed(error: Error, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptEmailFailed(error: Error, countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailFailed,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.cardReaderModel: cardReaderModel
                               ].compactMapValues { $0 },
                               error: error)
@@ -1955,10 +2051,10 @@ extension WooAnalyticsEvent {
         /// - Parameter countryCode: the country code of the store.
         /// - Parameter cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailCanceled(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptEmailCanceled(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailCanceled,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.cardReaderModel: cardReaderModel
                               ].compactMapValues { $0 })
         }
@@ -1966,10 +2062,10 @@ extension WooAnalyticsEvent {
         /// Tracked when the receipt was sent by email.
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func receiptEmailSuccess(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptEmailSuccess(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailSuccess,
                               properties: [
-                                Keys.countryCode: countryCode,
+                                Keys.countryCode: countryCode.rawValue,
                                 Keys.cardReaderModel: cardReaderModel
                               ].compactMapValues { $0 })
         }
@@ -1977,9 +2073,9 @@ extension WooAnalyticsEvent {
         /// Tracked when the user tapped on the button to print a receipt.
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func receiptPrintTapped(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptPrintTapped(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
-                Keys.countryCode: countryCode,
+                Keys.countryCode: countryCode.rawValue,
                 Keys.cardReaderModel: cardReaderModel
             ]
             return WooAnalyticsEvent(statName: .receiptPrintTapped,
@@ -1992,9 +2088,9 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the country code of the store.
         ///
-        static func receiptPrintFailed(error: Error, countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptPrintFailed(error: Error, countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
-                Keys.countryCode: countryCode,
+                Keys.countryCode: countryCode.rawValue,
                 Keys.cardReaderModel: cardReaderModel
             ]
             return WooAnalyticsEvent(statName: .receiptPrintFailed,
@@ -2006,9 +2102,9 @@ extension WooAnalyticsEvent {
         /// - Parameter countryCode: the country code of the store.
         /// - Parameter cardReaderModel: the country code of the store.
         ///
-        static func receiptPrintCanceled(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptPrintCanceled(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
-                Keys.countryCode: countryCode,
+                Keys.countryCode: countryCode.rawValue,
                 Keys.cardReaderModel: cardReaderModel
             ]
             return WooAnalyticsEvent(statName: .receiptPrintCanceled,
@@ -2019,9 +2115,9 @@ extension WooAnalyticsEvent {
         /// - Parameter countryCode: the country code of the store.
         /// - Parameter cardReaderModel: the country code of the store.
         ///
-        static func receiptPrintSuccess(countryCode: String, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptPrintSuccess(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
-                Keys.countryCode: countryCode,
+                Keys.countryCode: countryCode.rawValue,
                 Keys.cardReaderModel: cardReaderModel
             ]
             return WooAnalyticsEvent(statName: .receiptPrintSuccess,
@@ -2033,6 +2129,7 @@ extension WooAnalyticsEvent {
             case paymentMethods
             case tapToPaySummary
             case manageCardReader
+            case aboutTapToPay
 
             var trackingValue: String {
                 switch self {
@@ -2044,12 +2141,39 @@ extension WooAnalyticsEvent {
                     return "tap_to_pay_summary"
                 case .manageCardReader:
                     return "manage_card_reader"
+                case .aboutTapToPay:
+                    return "about_tap_to_pay"
                 }
             }
         }
 
         static func learnMoreTapped(source: LearnMoreLinkSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .inPersonPaymentsLearnMoreTapped, properties: ["source": source.trackingValue])
+        }
+    }
+}
+
+// MARK: - Deposit Summary
+//
+extension WooAnalyticsEvent {
+    enum DepositSummary {
+        enum Keys {
+            static let numberOfCurrencies = "number_of_currencies"
+            static let currency = "currency"
+        }
+
+        static func depositSummaryShown(numberOfCurrencies: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryShown,
+                              properties: [Keys.numberOfCurrencies: numberOfCurrencies])
+        }
+
+        static func depositSummaryError(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryError, properties: [:], error: error)
+        }
+
+        static func depositSummaryCurrencySelected(currency: CurrencyCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryCurrencySelected,
+                              properties: [Keys.currency: currency.rawValue])
         }
     }
 }
@@ -2333,11 +2457,18 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case property
             case selectedProductsCount = "selected_products_count"
+            case isEligibleForSubscriptions = "is_eligible_for_subscriptions"
         }
 
         enum BulkUpdateField: String {
             case price
             case status
+        }
+
+        static func productListLoaded(isEligibleForSubscriptions: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListLoaded,
+                              properties: [Keys.isEligibleForSubscriptions.rawValue: isEligibleForSubscriptions]
+            )
         }
 
         static func bulkUpdateRequested(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {
@@ -2601,6 +2732,54 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Shipping Label Hazmat Declaration
+//
+extension WooAnalyticsEvent {
+    enum ShippingLabelHazmatDeclaration {
+        enum Keys: String {
+            case orderID = "order_id"
+            case category
+        }
+
+        static func hazmatCategorySelectorOpened() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hazmatCategorySelectorOpened, properties: [:])
+        }
+
+        static func hazmatCategorySelected(orderID: Int64, selectedCategory: ShippingLabelHazmatCategory) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hazmatCategorySelected, properties: [Keys.orderID.rawValue: orderID,
+                                                                              Keys.category.rawValue: selectedCategory.rawValue])
+        }
+
+        static func containsHazmatChecked() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .containsHazmatChecked, properties: [:])
+        }
+    }
+}
+
+// MARK: - App Login Deep Link
+//
+extension WooAnalyticsEvent {
+    enum AppLoginDeepLink {
+        enum Keys: String {
+            case flow
+            case url
+        }
+
+        enum Flows: String {
+            case wpCom = "wp_com"
+            case noWpCom = "no_wp_com"
+        }
+
+        static func appLoginLinkSuccess(flow: Flows) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginAppLoginLinkSuccess, properties: [Keys.flow.rawValue: flow.rawValue])
+        }
+
+        static func appLoginLinkMalformed(url: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginMalformedAppLoginLink, properties: [Keys.url.rawValue: url])
+        }
+    }
+}
+
 // MARK: - Remote Requests
 //
 extension WooAnalyticsEvent {
@@ -2617,6 +2796,55 @@ extension WooAnalyticsEvent {
                                 Keys.entityName.rawValue: entityName
                               ].compactMapValues { $0 },
                               error: error)
+        }
+    }
+}
+
+// MARK: - Barcode Scanning
+//
+extension WooAnalyticsEvent {
+    enum BarcodeScanning {
+        private enum Keys {
+            static let barcodeFormat = "barcode_format"
+            static let reason = "reason"
+            static let source = "source"
+        }
+
+        enum Source: String {
+            case orderCreation = "order_creation"
+            case orderList = "order_list"
+            case productList = "product_list"
+        }
+
+        enum BarcodeScanningFailureReason: String {
+            case cameraAccessNotPermitted = "camera_access_not_permitted"
+        }
+
+        static func barcodeScanningSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func barcodeScanningFailure(from source: BarcodeScanning.Source, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
+                                                                              Keys.reason: reason.rawValue])
+        }
+
+        static func productSearchViaSKUSuccess(from source: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source])
+        }
+
+        static func productSearchViaSKUFailure(from source: String,
+                                                    symbology: BarcodeSymbology? = nil,
+                                                    reason: String) -> WooAnalyticsEvent {
+
+            var properties = [Keys.source: source,
+                              Keys.reason: reason]
+
+            if let symbology = symbology {
+                properties[Keys.barcodeFormat] = symbology.rawValue
+            }
+
+            return WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: properties)
         }
     }
 }

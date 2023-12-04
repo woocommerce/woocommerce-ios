@@ -257,7 +257,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let submittedItems: [OrderItem] = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, let order, _):
+                case .createOrder(_, let order, _, _):
                     promise(order.items)
                 default:
                     XCTFail("Unexpected Action received: \(action)")
@@ -286,7 +286,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let submittedItems: [OrderItem] = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, let order, _):
+                case .createOrder(_, let order, _, _):
                     promise(order.items)
                 default:
                     XCTFail("Unexpected Action received: \(action)")
@@ -314,9 +314,9 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let submittedItems: [OrderItem] = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, let order, let completion):
+                case .createOrder(_, let order, _, let completion):
                     completion(.success(order.copy(orderID: self.sampleOrderID)))
-                case .updateOrder(_, let order, _, _):
+                case .updateOrder(_, let order, _, _, _):
                     promise(order.items)
                 default:
                     XCTFail("Unexpected Action received: \(action)")
@@ -387,7 +387,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderCreationInvoked)
     }
 
-    func test_sending_fee_input_triggers_order_creation() {
+    func test_adding_fee_input_triggers_order_creation() {
         // Given
         let fee = OrderFeeLine.fake().copy()
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -404,14 +404,14 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            synchronizer.setFee.send(fee)
+            synchronizer.addFee.send(fee)
         }
 
         // Then
         XCTAssertTrue(orderCreationInvoked)
     }
 
-    func test_sending_fee_input_triggers_order_sync_in_edit_flow() {
+    func test_adding_fee_input_triggers_order_sync_in_edit_flow() {
         // Given
         let fee = OrderFeeLine.fake().copy()
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -431,26 +431,39 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            synchronizer.setFee.send(fee)
+            synchronizer.addFee.send(fee)
         }
 
         // Then
         XCTAssertTrue(orderUpdateInvoked)
     }
 
-    func test_sending_nil_fee_input_updates_local_order() throws {
+    func test_adding_fee_input_updates_local_order() throws {
+        // Given
+        let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID, name: "test-fee")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        synchronizer.addFee.send(feeLine)
+
+        // Then
+        let firstLine = try XCTUnwrap(synchronizer.order.fees.first)
+        XCTAssertEqual(firstLine.name, feeLine.name)
+    }
+
+    func test_removing_fee_input_updates_local_order() throws {
         // Given
         let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 
         // When
-        synchronizer.setFee.send(feeLine)
-        synchronizer.setFee.send(nil)
+        synchronizer.addFee.send(feeLine)
+        synchronizer.removeFee.send(feeLine)
 
         // Then
-        let firstLine = try XCTUnwrap(synchronizer.order.fees.first)
-        XCTAssertNil(firstLine.name)
+        XCTAssertTrue(synchronizer.order.fees.first?.isDeleted ?? true)
     }
 
     func test_sending_coupon_input_triggers_order_creation() {
@@ -537,7 +550,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let expectedNote = "Second customer note"
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, _, let completion):
+            case .createOrder(_, _, _, let completion):
                 completion(.success(.fake().copy(orderID: self.sampleOrderID, customerNote: randomNote)))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -547,7 +560,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // When
         synchronizer.setNote.send(expectedNote)
         let resultOrder = try waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }.get()
@@ -565,9 +578,9 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let expectedNote = "Second customer note"
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, _, let completion):
+            case .createOrder(_, _, _, let completion):
                 completion(.success(.fake().copy(orderID: self.sampleOrderID)))
-            case .updateOrder(_, let order, _, let completion):
+            case .updateOrder(_, let order, _, _, let completion):
                 completion(.success(order.copy(customerNote: firstNote)))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -584,7 +597,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setNote.send(expectedNote)
 
         let resultOrder = try waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }.get()
@@ -604,7 +617,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .updateOrder(_, let order, let fields, let completion):
+                case .updateOrder(_, let order, _, let fields, let completion):
                     completion(.success(order))
                     promise((order, fields))
                 default:
@@ -626,7 +639,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, _, let completion):
+            case .createOrder(_, _, _, let completion):
                 completion(.success(.fake()))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -658,9 +671,9 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, _, let completion):
+            case .createOrder(_, _, _, let completion):
                 completion(.success(.fake().copy(orderID: self.sampleOrderID)))
-            case .updateOrder(_, let order, _, let completion):
+            case .updateOrder(_, let order, _, _, let completion):
                 completion(.success(order))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -689,6 +702,33 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: true), .synced])
     }
 
+    func test_state_is_set_to_syncing_and_blocking_upon_order_update_with_new_item_that_includes_bundle_configuration() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        let states: [OrderSyncState] = waitFor { promise in
+            synchronizer.statePublisher
+                .dropFirst()
+                .collect(1)
+                .sink { states in
+                    promise(states)
+                }
+                .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1, discount: 0, bundleConfiguration: [
+                .init(bundledItemID: 0, productOrVariation: .product(id: 1), quantity: 2, isOptionalAndSelected: nil)
+            ])
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertEqual(states, [.syncing(blocking: true)])
+    }
+
     func test_states_are_properly_set_upon_success_order_update_with_no_new_items() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -697,9 +737,9 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, _, let completion):
+            case .createOrder(_, _, _, let completion):
                 completion(.success(.fake().copy(orderID: self.sampleOrderID)))
-            case .updateOrder(_, let order, _, let completion):
+            case .updateOrder(_, let order, _, _, let completion):
                 completion(.success(order))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -739,7 +779,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let receivedError: Bool = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, _, let completion):
+                case .createOrder(_, _, _, let completion):
                     completion(.failure(error))
                     promise(true)
                 default:
@@ -778,7 +818,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, _, let completion):
+            case .createOrder(_, _, _, let completion):
                 completion(.failure(error))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -800,7 +840,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Then
-        assertEqual(states, [.syncing(blocking: true), .error(error)])
+        assertEqual(states, [.syncing(blocking: true), .error(error, usesGiftCard: false)])
     }
 
     func test_states_are_properly_set_upon_failing_order_update() {
@@ -811,9 +851,9 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, _, let completion):
+            case .createOrder(_, _, _, let completion):
                 completion(.success(.fake().copy(orderID: self.sampleOrderID)))
-            case .updateOrder(_, _, _, let completion):
+            case .updateOrder(_, _, _, _, let completion):
                 completion(.failure(error))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -839,7 +879,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(states, [.syncing(blocking: true), .error(error)])
+        XCTAssertEqual(states, [.syncing(blocking: true), .error(error, usesGiftCard: false)])
     }
 
     func test_sending_double_input_triggers_only_one_order_creation() {
@@ -883,7 +923,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             exp.isInverted = true
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, _, let completion):
+                case .createOrder(_, _, _, let completion):
                     // Send update request before order is created
                     let input2 = OrderSyncProductInput(product: .product(product), quantity: 2, discount: 0)
                     synchronizer.setProduct.send(input2)
@@ -924,7 +964,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let submittedStatus: OrderStatusEnum = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, order, onCompletion):
+                case let .createOrder(_, order, _, onCompletion):
                     onCompletion(.success(order))
                     promise(order.status)
                 default:
@@ -932,7 +972,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            synchronizer.setFee.send(.fake())
+            synchronizer.addFee.send(.fake())
         }
 
         // Then
@@ -950,7 +990,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let submittedStatus: OrderStatusEnum = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .updateOrder(_, let order, _, let completion):
+                case .updateOrder(_, let order, _, _, let completion):
                     completion(.success(order))
                     promise(order.status)
                 default:
@@ -976,9 +1016,9 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let updateFields: [OrderUpdateField] = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, _, let completion):
+                case .createOrder(_, _, _, let completion):
                     completion(.success(.fake().copy(orderID: self.sampleOrderID)))
-                case .updateOrder(_, _, let fields, _):
+                case .updateOrder(_, _, _, let fields, _):
                     promise(fields)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -1014,7 +1054,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let updateFields: [OrderUpdateField] = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .updateOrder(_, _, let fields, _):
+                case .updateOrder(_, _, _, let fields, _):
                     promise(fields)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -1041,7 +1081,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let orderCreationFailed: Bool = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, _, let completion):
+                case .createOrder(_, _, _, let completion):
                     completion(.failure(error))
                     promise(true)
                 default:
@@ -1057,7 +1097,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let createdOrderItems: [OrderItem] = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, let order, _):
+                case .createOrder(_, let order, _, _):
                     promise(order.items)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -1084,9 +1124,9 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let orderUpdateFailed: Bool = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, _, let completion):
+                case .createOrder(_, _, _, let completion):
                     completion(.success(.fake().copy(orderID: self.sampleOrderID)))
-                case .updateOrder(_, _, _, let completion):
+                case .updateOrder(_, _, _, _, let completion):
                     completion(.failure(error))
                     promise(true)
                 default:
@@ -1107,7 +1147,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let updatedOrderItems: [OrderItem] = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .updateOrder(_, let order, _, _):
+                case .updateOrder(_, let order, _, _, _):
                     promise(order.items)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -1129,7 +1169,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, let order, let completion):
+            case .createOrder(_, let order, _, let completion):
                 completion(.success(order))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -1138,7 +1178,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
@@ -1153,7 +1193,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, _, let completion):
+            case .createOrder(_, _, _, let completion):
                 let error = NSError(domain: "", code: 0, userInfo: nil)
                 completion(.failure(error))
             default:
@@ -1163,7 +1203,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
@@ -1178,9 +1218,9 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, let order, let completion):
+            case .createOrder(_, let order, _, let completion):
                 completion(.success(order.copy(orderID: self.sampleOrderID)))
-            case .updateOrder(_, let order, _, let completion):
+            case .updateOrder(_, let order, _, _, let completion):
                 completion(.success(order))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -1192,13 +1232,64 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_commitAllChanges_relays_usesGiftCard_on_success() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+                case .createOrder(_, _, _, let completion):
+                    completion(.success(.fake()))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        synchronizer.setGiftCard.send("AABO")
+        let usesGiftCard = waitFor { promise in
+            synchronizer.commitAllChanges { _, usesGiftCard in
+                promise(usesGiftCard)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(usesGiftCard)
+    }
+
+    func test_commitAllChanges_relays_usesGiftCard_on_failure() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+                case .createOrder(_, _, _, let completion):
+                    let error = NSError(domain: "", code: 0, userInfo: nil)
+                    completion(.failure(error))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        synchronizer.setGiftCard.send("AABO")
+        let usesGiftCard = waitFor { promise in
+            synchronizer.commitAllChanges { _, usesGiftCard in
+                promise(usesGiftCard)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(usesGiftCard)
     }
 
     func test_double_inputs_are_debounced_during_order_update() {
@@ -1214,7 +1305,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .createOrder(_, let order, let completion):
+            case .createOrder(_, let order, _, let completion):
                 completion(.success(order.copy(orderID: self.sampleOrderID)))
             case .updateOrder:
                 exp.fulfill()
@@ -1254,8 +1345,8 @@ extension OrderSyncState: Equatable {
         switch (lhs, rhs) {
         case (.syncing, .syncing), (.synced, .synced):
             return true
-        case (.error(let error1), .error(let error2)):
-            return error1 as NSError == error2 as NSError
+        case (.error(let error1, let usesGiftCard1), .error(let error2, let usesGiftCard2)):
+            return error1 as NSError == error2 as NSError && usesGiftCard1 == usesGiftCard2
         default:
             return false
         }

@@ -119,13 +119,6 @@ public extension StorageType {
         return firstObject(ofType: OrderMetaData.self, matching: predicate)
     }
 
-    /// Retrieves the Stored Order Gift Cards.
-    ///
-    func loadOrderGiftCard(siteID: Int64, giftCardID: Int64) -> OrderGiftCard? {
-        let predicate = \OrderGiftCard.order?.siteID == siteID && \OrderGiftCard.giftCardID == giftCardID
-        return firstObject(ofType: OrderGiftCard.self, matching: predicate)
-    }
-
     // MARK: - Stats
 
     /// Retrieves the Stored TopEarnerStats.
@@ -544,6 +537,21 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 
+    // MARK: - BlazeCampaign
+
+    /// Returns a single Blaze campaign given a `siteID` and `campaignID`
+    ///
+    func loadBlazeCampaign(siteID: Int64, campaignID: Int64) -> BlazeCampaign? {
+        let predicate = \BlazeCampaign.siteID == siteID && \BlazeCampaign.campaignID == campaignID
+        return firstObject(ofType: BlazeCampaign.self, matching: predicate)
+    }
+
+    /// Returns all stored Blaze campaigns for a site
+    ///
+    func loadAllBlazeCampaigns(siteID: Int64) -> [BlazeCampaign] {
+        let predicate = \BlazeCampaign.siteID == siteID
+        return allObjects(ofType: BlazeCampaign.self, matching: predicate, sortedBy: nil)
+    }
 
     // MARK: - Coupons
 
@@ -662,6 +670,13 @@ public extension StorageType {
     ///
     func loadSystemPlugin(siteID: Int64, name: String) -> SystemPlugin? {
         let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.name == name
+        return firstObject(ofType: SystemPlugin.self, matching: predicate)
+    }
+
+    /// Returns a system plugin with a specified `siteID` and `path`.
+    ///
+    func loadSystemPlugin(siteID: Int64, path: String) -> SystemPlugin? {
+        let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.plugin == path
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
     }
 

@@ -28,6 +28,10 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var skuLabel: UILabel!
 
+    /// The stack view to show optional product add-ons.
+    ///
+    @IBOutlet private weak var addOnsStackView: UIStackView!
+
     /// The stack view grouping add on information.
     ///
     @IBOutlet private var viewAddOnsStackView: UIStackView!
@@ -65,6 +69,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureSKULabel()
         configureSubtitleLabel()
         configureSelectionStyle()
+        configureAttributesStackView()
         configureAddOnViews()
     }
 }
@@ -107,6 +112,10 @@ private extension ProductDetailsTableViewCell {
         skuLabel?.text = ""
     }
 
+    func configureAttributesStackView() {
+        addOnsStackView.spacing = 6
+    }
+
     func configureAddOnViews() {
         viewAddOnsStackView.layoutMargins = .init(top: 4, left: 0, bottom: 4, right: 0) // Increase touch area
         viewAddOnsStackView.isLayoutMarginsRelativeArrangement = true
@@ -138,6 +147,34 @@ private extension ProductDetailsTableViewCell {
             productImageLeadingConstraint.constant = 0
         }
     }
+
+    func updateAddOnsStackView(viewModel: ProductDetailsCellViewModel.AddOnsViewModel) {
+        addOnsStackView.isHidden = viewModel.addOns.isEmpty
+        let subviews = viewModel.addOns.map { attribute in
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 0
+
+            let keyString = NSAttributedString(string: "\(attribute.key): ", attributes: [
+                .font: UIFont.footnote,
+                .foregroundColor: UIColor.textSubtle,
+                .paragraphStyle: paragraphStyle
+            ])
+            let valueString = NSAttributedString(string: attribute.value, attributes: [
+                .font: UIFont.footnote.bold,
+                .foregroundColor: UIColor.textSubtle,
+                .paragraphStyle: paragraphStyle
+            ])
+            let attributedString = NSMutableAttributedString(attributedString: keyString)
+            attributedString.append(valueString)
+            let label = UILabel(frame: .zero)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.attributedText = attributedString
+            label.numberOfLines = 0
+            return label
+        }
+        addOnsStackView.removeAllSubviews()
+        addOnsStackView.addArrangedSubviews(subviews)
+    }
 }
 
 
@@ -157,8 +194,17 @@ extension ProductDetailsTableViewCell {
         priceLabel.text = item.total
         subtitleLabel.text = item.subtitle
         skuLabel.text = item.sku
+        updateAddOnsStackView(viewModel: item.addOns)
         viewAddOnsStackView.isHidden = !item.hasAddOns
         configureChildProductPadding(isChildProduct: item.isChildProduct)
+    }
+
+    func configure(customAmountViewModel: OrderDetailsCustomAmountCellViewModel) {
+        nameLabel.text = customAmountViewModel.name
+        productImageView.image = customAmountViewModel.image
+        priceLabel.text = customAmountViewModel.total
+        subtitleLabel.text = Localization.customAmount
+        viewAddOnsStackView.isHidden = true
     }
 }
 
@@ -166,6 +212,9 @@ extension ProductDetailsTableViewCell {
 private extension ProductDetailsTableViewCell {
     enum Localization {
         static let viewAddOns = NSLocalizedString("View Add-Ons", comment: "Title of the button on the order detail item to navigate to add-ons")
+        static let customAmount = NSLocalizedString("orderDetails.customAmountsRow.subtitle",
+                                                    value: "Custom Amount",
+                                                    comment: "Subtitle of the custom amount row in order details")
     }
 
     enum Constants {

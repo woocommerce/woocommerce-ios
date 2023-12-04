@@ -8,6 +8,7 @@
 		"version": "",
 		"status": "draft",
 		"currency": "GBP",
+        "currency_symbol": "$",
 		"date_created": null,
 		"date_created_gmt": null,
 		"date_modified": null,

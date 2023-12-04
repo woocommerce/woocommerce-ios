@@ -54,7 +54,7 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
         super.viewDidLoad()
 
         // Needed to present IPP collect amount alerts, which are displayed in UIKit view controllers.
-        rootView.rootViewController = navigationController
+        rootView.rootViewController = navigationController ?? self
 
         // Set presentation delegate to track the user dismiss flow event
         if let navigationController = navigationController {
@@ -111,6 +111,23 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
     }
 }
 
+// MARK: - SwiftUI compatibility
+/// It's obviously strange to use UIViewControllerRepresentable to present a UIHostingController containing a SwiftUI view.
+/// This is done because the CollectOrderPaymentUseCase and associated files use a UIViewController to show their UI.
+/// We should find a better way of doing this, but it's out of scope at the time of adding this (during Payments Menu rewrite.)
+struct SimplePaymentsAmountHosted: UIViewControllerRepresentable {
+    let viewModel: SimplePaymentsAmountViewModel
+
+    func makeUIViewController(context: Context) -> some UIViewController {
+        SimplePaymentsAmountHostingController(
+            viewModel: viewModel,
+            presentNoticePublisher: viewModel.presentNoticePublisher)
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+    }
+}
+
 /// View that receives an arbitrary amount for creating a simple payments order.
 ///
 struct SimplePaymentsAmount: View {
@@ -144,23 +161,7 @@ struct SimplePaymentsAmount: View {
             Text(Localization.instructions)
                 .secondaryBodyStyle()
 
-            ZStack(alignment: .center) {
-                // Hidden input text field
-                BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
-                    .keyboardType(.decimalPad)
-                    .opacity(0)
-
-                // Visible & formatted label
-                Text(viewModel.formattedAmount)
-                    .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold))
-                    .foregroundColor(Color(viewModel.amountTextColor))
-                    .minimumScaleFactor(0.1)
-                    .lineLimit(1)
-                    .onTapGesture {
-                        focusAmountInput = true
-                    }
-            }
-            .fixedSize(horizontal: false, vertical: true)
+            FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
 
             Spacer()
 

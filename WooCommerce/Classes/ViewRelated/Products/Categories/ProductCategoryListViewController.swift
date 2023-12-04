@@ -22,6 +22,10 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
     private let configuration: Configuration
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Tracks if the swipe actions have been glanced to the user.
+    ///
+    private var swipeActionsGlanced = false
+
     /// The controller of the view to show if the search results are empty.
     ///
     private lazy var emptyStateViewController: EmptyStateViewController = {
@@ -54,6 +58,7 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
         configureEmptyView()
         configureViewModel()
         handleSwipeBackGesture()
+        configureDeletionError()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -69,6 +74,7 @@ extension ProductCategoryListViewController {
     struct Configuration {
         var searchEnabled = false
         var clearSelectionEnabled = false
+        var updateEnabled = false
     }
 }
 
@@ -156,9 +162,23 @@ private extension ProductCategoryListViewController {
                         self.emptyStateViewController.view.isHidden = false
                         self.tableView.isHidden = true
                     }
+                    self.glanceTrailingActionsIfNeeded()
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
+    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
+    ///
+    func glanceTrailingActionsIfNeeded() {
+        guard configuration.updateEnabled else {
+            return
+        }
+        if !swipeActionsGlanced {
+            swipeActionsGlanced = true
+            tableView.glanceTrailingSwipeActions()
+        }
     }
 }
 
@@ -201,6 +221,96 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
         tableView.reloadData()
         searchBar.resignFirstResponder()
     }
+
+    /// Provides an implementation to show cell swipe actions. Return `nil` to provide no action.
+    ///
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        /// Only enable editing and deleting if update is enabled
+        guard configuration.updateEnabled else {
+            return nil
+        }
+        let deleteAction = UIContextualAction(style: .destructive, title: nil, handler: { [weak self] _, _, completionHandler in
+            guard let self,
+                let model = self.viewModel.categoryViewModels[safe: indexPath.row] else { return }
+            self.showDeleteAlert(for: model)
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        deleteAction.backgroundColor = .error
+        deleteAction.title = Localization.delete
+
+        let editAction = UIContextualAction(style: .normal, title: nil, handler: { [weak self] _, _, completionHandler in
+            guard let self,
+                let model = self.viewModel.categoryViewModels[safe: indexPath.row] else { return }
+            self.editCategory(model: model)
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        editAction.backgroundColor = .accent
+        editAction.title = Localization.edit
+
+        return UISwipeActionsConfiguration(actions: [editAction, deleteAction])
+    }
+
+    func editCategory(model: ProductCategoryCellViewModel) {
+        guard let id = model.categoryID,
+              let category = viewModel.findCategory(with: id) else {
+            return
+        }
+
+        ServiceLocator.analytics.track(.productCategorySettingsEditButtonTapped)
+
+        let parent = viewModel.findCategory(with: category.parentID)
+        let viewModel = AddEditProductCategoryViewModel(siteID: viewModel.siteID,
+                                                        existingCategory: category,
+                                                        parentCategory: parent) { [weak self] _ in
+            defer {
+                self?.dismiss(animated: true, completion: nil)
+            }
+            self?.viewModel.performFetch()
+        }
+        let addCategoryViewController = AddEditProductCategoryViewController(viewModel: viewModel)
+        let navController = WooNavigationController(rootViewController: addCategoryViewController)
+        present(navController, animated: true, completion: nil)
+    }
+
+    func showDeleteAlert(for model: ProductCategoryCellViewModel) {
+        let title = String.localizedStringWithFormat(Localization.DeleteAlert.title, model.name)
+        let alertController = UIAlertController(title: title,
+                                                message: Localization.DeleteAlert.message,
+                                                preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: Localization.delete, style: .destructive) { [weak self] _ in
+            guard let self, let id = model.categoryID else {
+                return
+            }
+            ServiceLocator.analytics.track(.productCategorySettingsDeleteButtonTapped)
+            Task { @MainActor in
+                await self.viewModel.deleteCategory(id: id)
+            }
+        }
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+        alertController.addAction(cancelAction)
+        alertController.addAction(deleteAction)
+        present(alertController, animated: true)
+    }
+
+    func configureDeletionError() {
+        viewModel.$deletionFailure
+            .sink { [weak self] error in
+                guard let self, let error else {
+                    return
+                }
+                self.showDeletionFailureAlert(error: error)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func showDeletionFailureAlert(error: Error) {
+        let alertController = UIAlertController(title: nil,
+                                                message: error.localizedDescription,
+                                                preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true)
+    }
 }
 
 private extension ProductCategoryListViewController {
@@ -211,6 +321,20 @@ private extension ProductCategoryListViewController {
         static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button to clear selection on the product categories list")
         static let emptyStateMessage = NSLocalizedString("No product categories found",
                                                          comment: "Message on the empty view when the category list or its search result is empty.")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss an alert on the product category list screen")
+        static let delete = NSLocalizedString("Delete", comment: "Button to delete a product category")
+        static let edit = NSLocalizedString("Edit", comment: "Button to edit a product category")
+
+        enum DeleteAlert {
+            static let title = NSLocalizedString(
+                "Delete %1$@",
+                comment: "Title of the confirmation alert to delete product category. Reads like: Delete Clothing"
+            )
+            static let message = NSLocalizedString(
+                "Are you sure you want to delete this category permanently?",
+                comment: "Message on the confirmation alert to delete product category"
+            )
+        }
     }
 }
 

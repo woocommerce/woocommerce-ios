@@ -2,6 +2,9 @@ import SwiftUI
 import WooFoundation
 
 struct NewTaxRateSelectorView: View {
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     @Environment(\.dismiss) var dismiss
 
     @StateObject var viewModel: NewTaxRateSelectorViewModel
@@ -14,7 +17,8 @@ struct NewTaxRateSelectorView: View {
 
     /// Whether the WPAdmin webview is being shown.
     ///
-    @State private var showingWPAdminWebview: Bool = false
+    @State private var showingWPAdminWebView: Bool = false
+    @State var storeSelectedTaxRate: Bool
 
     var body: some View {
         NavigationView {
@@ -33,21 +37,21 @@ struct NewTaxRateSelectorView: View {
                 )
                 .padding(Layout.generalPadding)
 
-                Text(Localization.taxRatesSectionTitle.uppercased())
-                    .footnoteStyle()
-                    .multilineTextAlignment(.leading)
-                    .padding([.leading, .trailing], Layout.generalPadding)
-                    .padding([.top, .bottom], Layout.taxRatesSectionTitleVerticalPadding)
-
-                Divider()
-
                 switch viewModel.syncState {
                     case .results:
+                    Text(Localization.taxRatesSectionTitle.uppercased())
+                        .footnoteStyle()
+                        .multilineTextAlignment(.leading)
+                        .padding([.leading, .trailing], Layout.generalPadding)
+                        .padding([.top, .bottom], Layout.taxRatesSectionTitleVerticalPadding)
+
+                    Divider()
+
                     ScrollView {
                         LazyVStack(spacing: 0) {
                             ForEach(Array(viewModel.taxRateViewModels.enumerated()), id: \.offset) { index, taxRateViewModel in
                                 TaxRateRow(viewModel: taxRateViewModel) {
-                                    viewModel.onRowSelected(with: index)
+                                    viewModel.onRowSelected(with: index, storeSelectedTaxRate: storeSelectedTaxRate)
                                     dismiss()
                                 }
 
@@ -55,7 +59,7 @@ struct NewTaxRateSelectorView: View {
                             }
                             .background(Color(.listForeground(modal: false)))
 
-                            bottomNotice
+                            resultsListFooter
                                 .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
 
                             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
@@ -65,11 +69,29 @@ struct NewTaxRateSelectorView: View {
                                 }
                         }
                     }
+
+                    storeTaxRateBottomView
+
                     case .empty:
-                        EmptyState(title: "",
-                                   description: "",
-                                   image: .emptyInboxNotesImage)
-                        .frame(maxHeight: .infinity)
+                    EmptyState(title: Localization.emptyStateTitle,
+                                   description: Localization.emptyStateDescription,
+                                   image: .emptyTaxRatesImage)
+                        .padding(Layout.generalPadding)
+
+                        Button {
+                            tapOnWPAdminWebViewButton()
+                        } label: {
+                            HStack {
+                                Text(Localization.editTaxRatesInWpAdminButtonTitle)
+                                    .font(.body)
+                                    .fontWeight(.bold)
+
+                                Image(systemName: "arrow.up.forward.square")
+                            }
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .padding(Layout.generalPadding)
+                        Spacer()
                     case .syncingFirstPage:
                         ScrollView {
                             LazyVStack(spacing: 0) {
@@ -105,19 +127,23 @@ struct NewTaxRateSelectorView: View {
                 }
         }
         .wooNavigationBarStyle()
+        .safariSheet(isPresented: $showingWPAdminWebView, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+            viewModel.onRefreshAction()
+            onDismissWpAdminWebView()
+            showingWPAdminWebView = false
+        })
     }
 
-    var bottomNotice: some View {
+    private var resultsListFooter: some View {
         Group {
-            Text(Localization.editTaxRatesInWpAdminSectionTitle)
+            Text(Localization.listFooterResultsSectionTitle)
                 .foregroundColor(Color(.textSubtle))
                 .footnoteStyle()
                 .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding([.leading, .trailing], Layout.generalPadding)
-
             Button(action: {
-                showingWPAdminWebview = true
+                tapOnWPAdminWebViewButton()
             }) {
                 HStack {
                     Text(Localization.editTaxRatesInWpAdminButtonTitle)
@@ -130,11 +156,29 @@ struct NewTaxRateSelectorView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
-            .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
-                onDismissWpAdminWebView()
-                showingWPAdminWebview = false
-            })
         }
+    }
+
+    private var storeTaxRateBottomView: some View {
+        VStack {
+            Divider()
+
+            Toggle(isOn: $storeSelectedTaxRate) {
+                VStack(alignment: .leading, spacing: Layout.fixedBottomPanelVerticalSpace) {
+                    Text(Localization.fixedBottomPanelBody)
+                    Text(Localization.fixedBottomPanelFootnote)
+                        .footnoteStyle()
+                }
+            }
+            .padding(Layout.generalPadding)
+        }
+    }
+}
+
+private extension NewTaxRateSelectorView {
+    func tapOnWPAdminWebViewButton() {
+        viewModel.onShowWebView()
+        showingWPAdminWebView = true
     }
 }
 
@@ -146,6 +190,8 @@ extension NewTaxRateSelectorView {
         static let taxRatesSectionTitleVerticalPadding: CGFloat = 8
         static let editTaxRatesInWpAdminSectionTopPadding: CGFloat = 24
         static let editTaxRatesInWpAdminSectionVerticalSpacing: CGFloat = 8
+        static let externalLinkImageSize: CGFloat = 18
+        static let fixedBottomPanelVerticalSpace: CGFloat = 4
     }
     enum Localization {
         static let navigationTitle = NSLocalizedString("Set Tax Rate", comment: "Navigation title for the tax rate selector")
@@ -153,9 +199,15 @@ extension NewTaxRateSelectorView {
         static let infoText = NSLocalizedString("This will change the customer’s address to the location of the tax rate you select.",
                                                 comment: "Explanatory text for the tax rate selector")
         static let taxRatesSectionTitle = NSLocalizedString("Select a tax rate", comment: "Title for the tax rate selector section")
-        static let editTaxRatesInWpAdminSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
-                                                                         comment: "Text to prompt the user to edit tax rates in the web")
         static let editTaxRatesInWpAdminButtonTitle = NSLocalizedString("Edit tax rates in admin",
                                                                          comment: "Title of the button that prompts the user to edit tax rates in the web")
+        static let emptyStateTitle = NSLocalizedString("We couldn’t find any tax rates", comment: "Title for the empty state on the Tax Rates selector screen")
+        static let emptyStateDescription = NSLocalizedString("Add tax rates in admin. Only tax rates with location information will be shown here.",
+                                                             comment: "Description for the empty state on the Tax Rates selector screen")
+        static let listFooterResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
+                                                                         comment: "Text to prompt the user to edit tax rates in the web")
+        static let fixedBottomPanelBody = NSLocalizedString("Add this rate to all created orders", comment: "Body for the action to store selected tax rate")
+        static let fixedBottomPanelFootnote = NSLocalizedString("This will not affect online orders",
+                                                                comment: "Footnote for the action to store selected tax rate")
     }
 }

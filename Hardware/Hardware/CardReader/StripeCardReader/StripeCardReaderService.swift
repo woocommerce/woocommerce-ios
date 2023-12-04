@@ -65,7 +65,8 @@ extension StripeCardReaderService: CardReaderService {
 
     public func checkSupport(for cardReaderType: CardReaderType,
                              configProvider: CardReaderConfigProvider,
-                             discoveryMethod: CardReaderDiscoveryMethod) -> Bool {
+                             discoveryMethod: CardReaderDiscoveryMethod,
+                             minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool {
         guard let deviceType = cardReaderType.toStripe() else {
             return false
         }
@@ -77,7 +78,13 @@ extension StripeCardReaderService: CardReaderService {
                                                      simulated: shouldUseSimulatedCardReader)
         switch result {
         case .success:
-            return true
+            /// Note that while this will now never be nil, we can still remove this check if Stripe update `supportsReaders` to be country-aware
+            if let minimumOperatingSystemVersionOverride {
+                return ProcessInfo().isOperatingSystemAtLeast(minimumOperatingSystemVersionOverride)
+            } else {
+                return true
+            }
+
         case .failure:
             return false
         }
@@ -114,10 +121,31 @@ extension StripeCardReaderService: CardReaderService {
             Terminal.shared.simulatorConfiguration.simulatedCard = .init(type: .amex)
         }
 
-        let config = DiscoveryConfiguration(
-            discoveryMethod: discoveryMethod.toStripe(),
-            simulated: shouldUseSimulatedCardReader
-        )
+        let config: DiscoveryConfiguration
+        switch discoveryMethod {
+        case .bluetoothScan:
+            let blueToothConfig = BluetoothScanDiscoveryConfigurationBuilder()
+            do {
+                config = try blueToothConfig.setSimulated(shouldUseSimulatedCardReader).build()
+            } catch let error as UnderlyingError {
+                DDLogError("Failed to start BluetoothScanDiscovery. Error:\(String(describing: error.failureReason))")
+                throw error
+            } catch {
+                DDLogError("\(error)")
+                throw error
+            }
+        case .localMobile:
+            let localMobileConfig = LocalMobileDiscoveryConfigurationBuilder()
+            do {
+                config = try localMobileConfig.setSimulated(shouldUseSimulatedCardReader).build()
+            } catch let error as UnderlyingError {
+                DDLogError("Failed to start LocalMobileDiscovery. Error:\(String(describing: error.failureReason))")
+                throw error
+            } catch {
+                DDLogError("\(error)")
+                throw error
+            }
+        }
 
         guard shouldSkipBluetoothCheck(discoveryConfiguration: config) ||
                 CBCentralManager.authorization != .denied else {
@@ -130,7 +158,7 @@ extension StripeCardReaderService: CardReaderService {
         // another discovery process.
         // If we can't grab a lock quickly, let's fail rather than wait indefinitely
         guard discoveryLock.lock(before: Date().addingTimeInterval(1)) else {
-            throw CardReaderServiceError.discovery(underlyingError: .busy)
+            throw CardReaderServiceError.discovery(underlyingError: .readerBusy)
         }
         // We only want to lock while we start the process to make sure another start or cancel doesn't collide.
         // The lock is released when we return from this method, when it will be OK to call cancel.
@@ -182,7 +210,7 @@ extension StripeCardReaderService: CardReaderService {
             // cancelable, then we attempt to grab a lock on the discovery process.
             // If it's not possible, then another start or cancel might be in progress, so we'll fail right away.
             guard self.discoveryLock.lock(before: Date().addingTimeInterval(1)) else {
-                return promise(.failure(CardReaderServiceError.discovery(underlyingError: .busy)))
+                return promise(.failure(CardReaderServiceError.discovery(underlyingError: .readerBusy)))
             }
 
             // The completion block for cancel, apparently, is called when
@@ -314,11 +342,57 @@ extension StripeCardReaderService: CardReaderService {
             .eraseToAnyPublisher()
     }
 
+    public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
+        guard let activePaymentIntent = activePaymentIntent else {
+            return Fail(error: CardReaderServiceError.retryNotPossibleNoActivePayment)
+                .eraseToAnyPublisher()
+        }
+        switch activePaymentIntent.status {
+        case .requiresPaymentMethod:
+            return collectPaymentMethod(intent: activePaymentIntent)
+                .flatMap { intent in
+                    self.processPayment(intent: intent)
+                }
+                .map(PaymentIntent.init(intent:))
+                .eraseToAnyPublisher()
+        case .requiresConfirmation:
+            return processPayment(intent: activePaymentIntent)
+                .map(PaymentIntent.init(intent:))
+                .eraseToAnyPublisher()
+        case .requiresCapture:
+            return Just(PaymentIntent(intent: activePaymentIntent))
+                .setFailureType(to: CardReaderServiceError.self)
+                .mapError({ $0 as Error })
+                .eraseToAnyPublisher()
+        case .processing:
+            return Fail(error: CardReaderServiceError.retryNotPossibleProcessingInProgress)
+                .eraseToAnyPublisher()
+        case .canceled:
+            return Fail(error: CardReaderServiceError.retryNotPossibleActivePaymentCancelled)
+                .eraseToAnyPublisher()
+        case .succeeded:
+            return Fail(error: CardReaderServiceError.retryNotPossibleActivePaymentSucceeded)
+                .eraseToAnyPublisher()
+        case .requiresAction:
+            /// This case shouldn't happen, but Stripe advise checking the nextAction in the JSON if it does.
+            /// We're not doing that yet, because it's challenging to test. In future we
+            /// can assess whether it's needed from analytics of this specific error.
+            /// It will be tracked as `woocommerceios_card_present_collect_payment_failed`
+            // swiftlint:disable:next line_length
+            // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPPaymentIntentStatus.html#/c:@E@SCPPaymentIntentStatus@SCPPaymentIntentStatusRequiresAction
+            return Fail(error: CardReaderServiceError.retryNotPossibleRequiresAction)
+                    .eraseToAnyPublisher()
+        @unknown default:
+            return Fail(error: CardReaderServiceError.retryNotPossibleUnknownCause)
+                .eraseToAnyPublisher()
+        }
+    }
+
     public func cancelPaymentIntent() -> Future<Void, Error> {
         return Future() { [weak self] promise in
             guard let self = self,
                   let activePaymentIntent = self.activePaymentIntent else {
-                promise(.failure(CardReaderServiceError.paymentCancellation()))
+                promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
                 return
             }
 
@@ -388,7 +462,14 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
+                    let buildConfig = BluetoothConnectionConfigurationBuilder(locationId: locationId)
+                    do {
+                        let config = try buildConfig.build()
+                        return promise(.success(config))
+                    } catch {
+                        let underlyingError = UnderlyingError(with: error)
+                        return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    }
                 case .failure(let error):
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
@@ -410,11 +491,17 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    return promise(.success(LocalMobileConnectionConfiguration(
-                        locationId: locationId,
-                        merchantDisplayName: nil,
-                        onBehalfOf: nil,
-                        tosAcceptancePermitted: options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)))
+                    let localMobileConfig = LocalMobileConnectionConfigurationBuilder(locationId: locationId)
+                    localMobileConfig.setMerchantDisplayName(nil)
+                    localMobileConfig.setOnBehalfOf(nil)
+                    localMobileConfig.setTosAcceptancePermitted(options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)
+                    do {
+                        let config = try localMobileConfig.build()
+                        return promise(.success(config))
+                    } catch {
+                        let underlyingError = UnderlyingError(with: error)
+                        return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    }
                 case .failure(let error):
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
@@ -509,6 +596,11 @@ extension StripeCardReaderService: CardReaderService {
     }
 }
 
+struct CardReaderMetadata {
+    let readerIDMetadataKey: String
+    let readerModelMetadataKey: String
+    let platformMetadataKey: String
+}
 
 // MARK: - Payment collection
 private extension StripeCardReaderService {
@@ -524,17 +616,18 @@ private extension StripeCardReaderService {
 
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
+            /// Add the reader_ID, reader_model, and platform to the request metadata so we can attribute this intent to the connected reader
+            ///
+            let cardReaderMetadata = CardReaderMetadata(
+                readerIDMetadataKey: self?.readerIDForIntent() ?? "",
+                readerModelMetadataKey: self?.readerModelForIntent() ?? "",
+                platformMetadataKey: Constants.platform)
+
             // Shortcircuit if we have an inconsistent set of parameters
-            guard let parameters = parameters.toStripe() else {
+            guard let parameters = parameters.toStripe(with: cardReaderMetadata) else {
                 promise(.failure(CardReaderServiceError.intentCreation()))
                 return
             }
-
-            /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
-            ///
-            parameters.metadata?[Constants.readerIDMetadataKey] = self?.readerIDForIntent()
-            parameters.metadata?[Constants.readerModelMetadataKey] = self?.readerModelForIntent()
-            parameters.metadata?[Constants.platformMetadataKey] = Constants.platform
 
             Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
                 if let error = error {
@@ -589,20 +682,32 @@ private extension StripeCardReaderService {
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
-            Terminal.shared.processPayment(intent) { (intent, error) in
+            Terminal.shared.confirmPaymentIntent(intent) { (intent, error) in
+                guard let self = self else { return }
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    if let paymentMethod = error.paymentIntent.map({ PaymentIntent(intent: $0) })?.paymentMethod() {
-                        promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
-                                                                                                paymentMethod: paymentMethod)))
-                    } else {
-                        promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+
+                    guard let paymentIntent = error.paymentIntent else {
+                        return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                    }
+
+                    self.activePaymentIntent = paymentIntent
+                    switch (paymentIntent.status, PaymentIntent(intent: paymentIntent).paymentMethod()) {
+                    case (.requiresCapture, _):
+                        // This payment intent can be used, we lost context to get an error with a PI that requires capture
+                        self.activePaymentIntent = nil
+                        return promise(.success(paymentIntent))
+                    case (_, .some(let paymentMethod)):
+                        return promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
+                                                                                                       paymentMethod: paymentMethod)))
+                    default:
+                        return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
                     }
                 }
 
                 if let intent = intent {
-                    promise(.success(intent))
-                    self?.activePaymentIntent = nil
+                    self.activePaymentIntent = nil
+                    return promise(.success(intent))
                 }
             }
         }
@@ -657,7 +762,7 @@ extension StripeCardReaderService {
                     )))
                 } else {
                     // Process refund
-                    Terminal.shared.processRefund { [weak self] processedRefund, processError in
+                    Terminal.shared.confirmRefund { [weak self] processedRefund, processError in
                         guard let self = self else { return }
                         self.refundCancellable = nil
                         if let error = processError {
@@ -693,15 +798,15 @@ extension StripeCardReaderService {
 
     /// Implements refund retry logic as recommended by Stripe
     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)processRefund
-    /// > When `processRefund` fails, the SDK returns an error that either includes the failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
-    /// > Your app should inspect the `SCPProcessRefundError` to decide how to proceed.
+    /// > When `confirmRefund` fails, the SDK returns an error that either includes the failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
+    /// > Your app should inspect the `SCPConfirmRefundError` to decide how to proceed.
     /// >
     /// > If the `refund` property is nil, the request to Stripe’s servers timed out and the refund’s status is unknown.
     /// > We recommend that you retry processRefund with the original `SCPRefundParameters`.
     /// >
-    /// > If the `SCPProcessRefundError` has a `failure_reason`, the refund was declined.
+    /// > If the `SCPConfirmRefundError` has a `failure_reason`, the refund was declined.
     /// > We recommend that you take action based on the decline code you received.
-    private func shouldRetryRefund(after processError: ProcessRefundError) -> Bool {
+    private func shouldRetryRefund(after processError: ConfirmRefundError) -> Bool {
         if let refund = processError.refund {
             // Retry based on `failure_reason`
             return shouldRetryRefundAfterFailureDeterminer.shouldRetryRefund(after: refund.failureReason)

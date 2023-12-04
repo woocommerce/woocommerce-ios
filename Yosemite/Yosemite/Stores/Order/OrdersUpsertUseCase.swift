@@ -88,6 +88,7 @@ struct OrdersUpsertUseCase {
             }
 
             handleOrderItemAttributes(readOnlyItem, storageItem, storage)
+            handleOrderItemAddOns(readOnlyItem, storageItem, storage)
             handleOrderItemTaxes(readOnlyItem, storageItem, storage)
         }
 
@@ -116,6 +117,24 @@ struct OrdersUpsertUseCase {
                 return storageAttribute
         }
         storageItem.attributes = NSOrderedSet(array: storageAttributes)
+    }
+
+    /// Updates, inserts, or prunes the provided StorageOrderItem's add-ons using the provided read-only OrderItem.
+    ///
+    private func handleOrderItemAddOns(_ readOnlyItem: Networking.OrderItem, _ storageItem: Storage.OrderItem, _ storage: StorageType) {
+        // Removes all the add-ons first.
+        storageItem.addOnsArray.forEach { existingStorageAddOn in
+            storage.deleteObject(existingStorageAddOn)
+        }
+
+        // Inserts the add-ons from the read-only model.
+        let storageAddOns: [Storage.OrderItemProductAddOn] = readOnlyItem.addOns
+            .map { readOnlyAddOn in
+                let storageAddOn = storage.insertNewObject(ofType: Storage.OrderItemProductAddOn.self)
+                storageAddOn.update(with: readOnlyAddOn)
+                return storageAddOn
+        }
+        storageItem.addOns = NSOrderedSet(array: storageAddOns)
     }
 
     /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem
@@ -311,23 +330,16 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided `storageOrder`'s applied gift cards using the provided `readOnlyOrder`'s custom fields
     ///
     private func handleOrderGiftCards(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        // Upsert the `appliedGiftCards` from the `readOnlyOrder`
-        readOnlyOrder.appliedGiftCards.forEach { readOnlyGiftCard in
-            if let existingStorageGiftCard = storage.loadOrderGiftCard(siteID: readOnlyOrder.siteID, giftCardID: readOnlyGiftCard.giftCardID) {
-                existingStorageGiftCard.update(with: readOnlyGiftCard)
-            } else {
-                let newStorageGiftCard = storage.insertNewObject(ofType: Storage.OrderGiftCard.self)
-                newStorageGiftCard.update(with: readOnlyGiftCard)
-                storageOrder.addToAppliedGiftCards(newStorageGiftCard)
-            }
+        // Remove any objects that exist in `storageOrder.appliedGiftCards` first
+        storageOrder.appliedGiftCards?.forEach { existingStorageGiftCard in
+            storage.deleteObject(existingStorageGiftCard)
         }
 
-        // Now, remove any objects that exist in `storageOrder.appliedGiftCards` but not in `readOnlyOrder.appliedGiftCards`
-        storageOrder.appliedGiftCards?.forEach { storageGiftCard in
-            if readOnlyOrder.appliedGiftCards.first(where: { $0.giftCardID == storageGiftCard.giftCardID } ) == nil {
-                storageOrder.removeFromAppliedGiftCards(storageGiftCard)
-                storage.deleteObject(storageGiftCard)
-            }
+        // Upsert the `appliedGiftCards` from the `readOnlyOrder`
+        readOnlyOrder.appliedGiftCards.forEach { readOnlyGiftCard in
+            let newStorageGiftCard = storage.insertNewObject(ofType: Storage.OrderGiftCard.self)
+            newStorageGiftCard.update(with: readOnlyGiftCard)
+            storageOrder.addToAppliedGiftCards(newStorageGiftCard)
         }
     }
 }

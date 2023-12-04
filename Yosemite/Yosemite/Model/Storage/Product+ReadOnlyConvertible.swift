@@ -52,6 +52,7 @@ extension Storage.Product: ReadOnlyConvertible {
         taxStatusKey = product.taxStatusKey
         taxClass = product.taxClass
         manageStock = product.manageStock
+        isSampleItem = product.isSampleItem
 
         var quantity: String? = nil
         if let stockQuantity = product.stockQuantity {
@@ -82,6 +83,8 @@ extension Storage.Product: ReadOnlyConvertible {
         backordered = product.backordered
         bundleStockQuantity = product.bundleStockQuantity as? NSNumber
         bundleStockStatus = product.bundleStockStatus?.rawValue
+        bundleMinSize = product.bundleMinSize as? NSDecimalNumber
+        bundleMaxSize = product.bundleMaxSize as? NSDecimalNumber
         minAllowedQuantity = product.minAllowedQuantity
         maxAllowedQuantity = product.maxAllowedQuantity
         groupOfQuantity = product.groupOfQuantity
@@ -177,8 +180,11 @@ extension Storage.Product: ReadOnlyConvertible {
                        groupedProducts: groupedProducts ?? [],
                        menuOrder: Int(menuOrder),
                        addOns: addOnsArray.map { $0.toReadOnly() },
+                       isSampleItem: isSampleItem,
                        bundleStockStatus: productBundleStockStatus,
                        bundleStockQuantity: bundleStockQuantity as? Int64,
+                       bundleMinSize: bundleMinSize?.decimalValue,
+                       bundleMaxSize: bundleMaxSize?.decimalValue,
                        bundledItems: bundledItemsArray.map { $0.toReadOnly() },
                        compositeComponents: compositeComponentsArray.map { $0.toReadOnly() },
                        subscription: subscription?.toReadOnly(),

@@ -7,6 +7,10 @@ import XCTest
 /// ProductCategoryStore Unit Tests
 ///
 final class ProductCategoryStoreTests: XCTestCase {
+    /// Mock Dispatcher!
+    ///
+    private var dispatcher: Dispatcher!
+
     /// Mock Network: Allows us to inject predefined responses!
     ///
     private var network: MockNetwork!
@@ -43,6 +47,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        dispatcher = Dispatcher()
         network = MockNetwork(useResponseQueue: true)
         storageManager = MockStorageManager()
         store = ProductCategoryStore(dispatcher: Dispatcher(),
@@ -54,6 +59,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         store = nil
         network = nil
         storageManager = nil
+        dispatcher = nil
 
         super.tearDown()
     }
@@ -367,6 +373,157 @@ final class ProductCategoryStoreTests: XCTestCase {
             XCTFail()
             return
         }
+    }
+
+    func test_updateProductCategory_success_returns_product_category() throws {
+        // Given
+        let categoryID: Int64 = 104
+        let category = ProductCategory.fake().copy(categoryID: categoryID, siteID: sampleSiteID)
+        network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "category")
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductCategoryAction.updateProductCategory(category) { aResult in
+                promise(aResult)
+            }
+            self.store.onAction(action)
+        }
+
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let productCategory = try result.get()
+        XCTAssertEqual(productCategory.categoryID, 104)
+        XCTAssertEqual(productCategory.parentID, 0)
+        XCTAssertEqual(productCategory.siteID, sampleSiteID)
+        XCTAssertEqual(productCategory.name, "Dress")
+        XCTAssertEqual(productCategory.slug, "Shirt")
+    }
+
+    func test_updateProductCategory_failure_throws_correct_error() {
+        // Given
+        let categoryID: Int64 = 104
+        let category = ProductCategory.fake().copy(categoryID: categoryID)
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound())
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductCategoryAction.updateProductCategory(category) { aResult in
+                promise(aResult)
+            }
+            self.store.onAction(action)
+        }
+
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound())
+    }
+
+    func test_deleteProductCategory_does_not_throw_error_upon_success() {
+        // Given
+        let categoryID: Int64 = 104
+        network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "generic_success_data")
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductCategoryAction.deleteProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { aResult in
+                promise(aResult)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_deleteProductCategory_throws_correct_error_upon_failure() {
+        // Given
+        let categoryID: Int64 = 104
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound())
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductCategoryAction.deleteProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { aResult in
+                promise(aResult)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound())
+    }
+
+    // MARK: Batch creation of categories
+
+    func test_createProductCategories_returns_categories_on_success() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockProductCategoriesRemote()
+        remote.whenCreatingProductCategories(thenReturn: .success([.fake().copy(name: "Sample 1"),
+                                                                   .fake().copy(name: "Sample 2")]))
+        let store = ProductCategoryStore(dispatcher: dispatcher,
+                                         storageManager: storageManager,
+                                         network: network,
+                                         remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(ProductCategoryAction.addProductCategories(siteID: self.sampleSiteID, names: [], parentID: nil) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let categories = try XCTUnwrap(result.get())
+        XCTAssertEqual(categories[0].name, "Sample 1")
+        XCTAssertEqual(categories[1].name, "Sample 2")
+    }
+
+    func test_createProductCategories_updates_stored_categories_on_success() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockProductCategoriesRemote()
+        remote.whenCreatingProductCategories(thenReturn: .success([.fake().copy(name: "Sample 1"),
+                                                                   .fake().copy(name: "Sample 2")]))
+        let store = ProductCategoryStore(dispatcher: dispatcher,
+                                         storageManager: storageManager,
+                                         network: network,
+                                         remote: remote)
+        XCTAssertEqual(storedProductCategoriesCount, 0)
+
+        // When
+        _ = waitFor { promise in
+            store.onAction(ProductCategoryAction.addProductCategories(siteID: self.sampleSiteID, names: [], parentID: nil) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(storedProductCategoriesCount, 2)
+    }
+
+    func test_createProductCategories_returns_error_on_failure() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockProductCategoriesRemote()
+        remote.whenCreatingProductCategories(thenReturn: .failure(NetworkError.timeout()))
+        let store = ProductCategoryStore(dispatcher: dispatcher,
+                                         storageManager: storageManager,
+                                         network: network,
+                                         remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(ProductCategoryAction.addProductCategories(siteID: self.sampleSiteID, names: [], parentID: nil) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 }
 

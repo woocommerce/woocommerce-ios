@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 
 final class PaymentSettingsFlowPresentingViewController: UIViewController {
@@ -78,6 +79,23 @@ private extension PaymentSettingsFlowPresentingViewController {
 
 // MARK: - SwiftUI compatibility
 //
+
+/// N.B. this should not be used directly for the two concrete use cases it enables
+/// `SetUpTapToPayViewModelsOrderedList` and `CardReaderSettingsViewModelsOrderedList`
+/// If you use it directly, the view models will outlive the views, and likely disconnect readers which we subsequently connect to.
+/// Instead, use one of these wrappers, to ensure the view model has the same lifecycle as the view:
+/// `TapToPaySettingsFlowPresentingView` or `CardReaderSettingsFlowPresentingView`
+struct PaymentSettingsFlowPresentingView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = PaymentSettingsFlowPresentingViewController
+    let viewModelsAndViews: PaymentSettingsFlowPrioritizedViewModelsProvider
+
+    func makeUIViewController(context: Context) -> PaymentSettingsFlowPresentingViewController {
+        let viewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
+        return viewController
+    }
+
+    func updateUIViewController(_ uiViewController: PaymentSettingsFlowPresentingViewController, context: Context) {}
+}
 
 // MARK: - Localization
 //

@@ -12,6 +12,7 @@ extension WooAnalyticsEvent {
         enum Source: String {
             case productDescription = "product_description"
             case productSharingMessage = "product_sharing_message"
+            case productCreation = "product_creation"
         }
 
         /// Tracked when feedback for AI-generated content in sent.

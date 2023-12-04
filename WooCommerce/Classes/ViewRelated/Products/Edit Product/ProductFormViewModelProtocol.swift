@@ -46,6 +46,9 @@ protocol ProductFormViewModelProtocol {
     /// Emits a void value informing when there is a new variation price state available
     var newVariationsPrice: AnyPublisher<Void, Never> { get }
 
+    /// Emits a void value informing when Blaze eligibility is computed
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> { get }
+
     /// Creates actions available on the bottom sheet.
     var actionsFactory: ProductFormActionsFactoryProtocol { get }
 
@@ -63,6 +66,9 @@ protocol ProductFormViewModelProtocol {
 
     /// The product variation ID
     var productionVariationID: Int64? { get }
+
+    /// Whether the "Promote with Blaze" button should show Blaze intro view first or not when tapped.
+    var shouldShowBlazeIntroView: Bool { get }
 
     // Unsaved changes
 
@@ -95,6 +101,9 @@ protocol ProductFormViewModelProtocol {
     func updateDescription(_ newDescription: String)
 
     func updatePriceSettings(regularPrice: String?,
+                             subscriptionPeriod: SubscriptionPeriod?,
+                             subscriptionPeriodInterval: String?,
+                             subscriptionSignupFee: String?,
                              salePrice: String?,
                              dateOnSaleStart: Date?,
                              dateOnSaleEnd: Date?,
@@ -110,7 +119,11 @@ protocol ProductFormViewModelProtocol {
 
     func updateProductType(productType: BottomSheetProductType)
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?)
+    func updateShippingSettings(weight: String?,
+                                dimensions: ProductDimensions,
+                                oneTimeShipping: Bool?,
+                                shippingClass: String?,
+                                shippingClassID: Int64?)
 
     func updateProductCategories(_ categories: [ProductCategory])
 
@@ -133,6 +146,10 @@ protocol ProductFormViewModelProtocol {
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64])
 
     func updateVariationAttributes(_ attributes: [ProductVariationAttribute])
+
+    func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod)
+
+    func updateSubscriptionExpirySettings(length: String)
 
     // Remote action
 

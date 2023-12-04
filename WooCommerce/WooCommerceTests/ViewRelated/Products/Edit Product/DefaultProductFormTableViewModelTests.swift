@@ -170,9 +170,11 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertEqual(shippingViewModel?.details, "Weight: 1,6\(weightUnit)\nDimensions: 2,9 x 1,1 x 113 \(dimensionUnit)")
     }
 
-    func test_subscription_row_returns_expected_details_with_singular_format() {
+    // MARK: Subscription free trial
+
+    func test_subscription_free_trial_row_returns_expected_details_with_singular_format() throws {
         // Given
-        let subscription = ProductSubscription.fake().copy(length: "1", period: .month, periodInterval: "1", price: "5")
+        let subscription = ProductSubscription.fake().copy(trialLength: "1", trialPeriod: .month)
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
@@ -190,21 +192,21 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
             return
         }
-        var subscriptionViewModel: ProductFormSection.SettingsRow.ViewModel?
+        var subscriptionFreeTrialViewModel: ProductFormSection.SettingsRow.ViewModel?
         for row in rows {
-            if case let .subscription(viewModel, _) = row {
-                subscriptionViewModel = viewModel
+            if case let .subscriptionFreeTrial(viewModel, _) = row {
+                subscriptionFreeTrialViewModel = viewModel
                 break
             }
         }
-        let expectedDetails = [String.localizedStringWithFormat(Localization.priceFormat, "$5.00", "month"),
-                               String.localizedStringWithFormat(Localization.expiryFormat, "1 month")].joined(separator: "\n")
-        XCTAssertEqual(subscriptionViewModel?.details, expectedDetails)
+
+        let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
+        XCTAssertEqual(viewModel.details, "\(subscription.trialLength) \(subscription.trialPeriod.descriptionSingular)")
     }
 
-    func test_subscription_row_returns_expected_details_with_plural_format() {
+    func test_subscription_free_trial_row_returns_expected_details_with_plural_format() throws {
         // Given
-        let subscription = ProductSubscription.fake().copy(length: "4", period: .month, periodInterval: "2", price: "5")
+        let subscription = ProductSubscription.fake().copy(trialLength: "2", trialPeriod: .week)
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
@@ -222,21 +224,21 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
             return
         }
-        var subscriptionViewModel: ProductFormSection.SettingsRow.ViewModel?
+        var subscriptionFreeTrialViewModel: ProductFormSection.SettingsRow.ViewModel?
         for row in rows {
-            if case let .subscription(viewModel, _) = row {
-                subscriptionViewModel = viewModel
+            if case let .subscriptionFreeTrial(viewModel, _) = row {
+                subscriptionFreeTrialViewModel = viewModel
                 break
             }
         }
-        let expectedDetails = [String.localizedStringWithFormat(Localization.priceFormat, "$5.00", "2 months"),
-                               String.localizedStringWithFormat(Localization.expiryFormat, "4 months")].joined(separator: "\n")
-        XCTAssertEqual(subscriptionViewModel?.details, expectedDetails)
+
+        let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
+        XCTAssertEqual(viewModel.details, "\(subscription.trialLength) \(subscription.trialPeriod.descriptionPlural)")
     }
 
-    func test_subscription_row_returns_expected_details_for_no_price_or_expiry() {
+    func test_subscription_free_trial_row_returns_expected_details_for_no_free_trial() throws {
         // Given
-        let subscription = ProductSubscription.fake().copy(length: "0", period: .month, periodInterval: "2", price: "")
+        let subscription = ProductSubscription.fake().copy(trialLength: "0", trialPeriod: .week)
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
@@ -254,16 +256,181 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
             return
         }
-        var subscriptionViewModel: ProductFormSection.SettingsRow.ViewModel?
+        var subscriptionFreeTrialViewModel: ProductFormSection.SettingsRow.ViewModel?
         for row in rows {
-            if case let .subscription(viewModel, _) = row {
-                subscriptionViewModel = viewModel
+            if case let .subscriptionFreeTrial(viewModel, _) = row {
+                subscriptionFreeTrialViewModel = viewModel
                 break
             }
         }
-        let expectedDetails = String.localizedStringWithFormat(Localization.expiryFormat, Localization.neverExpire)
-        XCTAssertEqual(subscriptionViewModel?.details, expectedDetails)
+
+        let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
+        XCTAssertEqual(viewModel.details, DefaultProductFormTableViewModel.Localization.noTrialPeriod)
     }
+
+    func test_subscription_free_trial_row_returns_expected_details_for_empty_trial_length() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(trialLength: "", trialPeriod: .week)
+        let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var subscriptionFreeTrialViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .subscriptionFreeTrial(viewModel, _) = row {
+                subscriptionFreeTrialViewModel = viewModel
+                break
+            }
+        }
+
+        let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
+        XCTAssertEqual(viewModel.details, DefaultProductFormTableViewModel.Localization.noTrialPeriod)
+    }
+
+    // MARK: Subscription - Expire after
+
+    func test_subscription_expire_after_row_returns_expected_details_with_singular_format() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(length: "1", period: .month, periodInterval: "1")
+        let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var subscriptionExpiryViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .subscriptionExpiry(viewModel, _) = row {
+                subscriptionExpiryViewModel = viewModel
+                break
+            }
+        }
+
+        let viewModel = try XCTUnwrap(subscriptionExpiryViewModel)
+        XCTAssertEqual(viewModel.details, "\(subscription.length) \(subscription.period.descriptionSingular)")
+    }
+
+    func test_subscription_expire_after_row_returns_expected_details_with_plural_format() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(length: "4", period: .week, periodInterval: "2")
+        let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var subscriptionExpiryViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .subscriptionExpiry(viewModel, _) = row {
+                subscriptionExpiryViewModel = viewModel
+                break
+            }
+        }
+
+        let viewModel = try XCTUnwrap(subscriptionExpiryViewModel)
+        XCTAssertEqual(viewModel.details, "\(subscription.length) \(subscription.period.descriptionPlural)")
+    }
+
+    func test_subscription_expire_after_row_returns_expected_details_when_no_expiry() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(length: "0", period: .week, periodInterval: "2")
+        let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var subscriptionExpiryViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .subscriptionExpiry(viewModel, _) = row {
+                subscriptionExpiryViewModel = viewModel
+                break
+            }
+        }
+
+        let viewModel = try XCTUnwrap(subscriptionExpiryViewModel)
+        XCTAssertEqual(viewModel.details, DefaultProductFormTableViewModel.Localization.neverExpire)
+    }
+
+    func test_subscription_expire_after_row_returns_expected_details_when_empty_length() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(length: "", period: .week, periodInterval: "2")
+        let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var subscriptionExpiryViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .subscriptionExpiry(viewModel, _) = row {
+                subscriptionExpiryViewModel = viewModel
+                break
+            }
+        }
+
+        let viewModel = try XCTUnwrap(subscriptionExpiryViewModel)
+        XCTAssertEqual(viewModel.details, DefaultProductFormTableViewModel.Localization.neverExpire)
+    }
+
+    // MARK: Quantity
 
     func test_quantity_rules_row_returns_expected_details_for_product_with_min_and_max_quantity() {
         // Given

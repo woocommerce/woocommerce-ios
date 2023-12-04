@@ -133,37 +133,6 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertEqual(mockAuthentication.presentSupportFromScreen, .wrongAccountError)
     }
 
-    func test_web_view_is_presented_when_tapping_primary_button_if_site_credentials_are_present() throws {
-        // Given
-        let expectedURL = try XCTUnwrap(URL(string: "http://jetpack.wordpress.com/jetpack.authorize/1/"))
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .fetchJetpackConnectionURL(let completion):
-                completion(.success(expectedURL))
-            default:
-                break
-            }
-        }
-        let credentials = WordPressOrgCredentials(username: "test", password: "pwd", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
-                                                   showsConnectedStores: false,
-                                                   siteCredentials: credentials,
-                                                   storesManager: stores,
-                                                   onJetpackSetupCompletion: { _, _ in })
-        let viewController = UIViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
-
-        // When
-        viewModel.didTapPrimaryButton(in: viewController)
-        waitUntil {
-            navigationController.viewControllers.containsMoreThanOne
-        }
-
-        // Then
-        XCTAssertTrue(navigationController.topViewController is AuthenticatedWebViewController)
-    }
-
     func test_fetchSiteInfo_is_triggered_if_credentials_are_not_present() {
         // Given
 
@@ -266,87 +235,12 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_button_tapped" }))
     }
-
-    func test_primary_button_tap_triggers_site_credential_login_if_credentials_are_not_present_and_fetched_site_info_returns_self_hosted_site() {
-        // Given
-        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": false])
-        MockAuthenticator.setMockSiteInfo(siteInfo)
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
-                                                   showsConnectedStores: false,
-                                                   siteCredentials: nil,
-                                                   authenticatorType: MockAuthenticator.self,
-                                                   onJetpackSetupCompletion: { _, _ in })
-        let viewController = UIViewController()
-
-        // When
-        viewModel.viewDidLoad(viewController)
-        viewModel.didTapPrimaryButton(in: viewController)
-
-        // Then
-        XCTAssertTrue(MockAuthenticator.siteCredentialLoginTriggered)
-    }
-
-    func test_primary_button_tap_does_not_trigger_site_credential_login_if_credentials_are_not_present_and_fetched_site_info_returns_wpcom_site() {
-        // Given
-        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": true])
-        MockAuthenticator.setMockSiteInfo(siteInfo)
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
-                                                   showsConnectedStores: false,
-                                                   siteCredentials: nil,
-                                                   authenticatorType: MockAuthenticator.self,
-                                                   onJetpackSetupCompletion: { _, _ in })
-        let viewController = UIViewController()
-
-        // When
-        viewModel.viewDidLoad(viewController)
-        viewModel.didTapPrimaryButton(in: viewController)
-
-        // Then
-        XCTAssertFalse(MockAuthenticator.siteCredentialLoginTriggered)
-    }
-
-    func test_failure_to_fetch_connection_url_is_tracked() throws {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        var completed = false
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .fetchJetpackConnectionURL(let completion):
-                let error = NSError(domain: "Test", code: 123)
-                completion(.failure(error))
-                completed = true
-            default:
-                break
-            }
-        }
-
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let credentials = WordPressOrgCredentials(username: "test", password: "pwd", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
-
-        // When
-        _ = WrongAccountErrorViewModel(siteURL: Expectations.url,
-                                       showsConnectedStores: false,
-                                       siteCredentials: credentials,
-                                       storesManager: stores,
-                                       analytics: analytics,
-                                       onJetpackSetupCompletion: { _, _ in })
-        waitUntil {
-            completed == true
-        }
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_url_fetch_failed" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["error_code"] as? String, "123")
-        XCTAssertEqual(properties["error_domain"] as? String, "Test")
-    }
 }
 
 
 private extension WrongAccountErrorViewModelTests {
     private enum Expectations {
-        static let url = "https://woocommerce.com"
+        static let url = "https://woo.com"
         static let image = UIImage.productErrorImage
 
         static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",

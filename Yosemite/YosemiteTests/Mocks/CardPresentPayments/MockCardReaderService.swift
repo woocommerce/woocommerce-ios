@@ -55,6 +55,7 @@ final class MockCardReaderService: CardReaderService {
     var spyCheckSupportCardReaderType: CardReaderType? = nil
     var spyCheckSupportConfigProvider: CardReaderConfigProvider? = nil
     var spyCheckSupportDiscoveryMethod: CardReaderDiscoveryMethod? = nil
+    var spyCheckSupportMinimumOperatingSystemVersionOverride: OperatingSystemVersion? = nil
 
     /// The future to return in `waitForInsertedCardToBeRemoved`.
     private var waitForInsertedCardToBeRemovedFuture: Future<Void, Never>?
@@ -69,11 +70,13 @@ final class MockCardReaderService: CardReaderService {
 
     func checkSupport(for cardReaderType: Hardware.CardReaderType,
                       configProvider: Hardware.CardReaderConfigProvider,
-                      discoveryMethod: Hardware.CardReaderDiscoveryMethod) -> Bool {
+                      discoveryMethod: Hardware.CardReaderDiscoveryMethod,
+                      minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool {
         didCheckSupport = true
         spyCheckSupportCardReaderType = cardReaderType
         spyCheckSupportConfigProvider = configProvider
         spyCheckSupportDiscoveryMethod = discoveryMethod
+        spyCheckSupportMinimumOperatingSystemVersionOverride = minimumOperatingSystemVersionOverride
 
         return true
     }
@@ -134,6 +137,12 @@ final class MockCardReaderService: CardReaderService {
 
     func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
         capturePaymentPublisher ??
+        Just(.fake())
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
+    func retryActivePaymentIntent() -> AnyPublisher<Hardware.PaymentIntent, Error> {
         Just(.fake())
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()

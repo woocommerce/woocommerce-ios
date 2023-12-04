@@ -1,7 +1,8 @@
 import Foundation
 import UIKit
+import SwiftUI
 
-struct LearnMoreViewModel {
+class LearnMoreViewModel: ObservableObject {
 
     static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
 
@@ -64,6 +65,15 @@ private enum Localization {
                  """
     )
 
+    static let tapToPayLearnMoreText = NSLocalizedString(
+        "tapToPay.learnMore.text",
+        value: "%1$@ about accepting payments with Tap to Pay on iPhone.",
+        comment: """
+                 A label prompting users to learn more about Tap to Pay on iPhone.
+                 %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                 which should be translated separately and considered part of this sentence.
+                 """)
+
     static let inPersonPaymentslearnMoreText = NSLocalizedString(
         "cardPresent.modalScanningForReader.learnMore.text",
         value: "%1$@ about In‑Person Payments",
@@ -82,6 +92,13 @@ extension LearnMoreViewModel {
         LearnMoreViewModel(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(),
                            linkText: Localization.learnMoreLink,
                            formatText: Localization.inPersonPaymentslearnMoreText,
+                           tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: source))
+    }
+
+    static func tapToPay(source: WooAnalyticsEvent.InPersonPayments.LearnMoreLinkSource) -> LearnMoreViewModel {
+        LearnMoreViewModel(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL(),
+                           linkText: Localization.learnMoreLink,
+                           formatText: Localization.tapToPayLearnMoreText,
                            tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: source))
     }
 }

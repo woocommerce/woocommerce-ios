@@ -209,6 +209,25 @@ final class TaxStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 3)
     }
+
+    func test_retrieveTaxRate_then_persists_TaxRate() {
+        let taxRateID: Int64 = 1
+        network.simulateResponse(requestUrlSuffix: "taxes/\(taxRateID)", filename: "tax")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 0)
+
+        // When
+        let result: Result<Yosemite.TaxRate, Error> = waitFor { [weak self] promise in
+            guard let self = self else { return }
+
+            let action = TaxAction.retrieveTaxRate(siteID: self.sampleSiteID, taxRateID: taxRateID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 1)
+    }
 }
 
 

@@ -20,6 +20,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let viewModel: ViewModel
     private let eventLogger: ProductFormEventLoggerProtocol
+
     private var product: ProductModel {
         viewModel.productModel
     }
@@ -69,6 +70,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var updateEnabledSubscription: AnyCancellable?
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
+    private var blazeEligibilitySubscription: AnyCancellable?
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
@@ -84,13 +86,19 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     ///
     private var shareProductCoordinator: ShareProductCoordinator?
 
+    /// Whether the product details were generated with AI.
+    ///
+    private let isAIContent: Bool
+
     init(viewModel: ViewModel,
+         isAIContent: Bool = false,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.viewModel = viewModel
+        self.isAIContent = isAIContent
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
@@ -106,6 +114,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
+
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -119,6 +128,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         productNameSubscription?.cancel()
         updateEnabledSubscription?.cancel()
         newVariationsPriceSubscription?.cancel()
+        blazeEligibilitySubscription?.cancel()
     }
 
     override func viewDidLoad() {
@@ -137,6 +147,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeProductName()
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
+        observeUpdateBlazeEligibility()
 
         productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -210,6 +221,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @objc func publishProduct() {
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
+        } else if viewModel.formType == .edit && isAIContent {
+            ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: [
+                "product_type": product.productType.rawValue,
+                "is_ai_content": isAIContent
+            ])
         }
         saveProduct(status: .published)
     }
@@ -304,14 +320,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if viewModel.canPromoteWithBlaze() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
-                self?.displayBlaze()
-                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productMoreMenu))
-            }
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productMoreMenu))
-        }
-
         if viewModel.canEditProductSettings() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
@@ -371,6 +379,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logDescriptionTapped()
                 editProductDescription()
+            case .promoteWithBlaze:
+                if !viewModel.shouldShowBlazeIntroView {
+                    ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
+                }
+                displayBlaze()
             default:
                 break
             }
@@ -493,12 +506,20 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 ServiceLocator.analytics.track(event: .ProductDetail.componentsTapped())
                 showCompositeComponents()
-            case .subscription(_, let isActionable):
-                guard isActionable else {
+            case .subscriptionFreeTrial(_, let isEditable):
+                guard isEditable else {
                     return
                 }
-                eventLogger.logSubscriptionsTapped()
-                showSubscriptionSettings()
+
+                eventLogger.logSubscriptionsFreeTrialTapped()
+                showSubscriptionFreeTrialSettings()
+            case .subscriptionExpiry(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+
+                eventLogger.logSubscriptionsExpirationDateTapped()
+                showSubscriptionExpirySettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.
             case .quantityRules:
@@ -709,8 +730,22 @@ private extension ProductFormViewController {
     ///
     func observeVariationsPriceChanges() {
         newVariationsPriceSubscription = viewModel.newVariationsPrice.sink { [weak self] in
-            self?.onVariationsPriceChanged()
+            self?.updateFormTableContent()
         }
+    }
+
+    /// Updates table rows when Blaze eligibility is computed.
+    /// Needed to show/hide the "Promote with Blaze" button accordingly.
+    ///
+    func observeUpdateBlazeEligibility() {
+        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
+            guard let self else { return }
+            self.updateFormTableContent()
+            if self.viewModel.canPromoteWithBlaze() && !self.viewModel.shouldShowBlazeIntroView {
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
+            }
+        }
+
     }
 
     /// Updates table viewmodel and datasource and attempts to animate cell deletion/insertion.
@@ -790,13 +825,15 @@ private extension ProductFormViewController {
 
     /// Recreates the `tableViewModel` and reloads the `table` & `datasource`.
     ///
-    func onVariationsPriceChanged() {
+    func updateFormTableContent() {
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
                                                           currency: currency,
                                                           isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
+
+
 
     /// Recreates `tableViewDataSource` and reloads the `tableView` data.
     /// - Parameters:
@@ -1073,8 +1110,31 @@ private extension ProductFormViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let viewModel = BlazeWebViewModel(source: .productMoreMenu, site: site, productID: product.productID)
-        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+
+        if viewModel.shouldShowBlazeIntroView {
+            let blazeHostingController = BlazeCampaignIntroController(onStartCampaign: { [weak self] in
+                guard let self else { return }
+                self.dismiss(animated: true)
+                navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
+            }, onDismiss: { [weak self] in
+                guard let self = self else { return }
+                self.dismiss(animated: true)
+            })
+
+            present(blazeHostingController, animated: true)
+            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
+        } else {
+            navigateToBlazeCampaignCreation(siteUrl: site.url, source: .productDetailPromoteButton)
+        }
+    }
+
+    private func navigateToBlazeCampaignCreation(siteUrl: String, source: BlazeSource) {
+        let blazeViewModel = BlazeWebViewModel(siteID: viewModel.productModel.siteID,
+                                               source: source,
+                                               siteURL: siteUrl,
+                                               productID: product.productID)
+        let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
         navigationController?.show(webViewController, sender: self)
     }
 
@@ -1309,20 +1369,25 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editPriceSettings() {
-        let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
-            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
-            self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
-                                                salePrice: salePrice,
-                                                dateOnSaleStart: dateOnSaleStart,
-                                                dateOnSaleEnd: dateOnSaleEnd,
-                                                taxStatus: taxStatus,
-                                                taxClass: taxClass,
-                                                hasUnsavedChanges: hasUnsavedChanges)
+        let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self] in
+            self?.onEditPriceSettingsCompletion(regularPrice: $0,
+                                                subscriptionPeriod: $1,
+                                                subscriptionPeriodInterval: $2,
+                                                subscriptionSignupFee: $3,
+                                                salePrice: $4,
+                                                dateOnSaleStart: $5,
+                                                dateOnSaleEnd: $6,
+                                                taxStatus: $7,
+                                                taxClass: $8,
+                                                hasUnsavedChanges: $9)
         }
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
 
     func onEditPriceSettingsCompletion(regularPrice: String?,
+                                       subscriptionPeriod: SubscriptionPeriod?,
+                                       subscriptionPeriodInterval: String?,
+                                       subscriptionSignupFee: String?,
                                        salePrice: String?,
                                        dateOnSaleStart: Date?,
                                        dateOnSaleEnd: Date?,
@@ -1339,6 +1404,9 @@ private extension ProductFormViewController {
         }
 
         viewModel.updatePriceSettings(regularPrice: regularPrice,
+                                      subscriptionPeriod: subscriptionPeriod,
+                                      subscriptionPeriodInterval: subscriptionPeriodInterval,
+                                      subscriptionSignupFee: subscriptionSignupFee,
                                       salePrice: salePrice,
                                       dateOnSaleStart: dateOnSaleStart,
                                       dateOnSaleEnd: dateOnSaleEnd,
@@ -1397,9 +1465,10 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) {
-            [weak self] (weight, dimensions, shippingClass, shippingClassID, hasUnsavedChanges) in
+            [weak self] (weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges) in
             self?.onEditShippingSettingsCompletion(weight: weight,
                                                    dimensions: dimensions,
+                                                   oneTimeShipping: oneTimeShipping,
                                                    shippingClass: shippingClass,
                                                    shippingClassID: shippingClassID,
                                                    hasUnsavedChanges: hasUnsavedChanges)
@@ -1409,6 +1478,7 @@ private extension ProductFormViewController {
 
     func onEditShippingSettingsCompletion(weight: String?,
                                           dimensions: ProductDimensions,
+                                          oneTimeShipping: Bool?,
                                           shippingClass: String?,
                                           shippingClassID: Int64?,
                                           hasUnsavedChanges: Bool) {
@@ -1420,7 +1490,11 @@ private extension ProductFormViewController {
         guard hasUnsavedChanges else {
             return
         }
-        viewModel.updateShippingSettings(weight: weight, dimensions: dimensions, shippingClass: shippingClass, shippingClassID: shippingClassID)
+        viewModel.updateShippingSettings(weight: weight,
+                                         dimensions: dimensions,
+                                         oneTimeShipping: oneTimeShipping,
+                                         shippingClass: shippingClass,
+                                         shippingClassID: shippingClassID)
     }
 }
 
@@ -1778,13 +1852,13 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showVariations() {
-        guard let originalProduct = viewModel.originalProductModel as? EditableProductModel else {
+        guard let currentProduct = viewModel.productModel as? EditableProductModel else {
             return
         }
         let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
         let variationsViewController = ProductVariationsViewController(initialViewController: self,
                                                                        viewModel: variationsViewModel,
-                                                                       product: originalProduct.product)
+                                                                       product: currentProduct.product)
         variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
             viewModel.updateProductVariations(from: updatedProduct)
         }
@@ -1818,16 +1892,66 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Show Subscription Settings
+// MARK: Action - Show Subscription Free trial Settings
 //
 private extension ProductFormViewController {
-    func showSubscriptionSettings() {
+    func showSubscriptionFreeTrialSettings() {
         guard let subscription = product.subscription else {
             return
         }
-        let viewModel = SubscriptionSettingsViewModel(subscription: subscription)
-        let viewController = SubscriptionSettingsViewController(viewModel: viewModel)
+        let viewModel = SubscriptionTrialViewModel(subscription: subscription) { [weak self] trialLength, trialPeriod, hasUnsavedChanges in
+            self?.onEditSubscriptionFreeTrialSettings(trialLength: trialLength,
+                                                      trialPeriod: trialPeriod,
+                                                      hasUnsavedChanges: hasUnsavedChanges)
+        }
+        let viewController = SubscriptionTrialViewController(viewModel: viewModel)
         show(viewController, sender: self)
+    }
+
+    func onEditSubscriptionFreeTrialSettings(trialLength: String,
+                                             trialPeriod: SubscriptionPeriod,
+                                             hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        ServiceLocator.analytics.track(event: .ProductDetail.freeTrialDetailsScreenClosed(hasChangedData: hasUnsavedChanges))
+
+        guard hasUnsavedChanges else {
+            return
+        }
+        viewModel.updateSubscriptionFreeTrialSettings(trialLength: trialLength,
+                                                      trialPeriod: trialPeriod)
+    }
+}
+
+// MARK: Action - Show Subscription expiry settings
+//
+private extension ProductFormViewController {
+    func showSubscriptionExpirySettings() {
+        guard let subscription = product.subscription else {
+            return
+        }
+        let viewModel = SubscriptionExpiryViewModel(subscription: subscription) { [weak self] length, hasUnsavedChanges in
+            self?.onEditSubscriptionExpirySettings(length: length,
+                                                   hasUnsavedChanges: hasUnsavedChanges)
+        }
+        let viewController = SubscriptionExpiryViewController(viewModel: viewModel)
+        show(viewController, sender: self)
+    }
+
+    func onEditSubscriptionExpirySettings(length: String,
+                                          hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        ServiceLocator.analytics.track(event: .ProductDetail.expirationDetailsScreenClosed(hasChangedData: hasUnsavedChanges))
+
+        guard hasUnsavedChanges else {
+            return
+        }
+        viewModel.updateSubscriptionExpirySettings(length: length)
     }
 }
 

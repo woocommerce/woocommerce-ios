@@ -55,6 +55,9 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         viewModel.updateImages(model.images)
         viewModel.updateDescription(productVariation.description ?? "")
         viewModel.updatePriceSettings(regularPrice: productVariation.regularPrice,
+                                      subscriptionPeriod: productVariation.subscription?.period,
+                                      subscriptionPeriodInterval: productVariation.subscription?.periodInterval,
+                                      subscriptionSignupFee: productVariation.subscription?.signUpFee,
                                       salePrice: productVariation.salePrice,
                                       dateOnSaleStart: productVariation.dateOnSaleStart,
                                       dateOnSaleEnd: productVariation.dateOnSaleEnd,
@@ -66,7 +69,11 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
                                           stockQuantity: productVariation.stockQuantity,
                                           backordersSetting: model.backordersSetting,
                                           stockStatus: productVariation.stockStatus)
-        viewModel.updateShippingSettings(weight: productVariation.weight, dimensions: productVariation.dimensions, shippingClass: nil, shippingClassID: nil)
+        viewModel.updateShippingSettings(weight: productVariation.weight,
+                                         dimensions: productVariation.dimensions,
+                                         oneTimeShipping: nil,
+                                         shippingClass: nil,
+                                         shippingClassID: nil)
     }
 
     func testObservablesFromUploadingAnImage() {

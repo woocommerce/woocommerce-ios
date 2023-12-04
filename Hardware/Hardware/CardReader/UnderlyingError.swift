@@ -1,9 +1,6 @@
 /// Underlying error. Models the specific error that made a given
 /// interaction with the SDK fail.
 public enum UnderlyingError: Error, Equatable {
-    /// The service is busy executing another command. The service can only execute a single command at a time.
-    case busy
-
     /// No reader is connected. Connect to a reader before trying again.
     case notConnectedToReader
 
@@ -11,10 +8,7 @@ public enum UnderlyingError: Error, Equatable {
     case alreadyConnectedToReader
 
     /// Attempted to process a nil or invalid payment intent
-    case processInvalidPaymentIntent
-
-    /// Attempted to connect to a reader that has not been discovered yet
-    case connectingToUndiscoveredReader
+    case confirmInvalidPaymentIntent
 
     /// Attempted to connect from an unsupported version of the SDK.
     /// In order to fix this you will need to update your app
@@ -152,6 +146,10 @@ public enum UnderlyingError: Error, Equatable {
     /// Connection attempt invalidated while it was in progress – e.g. the store was changed during a connection
     case connectionAttemptInvalidated
 
+    /// Errors that originate because there's no active payment intent, so the operation is invalid, e.g. cancelling the active PI when there isn't one.
+    /// 
+    case noActivePaymentIntent
+
     // MARK: - Tap to Pay on iPhone related errors
 
     /// The device must have a passcode in order to use Tap to Pay on iPhone
@@ -272,21 +270,15 @@ extension UnderlyingError {
 extension UnderlyingError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .busy:
-            return NSLocalizedString("The system is busy executing another command - please try again",
-                                     comment: "Error message when the card reader service is busy executing another command.")
         case .notConnectedToReader:
             return NSLocalizedString("No card reader is connected - connect a reader and try again",
                                      comment: "Error message when a card reader was expected to already have been connected.")
         case .alreadyConnectedToReader:
             return NSLocalizedString("Unable to connect to reader - another reader is already connected",
                                      comment: "Error message when a card reader is already connected and we were not expecting one.")
-        case .processInvalidPaymentIntent:
+        case .confirmInvalidPaymentIntent:
             return NSLocalizedString("Unable to process payment due to invalid data - please try again",
                                      comment: "Error message when the payment intent is invalid.")
-        case .connectingToUndiscoveredReader:
-            return NSLocalizedString("Unable to connect to card reader - card reader was not correctly discovered - please try again",
-                                     comment: "Error message when the card reader service attempts to connect to a reader without discovering it first.")
         case .unsupportedSDK:
             return NSLocalizedString("Unable to perform software request - please update this application and try again",
                                      comment: "Error message when the application is so out of date that the backend refuses to work with it.")
@@ -415,6 +407,11 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("Sorry, we could not connect to the reader. Please try again.",
                                      comment: "Error message shown when an in-progress connection is cancelled by the system")
 
+        case .noActivePaymentIntent:
+            return NSLocalizedString("Sorry, we could not complete this action, as no active payment was found.",
+                                     comment: "Underlying error message for actions which require an active payment, " +
+                                     "such as cancellation, when none is found. Unlikely to be shown.")
+
             // MARK: - Tap to Pay on iPhone errors
         case .passcodeNotEnabled:
             return NSLocalizedString("You need to set a lock screen passcode to use Tap to Pay on iPhone",
@@ -449,8 +446,10 @@ extension UnderlyingError: LocalizedError {
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "there is an issue with the merchant account or device")
         case .unsupportedMobileDeviceConfiguration:
+            /// Strictly, 16.0 is required in the US, 16.4 in the UK... but it's overly complicated to make this country specific.
+            /// Any device running 16.0 can run 16.4, so this seems clear enough.
             return NSLocalizedString("Please check that your phone meets these requirements: " +
-                                     "iPhone XS or newer running iOS 16.0 or above. Contact support if this error " +
+                                     "iPhone XS or newer running iOS 16.4 or above. Contact support if this error " +
                                      "shows on a supported device.",
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "the device does not meet minimum requirements.")

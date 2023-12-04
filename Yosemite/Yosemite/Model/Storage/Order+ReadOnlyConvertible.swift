@@ -91,6 +91,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      number: number ?? "",
                      status: OrderStatusEnum(rawValue: statusKey),
                      currency: currency ?? "",
+                     currencySymbol: "", // Not stored in the Storage Layer, only used in the notifications extension.
                      customerNote: customerNote ?? "",
                      dateCreated: dateCreated ?? Date(),
                      dateModified: dateModified ?? Date(),

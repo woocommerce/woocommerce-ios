@@ -128,10 +128,34 @@ public class ProductStore: Store {
             generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
         case let .generateProductSharingMessage(siteID, url, name, description, language, completion):
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
-        case let .generateProductDetails(siteID, scannedTexts, completion):
-            generateProductDetails(siteID: siteID, scannedTexts: scannedTexts, completion: completion)
+        case let .generateProductName(siteID, keywords, language, completion):
+            generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
+        case let .generateProductDetails(siteID, productName, scannedTexts, language, completion):
+            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, language: language, completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
+        case let .generateAIProduct(siteID,
+                                    productName,
+                                    keywords,
+                                    language,
+                                    tone,
+                                    currencySymbol,
+                                    dimensionUnit,
+                                    weightUnit,
+                                    categories,
+                                    tags,
+                                    completion):
+            generateAIProduct(siteID: siteID,
+                              productName: productName,
+                              keywords: keywords,
+                              language: language,
+                              tone: tone,
+                              currencySymbol: currencySymbol,
+                              dimensionUnit: dimensionUnit,
+                              weightUnit: weightUnit,
+                              categories: categories,
+                              tags: tags,
+                              completion: completion)
         }
     }
 }
@@ -164,7 +188,7 @@ private extension ProductStore {
                         productType: ProductType?,
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
-                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                        onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         switch filter {
         case .all:
             remote.searchProducts(for: siteID,
@@ -179,6 +203,7 @@ private extension ProductStore {
                 self?.handleSearchResults(siteID: siteID,
                                           keyword: keyword,
                                           filter: filter,
+                                          pageSize: pageSize,
                                           result: result,
                                           onCompletion: onCompletion)
             }
@@ -190,6 +215,7 @@ private extension ProductStore {
                 self?.handleSearchResults(siteID: siteID,
                                           keyword: keyword,
                                           filter: filter,
+                                          pageSize: pageSize,
                                           result: result,
                                           onCompletion: onCompletion)
             }
@@ -208,6 +234,7 @@ private extension ProductStore {
         handleSearchResults(siteID: siteID,
                             keyword: keyword,
                             filter: .all,
+                            pageSize: pageSize,
                             result: Result.success(results.prefix(pageSize).map { $0.toReadOnly() }),
                             onCompletion: { _ in onCompletion(!results.isEmpty) })
     }
@@ -366,7 +393,7 @@ private extension ProductStore {
                     return onCompletion(.failure(ProductLoadError.notFound))
                 }
 
-                guard let product = products.first(where: { $0.purchasable }) else {
+                guard let product = skuProducts.first(where: { $0.purchasable }) else {
                     return onCompletion(.failure(ProductLoadError.notPurchasable))
                 }
 
@@ -386,17 +413,6 @@ private extension ProductStore {
                 onCompletion(.failure(error))
             }
         })
-    }
-
-    func retrieveProducts(from productIDs: [Int64]) -> [Product] {
-        productIDs
-            .compactMap {
-                let predicate = NSPredicate(format: "productID == %lld", $0)
-                let product = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                          matching: predicate,
-                                                          sortedBy: nil).first
-                return product
-            }.map { $0.toReadOnly() }
     }
 
     /// Adds a product.
@@ -616,18 +632,27 @@ private extension ProductStore {
         }
     }
 
-    func generateProductDetails(siteID: Int64, scannedTexts: [String], completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
+    func generateProductDetails(siteID: Int64,
+                                productName: String?,
+                                scannedTexts: [String],
+                                language: String,
+                                completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
+        let keywords: [String] = {
+            guard let productName else {
+                return scannedTexts
+            }
+            return scannedTexts + [productName]
+        }()
         let prompt = [
-            "Write a name and description of a product for an online store given the array of scanned text strings from a packaging photo at the end.",
-            "Return only a JSON dictionary with the name in `name` field, description in `description` field, " +
-            "and the detected language as the locale identifier in `language` field.",
+            "Write a name and description of a product for an online store given the keywords at the end.",
+            "Return only a JSON dictionary with the name in `name` field, description in `description` field.",
             "The output should be in valid JSON format.",
-            "Detect the language in the array and use the same language to write the name and description.",
+            "The output should be in language \(language).",
             "Make the description 50-60 words or less.",
             "Use a 9th grade reading level.",
             "Perform in-depth keyword research relating to the product in the same language of the product title, " +
             "and use them in your sentences without listing them out." +
-            "\(scannedTexts)"
+            "\(keywords)"
         ].joined(separator: "\n")
         Task { @MainActor in
             do {
@@ -636,10 +661,31 @@ private extension ProductStore {
                     return completion(.failure(DotcomError.resourceDoesNotExist))
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
-                completion(.success(.init(name: details.name, description: details.description, language: details.language)))
+                completion(.success(.init(name: details.name, description: details.description)))
             } catch {
                 completion(.failure(error))
             }
+        }
+    }
+
+    func generateProductName(siteID: Int64,
+                             keywords: String,
+                             language: String,
+                             completion: @escaping (Result<String, Error>) -> Void) {
+        let prompt = [
+            "You are a WooCommerce SEO and marketing expert.",
+            "Provide a product title to enhance the store's SEO performance and sales " +
+            "based on the following product keywords: \(keywords).",
+            "Your response should be in language \(language).",
+            "Do not explain the suggestion, strictly return the product name only."
+        ].joined(separator: "\n")
+
+        Task { @MainActor in
+            let result = await Result {
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName)
+                return description
+            }
+            completion(result)
         }
     }
 
@@ -651,6 +697,35 @@ private extension ProductStore {
             } catch {
                 completion(.failure(error))
             }
+        }
+    }
+
+    func generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag],
+                           completion: @escaping (Result<AIProduct, Error>) -> Void) {
+        Task { @MainActor in
+            let result = await Result {
+                let product = try await generativeContentRemote.generateAIProduct(siteID: siteID,
+                                                                                  productName: productName,
+                                                                                  keywords: keywords,
+                                                                                  language: language,
+                                                                                  tone: tone,
+                                                                                  currencySymbol: currencySymbol,
+                                                                                  dimensionUnit: dimensionUnit,
+                                                                                  weightUnit: weightUnit,
+                                                                                  categories: categories,
+                                                                                  tags: tags)
+                return product
+            }
+            completion(result)
         }
     }
 }
@@ -921,6 +996,19 @@ extension ProductStore {
         let storageBundledItems = readOnlyProduct.bundledItems.map { readOnlyBundleItem -> StorageProductBundleItem in
             let storageBundledItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
             storageBundledItem.update(with: readOnlyBundleItem)
+
+            // Removes all default variation attributes and adds new ones from the readonly version.
+            if let defaultVariationAttributes = storageBundledItem.defaultVariationAttributes {
+                storageBundledItem.removeFromDefaultVariationAttributes(defaultVariationAttributes)
+            }
+
+            let storageDefaultVariationAttributes = readOnlyBundleItem.defaultVariationAttributes.map {
+                let storageVariationAttribute = storage.insertNewObject(ofType: Storage.GenericAttribute.self)
+                storageVariationAttribute.update(with: $0)
+                return storageVariationAttribute
+            }
+            storageBundledItem.addToDefaultVariationAttributes(NSOrderedSet(array: storageDefaultVariationAttributes))
+
             return storageBundledItem
         }
         storageProduct.addToBundledItems(NSOrderedSet(array: storageBundledItems))
@@ -1006,15 +1094,17 @@ private extension ProductStore {
     func handleSearchResults(siteID: Int64,
                              keyword: String,
                              filter: ProductSearchFilter,
+                             pageSize: Int,
                              result: Result<[Product], Error>,
-                             onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         switch result {
         case .success(let products):
             upsertSearchResultsInBackground(siteID: siteID,
                                             keyword: keyword,
                                             filter: filter,
                                             readOnlyProducts: products) {
-                onCompletion(.success(()))
+                let hasNextPage = products.count == pageSize
+                onCompletion(.success(hasNextPage))
             }
         case .failure(let error):
             onCompletion(.failure(error))
@@ -1156,13 +1246,10 @@ public struct ProductDetailsFromScannedTexts: Equatable, Decodable {
     public let name: String
     /// Product description.
     public let description: String
-    /// The language code detected for the product.
-    public let language: String
 
-    public init(name: String, description: String, language: String) {
+    public init(name: String, description: String) {
         self.name = name
         self.description = description
-        self.language = language
     }
 }
 

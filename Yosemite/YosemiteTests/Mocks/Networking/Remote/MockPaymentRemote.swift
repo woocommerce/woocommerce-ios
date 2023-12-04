@@ -49,7 +49,7 @@ extension MockPaymentRemote: PaymentRemoteProtocol {
     func loadPlan(thatMatchesID productID: Int64) async throws -> WPComPlan {
         guard let result = loadPlanResult else {
             XCTFail("Could not find result for loading a plan.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -57,7 +57,7 @@ extension MockPaymentRemote: PaymentRemoteProtocol {
     func loadSiteCurrentPlan(siteID: Int64) async throws -> WPComSitePlan {
         guard let result = loadSiteCurrentPlanResult else {
             XCTFail("Could not find result for loading a site's current plan.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -65,7 +65,7 @@ extension MockPaymentRemote: PaymentRemoteProtocol {
     func createCart(siteID: Int64, productID: Int64) async throws {
         guard let result = createCartResult else {
             XCTFail("Could not find result for creating a cart.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -73,7 +73,7 @@ extension MockPaymentRemote: PaymentRemoteProtocol {
     func createCart(siteID: Int64, domain: DomainToPurchase, isTemporary: Bool) async throws -> CartResponse {
         guard let result = createDomainCartResult else {
             XCTFail("Could not find result for creating a domain cart.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -81,7 +81,7 @@ extension MockPaymentRemote: PaymentRemoteProtocol {
     func checkoutCartWithDomainCredit(cart: CartResponse, contactInfo: DomainContactInfo) async throws {
         guard let result = checkoutCartWithDomainCreditResult else {
             XCTFail("Could not find result for checking out a cart with domain credit.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }

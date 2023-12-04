@@ -12,7 +12,15 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
 
     init(viewModel: EditableOrderViewModel) {
         self.viewModel = viewModel
-        super.init(rootView: OrderForm(viewModel: viewModel))
+        let flow: WooAnalyticsEvent.Orders.Flow = {
+            switch viewModel.flow {
+                case .creation:
+                    return .creation
+                case .editing:
+                    return .editing
+            }
+        }()
+        super.init(rootView: OrderForm(flow: flow, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -97,12 +105,20 @@ struct OrderForm: View {
     ///
     var dismissHandler: (() -> Void) = {}
 
+    let flow: WooAnalyticsEvent.Orders.Flow
+
     @ObservedObject var viewModel: EditableOrderViewModel
+
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     /// Fix for breaking navbar button
     @State private var navigationButtonID = UUID()
 
     @State private var shouldShowNewTaxRateSelector = false
+    @State private var shouldShowStoredTaxRateSheet = false
+
+    @State private var shouldShowInformationalCouponTooltip = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -121,8 +137,22 @@ struct OrderForm: View {
 
                             Spacer(minLength: Layout.sectionSpacing)
 
-                            ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                            ProductsSection(scroll: scroll,
+                                            flow: flow,
+                                            viewModel: viewModel, navigationButtonID: $navigationButtonID)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
+
+                            Group {
+                                Divider()
+                                Spacer(minLength: Layout.sectionSpacing)
+                                Divider()
+                            }
+                            .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
+
+                            OrderCustomAmountsSection(viewModel: viewModel)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
+
+                            Divider()
 
                             Spacer(minLength: Layout.sectionSpacing)
 
@@ -132,7 +162,9 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
-                                OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                                OrderPaymentSection(
+                                    viewModel: viewModel.paymentDataViewModel,
+                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                             }
 
@@ -141,8 +173,16 @@ struct OrderForm: View {
 
                         VStack(spacing: Layout.noSpacing) {
                             Group {
-                                NewTaxRateSection {
-                                    shouldShowNewTaxRateSelector = true
+                                NewTaxRateSection(text: viewModel.taxRateRowText) {
+                                    viewModel.onSetNewTaxRateTapped()
+                                    switch viewModel.taxRateRowAction {
+                                    case .storedTaxRateSheet:
+                                        shouldShowStoredTaxRateSheet = true
+                                        viewModel.onStoredTaxRateBottomSheetAppear()
+                                    case .taxSelector:
+                                        shouldShowNewTaxRateSelector = true
+                                    }
+
                                 }
                                 .sheet(isPresented: $shouldShowNewTaxRateSelector) {
                                     NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
@@ -150,18 +190,39 @@ struct OrderForm: View {
                                         viewModel.onTaxRateSelected(taxRate)
                                     }),
                                                            taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
-                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure)
+                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure,
+                                                           storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
+                                }
+                                .sheet(isPresented: $shouldShowStoredTaxRateSheet) {
+                                    if #available(iOS 16.0, *) {
+                                        storedTaxRateBottomSheetContent
+                                            .presentationDetents([.medium])
+                                            .presentationDragIndicator(.visible)
+                                    } else {
+                                        storedTaxRateBottomSheetContent
+                                    }
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
                             .renderedIf(viewModel.shouldShowNewTaxRateSection)
 
+                            Divider()
+
                             OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
 
-                            Spacer(minLength: Layout.sectionSpacing)
+                            Group {
+                                Divider()
+
+                                Spacer(minLength: Layout.sectionSpacing)
+
+                                Divider()
+                            }
+                            .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
 
                             CustomerNoteSection(viewModel: viewModel)
+
+                            Divider()
                         }
                     }
                     .disabled(viewModel.disabled)
@@ -203,6 +264,65 @@ struct OrderForm: View {
         .wooNavigationBarStyle()
         .notice($viewModel.autodismissableNotice)
         .notice($viewModel.fixedNotice, autoDismiss: false)
+        .onTapGesture {
+            shouldShowInformationalCouponTooltip = false
+        }
+    }
+
+    @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
+        VStack (alignment: .leading) {
+            Text(Localization.storedTaxRateBottomSheetTitle)
+                .bodyStyle()
+                .padding(.top, Layout.storedTaxRateBottomSheetTopSpace)
+                .padding([.leading, .trailing, .bottom])
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let taxRateViewModel = viewModel.storedTaxRateViewModel {
+                TaxRateRow(viewModel: taxRateViewModel, onSelect: nil)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Layout.storedTaxRateBottomSheetRowCornerRadius)
+                            .stroke(Color(.separator), lineWidth: 1)
+                    )
+                    .padding()
+            }
+
+            Button {
+                viewModel.onSetNewTaxRateFromBottomSheetTapped()
+                shouldShowStoredTaxRateSheet = false
+                shouldShowNewTaxRateSelector = true
+            } label: {
+                Label {
+                    Text(Localization.storedTaxRateBottomSheetNewTaxRateButtonTitle)
+                        .bodyStyle()
+                } icon: {
+                    Image(systemName: "pencil")
+                        .resizable()
+                        .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,
+                               height: Layout.storedTaxRateBottomSheetButtonIconSize * scale)
+                        .foregroundColor(Color(.secondaryLabel))
+                }
+            }
+            .padding()
+
+            Button {
+                viewModel.onClearAddressFromBottomSheetTapped()
+                shouldShowStoredTaxRateSheet = false
+            } label: {
+                Label {
+                    Text(Localization.storedTaxRateBottomSheetClearTaxRateButtonTitle)
+                } icon: {
+                    Image(systemName: "xmark.circle")
+                        .resizable()
+                        .font(Font.title2.weight(.semibold))
+                        .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,
+                               height: Layout.storedTaxRateBottomSheetButtonIconSize * scale)
+                }
+            }
+            .foregroundColor(Color(uiColor: .withColorStudio(.red, shade: .shade60)))
+            .padding()
+
+            Spacer()
+        }
     }
 }
 
@@ -240,12 +360,13 @@ private struct MultipleLinesMessage: View {
 }
 
 private struct NewTaxRateSection: View {
+    let text: String
     let onButtonTapped: (() -> Void)
 
     var body: some View {
         Button(action: onButtonTapped,
                label: {
-                    Text(OrderForm.Localization.setNewTaxRate)
+                    Text(text)
                         .multilineTextAlignment(.center)
                         .padding(OrderForm.Layout.sectionSpacing)
                         .frame(maxWidth: .infinity)
@@ -261,15 +382,13 @@ private struct NewTaxRateSection: View {
 private struct ProductsSection: View {
     let scroll: ScrollViewProxy
 
+    let flow: WooAnalyticsEvent.Orders.Flow
+
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Fix for breaking navbar button
     @Binding var navigationButtonID: UUID
-
-    /// Defines whether `AddProduct` modal is presented.
-    ///
-    @State private var showAddProduct: Bool = false
 
     /// Defines whether `AddProductViaSKUScanner` modal is presented.
     ///
@@ -300,7 +419,6 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
-
                 HStack {
                     Text(OrderForm.Localization.products)
                         .accessibilityAddTraits(.isHeader)
@@ -311,88 +429,76 @@ private struct ProductsSection: View {
                     Image(uiImage: .lockImage)
                         .foregroundColor(Color(.brand))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
+
+                    HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {
+                        scanProductButton
+                        .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+
+                        Button(action: {
+                            viewModel.toggleProductSelectorVisibility()
+                        }) {
+                            Image(uiImage: .plusImage)
+                        }
+                        .id(addProductButton)
+                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                    }
+                    .scaledToFit()
+                    .renderedIf(!viewModel.shouldShowNonEditableIndicators)
                 }
+                .renderedIf(viewModel.shouldShowProductsSectionHeader)
 
                 ForEach(viewModel.productRows) { productRow in
-                    ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
-                        .onTapGesture {
-                            viewModel.selectOrderItem(productRow.id)
-                        }
-                        .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
-                            ProductInOrder(viewModel: productViewModel)
-                        }
-                        .redacted(reason: viewModel.disabled ? .placeholder : [] )
-
-                    Divider()
+                    CollapsibleProductCard(viewModel: productRow,
+                                           flow: flow,
+                                           shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                           shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
+                                           onAddDiscount: viewModel.selectOrderItem)
+                    .sheet(item: $viewModel.selectedProductViewModel, content: { selectedProduct in
+                        ProductDiscountView(imageURL: selectedProduct.productRowViewModel.imageURL,
+                                            name: selectedProduct.productRowViewModel.name,
+                                            stockLabel: selectedProduct.productRowViewModel.stockQuantityLabel,
+                                            productRowViewModel: selectedProduct.productRowViewModel,
+                                            discountViewModel: selectedProduct.discountDetailsViewModel)
+                    })
+                    .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
+                        ConfigurableBundleProductView(viewModel: configurableProductViewModel)
+                    }
+                    .redacted(reason: viewModel.disabled ? .placeholder : [] )
                 }
 
                 HStack {
                     Button(OrderForm.Localization.addProducts) {
-                        showAddProduct.toggle()
+                        viewModel.toggleProductSelectorVisibility()
                     }
                     .id(addProductButton)
                     .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     .buttonStyle(PlusButtonStyle())
-                    .sheet(isPresented: $showAddProduct, onDismiss: {
-                        scroll.scrollTo(addProductButton)
-                    }, content: {
-                        ProductSelectorNavigationView(
-                            configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                            source: .orderForm,
-                            isPresented: $showAddProduct,
-                            viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
-                        .onDisappear {
-                            navigationButtonID = UUID()
-                        }
-                    })
 
-                    Button(action: {
-                        viewModel.trackBarcodeScanningButtonTapped()
-                        let capturePermissionStatus = viewModel.capturePermissionStatus
-                        switch capturePermissionStatus {
-                        case .notPermitted:
-                            viewModel.trackBarcodeScanningNotPermitted()
-                            logPermissionStatus(status: .notPermitted)
-                            self.showPermissionsSheet = true
-                        case .notDetermined:
-                            logPermissionStatus(status: .notDetermined)
-                            viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
-                                if isPermissionGranted {
-                                    showAddProductViaSKUScanner = true
-                                    logPermissionStatus(status: .permitted)
-                                }
-                            })
-                        case .permitted:
-                            showAddProductViaSKUScanner = true
-                            logPermissionStatus(status: .permitted)
-                        }
-                    }, label: {
-                        if showAddProductViaSKUScannerLoading {
-                            ProgressView()
-                        } else {
-                            Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                            .foregroundColor(Color(.brand))
-                        }
-                    })
-                    .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
-                        scroll.scrollTo(addProductViaSKUScannerButton)
-                    }, content: {
-                        ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                            showAddProductViaSKUScanner = false
-                            showAddProductViaSKUScannerLoading = true
-                            viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                                showAddProductViaSKUScannerLoading = false
-                            }, onRetryRequested: {
-                                showAddProductViaSKUScanner = true
-                            })
-                        })
-                    })
+                    scanProductButton
                     .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
                 }
+                .renderedIf(viewModel.shouldShowAddProductsButton)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground(modal: true)))
+            .sheet(isPresented: $viewModel.isProductSelectorPresented, onDismiss: {
+                scroll.scrollTo(addProductButton)
+            }, content: {
+                if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                    ProductSelectorNavigationView(
+                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                        source: .orderForm(flow: flow),
+                        isPresented: $viewModel.isProductSelectorPresented,
+                        viewModel: productSelectorViewModel)
+                    .onDisappear {
+                        navigationButtonID = UUID()
+                    }
+                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                        ConfigurableBundleProductView(viewModel: viewModel)
+                    }
+                }
+            })
             .actionSheet(isPresented: $showPermissionsSheet, content: {
                 ActionSheet(
                     title: Text(OrderForm.Localization.permissionsTitle),
@@ -405,9 +511,53 @@ private struct ProductsSection: View {
                      ]
                  )
             })
-
-            Divider()
         }
+    }
+}
+
+private extension ProductsSection {
+    var scanProductButton: some View {
+        Button(action: {
+            viewModel.trackBarcodeScanningButtonTapped()
+            let capturePermissionStatus = viewModel.capturePermissionStatus
+            switch capturePermissionStatus {
+            case .notPermitted:
+                viewModel.trackBarcodeScanningNotPermitted()
+                logPermissionStatus(status: .notPermitted)
+                self.showPermissionsSheet = true
+            case .notDetermined:
+                logPermissionStatus(status: .notDetermined)
+                viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                    if isPermissionGranted {
+                        showAddProductViaSKUScanner = true
+                        logPermissionStatus(status: .permitted)
+                    }
+                })
+            case .permitted:
+                showAddProductViaSKUScanner = true
+                logPermissionStatus(status: .permitted)
+            }
+        }, label: {
+            if showAddProductViaSKUScannerLoading {
+                ProgressView()
+            } else {
+                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                .foregroundColor(Color(.brand))
+            }
+        })
+        .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
+            scroll.scrollTo(addProductViaSKUScannerButton)
+        }, content: {
+            ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                showAddProductViaSKUScanner = false
+                showAddProductViaSKUScannerLoading = true
+                viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                    showAddProductViaSKUScannerLoading = false
+                }, onRetryRequested: {
+                    showAddProductViaSKUScanner = true
+                })
+            })
+        })
     }
 }
 
@@ -417,6 +567,11 @@ private extension OrderForm {
         static let sectionSpacing: CGFloat = 16.0
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
+        static let storedTaxRateBottomSheetTopSpace: CGFloat = 24.0
+        static let storedTaxRateBottomSheetRowCornerRadius: CGFloat = 8.0
+        static let storedTaxRateBottomSheetStoredTaxRateCornerRadius: CGFloat = 8.0
+        static let storedTaxRateBottomSheetButtonIconSize: CGFloat = 24.0
+        static let productsHeaderButtonsSpacing: CGFloat = 20
     }
 
     enum Localization {
@@ -434,7 +589,13 @@ private extension OrderForm {
                                                           "Please enable camera permissions in your device settings",
                                                           comment: "Message of the action sheet button that links to settings for camera access")
         static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an action sheet")
-        static let setNewTaxRate = NSLocalizedString("Set New Tax Rate", comment: "Button title to set a new tax rate to an order")
+        static let storedTaxRateBottomSheetTitle = NSLocalizedString("Automatically adding tax rate",
+                                                                     comment: "Title for the bottom sheet when there is a tax rate stored")
+        static let storedTaxRateBottomSheetNewTaxRateButtonTitle = NSLocalizedString("Set a new tax rate for this order",
+                                                                                     comment: "Title for the button to add a new tax rate" +
+                                                                                     "when there is a tax rate stored")
+        static let storedTaxRateBottomSheetClearTaxRateButtonTitle = NSLocalizedString("Clear address and stop using this rate",
+                                                                                       comment: "Title for the button to clear the stored tax rate")
     }
 
     enum Accessibility {
@@ -451,23 +612,23 @@ struct OrderForm_Previews: PreviewProvider {
         let viewModel = EditableOrderViewModel(siteID: 123)
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
         .previewDisplayName("Accessibility")
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.layoutDirection, .rightToLeft)
         .previewDisplayName("Right to left")

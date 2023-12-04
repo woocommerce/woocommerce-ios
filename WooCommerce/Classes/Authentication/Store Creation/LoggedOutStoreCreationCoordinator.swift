@@ -1,4 +1,5 @@
 import UIKit
+import Experiments
 import enum WordPressAuthenticator.SignInSource
 import struct WordPressAuthenticator.NavigateToEnterAccount
 
@@ -15,53 +16,56 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
     let navigationController: UINavigationController
 
     private var storePickerCoordinator: StorePickerCoordinator?
+    private var storeCreationCoordinator: StoreCreationCoordinator?
+    private var loginCoordinator: WPComLoginCoordinator?
 
     private let analytics: Analytics
     private let source: Source
+    private let featureFlagService: FeatureFlagService
+
+    private lazy var signInSource: SignInSource = .custom(source: source.rawValue)
 
     init(source: Source,
          navigationController: UINavigationController,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.source = source
         self.navigationController = navigationController
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
     }
 
     func start() {
-        let viewModel = AccountCreationFormViewModel(emailSubmissionHandler: { [weak self] email, isExisting in
-            self?.handleEmailSubmission(email: email, isExisting: isExisting)
-        })
-        let accountCreationController = AccountCreationFormHostingController(
-            field: .email,
-            viewModel: viewModel,
-            signInSource: .custom(source: source.rawValue),
-            analytics: analytics
-        ) { [weak self] in
+        let viewModel = AccountCreationFormViewModel(onExistingEmail: { [weak self] email in
+            await self?.startLoginWithExistingAccount(email: email)
+        }, completionHandler: { [weak self] in
             guard let self else { return }
             self.startStoreCreation(in: self.navigationController)
-        }
+        })
+        let accountCreationController = AccountCreationFormHostingController(
+            viewModel: viewModel,
+            signInSource: signInSource,
+            analytics: analytics
+        )
         navigationController.show(accountCreationController, sender: self)
     }
 }
 
 private extension LoggedOutStoreCreationCoordinator {
-    func handleEmailSubmission(email: String, isExisting: Bool) {
-        let signInSource: SignInSource = .custom(source: source.rawValue)
-        guard !isExisting else {
-            /// Navigates to login with the existing email address.
+    @MainActor
+    func startLoginWithExistingAccount(email: String) async {
+        guard featureFlagService.isFeatureFlagEnabled(.customLoginUIForAccountCreation) else {
+            /// Navigates to login with the authenticator library.
             let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
             command.execute(from: navigationController.topViewController ?? navigationController)
             return
         }
-        /// Navigates to password field for account creation
-        let passwordView = AccountCreationFormHostingController(field: .password,
-                                                                viewModel: .init(email: email),
-                                                                signInSource: signInSource,
-                                                                completion: { [weak self] in
+        let coordinator = WPComLoginCoordinator(navigationController: navigationController) { [weak self] in
             guard let self else { return }
             self.startStoreCreation(in: self.navigationController)
-        })
-        navigationController.show(passwordView, sender: nil)
+        }
+        self.loginCoordinator = coordinator
+        await coordinator.start(with: email)
     }
 
     func startStoreCreation(in navigationController: UINavigationController) {
@@ -69,5 +73,10 @@ private extension LoggedOutStoreCreationCoordinator {
         let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLogin(source: source))
         storePickerCoordinator = coordinator
         coordinator.start()
+
+        // Start store creation
+        storeCreationCoordinator = StoreCreationCoordinator(source: .loggedOut(source: source),
+                                                            navigationController: navigationController)
+        storeCreationCoordinator?.start()
     }
 }

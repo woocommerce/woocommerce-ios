@@ -51,7 +51,7 @@ final class MockReviews {
 extension MockReviews {
     func product(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? self.siteID
-        return Product(siteID: testSiteID,
+        return Product.fake().copy(siteID: testSiteID,
                        productID: productID,
                        name: productName,
                        slug: "book-the-green-room",
@@ -119,6 +119,7 @@ extension MockReviews {
                        groupedProducts: [],
                        menuOrder: 0,
                        addOns: [],
+                       isSampleItem: false,
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
                        bundledItems: [],
@@ -206,7 +207,7 @@ extension MockReviews {
     func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? self.siteID
 
-        return Product(siteID: testSiteID,
+        return Product.fake().copy(siteID: testSiteID,
                        productID: productID,
                        name: productName,
                        slug: "book-the-green-room",
@@ -274,6 +275,7 @@ extension MockReviews {
                        groupedProducts: [111, 222, 333],
                        menuOrder: 0,
                        addOns: [],
+                       isSampleItem: false,
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
                        bundledItems: [],
@@ -341,7 +343,7 @@ extension MockReviews {
 
     func sampleVariationTypeProduct(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? self.siteID
-        return Product(siteID: testSiteID,
+        return Product.fake().copy(siteID: testSiteID,
                        productID: sampleVariationTypeProductID,
                        name: "Paper Airplane - Black, Long",
                        slug: "paper-airplane-3",
@@ -404,6 +406,7 @@ extension MockReviews {
                        groupedProducts: [],
                        menuOrder: 2,
                        addOns: [],
+                       isSampleItem: false,
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
                        bundledItems: [],

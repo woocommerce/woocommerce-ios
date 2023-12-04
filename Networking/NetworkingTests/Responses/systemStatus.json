@@ -3,6 +3,7 @@
         "environment": {
             "home_url": "https://additional-beetle.jurassic.ninja",
             "site_url": "https://additional-beetle.jurassic.ninja",
+            "store_id": "sample-store-uuid",
             "version": "5.9.0",
             "log_directory": "/srv/users/user9fe179e8/apps/user9fe179e8/public/wp-content/uploads/wc-logs/",
             "log_directory_writable": true,
@@ -270,9 +271,9 @@
                 "name":"WooCommerce",
                 "version":"5.8.0",
                 "version_latest":"5.8.0",
-                "url":"https:\/\/woocommerce.com\/",
+                "url":"https:\/\/woo.com\/",
                 "author_name":"Automattic",
-                "author_url":"https:\/\/woocommerce.com",
+                "author_url":"https:\/\/woo.com",
                 "network_activated":false
             },
             {
@@ -280,9 +281,9 @@
                 "name":"WooCommerce Payments",
                 "version":"3.1.0",
                 "version_latest":"3.1.0",
-                "url":"https:\/\/woocommerce.com\/payments\/",
+                "url":"https:\/\/woo.com\/payments\/",
                 "author_name":"Automattic",
-                "author_url":"https:\/\/woocommerce.com\/",
+                "author_url":"https:\/\/woo.com\/",
                 "network_activated":false
             },
             {
@@ -290,9 +291,9 @@
                 "name":"WooCommerce Subscriptions",
                 "version":"3.1.6",
                 "version_latest":"3.1.6",
-                "url":"https:\/\/www.woocommerce.com\/products\/woocommerce-subscriptions\/",
+                "url":"https:\/\/www.woo.com\/products\/woocommerce-subscriptions\/",
                 "author_name":"Automattic",
-                "author_url":"https:\/\/woocommerce.com\/",
+                "author_url":"https:\/\/woo.com\/",
                 "network_activated":false
             },
             {

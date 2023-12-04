@@ -268,7 +268,7 @@ final class OrderListViewModelTests: XCTestCase {
         // Given
         insertCODPaymentGateway()
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           cardPresentPaymentsConfiguration: .init(country: .US),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -319,9 +319,8 @@ final class OrderListViewModelTests: XCTestCase {
     func test_when_having_no_error_and_orders_banner_or_IPP_banner_should_be_shown_shows_correct_banner() {
         // Given
         insertCODPaymentGateway()
-        let isIPPFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner)
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           cardPresentPaymentsConfiguration: .init(country: .US),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -340,15 +339,9 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.updateBannerVisibility()
 
         // Then
-        if isIPPFeatureFlagEnabled {
-            viewModel.hideIPPFeedbackBanner = false
-            waitUntil {
-                viewModel.topBanner == .inPersonPaymentsFeedback(.inPersonPaymentsCashOnDelivery)
-            }
-        } else {
-            waitUntil {
-                viewModel.topBanner == .orderCreation
-            }
+        viewModel.hideIPPFeedbackBanner = false
+        waitUntil {
+            viewModel.topBanner == .inPersonPaymentsFeedback(.inPersonPaymentsCashOnDelivery)
         }
     }
 
@@ -566,7 +559,7 @@ final class OrderListViewModelTests: XCTestCase {
         )
 
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           cardPresentPaymentsConfiguration: .init(country: .US),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -593,7 +586,7 @@ final class OrderListViewModelTests: XCTestCase {
         )
 
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           cardPresentPaymentsConfiguration: .init(country: .US),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -622,7 +615,7 @@ final class OrderListViewModelTests: XCTestCase {
         )
 
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "AQ"), // Antarctica ;)
+                                           cardPresentPaymentsConfiguration: .init(country: .AQ), // Antarctica ;)
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -652,7 +645,7 @@ final class OrderListViewModelTests: XCTestCase {
         )
 
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "US"),
+                                           cardPresentPaymentsConfiguration: .init(country: .US),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -670,7 +663,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_then_assigns_inPersonPaymentsFirstTransaction_survey() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           cardPresentPaymentsConfiguration: .init(country: .CA),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -700,7 +693,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_feedbackBannerSurveySource_when_there_are_less_than_ten_wcpay_orders_all_older_than_30_days_then_no_survey() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           cardPresentPaymentsConfiguration: .init(country: .CA),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -731,7 +724,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_feedbackBannerSurveySource_when_there_are_more_than_ten_wcpay_orders_then_assigns_inPersonPaymentsPowerUsers_survey() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           cardPresentPaymentsConfiguration: .init(country: .CA),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)
@@ -761,7 +754,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_feedbackBannerSurveySource_when_there_are_ten_or_more_wcpay_ipp_orders_all_older_than_30_days_then_assigns_inPersonPaymentsPowerUsers_survey() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
-                                           cardPresentPaymentsConfiguration: .init(country: "CA"),
+                                           cardPresentPaymentsConfiguration: .init(country: .CA),
                                            stores: stores,
                                            storageManager: storageManager,
                                            filters: nil)

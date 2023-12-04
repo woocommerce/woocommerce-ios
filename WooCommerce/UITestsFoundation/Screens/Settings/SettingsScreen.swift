@@ -2,6 +2,10 @@ import ScreenObject
 import XCTest
 
 public final class SettingsScreen: ScreenObject {
+    private let settingsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
+        $0.navigationBars["Settings"]
+    }
+
     private let betaFeaturesGetter: (XCUIApplication) -> XCUIElement = {
         $0.cells["settings-beta-features-button"]
     }
@@ -13,6 +17,7 @@ public final class SettingsScreen: ScreenObject {
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
+                settingsNavigationBarGetter,
                 betaFeaturesGetter
             ],
             app: app

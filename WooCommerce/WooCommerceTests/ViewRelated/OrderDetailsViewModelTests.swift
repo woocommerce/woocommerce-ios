@@ -108,13 +108,13 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // SystemStatusAction.fetchSystemPlugin
         let firstAction = try XCTUnwrap(storesManager.receivedActions.first as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPlugin(siteID, systemPluginName, _) = firstAction else {
+        guard case let SystemStatusAction.fetchSystemPluginListWithNameList(siteID, systemPluginNameList, _) = firstAction else {
             XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
             return
         }
 
         XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(systemPluginName, SitePlugin.SupportedPlugin.WCShip)
+        XCTAssertEqual(systemPluginNameList, [SitePlugin.SupportedPlugin.WCShip])
 
         // ShippingLabelAction.synchronizeShippingLabels
         let secondAction = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
@@ -186,13 +186,13 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // SystemStatusAction.fetchSystemPlugin
         let firstAction = try XCTUnwrap(storesManager.receivedActions.first as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPlugin(siteID, systemPluginName, _) = firstAction else {
+        guard case let SystemStatusAction.fetchSystemPluginListWithNameList(siteID, systemPluginNameList, _) = firstAction else {
             XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
             return
         }
 
         XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(systemPluginName, SitePlugin.SupportedPlugin.WCShip)
+        XCTAssertEqual(systemPluginNameList, [SitePlugin.SupportedPlugin.WCShip])
 
         // ShippingLabelAction.synchronizeShippingLabels
         let secondAction = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
@@ -228,11 +228,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 
-    func test_syncSubscriptions_loads_subscription_into_dataSource() throws {
+    func test_syncSubscriptions_loads_subscription_into_dataSource_with_legacy_plugin_name() throws {
         // Given
-
-        // Make sure the are plugins synced
-        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: SitePlugin.SupportedPlugin.WCSubscriptions, active: true)
+        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: "WooCommerce Subscriptions", active: true)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
 
         storesManager.reset()
@@ -242,14 +240,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let subscriptionsCount: Int = waitFor { promise in
 
             // Return the active WCExtensions plugin.
-            self.storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-                switch action {
-                case .fetchSystemPlugin(_, _, let onCompletion):
-                    onCompletion(plugin)
-                default:
-                    XCTFail("Unexpected action: \(action)")
-                }
-            }
+            self.whenFetchingSystemPlugin(thenReturn: plugin)
 
             // Return the synced subscription.
             self.storesManager.whenReceivingAction(ofType: SubscriptionAction.self) { action in
@@ -260,7 +251,39 @@ final class OrderDetailsViewModelTests: XCTestCase {
                 }
             }
 
-            self.viewModel.syncSubscriptions(isFeatureFlagEnabled: true)
+            self.viewModel.syncSubscriptions()
+        }
+
+        // Then
+        XCTAssertEqual(subscriptionsCount, 1)
+    }
+
+    func test_syncSubscriptions_loads_subscription_into_dataSource_with_current_plugin_name() throws {
+        // Given
+
+        // Make sure the are plugins synced
+        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: "Woo Subscriptions", active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        let subscriptionsCount: Int = waitFor { promise in
+
+            // Return the active WCExtensions plugin.
+            self.whenFetchingSystemPlugin(thenReturn: plugin)
+
+            // Return the synced subscription.
+            self.storesManager.whenReceivingAction(ofType: SubscriptionAction.self) { action in
+                switch action {
+                case .loadSubscriptions(_, let onCompletion):
+                    onCompletion(.success([Subscription.fake()]))
+                    promise(self.viewModel.dataSource.orderSubscriptions.count)
+                }
+            }
+
+            self.viewModel.syncSubscriptions()
         }
 
         // Then
@@ -382,8 +405,10 @@ private extension OrderDetailsViewModelTests {
     func whenFetchingSystemPlugin(thenReturn plugin: SystemPlugin?) {
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-                case let .fetchSystemPlugin(_, _, onCompletion):
-                    onCompletion(plugin)
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(plugin)
+            case let .fetchSystemPluginListWithNameList(_, _, onCompletion):
+                onCompletion(plugin)
                 default:
                     break
             }

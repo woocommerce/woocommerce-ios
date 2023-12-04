@@ -31,6 +31,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.currencyImage)
     }
 
+    func test_calendarClock_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.calendarClock)
+    }
+
     func testNoticeImageIsNotNil() {
         XCTAssertNotNil(UIImage.noticeImage)
     }
@@ -234,6 +238,10 @@ final class IconsTests: XCTestCase {
 
     func testHouseImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.houseImage)
+    }
+
+    func test_hourglass_is_not_nil() {
+        XCTAssertNotNil(UIImage.hourglass)
     }
 
     func testHouseOutlinedImageIconIsNotNil() {
@@ -875,5 +883,13 @@ final class IconsTests: XCTestCase {
 
     func test_unlimitedProducts_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.unlimitedProductsIcon)
+    }
+
+    func test_subscriptionProductImage_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.subscriptionProductImage)
+    }
+
+    func test_variableSubscriptionProductImage_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.variableSubscriptionProductImage)
     }
 }

@@ -1,3 +1,4 @@
+import TestKit
 import XCTest
 import Yosemite
 @testable import WooCommerce
@@ -194,7 +195,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
                 self.insert(product, withSearchTerm: "shirt")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -225,7 +226,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 remoteRequestSearchFilter = filter
                 self.insert(skuFilterProduct, withSearchTerm: "shirt", filterKey: "sku")
                 self.insert(allFilterProduct, withSearchTerm: "shirt", filterKey: "all")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -255,7 +256,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             switch action {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(skuFilterVariation, withSearchTerm: "shirt", filterKey: "sku")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -338,7 +339,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             switch action {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(shirt, withSearchTerm: "shirt")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -366,7 +367,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: .outOfStock,
             productStatus: .draft,
-            productType: .simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 3)
 
@@ -390,7 +391,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             switch action {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.success(true))
                 expectation.fulfill()
@@ -417,7 +418,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.searchTerm, "")
         XCTAssertNil(currentFilters.stockStatus)
         XCTAssertNil(currentFilters.productCategory)
-        XCTAssertNil(currentFilters.productType)
+        XCTAssertNil(currentFilters.promotableProductType)
         XCTAssertNil(currentFilters.productCategory)
         XCTAssertEqual(currentFilters.numberOfActiveFilters, 0)
     }
@@ -746,7 +747,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: ProductStockStatus.outOfStock,
             productStatus: ProductStatus.draft,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 3
         )
@@ -909,7 +910,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: ProductStockStatus.outOfStock,
             productStatus: ProductStatus.draft,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 3
         )
@@ -933,7 +934,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 1
         )
@@ -999,6 +1000,18 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(onAllSelectionsClearedCalled)
     }
 
+    func test_addSelection_allows_multiple_same_ids() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, selectedItemIDs: [1, 12, 20])
+
+        // When
+        viewModel.addSelection(id: 1)
+        viewModel.addSelection(id: 1)
+
+        // Then
+        XCTAssertEqual(viewModel.totalSelectedItemsCount, 5)
+    }
+
     @MainActor
     func test_synchronizeProducts_are_triggered_with_correct_filters() async throws {
         // Given
@@ -1017,7 +1030,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: .outOfStock,
             productStatus: .draft,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
             numberOfActiveFilters: 1
         )
@@ -1042,7 +1055,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         assertEqual(filteredStockStatus, filters.stockStatus)
-        assertEqual(filteredProductType, filters.productType)
+        assertEqual(filteredProductType, filters.promotableProductType?.productType)
         assertEqual(filteredProductStatus, filters.productStatus)
         assertEqual(filteredProductCategory, filters.productCategory)
     }
@@ -1057,7 +1070,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: .outOfStock,
             productStatus: .draft,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
             numberOfActiveFilters: 1
         )
@@ -1068,7 +1081,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 filteredProductType = productType
                 filteredProductStatus = productStatus
                 filteredProductCategory = category
-                onCompletion(.success(Void()))
+                onCompletion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -1081,7 +1094,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         assertEqual(filteredStockStatus, filters.stockStatus)
-        assertEqual(filteredProductType, filters.productType)
+        assertEqual(filteredProductType, filters.promotableProductType?.productType)
         assertEqual(filteredProductStatus, filters.productStatus)
         assertEqual(filteredProductCategory, filters.productCategory)
     }
@@ -1111,7 +1124,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
-            productType: ProductType.variable,
+            promotableProductType: PromotableProductType(productType: .variable, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 1
         )
@@ -1254,7 +1267,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
                 self.insert(product, withSearchTerm: "shirt")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -1299,7 +1312,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 1
         )
@@ -1312,13 +1325,117 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
         XCTAssertEqual(viewModel.productRows.first?.productOrVariationID, simpleProduct.productID)
     }
+
+    func test_bundle_product_row_is_not_configurable_when_onConfigureProductRow_is_nil() async throws {
+        // Given
+        _ = createAndInsertBundleProduct(bundleItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 featureFlagService: featureFlagService,
+                                                 onConfigureProductRow: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        let productRow = try XCTUnwrap(viewModel.productRows.first)
+        XCTAssertFalse(productRow.isConfigurable)
+    }
+
+    func test_bundle_product_row_is_configurable_and_invokes_onConfigureProductRow_on_row_configure() async throws {
+        // Given
+        let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
+
+        // When
+        let productToConfigure: Yosemite.Product = try waitFor { promise in
+            let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                     storageManager: self.storageManager,
+                                                     stores: self.stores,
+                                                     featureFlagService: featureFlagService,
+                                                     onConfigureProductRow: { product in
+                promise(product)
+            })
+
+            // Then bundle product row is configurable
+            XCTAssertEqual(viewModel.productRows.count, 1)
+            let productRow = try XCTUnwrap(viewModel.productRows.first)
+            XCTAssertTrue(productRow.isConfigurable)
+            productRow.configure?()
+        }
+
+        // Then
+        assertEqual(bundleProduct, productToConfigure)
+    }
+
+    // MARK: - Pagination
+
+    func test_it_syncs_the_second_page_after_searching_and_selecting_a_product_not_in_the_first_page() {
+        // Given
+        var searchProductsPages = [Int]()
+        var synchronizeProductsPages = [Int]()
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+                case let .searchProducts(_, _, _, pageNumber, _, _, _, _, _, _, onCompletion):
+                    searchProductsPages.append(pageNumber)
+                    let product = Product.fake().copy(siteID: self.sampleSiteID, productID: 3, purchasable: true)
+                    self.insert(product, withSearchTerm: "shirt")
+                    // No next page from the search.
+                    onCompletion(.success(false))
+                case let .synchronizeProducts(_, pageNumber, _, _, _, _, _, _, _, _, onCompletion):
+                    synchronizeProductsPages.append(pageNumber)
+                    let hasNextPage = pageNumber < 2
+                    onCompletion(.success(hasNextPage))
+                case .searchProductsInCache:
+                    break
+                default:
+                    XCTFail("Unsupported Action")
+            }
+        }
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        viewModel.onLoadTrigger.send(())
+
+        XCTAssertEqual(synchronizeProductsPages, [1])
+        XCTAssertEqual(searchProductsPages, [])
+
+        // When
+        viewModel.searchTerm = "shirt"
+
+        waitUntil {
+            searchProductsPages.isNotEmpty
+        }
+
+        viewModel.changeSelectionStateForProduct(with: 3)
+
+        XCTAssertEqual(synchronizeProductsPages, [1])
+        XCTAssertEqual(searchProductsPages, [1])
+
+        viewModel.searchTerm = ""
+
+        waitUntil {
+            synchronizeProductsPages == [1, 1]
+        }
+
+        XCTAssertEqual(searchProductsPages, [1])
+
+        viewModel.syncNextPage()
+
+        // Then
+        XCTAssertEqual(synchronizeProductsPages, [1, 1, 2])
+        XCTAssertEqual(searchProductsPages, [1])
+    }
 }
 
 // MARK: - Utils
 private extension ProductSelectorViewModelTests {
-    func insert(_ readOnlyProduct: Yosemite.Product) {
+    @discardableResult
+    func insert(_ readOnlyProduct: Yosemite.Product) -> StorageProduct {
         let product = storage.insertNewObject(ofType: StorageProduct.self)
         product.update(with: readOnlyProduct)
+        return product
     }
 
     func insert(_ readOnlyProducts: [Yosemite.Product]) {
@@ -1338,6 +1455,27 @@ private extension ProductSelectorViewModelTests {
         if let storedProduct = storage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID) {
             searchResult.addToProducts(storedProduct)
         }
+    }
+
+    func insert(_ readOnlyProductBundleItem: Yosemite.ProductBundleItem, for product: StorageProduct) {
+        let bundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+        bundleItem.update(with: readOnlyProductBundleItem)
+        bundleItem.product = product
+    }
+
+    func createAndInsertBundleProduct(bundleItems: [Yosemite.ProductBundleItem]) -> Yosemite.Product {
+        let bundleProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                productID: 1,
+                                                productTypeKey: ProductType.bundle.rawValue,
+                                                purchasable: true,
+                                                bundledItems: bundleItems)
+        let storageProduct = insert(bundleProduct)
+
+        bundleItems.forEach { bundleItem in
+            insert(bundleItem, for: storageProduct)
+        }
+
+        return bundleProduct
     }
 }
 

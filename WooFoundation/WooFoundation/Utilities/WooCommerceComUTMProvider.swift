@@ -1,7 +1,7 @@
 import Foundation
 
 public struct WooCommerceComUTMProvider: UTMParametersProviding {
-    public var limitToHosts: [String]? = ["woocommerce.com"]
+    public var limitToHosts: [String]? = ["woo.com"]
 
     public let parameters: [UTMParameterKey: String?]
 

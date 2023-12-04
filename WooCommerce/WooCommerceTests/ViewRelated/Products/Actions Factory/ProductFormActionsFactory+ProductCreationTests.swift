@@ -22,9 +22,26 @@ final class ProductFormActionsFactory_ProductCreationTests: XCTestCase {
         }
     }
 
+    func test_product_type_is_editable_for_woo_subscription_product_types() {
+        // Product types supported by Woo Subscription plugin.
+        let subscriptionProductTypes: [ProductType] = [.subscription, .variableSubscription]
+
+        subscriptionProductTypes.forEach { type in
+            // Given
+            let product = Product.fake().copy(productTypeKey: type.rawValue)
+            let model = EditableProductModel(product: product)
+
+            // When
+            let actions = Fixtures.actionsFactory(product: model, formType: .add).settingsSectionActions()
+
+            // Then
+            XCTAssertTrue(actions.contains(.productType(editable: true)))
+        }
+    }
+
     func test_product_type_is_not_editable_for_non_core_product_types() {
         // Product types supported in Woo extensions.
-        let nonCoreProductTypes: [ProductType] = [.bundle, .composite, .subscription, .variableSubscription, .custom("sub")]
+        let nonCoreProductTypes: [ProductType] = [.bundle, .composite, .custom("sub")]
 
         nonCoreProductTypes.forEach { nonCoreProductType in
             // Given
@@ -49,7 +66,6 @@ private extension ProductFormActionsFactory_ProductCreationTests {
                                    isLinkedProductsPromoEnabled: Bool = false,
                                    isBundledProductsEnabled: Bool = false,
                                    isCompositeProductsEnabled: Bool = false,
-                                   isSubscriptionProductsEnabled: Bool = false,
                                    isMinMaxQuantitiesEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
@@ -58,7 +74,6 @@ private extension ProductFormActionsFactory_ProductCreationTests {
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                       isBundledProductsEnabled: isBundledProductsEnabled,
                                       isCompositeProductsEnabled: isCompositeProductsEnabled,
-                                      isSubscriptionProductsEnabled: isSubscriptionProductsEnabled,
                                       isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
                                       variationsPrice: variationsPrice)
         }

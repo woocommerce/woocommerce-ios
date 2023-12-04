@@ -22,7 +22,8 @@ public protocol CardReaderService {
     ///
     func checkSupport(for cardReaderType: CardReaderType,
                       configProvider: CardReaderConfigProvider,
-                      discoveryMethod: CardReaderDiscoveryMethod) -> Bool
+                      discoveryMethod: CardReaderDiscoveryMethod,
+                      minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool
 
     /// Starts the service.
     /// That could imply, for example, that the reader discovery process starts
@@ -48,6 +49,12 @@ public protocol CardReaderService {
     /// Captures a payment after collecting a payment method succeeds.
     /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
     func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error>
+
+    /// Retries the most recent payment intent attempted.
+    /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
+    /// This action continues at the appropriate place in the `capturePayment` flow, but parameters cannot be changed.
+    /// If the payment cannot be retried, an appropriate error will immediately return.
+    func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error>
 
     /// Cancels a PaymentIntent
     func cancelPaymentIntent() -> Future<Void, Error>

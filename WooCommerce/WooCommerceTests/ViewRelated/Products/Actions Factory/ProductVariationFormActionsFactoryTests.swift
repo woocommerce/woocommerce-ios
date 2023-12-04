@@ -155,7 +155,9 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
-            .subscription(actionable: true),
+            .priceSettings(editable: true, hideSeparator: false),
+            .subscriptionFreeTrial(editable: true),
+            .subscriptionExpiry(editable: true),
             .attributes(editable: true),
             .status(editable: true),
             .shippingSettings(editable: true),
@@ -174,12 +176,15 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
                                                                                 groupOfQuantity: "4",
                                                                                 overrideProductQuantities: true)
         let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: false)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, isMinMaxQuantitiesEnabled: true)
+        let factory = ProductVariationFormActionsFactory(productVariation: model,
+                                                         editable: true,
+                                                         isMinMaxQuantitiesEnabled: true)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]

@@ -40,6 +40,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return [TextViewTableViewCell.self]
         case .separator:
             return [SpacerTableViewCell.self]
+        case .promoteWithBlaze:
+            return [LeftImageTableViewCell.self]
         }
     }
 
@@ -65,6 +67,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return TextViewTableViewCell.self
         case .separator:
             return SpacerTableViewCell.self
+        case .promoteWithBlaze:
+            return LeftImageTableViewCell.self
         }
     }
 }
@@ -91,7 +95,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .attributes,
              .bundledProducts,
              .components,
-             .subscription,
+             .subscriptionFreeTrial,
+             .subscriptionExpiry,
              .noVariationsWarning,
              .quantityRules:
             return [ImageAndTitleAndTextTableViewCell.self]
@@ -125,7 +130,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .attributes,
              .bundledProducts,
              .components,
-             .subscription,
+             .subscriptionFreeTrial,
+             .subscriptionExpiry,
              .noVariationsWarning,
              .quantityRules:
             return ImageAndTitleAndTextTableViewCell.self

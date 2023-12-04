@@ -18,6 +18,7 @@ extension Storage.Site: ReadOnlyConvertible {
         isSiteOwner = site.isSiteOwner
         frameNonce = site.frameNonce
         plan = site.plan
+        isAIAssitantFeatureActive = site.isAIAssistantFeatureActive
         isJetpackThePluginInstalled = site.isJetpackThePluginInstalled
         isJetpackConnected = site.isJetpackConnected
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
@@ -43,6 +44,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     isSiteOwner: isSiteOwner,
                     frameNonce: frameNonce ?? "",
                     plan: plan ?? "",
+                    isAIAssistantFeatureActive: isAIAssitantFeatureActive,
                     isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                     isJetpackConnected: isJetpackConnected,
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,

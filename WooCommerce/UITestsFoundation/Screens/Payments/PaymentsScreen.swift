@@ -3,11 +3,11 @@ import XCTest
 
 public final class PaymentsScreen: ScreenObject {
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.cells["collect-payment"]
+        $0.buttons["collect-payment"]
     }
 
     private let cardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.cells["card-reader-manuals"]
+        $0.buttons["card-reader-manuals"]
     }
 
     private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -27,17 +27,22 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     private let learnMoreButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Learn more about In‑Person Payments"]
+        $0.textViews["Learn more about In‑Person Payments"].firstMatch
     }
 
     private let IPPDocumentationHeaderTextGetter: (XCUIApplication) -> XCUIElement = {
         $0.staticTexts["Getting started with In-Person Payments with WooPayments"]
     }
 
+    private let paymentsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
+        $0.navigationBars["Payments"]
+    }
+
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
     private var cardReaderManualsButton: XCUIElement { cardReaderManualsButtonGetter(app) }
     private var learnMoreButton: XCUIElement { learnMoreButtonGetter(app) }
     private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var paymentsNavigationBar: XCUIElement { paymentsNavigationBarGetter(app) }
     private var takePaymentButton: XCUIElement { takePaymentButtonGetter(app) }
     private var cashPaymentButton: XCUIElement { cashPaymentButtonGetter(app) }
     private var markAsPaidButton: XCUIElement { markAsPaidButtonGetter(app) }
@@ -45,7 +50,11 @@ public final class PaymentsScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ collectPaymentButtonGetter, cardReaderManualsButtonGetter ],
+            expectedElementGetters: [
+                paymentsNavigationBarGetter,
+                collectPaymentButtonGetter,
+                cardReaderManualsButtonGetter
+            ],
             app: app
         )
     }
@@ -57,7 +66,7 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     public func tapLearnMoreIPPLink() throws -> Self {
-        learnMoreButton.tap()
+        learnMoreButton.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.5)).tap()
         return self
     }
 
@@ -90,12 +99,11 @@ public final class PaymentsScreen: ScreenObject {
 
     @discardableResult
     public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
-        collectPaymentButton.waitForExistence(timeout: 15)
-        XCTAssertTrue(isLoaded)
+        XCTAssertTrue(collectPaymentButton.waitForExistence(timeout: 5))
         return self
     }
 
     public func verifyIPPDocumentationLoadedInWebView() throws {
-        XCTAssertTrue(IPPDocumentationHeaderText.waitForExistence(timeout: 10), "IPP Documentation not displayed on WebView!")
+        XCTAssertTrue(IPPDocumentationHeaderText.waitForExistence(timeout: 30), "IPP Documentation not displayed on WebView!")
     }
 }

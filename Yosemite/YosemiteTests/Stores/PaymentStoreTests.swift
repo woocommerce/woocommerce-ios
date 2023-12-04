@@ -55,7 +55,7 @@ final class PaymentStoreTests: XCTestCase {
 
     func test_loadPlan_returns_failure_on_error() throws {
         // Given
-        remote.whenLoadingPlan(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingPlan(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -67,7 +67,7 @@ final class PaymentStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 
     // MARK: - `loadSiteCurrentPlan`
@@ -91,7 +91,7 @@ final class PaymentStoreTests: XCTestCase {
 
     func test_loadSiteCurrentPlan_returns_failure_on_error() throws {
         // Given
-        remote.whenLoadingSiteCurrentPlan(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingSiteCurrentPlan(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -103,7 +103,7 @@ final class PaymentStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 
     // MARK: - `createCart`
@@ -125,7 +125,7 @@ final class PaymentStoreTests: XCTestCase {
 
     func test_createCart_returns_invalidProductID_error_when_productID_is_not_integer() throws {
         // Given
-        remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout))
+        remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -159,7 +159,7 @@ final class PaymentStoreTests: XCTestCase {
 
     func test_createCart_returns_failure_on_error() throws {
         // Given
-        remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout))
+        remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -171,6 +171,6 @@ final class PaymentStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 }

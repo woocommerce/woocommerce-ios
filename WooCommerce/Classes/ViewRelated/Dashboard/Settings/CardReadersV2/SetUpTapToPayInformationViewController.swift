@@ -68,6 +68,7 @@ struct SetUpTapToPayInformationView: View {
     @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
+    @State var showingAboutTapToPay: Bool = false
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
@@ -123,21 +124,18 @@ struct SetUpTapToPayInformationView: View {
                     viewModel: LearnMoreViewModel(
                         formatText: Localization.learnMore,
                         tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
-                .customOpenURL(action: { url in
-                    switch url {
-                    case LearnMoreViewModel.learnMoreURL:
-                        if let url = learnMoreUrl {
-                            showURL?(url)
-                        }
-                    default:
-                        showURL?(url)
-                    }
+                .padding(.vertical, Constants.learnMorePadding)
+                .customOpenURL(action: { _ in
+                    showingAboutTapToPay = true
                 })
             }
             .scrollVerticallyIfNeeded()
         }
         .padding()
         .onAppear(perform: viewModel.viewDidAppear)
+        .sheet(isPresented: $showingAboutTapToPay) {
+            AboutTapToPayViewInNavigationView(viewModel: AboutTapToPayViewModel(shouldAlwaysHideSetUpTapToPayButton: true))
+        }
     }
 }
 
@@ -148,6 +146,7 @@ private enum Constants {
     static let maxImageHeight: CGFloat = 180
     static let maxCompactImageHeight: CGFloat = 80
     static let hintSpacing: CGFloat = 16
+    static let learnMorePadding: CGFloat = 8
 }
 
 // MARK: - Localization

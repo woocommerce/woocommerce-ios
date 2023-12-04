@@ -129,8 +129,8 @@ private extension AggregatedProductListViewController {
         present(navController, animated: true, completion: nil)
     }
 
-    private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
-        let addOnsViewModel = OrderAddOnListI1ViewModel(attributes: addOns)
+    private func itemAddOnsButtonTapped(addOns: [OrderItemProductAddOn]) {
+        let addOnsViewModel = OrderAddOnListI1ViewModel(addOns: addOns)
         let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)

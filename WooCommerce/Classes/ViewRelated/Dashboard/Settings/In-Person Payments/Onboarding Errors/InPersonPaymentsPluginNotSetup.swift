@@ -30,6 +30,7 @@ struct InPersonPaymentsPluginNotSetup: View {
                     event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
                         reason: analyticReason,
                         countryCode: cardPresentConfiguration.countryCode))
+                trackPluginSetupTappedEvent()
             } label: {
                 HStack {
                     Text(Localization.primaryButton)
@@ -37,15 +38,20 @@ struct InPersonPaymentsPluginNotSetup: View {
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
+            Button(Localization.refreshButton) {
+                onRefresh()
+            }
+            .buttonStyle(SecondaryButtonStyle())
             .padding(.bottom, 24.0)
 
             InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
+                .padding(.vertical, 8)
         }
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
 
     private var setupURL: URL? {
-        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.pluginSettingsSectionURL(from: plugin) else {
+        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL() else {
             return nil
         }
 
@@ -68,6 +74,10 @@ private enum Localization {
         "Finish Setup in Store Admin",
         comment: "Button to set up an in-person payments plugin after activating it"
     )
+
+    static let refreshButton = NSLocalizedString(
+        "Refresh",
+        comment: "Button to refresh the state of the in-person payments setup")
 }
 
 struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
@@ -80,5 +90,11 @@ private extension InPersonPaymentsPluginNotSetup {
     var learnMoreAnalyticEvent: WooAnalyticsEvent? {
         WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
                                                                                 countryCode: cardPresentConfiguration.countryCode)
+    }
+
+    private func trackPluginSetupTappedEvent() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaFailed(
+            reason: "plugin_setup_tapped",
+            countryCode: cardPresentConfiguration.countryCode))
     }
 }

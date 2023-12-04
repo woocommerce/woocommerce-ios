@@ -143,6 +143,14 @@ public enum AppSettingsAction: Action {
 
     // MARK: - General Store Settings
 
+    /// Sets the store uuid.
+    ///
+    case setStoreID(siteID: Int64, id: String?)
+
+    /// Gets the store uuid.
+    ///
+    case getStoreID(siteID: Int64, onCompletion: (String?) -> Void)
+
     /// Sets telemetry availability status information.
     ///
     case setTelemetryAvailability(siteID: Int64, isAvailable: Bool)
@@ -224,4 +232,12 @@ public enum AppSettingsAction: Action {
     case getLocalAnnouncementVisibility(announcement: LocalAnnouncement, onCompletion: (Bool) -> ())
 
     case setLocalAnnouncementDismissed(announcement: LocalAnnouncement, onCompletion: (Result<Void, Error>) -> Void)
+
+    // MARK: - Tax Rates
+
+    /// Stores the selected tax rate to be applied to orders. Passing a nil value erases it. This is site-specific.
+    case setSelectedTaxRateID(id: Int64?, siteID: Int64)
+
+    /// Loads the selected tax rate to be applied to orders. This is site-specific.
+    case loadSelectedTaxRateID(siteID: Int64, onCompletion: (Int64?) -> Void)
 }

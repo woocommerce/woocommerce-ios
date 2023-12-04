@@ -31,11 +31,12 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_payment_section_is_shown_right_after_the_products_and_refunded_products_sections() {
+    func test_payment_section_is_shown_right_after_the_products_custom_amounts_and_refunded_products_sections() {
         // Given
         let order = makeOrder()
 
         insert(refund: makeRefund(refundID: 1, orderID: order.orderID, siteID: order.siteID))
+        insertFee(with: order)
 
         let dataSource = OrderDetailsDataSource(
             order: order,
@@ -49,10 +50,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let actualTitles = dataSource.sections.map(\.title)
+        let actualTitles = dataSource.sections.compactMap(\.title)
         let expectedTitles = [
-            nil,
             Title.products,
+            Title.customAmounts,
             Title.refundedProducts,
             Title.payment,
             Title.information,
@@ -388,7 +389,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             .copy(
                 siteID: sampleSiteID,
                 settingID: "woocommerce_default_country",
-                value: SiteAddress.CountryCode.US.rawValue,
+                value: CountryCode.US.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
 
@@ -421,13 +422,13 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             .copy(
                 siteID: sampleSiteID,
                 settingID: "woocommerce_default_country",
-                value: SiteAddress.CountryCode.US.rawValue,
+                value: CountryCode.US.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
 
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: "US"),
+                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: .US),
                                                 currencySettings: currencySettings,
                                                 siteSettings: [siteSetting],
                                                 userIsAdmin: true,
@@ -480,7 +481,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for eligible order without shipping labels")
             return
         }
@@ -499,7 +500,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for ineligible order")
             return
         }
@@ -517,7 +518,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for cash on delivery order")
             return
         }
@@ -562,8 +563,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = MockOrders().makeOrder()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration
         )
 
         // When
@@ -579,8 +579,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = MockOrders().makeOrder()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration
         )
 
         // When
@@ -589,6 +588,38 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let subscriptionSection = section(withCategory: .subscriptions, from: dataSource)
         XCTAssertNil(subscriptionSection)
+    }
+
+    func test_reloadSections_when_order_has_custom_amounts_then_custom_amounts_section_is_visible() {
+        // Given
+        let order = MockOrders().makeOrder(fees: [OrderFeeLine.fake()])
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        insertFee(with: order)
+        dataSource.configureResultsControllers { }
+        dataSource.reloadSections()
+
+        // Then
+        let customAmountsSection = section(withCategory: .customAmounts, from: dataSource)
+        XCTAssertNotNil(customAmountsSection)
+    }
+
+    func test_reloadSections_when_order_has_not_custom_amounts_then_custom_amounts_section_is_hidden() {
+        // Given
+        let order = MockOrders().makeOrder(fees: [])
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customAmountsSection = section(withCategory: .customAmounts, from: dataSource)
+        XCTAssertNil(customAmountsSection)
     }
 
     func test_giftCards_section_is_visible_when_order_has_gift_cards() throws {
@@ -628,7 +659,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
 private extension OrderDetailsDataSourceTests {
     func makeOrder() -> Order {
-        MockOrders().makeOrder(items: [makeOrderItem(), makeOrderItem()])
+        MockOrders().makeOrder(items: [makeOrderItem(), makeOrderItem()], fees: [OrderFeeLine.fake()])
     }
 
     func makeOrderItem() -> OrderItem {
@@ -647,7 +678,8 @@ private extension OrderDetailsDataSourceTests {
                   totalTax: "1",
                   attributes: [],
                   addOns: [],
-                  parent: nil)
+                  parent: nil,
+                  bundleConfiguration: [])
     }
 
     func makeRefund(refundID: Int64, orderID: Int64, siteID: Int64) -> Refund {
@@ -688,6 +720,13 @@ private extension OrderDetailsDataSourceTests {
         let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
         storageRefund.update(with: refund)
         storageRefund.addToItems(storageOrderItemRefunds as NSSet)
+    }
+
+    func insertFee(with order: Order) {
+        let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        storageOrder.update(with: order)
+        let storageFee = storage.insertNewObject(ofType: StorageOrderFeeLine.self)
+        storageFee.order = storageOrder
     }
 
     /// Inserts the shipping label into storage
@@ -732,6 +771,6 @@ private extension OrderDetailsDataSourceTests {
 
 private extension OrderDetailsDataSourceTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US")
+        static let configuration = CardPresentPaymentsConfiguration(country: .US)
     }
 }

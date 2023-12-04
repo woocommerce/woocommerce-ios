@@ -20,7 +20,8 @@ public struct NoOpCardReaderService: CardReaderService {
 
     public func checkSupport(for cardReaderType: CardReaderType,
                              configProvider: CardReaderConfigProvider,
-                             discoveryMethod: CardReaderDiscoveryMethod) -> Bool {
+                             discoveryMethod: CardReaderDiscoveryMethod,
+                             minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool {
         return false
     }
 
@@ -86,6 +87,12 @@ public struct NoOpCardReaderService: CardReaderService {
     }
 
     public func cancelRefund() -> AnyPublisher<Void, Error> {
+        return Future() { promise in
+            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+        }.eraseToAnyPublisher()
+    }
+
+    public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
         return Future() { promise in
             promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()

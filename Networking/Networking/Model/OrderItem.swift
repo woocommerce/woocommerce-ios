@@ -6,6 +6,8 @@ import Codegen
 public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
     public let itemID: Int64
     public let name: String
+
+    /// The product ID of a product order item, or the ID of the variable product if the order item is a product variation.
     public let productID: Int64
     public let variationID: Int64
     public let quantity: Decimal
@@ -31,8 +33,13 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
     /// Item ID of parent `OrderItem`, if any.
     ///
     /// An `OrderItem` can have a parent if, for example, it is a bundled item within a product bundle.
+    /// Note that this reflects a parent-child relationship between items in an order; it is not the parent variable product of a product variation in an order.
     ///
     public let parent: Int64?
+
+    /// Networking layer only, used when Product Bundles extension/plugin is active.
+    /// The property is non-empty when the order item is a bundle product with configuration for each bundled item.
+    public let bundleConfiguration: [OrderItemBundleItem]
 
     /// OrderItem struct initializer.
     ///
@@ -51,7 +58,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                 totalTax: String,
                 attributes: [OrderItemAttribute],
                 addOns: [OrderItemProductAddOn],
-                parent: Int64?) {
+                parent: Int64?,
+                bundleConfiguration: [OrderItemBundleItem]) {
         self.itemID = itemID
         self.name = name
         self.productID = productID
@@ -68,6 +76,7 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         self.attributes = attributes
         self.addOns = addOns
         self.parent = parent
+        self.bundleConfiguration = bundleConfiguration
     }
 
     /// The public initializer for OrderItem.
@@ -139,7 +148,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                   totalTax: totalTax,
                   attributes: attributes,
                   addOns: productAddOns,
-                  parent: bundledBy ?? compositeParent)
+                  parent: bundledBy ?? compositeParent,
+                  bundleConfiguration: [])
     }
 
     /// Encodes an order item.
@@ -161,6 +171,10 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
 
         if !total.isEmpty {
             try container.encode(total, forKey: .total)
+        }
+
+        if !bundleConfiguration.isEmpty {
+            try container.encode(bundleConfiguration, forKey: .bundleConfiguration)
         }
     }
 }
@@ -188,6 +202,7 @@ extension OrderItem {
         case totalTax       = "total_tax"
         case bundledBy      = "bundled_by"
         case compositeParent = "composite_parent"
+        case bundleConfiguration = "bundle_configuration"
     }
 }
 

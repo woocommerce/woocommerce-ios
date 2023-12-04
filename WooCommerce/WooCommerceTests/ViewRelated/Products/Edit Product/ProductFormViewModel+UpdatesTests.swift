@@ -43,7 +43,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
     func testUpdatingShippingSettings() {
         // Arrange
-        let product = Product.fake()
+        let subscription = ProductSubscription.fake()
+        let product = Product.fake().copy(subscription: subscription)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -61,6 +62,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
                                                     slug: "2-days")
         viewModel.updateShippingSettings(weight: newWeight,
                                          dimensions: newDimensions,
+                                         oneTimeShipping: true,
                                          shippingClass: newShippingClass.slug,
                                          shippingClassID: newShippingClass.shippingClassID)
 
@@ -69,6 +71,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.name, product.name)
         XCTAssertEqual(viewModel.productModel.weight, newWeight)
         XCTAssertEqual(viewModel.productModel.dimensions, newDimensions)
+        XCTAssertEqual(viewModel.productModel.subscription?.oneTimeShipping, true)
         XCTAssertEqual(viewModel.productModel.shippingClass, newShippingClass.slug)
         XCTAssertEqual(viewModel.productModel.shippingClassID, newShippingClass.shippingClassID)
         XCTAssertEqual(viewModel.productModel.shippingClass, newShippingClass.slug)
@@ -76,7 +79,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
     func testUpdatingPriceSettings() {
         // Arrange
-        let product = Product.fake()
+        let subscription = ProductSubscription.fake()
+        let product = Product.fake().copy(subscription: subscription)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -90,7 +94,13 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let newDateOnSaleEnd = newDateOnSaleStart.addingTimeInterval(86400)
         let newTaxStatus = ProductTaxStatus.taxable
         let newTaxClass = TaxClass(siteID: product.siteID, name: "Reduced rate", slug: "reduced-rate")
+        let newSubscriptionPeriod = SubscriptionPeriod.month
+        let newSubscriptionInterval = "2"
+        let newSubscriptionSignupFee = "0.99"
         viewModel.updatePriceSettings(regularPrice: newRegularPrice,
+                                      subscriptionPeriod: newSubscriptionPeriod,
+                                      subscriptionPeriodInterval: newSubscriptionInterval,
+                                      subscriptionSignupFee: newSubscriptionSignupFee,
                                       salePrice: newSalePrice,
                                       dateOnSaleStart: newDateOnSaleStart,
                                       dateOnSaleEnd: newDateOnSaleEnd,
@@ -104,6 +114,9 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.dateOnSaleEnd, newDateOnSaleEnd)
         XCTAssertEqual(viewModel.productModel.taxStatusKey, newTaxStatus.rawValue)
         XCTAssertEqual(viewModel.productModel.taxClass, newTaxClass.slug)
+        XCTAssertEqual(viewModel.productModel.subscription?.period, newSubscriptionPeriod)
+        XCTAssertEqual(viewModel.productModel.subscription?.periodInterval, newSubscriptionInterval)
+        XCTAssertEqual(viewModel.productModel.subscription?.signUpFee, newSubscriptionSignupFee)
     }
 
     func testUpdatingInventorySettings() {

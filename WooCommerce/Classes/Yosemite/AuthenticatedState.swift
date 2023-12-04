@@ -35,6 +35,7 @@ class AuthenticatedState: StoresManagerState {
                              fileStorage: PListFileStorage(),
                              generalAppSettings: ServiceLocator.generalAppSettings),
             AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            BlazeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -98,7 +99,10 @@ class AuthenticatedState: StoresManagerState {
 
 
         if case .wpcom = credentials {
-            services.append(AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network))
+            services.append(contentsOf: [
+                AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+                WordPressThemeStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            ])
         } else {
             DDLogInfo("No WordPress.com auth token found. AccountStore is not initialized.")
         }

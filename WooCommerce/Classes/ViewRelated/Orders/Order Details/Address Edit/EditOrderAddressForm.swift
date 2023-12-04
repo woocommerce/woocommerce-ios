@@ -479,6 +479,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                    number: "789",
                                    status: .processing,
                                    currency: "USD",
+                                   currencySymbol: "$",
                                    customerNote: "",
                                    dateCreated: Date(),
                                    dateModified: Date(),

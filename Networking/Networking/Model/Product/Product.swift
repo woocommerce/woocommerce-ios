@@ -85,6 +85,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public let addOns: [ProductAddOn]
 
+    /// Whether the product was added automatically for a trial store
+    public let isSampleItem: Bool
+
     // MARK: Product Bundle properties
 
     /// Stock status of this bundle, taking bundled product quantity requirements and limitations into account. Applicable for bundle-type products only.
@@ -92,6 +95,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     /// Quantity of bundles left in stock, taking bundled product quantity requirements into account. Applicable for bundle-type products only.
     public let bundleStockQuantity: Int64?
+
+    /// Optional min bundle size (total number of bundle items) used in bundle configuration. Applicable for bundle-type products only.
+    public let bundleMinSize: Decimal?
+
+    /// Optional max bundle size (total number of bundle items) used in bundle configuration. Applicable for bundle-type products only.
+    public let bundleMaxSize: Decimal?
 
     /// List of bundled item data contained in this product.
     public let bundledItems: [ProductBundleItem]
@@ -236,8 +245,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 groupedProducts: [Int64],
                 menuOrder: Int,
                 addOns: [ProductAddOn],
+                isSampleItem: Bool,
                 bundleStockStatus: ProductStockStatus?,
                 bundleStockQuantity: Int64?,
+                bundleMinSize: Decimal?,
+                bundleMaxSize: Decimal?,
                 bundledItems: [ProductBundleItem],
                 compositeComponents: [ProductCompositeComponent],
                 subscription: ProductSubscription?,
@@ -308,8 +320,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupedProducts = groupedProducts
         self.menuOrder = menuOrder
         self.addOns = addOns
+        self.isSampleItem = isSampleItem
         self.bundleStockStatus = bundleStockStatus
         self.bundleStockQuantity = bundleStockQuantity
+        self.bundleMinSize = bundleMinSize
+        self.bundleMaxSize = bundleMaxSize
         self.bundledItems = bundledItems
         self.compositeComponents = compositeComponents
         self.subscription = subscription
@@ -505,29 +520,30 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
         let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
 
+        let metaDataExtractor = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)
+        let isSampleItem = (metaDataExtractor?.extractStringValue(forKey: MetadataKeys.headStartPost) == Values.headStartValue)
+
         // Product Bundle properties
         // Uses failsafe decoding because non-bundle product types can return unexpected value types.
         let bundleStockStatus = container.failsafeDecodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
         // When the bundle stock quantity is not set for a product bundle, the API returns an empty string and the value will be `nil`.
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
+        let bundleMinSize = container.failsafeDecodeIfPresent(decimalForKey: .bundleMinSize)
+        let bundleMaxSize = container.failsafeDecodeIfPresent(decimalForKey: .bundleMaxSize)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
         // Composite Product properties
         let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
 
         // Subscription properties
-        let subscription = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?.extractProductSubscription()
+        let subscription = try? metaDataExtractor?.extractProductSubscription()
 
         // Min/Max Quantities properties
-        let minAllowedQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-            .extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
-        let maxAllowedQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-            .extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
-        let groupOfQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-            .extractStringValue(forKey: MetadataKeys.groupOfQuantity)
+        let minAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
+        let maxAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
+        let groupOfQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.groupOfQuantity)
         let combineVariationQuantities: Bool? = {
-            guard let allowCombination = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-                .extractStringValue(forKey: MetadataKeys.allowCombination) else {
+            guard let allowCombination = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.allowCombination) else {
                 return nil
             }
             return (allowCombination as NSString).boolValue
@@ -596,8 +612,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   groupedProducts: groupedProducts,
                   menuOrder: menuOrder,
                   addOns: addOns,
+                  isSampleItem: isSampleItem,
                   bundleStockStatus: bundleStockStatus,
                   bundleStockQuantity: bundleStockQuantity,
+                  bundleMinSize: bundleMinSize,
+                  bundleMaxSize: bundleMaxSize,
                   bundledItems: bundledItems,
                   compositeComponents: compositeComponents,
                   subscription: subscription,
@@ -706,6 +725,19 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Attributes
         try container.encode(attributes, forKey: .attributes)
+
+        // Metadata
+        let metaDataValuePairs = buildMetaDataValuePairs()
+        if metaDataValuePairs.isEmpty == false {
+            try container.encode(metaDataValuePairs, forKey: .metadata)
+        }
+    }
+
+    private func buildMetaDataValuePairs() -> [KeyValuePair] {
+        if let subscription {
+            return subscription.toKeyValuePairs()
+        }
+        return []
     }
 }
 
@@ -793,6 +825,8 @@ private extension Product {
 
         case bundleStockStatus              = "bundle_stock_status"
         case bundleStockQuantity            = "bundle_stock_quantity"
+        case bundleMinSize                  = "bundle_min_size"
+        case bundleMaxSize                  = "bundle_max_size"
         case bundledItems                   = "bundled_items"
 
         case compositeComponents    = "composite_components"
@@ -803,6 +837,7 @@ private extension Product {
         static let maxAllowedQuantity = "maximum_allowed_quantity"
         static let groupOfQuantity    = "group_of_quantity"
         static let allowCombination   = "allow_combination"
+        static let headStartPost      = "_headstart_post"
     }
 }
 
@@ -813,6 +848,7 @@ private extension Product {
 
     enum Values {
         static let manageStockParent = "parent"
+        static let headStartValue = "_hs_extra"
     }
 }
 

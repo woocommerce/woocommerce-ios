@@ -79,7 +79,7 @@ private extension AztecUIConfigurator {
         textView.backgroundColor = .basicBackground
         textView.textColor = .systemColor(.label)
         textView.blockquoteBackgroundColor = .wooCommercePurple(.shade5)
-        textView.blockquoteBorderColor = .wooCommercePurple(.shade50)
+        textView.blockquoteBorderColors = [.wooCommercePurple(.shade50)]
         textView.preBackgroundColor = .wooCommercePurple(.shade5)
         textView.linkTextAttributes = linkAttributes
 

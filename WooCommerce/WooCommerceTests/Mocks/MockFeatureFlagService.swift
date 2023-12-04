@@ -10,8 +10,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isSupportRequestEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
-    private let isTapToPayOnIPhoneMilestone2On: Bool
-    private let isReadOnlySubscriptionsEnabled: Bool
     private let isProductDescriptionAIEnabled: Bool
     private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
@@ -19,8 +17,11 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isAddProductToOrderViaSKUScannerEnabled: Bool
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
-    private let isJustInTimeMessagesOnDashboardEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
+    private let productCreationAI: Bool
+    private let productBundles: Bool
+    private let productBundlesInOrderForm: Bool
+    private let isLightweightStorefrontEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -30,8 +31,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isSupportRequestEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
-         isTapToPayOnIPhoneMilestone2On: Bool = false,
-         isReadOnlySubscriptionsEnabled: Bool = false,
          isProductDescriptionAIEnabled: Bool = false,
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
@@ -39,8 +38,11 @@ struct MockFeatureFlagService: FeatureFlagService {
          isAddProductToOrderViaSKUScannerEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
-         isJustInTimeMessagesOnDashboardEnabled: Bool = false,
-         betterCustomerSelectionInOrder: Bool = false) {
+         betterCustomerSelectionInOrder: Bool = false,
+         productCreationAI: Bool = false,
+         productBundles: Bool = false,
+         productBundlesInOrderForm: Bool = false,
+         isLightweightStorefrontEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -49,8 +51,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
-        self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
-        self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
         self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
         self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
@@ -58,8 +58,11 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isAddProductToOrderViaSKUScannerEnabled = isAddProductToOrderViaSKUScannerEnabled
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
-        self.isJustInTimeMessagesOnDashboardEnabled = isJustInTimeMessagesOnDashboardEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
+        self.productCreationAI = productCreationAI
+        self.productBundles = productBundles
+        self.productBundlesInOrderForm = productBundlesInOrderForm
+        self.isLightweightStorefrontEnabled = isLightweightStorefrontEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -80,10 +83,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDashboardStoreOnboardingEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
-        case .tapToPayOnIPhoneMilestone2:
-            return isTapToPayOnIPhoneMilestone2On
-        case .readOnlySubscriptions:
-            return isReadOnlySubscriptionsEnabled
         case .productDescriptionAI:
             return isProductDescriptionAIEnabled
         case .productDescriptionAIFromStoreOnboarding:
@@ -96,10 +95,16 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isAddProductToOrderViaSKUScannerEnabled
         case .shareProductAI:
             return isShareProductAIEnabled
-        case .justInTimeMessagesOnDashboard:
-            return isJustInTimeMessagesOnDashboardEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
+        case .productCreationAI:
+            return productCreationAI
+        case .productBundles:
+            return productBundles
+        case .productBundlesInOrderForm:
+            return productBundlesInOrderForm
+        case .lightweightStorefront:
+            return isLightweightStorefrontEnabled
         default:
             return false
         }

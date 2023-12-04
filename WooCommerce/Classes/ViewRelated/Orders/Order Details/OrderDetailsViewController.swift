@@ -50,14 +50,27 @@ final class OrderDetailsViewController: UIViewController {
 
     /// Order to be rendered!
     ///
-    private let viewModel: OrderDetailsViewModel
+    private let viewModels: [OrderDetailsViewModel]
+
+    private var viewModel: OrderDetailsViewModel {
+        viewModels[currentIndex]
+    }
 
     private let notices = OrderDetailsNotices()
 
+    private let currentIndex: Int
+
+    private let isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
     // MARK: - View Lifecycle
-    init(viewModel: OrderDetailsViewModel) {
-        self.viewModel = viewModel
+    init(viewModels: [OrderDetailsViewModel], currentIndex: Int) {
+        self.viewModels = viewModels
+        self.currentIndex = currentIndex
         super.init(nibName: Self.nibName, bundle: nil)
+    }
+
+    convenience init(viewModel: OrderDetailsViewModel) {
+        self.init(viewModels: [viewModel], currentIndex: 0)
     }
 
     required init?(coder: NSCoder) {
@@ -98,10 +111,7 @@ final class OrderDetailsViewController: UIViewController {
     }
 
     override var shouldShowOfflineBanner: Bool {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            return false
-        }
-        return true
+        !isSplitViewInOrdersTabEnabled
     }
 }
 
@@ -140,7 +150,53 @@ private extension OrderDetailsViewController {
                                          action: #selector(editOrder))
         editButton.accessibilityIdentifier = "order-details-edit-button"
         editButton.isEnabled = viewModel.editButtonIsEnabled
-        navigationItem.rightBarButtonItem = editButton
+        navigationItem.rightBarButtonItems = [editButton] + orderNavigationRightBarButtonItems()
+    }
+
+    func orderNavigationRightBarButtonItems() -> [UIBarButtonItem] {
+        guard viewModels.count > 1 else { return [] }
+
+        let upArrowButon = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.up"),
+            style: .plain,
+            target: self,
+            action: #selector(loadPreviousOrder)
+        )
+
+        // The buttons are too far apart when setting them to rightBarButtonItems, let's adjust the inset to provide better visuals
+        upArrowButon.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        upArrowButon.isEnabled = viewModels[safe: currentIndex - 1] != nil
+
+        let downArrowButon = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.down"),
+            style: .plain,
+            target: self,
+            action: #selector(loadNextOrder)
+        )
+
+        downArrowButon.isEnabled = viewModels[safe: currentIndex + 1] != nil
+
+        return [downArrowButon, upArrowButon]
+    }
+
+    @objc func loadPreviousOrder() {
+        loadOrder(with: currentIndex - 1)
+    }
+
+    @objc func loadNextOrder() {
+        loadOrder(with: currentIndex + 1)
+    }
+
+    func loadOrder(with index: Int) {
+        let splitViewNavigationController = splitViewController?.viewControllers.first as? UINavigationController
+        let usingNavigationController = isSplitViewInOrdersTabEnabled ? splitViewNavigationController : navigationController
+
+        guard let usingNavigationController = usingNavigationController else {
+            return
+        }
+
+        let viewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: index)
+        usingNavigationController.replaceTopViewController(with: viewController, animated: false)
     }
 
     /// Setup: EntityListener
@@ -572,8 +628,8 @@ private extension OrderDetailsViewController {
         present(paymentMethodsNavigationController, animated: true)
     }
 
-    private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
-        let addOnsViewModel = OrderAddOnListI1ViewModel(attributes: addOns)
+    private func itemAddOnsButtonTapped(addOns: [OrderItemProductAddOn]) {
+        let addOnsViewModel = OrderAddOnListI1ViewModel(addOns: addOns)
         let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)

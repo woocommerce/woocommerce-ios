@@ -67,6 +67,86 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.total, "$100.00")
     }
 
+    func test_given_default_currency_when_updateOrder_then_order_is_updated_with_correct_values() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1", totalWithTaxes: "1", taxLines: [], stores: mockStores)
+
+        // When
+        let _ : String = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _):
+                    promise(amount)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.updateOrder()
+        }
+
+        // Then
+        // Default currency US
+        assertEqual("$1.00", viewModel.providedAmount)
+        assertEqual("$1.00", viewModel.total)
+    }
+
+    func test_given_a_non_default_currency_when_updateOrder_then_order_is_updated_with_correct_values() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings.init(currencyCode: .AED,
+                                                                                          currencyPosition: .right,
+                                                                                          thousandSeparator: ",",
+                                                                                          decimalSeparator: ".",
+                                                                                          numberOfDecimals: 2))
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1",
+                                                       totalWithTaxes: "1",
+                                                       taxLines: [],
+                                                       currencyFormatter: currencyFormatter,
+                                                       stores: mockStores)
+
+        // When
+        let _: String = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _):
+                    promise(amount)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.updateOrder()
+        }
+
+        // Then
+        assertEqual("1.00د.إ", viewModel.providedAmount)
+        assertEqual("1.00د.إ", viewModel.total)
+    }
+
+    func test_when_updateOrder_then_currency_symbol_is_stripped_from_amount_sent_to_stores() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1", totalWithTaxes: "1", taxLines: [], stores: mockStores)
+
+        // When
+        let updatedAmount: String = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _):
+                    promise(amount)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.updateOrder()
+        }
+
+        // Then
+        assertEqual("$1.00", viewModel.providedAmount)
+        assertEqual("$1.00", viewModel.total)
+        assertEqual("1.00", updatedAmount)
+    }
+
     func test_provided_amount_with_taxes_gets_properly_formatted() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US.

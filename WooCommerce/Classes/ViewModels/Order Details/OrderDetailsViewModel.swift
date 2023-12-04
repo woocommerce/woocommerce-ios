@@ -344,7 +344,12 @@ extension OrderDetailsViewModel {
 //
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
-        dataSource.configureResultsControllers(onReload: onReload)
+        dataSource.configureResultsControllers(onReload: { [weak self] in
+            guard let self = self else { return }
+
+            self.updateMissingInfoInOrderAfterReload()
+            onReload()
+        })
     }
 }
 
@@ -356,6 +361,7 @@ extension OrderDetailsViewModel {
     ///
     func registerTableViewCells(_ tableView: UITableView) {
         let cells = [
+            LargeHeightLeftImageTableViewCell.self,
             LeftImageTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
@@ -429,7 +435,7 @@ extension OrderDetailsViewModel {
             let item = dataSource.aggregateOrderItems[indexPath.row]
             let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
                                                                    siteID: order.siteID,
-                                                                   forceReadOnly: true)
+                                                                   forceReadOnly: false)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .shippingLabelCreationInfo:
@@ -627,14 +633,7 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func syncSubscriptions(isFeatureFlagEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
-                           onCompletion: ((Error?) -> ())? = nil) {
-        // Only sync subscriptions if the feature flag is enabled.
-        guard isFeatureFlagEnabled else {
-            onCompletion?(nil)
-            return
-        }
-
+    func syncSubscriptions(onCompletion: ((Error?) -> ())? = nil) {
         // If the plugin is not active, there is no point in continuing with a request that will fail.
         isPluginActive(SitePlugin.SupportedPlugin.WCSubscriptions) { [weak self] isActive in
 
@@ -722,13 +721,21 @@ extension OrderDetailsViewModel {
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///
     private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
+        isPluginActive([plugin], completion: completion)
+    }
+
+    /// Helper function that returns `true` in its callback if any of the the provided plugin names are active on the order's store.
+    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
+    /// Useful for when a plugin has had many names.
+    ///
+    private func isPluginActive(_ plugins: [String], completion: @escaping (Bool) -> (Void)) {
         guard arePluginsSynced() else {
             DDLogError("⚠️ SystemPlugins acceded without being in sync.")
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
             return completion(false)
         }
 
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: order.siteID, systemPluginName: plugin) { plugin in
+        let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: order.siteID, systemPluginNameList: plugins) { plugin in
             completion(plugin?.active == true)
         }
         stores.dispatch(action)
@@ -748,6 +755,12 @@ extension OrderDetailsViewModel {
     ///
     private func insertNote(_ orderNote: OrderNote) {
         orderNotes.insert(orderNote, at: 0)
+    }
+
+    private func updateMissingInfoInOrderAfterReload() {
+        // Listening for changes in the order listener do not include changes in their relationships' properties.
+        // Update them here.
+        update(order: order.copy(fees: self.dataSource.customAmounts))
     }
 }
 

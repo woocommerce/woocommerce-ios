@@ -10,8 +10,10 @@ public typealias Account = Networking.Account
 public typealias AccountSettings = Networking.AccountSettings
 public typealias AddOnGroup = Networking.AddOnGroup
 public typealias Address = Networking.Address
+public typealias AIProduct = Networking.AIProduct
 public typealias Announcement = Networking.Announcement
 public typealias APNSDevice = Networking.APNSDevice
+public typealias BlazeCampaign = Networking.BlazeCampaign
 public typealias FallibleCancelable = Hardware.FallibleCancelable
 public typealias CommentStatus = Networking.CommentStatus
 public typealias CompositeComponentOptionType = Networking.CompositeComponentOptionType
@@ -183,14 +185,18 @@ public typealias WCPayCardPaymentDetails = Networking.WCPayCardPaymentDetails
 public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentReceiptDetails
 public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
 public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
+public typealias WooPaymentsDepositInterval = Networking.WooPaymentsDepositInterval
+public typealias WooPaymentsDepositStatus = Networking.WooPaymentsDepositStatus
 public typealias StoreOnboardingTask = Networking.StoreOnboardingTask
 public typealias WCAnalyticsCustomer = Networking.WCAnalyticsCustomer
+public typealias WordPressTheme = Networking.WordPressTheme
 
 // MARK: - Exported Storage Symbols
 
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
+public typealias StorageBlazeCampaign = Storage.BlazeCampaign
 public typealias StorageCardReaderType = Storage.CardReaderType
 public typealias StorageCoupon = Storage.Coupon
 public typealias StorageCustomer = Storage.Customer
@@ -205,6 +211,7 @@ public typealias StorageInboxNote = Storage.InboxNote
 public typealias StorageInboxAction = Storage.InboxAction
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
+public typealias StorageOrderFeeLine = Storage.OrderFeeLine
 public typealias StorageOrderItem = Storage.OrderItem
 public typealias StorageOrderItemAttribute = Storage.OrderItemAttribute
 public typealias StorageOrderItemRefund = Storage.OrderItemRefund

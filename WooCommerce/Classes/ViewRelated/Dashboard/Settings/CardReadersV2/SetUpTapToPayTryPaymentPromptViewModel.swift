@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import WooFoundation
 
 final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresentedViewModel, ObservableObject {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
@@ -25,8 +26,11 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     }
     @Published var summaryActive: Bool = false
 
+    @Published var formattedPaymentAmount: String = ""
+
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject()
     private let analytics: Analytics = ServiceLocator.analytics
+    private let configuration: CardPresentPaymentsConfiguration
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -34,14 +38,23 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         stores.sessionManager.defaultStoreID ?? 0
     }
 
+    private let currencyFormatter: CurrencyFormatter
+    private let trialPaymentAmount: String
+
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          stores: StoresManager = ServiceLocator.stores) {
         self.didChangeShouldShow = didChangeShouldShow
         self.connectionAnalyticsTracker = connectionAnalyticsTracker
+        self.configuration = configuration
         self.stores = stores
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        self.currencyFormatter = currencyFormatter
+        self.trialPaymentAmount = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount) ?? "0.50"
 
         beginConnectedReaderObservation()
+        updateFormattedPaymentAmount()
     }
 
     /// Set up to observe readers connecting / disconnecting
@@ -58,11 +71,20 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         stores.dispatch(connectedAction)
     }
 
+    private func updateFormattedPaymentAmount() {
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        guard let formattedAmount = currencyFormatter.formatAmount(trialPaymentAmount,
+                                                                   with: configuration.currencies.first?.rawValue) else {
+            return
+        }
+        formattedPaymentAmount = formattedAmount
+    }
+
     private func startTestPayment() {
         loading = true
         let action = OrderAction.createSimplePaymentsOrder(siteID: siteID,
                                                            status: .pending,
-                                                           amount: Constants.tapToPayTryAPaymentAmount,
+                                                           amount: trialPaymentAmount,
                                                            taxable: false) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
@@ -122,10 +144,6 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 }
 
 extension SetUpTapToPayTryPaymentPromptViewModel {
-    enum Constants {
-        static let tapToPayTryAPaymentAmount = "0.50"
-    }
-
     enum Localization {
         static let errorCreatingTestPayment = NSLocalizedString(
             "The trial payment could not be started, please try again, or contact support if this problem persists.",

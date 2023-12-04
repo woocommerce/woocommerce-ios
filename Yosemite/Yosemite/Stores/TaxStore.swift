@@ -47,6 +47,8 @@ public class TaxStore: Store {
             requestMissingTaxClasses(for: product, onCompletion: onCompletion)
         case let .retrieveTaxRates(siteID, pageNumber, pageSize, onCompletion):
             retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveTaxRate(siteID: let siteID, taxRateID: let taxRateID, onCompletion: let onCompletion):
+            retrieveTaxRate(siteID: siteID, taxRateID: taxRateID, onCompletion: onCompletion)
         }
     }
 }
@@ -109,6 +111,21 @@ private extension TaxStore {
             case .success(let taxRates):
                 self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates, siteID: siteID, shouldDeleteExistingTaxRates: pageNumber == 1) {
                     onCompletion(.success(taxRates))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func retrieveTaxRate(siteID: Int64,
+                          taxRateID: Int64,
+                          onCompletion: @escaping (Result<TaxRate, Error>) -> Void) {
+        remote.retrieveTaxRate(siteID: siteID, taxRateID: taxRateID) { [weak self] result in
+            switch result {
+            case .success(let taxRate):
+                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: [taxRate], siteID: siteID, shouldDeleteExistingTaxRates: false) {
+                    onCompletion(.success(taxRate))
                 }
             case .failure(let error):
                 onCompletion(.failure(error))

@@ -152,7 +152,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         /// Synchronize system plugins for the WooCommerce plugin version row
         ///
         if let siteID = stores.sessionManager.defaultSite?.siteID {
-            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
+            let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID, onCompletion: { _ in })
             stores.dispatch(action)
         }
     }
@@ -278,13 +278,19 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section? = {
-            var rows: [Row] = [.storeName, .shippingZones]
+            var rows: [Row] = [.storeName]
 
-            let site = stores.sessionManager.defaultSite
-            if site?.isJetpackCPConnected == true ||
-                (site?.isNonJetpackSite == true &&
-                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
-                rows.append(.installJetpack)
+            if let site = stores.sessionManager.defaultSite {
+                if site.isJetpackCPConnected == true ||
+                    (site.isNonJetpackSite == true &&
+                     featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
+                    rows.append(.installJetpack)
+                }
+
+                let themesUseCase = ThemeEligibilityUseCase()
+                if themesUseCase.isEligible(site: site) {
+                    rows.append(.themes)
+                }
             }
 
             if !defaults.completedAllStoreOnboardingTasks,

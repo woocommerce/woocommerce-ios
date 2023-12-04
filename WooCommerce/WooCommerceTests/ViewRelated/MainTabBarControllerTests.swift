@@ -188,7 +188,11 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Action
         stores.updateDefaultStore(storeID: 134)
-        tabBarController.navigateTo(.products)
+        waitFor { promise in
+            tabBarController.navigateTo(.products) {
+                promise(())
+            }
+        }
         let selectedTabIndexBeforeSiteChange = tabBarController.selectedIndex
         stores.updateDefaultStore(storeID: 630)
         let selectedTabIndexAfterSiteChange = tabBarController.selectedIndex

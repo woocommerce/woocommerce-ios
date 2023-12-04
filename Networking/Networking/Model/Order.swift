@@ -20,6 +20,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let status: OrderStatusEnum
     public let currency: String
+    public let currencySymbol: String
     public let customerNote: String?
 
     public let dateCreated: Date
@@ -69,6 +70,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 number: String,
                 status: OrderStatusEnum,
                 currency: String,
+                currencySymbol: String,
                 customerNote: String?,
                 dateCreated: Date,
                 dateModified: Date,
@@ -107,6 +109,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.number = number
         self.status = status
         self.currency = currency
+        self.currencySymbol = currencySymbol
         self.customerNote = customerNote
 
         self.dateCreated = dateCreated
@@ -156,6 +159,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let status = try container.decode(OrderStatusEnum.self, forKey: .status)
 
         let currency = try container.decode(String.self, forKey: .currency)
+        let currencySymbol = try container.decode(String.self, forKey: .currencySymbol)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
 
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
@@ -231,6 +235,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   number: number,
                   status: status,
                   currency: currency,
+                  currencySymbol: currencySymbol,
                   customerNote: customerNote,
                   dateCreated: dateCreated,
                   dateModified: dateModified,
@@ -270,6 +275,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   number: "",
                   status: .pending,
                   currency: "",
+                  currencySymbol: "",
                   customerNote: "",
                   dateCreated: Date(),
                   dateModified: Date(),
@@ -315,6 +321,7 @@ internal extension Order {
         case number             = "number"
         case status             = "status"
         case currency           = "currency"
+        case currencySymbol     = "currency_symbol"
         case customerNote       = "customer_note"
 
         case dateCreated        = "date_created_gmt"

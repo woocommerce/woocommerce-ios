@@ -580,6 +580,42 @@ final class AppSettingsStoreTests: XCTestCase {
 
     // MARK: - General Store Settings
 
+    func test_setStoreID_stores_the_store_id_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setStoreID(siteID: siteID, id: "sample-store-uuid")
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(settingsForSite?.storeID, "sample-store-uuid")
+    }
+
+    func test_getStoreID_retrieves_the_saved_store_id() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(storeID: "sample-store-uuid")])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let storeID: String? = waitFor { promise in
+            let action = AppSettingsAction.getStoreID(siteID: siteID) { id in
+                promise(id)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(storeID, "sample-store-uuid")
+    }
+
     func test_saving_isTelemetryAvailable_works_correctly() throws {
         // Given
         let siteID: Int64 = 1234
@@ -1206,6 +1242,62 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertFalse(isVisible)
     }
+
+    func test_setSelectedTaxRateID_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let storedTaxRateID: Int64 = 4321
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(selectedTaxRateID: 0)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setSelectedTaxRateID(id: storedTaxRateID, siteID: siteID)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(storedTaxRateID, settingsForSite?.selectedTaxRateID)
+    }
+
+    func test_setSelectedTaxRateID_when_nil_then_erases_the_value() throws {
+        // Given
+        let siteID: Int64 = 1234
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(selectedTaxRateID: 34)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: siteID)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertNil(settingsForSite?.selectedTaxRateID)
+    }
+
+    func test_loadSelectedTaxRateID_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let storedTaxRateID: Int64 = 4321
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(selectedTaxRateID: storedTaxRateID)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTaxRateID: Int64?
+        let action = AppSettingsAction.loadSelectedTaxRateID(siteID: siteID) { taxRateID in
+            loadedTaxRateID = taxRateID
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertEqual(loadedTaxRateID, storedTaxRateID)
+    }
 }
 
 // MARK: - Utils
@@ -1223,7 +1315,6 @@ private extension AppSettingsStoreTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
-            isTapToPayOnIPhoneSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
@@ -1240,7 +1331,6 @@ private extension AppSettingsStoreTests {
             feedbacks: [:],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
-            isTapToPayOnIPhoneSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],

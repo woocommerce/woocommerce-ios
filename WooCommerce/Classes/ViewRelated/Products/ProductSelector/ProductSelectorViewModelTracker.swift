@@ -41,7 +41,7 @@ final class ProductSelectorViewModelTracker {
             return
         }
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUSuccess(from: Constants.orderProductSearchViaSKUSuccessSource))
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: Constants.orderProductSearchViaSKUSuccessSource))
     }
 
     func trackSearchFailureIfNecessary(with error: Error) {
@@ -49,7 +49,7 @@ final class ProductSelectorViewModelTracker {
             return
         }
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUFailure(from: Constants.orderProductSearchViaSKUSuccessSource,
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: Constants.orderProductSearchViaSKUSuccessSource,
                                                                                         reason: error.localizedDescription))
     }
 

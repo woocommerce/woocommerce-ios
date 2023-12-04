@@ -69,6 +69,8 @@ private extension AddProductFromImageFormImageView {
 struct AddProductFromImageFormImageView_Previews: PreviewProvider {
     static var previews: some View {
         AddProductFromImageFormImageView(viewModel: .init(siteID: 0,
-                                                          source: .productsTab, onAddImage: { _ in nil }))
+                                                          source: .productsTab,
+                                                          productName: nil,
+                                                          onAddImage: { _ in nil }))
     }
 }

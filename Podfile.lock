@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.8.2)
+  - Alamofire (4.8.0)
   - Automattic-Tracks-iOS (3.0.0):
     - Sentry (~> 8.0)
     - Sodium (>= 0.9.1)
@@ -14,12 +14,12 @@ PODS:
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
-  - Sentry (8.17.1):
-    - Sentry/Core (= 8.17.1)
-    - SentryPrivate (= 8.17.1)
-  - Sentry/Core (8.17.1):
-    - SentryPrivate (= 8.17.1)
-  - SentryPrivate (8.17.1)
+  - Sentry (8.15.2):
+    - Sentry/Core (= 8.15.2)
+    - SentryPrivate (= 8.15.2)
+  - Sentry/Core (8.15.2):
+    - SentryPrivate (= 8.15.2)
+  - SentryPrivate (8.15.2)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (3.1.0)
@@ -28,23 +28,23 @@ PODS:
   - WordPress-Aztec-iOS (1.19.9)
   - WordPress-Editor-iOS (1.19.9):
     - WordPress-Aztec-iOS (= 1.19.9)
-  - WordPressAuthenticator (7.3.1):
+  - WordPressAuthenticator (7.3.0):
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
     - SVProgressHUD (~> 2.2.5)
     - WordPressKit (~> 8.7-beta)
     - WordPressShared (~> 2.1-beta)
     - WordPressUI (~> 1.7-beta)
-  - WordPressKit (8.11.0):
+  - WordPressKit (8.10.0):
     - Alamofire (~> 4.8.0)
     - NSObject-SafeExpectations (~> 0.0.4)
     - UIDeviceIdentifier (~> 2.0)
     - WordPressShared (~> 2.0-beta)
     - wpxmlrpc (~> 0.10)
-  - WordPressShared (2.2.0)
-  - WordPressUI (1.15.0)
+  - WordPressShared (2.1.0)
+  - WordPressUI (1.13.1)
   - Wormholy (1.6.6)
-  - WPMediaPicker (1.8.10)
+  - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.10.0)
   - ZendeskCommonUISDK (7.0.0)
   - ZendeskCoreSDK (3.0.0)
@@ -79,6 +79,8 @@ DEPENDENCIES:
   - ZendeskSupportSDK (~> 6.0)
 
 SPEC REPOS:
+  https://github.com/wordpress-mobile/cocoapods-specs.git:
+    - WordPressKit
   trunk:
     - Alamofire
     - Automattic-Tracks-iOS
@@ -98,7 +100,6 @@ SPEC REPOS:
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
     - WordPressAuthenticator
-    - WordPressKit
     - WordPressShared
     - WordPressUI
     - Wormholy
@@ -113,7 +114,7 @@ SPEC REPOS:
     - ZendeskSupportSDK
 
 SPEC CHECKSUMS:
-  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   Automattic-Tracks-iOS: f30bf3362a77010ccb9fe9aded453645089f6ccb
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
@@ -121,8 +122,8 @@ SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
-  Sentry: d9f99f9cc13777c5d938650c1e1c85047bb4f0d1
-  SentryPrivate: 839b1e58addf58624087a80b2628e543193fa8ef
+  Sentry: 6f5742b4c47c17c9adcf265f6f328cf4a0ed1923
+  SentryPrivate: b2f7996f37781080f04a946eb4e377ff63c64195
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: fa064cf68a7a3df7c2ee1b2e6d33c8866d1e6aef
@@ -130,12 +131,12 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: fbebd569c61baa252b3f5058c0a2a9a6ada686bb
   WordPress-Editor-iOS: bda9f7f942212589b890329a0cb22547311749ef
-  WordPressAuthenticator: 503a174d8ccc0781a0f5769e5e284e07cb294dc0
-  WordPressKit: 13e01ed70f6ab2397c228959bc47cb2073521f63
-  WordPressShared: 87f3ee89b0a3e83106106f13a8b71605fb8eb6d2
-  WordPressUI: a491454affda3b0fb812812e637dc5e8f8f6bd06
+  WordPressAuthenticator: 16f6560a06008cc502b92c85e76eaaa90248c12b
+  WordPressKit: 30510174ad90a997acef42a5880bdda45c5c66e9
+  WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
+  WordPressUI: 7304a3a604b8dc582981e723e6d7caa9dd5a9f0e
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
-  WPMediaPicker: 332812329cbdc672cdb385b8ac3a389f668d3012
+  WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
   ZendeskCommonUISDK: f06dbac6c9e74c3afff75ecdc6bec3832b23258c
   ZendeskCoreSDK: ce6dbb5eb4d61d2d061547a92bd0b0fe98602e9d

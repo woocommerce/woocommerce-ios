@@ -2,6 +2,7 @@ import Combine
 import UIKit
 import Yosemite
 import Photos
+import MobileCoreServices
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -171,8 +172,10 @@ extension ProductDownloadListViewController {
             self?.dismiss(animated: true) { [weak self] in
                 guard let self = self else { return }
                 switch action {
-                case .device:
+                case .deviceMedia:
                     self.showDeviceMediaLibraryPicker(origin: self)
+                case .deviceDocument:
+                    self.showDeviceDocumentPicker(origin: self)
                 case .wordPressMediaLibrary:
                     self.showSiteMediaPicker(origin: self)
                 case .fileURL:
@@ -311,8 +314,21 @@ private extension ProductDownloadListViewController {
         deviceMediaLibraryPicker.presentPicker(origin: origin)
     }
 
+    func showDeviceDocumentPicker(origin: UIViewController) {
+        let types: [UTType] = [.pdf, .text, .rtf, .spreadsheet, .audio, .video, .epub, .zip, .plainText, .presentation]
+        let importMenu = UIDocumentPickerViewController(forOpeningContentTypes: types)
+        importMenu.delegate = self
+        origin.present(importMenu, animated: true)
+    }
+
     func showSiteMediaPicker(origin: UIViewController) {
         wpMediaLibraryPicker.start(from: origin)
+    }
+}
+
+extension ProductDownloadListViewController: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        print(urls)
     }
 }
 

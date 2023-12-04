@@ -55,7 +55,7 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     private(set) var downloadExpiry: Int64
 
     var bottomSheetActions: [DownloadableFileSource] {
-        [.device, .wordPressMediaLibrary, .fileURL]
+        [.deviceMedia, .deviceDocument, .wordPressMediaLibrary, .fileURL]
     }
 
     init(product: ProductFormDataModel) {

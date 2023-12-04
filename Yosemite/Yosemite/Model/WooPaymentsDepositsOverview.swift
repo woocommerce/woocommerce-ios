@@ -1,8 +1,9 @@
 import Foundation
 import WooFoundation
 import Networking
+import Codegen
 
-public struct WooPaymentsDepositsOverviewByCurrency {
+public struct WooPaymentsDepositsOverviewByCurrency: GeneratedCopiable, GeneratedFakeable {
     public let currency: CurrencyCode
     public let automaticDeposits: Bool
     public let depositInterval: WooPaymentsDepositInterval
@@ -28,10 +29,12 @@ public struct WooPaymentsDepositsOverviewByCurrency {
     public struct LastDeposit {
         public let amount: NSDecimalNumber
         public let date: Date
+        public let status: WooPaymentsDepositStatus
 
-        public init(amount: NSDecimalNumber, date: Date) {
+        public init(amount: NSDecimalNumber, date: Date, status: WooPaymentsDepositStatus) {
             self.amount = amount
             self.date = date
+            self.status = status
         }
     }
 

@@ -12,10 +12,11 @@ final class ProductShippingSettingsViewController: UIViewController {
     private var hasRetrievedShippingClassIfNeeded: Bool = false
 
     typealias Completion = (_ weight: String?,
-        _ dimensions: ProductDimensions,
-        _ shippingClassSlug: String?,
-        _ shippingClassID: Int64?,
-        _ hasUnsavedChanges: Bool) -> Void
+                            _ dimensions: ProductDimensions,
+                            _ oneTimeShipping: Bool?,
+                            _ shippingClassSlug: String?,
+                            _ shippingClassID: Int64?,
+                            _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
     private let viewModel: ProductShippingSettingsViewModelOutput & ProductShippingSettingsActionHandler
@@ -200,6 +201,8 @@ private extension ProductShippingSettingsViewController {
             configureHeight(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .shippingClass:
             configureShippingClass(cell: cell)
+        case let cell as SwitchTableViewCell where row == .oneTimeShipping:
+            configureOneTimeShipping(cell: cell)
         default:
             fatalError()
         }
@@ -242,6 +245,18 @@ private extension ProductShippingSettingsViewController {
         cell.updateUI(title: title, value: viewModel.shippingClass?.name)
         cell.accessoryType = .disclosureIndicator
     }
+
+    func configureOneTimeShipping(cell: SwitchTableViewCell) {
+        cell.title = Localization.OneTimeShipping.title
+        cell.subtitle = {
+            viewModel.supportsOneTimeShipping ? Localization.OneTimeShipping.subtitle : Localization.OneTimeShipping.subtitleDisabled
+        }()
+        cell.isOn = viewModel.oneTimeShipping ?? false
+        cell.isUserInteractionEnabled = viewModel.supportsOneTimeShipping
+        cell.onChange = { [weak self] newValue in
+            self?.viewModel.handleOneTimeShippingChange(newValue)
+        }
+    }
 }
 
 // MARK: - Convenience Methods
@@ -265,6 +280,7 @@ extension ProductShippingSettingsViewController {
         case width
         case height
         case shippingClass
+        case oneTimeShipping
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
@@ -272,11 +288,39 @@ extension ProductShippingSettingsViewController {
                 return UnitInputTableViewCell.self
             case .shippingClass:
                 return TitleAndValueTableViewCell.self
+            case .oneTimeShipping:
+                return SwitchTableViewCell.self
             }
         }
 
         fileprivate var reuseIdentifier: String {
             return type.reuseIdentifier
+        }
+    }
+}
+
+// MARK: Localization
+
+private extension ProductShippingSettingsViewController {
+    enum Localization {
+        enum OneTimeShipping {
+            static let title = NSLocalizedString(
+                "productShippingSettings.oneTimeShipping.title",
+                value: "One time shipping",
+                comment: "Title for the One time shipping product shipping setting."
+            )
+
+            static let subtitle = NSLocalizedString(
+                "productShippingSettings.oneTimeShipping.subtitle",
+                value: "Enable this to charge shipping once on the initial order.",
+                comment: "Subtitle for the One time shipping product shipping setting."
+            )
+
+            static let subtitleDisabled = NSLocalizedString(
+                "productShippingSettings.oneTimeShipping.subtitleDisabled",
+                value: "For this setting to be enabled the subscription must not have a free trial or a synced renewal date.",
+                comment: "Subtitle for the One time shipping product shipping setting when it is disabled."
+            )
         }
     }
 }

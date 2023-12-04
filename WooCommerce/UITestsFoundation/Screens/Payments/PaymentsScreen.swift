@@ -3,11 +3,11 @@ import XCTest
 
 public final class PaymentsScreen: ScreenObject {
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.cells["collect-payment"]
+        $0.buttons["collect-payment"]
     }
 
     private let cardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.cells["card-reader-manuals"]
+        $0.buttons["card-reader-manuals"]
     }
 
     private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -27,7 +27,7 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     private let learnMoreButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Learn more about In‑Person Payments"]
+        $0.textViews["Learn more about In‑Person Payments"].firstMatch
     }
 
     private let IPPDocumentationHeaderTextGetter: (XCUIApplication) -> XCUIElement = {
@@ -66,7 +66,7 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     public func tapLearnMoreIPPLink() throws -> Self {
-        learnMoreButton.tap()
+        learnMoreButton.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.5)).tap()
         return self
     }
 

@@ -16,8 +16,6 @@ struct SimplifiedProductRow: View {
             ProductStepper(viewModel: viewModel)
                 .renderedIf(viewModel.canChangeQuantity)
         }
-        .padding(.top)
-        .padding(.bottom)
     }
 }
 
@@ -88,9 +86,9 @@ struct ProductRow: View {
                         Text(viewModel.productDetailsLabel)
                             .subheadlineStyle()
                             .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
-                        Text(viewModel.skuLabel)
+                        Text(viewModel.secondaryProductDetailsLabel)
                             .subheadlineStyle()
-                            .renderedIf(viewModel.skuLabel.isNotEmpty)
+                            .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)
                     }
                     .multilineTextAlignment(.leading)
                 }
@@ -173,6 +171,7 @@ private struct ProductStepper: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.stepperButtonSize * scale)
             }
+            .disabled(viewModel.shouldDisableQuantityIncrementer)
         }
         .padding(Layout.stepperPadding * scale)
         .frame(width: Layout.stepperWidth * scale)

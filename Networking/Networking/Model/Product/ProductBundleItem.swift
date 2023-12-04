@@ -43,6 +43,9 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
     /// Overridden default variation attribute values, if applicable.
     public let defaultVariationAttributes: [ProductVariationAttribute]
 
+    /// Whether the price of this bundled item is added to the base price of the bundle.
+    public let pricedIndividually: Bool
+
     /// ProductBundleItem struct initializer
     ///
     public init(bundledItemID: Int64,
@@ -57,7 +60,8 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
                 overridesVariations: Bool,
                 allowedVariations: [Int64],
                 overridesDefaultVariationAttributes: Bool,
-                defaultVariationAttributes: [ProductVariationAttribute]) {
+                defaultVariationAttributes: [ProductVariationAttribute],
+                pricedIndividually: Bool) {
         self.bundledItemID = bundledItemID
         self.productID = productID
         self.menuOrder = menuOrder
@@ -71,6 +75,7 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
         self.allowedVariations = allowedVariations
         self.overridesDefaultVariationAttributes = overridesDefaultVariationAttributes
         self.defaultVariationAttributes = defaultVariationAttributes
+        self.pricedIndividually = pricedIndividually
     }
 
     /// The public initializer for ProductBundleItem.
@@ -92,6 +97,7 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
         let allowedVariations = try container.decode([Int64].self, forKey: .allowedVariations)
         let overridesDefaultVariationAttributes = try container.decode(Bool.self, forKey: .overridesDefaultVariationAttributes)
         let defaultVariationAttributes = try container.decode([ProductVariationAttribute].self, forKey: .defaultVariationAttributes)
+        let pricedIndividually = try container.decode(Bool.self, forKey: .pricedIndividually)
 
         self.init(bundledItemID: bundledItemID,
                   productID: productID,
@@ -105,7 +111,8 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
                   overridesVariations: overridesVariations,
                   allowedVariations: allowedVariations,
                   overridesDefaultVariationAttributes: overridesDefaultVariationAttributes,
-                  defaultVariationAttributes: defaultVariationAttributes)
+                  defaultVariationAttributes: defaultVariationAttributes,
+                  pricedIndividually: pricedIndividually)
     }
 }
 
@@ -127,6 +134,7 @@ private extension ProductBundleItem {
         case allowedVariations = "allowed_variations"
         case overridesDefaultVariationAttributes = "override_default_variation_attributes"
         case defaultVariationAttributes = "default_variation_attributes"
+        case pricedIndividually = "priced_individually"
     }
 }
 

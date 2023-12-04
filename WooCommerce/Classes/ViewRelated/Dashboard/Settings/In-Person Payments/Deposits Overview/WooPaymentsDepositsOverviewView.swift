@@ -3,43 +3,27 @@ import Yosemite
 
 @available(iOS 16.0, *)
 struct WooPaymentsDepositsOverviewView: View {
-    let viewModels: [WooPaymentsDepositsCurrencyOverviewViewModel]
+    @ObservedObject var viewModel: WooPaymentsDepositsOverviewViewModel
+
+    @State var isExpanded: Bool = false
 
     var tabs: [TopTabItem] {
-        viewModels.map { tabViewModel in
-            TopTabItem(name: tabViewModel.overview.currency.rawValue,
-                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: tabViewModel)))
+        viewModel.currencyViewModels.map { currencyViewModel in
+            TopTabItem(name: currencyViewModel.tabTitle,
+                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: currencyViewModel,
+                                                                             isExpanded: $isExpanded)),
+                       onSelected: {
+                viewModel.currencySelected(currencyViewModel: currencyViewModel)
+            })
         }
     }
 
     var body: some View {
         VStack {
-            TopTabView(tabs: tabs)
-
-            Button {
-                // TODO: Open a webview here: https://woo.com/document/woopayments/deposits/deposit-schedule/
-            } label: {
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text(Localization.learnMoreButtonText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.footnote)
-                        .multilineTextAlignment(.leading)
-                }
-            }
-            .padding()
-
-            Spacer()
+            TopTabView(tabs: tabs,
+                       showTabs: $isExpanded)
         }
-    }
-}
-
-@available(iOS 16.0, *)
-private extension WooPaymentsDepositsOverviewView {
-    enum Localization {
-        static let learnMoreButtonText = NSLocalizedString(
-            "Learn more about when you'll receive your funds",
-            comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
+        .onAppear(perform: viewModel.onAppear)
     }
 }
 
@@ -60,7 +44,8 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 500.0,
-                date: Date()
+                date: Date(),
+                status: .inTransit
             ),
             availableBalance: 1500.0
         )
@@ -81,13 +66,14 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 600.0,
-                date: Date()
+                date: Date(),
+                status: .canceled
             ),
             availableBalance: 1900.0
         )
 
         let viewModel2 = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overviewData2)
 
-        WooPaymentsDepositsOverviewView(viewModels: [viewModel1, viewModel2])
+        WooPaymentsDepositsOverviewView(viewModel: .init(currencyViewModels: [viewModel1, viewModel2]))
     }
 }

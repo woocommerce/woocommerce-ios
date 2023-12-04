@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-14 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-11-28 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -64,9 +64,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@-kortets sista siffror är %2$@";
-
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
-"%1$@ every %2$@" = "%1$@ var %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ förutom %2$@";
@@ -398,8 +395,7 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "Möjlighet att skala allteftersom verksamheten växer";
 
-/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
-   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+/* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
 "About Tap to Pay" = "Om Tryck för att betala";
 
 /* Navigation title for the About Tap to Pay on iPhone Screen. */
@@ -443,9 +439,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Konto anslutet";
-
-/* Title for the section related to actions inside In-Person Payments settings */
-"Actions" = "Åtgärder";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Aktivera %1$@";
@@ -1564,17 +1557,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the card reader support area option */
 "Card Reader \/ In-Person Payments" = "Kortläsare\/personliga betalningar";
 
-/* Navigates to Card Reader Manuals screen */
-"Card Reader Manuals" = "Manualer för kortläsare";
-
 /* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
 "Card Readers" = "Kortläsare";
 
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Kortläsarmanualer";
-
-/* Title for the section related to card readers inside In-Person Payments settings */
-"Card readers" = "Kortläsare";
 
 /* Error message when a card is left in the reader and another transaction started. */
 "Card was left in reader - please remove and reinsert card" = "Kortet lämnades i läsaren – avlägsna kortet och för in det igen";
@@ -1807,8 +1794,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Minimerad";
 
-/* Navigates to Collect a payment via the Simple Payment screen
-   Text on the button that starts collecting a card present payment. */
+/* Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "Ta emot betalning";
 
 /* Alert title when starting the collect payment flow without a user name.
@@ -2033,9 +2019,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Fortsätt läsa";
-
-/* Call to Action to finish the setup of In-Person Payments in the Menu */
-"Continue setup" = "Fortsätt konfigurationen";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "Fortsätt till betalning";
@@ -2666,7 +2649,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for a done button in the navigation bar
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
 "Done" = "Klar";
@@ -3226,9 +3208,6 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "Experimentella funktioner";
 
-/* Label for the expiry setting in the subscription settings screen. */
-"Expire after" = "Löper ut efter";
-
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "Löper ut efter: %@";
 
@@ -3313,9 +3292,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fees and shipping lines */
 "Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "Avgifterna och leveransinformationen är ofullständiga.\nFör att redigera all information, visa beställningen i din WooCommerce-butiksadmin.";
-
-/* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Avgiftsåterbetalning";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Hämtar variationer...";
@@ -3437,9 +3413,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "Gratis första året";
-
-/* Label for the free trial setting in the subscription settings screen. */
-"Free trial" = "Gratis provperiod";
 
 /* Country option for a site address. */
 "French Guiana" = "Franska Guinea";
@@ -3723,7 +3696,7 @@ which should be translated separately and considered part of this sentence. */
 "Haiti" = "Haiti";
 
 /* Title of features on the Free Trial Summary screen */
-"Hassel-free store ownership" = "Problemfritt butiksägarskap";
+"Hassle-free store ownership" = "Butiksägande utan krångel";
 
 /* Subtitle of the store onboarding task to customize the store domain. */
 "Have a custom URL to host your store." = "Få en anpassad URL för din butik.";
@@ -3961,9 +3934,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "Personliga betalningar är inte tillgängliga för den här butiken";
-
-/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
-"In-Person Payments setup is incomplete." = "Konfigurationen av Personliga betalningar har inte slutförts.";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Köp i appen";
@@ -4342,7 +4312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Tappable text at the bottom of the domain settings screen that opens a webview.
-   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title for the link to open the legal URL for AI-generated content in the product detail screen
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -4661,9 +4630,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Hantera och redigera beställningar i farten ";
 
-/* Navigates to Card Reader management screen */
-"Manage card reader" = "Hantera kortläsare";
-
 /* Description of one of the hub menu options */
 "Manage more on admin" = "Hantera mer på admin";
 
@@ -4851,7 +4817,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "More options" = "Fler alternativ";
 
 /* More Privacy toggle section in the privacy screen. */
-"More privacy options available for woocommerce.com users. Check here to learn more." = "Fler integritetsinställningar finns tillgängliga för WooCommerce.com-användare. Mer information finns här.";
+"More privacy options available for woo.com users. Check here to learn more." = "Fler integritetsalternativ tillgängliga för woo.com-användare. Kolla in här för att lära dig mer.";
 
 /* Country option for a site address. */
 "Morocco" = "Marocko";
@@ -4959,6 +4925,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Nätverksaktiva tillägg";
+
+/* Error message when session cookie has expired. */
+"NetworkError.invalidCookieNonce" = "Din session har löpt ut. Logga in igen.";
+
+/* Error message when the URL is invalid. */
+"NetworkError.invalidURL" = "URL:en är inte giltig. Försök igen.";
+
+/* Error message when we receive not found error */
+"NetworkError.notFound" = "Vi hittade tyvärr inte det du letade efter. Försök igen. Svar: %1$@";
+
+/* Error message when a request times out. */
+"NetworkError.timeout" = "Det tog tyvärr för lång tid att behandla begäran. Försök igen senare. Svar: %1$@";
+
+/* Error message when the a network call fails with unacceptable status code.%1$d is the status code like 500. %2$@ is the response string. */
+"NetworkError.unacceptableStatusCode" = "Tyvärr uppstod ett problem med servern. Försök igen senare. (Felkod: %1$d). Svar: %2$@";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "Löper aldrig ut";
@@ -5102,8 +5083,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Bolded message confirming that no payment has been taken when the upgrade failed. */
 "No payment has been taken" = "Ingen betalning har dragits";
 
-/* Display label when a subscription has no price.
-   Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Inget pris angivet";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -5135,9 +5115,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "Det finns inga fraktavgifter tillgängliga";
 
-/* Display label when a subscription has no signup fee. */
-"No signup fee" = "Ingen registreringsavgift";
-
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "Det finns ingen kontaktmetod som stöds på den här enheten.";
 
@@ -5149,9 +5126,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No text detected message on the add product from image form. */
 "No text detected. Please select another packaging photo or enter product details manually." = "Ingen text upptäckt. Välj ett annat förpackningsfoto eller ange produktinformation manuellt.";
-
-/* Display label when a subscription has no trial period. */
-"No trial period" = "Ingen provperiod";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Inga variationer att generera";
@@ -5389,9 +5363,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for button triggering more actions menu sheet. */
 "Order actions" = "Beställningsåtgärder";
 
-/* Navigates to Card Reader ordering screen */
-"Order card reader" = "Beställ kortläsare";
-
 /* Order status update success notice */
 "Order status updated" = "Orderstatus uppdaterad";
 
@@ -5532,8 +5503,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "Betala med kort eller annan accepterad betalningsmetod";
 
-/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
-   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person */
 "Pay in Person" = "Betala personligen";
 
 /* Title text of the row that shows the payment headline when creating a simple payment */
@@ -5550,9 +5520,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Highlighted header text on the store onboarding payments setup screen. */
 "Payment Methods" = "Betalningsmetoder";
 
-/* Navigates to Payment Gateway management screen */
-"Payment Provider" = "Betalningsleverantör";
-
 /* Payment section title */
 "Payment Totals" = "Betalning totalt";
 
@@ -5568,9 +5535,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
 "Payment method added" = "Betalningsmetod tillagd";
-
-/* Title for the section related to payments inside In-Person Payments settings */
-"Payment options" = "Betalningsalternativ";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Betalning lyckades";
@@ -5938,7 +5902,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price
    Title of the price field on the add product with AI Preview screen. */
 "Price" = "Pris";
 
@@ -6293,9 +6256,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Refund Details section title */
 "Refund Details" = "Återbetalningsinformation";
 
-/* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Återbetala avgifter";
-
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "Återbetala etikett (%1$@)";
 
@@ -6641,9 +6601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the sale period on the Price Settings row until a certain date */
 "Sale dates: Until %@" = "Försäljningsdatum: Till %@";
 
-/* Title of the cell in Product Price Settings > Sale price */
-"Sale price" = "Reapris";
-
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Reapris: %@";
 
@@ -6979,7 +6936,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
-   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "Inställningar";
 
@@ -7007,9 +6963,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action title for sharing coupon from the Coupon Details screen
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Dela rabattkod";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Feedback" = "Dela feedback";
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Dela betalningslänk";
@@ -7204,9 +7157,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Inloggad som @%1$@";
-
-/* Label for the signup fee setting in the subscription settings screen. */
-"Signup fee" = "Registreringsavgift";
 
 /* Display label for simple product type. */
 "Simple" = "Enkel";
@@ -7536,9 +7486,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Skicka supportförfrågan";
 
-/* Display label for simple subscription product type.
-   Title for Subscription row in the product form screen.
-   Title for the subscription settings in a subscription product. */
+/* Display label for simple subscription product type. */
 "Subscription" = "Prenumeration";
 
 /* Subscription title with subscription number. Reads like: 'Subscription #123' */
@@ -7546,9 +7494,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "Prenumerationsstatus";
-
-/* Label for the subscription price setting in the subscription settings screen. */
-"Subscription price" = "Prenumerationspris";
 
 /* Subscriptions section title
    Title for the Subscriptions / Upgrades view
@@ -7709,9 +7654,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "Tryck på knappen nedan för att omdirigeras till din onlinebutik via en webbläsare.";
-
-/* Title for the Tap to Pay section in the In-Person payments settings */
-"Tap to Pay" = "Tryck för att betala";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7919,9 +7861,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Det gick inte att hämta beställningen!";
 
-/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "Kassaalternativet Betala personligen gör det möjligt att ta emot betalningar för webbplatsbeställningar vid upphämtning eller leverans. %1$@";
-
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "Det finns ingen gilitg värd för webbadressen.";
 
@@ -8063,9 +8002,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
 "The price for bulk updating all variations. Editable." = "Priset för bulkuppdatering av alla variationer. Redigerbart.";
 
-/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
-"The price for this product. Editable." = "Priset för denna produkt. Redigerbar.";
-
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d product." = "Priset kommer att uppdateras för %d produkt.";
 
@@ -8093,9 +8029,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Bulk price update error message, when the sale price is added but the regular price is not
    Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Reapriset kan inte läggas till utan ordinarie pris.";
-
-/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
-"The sale price for this product. Editable." = "Försäljningspriset för den här produkten. Redigerbar.";
 
 /* Bulk price update error, when the sale price is higher than the regular price
    Product price error notice message, when the sale price is higher than the regular price */
@@ -8148,9 +8081,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the card reader service experiences an unexpected software error. */
 "The system experienced an unexpected software error" = "Systemet stötte på ett oväntat programvarufel";
-
-/* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "Systemet är upptaget med att köra ett annat kommando – försök igen";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Systemstatusrapporten för din webbplats kan inte hämtas för tillfället. Försök igen.";
@@ -8692,9 +8622,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when communication with the card reader is disrupted. */
 "Unable to communicate with reader - please try again" = "Kan inte kommunicera med läsare – försök igen";
-
-/* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Kan inte ansluta till kortläsare – kortläsare upptäcktes inte korrekt – försök igen";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
 "Unable to connect to card reader - the card reader is already in use" = "Kan inte ansluta till kortläsare – kortläsaren används redan";
@@ -9538,10 +9465,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
-/* Title for the row related to Woo Payments Deposits/Balances.
-   Title for the section related to Woo Payments Deposits/Balances. */
-"Woo Payments Balance" = "Woo Betalningsbalans";
-
 /* Text shown when a plan upgrade has been successfully purchased. */
 "Woo! You’re off to a great start!" = "Woo. Du har kommit igång bra.";
 
@@ -9676,9 +9599,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the quantity rules screen. */
 "You can edit quantity rules in the web dashboard" = "Du kan redigera kvantitetsregler i webbadminpanelen";
 
-/* Info notice at the bottom of the subscription settings screen. */
-"You can edit subscription settings in the web dashboard" = "Du kan redigera prenumerationsinställningarna i webbadminpanelen";
-
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Du kan hitta domäninställningarna i menyn > Inställningar";
 
@@ -9693,9 +9613,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "Du kan endast lägga till variabla prenumerationer i webbadminpanelen";
-
-/* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "Du kan återbetala avgifter i adminpanelen för din butik";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "Du kan begära en återbetalning för en fraktetikett som inte har använts för att skicka ett paket.\nDen kommer att ta minst 14 dagar att behandla.";
@@ -9881,23 +9798,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Lär dig mer.](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to delete the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.deleteButton" = "Radera anpassat belopp";
+
 /* Button title to confirm the custom amount on the add custom amount view in orders. */
 "addCustomAmount.doneButton" = "Lägg till anpassat belopp";
 
 /* Button title to confirm the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.editButton" = "Redigera anpassat belopp";
 
+/* Title above the amount field on the add custom amount view in orders. */
+"addCustomAmountPercentageView.amount.title" = "Belopp";
+
+/* Title for entering an custom amount through a percentage */
+"addCustomAmountPercentageView.percentageTextField.title" = "Ange procentandel av orderns totala belopp";
+
+/* Title for the charge taxes toggle in the custom amounts screen. */
+"addCustomAmountView.chargeTaxesToggle.title" = "Debitera moms";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "Starta WooCommerce snabbt";
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Ikon";
-
-/* Cell title on beta features screen to enable new payments menu */
-"betaFeature.swiftUIPaymentsMenu.switch.description" = "Testa SwiftUI:s omarbetning av betalningsmenyn i samband med att vi gör oss redo för lansering.";
-
-/* Cell title on beta features screen to enable new payments menu */
-"betaFeature.swiftUIPaymentsMenu.switch.title" = "Ny betalningsmeny";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Avbryt";
@@ -9913,10 +9836,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.instruction" = "För att slå på din kortläsare, tryck kort på dess strömknapp.";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.modalScanningForReader.learnMore.link" = "Lär dig mer";
 
 /* A label prompting users to learn more about In-Person Payments.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -9964,11 +9883,51 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the products cannot be loaded in the bundle product configuration form. */
 "configureBundleProductError.cannotLoadProducts" = "Det går inte att ladda de paketerade produkterna. Försök igen.";
 
+/* Error message when the product bundle size is greater than the maximum if a maximum rule is specified.%1$@ is the maximum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeGreaterThanMaximum" = "Välj upp till %1$@ %2$@.";
+
+/* Error message when the product bundle size is less than the minimum if a minimum rule is specified.%1$@ is the minimum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeLessThanMinimum" = "Välj minst %1$@ %2$@.";
+
+/* Error message when the product bundle size is not matching the exact size if both rules are specified and the min/max are the same.%1$@ is the expected bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeNotExact" = "Välj %1$@ %2$@.";
+
+/* Error message when the product bundle size is not within a min/max range if both rules are specified.%1$@ is the minimum bundle size. %2$@ is the minimum bundle size. */
+"configureBundleProductValidationError.bundleSizeNotWithinRange" = "Välj %1$@–%2$@ objekt.";
+
+/* Used in configureBundleProductValidationError strings for the plural form of item. */
+"configureBundleProductValidationError.itemPlural" = "objekt";
+
+/* Used in configureBundleProductValidationError strings for the singular form of item. */
+"configureBundleProductValidationError.itemSingular" = "objekt";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "dag";
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "dagar";
+
+/* Title for Subscription expiry row in the product form screen. */
+"defaultProductFormTableViewModel.expireAfter" = "Löper ut efter";
+
+/* Display label when a subscription never expires. */
+"defaultProductFormTableViewModel.neverExpire" = "Löper aldrig ut";
+
+/* Display label when a subscription has no trial period.
+   Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.noFreeTrial" = "Gratis provperiod";
+
+/* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
+"defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "Ordinarie pris: %1$@ %2$@";
+
+/* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
+"defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Registreringsavgift: %1$@";
+
+/* Accessibility label for the collapse chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.hide" = "Dölj insättningsuppgifter";
+
+/* Accessibility label for the expand chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.show" = "Visa insättningsuppgifter";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
@@ -10046,6 +10005,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "Kortläsare";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.depositSummary.loading.accessibilityLabel" = "Hämtar saldon …";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
 "menu.payments.inPersonPayments.learnMore.link" = "Lär dig mer";
@@ -10068,6 +10030,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link" = "Lär dig mer";
+
+/* Title for the accessibility action to open the learn more screen, showing information about adding Pay in Person to their checkout. */
+"menu.payments.payInPerson.learnMore.link.accessibilityAction" = "Lär dig mer";
 
 /* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "menu.payments.payInPerson.toggle.row.title" = "Betala personligen";
@@ -10117,6 +10082,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Anpassade belopp";
 
+/* Button title for the fixed amount option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle" = "Ett fast belopp";
+
+/* Button title for the percentage option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "En procentandel av orderns totala belopp";
+
+/* Title text of the confirmation dialog that shows the add custom amounts options. */
+"orderForm.customAmounts.addOptionsDialogTitle" = "Hur vill du lägga till ditt anpassade belopp?";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Anpassade belopp";
 
@@ -10162,20 +10136,56 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Produkt med rörlig prenumeration";
 
+/* Description of the subscription period for a product. Reads like: 'every 2 months'. */
+"productFormDataModel.subscriptionPeriodFormat" = "varje %1$@";
+
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Marknadsför med Blaze";
 
+/* Title of the billing interval row on the Product Price screen */
+"productPriceSettingsViewController.billingIntervalRowTitle" = "Faktureringsintervall";
+
+/* Button on the toolbar of the subscription period picker view on the Product Price screen */
+"productPriceSettingsViewController.subscriptionPeriodToolBarButton" = "Klar";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
+"productPriceSettingsViewModel.regularPriceAccessibilityHint" = "Priset för den här produkten. Redigerbart.";
+
+/* Title of the cell in Product Price Settings > Price */
+"productPriceSettingsViewModel.regularPriceTitle" = "Pris";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
+"productPriceSettingsViewModel.salePriceAccessibilityHint" = "Försäljningspriset för den här produkten. Redigerbart.";
+
+/* Title of the cell in Product Price Settings > Sale price */
+"productPriceSettingsViewModel.salePriceTitle" = "Reapris";
+
+/* Section header title for product sale price */
+"productPriceSettingsViewModel.saleSectionTitle" = "Rea";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the subscription sign-up fee for this product. */
+"productPriceSettingsViewModel.signupFeeAccessibilityHint" = "Registreringsavgift för prenumerationen av denna produkt. Redigerbart.";
+
+/* Subtitle of the cell in Product Price Settings > Sign-up Fee */
+"productPriceSettingsViewModel.signupFeeSubtitle" = "Alternativt kan du inkludera ett belopp som ska debiteras vid prenumerationens start. Registreringsavgiften kommer att debiteras omedelbart, även om produkten har en gratis provperiod eller synkroniserade betalningsdatum.";
+
+/* Title of the cell in Product Price Settings > Sign-up Fee */
+"productPriceSettingsViewModel.signupFeeTitle" = "Registreringsavgift";
+
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
-
-/* Action to configure a product row in the product selector. */
-"productSelector.configureProductRow" = "Konfigurera";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "betygsatt %ld gånger";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "betygsatt en gång";
+
+/* Title on the refund screen that lists the custom amounts total cost */
+"refundCustomAmountsDetails.totalTitle" = "Återbetalning av anpassade belopp";
+
+/* Title of the switch in the IssueRefund screen to refund customAmounts */
+"refundIssue.customAmounts.title" = "Återbetala anpassade belopp";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Betalning slutförd";
@@ -10234,6 +10244,37 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Kan inte hämta dagens statistik";
+
+/* Title of the button to save subscription's expire after info. */
+"subscriptionExpiryView.done" = "Klar";
+
+/* Title for the expire after row in add or edit subscription expire after info screen.
+   Title for the Subscription expire after screen of the subscription product. */
+"subscriptionExpiryView.expireAfter" = "Löper ut efter";
+
+/* Subtitle text to explain subscription expire after value. */
+"subscriptionExpiryView.expireAfterSubtitle" = "Prenumerationen löper automatiskt ut efter denna tidsperiod. Denna tid gäller utöver eventuella gratis provperioder eller tider som tillhandahålls före ett synkroniserat första förnyelsedatum.";
+
+/* Title for the Expire after screen of the subscription product. */
+"subscriptionExpiryView.neverExpire" = "Löper aldrig ut";
+
+/* Title of the button to save subscription's free trial info. */
+"subscriptionTrialView.done" = "Klar";
+
+/* Title for the free trial length row in add or edit subscription free trial screen. */
+"subscriptionTrialView.duration" = "Varaktighet";
+
+/* Subtitle text to explain subscription free trial. */
+"subscriptionTrialView.freeTrialSubtitle" = "Gratis provperiod är en valfri tidsperiod att vänta innan den första återkommande betalningen debiteras. Eventuella registreringsavgifter kommer fortfarande att debiteras vid prenumerationens start.";
+
+/* Title for the free trial period row in add or edit subscription free trial screen. */
+"subscriptionTrialView.period" = "Period";
+
+/* Validation error message in the Free trial info screen of the subscription product. Reads like: The trial period cannot exceed 90 days. */
+"subscriptionTrialViewModel.errorMessage" = "Provperioden får inte överstiga %1$d %2$@";
+
+/* Title for the Free trial info screen of the subscription product. */
+"subscriptionTrialViewModel.title" = "Gratis provperiod";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,

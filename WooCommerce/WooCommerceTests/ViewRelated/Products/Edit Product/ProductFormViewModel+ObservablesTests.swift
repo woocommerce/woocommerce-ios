@@ -107,6 +107,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                           stockStatus: product.productStockStatus)
         viewModel.updateShippingSettings(weight: product.weight,
                                          dimensions: product.dimensions,
+                                         oneTimeShipping: product.subscription?.oneTimeShipping,
                                          shippingClass: product.shippingClass,
                                          shippingClassID: product.shippingClassID)
         viewModel.updateProductCategories(product.categories)

@@ -100,6 +100,10 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
         product.sku
     }
 
+    private var parentProductType: ProductType {
+        product.productType
+    }
+
     private var parentProductDisablesQuantityRules: Bool? {
         product.combineVariationQuantities
     }
@@ -289,14 +293,6 @@ private extension ProductVariationsViewController {
 //
 private extension ProductVariationsViewController {
     func configureTopStackView() {
-        guard viewModel.shouldAllowGeneration(for: product) else {
-            // Hide top stack view by reducing its height to 0.
-            // Otherwise, a blank space is shown where the "Generate Variation" button would be.
-            let zeroHeight = topStackView.heightAnchor.constraint(equalToConstant: 0)
-            topStackView.addConstraint(zeroHeight)
-            return
-        }
-
         addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,
@@ -407,6 +403,7 @@ extension ProductVariationsViewController: UITableViewDataSource {
 
         let productVariation = resultsController.object(at: indexPath)
         let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: parentProductType,
                                                   allAttributes: allAttributes,
                                                   parentProductSKU: parentProductSKU,
                                                   parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -537,6 +534,7 @@ private extension ProductVariationsViewController {
 
     private func navigateToVariationDetail(for productVariation: ProductVariation) {
         let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: parentProductType,
                                                   allAttributes: allAttributes,
                                                   parentProductSKU: parentProductSKU,
                                                   parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)

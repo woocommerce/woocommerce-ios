@@ -135,9 +135,8 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var syncStatus: SyncStatus?
 
-    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
-    ///
-    private let syncingCoordinator = SyncingCoordinator()
+    /// Supports infinite scroll: keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
+    private let paginationTracker: PaginationTracker
 
     /// Tracks if the infinite scroll indicator should be displayed
     ///
@@ -184,6 +183,8 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private let purchasableItemsOnly: Bool
 
+    private let shouldDeleteStoredProductsOnFirstPage: Bool
+
     /// Closure to be invoked when "Clear Selection" is called.
     ///
     private let onAllSelectionsCleared: (() -> Void)?
@@ -199,12 +200,15 @@ final class ProductSelectorViewModel: ObservableObject {
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
+         shouldDeleteStoredProductsOnFirstPage: Bool = true,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
+         pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex,
+         pageSize: Int = PaginationTracker.Defaults.pageSize,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -223,6 +227,8 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.selectedItemsIDs = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
+        self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
+        self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
@@ -232,7 +238,7 @@ final class ProductSelectorViewModel: ObservableObject {
         topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
         tracker.viewModel = self
 
-        configureSyncingCoordinator()
+        configurePaginationTracker()
         refreshDataAndSync()
         configureFirstPageLoad()
         synchronizeProductFilterSearch()
@@ -257,7 +263,13 @@ final class ProductSelectorViewModel: ObservableObject {
         }
     }
 
-    func toggleSelection(id: Int64) {
+    /// Adds a product or variation ID to the product selector from an external source (e.g. bundle configuration form for bundle products).
+    /// - Parameter id: Product or variation ID to add to the product selector.
+    func addSelection(id: Int64) {
+        selectedItemsIDs.append(id)
+    }
+
+    private func toggleSelection(id: Int64) {
         if selectedItemsIDs.contains(id) {
             selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
         } else {
@@ -349,11 +361,11 @@ final class ProductSelectorViewModel: ObservableObject {
     }
 }
 
-// MARK: - SyncingCoordinatorDelegate & Sync Methods
-extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
+// MARK: - PaginationTrackerDelegate conformance
+extension ProductSelectorViewModel: PaginationTrackerDelegate {
     /// Sync products from remote.
     ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
         transitionToSyncingState(pageNumber: pageNumber)
 
         if searchTerm.isNotEmpty {
@@ -365,7 +377,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
     /// Sync all products from remote.
     ///
-    private func syncProducts(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
+    private func syncProducts(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
@@ -374,7 +386,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                                                        productType: filtersSubject.value.promotableProductType?.productType,
                                                        productCategory: filtersSubject.value.productCategory,
                                                        sortOrder: .nameAscending,
-                                                       shouldDeleteStoredProductsOnFirstPage: true) { [weak self] result in
+                                                       shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -388,14 +400,14 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
             }
 
             self.transitionToResultsUpdatedState()
-            onCompletion?(result.isSuccess)
+            onCompletion?(result)
         }
         stores.dispatch(action)
     }
 
     /// Sync products matching a given keyword.
     ///
-    private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+    private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
         searchProductsInCacheIfPossible(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
 
         let action = ProductAction.searchProducts(siteID: siteID,
@@ -425,7 +437,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
             }
 
             self.transitionToResultsUpdatedState()
-            onCompletion?(result.isSuccess)
+            onCompletion?(result)
         }
 
         stores.dispatch(action)
@@ -457,14 +469,13 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync first page of products from remote if needed.
     ///
     func syncFirstPage() {
-        syncingCoordinator.synchronizeFirstPage()
+        paginationTracker.syncFirstPage()
     }
 
     /// Sync next page of products from remote.
     ///
     func syncNextPage() {
-        let lastIndex = productsResultsController.numberOfObjects - 1
-                syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
+        paginationTracker.ensureNextPageIsSynced()
     }
 
     /// Updates the selected filters for the product list
@@ -601,10 +612,10 @@ private extension ProductSelectorViewModel {
         }
     }
 
-    /// Setup: Syncing Coordinator
+    /// Setup: Pagination Tracker
     ///
-    func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
+    func configurePaginationTracker() {
+        paginationTracker.delegate = self
     }
 
     /// Performs initial sync on first page load
@@ -637,7 +648,7 @@ private extension ProductSelectorViewModel {
                 self.updateFilterButtonTitle(with: filtersSubject)
                 self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject, productSearchFilter: productSearchFilter)
                 self.reloadData()
-                self.syncingCoordinator.resynchronize()
+                self.paginationTracker.resync()
             }.store(in: &subscriptions)
     }
 

@@ -119,7 +119,11 @@ protocol ProductFormViewModelProtocol {
 
     func updateProductType(productType: BottomSheetProductType)
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?)
+    func updateShippingSettings(weight: String?,
+                                dimensions: ProductDimensions,
+                                oneTimeShipping: Bool?,
+                                shippingClass: String?,
+                                shippingClassID: Int64?)
 
     func updateProductCategories(_ categories: [ProductCategory])
 
@@ -144,6 +148,8 @@ protocol ProductFormViewModelProtocol {
     func updateVariationAttributes(_ attributes: [ProductVariationAttribute])
 
     func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod)
+
+    func updateSubscriptionExpirySettings(length: String)
 
     // Remote action
 

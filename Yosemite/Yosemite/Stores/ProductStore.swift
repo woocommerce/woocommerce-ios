@@ -188,7 +188,7 @@ private extension ProductStore {
                         productType: ProductType?,
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
-                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                        onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         switch filter {
         case .all:
             remote.searchProducts(for: siteID,
@@ -203,6 +203,7 @@ private extension ProductStore {
                 self?.handleSearchResults(siteID: siteID,
                                           keyword: keyword,
                                           filter: filter,
+                                          pageSize: pageSize,
                                           result: result,
                                           onCompletion: onCompletion)
             }
@@ -214,6 +215,7 @@ private extension ProductStore {
                 self?.handleSearchResults(siteID: siteID,
                                           keyword: keyword,
                                           filter: filter,
+                                          pageSize: pageSize,
                                           result: result,
                                           onCompletion: onCompletion)
             }
@@ -232,6 +234,7 @@ private extension ProductStore {
         handleSearchResults(siteID: siteID,
                             keyword: keyword,
                             filter: .all,
+                            pageSize: pageSize,
                             result: Result.success(results.prefix(pageSize).map { $0.toReadOnly() }),
                             onCompletion: { _ in onCompletion(!results.isEmpty) })
     }
@@ -1091,15 +1094,17 @@ private extension ProductStore {
     func handleSearchResults(siteID: Int64,
                              keyword: String,
                              filter: ProductSearchFilter,
+                             pageSize: Int,
                              result: Result<[Product], Error>,
-                             onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         switch result {
         case .success(let products):
             upsertSearchResultsInBackground(siteID: siteID,
                                             keyword: keyword,
                                             filter: filter,
                                             readOnlyProducts: products) {
-                onCompletion(.success(()))
+                let hasNextPage = products.count == pageSize
+                onCompletion(.success(hasNextPage))
             }
         case .failure(let error):
             onCompletion(.failure(error))

@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 16.5
+The latest WooCommerce app version brings exciting updates! Now, you can easily set the 'One time shipping' option for subscription products. We've also fixed bugs related to printing customs forms, managing product subscriptions, and improved CPU and memory usage. Additionally, WooPayments users can now enjoy seamlessly swiping between currencies on the Deposits Summary view. Upgrade now for a smoother WooCommerce experience!
+
+## 16.4
+We're excited to announce some new updates to our WooCommerce app! You can now create or edit subscription products with ease! We've also made some tweaks to the order form to ensure bundled items are added/updated correctly when dealing with optional & non-selected variable items. Plus, we've rearranged the Dashboard for better navigation - the Blaze section is now conveniently located under the Stats. Enjoy the enhanced experience!
+
 ## 16.3
 Explore our latest WooCommerce app update! We've introduced new features in Orders: you can now calculate custom amounts based on the order total percentage and decide if these custom amounts are taxable. Enjoy a more personalized and flexible experience!
 

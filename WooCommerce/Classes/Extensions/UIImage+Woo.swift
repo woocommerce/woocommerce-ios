@@ -86,6 +86,12 @@ extension UIImage {
         .init(named: "sparkles")!
     }
 
+    /// Calendar clock Image
+    ///
+    static var calendarClock: UIImage {
+        .init(systemName: "calendar.badge.clock")!
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {
@@ -382,6 +388,19 @@ extension UIImage {
     static var externalProductImage: UIImage {
         return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
     }
+
+    /// Subscription Product
+    ///
+    static var subscriptionProductImage: UIImage {
+        return UIImage(systemName: "repeat")!
+    }
+
+    /// Subscription Product
+    ///
+    static var variableSubscriptionProductImage: UIImage {
+        return UIImage(systemName: "square.3.layers.3d")!
+    }
+
 
     /// Filter Icon
     ///

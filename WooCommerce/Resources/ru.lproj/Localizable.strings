@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-14 21:54:04+0000 */
+/* Translation-Revision-Date: 2023-11-29 09:54:05+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -64,9 +64,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "Срок действия карты %1$@ истекает %2$@";
-
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
-"%1$@ every %2$@" = "%1$@ за %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ без учёта %2$@";
@@ -398,8 +395,7 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "Возможность масштабирования по мере развития бизнеса";
 
-/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
-   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+/* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
 "About Tap to Pay" = "О функции Tap to Pay (Оплата в касание)";
 
 /* Navigation title for the About Tap to Pay on iPhone Screen. */
@@ -443,9 +439,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Учётная запись подключена";
-
-/* Title for the section related to actions inside In-Person Payments settings */
-"Actions" = "Действия";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Активировать %1$@";
@@ -1564,17 +1557,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the card reader support area option */
 "Card Reader \/ In-Person Payments" = "Устройство чтения карт\/очные платежи";
 
-/* Navigates to Card Reader Manuals screen */
-"Card Reader Manuals" = "Руководства по работе с платёжными терминалами";
-
 /* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
 "Card Readers" = "Устройства чтения карт";
 
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Руководства по работе с платёжными терминалами";
-
-/* Title for the section related to card readers inside In-Person Payments settings */
-"Card readers" = "Устройства чтения карт";
 
 /* Error message when a card is left in the reader and another transaction started. */
 "Card was left in reader - please remove and reinsert card" = "Карта осталась в устройстве чтения. Извлеките её и вставьте снова";
@@ -1807,8 +1794,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Свернутый";
 
-/* Navigates to Collect a payment via the Simple Payment screen
-   Text on the button that starts collecting a card present payment. */
+/* Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "Сбор платежей";
 
 /* Alert title when starting the collect payment flow without a user name.
@@ -2033,9 +2019,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Читать дальше";
-
-/* Call to Action to finish the setup of In-Person Payments in the Menu */
-"Continue setup" = "Продолжить настройку";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "Перейти к оплате";
@@ -2666,7 +2649,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for a done button in the navigation bar
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
 "Done" = "Готово";
@@ -3226,9 +3208,6 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "Экспериментальные функции";
 
-/* Label for the expiry setting in the subscription settings screen. */
-"Expire after" = "Прекратить после";
-
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "Окончание срока действия: %@";
 
@@ -3313,9 +3292,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fees and shipping lines */
 "Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "Неполные сведения о доставке и данные о комиссии.\nЧтобы изменить все сведения, откройте заказ в разделе администрирования WooCommerce.";
-
-/* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "Возврат платежей";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Получение вариантов...";
@@ -3437,9 +3413,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "Бесплатно за первый год";
-
-/* Label for the free trial setting in the subscription settings screen. */
-"Free trial" = "Бесплатная проба";
 
 /* Country option for a site address. */
 "French Guiana" = "Французская Гвиана";
@@ -3723,7 +3696,7 @@ which should be translated separately and considered part of this sentence. */
 "Haiti" = "Гаити";
 
 /* Title of features on the Free Trial Summary screen */
-"Hassel-free store ownership" = "Управление магазином без хлопот";
+"Hassle-free store ownership" = "Управление магазином без хлопот";
 
 /* Subtitle of the store onboarding task to customize the store domain. */
 "Have a custom URL to host your store." = "Настройте URL-адрес для своего магазина.";
@@ -3961,9 +3934,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "Очные платежи для этого магазина недоступны";
-
-/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
-"In-Person Payments setup is incomplete." = "Настройка очных платежей не завершена.";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Покупки в приложении";
@@ -4342,7 +4312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Tappable text at the bottom of the domain settings screen that opens a webview.
-   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title for the link to open the legal URL for AI-generated content in the product detail screen
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -4661,9 +4630,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Управляйте заказами и редактируйте их на ходу";
 
-/* Navigates to Card Reader management screen */
-"Manage card reader" = "Управление устройством чтения карт";
-
 /* Description of one of the hub menu options */
 "Manage more on admin" = "Дополнительные возможности администрирования";
 
@@ -4851,7 +4817,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "More options" = "Дополнительные параметры";
 
 /* More Privacy toggle section in the privacy screen. */
-"More privacy options available for woocommerce.com users. Check here to learn more." = "Для пользователей woocommerce.com доступны дополнительные опции конфиденциальности. Подробности смотрите здесь.";
+"More privacy options available for woo.com users. Check here to learn more." = "Для пользователей woo.com доступны дополнительные опции конфиденциальности. Подробности см. здесь.";
 
 /* Country option for a site address. */
 "Morocco" = "Марокко";
@@ -4959,6 +4925,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Активные сетевые плагины";
+
+/* Error message when session cookie has expired. */
+"NetworkError.invalidCookieNonce" = "Время вашей сессии истекло. Пожалуйста, войдите заново.";
+
+/* Error message when the URL is invalid. */
+"NetworkError.invalidURL" = "URL-адрес недействителен. Повторите попытку.";
+
+/* Error message when we receive not found error */
+"NetworkError.notFound" = "К сожалению, мы не смогли найти то, что вы искали. Повторите попытку. Ответ: %1$@";
+
+/* Error message when a request times out. */
+"NetworkError.timeout" = "К сожалению, обработка запроса заняла слишком много времени. Повторите попытку позже. Ответ: %1$@";
+
+/* Error message when the a network call fails with unacceptable status code.%1$d is the status code like 500. %2$@ is the response string. */
+"NetworkError.unacceptableStatusCode" = "К сожалению, на сервере возникла проблема. Повторите попытку позже. (Код ошибки: %1$d) Ответ: %2$@";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "Никогда не истекает";
@@ -5102,8 +5083,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Bolded message confirming that no payment has been taken when the upgrade failed. */
 "No payment has been taken" = "Средства не списаны";
 
-/* Display label when a subscription has no price.
-   Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Не установлена цена";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -5135,9 +5115,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "Тарифы доставки недоступны";
 
-/* Display label when a subscription has no signup fee. */
-"No signup fee" = "Нет регистрационного сбора";
-
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "Нет поддерживаемых устройством способов связи.";
 
@@ -5149,9 +5126,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No text detected message on the add product from image form. */
 "No text detected. Please select another packaging photo or enter product details manually." = "Текст не обнаружен. Выберите другую фотографию упаковки или введите сведения о товаре вручную.";
-
-/* Display label when a subscription has no trial period. */
-"No trial period" = "Нет пробного периода";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Нет вариантов для создания";
@@ -5389,9 +5363,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for button triggering more actions menu sheet. */
 "Order actions" = "Действия заказа";
 
-/* Navigates to Card Reader ordering screen */
-"Order card reader" = "Заказать устройство чтения карт";
-
 /* Order status update success notice */
 "Order status updated" = "Статус заказа обновлен";
 
@@ -5532,8 +5503,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "Платите картой или используйте другой разрешённый способ оплаты";
 
-/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
-   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person */
 "Pay in Person" = "Очная оплата";
 
 /* Title text of the row that shows the payment headline when creating a simple payment */
@@ -5550,9 +5520,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Highlighted header text on the store onboarding payments setup screen. */
 "Payment Methods" = "Способы оплаты";
 
-/* Navigates to Payment Gateway management screen */
-"Payment Provider" = "Платёжный сервис";
-
 /* Payment section title */
 "Payment Totals" = "Итоговые суммы платежей";
 
@@ -5568,9 +5535,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
 "Payment method added" = "Способ оплаты добавлен";
-
-/* Title for the section related to payments inside In-Person Payments settings */
-"Payment options" = "Способы оплаты";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Оплата прошла успешно";
@@ -5938,7 +5902,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price
    Title of the price field on the add product with AI Preview screen. */
 "Price" = "Цена";
 
@@ -6293,9 +6256,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Refund Details section title */
 "Refund Details" = "Описание возврата платежа";
 
-/* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "Возвратить платежи";
-
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "Возврат оплаты транспортной этикетки (%1$@)";
 
@@ -6641,9 +6601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the sale period on the Price Settings row until a certain date */
 "Sale dates: Until %@" = "Даты распродажи: до %@";
 
-/* Title of the cell in Product Price Settings > Sale price */
-"Sale price" = "Цена со скидкой";
-
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Цена со скидкой: %@";
 
@@ -6979,7 +6936,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
-   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "Настройки";
 
@@ -7007,9 +6963,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action title for sharing coupon from the Coupon Details screen
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Поделиться купоном";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Feedback" = "Отправить отзыв";
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Поделиться ссылкой на оплату";
@@ -7204,9 +7157,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Вы вошли под именем @%1$@";
-
-/* Label for the signup fee setting in the subscription settings screen. */
-"Signup fee" = "Регистрационный сбор";
 
 /* Display label for simple product type. */
 "Simple" = "Обычный";
@@ -7536,9 +7486,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Отправить запрос в службу поддержки";
 
-/* Display label for simple subscription product type.
-   Title for Subscription row in the product form screen.
-   Title for the subscription settings in a subscription product. */
+/* Display label for simple subscription product type. */
 "Subscription" = "Подписка";
 
 /* Subscription title with subscription number. Reads like: 'Subscription #123' */
@@ -7546,9 +7494,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "Статус подписки";
-
-/* Label for the subscription price setting in the subscription settings screen. */
-"Subscription price" = "Цена подписки";
 
 /* Subscriptions section title
    Title for the Subscriptions / Upgrades view
@@ -7709,9 +7654,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "Нажмите кнопку ниже, чтобы открыть онлайн-магазин в браузере.";
-
-/* Title for the Tap to Pay section in the In-Person payments settings */
-"Tap to Pay" = "Оплата в касание";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7919,9 +7861,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Невозможно загрузить заказ!";
 
-/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "Способ оформления заказа \"Очная оплата\" позволяет вам принимать платежи за заказы на веб-сайте при получении товара покупателем. %1$@";
-
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
 
@@ -8063,9 +8002,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
 "The price for bulk updating all variations. Editable." = "Цена массового обновления всех вариантов. Редактируемое значение.";
 
-/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
-"The price for this product. Editable." = "Цена товара. Можно редактировать.";
-
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d product." = "Будет обновлена цена %d продукта.";
 
@@ -8093,9 +8029,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Bulk price update error message, when the sale price is added but the regular price is not
    Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Нельзя добавить продажную цену без обычной цены.";
-
-/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
-"The sale price for this product. Editable." = "Продажная цена товара. Можно редактировать.";
 
 /* Bulk price update error, when the sale price is higher than the regular price
    Product price error notice message, when the sale price is higher than the regular price */
@@ -8148,9 +8081,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the card reader service experiences an unexpected software error. */
 "The system experienced an unexpected software error" = "Возникла неожиданная программная ошибка";
-
-/* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "Система выполняет другую команду. Повторите попытку";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Не удаётся получить отчёт о статусе системы для вашего сайта. Повторите попытку.";
@@ -8692,9 +8622,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when communication with the card reader is disrupted. */
 "Unable to communicate with reader - please try again" = "Отсутствует связь с устройством чтения. Повторите попытку";
-
-/* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "Не удалось подключиться к устройству чтения: процедура его обнаружения выполнена ненадлежащим образом. Повторите попытку";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
 "Unable to connect to card reader - the card reader is already in use" = "Не удалось подключиться к устройству чтения: оно уже используется";
@@ -9538,10 +9465,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
-/* Title for the row related to Woo Payments Deposits/Balances.
-   Title for the section related to Woo Payments Deposits/Balances. */
-"Woo Payments Balance" = "Баланс Woo Payments";
-
 /* Text shown when a plan upgrade has been successfully purchased. */
 "Woo! You’re off to a great start!" = "Вау! Теперь всё готово!";
 
@@ -9676,9 +9599,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the quantity rules screen. */
 "You can edit quantity rules in the web dashboard" = "Правила, регулирующие количество, можно редактировать в веб-консоли";
 
-/* Info notice at the bottom of the subscription settings screen. */
-"You can edit subscription settings in the web dashboard" = "Изменять веб-подписки можно в веб-консоли";
-
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Настройки домена находятся в \"Меню\" > \"Настройки\".";
 
@@ -9693,9 +9613,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "Добавить переменные подписки можно только в веб-консоли";
-
-/* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "Вы можете вернуть сборы, используя меню администратора магазина";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "Вы можете запросить возврат средств за неиспользованный почтовый бланк.\nОбработка займет от 14 дней.";
@@ -9881,23 +9798,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Подробнее](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to delete the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.deleteButton" = "Удалить индивидуальную сумму";
+
 /* Button title to confirm the custom amount on the add custom amount view in orders. */
 "addCustomAmount.doneButton" = "Добавить индивидуальную сумму";
 
 /* Button title to confirm the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.editButton" = "Изменить индивидуальную сумму";
 
+/* Title above the amount field on the add custom amount view in orders. */
+"addCustomAmountPercentageView.amount.title" = "Сумма";
+
+/* Title for entering an custom amount through a percentage */
+"addCustomAmountPercentageView.percentageTextField.title" = "Ввести процент от общей суммы заказа";
+
+/* Title for the charge taxes toggle in the custom amounts screen. */
+"addCustomAmountView.chargeTaxesToggle.title" = "Удержать налог";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "Быстрый запуск WooCommerce";
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Иконка";
-
-/* Cell title on beta features screen to enable new payments menu */
-"betaFeature.swiftUIPaymentsMenu.switch.description" = "Попробуйте новый вариант меню платежей, переработанный SwiftUI, который готовится к запуску.";
-
-/* Cell title on beta features screen to enable new payments menu */
-"betaFeature.swiftUIPaymentsMenu.switch.title" = "Новое меню платежей";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
@@ -9913,10 +9836,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.instruction" = "Чтобы включить устройство чтения карт, нажмите кнопку питания.";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.modalScanningForReader.learnMore.link" = "Подробнее";
 
 /* A label prompting users to learn more about In-Person Payments.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -9964,11 +9883,51 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the products cannot be loaded in the bundle product configuration form. */
 "configureBundleProductError.cannotLoadProducts" = "Не удалось загрузить пакеты товаров. Повторите попытку.";
 
+/* Error message when the product bundle size is greater than the maximum if a maximum rule is specified.%1$@ is the maximum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeGreaterThanMaximum" = "Выберите до %1$@ %2$@.";
+
+/* Error message when the product bundle size is less than the minimum if a minimum rule is specified.%1$@ is the minimum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeLessThanMinimum" = "Выберите по крайней мере %1$@ %2$@.";
+
+/* Error message when the product bundle size is not matching the exact size if both rules are specified and the min/max are the same.%1$@ is the expected bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeNotExact" = "Выберите %1$@ %2$@.";
+
+/* Error message when the product bundle size is not within a min/max range if both rules are specified.%1$@ is the minimum bundle size. %2$@ is the minimum bundle size. */
+"configureBundleProductValidationError.bundleSizeNotWithinRange" = "Выберите %1$@–%2$@ поз.";
+
+/* Used in configureBundleProductValidationError strings for the plural form of item. */
+"configureBundleProductValidationError.itemPlural" = "позиций";
+
+/* Used in configureBundleProductValidationError strings for the singular form of item. */
+"configureBundleProductValidationError.itemSingular" = "позиция";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "день";
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "дн.";
+
+/* Title for Subscription expiry row in the product form screen. */
+"defaultProductFormTableViewModel.expireAfter" = "Окончание срока действия";
+
+/* Display label when a subscription never expires. */
+"defaultProductFormTableViewModel.neverExpire" = "Действует бессрочно";
+
+/* Display label when a subscription has no trial period.
+   Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.noFreeTrial" = "Пробный период";
+
+/* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
+"defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "Обычная цена: %1$@ каждые %2$@";
+
+/* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
+"defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Регистрационный сбор: %1$@";
+
+/* Accessibility label for the collapse chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.hide" = "Скрыть сведения о предоплате";
+
+/* Accessibility label for the expand chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.show" = "Показать сведения о предоплате";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
@@ -10046,6 +10005,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "Устройства чтения карт";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.depositSummary.loading.accessibilityLabel" = "Загрузка балансов…";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
 "menu.payments.inPersonPayments.learnMore.link" = "Подробнее";
@@ -10068,6 +10030,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link" = "Подробнее";
+
+/* Title for the accessibility action to open the learn more screen, showing information about adding Pay in Person to their checkout. */
+"menu.payments.payInPerson.learnMore.link.accessibilityAction" = "Подробнее";
 
 /* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "menu.payments.payInPerson.toggle.row.title" = "Очная оплата";
@@ -10117,6 +10082,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Индивидуальные суммы";
 
+/* Button title for the fixed amount option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle" = "Фиксированная сумма";
+
+/* Button title for the percentage option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "Процент от общей суммы заказа";
+
+/* Title text of the confirmation dialog that shows the add custom amounts options. */
+"orderForm.customAmounts.addOptionsDialogTitle" = "Как вы хотите добавить индивидуальную сумму?";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Индивидуальные суммы";
 
@@ -10162,20 +10136,56 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Продукт по подписке с вариантами";
 
+/* Description of the subscription period for a product. Reads like: 'every 2 months'. */
+"productFormDataModel.subscriptionPeriodFormat" = "Раз в %1$@";
+
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Рекламируйте при помощи Blaze";
 
+/* Title of the billing interval row on the Product Price screen */
+"productPriceSettingsViewController.billingIntervalRowTitle" = "Расчётный интервал";
+
+/* Button on the toolbar of the subscription period picker view on the Product Price screen */
+"productPriceSettingsViewController.subscriptionPeriodToolBarButton" = "Готово";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
+"productPriceSettingsViewModel.regularPriceAccessibilityHint" = "Цена данного товара. Редактируемое значение.";
+
+/* Title of the cell in Product Price Settings > Price */
+"productPriceSettingsViewModel.regularPriceTitle" = "Цена";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
+"productPriceSettingsViewModel.salePriceAccessibilityHint" = "Продажная цена товара. Редактируемое значение.";
+
+/* Title of the cell in Product Price Settings > Sale price */
+"productPriceSettingsViewModel.salePriceTitle" = "Цена со скидкой";
+
+/* Section header title for product sale price */
+"productPriceSettingsViewModel.saleSectionTitle" = "Распродажа";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the subscription sign-up fee for this product. */
+"productPriceSettingsViewModel.signupFeeAccessibilityHint" = "Регистрационный сбор при подписке на этот товар. Редактируемое значение.";
+
+/* Subtitle of the cell in Product Price Settings > Sign-up Fee */
+"productPriceSettingsViewModel.signupFeeSubtitle" = "Можно включить сумму, взимаемую в момент подписки. Регистрационный сбор взимается немедленно, даже если у товара есть бесплатный пробный период или синхронизированы даты оплаты.";
+
+/* Title of the cell in Product Price Settings > Sign-up Fee */
+"productPriceSettingsViewModel.signupFeeTitle" = "Регистрационный сбор";
+
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
-
-/* Action to configure a product row in the product selector. */
-"productSelector.configureProductRow" = "Настройка";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "оценен несколько раз (%ld)";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "оценен один раз";
+
+/* Title on the refund screen that lists the custom amounts total cost */
+"refundCustomAmountsDetails.totalTitle" = "Возврат индивидуальных сумм";
+
+/* Title of the switch in the IssueRefund screen to refund customAmounts */
+"refundIssue.customAmounts.title" = "Возместить индивидуальные суммы";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Платёж завершён";
@@ -10234,6 +10244,37 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Не удаётся получить статистику за сегодня";
+
+/* Title of the button to save subscription's expire after info. */
+"subscriptionExpiryView.done" = "Готово";
+
+/* Title for the expire after row in add or edit subscription expire after info screen.
+   Title for the Subscription expire after screen of the subscription product. */
+"subscriptionExpiryView.expireAfter" = "Окончание срока действия";
+
+/* Subtitle text to explain subscription expire after value. */
+"subscriptionExpiryView.expireAfterSubtitle" = "По истечении этого срока подписка автоматически прекращается. Этот период дополняет любой бесплатный пробный период или время, предоставленное до синхронизированной даты первого продления.";
+
+/* Title for the Expire after screen of the subscription product. */
+"subscriptionExpiryView.neverExpire" = "Действует бессрочно";
+
+/* Title of the button to save subscription's free trial info. */
+"subscriptionTrialView.done" = "Готово";
+
+/* Title for the free trial length row in add or edit subscription free trial screen. */
+"subscriptionTrialView.duration" = "Продолжительность";
+
+/* Subtitle text to explain subscription free trial. */
+"subscriptionTrialView.freeTrialSubtitle" = "Пробный период — это необязательный период времени до списания первого регулярного платежа. Любой регистрационный взнос всё равно будет взиматься в начале подписки.";
+
+/* Title for the free trial period row in add or edit subscription free trial screen. */
+"subscriptionTrialView.period" = "Период";
+
+/* Validation error message in the Free trial info screen of the subscription product. Reads like: The trial period cannot exceed 90 days. */
+"subscriptionTrialViewModel.errorMessage" = "Пробный период не может превышать %1$d %2$@";
+
+/* Title for the Free trial info screen of the subscription product. */
+"subscriptionTrialViewModel.title" = "Пробный период";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,

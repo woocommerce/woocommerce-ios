@@ -21,19 +21,14 @@ enum ProductSettingsSections {
         let rows: [ProductSettingsRowMediator]
 
         init(_ settings: ProductSettings) {
-            if settings.productType == .simple {
-                let tempRows: [ProductSettingsRowMediator?] = [ProductSettingsRows.Status(settings),
-                        ProductSettingsRows.Visibility(settings),
-                        ProductSettingsRows.CatalogVisibility(settings),
-                        ProductSettingsRows.VirtualProduct(settings),
-                        ProductSettingsRows.DownloadableProduct(settings)
-                ]
-                rows = tempRows.compactMap { $0 }
-            } else {
-                rows = [ProductSettingsRows.Status(settings),
-                        ProductSettingsRows.Visibility(settings),
-                        ProductSettingsRows.CatalogVisibility(settings)]
-            }
+            let shouldShowVirtualProductSetting = settings.productType == .simple || settings.productType == .subscription
+            let shouldShowDownloadableProductSetting = settings.productType == .simple || settings.productType == .subscription
+            let rows: [ProductSettingsRowMediator?] = [ProductSettingsRows.Status(settings),
+                                                       ProductSettingsRows.Visibility(settings),
+                                                       ProductSettingsRows.CatalogVisibility(settings),
+                                                       shouldShowVirtualProductSetting ? ProductSettingsRows.VirtualProduct(settings) : nil,
+                                                       shouldShowDownloadableProductSetting ? ProductSettingsRows.DownloadableProduct(settings) : nil]
+            self.rows = rows.compactMap { $0 }
         }
     }
 

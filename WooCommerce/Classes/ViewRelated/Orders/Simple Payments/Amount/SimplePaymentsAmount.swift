@@ -117,12 +117,11 @@ extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControlle
 /// We should find a better way of doing this, but it's out of scope at the time of adding this (during Payments Menu rewrite.)
 struct SimplePaymentsAmountHosted: UIViewControllerRepresentable {
     let viewModel: SimplePaymentsAmountViewModel
-    let presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>
 
     func makeUIViewController(context: Context) -> some UIViewController {
         SimplePaymentsAmountHostingController(
             viewModel: viewModel,
-            presentNoticePublisher: presentNoticePublisher)
+            presentNoticePublisher: viewModel.presentNoticePublisher)
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

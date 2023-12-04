@@ -47,8 +47,8 @@ enum ProductFormSection: Equatable {
         case attributes(viewModel: ViewModel, isEditable: Bool)
         case bundledProducts(viewModel: ViewModel, isActionable: Bool)
         case components(viewModel: ViewModel, isActionable: Bool)
-        case subscription(viewModel: ViewModel, isActionable: Bool)
         case subscriptionFreeTrial(viewModel: ViewModel, isEditable: Bool)
+        case subscriptionExpiry(viewModel: ViewModel, isEditable: Bool)
         case noVariationsWarning(viewModel: WarningViewModel)
         case quantityRules(viewModel: ViewModel)
 

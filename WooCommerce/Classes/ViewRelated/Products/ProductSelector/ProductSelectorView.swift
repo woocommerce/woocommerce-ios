@@ -213,8 +213,7 @@ struct ProductSelectorView: View {
                            viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
 
-                Text(Localization.configureButton)
-                    .linkStyle()
+                ConfigurationIndicator()
                     .renderedIf(rowViewModel.isConfigurable)
                     .onAppear {
                         guard !hasTrackedBundleProductConfigureCTAShownEvent else {
@@ -275,11 +274,6 @@ private extension ProductSelectorView {
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
         static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
-        static let configureButton = NSLocalizedString(
-            "productSelector.configureProductRow",
-            value: "Configure",
-            comment: "Action to configure a product row in the product selector."
-        )
     }
 }
 

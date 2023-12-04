@@ -493,6 +493,7 @@ final class MockAuthenticationManager: AuthenticationManager {
 }
 
 final class MockSessionManager: SessionManagerProtocol {
+
     private(set) var deleteApplicationPasswordInvoked: Bool = false
 
     var defaultAccount: Yosemite.Account? = nil
@@ -508,6 +509,8 @@ final class MockSessionManager: SessionManagerProtocol {
     }
 
     var defaultStoreID: Int64? = nil
+
+    var defaultStoreUUID: String? = nil
 
     var defaultStoreURL: String? = nil
 

@@ -33,7 +33,10 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] in
-            let webViewModel = BlazeWebViewModel(source: .campaignList, siteURL: viewModel.siteURL, productID: nil) {
+            let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
+                                                 source: .campaignList,
+                                                 siteURL: viewModel.siteURL,
+                                                 productID: nil) {
                 self?.handlePostCreation()
             }
             let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)

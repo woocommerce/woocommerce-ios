@@ -28,17 +28,23 @@ final class BlazeWebViewModel {
     private var isCompleted: Bool = false
 
     private let source: BlazeSource
+    private let siteID: Int64
     private let siteURL: String
     private let productID: Int64?
+    private let userDefaults: UserDefaults
     private let onCampaignCreated: (() -> Void)?
 
-    init(source: BlazeSource,
+    init(siteID: Int64,
+         source: BlazeSource,
          siteURL: String,
          productID: Int64?,
+         userDefaults: UserDefaults = .standard,
          onCampaignCreated: (() -> Void)? = nil) {
+        self.siteID = siteID
         self.source = source
         self.siteURL = siteURL
         self.productID = productID
+        self.userDefaults = userDefaults
         self.onCampaignCreated = onCampaignCreated
         self.initialURL = {
             let url = siteURL.trimHTTPScheme()
@@ -82,6 +88,7 @@ extension BlazeWebViewModel: AuthenticatedWebViewModel {
         if currentStep == Constants.completionStep {
             ServiceLocator.analytics.track(event: .Blaze.blazeFlowCompleted(source: source, step: currentStep))
             isCompleted = true
+            userDefaults.restoreBlazeSectionOnMyStore(for: siteID)
             onCampaignCreated?()
         }
     }

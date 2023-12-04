@@ -10,35 +10,28 @@ struct AddCustomAmountView: View {
         NavigationView {
             GeometryReader { geometry in
                 ScrollView {
-                    VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
-                        Spacer()
+                    VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
 
-                        Text(Localization.amountTitle)
-                            .font(.title3)
-                            .foregroundColor(Color(.textSubtle))
-
-                        FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
-
-                        VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
-                            Text(String.localizedStringWithFormat(Localization.percentageInputTitle, viewModel.baseAmountForPercentageString))
-                                .font(.subheadline)
-                                .foregroundColor(Color(.textSubtle))
-
-                            HStack(spacing: Layout.inputFieldVerticalSpacing) {
-                                InputField(placeholder: Localization.percentageInputPlaceholder,
-                                           text: $viewModel.percentage)
-
-                                Text("%")
+                        if let formattableAmountTextFieldViewModel = viewModel.formattableAmountTextFieldViewModel {
+                            Group {
+                                Text(Localization.amountTitle)
                                     .font(.title3)
                                     .foregroundColor(Color(.textSubtle))
+
+                                FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel)
+
+                                Divider()
+                                    .padding(.bottom, Layout.mainVerticalSpacing)
                             }
                         }
-                        .padding(.bottom, Layout.mainVerticalSpacing)
-                        .renderedIf(viewModel.shouldShowPercentageInput)
+
+                        if let percentageViewModel = viewModel.percentageViewModel {
+                            AddCustomAmountPercentageView(viewModel: percentageViewModel)
+                                .padding(.bottom, Layout.mainVerticalSpacing)
+                        }
 
                         Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
                             .font(.title3)
-                            .foregroundColor(Color(.textSubtle))
                             .padding(.bottom, Layout.mainVerticalSpacing)
 
                         Text(Localization.nameTitle)
@@ -48,7 +41,16 @@ struct AddCustomAmountView: View {
                         TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
                             .secondaryTitleStyle()
                             .foregroundColor(Color(.textSubtle))
-                            .multilineTextAlignment(.center)
+                            .padding(.bottom, Layout.mainVerticalSpacing)
+
+                        Button(Localization.deleteButtonTitle) {
+                            viewModel.deleteButtonPressed()
+                            dismiss()
+                        }
+                        .foregroundColor(.init(uiColor: .error))
+                        .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
+                        .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
+                        .renderedIf(viewModel.shouldShowDeleteButton)
 
                         Spacer()
 
@@ -57,7 +59,7 @@ struct AddCustomAmountView: View {
                             dismiss()
                         }
                         .buttonStyle(PrimaryButtonStyle())
-                        .disabled(viewModel.shouldDisableDoneButton)
+                        .disabled(!viewModel.shouldEnableDoneButton)
                         .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
                     }
                     .padding()
@@ -77,36 +79,11 @@ struct AddCustomAmountView: View {
     }
 }
 
-private extension AddCustomAmountView {
-    struct InputField: View {
-        let placeholder: String
-        @Binding var text: String
 
-        var body: some View {
-            TextField(placeholder, text: $text)
-            .keyboardType(.decimalPad)
-            .padding(EdgeInsets(top: 0, leading: Layout.inputFieldInnerVerticalPadding, bottom: 0, trailing: Layout.inputFieldInnerVerticalPadding))
-            .frame(maxWidth: .infinity, minHeight: Layout.inputFieldHeight, maxHeight: Layout.inputFieldHeight)
-            .overlay {
-                RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                    .inset(by: Layout.inputFieldOverlayInset)
-                    .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
-            }
-            .cornerRadius(Layout.frameCornerRadius)
-        }
-    }
-}
 
 private extension AddCustomAmountView {
     enum Layout {
         static let mainVerticalSpacing: CGFloat = 8
-        static let rowHeight: CGFloat = 44
-        static let frameCornerRadius: CGFloat = 4
-        static let borderLineWidth: CGFloat = 1
-        static let inputFieldOverlayInset: CGFloat = 0.25
-        static let inputFieldHeight: CGFloat = 44
-        static let inputFieldInnerVerticalPadding: CGFloat = 8
-        static let inputFieldVerticalSpacing: CGFloat = 8
     }
 }
 
@@ -114,15 +91,12 @@ private extension AddCustomAmountView {
     enum Localization {
         static let amountTitle = NSLocalizedString("Amount", comment: "Title above the amount field on the add custom amount view in orders.")
         static let nameTitle = NSLocalizedString("Name", comment: "Title above the name field on the add custom amount view in orders.")
+        static let deleteButtonTitle = NSLocalizedString("addCustomAmount.deleteButton",
+                                                         value: "Delete Custom Amount",
+                                                         comment: "Button title to delete the custom amount on the edit custom amount view in orders.")
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
-        static let percentageInputTitle = NSLocalizedString("addCustomAmountView.percentageTextField.title",
-                                                             value: "Or enter percentage of the order total (%1$@)",
-                                                             comment: "Title for entering an custom amount through a percentage")
-        static let percentageInputPlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.placeholder",
-                                                             value: "Enter percentage",
-                                                             comment: "Placeholder for entering an custom amount through a percentage")
         static let chargeTaxesToggleTitle = NSLocalizedString("addCustomAmountView.chargeTaxesToggle.title",
                                                              value: "Charge Taxes",
                                                              comment: "Title for the charge taxes toggle in the custom amounts screen.")
@@ -130,5 +104,6 @@ private extension AddCustomAmountView {
 
     enum AccessibilityIdentifiers {
         static let addCustomAmountButton = "order-add-custom-amount-view-add-custom-amount-button"
+        static let deleteCustomAmountButton = "order-add-custom-amount-view-delete-custom-amount-button"
     }
 }

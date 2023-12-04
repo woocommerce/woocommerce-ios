@@ -6,7 +6,7 @@ import protocol Storage.StorageManagerType
 /// View model for `BlazeCampaignDashboardView`.
 final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// UI state of the Blaze campaign view in dashboard.
-    enum State {
+    enum State: Equatable {
         /// Shows placeholder views in redacted state.
         case loading
         /// Shows info about the latest Blaze campaign
@@ -50,6 +50,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let analytics: Analytics
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private let userDefaults: UserDefaults
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
@@ -75,14 +76,15 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         productResultsController.fetchedObjects.first
     }
 
-    private var visibilitySubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         userDefaults: UserDefaults = .standard) {
         self.siteID = siteID
         self.siteURL = siteURL
         self.stores = stores
@@ -90,7 +92,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
-
+        self.userDefaults = userDefaults
         observeSectionVisibility()
         configureResultsController()
     }
@@ -98,7 +100,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     @MainActor
     func reload() async {
         update(state: .loading)
-        guard await blazeEligibilityChecker.isSiteEligible() else {
+        guard !userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID),
+              await blazeEligibilityChecker.isSiteEligible() else {
             update(state: .empty)
             return
         }
@@ -136,6 +139,11 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     func didSelectCreateCampaign(source: BlazeSource) {
         analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
+    }
+
+    func dismissBlazeSection() {
+        userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
+        analytics.track(event: .Blaze.blazeViewDismissed(source: .myStoreSection))
     }
 }
 
@@ -233,7 +241,7 @@ private extension BlazeCampaignDashboardViewModel {
     }
 
     func observeSectionVisibility() {
-        visibilitySubscription = $state
+        $state
             .map { state in
                 switch state {
                 case .showCampaign, .showProduct:
@@ -247,6 +255,28 @@ private extension BlazeCampaignDashboardViewModel {
             .sink { [weak self] _ in
                 self?.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSection))
             }
+            .store(in: &subscriptions)
+
+        userDefaults.publisher(for: \.hasDismissedBlazeSectionOnMyStore)
+            .dropFirst() // ignores first event because data is already loaded initially.
+            .map { [weak self] _ -> Bool in
+                guard let self else {
+                    return false
+                }
+                return self.userDefaults.hasDismissedBlazeSectionOnMyStore(for: self.siteID)
+            }
+            .removeDuplicates()
+            .sink { [weak self] hasDismissed in
+                guard let self else { return }
+                guard !hasDismissed else {
+                    self.update(state: .empty)
+                    return
+                }
+                Task {
+                    await self.reload()
+                }
+            }
+            .store(in: &subscriptions)
     }
 }
 

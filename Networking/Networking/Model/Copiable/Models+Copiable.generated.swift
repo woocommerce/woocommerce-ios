@@ -1569,7 +1569,8 @@ extension Networking.ProductBundleItem {
         overridesVariations: CopiableProp<Bool> = .copy,
         allowedVariations: CopiableProp<[Int64]> = .copy,
         overridesDefaultVariationAttributes: CopiableProp<Bool> = .copy,
-        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy
+        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy,
+        pricedIndividually: CopiableProp<Bool> = .copy
     ) -> Networking.ProductBundleItem {
         let bundledItemID = bundledItemID ?? self.bundledItemID
         let productID = productID ?? self.productID
@@ -1584,6 +1585,7 @@ extension Networking.ProductBundleItem {
         let allowedVariations = allowedVariations ?? self.allowedVariations
         let overridesDefaultVariationAttributes = overridesDefaultVariationAttributes ?? self.overridesDefaultVariationAttributes
         let defaultVariationAttributes = defaultVariationAttributes ?? self.defaultVariationAttributes
+        let pricedIndividually = pricedIndividually ?? self.pricedIndividually
 
         return Networking.ProductBundleItem(
             bundledItemID: bundledItemID,
@@ -1598,7 +1600,8 @@ extension Networking.ProductBundleItem {
             overridesVariations: overridesVariations,
             allowedVariations: allowedVariations,
             overridesDefaultVariationAttributes: overridesDefaultVariationAttributes,
-            defaultVariationAttributes: defaultVariationAttributes
+            defaultVariationAttributes: defaultVariationAttributes,
+            pricedIndividually: pricedIndividually
         )
     }
 }
@@ -1734,7 +1737,10 @@ extension Networking.ProductSubscription {
         price: CopiableProp<String> = .copy,
         signUpFee: CopiableProp<String> = .copy,
         trialLength: CopiableProp<String> = .copy,
-        trialPeriod: CopiableProp<SubscriptionPeriod> = .copy
+        trialPeriod: CopiableProp<SubscriptionPeriod> = .copy,
+        oneTimeShipping: CopiableProp<Bool> = .copy,
+        paymentSyncDate: CopiableProp<String> = .copy,
+        paymentSyncMonth: CopiableProp<String> = .copy
     ) -> Networking.ProductSubscription {
         let length = length ?? self.length
         let period = period ?? self.period
@@ -1743,6 +1749,9 @@ extension Networking.ProductSubscription {
         let signUpFee = signUpFee ?? self.signUpFee
         let trialLength = trialLength ?? self.trialLength
         let trialPeriod = trialPeriod ?? self.trialPeriod
+        let oneTimeShipping = oneTimeShipping ?? self.oneTimeShipping
+        let paymentSyncDate = paymentSyncDate ?? self.paymentSyncDate
+        let paymentSyncMonth = paymentSyncMonth ?? self.paymentSyncMonth
 
         return Networking.ProductSubscription(
             length: length,
@@ -1751,7 +1760,10 @@ extension Networking.ProductSubscription {
             price: price,
             signUpFee: signUpFee,
             trialLength: trialLength,
-            trialPeriod: trialPeriod
+            trialPeriod: trialPeriod,
+            oneTimeShipping: oneTimeShipping,
+            paymentSyncDate: paymentSyncDate,
+            paymentSyncMonth: paymentSyncMonth
         )
     }
 }
@@ -1905,6 +1917,24 @@ extension Networking.ProductVariation {
             maxAllowedQuantity: maxAllowedQuantity,
             groupOfQuantity: groupOfQuantity,
             overrideProductQuantities: overrideProductQuantities
+        )
+    }
+}
+
+extension Networking.ProductVariationAttribute {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        option: CopiableProp<String> = .copy
+    ) -> Networking.ProductVariationAttribute {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let option = option ?? self.option
+
+        return Networking.ProductVariationAttribute(
+            id: id,
+            name: name,
+            option: option
         )
     }
 }
@@ -2900,18 +2930,15 @@ extension Networking.WooPaymentsBalance {
     public func copy(
         amount: CopiableProp<Int> = .copy,
         currency: CopiableProp<String> = .copy,
-        sourceTypes: CopiableProp<WooPaymentsSourceTypes> = .copy,
         depositsCount: NullableCopiableProp<Int> = .copy
     ) -> Networking.WooPaymentsBalance {
         let amount = amount ?? self.amount
         let currency = currency ?? self.currency
-        let sourceTypes = sourceTypes ?? self.sourceTypes
         let depositsCount = depositsCount ?? self.depositsCount
 
         return Networking.WooPaymentsBalance(
             amount: amount,
             currency: currency,
-            sourceTypes: sourceTypes,
             depositsCount: depositsCount
         )
     }
@@ -3043,18 +3070,6 @@ extension Networking.WooPaymentsManualDeposit {
     }
 }
 
-extension Networking.WooPaymentsSourceTypes {
-    public func copy(
-        card: CopiableProp<Int> = .copy
-    ) -> Networking.WooPaymentsSourceTypes {
-        let card = card ?? self.card
-
-        return Networking.WooPaymentsSourceTypes(
-            card: card
-        )
-    }
-}
-
 extension Networking.WordPressMedia {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,
@@ -3084,6 +3099,27 @@ extension Networking.WordPressMedia {
             alt: alt,
             details: details,
             title: title
+        )
+    }
+}
+
+extension Networking.WordPressTheme {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        demoURI: CopiableProp<String> = .copy
+    ) -> Networking.WordPressTheme {
+        let id = id ?? self.id
+        let description = description ?? self.description
+        let name = name ?? self.name
+        let demoURI = demoURI ?? self.demoURI
+
+        return Networking.WordPressTheme(
+            id: id,
+            description: description,
+            name: name,
+            demoURI: demoURI
         )
     }
 }

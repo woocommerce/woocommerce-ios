@@ -85,6 +85,21 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
         case feePercentage = "fee_percentage"
         case created
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.date = try container.decode(Date.self, forKey: .date)
+        self.type = try container.decode(WooPaymentsDepositType.self, forKey: .type)
+        self.amount = try container.decode(Int.self, forKey: .amount)
+        self.status = container.failsafeDecodeIfPresent(WooPaymentsDepositStatus.self, forKey: .status) ?? .unknown
+        self.bankAccount = try container.decodeIfPresent(String.self, forKey: .bankAccount)
+        self.currency = try container.decode(String.self, forKey: .currency)
+        self.automatic = try container.decode(Bool.self, forKey: .automatic)
+        self.fee = try container.decode(Int.self, forKey: .fee)
+        self.feePercentage = try container.decode(Int.self, forKey: .feePercentage)
+        self.created = try container.decode(Int.self, forKey: .created)
+    }
 }
 
 public struct WooPaymentsManualDeposit: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
@@ -137,6 +152,7 @@ public enum WooPaymentsDepositStatus: String, Codable, Equatable, GeneratedFakea
     case paid
     case canceled
     case failed
+    case unknown
 }
 
 public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
@@ -154,30 +170,18 @@ public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, Generated
 public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let amount: Int
     public let currency: String
-    public let sourceTypes: WooPaymentsSourceTypes
     public let depositsCount: Int?
 
-    public init(amount: Int, currency: String, sourceTypes: WooPaymentsSourceTypes, depositsCount: Int?) {
+    public init(amount: Int, currency: String, depositsCount: Int?) {
         self.amount = amount
         self.currency = currency
-        self.sourceTypes = sourceTypes
         self.depositsCount = depositsCount
     }
 
     public enum CodingKeys: String, CodingKey {
         case amount
         case currency
-        case sourceTypes = "source_types"
         case depositsCount = "deposits_count"
-    }
-}
-
-public struct WooPaymentsSourceTypes: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    public let card: Int
-    // TODO: find out other possible source types, or remove
-
-    public init(card: Int) {
-        self.card = card
     }
 }
 
@@ -222,7 +226,7 @@ public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, Generated
     }
 
     public init(from decoder: Decoder) throws {
-        var container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         delayDays = try container.decode(Int.self, forKey: .delayDays)
         let weeklyAnchor = try container.decodeIfPresent(WooPaymentsDepositInterval.Weekday.self, forKey: .weeklyAnchor)
         let monthlyAnchor = try container.decodeIfPresent(Int.self, forKey: .monthlyAnchor)

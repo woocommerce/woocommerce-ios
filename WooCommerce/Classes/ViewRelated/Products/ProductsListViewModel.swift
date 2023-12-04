@@ -1,7 +1,8 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
-/// View model for `ProductsViewController`. Only stores logic related to Bulk Editing.
+/// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.
 ///
 class ProductListViewModel {
 
@@ -14,10 +15,17 @@ class ProductListViewModel {
 
     private(set) var selectedProducts: Set<Product> = .init()
 
+    private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
+
+    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+
     init(siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
         self.siteID = siteID
         self.stores = stores
+        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
+        self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
     }
 
     var selectedProductsCount: Int {
@@ -150,5 +158,21 @@ class ProductListViewModel {
             }
         }
         stores.dispatch(batchAction)
+    }
+
+    /// Whether site has Woo Subscriptions extension enabled
+    ///
+    var isEligibleForSubscriptions: Bool {
+        wooSubscriptionProductsEligibilityChecker.isSiteEligible()
+    }
+
+    func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> SKUSearchResult {
+        do {
+            return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .productList)
+        } catch {
+            DDLogInfo("SKU search failed with error: \(error)")
+            throw error
+            // TODO: Show error notice
+        }
     }
 }

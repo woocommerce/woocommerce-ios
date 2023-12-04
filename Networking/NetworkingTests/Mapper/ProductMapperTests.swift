@@ -341,6 +341,7 @@ final class ProductMapperTests: XCTestCase {
             .init(id: 1, name: "Color", option: "blue"),
             .init(id: 0, name: "Logo", option: "Yes")
         ])
+        XCTAssertTrue(bundledItem.pricedIndividually)
     }
 
     /// Test that products with the `composite` product type are properly parsed.
@@ -382,6 +383,62 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.signUpFee, "")
         XCTAssertEqual(subscriptionSettings.trialLength, "1")
         XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
+        XCTAssertTrue(subscriptionSettings.oneTimeShipping)
+        XCTAssertEqual(subscriptionSettings.paymentSyncDate, "3")
+    }
+
+    /// Test that products with the `subscription` product type are properly parsed when sync renewal value is in dict format.
+    ///
+    func test_subscription_products_with_sync_renewals_in_dict_format_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapProduct(from: "product-subscription-sync-renewals-day-month-format"))
+        let subscriptionSettings = try XCTUnwrap(product.subscription)
+
+        // Then
+        XCTAssertEqual(product.productType, .subscription)
+        XCTAssertEqual(subscriptionSettings.length, "2")
+        XCTAssertEqual(subscriptionSettings.period, .month)
+        XCTAssertEqual(subscriptionSettings.periodInterval, "1")
+        XCTAssertEqual(subscriptionSettings.price, "5")
+        XCTAssertEqual(subscriptionSettings.signUpFee, "")
+        XCTAssertEqual(subscriptionSettings.trialLength, "1")
+        XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
+        XCTAssertTrue(subscriptionSettings.oneTimeShipping)
+        XCTAssertEqual(subscriptionSettings.paymentSyncDate, "1")
+        XCTAssertEqual(subscriptionSettings.paymentSyncMonth, "01")
+    }
+
+    /// Test that products with the `subscription` product type are properly parsed when sync renewal value is in dict format with int values.
+    ///
+    func test_subscription_products_with_sync_renewals_in_dict_format_with_int_values_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapProduct(from: "product-subscription-sync-renewals-day-month-format-int-values"))
+        let subscriptionSettings = try XCTUnwrap(product.subscription)
+
+        // Then
+        XCTAssertEqual(product.productType, .subscription)
+        XCTAssertEqual(subscriptionSettings.length, "2")
+        XCTAssertEqual(subscriptionSettings.period, .month)
+        XCTAssertEqual(subscriptionSettings.periodInterval, "1")
+        XCTAssertEqual(subscriptionSettings.price, "5")
+        XCTAssertEqual(subscriptionSettings.signUpFee, "")
+        XCTAssertEqual(subscriptionSettings.trialLength, "1")
+        XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
+        XCTAssertTrue(subscriptionSettings.oneTimeShipping)
+        XCTAssertEqual(subscriptionSettings.paymentSyncDate, "1")
+        XCTAssertEqual(subscriptionSettings.paymentSyncMonth, "01")
+    }
+
+    /// Test that `subscription` is nil when parsing non-subscription product response
+    ///
+    func test_subscription_is_nil_when_parsing_non_subscription_product_response() throws {
+        // Given
+        let productsToTest = try XCTUnwrap(mapLoadProductResponse())
+
+        // Then
+        for product in productsToTest {
+            XCTAssertNil(product.subscription)
+        }
     }
 
     /// Test that products with properties from the Min/Max Quantities extension are properly parsed.

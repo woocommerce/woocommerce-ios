@@ -2,7 +2,11 @@ import Foundation
 import Networking
 import WooFoundation
 
-public class WooPaymentsDepositService {
+public protocol WooPaymentsDepositServiceProtocol {
+    func fetchDepositsOverview() async throws -> [WooPaymentsDepositsOverviewByCurrency]
+}
+
+public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol {
     // MARK: - Properties
 
     private let wooPaymentsRemote: WCPayRemote
@@ -10,20 +14,21 @@ public class WooPaymentsDepositService {
 
     // MARK: - Initialization
 
-    public init(siteID: Int64, credentials: Credentials) {
+    public convenience init(siteID: Int64, credentials: Credentials) {
+        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
+    }
+
+    public init(siteID: Int64, network: Network) {
         self.siteID = siteID
-        self.wooPaymentsRemote = WCPayRemote(network: AlamofireNetwork(credentials: credentials))
+        self.wooPaymentsRemote = WCPayRemote(network: network)
     }
 
     // MARK: - Public Methods
 
-    public func fetchDepositsOverview() async -> [WooPaymentsDepositsOverviewByCurrency] {
+    public func fetchDepositsOverview() async throws -> [WooPaymentsDepositsOverviewByCurrency] {
         do {
             let overview = try await wooPaymentsRemote.loadDepositsOverview(for: siteID)
             return depositsOverviewForViews(overview)
-        } catch {
-            DDLogError("💰 Error fetching deposits summary \(error)")
-            return []
         }
     }
 
@@ -63,6 +68,8 @@ public class WooPaymentsDepositService {
                 availableBalance: balanceAmount(from: availableBalance))
             depositsOverviews.append(overview)
         }
+
+        moveCurrencyToFront(currency: defaultCurrency, of: &depositsOverviews)
 
         return depositsOverviews
     }
@@ -109,6 +116,17 @@ public class WooPaymentsDepositService {
             amount: depositAmountDecimal(from: lastDeposit.amount,
                                          currency: currency,
                                          type: lastDeposit.type),
-            date: lastDeposit.date)
+            date: lastDeposit.date,
+            status: lastDeposit.status)
+    }
+
+    private func moveCurrencyToFront(currency: CurrencyCode, of depositOverviews: inout [WooPaymentsDepositsOverviewByCurrency]) {
+        guard depositOverviews.count > 1,
+            let currencyOverviewIndex = depositOverviews.firstIndex(where: { $0.currency == currency }) else {
+            return
+        }
+
+        let currencyOverview = depositOverviews.remove(at: currencyOverviewIndex)
+        depositOverviews.insert(currencyOverview, at: 0)
     }
 }

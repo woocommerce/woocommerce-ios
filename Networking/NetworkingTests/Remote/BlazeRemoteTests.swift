@@ -25,7 +25,7 @@ final class BlazeRemoteTests: XCTestCase {
 
     /// Verifies that loadCampaign properly parses the response.
     ///
-    func test_loadCampaigns_returns_parsed_coupons() async throws {
+    func test_loadCampaigns_returns_parsed_campaigns() async throws {
         // Given
         let remote = BlazeRemote(network: network)
 

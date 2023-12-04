@@ -1,0 +1,25 @@
+{
+    "id": "maywood",
+    "screenshot": "//i0.wp.com/example.com/wp-content/themes/maywood/screenshot.png?ssl=1",
+    "name": "Maywood",
+    "theme_uri": "https://wordpress.com/theme/maywood",
+    "description": "Maywood is a refined theme designed for restaurants and food-related businesses seeking a modern look.",
+    "tags": [
+        "one-column",
+        "flexible-header",
+        "accessibility-ready",
+        "custom-colors",
+        "custom-menu",
+        "custom-logo",
+        "editor-style",
+        "featured-images",
+        "footer-widgets",
+        "rtl-language-support",
+        "sticky-post",
+        "threaded-comments",
+        "translation-ready",
+        "auto-loading-homepage",
+        "wpcom-fse",
+        "jetpack-global-styles"
+    ]
+}

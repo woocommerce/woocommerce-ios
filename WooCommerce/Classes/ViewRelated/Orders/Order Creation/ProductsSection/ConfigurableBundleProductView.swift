@@ -5,6 +5,7 @@ struct ConfigurableBundleProductView: View {
     @ObservedObject private var viewModel: ConfigurableBundleProductViewModel
     @Environment(\.presentationMode) private var presentation
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     init(viewModel: ConfigurableBundleProductViewModel) {
         self.viewModel = viewModel
@@ -12,50 +13,56 @@ struct ConfigurableBundleProductView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: Layout.noSpacing) {
-                    if let validationErrorMessage = viewModel.validationErrorMessage {
-                        Group {
-                            Text(validationErrorMessage)
-                                .errorStyle()
-                        }
-                        .padding()
-                    }
-
-                    if let loadProductsErrorMessage = viewModel.loadProductsErrorMessage {
-                        Group {
-                            Text(loadProductsErrorMessage)
-                                .errorStyle()
-                            Button(Localization.retry) {
-                                viewModel.retry()
+            VStack(alignment: .leading) {
+                ScrollView {
+                    VStack(spacing: Layout.noSpacing) {
+                        if let loadProductsErrorMessage = viewModel.loadProductsErrorMessage {
+                            Group {
+                                Text(loadProductsErrorMessage)
+                                    .errorStyle()
+                                Button(Localization.retry) {
+                                    viewModel.retry()
+                                }
+                                .buttonStyle(PrimaryButtonStyle())
                             }
-                            .buttonStyle(PrimaryButtonStyle())
+                            .padding()
                         }
-                        .padding()
-                    }
 
-                    ForEach(viewModel.bundleItemViewModels) { bundleItemViewModel in
-                        ConfigurableBundleItemView(viewModel: bundleItemViewModel)
-                        Divider()
-                            .dividerStyle()
-                            .padding(.leading, Layout.defaultPadding)
-                    }
-                    .renderedIf(viewModel.bundleItemViewModels.isNotEmpty)
+                        ForEach(viewModel.bundleItemViewModels) { bundleItemViewModel in
+                            ConfigurableBundleItemView(viewModel: bundleItemViewModel)
+                            Divider()
+                                .dividerStyle()
+                                .padding(.leading, Layout.defaultPadding)
+                        }
+                        .renderedIf(viewModel.bundleItemViewModels.isNotEmpty)
 
-                    ForEach(viewModel.placeholderItemViewModels) { bundleItemViewModel in
-                        ConfigurableBundleItemView(viewModel: bundleItemViewModel)
-                        Divider()
-                            .dividerStyle()
-                            .padding(.leading, Layout.defaultPadding)
+                        ForEach(viewModel.placeholderItemViewModels) { bundleItemViewModel in
+                            ConfigurableBundleItemView(viewModel: bundleItemViewModel)
+                            Divider()
+                                .dividerStyle()
+                                .padding(.leading, Layout.defaultPadding)
+                        }
+                        .redacted(reason: .placeholder)
+                        .shimmering()
+                        .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
                     }
-                    .redacted(reason: .placeholder)
-                    .shimmering()
-                    .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
                 }
-                .background(Color(.listForeground(modal: false)))
+
+                ConfigurableBundleNoticeView(validationState: viewModel.validationState)
+                    .padding(.horizontal, insets: .init(top: 0, leading: Layout.defaultPadding, bottom: 0, trailing: Layout.defaultPadding))
+                    .renderedIf(viewModel.showsValidationNotice)
+
+                Button(Localization.save) {
+                    viewModel.configure()
+                    presentation.wrappedValue.dismiss()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(!viewModel.isConfigureEnabled)
+                .padding(Layout.defaultPadding)
             }
-            .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+            .padding(.horizontal, insets: safeAreaInsets)
+            .background(Color(.listForeground(modal: false)))
+            .ignoresSafeArea(.container, edges: [.horizontal])
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -63,17 +70,6 @@ struct ConfigurableBundleProductView: View {
                     Button(Localization.close) {
                         presentation.wrappedValue.dismiss()
                     }
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.done) {
-                        guard viewModel.validate() else {
-                            return
-                        }
-                        viewModel.configure()
-                        presentation.wrappedValue.dismiss()
-                    }
-                    .disabled(!viewModel.isConfigureEnabled)
                 }
             }
         }
@@ -98,10 +94,10 @@ private extension ConfigurableBundleProductView {
             value: "Close",
             comment: "Text for the close button in the bundle product configuration screen in the order form."
         )
-        static let done = NSLocalizedString(
-            "configureBundleProduct.done",
-            value: "Done",
-            comment: "Text for the done button in the bundle product configuration screen in the order form."
+        static let save = NSLocalizedString(
+            "configureBundleProduct.save",
+            value: "Save Configuration",
+            comment: "Text for the save button in the bundle product configuration screen in the order form."
         )
         static let retry = NSLocalizedString(
             "configureBundleProduct.retry",

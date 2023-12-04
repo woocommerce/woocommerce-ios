@@ -3,7 +3,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-/// View model for `ProductRow`.
+/// View model for product rows or cards, e.g. `ProductRow` or `CollapsibleProductCard`.
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
@@ -12,6 +12,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Controls whether the stepper is rendered.
     ///
     let canChangeQuantity: Bool
+
+    /// Whether the product row is read-only. Defaults to `false`.
+    ///
+    /// Used to remove product editing controls for read-only order items (e.g. child items of a product bundle).
+    private(set) var isReadOnly: Bool = false
 
     /// Unique ID for the view model.
     ///
@@ -34,6 +39,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
 
+    /// Child product rows, if the product is the parent of child order items
+    @Published private(set) var childProductRows: [ProductRowViewModel]
+
     /// Whether a product in an order item is configurable
     ///
     let isConfigurable: Bool
@@ -45,6 +53,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Product price
     ///
     private(set) var price: String?
+
+    /// Whether the product is priced individually. Defaults to `true`.
+    ///
+    /// Used to control how the price is displayed, e.g. when a product is part of a bundle.
+    ///
+    let pricedIndividually: Bool
 
     /// Product stock status
     ///
@@ -196,6 +210,34 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: " • ")
     }
 
+    /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
+    ///
+    var secondaryProductDetailsLabel: String {
+        [productTypeLabel, skuLabel]
+            .compactMap({ $0 })
+            .filter { $0.isNotEmpty }
+            .joined(separator: " • ")
+    }
+
+    /// Label showing product details for a product in an order.
+    /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
+    ///
+    var orderProductDetailsLabel: String {
+        let attributesLabel: String? = {
+            guard case let .attributes(attributes) = variationDisplayMode else {
+                return nil
+            }
+            return createAttributesText(from: attributes)
+        }()
+        let stockLabel = createStockText()
+        return [productTypeLabel, attributesLabel, stockLabel]
+            .compactMap({ $0 })
+            .filter { $0.isNotEmpty }
+            .joined(separator: " • ")
+    }
+
+    private let productTypeLabel: String?
+
     /// Label showing product SKU
     ///
     lazy var skuLabel: String = {
@@ -228,7 +270,20 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Whether the quantity can be decremented.
     ///
     var shouldDisableQuantityDecrementer: Bool {
-        quantity < minimumQuantity
+        if removeProductIntent != nil { // Allow decrementing below minimum quantity to remove product
+            return quantity < minimumQuantity
+        } else {
+            return quantity <= minimumQuantity
+        }
+    }
+
+    /// Whether the quantity can be incremented.
+    ///
+    var shouldDisableQuantityIncrementer: Bool {
+        guard let maximumQuantity else {
+            return false
+        }
+        return quantity >= maximumQuantity
     }
 
     /// Closure to run when the quantity is changed.
@@ -237,7 +292,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
-    var removeProductIntent: () -> Void
+    var removeProductIntent: (() -> Void)?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -258,6 +313,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          productOrVariationID: Int64,
          name: String,
          sku: String?,
+         productTypeLabel: String? = nil,
          price: String?,
          discount: Decimal? = nil,
          stockStatusKey: String,
@@ -272,17 +328,20 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
+         pricedIndividually: Bool = true,
+         childProductRows: [ProductRowViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-         removeProductIntent: @escaping (() -> Void) = {},
+         removeProductIntent: (() -> Void)? = nil,
          configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.selectedState = selectedState
         self.productOrVariationID = productOrVariationID
         self.name = name
         self.sku = sku
+        self.productTypeLabel = productTypeLabel
         self.price = price
         self.discount = discount
         self.stockStatus = .init(rawValue: stockStatusKey)
@@ -294,6 +353,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
+        self.pricedIndividually = pricedIndividually
+        self.childProductRows = childProductRows
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
@@ -313,6 +374,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     pricedIndividually: Bool = true,
+                     childProductRows: [ProductRowViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -323,6 +386,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let price: String?
         if product.productType == .variable {
             price = nil
+        } else if !pricedIndividually {
+            price = "0"
         } else {
             price = product.price
         }
@@ -364,10 +429,19 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         && product.bundledItems.isNotEmpty
         && configure != nil
 
+        let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
+
+        if product.productType == .bundle {
+            for child in childProductRows {
+                child.isReadOnly = true // Can't edit child bundle items separate from bundle configuration
+            }
+        }
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
                   sku: product.sku,
+                  productTypeLabel: productTypeLabel,
                   price: price,
                   discount: discount,
                   stockStatusKey: stockStatusKey,
@@ -379,6 +453,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  pricedIndividually: pricedIndividually,
+                  childProductRows: childProductRows,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
@@ -398,6 +474,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -413,7 +490,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   productOrVariationID: productVariation.productVariationID,
                   name: name,
                   sku: productVariation.sku,
-                  price: productVariation.price,
+                  price: pricedIndividually ? productVariation.price : "0",
                   discount: discount,
                   stockStatusKey: productVariation.stockStatus.rawValue,
                   stockQuantity: productVariation.stockQuantity,
@@ -424,6 +501,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  pricedIndividually: pricedIndividually,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
@@ -495,7 +573,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     func decrementQuantity() {
         guard quantity > minimumQuantity else {
-            return removeProductIntent()
+            removeProductIntent?()
+            return
         }
         quantity -= 1
 

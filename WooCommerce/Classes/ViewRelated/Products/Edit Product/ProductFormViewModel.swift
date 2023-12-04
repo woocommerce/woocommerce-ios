@@ -338,7 +338,18 @@ extension ProductFormViewModel {
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        let subscription = product.subscription?.copy(period: subscriptionPeriod,
+        // Sets "Expire after" to "0" (i.e. Never expire)
+        // if the subscription period or interval is changed
+        let subscriptionLength: String? = {
+            if product.subscription?.period != subscriptionPeriod || product.subscription?.periodInterval != subscriptionPeriodInterval {
+                return "0"
+            } else {
+                return product.subscription?.length
+            }
+        }()
+
+        let subscription = product.subscription?.copy(length: subscriptionLength,
+                                                      period: subscriptionPeriod,
                                                       periodInterval: subscriptionPeriodInterval,
                                                       price: regularPrice,
                                                       signUpFee: subscriptionSignupFee)
@@ -382,11 +393,17 @@ extension ProductFormViewModel {
                                                                      soldIndividually: soldIndividually))
     }
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?) {
+    func updateShippingSettings(weight: String?,
+                                dimensions: ProductDimensions,
+                                oneTimeShipping: Bool?,
+                                shippingClass: String?,
+                                shippingClassID: Int64?) {
+        let subscription = product.subscription?.copy(oneTimeShipping: oneTimeShipping)
         product = EditableProductModel(product: product.product.copy(weight: weight,
                                                                      dimensions: dimensions,
                                                                      shippingClass: shippingClass ?? "",
-                                                                     shippingClassID: shippingClassID ?? 0))
+                                                                     shippingClassID: shippingClassID ?? 0,
+                                                                     subscription: subscription))
     }
 
     func updateProductCategories(_ categories: [ProductCategory]) {
@@ -492,8 +509,26 @@ extension ProductFormViewModel {
     }
 
     func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod) {
+        let oneTimeShipping: Bool? = {
+            guard let subscription = product.subscription else {
+                return nil
+            }
+
+            // One time shipping can be turned on only if there is no Free trial
+            guard trialLength.isEmpty || trialLength == "0" else {
+                return false
+            }
+
+            return subscription.oneTimeShipping
+        }()
         let subscription = product.subscription?.copy(trialLength: trialLength,
-                                                      trialPeriod: trialPeriod)
+                                                      trialPeriod: trialPeriod,
+                                                      oneTimeShipping: oneTimeShipping ?? nil)
+        product = EditableProductModel(product: product.product.copy(subscription: subscription))
+    }
+
+    func updateSubscriptionExpirySettings(length: String) {
+        let subscription = product.subscription?.copy(length: length)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
 }

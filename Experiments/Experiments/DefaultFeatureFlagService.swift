@@ -11,8 +11,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         let isUITesting = CommandLine.arguments.contains("-ui_testing")
 
         switch featureFlag {
-        case .barcodeScanner:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
@@ -77,15 +75,17 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .giftCardInOrderForm:
             return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .tapToPayOnIPhoneInUK:
             return true
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .subscriptionProducts:
-            return false
+        case .lightweightStorefront:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .scanToUpdateInventory:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

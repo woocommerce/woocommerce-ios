@@ -77,6 +77,8 @@ enum WooConstants {
     /// App login deep link prefix
     ///
     static let appLoginURLPrefix = "woocommerce://app-login"
+
+    static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
 }
 
 // MARK: URLs
@@ -346,6 +348,8 @@ extension WooConstants {
         case wooPaymentsKnowYourCustomer = "https://woo.com/document/woopayments/our-policies/know-your-customer/"
 
         case wooCorePaymentOptions = "https://woo.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
+
+        case wooPaymentsDepositSchedule = "https://woo.com/document/woopayments/deposits/deposit-schedule/"
 
         /// Returns the URL version of the receiver
         ///

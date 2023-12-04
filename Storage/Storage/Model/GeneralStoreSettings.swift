@@ -17,6 +17,10 @@ public struct GeneralStoreSettingsBySite: Codable, Equatable {
 ///
 public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
 
+    /// The store unique identifier.
+    ///
+    public let storeID: String?
+
     /// The state(`true` or `false`) for the view add-on beta feature switch.
     ///
     public let isTelemetryAvailable: Bool
@@ -46,7 +50,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The selected tax rate to apply to the orders
     public let selectedTaxRateID: Int64?
 
-    public init(isTelemetryAvailable: Bool = false,
+    public init(storeID: String? = nil,
+                isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
                 areSimplePaymentTaxesEnabled: Bool = false,
                 preferredInPersonPaymentGateway: String? = nil,
@@ -54,6 +59,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastSelectedStatsTimeRange: String = "",
                 firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date] = [:],
                 selectedTaxRateID: Int64? = nil) {
+        self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
         self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled
@@ -65,7 +71,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
-        GeneralStoreSettings(isTelemetryAvailable: isTelemetryAvailable,
+        GeneralStoreSettings(storeID: storeID,
+                             isTelemetryAvailable: isTelemetryAvailable,
                              telemetryLastReportedTime: telemetryLastReportedTime,
                              areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled,
                              preferredInPersonPaymentGateway: preferredInPersonPaymentGateway,
@@ -83,6 +90,7 @@ extension GeneralStoreSettings {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
+        self.storeID = try container.decodeIfPresent(String.self, forKey: .storeID)
         self.isTelemetryAvailable = try container.decodeIfPresent(Bool.self, forKey: .isTelemetryAvailable) ?? false
         self.telemetryLastReportedTime = try container.decodeIfPresent(Date.self, forKey: .telemetryLastReportedTime)
         self.areSimplePaymentTaxesEnabled = try container.decodeIfPresent(Bool.self, forKey: .areSimplePaymentTaxesEnabled) ?? false

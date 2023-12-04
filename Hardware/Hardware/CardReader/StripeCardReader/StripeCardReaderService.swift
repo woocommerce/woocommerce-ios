@@ -166,12 +166,16 @@ extension StripeCardReaderService: CardReaderService {
         switchStatusToDiscovering()
 
         /**
-         * https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
-         *
-         *Note that if discoverReaders is canceled, the completion block will be called with nil (rather than an SCPErrorCanceled error).
+         * From 3.0.0, if discoverReaders is canceled, the completion block will be called with a SCPErrorCanceled error.
+         * https://stripe.com/docs/terminal/references/sdk-migration-guide#update-your-discoverreaders-and-connectreader-usage
          */
-        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { [weak self] error in
-            guard let error = error else {
+        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { [weak self] receivedError in
+            guard receivedError == nil else {
+                self?.switchStatusToIdle()
+                return
+            }
+
+            guard let error = receivedError else {
                 self?.switchStatusToIdle()
                 return
             }

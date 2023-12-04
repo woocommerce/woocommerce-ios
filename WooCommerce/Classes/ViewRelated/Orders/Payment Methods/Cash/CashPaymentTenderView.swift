@@ -14,7 +14,7 @@ struct CashPaymentTenderView: View {
                 GeometryReader { geometry in
                     ScrollView {
                         VStack(alignment: .center, spacing: Layout.verticalSpacing) {
-                            Text(viewModel.formattedTotal + " Cash")
+                            Text(String.localizedStringWithFormat(Localization.cashPaymentTitle, viewModel.formattedTotal))
                                 .largeTitleStyle()
                             TextField("", text: $viewModel.customerCash)
                                 .keyboardType(.decimalPad)
@@ -24,12 +24,12 @@ struct CashPaymentTenderView: View {
                                     viewModel.customerCash = ""
                                 }
 
-                            Text("Enter your customer paid cash and we'll calculate the change for you. Tapping on Tender will mark your order as complete.")
+                            Text(Localization.cashPaymentFootnote)
                                 .footnoteStyle()
 
                             Divider()
 
-                            Text("Due Change")
+                            Text(Localization.dueChangeTitle)
                                 .font(.title3)
                                 .foregroundColor(Color(.textSubtle))
                             Text(viewModel.dueChange)
@@ -38,13 +38,13 @@ struct CashPaymentTenderView: View {
 
                             Spacer()
 
-                            Button("Tender") {
+                            Button(Localization.tenderButtonTitle) {
                                 viewModel.onTenderButtonTapped()
                                 dismiss()
                             }
                                 .buttonStyle(PrimaryButtonStyle())
                                 .disabled(!viewModel.tenderButtonIsEnabled)
-                            Button("Cancel", role: .destructive) {
+                            Button(Localization.cancelButtonTitle) {
                                 dismiss()
                             }
                             .buttonStyle(SecondaryButtonStyle())
@@ -70,5 +70,24 @@ extension CashPaymentTenderView {
         static let backgroundOpacity: CGFloat = 0.5
         static let cornerRadius: CGFloat = 8
         static let outterPadding: CGFloat = 24
+    }
+
+    enum Localization {
+        static let cashPaymentTitle = NSLocalizedString("cashPaymentTenderView.title",
+                                                        value: "Cash %1$@",
+                                                        comment: "Title for the cash tender view. Reads like Cash $34.45")
+        static let cashPaymentFootnote = NSLocalizedString("cashPaymentTenderView.footnote",
+                                                        value: "Enter the cash amount your customer paid and we'll calculate the change for you. " +
+                                                           "Tapping on Tender will mark the order as complete.",
+                                                        comment: "Explanatory footnote for the cash payment view.")
+        static let dueChangeTitle = NSLocalizedString("cashPaymentTenderView.dueChange",
+                                                        value: "Due Change",
+                                                        comment: "Title for the due change text.")
+        static let tenderButtonTitle = NSLocalizedString("cashPaymentTenderView.tenderButton",
+                                                        value: "Tender",
+                                                        comment: "Title for the tender button.")
+        static let cancelButtonTitle = NSLocalizedString("cashPaymentTenderView.cancelButton",
+                                                        value: "Cancel",
+                                                        comment: "Title for the cancel button.")
     }
 }

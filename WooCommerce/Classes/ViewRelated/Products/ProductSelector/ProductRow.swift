@@ -169,6 +169,7 @@ private struct ProductStepper: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.stepperButtonSize * scale)
             }
+            .accessibilityHidden(true)
             .disabled(viewModel.shouldDisableQuantityDecrementer)
 
             TextField("",
@@ -179,6 +180,24 @@ private struct ProductStepper: View {
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: true, vertical: false)
             .focused($textFieldFocused)
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                case .decrement:
+                    viewModel.decrementQuantity()
+                case .increment:
+                    viewModel.incrementQuantity()
+                @unknown default:
+                    break
+                }
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        textFieldFocused = false
+                    }
+                }
+            }
 
             Button {
                 stepperValue += 1.0
@@ -189,22 +208,10 @@ private struct ProductStepper: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.stepperButtonSize * scale)
             }
+            .accessibilityHidden(true)
             .disabled(viewModel.shouldDisableQuantityIncrementer)
         }
         .padding(Layout.stepperPadding * scale)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(viewModel.name): \(Localization.quantityLabel)")
-        .accessibilityValue(stepperValue.description)
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .decrement:
-                viewModel.decrementQuantity()
-            case .increment:
-                viewModel.incrementQuantity()
-            @unknown default:
-                break
-            }
-        }
     }
 }
 

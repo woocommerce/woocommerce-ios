@@ -2,7 +2,7 @@
 
 16.6
 -----
-- [**] Fixed a crash that occurred when reordering product images during the image upload process. Now, users will not be able to reorder images until the upload is complete, providing a smoother and more stable experience.
+- [**] Fixed a crash that occurred when reordering product images during the image upload process. Now, users will not be able to reorder images until the upload is complete, providing a smoother and more stable experience. [https://github.com/woocommerce/woocommerce-ios/pull/11350]
 
 16.5
 -----

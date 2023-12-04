@@ -1248,6 +1248,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze campaign list view */
 "Blaze Campaigns" = "Blaze Campaigns";
 
+/* Button to dismiss the Blaze campaign section on the My Store screen. */
+"blazeCampaignDashboardView.hideBlazeButton" = "Hide Blaze";
+
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Block Quote";
 
@@ -1908,31 +1911,31 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleItem.add" = "Add";
 
 /* Action to select a variation for a bundle item when it is variable. */
-"configureBundleItem.selectVariation" = "Select variation";
+"configureBundleItem.chooseVariation" = "Choose variation";
 
 /* Action to update a variation for a bundle item when it is variable. */
 "configureBundleItem.updateVariation" = "Update variation";
 
-/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
-"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "The quantity needs to be within %1$@ and %2$@";
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. %1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat" = "The quantity of %1$@ needs to be within %2$@ and %3$@.";
 
-/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
-"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "The quantity needs to be at least %1$@";
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. %1$@ is the product name. %2$@ is the minimum quantity. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat" = "The quantity of %1$@ needs to be at least %2$@.";
 
-/* Error message when a variable bundle item is missing a variation. */
-"configureBundleItemError.missingVariation" = "Please select a variation";
+/* Error message format when a variable bundle item is missing a variation. %1$@ is the variable product name. */
+"configureBundleItemError.missingVariationFormat" = "Choose a variation for %1$@.";
 
-/* Error message when a variable bundle item is missing some attributes. */
-"configureBundleItemError.variationMissingAttributes" = "Please select an option for all variation attributes";
+/* Error message format when a variable bundle item is missing some attributes. %1$@ is the variable product name. */
+"configureBundleItemError.variationMissingAttributesFormat" = "Choose an option for all variation attributes for %1$@.";
 
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "Close";
 
-/* Text for the done button in the bundle product configuration screen in the order form. */
-"configureBundleProduct.done" = "Done";
-
 /* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
 "configureBundleProduct.retry" = "Retry";
+
+/* Text for the save button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.save" = "Save Configuration";
 
 /* Title for the bundle product configuration screen in the order form. */
 "configureBundleProduct.title" = "Configure";
@@ -1957,6 +1960,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Used in configureBundleProductValidationError strings for the singular form of item. */
 "configureBundleProductValidationError.itemSingular" = "item";
+
+/* Title of the error notice when the bundle configuration is currently invalid in the bundle product configuration screen. */
+"configureBundleProductValidationError.title" = "Configuration required";
+
+/* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
+"configureBundleProductValidationSuccess.title" = "Configuration complete";
 
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
 "Configuring iPhone" = "Configuring iPhone";
@@ -2537,12 +2546,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Expire after";
 
+/* Display label when a subscription has no trial period. */
+"defaultProductFormTableViewModel.freeTrialRow.noTrialPeriod" = "No trial period";
+
+/* Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.freeTrialRow.title" = "Free Trial";
+
 /* Display label when a subscription never expires. */
 "defaultProductFormTableViewModel.neverExpire" = "Never expires";
-
-/* Display label when a subscription has no trial period.
-   Title for Subscription Free Trial row in the product form screen. */
-"defaultProductFormTableViewModel.noFreeTrial" = "Free Trial";
 
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "Regular price: %1$@ %2$@";
@@ -2576,6 +2587,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the expand chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.show" = "Show deposit details";
+
+/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.depositTable.last.title" = "Last";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.canceled.title" = "Canceled";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.estimated.title" = "Estimated";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.failed.title" = "Failed";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.inTransit.title" = "In Transit";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.paid.title" = "Paid";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.pending.title" = "Pending";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.unknown.title" = "Unknown";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Describe your product";
@@ -5751,8 +5786,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Package Type" = "Package Type";
 
-/* Row title for the last paid deposit in the WooPayments Deposits overview
-   The title for the customer payment cell */
+/* The title for the customer payment cell */
 "Paid" = "Paid";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -6466,6 +6500,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for computed value `product refunds + taxes = subtotal`.
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Products Refund";
+
+/* Subtitle for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.subtitle" = "Enable this to charge shipping once on the initial order.";
+
+/* Subtitle for the One time shipping product shipping setting when it is disabled. */
+"productShippingSettings.oneTimeShipping.subtitleDisabled" = "For this setting to be enabled the subscription must not have a free trial or a synced renewal date.";
+
+/* Title for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.title" = "One time shipping";
 
 /* No comment provided by engineer. */
 "Promote on TikTok" = "Promote on TikTok";
@@ -7296,6 +7339,9 @@ which should be translated separately and considered part of this sentence. */
    Settings navigation title
    Title of the hub menu settings button */
 "Settings" = "Settings";
+
+/* Navigates to Themes screen. */
+"settingsViewController.themesRow" = "Themes";
 
 /* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
 "Setup complete" = "Setup complete";
@@ -9423,6 +9469,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
 "Updated on %@" = "Updated on %@";
+
+/* Cancel button title on the update product inventory view. */
+"updateProductInventoryView.cancelButtonTitle" = "Cancel";
+
+/* Navigation bar title of the update product inventory view. */
+"updateProductInventoryView.navigationBarTitle" = "Product";
+
+/* Product name label in the update product inventory view. */
+"updateProductInventoryView.productNameTitle" = "Product Name";
+
+/* Product quantity label in the update product inventory view. */
+"updateProductInventoryView.productQuantityTitle" = "Quantity";
+
+/* Stock quantity button when a tap increases the stock once. */
+"updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle" = "Quantity + 1";
+
+/* Stock quantity button when the user adds a custom quantity. */
+"updateProductInventoryView.quantityButton.updateQuantityButtonTitle" = "Update quantity";
+
+/* Product detailsl button title. */
+"updateProductInventoryView.viewProductDetailsButtonTitle" = "View Product Details";
 
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Updating software";

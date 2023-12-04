@@ -74,7 +74,6 @@ struct UpdateProductInventoryView: View {
                                     dismiss()
                                 }
                             }
-
                             .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
 
                             Button(Localization.increaseStockOnceButtonTitle) {

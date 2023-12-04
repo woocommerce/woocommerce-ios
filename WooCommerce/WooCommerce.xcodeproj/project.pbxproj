@@ -1687,6 +1687,7 @@
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
 		B9001CDF2B1DD61600EC87B2 /* CashPaymentTenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9001CDE2B1DD61600EC87B2 /* CashPaymentTenderView.swift */; };
 		B9001CE12B1DF33300EC87B2 /* CashPaymentTenderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9001CE02B1DF33300EC87B2 /* CashPaymentTenderViewModel.swift */; };
+		B9001CE42B1E11A300EC87B2 /* CashPaymentTenderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9001CE32B1E11A300EC87B2 /* CashPaymentTenderViewModelTests.swift */; };
 		B90C65CD29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C65CC29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift */; };
 		B90C65D129AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C65D029AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift */; };
 		B90DACC02A30AEF000365897 /* BarcodeSKUScannerItemFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DACBF2A30AEF000365897 /* BarcodeSKUScannerItemFinder.swift */; };
@@ -4280,6 +4281,7 @@
 		B6FEFFF02A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUCustomsScenarioValidator.swift; sourceTree = "<group>"; };
 		B9001CDE2B1DD61600EC87B2 /* CashPaymentTenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashPaymentTenderView.swift; sourceTree = "<group>"; };
 		B9001CE02B1DF33300EC87B2 /* CashPaymentTenderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashPaymentTenderViewModel.swift; sourceTree = "<group>"; };
+		B9001CE32B1E11A300EC87B2 /* CashPaymentTenderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashPaymentTenderViewModelTests.swift; sourceTree = "<group>"; };
 		B90C65CC29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentOnboardingStateCache.swift; sourceTree = "<group>"; };
 		B90C65D029AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift; sourceTree = "<group>"; };
 		B90DACBF2A30AEF000365897 /* BarcodeSKUScannerItemFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeSKUScannerItemFinder.swift; sourceTree = "<group>"; };
@@ -6603,6 +6605,7 @@
 		039F373B2860DC12009A2B4C /* Payment Methods */ = {
 			isa = PBXGroup;
 			children = (
+				B9001CE22B1E119600EC87B2 /* Cash */,
 				261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */,
 			);
 			path = "Payment Methods";
@@ -9280,6 +9283,14 @@
 			children = (
 				B9001CDE2B1DD61600EC87B2 /* CashPaymentTenderView.swift */,
 				B9001CE02B1DF33300EC87B2 /* CashPaymentTenderViewModel.swift */,
+			);
+			path = Cash;
+			sourceTree = "<group>";
+		};
+		B9001CE22B1E119600EC87B2 /* Cash */ = {
+			isa = PBXGroup;
+			children = (
+				B9001CE32B1E11A300EC87B2 /* CashPaymentTenderViewModelTests.swift */,
 			);
 			path = Cash;
 			sourceTree = "<group>";
@@ -14436,6 +14447,7 @@
 				02A275C423FE5B64005C560F /* MockPHAssetImageLoader.swift in Sources */,
 				456738972743DE9A00743054 /* OrderDateRangeFilterTests.swift in Sources */,
 				A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */,
+				B9001CE42B1E11A300EC87B2 /* CashPaymentTenderViewModelTests.swift in Sources */,
 				029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */,
 				0236BCA425087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift in Sources */,
 				CC13C0CD278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift in Sources */,

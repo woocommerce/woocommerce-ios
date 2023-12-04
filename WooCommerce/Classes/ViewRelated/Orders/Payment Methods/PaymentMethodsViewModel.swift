@@ -171,27 +171,32 @@ final class PaymentMethodsViewModel: ObservableObject {
         Localization.markAsPaidInfo(total: formattedTotal)
     }
 
-    /// Mark an order as paid and notify if successful.
-    ///
-    func markOrderAsPaid(onSuccess: @escaping () -> Void) {
-        showLoadingIndicator = true
-        let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
-            guard let self = self else { return }
-            self.showLoadingIndicator = false
 
-            if let error = error {
-                self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
-                self.trackFlowFailed()
-                return DDLogError("⛔️ Error updating order: \(error)")
+
+    func markOrderPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
+        showLoadingIndicator = true
+        markOrderAsPaid { [weak self] in
+            guard let self = self,
+            let info else {
+                onCompletion()
+                return
+            }
+            let noteText = "Order paid by cash. Customer paid \(info.customerPaidAmount). Change given \(info.changeGivenAmount)."
+            let action = OrderNoteAction.addOrderNote(siteID: siteID,
+                                                      orderID: orderID,
+                                                      isCustomerNote: false,
+                                                      note: noteText) { _, _ in
+                self.showLoadingIndicator = false
+                self.presentNoticeSubject.send(.completed)
+                self.trackFlowCompleted(method: .cash, cardReaderType: .none)
+                
+                onCompletion()
             }
 
-            self.updateOrderAsynchronously()
-
-            onSuccess()
-            self.presentNoticeSubject.send(.completed)
-            self.trackFlowCompleted(method: .cash, cardReaderType: .none)
+            Task { @MainActor in
+                self.stores.dispatch(action)
+            }
         }
-        stores.dispatch(action)
     }
 
     /// Starts the collect payment flow in the provided `rootViewController`
@@ -297,6 +302,25 @@ final class PaymentMethodsViewModel: ObservableObject {
 
 // MARK: Helpers
 private extension PaymentMethodsViewModel {
+    /// Mark an order as paid and notify if successful.
+    ///
+    private func markOrderAsPaid(onSuccess: @escaping () -> Void) {
+        let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
+            guard let self = self else { return }
+
+            if let error = error {
+                self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
+                self.trackFlowFailed()
+                return DDLogError("⛔️ Error updating order: \(error)")
+            }
+
+            self.updateOrderAsynchronously()
+
+            onSuccess()
+
+        }
+        stores.dispatch(action)
+    }
 
     /// Observes the store CPP state and update publish variables accordingly.
     ///

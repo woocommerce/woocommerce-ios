@@ -3,10 +3,17 @@ import Combine
 import SwiftUI
 import WooFoundation
 
+typealias OrderPaidByCashCallback = ((OrderPaidByCashInfo?) -> Void)
+
+struct OrderPaidByCashInfo {
+    let customerPaidAmount: String
+    let changeGivenAmount: String
+}
+
 final class CashPaymentTenderViewModel: ObservableObject {
     let formattedTotal: String
     let currencyFormatter: CurrencyFormatter
-    let onOrderPaid: (() -> Void)
+    let onOrderPaid: OrderPaidByCashCallback
 
     @Published var tenderButtonIsEnabled: Bool = true
     @Published var dueChange: String = ""
@@ -27,7 +34,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
     }
 
     init(formattedTotal: String,
-         onOrderPaid: @escaping (() -> Void),
+         onOrderPaid: @escaping OrderPaidByCashCallback,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.formattedTotal = formattedTotal
         self.onOrderPaid = onOrderPaid
@@ -36,7 +43,12 @@ final class CashPaymentTenderViewModel: ObservableObject {
     }
 
     func onTenderButtonTapped() {
-        onOrderPaid()
+        var info: OrderPaidByCashInfo?
+        if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerCash) {
+            info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: dueChange)
+        }
+
+        onOrderPaid(info)
     }
 }
 

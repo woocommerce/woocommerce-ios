@@ -49,8 +49,8 @@ struct PaymentMethodsView: View {
                             viewModel.trackCollectByCash()
                         }
                         .fullScreenCover(isPresented: $showingCashAlert) {
-                            CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) {
-                                viewModel.markOrderAsPaid {
+                            CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
+                                viewModel.markOrderPaidByCash(with: info) {
                                     dismiss()
                                 }
                             })

@@ -86,7 +86,7 @@ extension CashPaymentTenderView {
                                                         comment: "Title for the amount the customer paid.")
         static let cashPaymentFootnote = NSLocalizedString("cashPaymentTenderView.footnote",
                                                         value: "Enter the cash amount your customer paid and we'll calculate the change for you. " +
-                                                           "Tapping on Tender will mark the order as complete.",
+                                                           "Tapping on Tender will mark the order as complete. This data will be added as a note to the order.",
                                                         comment: "Explanatory footnote for the cash payment view.")
         static let dueChangeTitle = NSLocalizedString("cashPaymentTenderView.dueChange",
                                                         value: "Due Change",

@@ -1685,6 +1685,7 @@
 		B6F37970293798ED00718561 /* AnalyticsHubTodayRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796F293798ED00718561 /* AnalyticsHubTodayRangeData.swift */; };
 		B6FEFFF12A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FEFFF02A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift */; };
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
+		B9001CDF2B1DD61600EC87B2 /* CashPaymentTenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9001CDE2B1DD61600EC87B2 /* CashPaymentTenderView.swift */; };
 		B90C65CD29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C65CC29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift */; };
 		B90C65D129AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C65D029AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift */; };
 		B90DACC02A30AEF000365897 /* BarcodeSKUScannerItemFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90DACBF2A30AEF000365897 /* BarcodeSKUScannerItemFinder.swift */; };
@@ -4276,6 +4277,7 @@
 		B6F3796D293796BC00718561 /* AnalyticsHubWeekToDateRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubWeekToDateRangeData.swift; sourceTree = "<group>"; };
 		B6F3796F293798ED00718561 /* AnalyticsHubTodayRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTodayRangeData.swift; sourceTree = "<group>"; };
 		B6FEFFF02A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUCustomsScenarioValidator.swift; sourceTree = "<group>"; };
+		B9001CDE2B1DD61600EC87B2 /* CashPaymentTenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CashPaymentTenderView.swift; sourceTree = "<group>"; };
 		B90C65CC29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentOnboardingStateCache.swift; sourceTree = "<group>"; };
 		B90C65D029AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift; sourceTree = "<group>"; };
 		B90DACBF2A30AEF000365897 /* BarcodeSKUScannerItemFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeSKUScannerItemFinder.swift; sourceTree = "<group>"; };
@@ -6580,6 +6582,7 @@
 		0386CFE52851F58E00134466 /* Payment Methods */ = {
 			isa = PBXGroup;
 			children = (
+				B9001CDD2B1DD5F700EC87B2 /* Cash */,
 				261AA308275178FA009530FE /* PaymentMethodsView.swift */,
 				261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */,
 				0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */,
@@ -9268,6 +9271,14 @@
 				26D1E9E72949818B00A7DC62 /* AnalyticsHubTimeRageAdapter.swift */,
 			);
 			path = "Time Range";
+			sourceTree = "<group>";
+		};
+		B9001CDD2B1DD5F700EC87B2 /* Cash */ = {
+			isa = PBXGroup;
+			children = (
+				B9001CDE2B1DD61600EC87B2 /* CashPaymentTenderView.swift */,
+			);
+			path = Cash;
 			sourceTree = "<group>";
 		};
 		B912603F2940B2C400CACD4B /* JustInTimeMessages */ = {
@@ -13107,6 +13118,7 @@
 				26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */,
 				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,
 				26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */,
+				B9001CDF2B1DD61600EC87B2 /* CashPaymentTenderView.swift in Sources */,
 				02CA3C9729F8E54D0079E2FF /* BottomSheetPresenter.swift in Sources */,
 				4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */,
 				02F6800325807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift in Sources */,

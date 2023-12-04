@@ -61,7 +61,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     /// Formatted total to charge.
     ///
-    private let formattedTotal: String
+    let formattedTotal: String
 
     /// Transmits notice presentation intents.
     ///

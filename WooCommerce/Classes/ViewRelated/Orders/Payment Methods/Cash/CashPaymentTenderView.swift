@@ -16,13 +16,18 @@ struct CashPaymentTenderView: View {
                         VStack(alignment: .center, spacing: Layout.verticalSpacing) {
                             Text(String.localizedStringWithFormat(Localization.cashPaymentTitle, viewModel.formattedTotal))
                                 .largeTitleStyle()
-                            TextField("", text: $viewModel.customerCash)
-                                .keyboardType(.decimalPad)
-                                .textFieldStyle(.roundedBorder)
-                                .headlineStyle()
-                                .onTapGesture {
-                                    viewModel.customerCash = ""
-                                }
+
+                            HStack {
+                                Text(Localization.customerPaidTitle)
+                                Spacer()
+                                TextField("", text: $viewModel.customerCash)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .headlineStyle()
+                                    .onTapGesture {
+                                        viewModel.customerCash = ""
+                                    }
+                            }
 
                             Text(Localization.cashPaymentFootnote)
                                 .footnoteStyle()
@@ -76,6 +81,9 @@ extension CashPaymentTenderView {
         static let cashPaymentTitle = NSLocalizedString("cashPaymentTenderView.title",
                                                         value: "Cash %1$@",
                                                         comment: "Title for the cash tender view. Reads like Cash $34.45")
+        static let customerPaidTitle = NSLocalizedString("cashPaymentTenderView.customerPaid",
+                                                        value: "Customer paid",
+                                                        comment: "Title for the amount the customer paid.")
         static let cashPaymentFootnote = NSLocalizedString("cashPaymentTenderView.footnote",
                                                         value: "Enter the cash amount your customer paid and we'll calculate the change for you. " +
                                                            "Tapping on Tender will mark the order as complete.",

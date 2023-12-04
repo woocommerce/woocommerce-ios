@@ -814,6 +814,12 @@ extension UIImage {
         return UIImage.gridicon(.image)
     }
 
+    /// Document image
+    ///
+    static var documentImage: UIImage {
+        return .gridicon(.attachment)
+    }
+
     /// Link Image
     ///
     static var linkImage: UIImage {

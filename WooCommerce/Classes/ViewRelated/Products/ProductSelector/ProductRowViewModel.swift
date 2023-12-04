@@ -557,28 +557,36 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
     }
 
-    /// Increment the product quantity.
-    ///
-    func incrementQuantity() {
-        if let maximumQuantity, quantity >= maximumQuantity {
+    func changeQuantity(to newQuantity: Decimal) {
+        guard newQuantity != quantity else {
+            // This stops unnecessary order edit submissions when editing starts via the text field
             return
         }
 
-        quantity += 1
+        guard newQuantity >= minimumQuantity else {
+            removeProductIntent?()
+            return
+        }
 
-        quantityUpdatedCallback(quantity)
+        if let maximumQuantity,
+            newQuantity > maximumQuantity {
+            return
+        }
+
+        quantity = newQuantity
+        quantityUpdatedCallback(newQuantity)
+    }
+
+    /// Increment the product quantity.
+    ///
+    func incrementQuantity() {
+        changeQuantity(to: quantity + 1)
     }
 
     /// Decrement the product quantity.
     ///
     func decrementQuantity() {
-        guard quantity > minimumQuantity else {
-            removeProductIntent?()
-            return
-        }
-        quantity -= 1
-
-        quantityUpdatedCallback(quantity)
+        changeQuantity(to: quantity - 1)
     }
 
     func trackAddDiscountTapped() {

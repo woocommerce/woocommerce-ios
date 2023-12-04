@@ -145,10 +145,24 @@ private struct ProductStepper: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
 
+    @Binding private var stepperValue: Decimal
+
+    @FocusState private var textFieldFocused: Bool
+
+    init(viewModel: ProductRowViewModel) {
+        self.viewModel = viewModel
+        self._stepperValue = Binding(get: {
+            viewModel.quantity
+        }, set: { newValue in
+            viewModel.changeQuantity(to: newValue)
+        })
+    }
+
     var body: some View {
         HStack {
             Button {
-                viewModel.decrementQuantity()
+                stepperValue -= 1.0
+                textFieldFocused = false
             } label: {
                 Image(uiImage: .minusSmallImage)
                     .resizable()
@@ -157,14 +171,18 @@ private struct ProductStepper: View {
             }
             .disabled(viewModel.shouldDisableQuantityDecrementer)
 
-            Spacer()
-
-            Text(viewModel.quantity.description)
-
-            Spacer()
+            TextField("",
+                      value: $stepperValue,
+                      format: .number)
+            .textFieldStyle(.roundedBorder)
+            .keyboardType(.decimalPad)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: true, vertical: false)
+            .focused($textFieldFocused)
 
             Button {
-                viewModel.incrementQuantity()
+                stepperValue += 1.0
+                textFieldFocused = false
             } label: {
                 Image(uiImage: .plusSmallImage)
                     .resizable()
@@ -174,14 +192,9 @@ private struct ProductStepper: View {
             .disabled(viewModel.shouldDisableQuantityIncrementer)
         }
         .padding(Layout.stepperPadding * scale)
-        .frame(width: Layout.stepperWidth * scale)
-        .overlay(
-            RoundedRectangle(cornerRadius: Layout.stepperBorderRadius)
-                .stroke(Color(UIColor.separator), lineWidth: Layout.stepperBorderWidth)
-        )
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(viewModel.name): \(Localization.quantityLabel)")
-        .accessibilityValue(viewModel.quantity.description)
+        .accessibilityValue(stepperValue.description)
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .decrement:

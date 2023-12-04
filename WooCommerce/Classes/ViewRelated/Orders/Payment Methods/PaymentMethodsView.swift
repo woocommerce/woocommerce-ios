@@ -49,7 +49,7 @@ struct PaymentMethodsView: View {
                             viewModel.trackCollectByCash()
                         }
                         .fullScreenCover(isPresented: $showingCashAlert) {
-                            CashPaymentTenderView(formattedTotal: viewModel.formattedTotal)
+                            CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal))
                                 .background(FullScreenCoverClearBackgroundView())
                         }
 //                        .alert(isPresented: $showingCashAlert) {

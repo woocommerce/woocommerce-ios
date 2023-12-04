@@ -3,10 +3,8 @@ import Foundation
 import WooFoundation
 
 struct CashPaymentTenderView: View {
-    let formattedTotal: String
+    @ObservedObject private(set) var viewModel: CashPaymentTenderViewModel
     @Environment(\.dismiss) var dismiss
-    @State private var customerCash: String = ""
-    @FocusState private var customerCashIsFocused: Bool
 
     var body: some View {
         ZStack {
@@ -16,36 +14,33 @@ struct CashPaymentTenderView: View {
                 GeometryReader { geometry in
                     ScrollView {
                         VStack(alignment: .center, spacing: Layout.verticalSpacing) {
-                            Text(formattedTotal + " Cash")
+                            Text(viewModel.formattedTotal + " Cash")
                                 .largeTitleStyle()
-                            TextField(formattedTotal, text: $customerCash)
+                            TextField("", text: $viewModel.customerCash)
                                 .keyboardType(.decimalPad)
                                 .textFieldStyle(.roundedBorder)
                                 .headlineStyle()
                                 .onTapGesture {
-                                    customerCash = ""
+                                    viewModel.customerCash = ""
                                 }
-                                .focused($customerCashIsFocused)
 
                             Text("Enter your customer cash and we calculate the change for you. Tapping on Tender will mark your order as complete.")
                                 .footnoteStyle()
 
                             Divider()
 
-                            Group {
-                                Text("Change")
-                                    .font(.title3)
-                                    .foregroundColor(Color(.textSubtle))
-                                Text(formattedTotal)
-                                    .font(.system(size: 36, weight: .bold))
-                                    .foregroundColor(Color(.textSubtle))
-                            }
+                            Text("Due Change")
+                                .font(.title3)
+                                .foregroundColor(Color(.textSubtle))
+                            Text(viewModel.dueChange)
+                                .font(.system(size: 36, weight: .bold))
+                                .foregroundColor(Color(.textSubtle))
 
                             Spacer()
 
                             Button("Tender") {}
                                 .buttonStyle(PrimaryButtonStyle())
-                                .disabled(customerCash.isEmpty)
+                                .disabled(!viewModel.tenderButtonIsEnabled)
                             Button("Cancel", role: .destructive) {
                                 dismiss()
                             }
@@ -57,10 +52,6 @@ struct CashPaymentTenderView: View {
                         .cornerRadius(Layout.cornerRadius)
                         .frame(width: geometry.size.width)      // Make the scroll view full-width
                         .frame(minHeight: geometry.size.height)
-                        .onAppear {
-                            customerCash = formattedTotal
-                        }
-
                     }
                 }
             }

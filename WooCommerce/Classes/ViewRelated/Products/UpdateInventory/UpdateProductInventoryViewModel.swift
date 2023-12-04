@@ -94,7 +94,6 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     enum UpdateQuantityButtonMode {
         case increaseOnce
         case customQuantity
-        case loading
     }
 
     let inventoryItem: InventoryItem
@@ -128,6 +127,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         }
     }
 
+    @Published var isPrimaryButtonLoading: Bool = false
     @Published var enableQuantityButton: Bool = true
     @Published var showLoadingName: Bool = true
     @Published var name: String = ""
@@ -163,11 +163,12 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
 private extension UpdateProductInventoryViewModel {
     func updateStockQuantity(with newQuantity: Decimal) async throws {
-        updateQuantityButtonMode = .loading
+        isPrimaryButtonLoading = true
 
         // TODO: Handle error
         try? await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
 
+        isPrimaryButtonLoading = false
         updateQuantityButtonMode = .increaseOnce
     }
 }

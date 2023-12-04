@@ -83,11 +83,8 @@ struct UpdateProductInventoryView: View {
                                 }
                             }
                             .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
-
-                            ProgressView()
-                                .renderedIf(viewModel.updateQuantityButtonMode == .loading)
                         }
-                        .buttonStyle(PrimaryButtonStyle())
+                        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPrimaryButtonLoading))
                         .disabled(!viewModel.enableQuantityButton)
                         .padding(.bottom, Layout.mediumSpacing)
 

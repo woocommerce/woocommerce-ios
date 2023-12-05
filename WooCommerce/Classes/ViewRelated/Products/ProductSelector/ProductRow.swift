@@ -145,13 +145,17 @@ private struct ProductStepper: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
 
-    @State private var textFieldValue: Decimal
+    @Binding private var textFieldValue: Decimal
 
     @FocusState private var textFieldFocused: Bool
 
     init(viewModel: ProductRowViewModel) {
         self.viewModel = viewModel
-        self._textFieldValue = State(initialValue: viewModel.quantity)
+        self._textFieldValue = Binding(get: {
+            viewModel.enteredQuantity
+        }, set: { newQuantity in
+            viewModel.enteredQuantity = newQuantity
+        })
     }
 
     var body: some View {
@@ -165,8 +169,14 @@ private struct ProductStepper: View {
                     textFieldValue = newQuantity
                 }
             } label: {
-                Image(systemName: "minus.circle")
-                    .font(.system(size: Layout.stepperButtonSize))
+                if viewModel.decrementWillRemoveProduct {
+                    Image(systemName: "xmark.circle")
+                        .font(.system(size: Layout.stepperButtonSize))
+                        .foregroundColor(Color(.error))
+                } else {
+                    Image(systemName: "minus.circle")
+                        .font(.system(size: Layout.stepperButtonSize))
+                }
             }
             .accessibilityHidden(true)
             .disabled(viewModel.shouldDisableQuantityDecrementer)

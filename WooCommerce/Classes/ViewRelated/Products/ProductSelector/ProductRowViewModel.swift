@@ -2,6 +2,7 @@ import Experiments
 import Foundation
 import Yosemite
 import WooFoundation
+import Combine
 
 /// View model for product rows or cards, e.g. `ProductRow` or `CollapsibleProductCard`.
 ///
@@ -259,6 +260,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     @Published private(set) var quantity: Decimal
 
+    /// Quantity as shown in the text field. This may be uncommitted, in which case it could differ from `quantity`
+    ///
+    @Published var enteredQuantity: Decimal
+
+    /// When a decrement action would remove the product, we can use this property to emphasise that to the user
+    ///
+    @Published var decrementWillRemoveProduct: Bool = false
+
     /// Minimum value of the product quantity
     ///
     private let minimumQuantity: Decimal
@@ -363,6 +372,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
         self.configure = configure
+        self.enteredQuantity = quantity
+        bindDecrementWillRemoveProduct()
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -555,6 +566,18 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private func createAttributesText(from attributes: [VariationAttributeViewModel]) -> String {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
+    }
+
+    private func bindDecrementWillRemoveProduct() {
+        $enteredQuantity
+            .map { [weak self] enteredQuantity in
+                guard let self,
+                    self.removeProductIntent != nil else {
+                    return false
+                }
+                return enteredQuantity <= self.minimumQuantity
+            }
+            .assign(to: &$decrementWillRemoveProduct)
     }
 
     func changeQuantity(to newQuantity: Decimal) {

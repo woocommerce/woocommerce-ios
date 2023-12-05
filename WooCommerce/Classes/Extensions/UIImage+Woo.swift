@@ -817,7 +817,7 @@ extension UIImage {
     /// Document image
     ///
     static var documentImage: UIImage {
-        return .gridicon(.attachment)
+        return .init(systemName: "doc.fill")!
     }
 
     /// Link Image

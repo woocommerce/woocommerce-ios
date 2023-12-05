@@ -29,6 +29,12 @@ final class ProductDownloadListViewController: UIViewController {
               allowsMultipleImages: false,
               onCompletion: onWPMediaPickerCompletion)
 
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     private let localFileUploader: LocalFileUploader
 
     private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
@@ -351,7 +357,9 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
                 loadingView.hideLoader()
             } catch {
                 loadingView.hideLoader()
-                // TODO: show error?
+                let notice = Notice(title: Localization.errorUploadingLocalFile,
+                                    feedbackType: .warning)
+                noticePresenter.enqueue(notice: notice)
             }
         }
     }
@@ -445,6 +453,11 @@ private extension ProductDownloadListViewController {
                                                               comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
         static let cancelAction = NSLocalizedString("Cancel",
                                                     comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
+        static let errorUploadingLocalFile = NSLocalizedString(
+            "productDownloadListViewController.notice.errorUploadingLocalFile",
+            value: "Error uploading the file. Please try again.",
+            comment: "Alert message to inform the user about a failure in uploading file for a downloadable product."
+        )
     }
 }
 

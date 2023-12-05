@@ -168,6 +168,6 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
 
 private extension WordPressMediaLibraryImagePickerCoordinatorTests {
     func makeCoordinator(onCompletion: @escaping Completion) -> WordPressMediaLibraryPickerCoordinator {
-        .init(siteID: 304, allowsMultipleImages: false, onCompletion: onCompletion)
+        .init(siteID: 304, imagesOnly: true, allowsMultipleSelections: false, onCompletion: onCompletion)
     }
 }

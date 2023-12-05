@@ -27,6 +27,31 @@ final class MediaRemoteTests: XCTestCase {
 
     // MARK: - Load Media From Media Library `loadMediaLibrary`
 
+    func test_loadMediaLibrary_sends_mime_type_filter_if_imagesOnly_is_true() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true, completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let mimeTypeValue = try XCTUnwrap(request.parameters?["mime_type"] as? String)
+        XCTAssertEqual(mimeTypeValue, "image")
+    }
+
+    func test_loadMediaLibrary_does_not_send_mime_type_filter_if_imagesOnly_is_false() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: false, completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        XCTAssertNil(request.parameters?["mime_type"])
+    }
+
     /// Verifies that `loadMediaLibrary` properly parses the `media-library` sample response.
     ///
     func test_loadMediaLibrary_properly_returns_parsed_media() throws {
@@ -36,7 +61,7 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibrary(for: self.sampleSiteID) { result in
+            remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
@@ -54,7 +79,7 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibrary(for: self.sampleSiteID) { result in
+            remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
@@ -74,7 +99,7 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID) { result in
+            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
@@ -108,7 +133,7 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID) { result in
+            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }

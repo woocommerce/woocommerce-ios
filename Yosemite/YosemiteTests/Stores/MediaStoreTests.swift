@@ -62,6 +62,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -99,6 +100,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -124,6 +126,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -146,6 +149,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -170,6 +174,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let _: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -196,6 +201,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -226,6 +232,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -255,6 +262,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)

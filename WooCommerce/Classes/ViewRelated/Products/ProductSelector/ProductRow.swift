@@ -165,10 +165,8 @@ private struct ProductStepper: View {
                     textFieldValue = newQuantity
                 }
             } label: {
-                Image(uiImage: .minusSmallImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: Layout.stepperButtonSize * scale)
+                Image(systemName: "minus.circle")
+                    .font(.system(size: Layout.stepperButtonSize))
             }
             .accessibilityHidden(true)
             .disabled(viewModel.shouldDisableQuantityDecrementer)
@@ -213,26 +211,21 @@ private struct ProductStepper: View {
                     textFieldValue = newQuantity
                 }
             } label: {
-                Image(uiImage: .plusSmallImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: Layout.stepperButtonSize * scale)
+                Image(systemName: "plus.circle")
+                    .font(.system(size: Layout.stepperButtonSize))
             }
             .accessibilityHidden(true)
             .disabled(viewModel.shouldDisableQuantityIncrementer)
         }
-        .padding(Layout.stepperPadding * scale)
+        .padding(.vertical, Layout.stepperPadding * scale)
     }
 }
 
 private enum Layout {
     static let productImageSize: CGFloat = 48.0
     static let cornerRadius: CGFloat = 4.0
-    static let stepperBorderWidth: CGFloat = 1.0
-    static let stepperBorderRadius: CGFloat = 4.0
-    static let stepperButtonSize: CGFloat = 22.0
+    static let stepperButtonSize: CGFloat = 24.0
     static let stepperPadding: CGFloat = 11.0
-    static let stepperWidth: CGFloat = 112.0
     static let checkImageSize: CGFloat = 24.0
 }
 

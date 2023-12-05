@@ -265,6 +265,10 @@ extension UIImage {
         UIImage(systemName: "qrcode.viewfinder")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
 
+    static var otherPaymentMethodsIcon: UIImage {
+        UIImage(systemName: "rectangle.and.pencil.and.ellipsis")?.withRenderingMode(.alwaysTemplate) ?? emptyBoxImage
+    }
+
     /// Customize Icon
     ///
     static var customizeImage: UIImage {

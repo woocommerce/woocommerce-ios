@@ -24,6 +24,8 @@ struct PaymentMethodsView: View {
 
     @State private var showingScanToPayView = false
 
+    @State private var showingOtherPaymentMethodsView = false
+
     private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentMethods)
 
     ///   Environment safe areas
@@ -92,6 +94,13 @@ struct PaymentMethodsView: View {
                                 viewModel.trackCollectByScanToPay()
                             }
                         }
+
+                        Divider()
+
+                        MethodRow(icon: .otherPaymentMethodsIcon, title: Localization.otherPaymentMethods, accessibilityID: Accessibility.otherPaymentMethods) {
+                            showingOtherPaymentMethodsView = true
+                            // viewModel.trackCollectByScanToPay()
+                        }
                     }
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
@@ -134,6 +143,12 @@ struct PaymentMethodsView: View {
                 dismiss()
                 viewModel.performScanToPayFinishedTasks()
             }
+                .background(FullScreenCoverClearBackgroundView())
+        }
+        .fullScreenCover(isPresented: $showingOtherPaymentMethodsView) {
+            OtherPaymentMethodsView(viewModel: OtherPaymentMethodsViewModel(formattedTotal: viewModel.formattedTotal) { noteText in
+
+            })
                 .background(FullScreenCoverClearBackgroundView())
         }
     }
@@ -209,6 +224,9 @@ extension PaymentMethodsView {
                                                 comment: "Tap to Pay on iPhone method title on the select payment method screen")
         static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen")
         static let scanToPay = NSLocalizedString("Scan to Pay", comment: "Scan to Pay method title on the select payment method screen")
+        static let otherPaymentMethods = NSLocalizedString("paymentMethods.otherPaymentMethods.tyile",
+                                                           value: "Other Payment Methods",
+                                                           comment: "Other payment methods title on the select payment method screen")
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
@@ -230,6 +248,7 @@ extension PaymentMethodsView {
         static let tapToPayMethod = "payment-methods-view-tap-to-pay-row"
         static let paymentLink = "payment-methods-view-payment-link-row"
         static let scanToPayMethod = "payment-methods-view-scan-to-pay-row"
+        static let otherPaymentMethods = "payment-methods-other-payment-methods-row"
     }
 }
 

@@ -1740,6 +1740,8 @@
 		B95B15C92B15EBA000A54044 /* UpdateProductInventoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95B15C82B15EBA000A54044 /* UpdateProductInventoryViewModel.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
+		B9713D282B1F381100AA899F /* OtherPaymentMethodsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9713D272B1F381100AA899F /* OtherPaymentMethodsView.swift */; };
+		B9713D2A2B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9713D292B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift */; };
 		B97C6E562B15E51A008A2BF2 /* UpdateProductInventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */; };
 		B98968572A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */; };
 		B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */; };
@@ -4333,6 +4335,8 @@
 		B95B15C82B15EBA000A54044 /* UpdateProductInventoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryViewModel.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
+		B9713D272B1F381100AA899F /* OtherPaymentMethodsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherPaymentMethodsView.swift; sourceTree = "<group>"; };
+		B9713D292B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherPaymentMethodsViewModel.swift; sourceTree = "<group>"; };
 		B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryView.swift; sourceTree = "<group>"; };
 		B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogViewModelTests.swift; sourceTree = "<group>"; };
 		B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomAmountsSection.swift; sourceTree = "<group>"; };
@@ -6586,6 +6590,7 @@
 		0386CFE52851F58E00134466 /* Payment Methods */ = {
 			isa = PBXGroup;
 			children = (
+				B9713D262B1F37FB00AA899F /* Other */,
 				B9001CDD2B1DD5F700EC87B2 /* Cash */,
 				261AA308275178FA009530FE /* PaymentMethodsView.swift */,
 				261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */,
@@ -9387,6 +9392,15 @@
 				B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */,
 			);
 			path = CustomerSection;
+			sourceTree = "<group>";
+		};
+		B9713D262B1F37FB00AA899F /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				B9713D272B1F381100AA899F /* OtherPaymentMethodsView.swift */,
+				B9713D292B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift */,
+			);
+			path = Other;
 			sourceTree = "<group>";
 		};
 		B97C6E542B15E4EE008A2BF2 /* UpdateInventory */ = {
@@ -12704,6 +12718,7 @@
 				E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */,
 				CC41E70C29310C1F008B3FB9 /* AnalyticsLineChart.swift in Sources */,
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
+				B9713D2A2B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift in Sources */,
 				6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */,
 				D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */,
 				B651474527D644FF00C9C4E6 /* CustomerNoteSection.swift in Sources */,
@@ -13003,6 +13018,7 @@
 				021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */,
 				02490D1A284DE664002096EF /* ProductImagesSaver.swift in Sources */,
 				0215320B24231D5A003F2BBD /* UIStackView+Subviews.swift in Sources */,
+				B9713D282B1F381100AA899F /* OtherPaymentMethodsView.swift in Sources */,
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,

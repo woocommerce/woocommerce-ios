@@ -217,7 +217,6 @@ private struct ProductStepper: View {
             .accessibilityHidden(true)
             .disabled(viewModel.shouldDisableQuantityIncrementer)
         }
-        .padding(.vertical, Layout.stepperPadding * scale)
     }
 }
 

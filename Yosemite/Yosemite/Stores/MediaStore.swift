@@ -55,6 +55,12 @@ public final class MediaStore: Store {
             retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let altText, let filename, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, altText: altText, filename: filename, onCompletion: onCompletion)
+        case let .uploadFile(siteID, productID, localURL, altText, onCompletion):
+            uploadFile(siteID: siteID,
+                       productID: productID,
+                       localURL: localURL,
+                       altText: altText,
+                       onCompletion: onCompletion)
         case .updateProductID(let siteID,
                             let productID,
                              let mediaID,
@@ -156,6 +162,24 @@ private extension MediaStore {
                     onCompletion(.failure(error))
                 }
             }
+        }
+    }
+
+    func uploadFile(siteID: Int64,
+                    productID: Int64,
+                    localURL: URL,
+                    altText: String?,
+                    onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        Task { @MainActor in
+            let uploadableMedia = UploadableMedia(localURL: localURL,
+                                                  filename: localURL.lastPathComponent,
+                                                  mimeType: localURL.mimeTypeForPathExtension,
+                                                  altText: altText)
+            uploadMedia(siteID: siteID,
+                        productID: productID,
+                        altText: altText,
+                        uploadableMedia: uploadableMedia,
+                        onCompletion: onCompletion)
         }
     }
 

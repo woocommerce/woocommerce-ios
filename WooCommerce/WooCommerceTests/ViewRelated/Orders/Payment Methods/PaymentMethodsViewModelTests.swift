@@ -436,7 +436,9 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedNote = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, cashPaymentInfo.customerPaidAmount, cashPaymentInfo.changeGivenAmount)
+        let expectedNote = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, 
+                                                            cashPaymentInfo.customerPaidAmount,
+                                                            cashPaymentInfo.changeGivenAmount)
 
         XCTAssertTrue(onSuccessInvoked)
         XCTAssertEqual(passedNote, expectedNote)

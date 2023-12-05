@@ -439,6 +439,7 @@ private struct ProductsSection: View {
                         }) {
                             Image(uiImage: .plusImage)
                         }
+                        .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     }
@@ -601,6 +602,11 @@ private extension OrderForm {
             "orderForm.products.add.scan.button.accessibilityLabel",
             value: "Scan barcode",
             comment: "Accessibility label for the barcode scanning button to add product")
+
+        static let addProductButtonAccessibilityLabel = NSLocalizedString(
+            "orderForm.products.add.button.accessibilityLabel",
+            value: "Add product",
+            comment: "Accessibility label for the + button to add product using a form")
     }
 
     enum Accessibility {

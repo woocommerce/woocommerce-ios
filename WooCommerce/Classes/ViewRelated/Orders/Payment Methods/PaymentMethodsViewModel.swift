@@ -165,12 +165,6 @@ final class PaymentMethodsViewModel: ObservableObject {
         updateCardPaymentVisibility()
     }
 
-    /// Creates the info text when the merchant selects the cash payment method.
-    ///
-    func payByCashInfo() -> String {
-        Localization.markAsPaidInfo(total: formattedTotal)
-    }
-
     func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
         showLoadingIndicator = true
         markOrderAsPaid { [weak self] in
@@ -450,11 +444,6 @@ private extension PaymentMethodsViewModel {
         static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
                                                         value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
                                                         comment: "Title for the cash tender view. Reads like Cash $34.45")
-
-        static func markAsPaidInfo(total: String) -> String {
-            NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",
-                              comment: "Alert info when selecting the cash payment method during payments")
-        }
     }
 }
 

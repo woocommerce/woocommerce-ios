@@ -1205,6 +1205,8 @@ lane :test_without_building do |options|
   # Only run UI tests in parallel.
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
   parallel_testing_value = options[:name] == 'UITests'
+  # Disabled to test if it makes a difference performance wise in Xcode 15.0.1 in CI.
+  parallel_testing_value = false
 
   run_tests(
     workspace: WORKSPACE_PATH,

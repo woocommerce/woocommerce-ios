@@ -41,6 +41,8 @@ struct CashPaymentTenderView: View {
                                 .font(.system(size: 36, weight: .bold))
                                 .foregroundColor(Color(.textSubtle))
 
+                            Toggle(Localization.addNoteToggleTitle, isOn: $viewModel.addNote)
+
                             Spacer()
 
                             Button(Localization.tenderButtonTitle) {
@@ -86,11 +88,14 @@ extension CashPaymentTenderView {
                                                         comment: "Title for the amount the customer paid.")
         static let cashPaymentFootnote = NSLocalizedString("cashPaymentTenderView.footnote",
                                                         value: "Enter the cash amount your customer paid and we'll calculate the change for you. " +
-                                                           "Tapping on Tender will mark the order as complete. This data will be added as a note to the order.",
+                                                           "Tapping on Tender will mark the order as complete.",
                                                         comment: "Explanatory footnote for the cash payment view.")
         static let dueChangeTitle = NSLocalizedString("cashPaymentTenderView.dueChange",
                                                         value: "Due Change",
                                                         comment: "Title for the due change text.")
+        static let addNoteToggleTitle = NSLocalizedString("cashPaymentTenderView.addNoteToggle.title",
+                                                        value: "Add note with due change",
+                                                        comment: "Title for the toggle that specifies whether to add a note to the order with the change data.")
         static let tenderButtonTitle = NSLocalizedString("cashPaymentTenderView.tenderButton",
                                                         value: "Tender",
                                                         comment: "Title for the tender button.")

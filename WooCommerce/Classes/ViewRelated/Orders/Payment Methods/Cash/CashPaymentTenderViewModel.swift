@@ -8,6 +8,7 @@ typealias OrderPaidByCashCallback = ((OrderPaidByCashInfo?) -> Void)
 struct OrderPaidByCashInfo {
     let customerPaidAmount: String
     let changeGivenAmount: String
+    let addNoteWithChangeData: Bool
 }
 
 final class CashPaymentTenderViewModel: ObservableObject {
@@ -16,6 +17,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
     let onOrderPaid: OrderPaidByCashCallback
 
     @Published var tenderButtonIsEnabled: Bool = true
+    @Published var addNote: Bool = true
     @Published var dueChange: String = ""
     @Published var customerCash: String = "" {
         didSet {
@@ -45,7 +47,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
     func onTenderButtonTapped() {
         var info: OrderPaidByCashInfo?
         if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerCash) {
-            info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: dueChange)
+            info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: dueChange, addNoteWithChangeData: addNote)
         }
 
         onOrderPaid(info)

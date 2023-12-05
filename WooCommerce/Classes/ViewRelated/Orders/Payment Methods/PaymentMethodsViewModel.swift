@@ -171,30 +171,20 @@ final class PaymentMethodsViewModel: ObservableObject {
         Localization.markAsPaidInfo(total: formattedTotal)
     }
 
-
-
     func markOrderPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
         showLoadingIndicator = true
         markOrderAsPaid { [weak self] in
             guard let self = self,
-            let info else {
+                  let info,
+                  info.addNoteWithChangeData else {
+                self?.finishOrderPaidByCashFlow()
                 onCompletion()
                 return
             }
-            let noteText = "Order paid by cash. Customer paid \(info.customerPaidAmount). Change given \(info.changeGivenAmount)."
-            let action = OrderNoteAction.addOrderNote(siteID: siteID,
-                                                      orderID: orderID,
-                                                      isCustomerNote: false,
-                                                      note: noteText) { _, _ in
-                self.showLoadingIndicator = false
-                self.presentNoticeSubject.send(.completed)
-                self.trackFlowCompleted(method: .cash, cardReaderType: .none)
-                
-                onCompletion()
-            }
 
-            Task { @MainActor in
-                self.stores.dispatch(action)
+            addPaidByCashNoteToOrder(with: info) {
+                self.finishOrderPaidByCashFlow()
+                onCompletion()
             }
         }
     }
@@ -322,6 +312,26 @@ private extension PaymentMethodsViewModel {
         stores.dispatch(action)
     }
 
+    func addPaidByCashNoteToOrder(with info: OrderPaidByCashInfo, onCompletion: @escaping () -> Void) {
+        let noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
+        let action = OrderNoteAction.addOrderNote(siteID: siteID,
+                                                  orderID: orderID,
+                                                  isCustomerNote: false,
+                                                  note: noteText) { _, _ in
+            onCompletion()
+        }
+
+        Task { @MainActor in
+            self.stores.dispatch(action)
+        }
+    }
+
+    func finishOrderPaidByCashFlow() {
+        showLoadingIndicator = false
+        presentNoticeSubject.send(.completed)
+        trackFlowCompleted(method: .cash, cardReaderType: .none)
+    }
+
     /// Observes the store CPP state and update publish variables accordingly.
     ///
     func bindStoreCPPState() {
@@ -436,6 +446,10 @@ private extension PaymentMethodsViewModel {
         static let title = NSLocalizedString("Take Payment (%1$@)",
                                              comment: "Navigation bar title for the Payment Methods screens. " +
                                              "%1$@ is a placeholder for the total amount to collect")
+
+        static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
+                                                        value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
+                                                        comment: "Title for the cash tender view. Reads like Cash $34.45")
 
         static func markAsPaidInfo(total: String) -> String {
             NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",

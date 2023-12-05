@@ -23,10 +23,14 @@ final class ProductDownloadListViewController: UIViewController {
     private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
         return DeviceMediaLibraryPicker(allowsMultipleImages: false, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
+
     private lazy var wpMediaLibraryPicker: WordPressMediaLibraryImagePickerCoordinator =
         .init(siteID: product.siteID,
               allowsMultipleImages: false,
               onCompletion: onWPMediaPickerCompletion)
+
+    private let localFileUploader: LocalFileUploader
+
     private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
     private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
     private let productImageActionHandler: ProductImageActionHandler?
@@ -47,6 +51,7 @@ final class ProductDownloadListViewController: UIViewController {
                                                               productID: .product(id: product.productID),
                                                               imageStatuses: [],
                                                               stores: stores)
+        localFileUploader = .init(siteID: product.siteID, productID: product.productID, stores: stores)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         onDeviceMediaLibraryPickerCompletion = { [weak self] assets in
@@ -317,6 +322,7 @@ private extension ProductDownloadListViewController {
     func showDeviceDocumentPicker(origin: UIViewController) {
         let types: [UTType] = [.pdf, .text, .rtf, .spreadsheet, .audio, .video, .epub, .zip, .plainText, .presentation]
         let importMenu = UIDocumentPickerViewController(forOpeningContentTypes: types)
+        importMenu.allowsMultipleSelection = false
         importMenu.delegate = self
         origin.present(importMenu, animated: true)
     }
@@ -328,7 +334,26 @@ private extension ProductDownloadListViewController {
 
 extension ProductDownloadListViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        print(urls)
+        // we don't support multiple selections, so we expect only one URL to be returned.
+        guard let url = urls.first else {
+            return
+        }
+
+        controller.dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+            self.loadingView.showLoader(in: self.view)
+        }
+
+        Task { @MainActor in
+            do {
+                let media = try await localFileUploader.uploadFile(url: url)
+                addDownloadableFile(fileName: media.name, fileURL: media.src)
+                loadingView.hideLoader()
+            } catch {
+                loadingView.hideLoader()
+                // TODO: show error?
+            }
+        }
     }
 }
 

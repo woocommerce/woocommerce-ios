@@ -5,7 +5,7 @@ import WooFoundation
 
 class CashPaymentTenderViewModelTests: XCTestCase {
     func test_customerCash_when_amount_is_not_suficient_handles_invalid_input() {
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: {})
+        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: {_ in })
         viewModel.customerCash = "5.00"
 
         XCTAssertFalse(viewModel.tenderButtonIsEnabled)
@@ -20,7 +20,7 @@ class CashPaymentTenderViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: usStoreSettings)
 
         // When
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: {}, storeCurrencySettings: usStoreSettings)
+        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: {_ in }, storeCurrencySettings: usStoreSettings)
         viewModel.customerCash = "15.00"
 
         // Then
@@ -35,17 +35,23 @@ class CashPaymentTenderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.dueChange, currencyFormatter.formatAmount(customerPaidAmount - totalAmount))
     }
 
-    func test_onTenderButtonTapped_then_calls_callback() {
+    func test_onTenderButtonTapped_then_calls_callback_with_right_info() {
         // Given
-        var onOrderPaidCalled = false
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: {
-            onOrderPaidCalled = true
-        })
+        var onOrderPaidInfo: OrderPaidByCashInfo?
+        let usStoreSettings = CurrencySettings()
+        let currencyFormatter = CurrencyFormatter(currencySettings: usStoreSettings)
+        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: { info in
+            onOrderPaidInfo = info
+        }, storeCurrencySettings: usStoreSettings)
 
         // When
+        viewModel.customerCash = "15.00"
+        viewModel.addNote = false
         viewModel.onTenderButtonTapped()
 
         // Then
-        XCTAssertTrue(onOrderPaidCalled)
+        XCTAssertEqual(onOrderPaidInfo?.customerPaidAmount, currencyFormatter.formatHumanReadableAmount(viewModel.customerCash))
+        XCTAssertEqual(onOrderPaidInfo?.changeGivenAmount, viewModel.dueChange)
+        XCTAssertEqual(onOrderPaidInfo?.addNoteWithChangeData, viewModel.addNote)
     }
 }

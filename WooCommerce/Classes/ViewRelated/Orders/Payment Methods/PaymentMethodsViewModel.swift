@@ -171,7 +171,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         Localization.markAsPaidInfo(total: formattedTotal)
     }
 
-    func markOrderPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
+    func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
         showLoadingIndicator = true
         markOrderAsPaid { [weak self] in
             guard let self = self,
@@ -294,7 +294,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 private extension PaymentMethodsViewModel {
     /// Mark an order as paid and notify if successful.
     ///
-    private func markOrderAsPaid(onSuccess: @escaping () -> Void) {
+    func markOrderAsPaid(onSuccess: @escaping () -> Void) {
         let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
             guard let self = self else { return }
 

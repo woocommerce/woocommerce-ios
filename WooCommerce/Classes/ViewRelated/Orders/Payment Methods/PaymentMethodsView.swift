@@ -50,7 +50,7 @@ struct PaymentMethodsView: View {
                         }
                         .fullScreenCover(isPresented: $showingCashAlert) {
                             CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
-                                viewModel.markOrderPaidByCash(with: info) {
+                                viewModel.markOrderAsPaidByCash(with: info) {
                                     dismiss()
                                 }
                             })

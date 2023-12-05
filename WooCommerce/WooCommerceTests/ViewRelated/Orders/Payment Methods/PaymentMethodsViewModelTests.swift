@@ -42,7 +42,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                     promise(loadingStates)
                 }
                 .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
         }
 
         // Then
@@ -70,7 +70,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 }
             }
 
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
         }
 
         // Then
@@ -105,7 +105,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                     XCTFail("Unexpected action: \(action)")
                 }
             }
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
         }
 
         // Then
@@ -133,7 +133,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         // When
         let onSuccessInvoked: Bool = waitFor { promise in
-            viewModel.markOrderAsPaid(onSuccess: {
+            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {
                 promise(true)
             })
         }
@@ -172,7 +172,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 }
             }
             .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
         }
 
         // Then
@@ -207,7 +207,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 }
             }
             .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaid(onSuccess: {})
+            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
         }
 
         // Then
@@ -238,7 +238,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        viewModel.markOrderAsPaid(onSuccess: {})
+        viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
@@ -277,7 +277,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        viewModel.markOrderAsPaid(onSuccess: {})
+        viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
@@ -389,12 +389,57 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        viewModel.markOrderAsPaid(onSuccess: {})
+        viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowFailed.rawValue)
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+    }
+
+    func test_markOrderAsPaidByCash_when_passing_info_with_add_note_true_sends_note() {
+        // Given
+        let cashPaymentInfo = OrderPaidByCashInfo(customerPaidAmount: "$50", changeGivenAmount: "$20", addNoteWithChangeData: true)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(nil)
+            case .retrieveOrder:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        var passedNote: String?
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            switch action {
+            case let .addOrderNote(_, _, _, note, onCompletion):
+                passedNote = note
+                onCompletion(nil, nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let dependencies = Dependencies(stores: stores)
+        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                dependencies: dependencies)
+
+        // When
+        let onSuccessInvoked: Bool = waitFor { promise in
+            viewModel.markOrderAsPaidByCash(with: cashPaymentInfo, onCompletion: {
+                promise(true)
+            })
+        }
+
+        // Then
+        let expectedNote = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, cashPaymentInfo.customerPaidAmount, cashPaymentInfo.changeGivenAmount)
+
+        XCTAssertTrue(onSuccessInvoked)
+        XCTAssertEqual(passedNote, expectedNote)
     }
 
     func test_failed_event_is_tracked_after_failing_to_collect_payment() {
@@ -893,5 +938,13 @@ private extension PaymentMethodsViewModelTests {
                 break
             }
         }
+    }
+}
+
+private extension PaymentMethodsViewModelTests {
+    enum Localization {
+        static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
+                                                        value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
+                                                        comment: "Title for the cash tender view. Reads like Cash $34.45")
     }
 }

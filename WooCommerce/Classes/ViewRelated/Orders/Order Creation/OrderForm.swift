@@ -545,6 +545,7 @@ private extension ProductsSection {
                 .foregroundColor(Color(.brand))
             }
         })
+        .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {
@@ -596,6 +597,10 @@ private extension OrderForm {
                                                                                      "when there is a tax rate stored")
         static let storedTaxRateBottomSheetClearTaxRateButtonTitle = NSLocalizedString("Clear address and stop using this rate",
                                                                                        comment: "Title for the button to clear the stored tax rate")
+        static let scanProductButtonAccessibilityLabel = NSLocalizedString(
+            "orderForm.products.add.scan.button.accessibilityLabel",
+            value: "Scan barcode",
+            comment: "Accessibility label for the barcode scanning button to add product")
     }
 
     enum Accessibility {

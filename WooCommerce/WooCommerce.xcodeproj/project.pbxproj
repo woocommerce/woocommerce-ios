@@ -1742,6 +1742,7 @@
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
 		B9713D282B1F381100AA899F /* OtherPaymentMethodsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9713D272B1F381100AA899F /* OtherPaymentMethodsView.swift */; };
 		B9713D2A2B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9713D292B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift */; };
+		B9713D2D2B1F436D00AA899F /* OtherPaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9713D2C2B1F436D00AA899F /* OtherPaymentMethodsViewModelTests.swift */; };
 		B97C6E562B15E51A008A2BF2 /* UpdateProductInventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */; };
 		B98968572A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */; };
 		B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */; };
@@ -4337,6 +4338,7 @@
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
 		B9713D272B1F381100AA899F /* OtherPaymentMethodsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherPaymentMethodsView.swift; sourceTree = "<group>"; };
 		B9713D292B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherPaymentMethodsViewModel.swift; sourceTree = "<group>"; };
+		B9713D2C2B1F436D00AA899F /* OtherPaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherPaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
 		B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryView.swift; sourceTree = "<group>"; };
 		B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogViewModelTests.swift; sourceTree = "<group>"; };
 		B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomAmountsSection.swift; sourceTree = "<group>"; };
@@ -6610,6 +6612,7 @@
 		039F373B2860DC12009A2B4C /* Payment Methods */ = {
 			isa = PBXGroup;
 			children = (
+				B9713D2B2B1F434F00AA899F /* Other */,
 				B9001CE22B1E119600EC87B2 /* Cash */,
 				261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */,
 			);
@@ -9399,6 +9402,14 @@
 			children = (
 				B9713D272B1F381100AA899F /* OtherPaymentMethodsView.swift */,
 				B9713D292B1F3DCA00AA899F /* OtherPaymentMethodsViewModel.swift */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		B9713D2B2B1F434F00AA899F /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				B9713D2C2B1F436D00AA899F /* OtherPaymentMethodsViewModelTests.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -14615,6 +14626,7 @@
 				EECB7EE02862115C0028C888 /* MockProductImageUploader.swift in Sources */,
 				022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */,
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
+				B9713D2D2B1F436D00AA899F /* OtherPaymentMethodsViewModelTests.swift in Sources */,
 				DE5FBB932A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift in Sources */,
 				26F94E34267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift in Sources */,
 				AE7C957F27C417FA007E8E12 /* FeeOrDiscountLineDetailsViewModelTests.swift in Sources */,

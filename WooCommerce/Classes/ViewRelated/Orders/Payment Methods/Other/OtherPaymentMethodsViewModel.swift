@@ -6,7 +6,7 @@ typealias OnMarkOrderAsCompleteCallback = ((_ noteText: String?) -> Void)
 final class OtherPaymentMethodsViewModel: ObservableObject {
     @Published var noteText: String = Localization.noteTextPlaceholder
     let formattedTotal: String
-    let onMarkOrderAsComplete: OnMarkOrderAsCompleteCallback
+    private let onMarkOrderAsComplete: OnMarkOrderAsCompleteCallback
 
     init(formattedTotal: String,
          onMarkOrderAsComplete: @escaping OnMarkOrderAsCompleteCallback) {
@@ -22,7 +22,7 @@ final class OtherPaymentMethodsViewModel: ObservableObject {
     }
 }
 
-extension OtherPaymentMethodsViewModel {
+private extension OtherPaymentMethodsViewModel {
     enum Localization {
         static let noteTextPlaceholder = NSLocalizedString("otherPaymentMethodsViewModel.note.placeholder",
                                                             value: "Enter optional note",

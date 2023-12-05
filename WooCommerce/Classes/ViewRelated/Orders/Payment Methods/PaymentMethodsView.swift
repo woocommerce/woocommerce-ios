@@ -147,7 +147,7 @@ struct PaymentMethodsView: View {
         }
         .fullScreenCover(isPresented: $showingOtherPaymentMethodsView) {
             OtherPaymentMethodsView(viewModel: OtherPaymentMethodsViewModel(formattedTotal: viewModel.formattedTotal) { noteText in
-                viewModel.markOrderAsComplete(with: noteText) {
+                viewModel.markOrderAsPaidWithOtherPaymentMethod(with: noteText) {
                     dismiss()
                 }
             })

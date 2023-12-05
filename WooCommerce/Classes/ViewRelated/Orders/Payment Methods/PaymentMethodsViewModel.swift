@@ -166,36 +166,17 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
-        let onCompletion = {
-            self.finishOrderPaidByCashFlow()
-            onCompletion()
+        var noteText: String?
+        if let info,
+           info.addNoteWithChangeData {
+            noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
         }
 
-        guard let info,
-              info.addNoteWithChangeData else {
-            markOrderAsPaid(onSuccess: onCompletion)
-            return
-        }
-
-        let noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
-
-        markOrderAsComplete(with: noteText, onCompletion: onCompletion)
+        markOrderAsComplete(with: noteText, paymentMethod: .cash, onCompletion: onCompletion)
     }
 
-    func markOrderAsComplete(with note: String?, onCompletion: @escaping () -> Void) {
-        markOrderAsPaid { [weak self] in
-            guard let self = self,
-                  let note else {
-                self?.finishOrderPaidByCashFlow()
-                onCompletion()
-                return
-            }
-
-            addNoteToOrder(note) {
-                self.finishOrderPaidByCashFlow()
-                onCompletion()
-            }
-        }
+    func markOrderAsPaidWithOtherPaymentMethod(with note: String?, onCompletion: @escaping () -> Void) {
+        markOrderAsComplete(with: note, paymentMethod: .otherPaymentMethods, onCompletion: onCompletion)
     }
 
     /// Starts the collect payment flow in the provided `rootViewController`
@@ -305,9 +286,27 @@ final class PaymentMethodsViewModel: ObservableObject {
 
 // MARK: Helpers
 private extension PaymentMethodsViewModel {
+    /// Mark an order as paid, notifies if the order was succesful, and adds a note to the order if passed.
+    ///
+    func markOrderAsComplete(with note: String? = nil, paymentMethod: WooAnalyticsEvent.PaymentsFlow.PaymentMethod, onCompletion: @escaping () -> Void) {
+        markOrderAsComplete { [weak self] in
+            guard let self = self,
+                  let note else {
+                self?.finishMarkingOrderAsComplete(with: paymentMethod)
+                onCompletion()
+                return
+            }
+
+            addNoteToOrder(note) {
+                self.finishMarkingOrderAsComplete(with: paymentMethod)
+                onCompletion()
+            }
+        }
+    }
+
     /// Mark an order as paid and notify if successful.
     ///
-    func markOrderAsPaid(onSuccess: @escaping () -> Void) {
+    func markOrderAsComplete(onSuccess: @escaping () -> Void) {
         showLoadingIndicator = true
 
         let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
@@ -340,10 +339,10 @@ private extension PaymentMethodsViewModel {
         }
     }
 
-    func finishOrderPaidByCashFlow() {
+    func finishMarkingOrderAsComplete(with paymentMethod: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
         showLoadingIndicator = false
         presentNoticeSubject.send(.completed)
-        trackFlowCompleted(method: .cash, cardReaderType: .none)
+        trackFlowCompleted(method: paymentMethod, cardReaderType: .none)
     }
 
     /// Observes the store CPP state and update publish variables accordingly.

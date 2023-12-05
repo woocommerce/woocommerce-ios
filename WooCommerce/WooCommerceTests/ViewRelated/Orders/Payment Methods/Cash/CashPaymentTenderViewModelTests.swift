@@ -9,7 +9,7 @@ class CashPaymentTenderViewModelTests: XCTestCase {
         viewModel.customerCash = "5.00"
 
         XCTAssertFalse(viewModel.tenderButtonIsEnabled)
-        XCTAssertEqual(viewModel.dueChange, "-")
+        XCTAssertEqual(viewModel.changeDue, "-")
     }
 
     func test_customerCash_when_amount_is_sufficient_handles_valid_input() {
@@ -32,7 +32,7 @@ class CashPaymentTenderViewModelTests: XCTestCase {
         }
 
         XCTAssertTrue(viewModel.tenderButtonIsEnabled)
-        XCTAssertEqual(viewModel.dueChange, currencyFormatter.formatAmount(customerPaidAmount - totalAmount))
+        XCTAssertEqual(viewModel.changeDue, currencyFormatter.formatAmount(customerPaidAmount - totalAmount))
     }
 
     func test_onTenderButtonTapped_then_calls_callback_with_right_info() {
@@ -51,7 +51,7 @@ class CashPaymentTenderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(onOrderPaidInfo?.customerPaidAmount, currencyFormatter.formatHumanReadableAmount(viewModel.customerCash))
-        XCTAssertEqual(onOrderPaidInfo?.changeGivenAmount, viewModel.dueChange)
+        XCTAssertEqual(onOrderPaidInfo?.changeGivenAmount, viewModel.changeDue)
         XCTAssertEqual(onOrderPaidInfo?.addNoteWithChangeData, viewModel.addNote)
     }
 }

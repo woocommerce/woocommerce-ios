@@ -13,12 +13,13 @@ struct OrderPaidByCashInfo {
 
 final class CashPaymentTenderViewModel: ObservableObject {
     let formattedTotal: String
-    let currencyFormatter: CurrencyFormatter
-    let onOrderPaid: OrderPaidByCashCallback
+    private let currencyFormatter: CurrencyFormatter
+    private let onOrderPaid: OrderPaidByCashCallback
+    private let analytics: Analytics
 
     @Published var tenderButtonIsEnabled: Bool = true
-    @Published var addNote: Bool = true
-    @Published var dueChange: String = ""
+    @Published var addNote: Bool = false
+    @Published var changeDue: String = ""
     @Published var customerCash: String = "" {
         didSet {
             guard customerCash != oldValue else { return }
@@ -37,9 +38,11 @@ final class CashPaymentTenderViewModel: ObservableObject {
 
     init(formattedTotal: String,
          onOrderPaid: @escaping OrderPaidByCashCallback,
-         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.formattedTotal = formattedTotal
         self.onOrderPaid = onOrderPaid
+        self.analytics = analytics
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
         customerCash = formattedTotal
     }
@@ -47,7 +50,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
     func onTenderButtonTapped() {
         var info: OrderPaidByCashInfo?
         if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerCash) {
-            info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: dueChange, addNoteWithChangeData: addNote)
+            info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: changeDue, addNoteWithChangeData: addNote)
         }
 
         onOrderPaid(info)
@@ -56,12 +59,12 @@ final class CashPaymentTenderViewModel: ObservableObject {
 
 private extension CashPaymentTenderViewModel {
     func handleInvalidInput() {
-        dueChange = "-"
+        changeDue = "-"
         tenderButtonIsEnabled = false
     }
 
     func handleSufficientPayment(customerPaidAmount: Decimal, totalAmount: Decimal) {
         tenderButtonIsEnabled = true
-        dueChange = currencyFormatter.formatAmount(customerPaidAmount - totalAmount) ?? ""
+        changeDue = currencyFormatter.formatAmount(customerPaidAmount - totalAmount) ?? ""
     }
 }

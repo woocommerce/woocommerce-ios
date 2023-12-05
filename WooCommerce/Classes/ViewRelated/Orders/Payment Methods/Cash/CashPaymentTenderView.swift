@@ -34,10 +34,10 @@ struct CashPaymentTenderView: View {
 
                             Divider()
 
-                            Text(Localization.dueChangeTitle)
+                            Text(Localization.changeDueTitle)
                                 .font(.title3)
                                 .foregroundColor(Color(.textSubtle))
-                            Text(viewModel.dueChange)
+                            Text(viewModel.changeDue)
                                 .font(.system(size: 36, weight: .bold))
                                 .foregroundColor(Color(.textSubtle))
 
@@ -87,14 +87,14 @@ extension CashPaymentTenderView {
                                                         value: "Customer paid",
                                                         comment: "Title for the amount the customer paid.")
         static let cashPaymentFootnote = NSLocalizedString("cashPaymentTenderView.footnote",
-                                                        value: "Enter the cash amount your customer paid and we'll calculate the change for you. " +
+                                                        value: "Enter the cash amount your customer paid and we'll calculate the change due for you. " +
                                                            "Tapping on Tender will mark the order as complete.",
                                                         comment: "Explanatory footnote for the cash payment view.")
-        static let dueChangeTitle = NSLocalizedString("cashPaymentTenderView.dueChange",
-                                                        value: "Due Change",
-                                                        comment: "Title for the due change text.")
+        static let changeDueTitle = NSLocalizedString("cashPaymentTenderView.changeDue",
+                                                        value: "Change due",
+                                                        comment: "Title for the change due text.")
         static let addNoteToggleTitle = NSLocalizedString("cashPaymentTenderView.addNoteToggle.title",
-                                                        value: "Add note with due change",
+                                                        value: "Add note with change due to order",
                                                         comment: "Title for the toggle that specifies whether to add a note to the order with the change data.")
         static let tenderButtonTitle = NSLocalizedString("cashPaymentTenderView.tenderButton",
                                                         value: "Tender",

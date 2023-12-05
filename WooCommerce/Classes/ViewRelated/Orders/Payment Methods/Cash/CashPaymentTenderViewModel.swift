@@ -20,12 +20,12 @@ final class CashPaymentTenderViewModel: ObservableObject {
     @Published var tenderButtonIsEnabled: Bool = true
     @Published var addNote: Bool = false
     @Published var changeDue: String = ""
-    @Published var customerCash: String = "" {
+    @Published var customerPaidAmount: String = "" {
         didSet {
-            guard customerCash != oldValue else { return }
+            guard customerPaidAmount != oldValue else { return }
 
             guard let totalAmount = currencyFormatter.convertToDecimal(formattedTotal) as? Decimal,
-                  let customerPaidAmount = currencyFormatter.convertToDecimal(customerCash) as? Decimal,
+                  let customerPaidAmount = currencyFormatter.convertToDecimal(customerPaidAmount) as? Decimal,
                   customerPaidAmount >= totalAmount else {
                 handleInvalidInput()
 
@@ -44,12 +44,12 @@ final class CashPaymentTenderViewModel: ObservableObject {
         self.onOrderPaid = onOrderPaid
         self.analytics = analytics
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
-        customerCash = formattedTotal
+        customerPaidAmount = formattedTotal
     }
 
     func onTenderButtonTapped() {
         var info: OrderPaidByCashInfo?
-        if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerCash) {
+        if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerPaidAmount) {
             info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: changeDue, addNoteWithChangeData: addNote)
         }
 

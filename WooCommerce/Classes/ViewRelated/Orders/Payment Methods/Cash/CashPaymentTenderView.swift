@@ -20,12 +20,12 @@ struct CashPaymentTenderView: View {
                             HStack {
                                 Text(Localization.customerPaidTitle)
                                 Spacer()
-                                TextField("", text: $viewModel.customerCash)
+                                TextField("", text: $viewModel.customerPaidAmount)
                                     .keyboardType(.decimalPad)
                                     .textFieldStyle(.roundedBorder)
                                     .headlineStyle()
                                     .onTapGesture {
-                                        viewModel.customerCash = ""
+                                        viewModel.customerPaidAmount = ""
                                     }
                             }
 

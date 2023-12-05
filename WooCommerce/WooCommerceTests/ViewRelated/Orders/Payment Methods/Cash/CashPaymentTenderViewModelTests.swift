@@ -35,7 +35,7 @@ class CashPaymentTenderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.changeDue, currencyFormatter.formatAmount(customerPaidAmount - totalAmount))
     }
 
-    func test_onTenderButtonTapped_then_calls_callback_with_right_info() {
+    func test_onMarkOrderAsCompleteButtonTapped_then_calls_callback_with_right_info() {
         // Given
         var onOrderPaidInfo: OrderPaidByCashInfo?
         let usStoreSettings = CurrencySettings()
@@ -47,7 +47,7 @@ class CashPaymentTenderViewModelTests: XCTestCase {
         // When
         viewModel.customerPaidAmount = "15.00"
         viewModel.addNote = false
-        viewModel.onTenderButtonTapped()
+        viewModel.onMarkOrderAsCompleteButtonTapped()
 
         // Then
         XCTAssertEqual(onOrderPaidInfo?.customerPaidAmount, currencyFormatter.formatHumanReadableAmount(viewModel.customerPaidAmount))

@@ -10,6 +10,12 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private var productImageStatuses: [ProductImageStatus]
 
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImagesGalleryViewController.Deletion
@@ -159,6 +165,15 @@ extension ProductImagesCollectionViewController {
 ///
 extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, UICollectionViewDropDelegate {
     func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+
+        // If any image is currently being uploaded, display a message to the user and prevent drag & drop operations.
+        guard !productImageStatuses.contains(where: { if case .uploading = $0 { return true }; return false }) else {
+            let notice = Notice(title: Localization.dragAndDropMessageWhileUploading,
+                                feedbackType: .warning)
+            self.noticePresenter.enqueue(notice: notice)
+            return []
+        }
+
         guard let item = productImageStatuses[safe: indexPath.row] else {
             return []
         }
@@ -265,5 +280,16 @@ private extension ProductImagesCollectionViewController {
                                 forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
         collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
                                 forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+    }
+}
+
+/// Private data structures
+/// 
+private extension ProductImagesCollectionViewController {
+    enum Localization {
+        static let dragAndDropMessageWhileUploading = NSLocalizedString(
+            "productImagesCollectionViewController.notice",
+            value: "Please wait until all uploads are finished before reordering images.",
+            comment: "Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images.")
     }
 }

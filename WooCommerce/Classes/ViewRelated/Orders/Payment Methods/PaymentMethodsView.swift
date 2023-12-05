@@ -99,7 +99,7 @@ struct PaymentMethodsView: View {
 
                         MethodRow(icon: .otherPaymentMethodsIcon, title: Localization.otherPaymentMethods, accessibilityID: Accessibility.otherPaymentMethods) {
                             showingOtherPaymentMethodsView = true
-                            // viewModel.trackCollectByScanToPay()
+                            viewModel.trackCollectByScanToPay()
                         }
                     }
                     .padding(.horizontal)

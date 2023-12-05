@@ -114,7 +114,7 @@ private struct CollapsibleProductRowCard: View {
 
     private func dismissTooltip() {
         if shouldShowInfoTooltip {
-            shouldShowInfoTooltip.toggle()
+            shouldShowInfoTooltip = false
         }
     }
 

@@ -193,8 +193,11 @@ private struct ProductStepper: View {
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("Done") {
+                    Button {
                         textFieldFocused = false
+                    } label: {
+                        Text(Localization.keyboardDoneButton)
+                            .bold()
                     }
                 }
             }
@@ -228,6 +231,10 @@ private enum Layout {
 
 private enum Localization {
     static let quantityLabel = NSLocalizedString("Quantity", comment: "Accessibility label for product quantity field")
+    static let keyboardDoneButton = NSLocalizedString(
+        "orderForm.productRow.keyboard.toolbar.done.button.title",
+        value: "Done",
+        comment: "The title for a button to dismiss the keyboard on the order creation/editing screen")
 }
 
 struct ProductRow_Previews: PreviewProvider {

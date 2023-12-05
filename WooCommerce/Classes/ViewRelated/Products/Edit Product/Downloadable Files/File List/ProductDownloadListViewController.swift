@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 import Photos
 import MobileCoreServices
+import enum Networking.DotcomError
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -326,7 +327,7 @@ private extension ProductDownloadListViewController {
     }
 
     func showDeviceDocumentPicker(origin: UIViewController) {
-        let types: [UTType] = [.pdf, .text, .rtf, .spreadsheet, .audio, .video, .epub, .zip, .plainText, .presentation]
+        let types: [UTType] = [.pdf, .text, .spreadsheet, .audio, .video, .zip, .presentation]
         let importMenu = UIDocumentPickerViewController(forOpeningContentTypes: types)
         importMenu.allowsMultipleSelection = false
         importMenu.delegate = self
@@ -357,8 +358,14 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
                 loadingView.hideLoader()
             } catch {
                 loadingView.hideLoader()
-                let notice = Notice(title: Localization.errorUploadingLocalFile,
-                                    feedbackType: .warning)
+                let errorMessage: String = {
+                    if case DotcomError.unknown(let code, _) = error,
+                       code == Constants.unsupportedMimeTypeCode {
+                        return Localization.unsupportedFileType
+                    }
+                    return Localization.errorUploadingLocalFile
+                }()
+                let notice = Notice(title: errorMessage, feedbackType: .error)
                 noticePresenter.enqueue(notice: notice)
             }
         }
@@ -453,6 +460,11 @@ private extension ProductDownloadListViewController {
                                                               comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
         static let cancelAction = NSLocalizedString("Cancel",
                                                     comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
+        static let unsupportedFileType = NSLocalizedString(
+            "productDownloadListViewController.notice.unsupportedFileType",
+            value: "The selected file type is not supported.",
+            comment: "Alert message about an unsupported file type when uploading file for a downloadable product."
+        )
         static let errorUploadingLocalFile = NSLocalizedString(
             "productDownloadListViewController.notice.errorUploadingLocalFile",
             value: "Error uploading the file. Please try again.",
@@ -464,5 +476,6 @@ private extension ProductDownloadListViewController {
 extension ProductDownloadListViewController {
     private enum Constants {
         static let defaultAddProductDownloadID: String = ""
+        static let unsupportedMimeTypeCode = "unsupported_mime_type"
     }
 }

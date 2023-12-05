@@ -51,15 +51,13 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                                  pageSize: Int = 25,
                                  context: String? = Default.context,
                                  completion: @escaping (Result<[Media], Error>) -> Void) {
-        var parameters: [String: Any] = [
+        let parameters: [String: Any] = [
             ParameterKey.contextKey: context ?? Default.context,
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type,file",
-        ]
-        if imagesOnly {
-            parameters[ParameterKey.mimeType] = "image"
-        }
+            ParameterKey.mimeType: imagesOnly ? "image" : nil
+        ].compactMapValues { $0 }
 
         let path = "sites/\(siteID)/media"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1,
@@ -85,14 +83,12 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                                                   pageNumber: Int = Default.pageNumber,
                                                   pageSize: Int = 25,
                                                   completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
-        var parameters: [String: Any] = [
+        let parameters: [String: Any] = [
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
-            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields
-        ]
-        if imagesOnly {
-            parameters[ParameterKey.mimeType] = "image"
-        }
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+            ParameterKey.mimeType: imagesOnly ? "image" : nil
+        ].compactMapValues { $0 }
 
         let path = "sites/\(siteID)/media"
         do {

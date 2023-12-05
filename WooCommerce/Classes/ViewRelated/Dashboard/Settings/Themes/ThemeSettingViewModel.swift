@@ -39,7 +39,7 @@ private extension ThemeSettingViewModel {
                     continuation.resume(returning: theme.name)
                 case .failure(let error):
                     DDLogError("⛔️ Error loading current theme: \(error)")
-                    // TODO: analytics
+                    // TODO: #11291 - analytics
                     continuation.resume(returning: "")
                 }
             })

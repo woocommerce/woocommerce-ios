@@ -13,7 +13,6 @@ public protocol MediaRemoteProtocol {
                                            completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
     func uploadMedia(for siteID: Int64,
                      productID: Int64,
-                     context: String?,
                      mediaItems: [UploadableMedia],
                      completion: @escaping (Result<[Media], Error>) -> Void)
     func uploadMediaToWordPressSite(siteID: Int64,
@@ -112,7 +111,6 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     public func uploadMedia(for siteID: Int64,
                             productID: Int64,
-                            context: String? = Default.context,
                             mediaItems: [UploadableMedia],
                             completion: @escaping (Result<[Media], Error>) -> Void) {
 

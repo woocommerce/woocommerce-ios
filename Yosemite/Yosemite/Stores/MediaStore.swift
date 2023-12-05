@@ -135,7 +135,6 @@ private extension MediaStore {
         } else {
             remote.uploadMedia(for: siteID,
                                productID: productID,
-                               context: nil,
                                mediaItems: [media]) { result in
                 // Removes local media after the upload API request.
                 do {

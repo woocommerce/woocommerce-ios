@@ -145,24 +145,25 @@ private struct ProductStepper: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
 
-    @Binding private var stepperValue: Decimal
+    @State private var textFieldValue: Decimal
 
     @FocusState private var textFieldFocused: Bool
 
     init(viewModel: ProductRowViewModel) {
         self.viewModel = viewModel
-        self._stepperValue = Binding(get: {
-            viewModel.quantity
-        }, set: { newValue in
-            viewModel.changeQuantity(to: newValue)
-        })
+        self._textFieldValue = State(initialValue: viewModel.quantity)
     }
 
     var body: some View {
         HStack {
             Button {
-                stepperValue -= 1.0
                 textFieldFocused = false
+                let newQuantity = textFieldValue - 1.0
+                viewModel.changeQuantity(to: newQuantity)
+                // If we edit the value and the focus in the same operation, the value change can be ignored.
+                DispatchQueue.main.async {
+                    textFieldValue = newQuantity
+                }
             } label: {
                 Image(uiImage: .minusSmallImage)
                     .resizable()
@@ -173,7 +174,7 @@ private struct ProductStepper: View {
             .disabled(viewModel.shouldDisableQuantityDecrementer)
 
             TextField("",
-                      value: $stepperValue,
+                      value: $textFieldValue,
                       format: .number)
             .textFieldStyle(.roundedBorder)
             .keyboardType(.decimalPad)
@@ -195,6 +196,7 @@ private struct ProductStepper: View {
                     Spacer()
                     Button {
                         textFieldFocused = false
+                        viewModel.changeQuantity(to: textFieldValue)
                     } label: {
                         Text(Localization.keyboardDoneButton)
                             .bold()
@@ -203,8 +205,13 @@ private struct ProductStepper: View {
             }
 
             Button {
-                stepperValue += 1.0
                 textFieldFocused = false
+                let newQuantity = textFieldValue + 1.0
+                viewModel.changeQuantity(to: newQuantity)
+                // If we edit the value and the focus in the same operation, the value change can be ignored.
+                DispatchQueue.main.async {
+                    textFieldValue = newQuantity
+                }
             } label: {
                 Image(uiImage: .plusSmallImage)
                     .resizable()

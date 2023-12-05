@@ -13,18 +13,20 @@ struct OrderPaidByCashInfo {
 
 final class CashPaymentTenderViewModel: ObservableObject {
     let formattedTotal: String
-    let currencyFormatter: CurrencyFormatter
-    let onOrderPaid: OrderPaidByCashCallback
+    private let currencyFormatter: CurrencyFormatter
+    private let onOrderPaid: OrderPaidByCashCallback
+    private let analytics: Analytics
 
+    var didTapOnCustomerPaidTextField = false
     @Published var tenderButtonIsEnabled: Bool = true
-    @Published var addNote: Bool = true
-    @Published var dueChange: String = ""
-    @Published var customerCash: String = "" {
+    @Published var addNote: Bool = false
+    @Published var changeDue: String = ""
+    @Published var customerPaidAmount: String = "" {
         didSet {
-            guard customerCash != oldValue else { return }
+            guard customerPaidAmount != oldValue else { return }
 
             guard let totalAmount = currencyFormatter.convertToDecimal(formattedTotal) as? Decimal,
-                  let customerPaidAmount = currencyFormatter.convertToDecimal(customerCash) as? Decimal,
+                  let customerPaidAmount = currencyFormatter.convertToDecimal(customerPaidAmount) as? Decimal,
                   customerPaidAmount >= totalAmount else {
                 handleInvalidInput()
 
@@ -37,31 +39,40 @@ final class CashPaymentTenderViewModel: ObservableObject {
 
     init(formattedTotal: String,
          onOrderPaid: @escaping OrderPaidByCashCallback,
-         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.formattedTotal = formattedTotal
         self.onOrderPaid = onOrderPaid
+        self.analytics = analytics
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
-        customerCash = formattedTotal
+        customerPaidAmount = formattedTotal
     }
 
-    func onTenderButtonTapped() {
+    func onMarkOrderAsCompleteButtonTapped() {
         var info: OrderPaidByCashInfo?
-        if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerCash) {
-            info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: dueChange, addNoteWithChangeData: addNote)
+        if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerPaidAmount) {
+            info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: changeDue, addNoteWithChangeData: addNote)
         }
 
+
+        trackOnMarkOrderAsCompleteButtonTapped(with: info)
         onOrderPaid(info)
     }
 }
 
 private extension CashPaymentTenderViewModel {
     func handleInvalidInput() {
-        dueChange = "-"
+        changeDue = "-"
         tenderButtonIsEnabled = false
     }
 
     func handleSufficientPayment(customerPaidAmount: Decimal, totalAmount: Decimal) {
         tenderButtonIsEnabled = true
-        dueChange = currencyFormatter.formatAmount(customerPaidAmount - totalAmount) ?? ""
+        changeDue = currencyFormatter.formatAmount(customerPaidAmount - totalAmount) ?? ""
+    }
+
+    func trackOnMarkOrderAsCompleteButtonTapped(with info: OrderPaidByCashInfo?) {
+        analytics.track(.cashPaymentTenderViewOnMarkOrderAsCompleteButtonTapped, withProperties: ["add_note": info?.addNoteWithChangeData ?? false,
+                                                                                                  "change_due_was_calculated": didTapOnCustomerPaidTextField])
     }
 }

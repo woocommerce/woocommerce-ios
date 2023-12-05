@@ -207,14 +207,17 @@ private struct ProductStepper: View {
             }
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button {
-                        textFieldFocused = false
-                        viewModel.changeQuantity(to: textFieldValue)
-                    } label: {
-                        Text(Localization.keyboardDoneButton)
-                            .bold()
+                    Group {
+                        Spacer()
+                        Button {
+                            viewModel.changeQuantity(to: textFieldValue)
+                            textFieldFocused = false
+                        } label: {
+                            Text(Localization.keyboardDoneButton)
+                                .bold()
+                        }
                     }
+                    .renderedIf(textFieldFocused)
                 }
             }
 

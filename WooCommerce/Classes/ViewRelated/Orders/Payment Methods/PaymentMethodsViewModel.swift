@@ -166,17 +166,33 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
+        let onCompletion = {
+            self.finishOrderPaidByCashFlow()
+            onCompletion()
+        }
+
+        guard let info,
+              info.addNoteWithChangeData else {
+            markOrderAsPaid(onSuccess: onCompletion)
+            return
+        }
+
+        let noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
+
+        markOrderAsComplete(with: noteText, onCompletion: onCompletion)
+    }
+
+    func markOrderAsComplete(with note: String?, onCompletion: @escaping () -> Void) {
         showLoadingIndicator = true
         markOrderAsPaid { [weak self] in
             guard let self = self,
-                  let info,
-                  info.addNoteWithChangeData else {
+                  let note else {
                 self?.finishOrderPaidByCashFlow()
                 onCompletion()
                 return
             }
 
-            addPaidByCashNoteToOrder(with: info) {
+            addNoteToOrder(note) {
                 self.finishOrderPaidByCashFlow()
                 onCompletion()
             }
@@ -306,8 +322,7 @@ private extension PaymentMethodsViewModel {
         stores.dispatch(action)
     }
 
-    func addPaidByCashNoteToOrder(with info: OrderPaidByCashInfo, onCompletion: @escaping () -> Void) {
-        let noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
+    func addNoteToOrder(_ noteText: String, onCompletion: @escaping () -> Void) {
         let action = OrderNoteAction.addOrderNote(siteID: siteID,
                                                   orderID: orderID,
                                                   isCustomerNote: false,

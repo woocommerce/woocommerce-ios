@@ -7,18 +7,26 @@ final class OtherPaymentMethodsViewModel: ObservableObject {
     @Published var noteText: String = Localization.noteTextPlaceholder
     let formattedTotal: String
     private let onMarkOrderAsComplete: OnMarkOrderAsCompleteCallback
+    private let analytics: Analytics
 
     init(formattedTotal: String,
+         analytics: Analytics = ServiceLocator.analytics,
          onMarkOrderAsComplete: @escaping OnMarkOrderAsCompleteCallback) {
         self.formattedTotal = formattedTotal
+        self.analytics = analytics
         self.onMarkOrderAsComplete = onMarkOrderAsComplete
     }
 
     func onMarkOrderAsCompleteTapped() {
         let noteTextWasAdded = noteText.isNotEmpty && noteText != Localization.noteTextPlaceholder
-        let noteText = noteTextWasAdded ? noteText : nil
 
-        onMarkOrderAsComplete(noteText)
+        var addingNoteText: String?
+        if noteTextWasAdded {
+            addingNoteText = noteText
+            analytics.track(.otherPaymentMethodsNoteAdded)
+        }
+
+        onMarkOrderAsComplete(addingNoteText)
     }
 }
 

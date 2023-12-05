@@ -7,7 +7,7 @@ final class ThemeSettingViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
 
-    func test_updateCurrentThemeName_updates_currentThemeName_properly() async {
+    func test_updateCurrentThemeName_updates_loadingCurrentTheme_properly() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ThemeSettingViewModel(siteID: 123, stores: stores)

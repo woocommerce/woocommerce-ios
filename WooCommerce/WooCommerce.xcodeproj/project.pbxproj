@@ -2310,6 +2310,9 @@
 		DEDA8D992B04643E0076BF0F /* ProductSubscription+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D982B04643E0076BF0F /* ProductSubscription+Empty.swift */; };
 		DEDA8D9D2B1609DE0076BF0F /* UserDefaults+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D9C2B1609DE0076BF0F /* UserDefaults+Blaze.swift */; };
 		DEDA8D9F2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D9E2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift */; };
+		DEDA8DBC2B1983570076BF0F /* ThemeSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */; };
+		DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */; };
+		DEDA8DC02B19CDC50076BF0F /* ThemeSettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */; };
 		DEDAE30B2A0B523F00F9635F /* LocalNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */; };
 		DEDAE30D2A12091500F9635F /* UpgradePlanCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
@@ -4913,6 +4916,9 @@
 		DEDA8D982B04643E0076BF0F /* ProductSubscription+Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSubscription+Empty.swift"; sourceTree = "<group>"; };
 		DEDA8D9C2B1609DE0076BF0F /* UserDefaults+Blaze.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Blaze.swift"; sourceTree = "<group>"; };
 		DEDA8D9E2B16D56A0076BF0F /* UserDefaultsBlazeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsBlazeTests.swift; sourceTree = "<group>"; };
+		DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingView.swift; sourceTree = "<group>"; };
+		DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingViewModel.swift; sourceTree = "<group>"; };
+		DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingViewModelTests.swift; sourceTree = "<group>"; };
 		DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationTests.swift; sourceTree = "<group>"; };
 		DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlanCoordinatingController.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
@@ -10336,6 +10342,7 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				DEDA8DBA2B19833E0076BF0F /* Themes */,
 				DE68979D2A8F7C8C00154588 /* AccountSettings */,
 				02ACD2592852E11700EC928E /* CloseAccountCoordinator.swift */,
 				0239305F2918F35600B2632F /* Domains */,
@@ -11120,6 +11127,15 @@
 			path = BlazeCampaignList;
 			sourceTree = "<group>";
 		};
+		DEDA8DBA2B19833E0076BF0F /* Themes */ = {
+			isa = PBXGroup;
+			children = (
+				DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */,
+				DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */,
+			);
+			path = Themes;
+			sourceTree = "<group>";
+		};
 		DEE4BBCA27FED9390002C818 /* ProductListSelector */ = {
 			isa = PBXGroup;
 			children = (
@@ -11224,6 +11240,7 @@
 				03A6C18128B52ACC00AADF23 /* In-Person Payments */,
 				E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */,
 				DEC51B03276B30F6009F3DF4 /* SystemStatusReportViewModelTests.swift */,
+				DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -13119,6 +13136,7 @@
 				AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
 				B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */,
+				DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */,
 				68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */,
 				D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */,
 				02ECD1E424FF5E0B00735BE5 /* AddProductCoordinator.swift in Sources */,
@@ -13672,6 +13690,7 @@
 				03582BE2299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift in Sources */,
 				02F36F472978349500D97EA0 /* DomainPurchaseSuccessView.swift in Sources */,
 				B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */,
+				DEDA8DBC2B1983570076BF0F /* ThemeSettingView.swift in Sources */,
 				03825FE92A97B63800363BDA /* AdaptiveImage.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
 				CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */,
@@ -14413,6 +14432,7 @@
 				021125B82578ECF10075AD2A /* BoldableTextParserTests.swift in Sources */,
 				4569D3F425DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift in Sources */,
 				57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */,
+				DEDA8DC02B19CDC50076BF0F /* ThemeSettingViewModelTests.swift in Sources */,
 				03EF250028C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift in Sources */,
 				EE5B5BB62AB31C7D009BCBD6 /* ProductCreationAIEligibilityCheckerTests.swift in Sources */,
 				DE2FE5832924DA2F0018040A /* JetpackSetupRequiredViewModelTests.swift in Sources */,

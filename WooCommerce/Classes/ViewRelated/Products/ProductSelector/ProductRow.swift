@@ -161,12 +161,12 @@ private struct ProductStepper: View {
     var body: some View {
         HStack {
             Button {
-                textFieldFocused = false
                 let newQuantity = textFieldValue - 1.0
                 viewModel.changeQuantity(to: newQuantity)
+                textFieldValue = newQuantity
                 // If we edit the value and the focus in the same operation, the value change can be ignored.
                 DispatchQueue.main.async {
-                    textFieldValue = newQuantity
+                    textFieldFocused = false
                 }
             } label: {
                 if viewModel.decrementWillRemoveProduct {
@@ -189,6 +189,12 @@ private struct ProductStepper: View {
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: true, vertical: false)
             .focused($textFieldFocused)
+            .onChange(of: textFieldFocused) { newValue in
+                // We may have unsaved changes in the text field, if switching focus to another text field.
+                if newValue == false {
+                    viewModel.resetEnteredQuantity()
+                }
+            }
             .accessibilityAdjustableAction { direction in
                 switch direction {
                 case .decrement:
@@ -213,12 +219,12 @@ private struct ProductStepper: View {
             }
 
             Button {
-                textFieldFocused = false
                 let newQuantity = textFieldValue + 1.0
                 viewModel.changeQuantity(to: newQuantity)
+                textFieldValue = newQuantity
                 // If we edit the value and the focus in the same operation, the value change can be ignored.
                 DispatchQueue.main.async {
-                    textFieldValue = newQuantity
+                    textFieldFocused = false
                 }
             } label: {
                 Image(systemName: "plus.circle")

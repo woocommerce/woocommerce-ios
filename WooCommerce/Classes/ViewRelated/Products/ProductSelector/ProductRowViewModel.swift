@@ -580,6 +580,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .assign(to: &$decrementWillRemoveProduct)
     }
 
+    func resetEnteredQuantity() {
+        enteredQuantity = quantity
+    }
+
     func changeQuantity(to newQuantity: Decimal) {
         guard newQuantity != quantity else {
             // This stops unnecessary order edit submissions when editing starts via the text field

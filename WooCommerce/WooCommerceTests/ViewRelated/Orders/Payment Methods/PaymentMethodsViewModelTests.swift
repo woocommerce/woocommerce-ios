@@ -444,7 +444,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(passedNote, expectedNote)
     }
 
-    func test_markOrderAsComplete_when_passing_note_then_sends_note() {
+    func test_markOrderAsPaidWithOtherPaymentMethod_when_passing_note_then_sends_note() {
         // Given
         let testNote = "testNote"
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -477,7 +477,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         // When
         let onSuccessInvoked: Bool = waitFor { promise in
-            viewModel.markOrderAsComplete(with: testNote, onCompletion: {
+            viewModel.markOrderAsPaidWithOtherPaymentMethod(with: testNote, onCompletion: {
                 promise(true)
             })
         }

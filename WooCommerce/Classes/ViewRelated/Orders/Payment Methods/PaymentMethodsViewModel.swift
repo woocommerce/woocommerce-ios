@@ -308,17 +308,17 @@ private extension PaymentMethodsViewModel {
         
         let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
             guard let self = self else { return }
-
+            
             if let error = error {
                 self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
                 self.trackFlowFailed()
                 return DDLogError("⛔️ Error updating order: \(error)")
             }
-
+            
             self.updateOrderAsynchronously()
-
+            
             onSuccess()
-
+            
         }
         stores.dispatch(action)
     }

@@ -494,6 +494,9 @@
 		02D29A8E29F7C26000473D6D /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A8D29F7C26000473D6D /* InputAccessoryView.swift */; };
 		02D29A9029F7C2DA00473D6D /* AztecAIViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A8F29F7C2DA00473D6D /* AztecAIViewFactory.swift */; };
 		02D29A9229F7C39200473D6D /* UIImage+Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A9129F7C39200473D6D /* UIImage+Text.swift */; };
+		02D391232AA5B550007A6BC5 /* ProductImageEditMenuCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D391222AA5B550007A6BC5 /* ProductImageEditMenuCoordinator.swift */; };
+		02D391252AA5C384007A6BC5 /* ProductImageBackgroundRemovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D391242AA5C384007A6BC5 /* ProductImageBackgroundRemovalView.swift */; };
+		02D391272AA5C3BA007A6BC5 /* ProductImageBackgroundRemovalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D391262AA5C3BA007A6BC5 /* ProductImageBackgroundRemovalViewModel.swift */; };
 		02D3B68529657061009BF0BC /* SupportButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3B68429657061009BF0BC /* SupportButton.swift */; };
 		02D4472C2A4D29930040D72D /* WooAnalyticsEvent+LocalAnnouncement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D4472B2A4D29930040D72D /* WooAnalyticsEvent+LocalAnnouncement.swift */; };
 		02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */; };
@@ -3085,6 +3088,9 @@
 		02D29A8D29F7C26000473D6D /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
 		02D29A8F29F7C2DA00473D6D /* AztecAIViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecAIViewFactory.swift; sourceTree = "<group>"; };
 		02D29A9129F7C39200473D6D /* UIImage+Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Text.swift"; sourceTree = "<group>"; };
+		02D391222AA5B550007A6BC5 /* ProductImageEditMenuCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageEditMenuCoordinator.swift; sourceTree = "<group>"; };
+		02D391242AA5C384007A6BC5 /* ProductImageBackgroundRemovalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageBackgroundRemovalView.swift; sourceTree = "<group>"; };
+		02D391262AA5C3BA007A6BC5 /* ProductImageBackgroundRemovalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageBackgroundRemovalViewModel.swift; sourceTree = "<group>"; };
 		02D3B68429657061009BF0BC /* SupportButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportButton.swift; sourceTree = "<group>"; };
 		02D4472B2A4D29930040D72D /* WooAnalyticsEvent+LocalAnnouncement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+LocalAnnouncement.swift"; sourceTree = "<group>"; };
 		02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Dot.swift"; sourceTree = "<group>"; };
@@ -6088,6 +6094,9 @@
 				02490D19284DE664002096EF /* ProductImagesSaver.swift */,
 				EECB7EE52864647F0028C888 /* ProductImagesProductIDUpdater.swift */,
 				02F3A6832A618CD7004CD2E8 /* WordPressMediaLibraryImagePickerCoordinator.swift */,
+				02D391222AA5B550007A6BC5 /* ProductImageEditMenuCoordinator.swift */,
+				02D391242AA5C384007A6BC5 /* ProductImageBackgroundRemovalView.swift */,
+				02D391262AA5C3BA007A6BC5 /* ProductImageBackgroundRemovalViewModel.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -12808,6 +12817,7 @@
 				B6E851F3276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift in Sources */,
 				024DF31F23743045006658FE /* Header+AztecFormatting.swift in Sources */,
 				AE7C957B27C3D5DA007E8E12 /* FeeOrDiscountLineDetails.swift in Sources */,
+				02D391252AA5C384007A6BC5 /* ProductImageBackgroundRemovalView.swift in Sources */,
 				B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */,
 				B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */,
 				02DD81FB242CAA400060E50B /* WordPressMediaLibraryPickerDataSource.swift in Sources */,
@@ -13435,6 +13445,7 @@
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
 				CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */,
 				0300201029C0EBA400B09777 /* ReaderConnectionUnderlyingErrorDisplaying.swift in Sources */,
+				02D391272AA5C3BA007A6BC5 /* ProductImageBackgroundRemovalViewModel.swift in Sources */,
 				EEB4E2DA29B5F8FC00371C3C /* CouponLineDetailsViewModel.swift in Sources */,
 				B6C78B8E293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift in Sources */,
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
@@ -13632,6 +13643,7 @@
 				DE971219290A9615000C0BD3 /* AddStoreFooterView.swift in Sources */,
 				261E91A029C961EE00A5C118 /* SubscriptionsViewModel.swift in Sources */,
 				4574745D24EA84D800CF49BC /* ProductTypeBottomSheetListSelectorCommand.swift in Sources */,
+				02D391232AA5B550007A6BC5 /* ProductImageEditMenuCoordinator.swift in Sources */,
 				26578C4126277AFF00A15097 /* OrderAddOnsListViewController.swift in Sources */,
 				02F67FEE25805F9C00C3BAD2 /* ShippingLabelTrackingURLGenerator.swift in Sources */,
 				0269A63C2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift in Sources */,

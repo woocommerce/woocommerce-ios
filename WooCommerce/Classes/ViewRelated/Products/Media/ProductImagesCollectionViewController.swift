@@ -10,19 +10,24 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private var productImageStatuses: [ProductImageStatus]
 
+    private var coordinator: ProductImageEditMenuCoordinator?
+
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
+    private let actionHandler: ProductImageActionHandlerProtocol
     private let onDeletion: ProductImagesGalleryViewController.Deletion
     private let onReordering: ReorderingHandler
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
+         actionHandler: ProductImageActionHandlerProtocol,
          onDeletion: @escaping ProductImagesGalleryViewController.Deletion,
          onReordering: @escaping ReorderingHandler) {
         self.productImageStatuses = imageStatuses
         self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
+        self.actionHandler = actionHandler
         self.onDeletion = onDeletion
         self.onReordering = onReordering
         let columnLayout = ColumnFlowLayout(
@@ -101,6 +106,18 @@ private extension ProductImagesCollectionViewController {
             cell?.imageView.image = image
         }
         cell.cancellableTask = cancellable
+
+        // TODO-jc: editable check
+        if #available(iOS 17.0, *), isDeletionEnabled {
+            let removeBackgroundAction = UIAction(title: "Remove background",
+                                                  image: .sparklesImage) { [weak self] _ in
+                self?.removeBackground(image: productImage)
+            }
+            let menu = UIMenu(title: "", children: [removeBackgroundAction])
+            cell.setEditButtonMenu(menu)
+        } else {
+            cell.setEditButtonMenu(nil)
+        }
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
@@ -265,5 +282,47 @@ private extension ProductImagesCollectionViewController {
                                 forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
         collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
                                 forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+    }
+}
+
+private extension ProductImagesCollectionViewController {
+    func removeBackground(image: ProductImage) {
+        print("\(image)")
+
+        guard let navigationController else {
+            return
+        }
+        let imageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: {
+            PHImageManager.default()
+        })
+        let coordinator = ProductImageEditMenuCoordinator(navigationController: navigationController,
+                                                          productImage: image,
+                                                          imageLoader: imageLoader,
+                                                          actionHandler: actionHandler)
+        self.coordinator = coordinator
+        coordinator.start()
+    }
+}
+
+extension ProductImagesCollectionViewController {
+    override func collectionView(_ collectionView: UICollectionView,
+                                 contextMenuConfigurationForItemsAt indexPaths: [IndexPath],
+                                 point: CGPoint) -> UIContextMenuConfiguration? {
+        // Multi-selection is not supported.
+        guard let indexPath = indexPaths.first, indexPaths.count == 1 else {
+            return nil
+        }
+
+        guard case let .remote(image) = productImageStatuses[indexPath.row] else {
+            return nil
+        }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: { nil }, actionProvider: { suggestedActions in
+            let removeBackgroundAction = UIAction(title: NSLocalizedString("Remove background", comment: ""),
+                                                  image: .sparklesImage) { [weak self] action in
+                self?.removeBackground(image: image)
+            }
+            return UIMenu(title: "", children: [removeBackgroundAction])
+        })
     }
 }

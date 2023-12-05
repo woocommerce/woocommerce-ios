@@ -287,7 +287,9 @@ private extension ProductImagesCollectionViewController {
 /// 
 private extension ProductImagesCollectionViewController {
     enum Localization {
-        static let dragAndDropMessageWhileUploading = NSLocalizedString("Please wait until all uploads are finished before reordering images.",
-                   comment: "Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images.")
+        static let dragAndDropMessageWhileUploading = NSLocalizedString(
+            "productImagesCollectionViewController.notice",
+            value: "Please wait until all uploads are finished before reordering images.",
+            comment: "Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images.")
     }
 }

@@ -25,9 +25,10 @@ final class ProductDownloadListViewController: UIViewController {
         return DeviceMediaLibraryPicker(allowsMultipleImages: false, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
-    private lazy var wpMediaLibraryPicker: WordPressMediaLibraryImagePickerCoordinator =
+    private lazy var wpMediaLibraryPicker: WordPressMediaLibraryPickerCoordinator =
         .init(siteID: product.siteID,
-              allowsMultipleImages: false,
+              imagesOnly: false,
+              allowsMultipleSelections: false,
               onCompletion: onWPMediaPickerCompletion)
 
     private lazy var noticePresenter: DefaultNoticePresenter = {
@@ -39,7 +40,7 @@ final class ProductDownloadListViewController: UIViewController {
     private let localFileUploader: LocalFileUploader
 
     private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
-    private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
+    private var onWPMediaPickerCompletion: WordPressMediaLibraryPickerViewController.Completion?
     private let productImageActionHandler: ProductImageActionHandler?
     private var cancellable: AnyCancellable?
 

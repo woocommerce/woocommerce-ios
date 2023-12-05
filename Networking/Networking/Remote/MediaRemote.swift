@@ -3,11 +3,13 @@ import Foundation
 /// Protocol for `MediaRemote` mainly used for mocking.
 public protocol MediaRemoteProtocol {
     func loadMediaLibrary(for siteID: Int64,
+                          imagesOnly: Bool,
                           pageNumber: Int,
                           pageSize: Int,
                           context: String?,
                           completion: @escaping (Result<[Media], Error>) -> Void)
     func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                           imagesOnly: Bool,
                                            pageNumber: Int,
                                            pageSize: Int,
                                            completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
@@ -38,22 +40,26 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
+    ///   - imagesOnly: Whether only images should be loaded.
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadMediaLibrary(for siteID: Int64,
+                                 imagesOnly: Bool,
                                  pageNumber: Int = Default.pageNumber,
                                  pageSize: Int = 25,
                                  context: String? = Default.context,
                                  completion: @escaping (Result<[Media], Error>) -> Void) {
-        let parameters: [String: Any] = [
+        var parameters: [String: Any] = [
             ParameterKey.contextKey: context ?? Default.context,
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type,file",
-            ParameterKey.mimeType: "image"
         ]
+        if imagesOnly {
+            parameters[ParameterKey.mimeType] = "image"
+        }
 
         let path = "sites/\(siteID)/media"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1,
@@ -70,19 +76,23 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
+    ///   - imagesOnly: Whether only images should be loaded.
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.
     public func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                                  imagesOnly: Bool,
                                                   pageNumber: Int = Default.pageNumber,
                                                   pageSize: Int = 25,
                                                   completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
-        let parameters: [String: Any] = [
+        var parameters: [String: Any] = [
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
-            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
-            ParameterKey.mimeType: "image"
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields
         ]
+        if imagesOnly {
+            parameters[ParameterKey.mimeType] = "image"
+        }
 
         let path = "sites/\(siteID)/media"
         do {

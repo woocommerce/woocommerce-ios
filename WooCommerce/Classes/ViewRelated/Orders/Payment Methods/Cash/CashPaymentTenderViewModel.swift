@@ -17,6 +17,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
     private let onOrderPaid: OrderPaidByCashCallback
     private let analytics: Analytics
 
+    var didTapOnCustomerPaidTextField = false
     @Published var tenderButtonIsEnabled: Bool = true
     @Published var addNote: Bool = false
     @Published var changeDue: String = ""
@@ -47,12 +48,14 @@ final class CashPaymentTenderViewModel: ObservableObject {
         customerPaidAmount = formattedTotal
     }
 
-    func onTenderButtonTapped() {
+    func onMarkOrderAsCompleteButtonTapped() {
         var info: OrderPaidByCashInfo?
         if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerPaidAmount) {
             info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: changeDue, addNoteWithChangeData: addNote)
         }
 
+
+        trackOnMarkOrderAsCompleteButtonTapped(with: info)
         onOrderPaid(info)
     }
 }
@@ -66,5 +69,10 @@ private extension CashPaymentTenderViewModel {
     func handleSufficientPayment(customerPaidAmount: Decimal, totalAmount: Decimal) {
         tenderButtonIsEnabled = true
         changeDue = currencyFormatter.formatAmount(customerPaidAmount - totalAmount) ?? ""
+    }
+
+    func trackOnMarkOrderAsCompleteButtonTapped(with info: OrderPaidByCashInfo?) {
+        analytics.track(.cashPaymentTenderViewOnMarkOrderAsCompleteButtonTapped, withProperties: ["add_note": info?.addNoteWithChangeData ?? false,
+                                                                                                  "change_due_was_calculated": didTapOnCustomerPaidTextField])
     }
 }

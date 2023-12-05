@@ -183,7 +183,6 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     func markOrderAsComplete(with note: String?, onCompletion: @escaping () -> Void) {
-        showLoadingIndicator = true
         markOrderAsPaid { [weak self] in
             guard let self = self,
                   let note else {
@@ -305,6 +304,8 @@ private extension PaymentMethodsViewModel {
     /// Mark an order as paid and notify if successful.
     ///
     func markOrderAsPaid(onSuccess: @escaping () -> Void) {
+        showLoadingIndicator = true
+        
         let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
             guard let self = self else { return }
 

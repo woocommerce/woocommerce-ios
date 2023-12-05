@@ -444,6 +444,49 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(passedNote, expectedNote)
     }
 
+    func test_markOrderAsComplete_when_passing_note_then_sends_note() {
+        // Given
+        let testNote = "testNote"
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(nil)
+            case .retrieveOrder:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        var passedNote: String?
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            switch action {
+            case let .addOrderNote(_, _, _, note, onCompletion):
+                passedNote = note
+                onCompletion(nil, nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let dependencies = Dependencies(stores: stores)
+        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                dependencies: dependencies)
+
+        // When
+        let onSuccessInvoked: Bool = waitFor { promise in
+            viewModel.markOrderAsComplete(with: testNote, onCompletion: {
+                promise(true)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(onSuccessInvoked)
+        XCTAssertEqual(passedNote, testNote)
+    }
+
     func test_failed_event_is_tracked_after_failing_to_collect_payment() {
         // Given
         let storage = MockStorageManager()

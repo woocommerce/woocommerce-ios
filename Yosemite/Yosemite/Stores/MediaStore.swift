@@ -107,7 +107,7 @@ private extension MediaStore {
                             productID: productID,
                             altText: altText,
                             uploadableMedia: uploadableMedia,
-                            shouldRemoveMediaUponCompletion: true,
+                            shouldRemoveFileUponCompletion: true,
                             onCompletion: onCompletion)
             } catch {
                 onCompletion(.failure(error))
@@ -119,14 +119,14 @@ private extension MediaStore {
                      productID: Int64,
                      altText: String?,
                      uploadableMedia media: UploadableMedia,
-                     shouldRemoveMediaUponCompletion: Bool,
+                     shouldRemoveFileUponCompletion: Bool,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.uploadMediaToWordPressSite(siteID: siteID,
                                               productID: productID,
                                               mediaItem: media) { result in
                 // Removes local media after the upload API request.
-                if shouldRemoveMediaUponCompletion {
+                if shouldRemoveFileUponCompletion {
                     do {
                         try MediaFileManager().removeLocalMedia(at: media.localURL)
                     } catch {
@@ -148,7 +148,7 @@ private extension MediaStore {
                                context: nil,
                                mediaItems: [media]) { result in
                 // Removes local media after the upload API request.
-                if shouldRemoveMediaUponCompletion {
+                if shouldRemoveFileUponCompletion {
                     do {
                         try MediaFileManager().removeLocalMedia(at: media.localURL)
                     } catch {
@@ -185,7 +185,7 @@ private extension MediaStore {
                         productID: productID,
                         altText: altText,
                         uploadableMedia: uploadableMedia,
-                        shouldRemoveMediaUponCompletion: false,
+                        shouldRemoveFileUponCompletion: false,
                         onCompletion: onCompletion)
         }
     }

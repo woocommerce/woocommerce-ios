@@ -10,6 +10,7 @@ protocol InventoryItem {
     var imageURL: URL? { get }
 
     func retrieveName(with stores: StoresManager, siteID: Int64) async throws -> String
+    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws
 }
 
 extension SKUSearchResult {
@@ -27,7 +28,27 @@ extension Product: InventoryItem {
     func retrieveName(with stores: StoresManager, siteID: Int64) async throws -> String {
         name
     }
+
+    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            let newProduct = copy(stockQuantity: newQuantity)
+
+            let action = ProductAction.updateProduct(product: newProduct) { result in
+                switch result {
+                case .success(_):
+                    continuation.resume(with: .success(()))
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
+    }
 }
+
 extension ProductVariation: InventoryItem {
     func retrieveName(with stores: StoresManager, siteID: Int64) async throws -> String {
         // Let's retrieve the parent product's name
@@ -47,8 +68,28 @@ extension ProductVariation: InventoryItem {
             }
         }
     }
+
+    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            let newProductVaiation = copy(stockQuantity: newQuantity)
+
+            let action = ProductVariationAction.updateProductVariation(productVariation: newProductVaiation) { result in
+                switch result {
+                case .success(_):
+                    continuation.resume(with: .success(()))
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
+    }
 }
 
+@MainActor
 final class UpdateProductInventoryViewModel: ObservableObject {
     enum UpdateQuantityButtonMode {
         case increaseOnce
@@ -56,11 +97,13 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     let inventoryItem: InventoryItem
+    private let stores: StoresManager
 
     init(inventoryItem: InventoryItem,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores) {
         self.inventoryItem = inventoryItem
+        self.stores = stores
 
         quantity = inventoryItem.stockQuantity?.formatted() ?? ""
 
@@ -84,6 +127,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         }
     }
 
+    @Published var isPrimaryButtonLoading: Bool = false
     @Published var enableQuantityButton: Bool = true
     @Published var showLoadingName: Bool = true
     @Published var name: String = ""
@@ -95,5 +139,36 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
     var imageURL: URL? {
         inventoryItem.imageURL
+    }
+
+    func onTapIncreaseStockQuantityOnce() async {
+        guard let quantityDecimal = Decimal(string: quantity) else {
+            return
+        }
+
+        let newQuantity = quantityDecimal + 1
+        quantity = newQuantity.formatted()
+
+        try? await updateStockQuantity(with: newQuantity)
+    }
+
+    func onTapUpdateStockQuantity() async {
+        guard let quantityDecimal = Decimal(string: quantity) else {
+            return
+        }
+
+        try? await updateStockQuantity(with: quantityDecimal)
+    }
+}
+
+private extension UpdateProductInventoryViewModel {
+    func updateStockQuantity(with newQuantity: Decimal) async throws {
+        isPrimaryButtonLoading = true
+
+        // TODO: Handle error
+        try? await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
+
+        isPrimaryButtonLoading = false
+        updateQuantityButtonMode = .increaseOnce
     }
 }

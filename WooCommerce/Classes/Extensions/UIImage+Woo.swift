@@ -1253,6 +1253,10 @@ extension UIImage {
         return UIImage(named: "woo-waiting-customers")!
     }
 
+    static var puzzleExtensionsImage: UIImage {
+        return UIImage(named: "woo-puzzle-extensions")!
+    }
+
     /// Install WCShip banner Image
     ///
     static var installWCShipImage: UIImage {

@@ -3,6 +3,7 @@ import SwiftUI
 struct InPersonPaymentsOnboardingErrorMainContentView: View {
     let title: String
     let message: String
+    let secondaryMessage: String?
     let image: ImageInfo
     let supportLink: Bool
 
@@ -33,6 +34,12 @@ struct InPersonPaymentsOnboardingErrorMainContentView: View {
                 .font(.callout)
                 .padding(.bottom, isCompact ? 12 : 24)
                 .fixedSize(horizontal: false, vertical: true)
+            if let secondaryMessage {
+                Text(secondaryMessage)
+                    .font(.callout)
+                    .padding(.bottom, isCompact ? 12 : 24)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             if supportLink {
                 InPersonPaymentsSupportLink()
             }
@@ -45,6 +52,7 @@ struct InPersonPaymentsOnboardingErrorMainContentView_Previews: PreviewProvider 
     static var previews: some View {
         InPersonPaymentsOnboardingErrorMainContentView(title: "Title",
                                                        message: "Lorem ipsum dolor sit amet",
+                                                       secondaryMessage: "Secondary Lorem ipsum dolor sit amet",
                                                        image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                                                         image: .paymentErrorImage,
                                                         height: 180),

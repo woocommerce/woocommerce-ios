@@ -411,7 +411,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 XCTFail("Unexpected action: \(action)")
             }
         }
-
+        
         var passedNote: String?
         stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
             switch action {
@@ -422,24 +422,24 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 XCTFail("Unexpected action: \(action)")
             }
         }
-
+        
         let dependencies = Dependencies(stores: stores)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 dependencies: dependencies)
-
+        
         // When
         let onSuccessInvoked: Bool = waitFor { promise in
             viewModel.markOrderAsPaidByCash(with: cashPaymentInfo, onCompletion: {
                 promise(true)
             })
         }
-
+        
         // Then
         let expectedNote = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, 
                                                             cashPaymentInfo.customerPaidAmount,
                                                             cashPaymentInfo.changeGivenAmount)
-
+        
         XCTAssertTrue(onSuccessInvoked)
         XCTAssertEqual(passedNote, expectedNote)
     }

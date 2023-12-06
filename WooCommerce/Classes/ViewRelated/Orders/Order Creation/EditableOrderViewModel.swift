@@ -608,7 +608,9 @@ final class EditableOrderViewModel: ObservableObject {
                 self?.removeItemFromOrder(item)
             },
                                        restoreProductIntent: { [weak self] in
-                self?.syncOrderItems(products: [], variations: [variation])
+                guard let self else { return }
+                self.selectedProductVariations.append(variation)
+                self.orderSynchronizer.setProduct.send(.init(product: .variation(variation), quantity: 1))
             })
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
             // If the parent product is a bundle product, quantity cannot be changed.
@@ -641,7 +643,9 @@ final class EditableOrderViewModel: ObservableObject {
                 self?.removeItemFromOrder(item)
             },
                                        restoreProductIntent: { [weak self] in
-                self?.syncOrderItems(products: [product], variations: [])
+                guard let self else { return }
+                self.selectedProducts.append(product)
+                self.orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
             },
                                        configure: { [weak self] in
                 guard let self else { return }

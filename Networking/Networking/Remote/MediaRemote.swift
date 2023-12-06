@@ -115,10 +115,6 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                             context: String? = Default.context,
                             mediaItems: [UploadableMedia],
                             completion: @escaping (Result<[Media], Error>) -> Void) {
-        let parameters = [
-            ParameterKey.contextKey: context ?? Default.context,
-        ]
-
         let formParameters: [String: String] = [Int](0..<mediaItems.count).reduce(into: [:]) { (parentIDsByKey, index) in
             parentIDsByKey["attrs[\(index)][parent_id]"] = "\(productID)"
             parentIDsByKey["attrs[\(index)][\(ParameterKey.altText)]"] = mediaItems[index].altText
@@ -127,8 +123,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         let path = "sites/\(siteID)/media/new"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1,
                                     method: .post,
-                                    path: path,
-                                    parameters: parameters)
+                                    path: path)
         let mapper = MediaListMapper()
 
         enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in

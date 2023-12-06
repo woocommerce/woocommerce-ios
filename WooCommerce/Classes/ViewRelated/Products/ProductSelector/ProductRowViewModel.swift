@@ -265,7 +265,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
-    var removeProductIntent: (() -> Void)?
+    let removeProductIntent: (() -> Void)?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?

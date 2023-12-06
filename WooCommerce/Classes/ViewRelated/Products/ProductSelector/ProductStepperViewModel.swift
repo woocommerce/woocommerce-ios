@@ -41,7 +41,7 @@ final class ProductStepperViewModel: ObservableObject {
 
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
-    var removeProductIntent: (() -> Void)?
+    let removeProductIntent: (() -> Void)?
 
     init(quantity: Decimal,
          name: String,

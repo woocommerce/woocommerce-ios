@@ -168,9 +168,9 @@ struct InPersonPaymentsMenu: View {
                         } label: {
                             PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
                                         title: Localization.managePaymentGateways,
-                                        subtitle: viewModel.activePaymentGatewayName,
+                                        subtitle: viewModel.selectedPaymentGatewayName,
                                         isActive: $viewModel.presentManagePaymentGateways) {
-                                InPersonPaymentsSelectPluginView(selectedPlugin: nil,
+                                InPersonPaymentsSelectPluginView(selectedPlugin: viewModel.selectedPaymentGatewayPlugin,
                                                                  onPluginSelected: viewModel.preferredPluginSelected)
                             }
                             .padding(.vertical, Layout.cellVerticalPadding)

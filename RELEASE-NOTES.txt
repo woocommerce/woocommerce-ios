@@ -3,6 +3,7 @@
 16.6
 -----
 - [*] Payments menu: restored the ability to search for Payments in device Spotlight. [https://github.com/woocommerce/woocommerce-ios/pull/11343]
+- [*] Payments menu: show the selected payment gateway when there's more than one to choose from [https://github.com/woocommerce/woocommerce-ios/pull/11345]
 - [**] Fixed a crash that occurred when reordering product images during the image upload process. Now, users will not be able to reorder images until the upload is complete, providing a smoother and more stable experience. [https://github.com/woocommerce/woocommerce-ios/pull/11350]
 
 16.5

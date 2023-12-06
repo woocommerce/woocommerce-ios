@@ -68,24 +68,29 @@ struct UpdateProductInventoryView: View {
                         Spacer()
 
                         Group {
-                            Button(Localization.updateQuantityButtonTitle) {}
-                                .buttonStyle(PrimaryButtonStyle())
-                                .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
+                            Button(Localization.updateQuantityButtonTitle) {
+                                Task { @MainActor in
+                                    await viewModel.onTapUpdateStockQuantity()
+                                    dismiss()
+                                }
+                            }
+                            .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
 
-                            Button(Localization.increaseStockOnceButtonTitle) {}
-                                .buttonStyle(PrimaryButtonStyle())
-                                .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
-
+                            Button(Localization.increaseStockOnceButtonTitle) {
+                                Task { @MainActor in
+                                    await viewModel.onTapIncreaseStockQuantityOnce()
+                                    dismiss()
+                                }
+                            }
+                            .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
                         }
+                        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPrimaryButtonLoading))
                         .disabled(!viewModel.enableQuantityButton)
                         .padding(.bottom, Layout.mediumSpacing)
 
-
-                        Button(Localization.viewProductDetailsButtonTitle) {
-
-                        }
-                        .buttonStyle(SecondaryButtonStyle())
-                        .padding(.bottom)
+                        Button(Localization.viewProductDetailsButtonTitle) {}
+                            .buttonStyle(SecondaryButtonStyle())
+                            .padding(.bottom)
                     }
                     .padding()
                     .frame(minHeight: geometry.size.height)

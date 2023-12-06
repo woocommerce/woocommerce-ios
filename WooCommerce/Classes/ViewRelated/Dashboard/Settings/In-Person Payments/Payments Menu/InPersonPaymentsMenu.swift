@@ -192,6 +192,7 @@ struct InPersonPaymentsMenu: View {
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
+                    .transition(.opacity.animation(.easeInOut))
                 LazyNavigationLink(destination: HostedSupportForm(viewModel: .init()),
                                    isActive: $viewModel.presentSupport) {
                     EmptyView()

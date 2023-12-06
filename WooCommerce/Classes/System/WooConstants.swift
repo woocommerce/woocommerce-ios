@@ -241,6 +241,14 @@ extension WooConstants {
         case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-production"
 #endif
 
+        /// URL for the Product Creation with AI feedback survey
+        ///
+#if DEBUG
+        case productCreationAIFeedback = "https://automattic.survey.fm/testing-debug-product-creation-with-ai-dec-2023"
+#else
+        case productCreationAIFeedback = "https://automattic.survey.fm/product-creation-with-ai-dec-2023"
+#endif
+
         /// URL for shipping label creation information
         ///
         case shippingLabelCreationInfo = "https://woo.com/products/shipping"

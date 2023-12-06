@@ -166,21 +166,17 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
-        showLoadingIndicator = true
-        markOrderAsPaid { [weak self] in
-            guard let self = self,
-                  let info,
-                  info.addNoteWithChangeData else {
-                self?.finishOrderPaidByCashFlow()
-                onCompletion()
-                return
-            }
-
-            addPaidByCashNoteToOrder(with: info) {
-                self.finishOrderPaidByCashFlow()
-                onCompletion()
-            }
+        var noteText: String?
+        if let info,
+           info.addNoteWithChangeData {
+            noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
         }
+
+        markOrderAsComplete(with: noteText, paymentMethod: .cash, onCompletion: onCompletion)
+    }
+
+    func markOrderAsPaidWithOtherPaymentMethod(with note: String?, onCompletion: @escaping () -> Void) {
+        markOrderAsComplete(with: note, paymentMethod: .otherPaymentMethods, onCompletion: onCompletion)
     }
 
     /// Starts the collect payment flow in the provided `rootViewController`
@@ -259,6 +255,10 @@ final class PaymentMethodsViewModel: ObservableObject {
         trackCollectIntention(method: .scanToPay, cardReaderType: .none)
     }
 
+    func trackCollectByOtherPaymentMethods() {
+        trackCollectIntention(method: .otherPaymentMethods, cardReaderType: .none)
+    }
+
     /// Perform the necesary tasks after a link is shared.
     ///
     func performLinkSharedTasks() {
@@ -286,9 +286,29 @@ final class PaymentMethodsViewModel: ObservableObject {
 
 // MARK: Helpers
 private extension PaymentMethodsViewModel {
+    /// Mark an order as paid, notifies if the order was succesful, and adds a note to the order if passed.
+    ///
+    func markOrderAsComplete(with note: String? = nil, paymentMethod: WooAnalyticsEvent.PaymentsFlow.PaymentMethod, onCompletion: @escaping () -> Void) {
+        markOrderAsComplete { [weak self] in
+            guard let self = self,
+                  let note else {
+                self?.finishMarkingOrderAsComplete(with: paymentMethod)
+                onCompletion()
+                return
+            }
+
+            addNoteToOrder(note) {
+                self.finishMarkingOrderAsComplete(with: paymentMethod)
+                onCompletion()
+            }
+        }
+    }
+
     /// Mark an order as paid and notify if successful.
     ///
-    func markOrderAsPaid(onSuccess: @escaping () -> Void) {
+    func markOrderAsComplete(onSuccess: @escaping () -> Void) {
+        showLoadingIndicator = true
+
         let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
             guard let self = self else { return }
 
@@ -306,8 +326,7 @@ private extension PaymentMethodsViewModel {
         stores.dispatch(action)
     }
 
-    func addPaidByCashNoteToOrder(with info: OrderPaidByCashInfo, onCompletion: @escaping () -> Void) {
-        let noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
+    func addNoteToOrder(_ noteText: String, onCompletion: @escaping () -> Void) {
         let action = OrderNoteAction.addOrderNote(siteID: siteID,
                                                   orderID: orderID,
                                                   isCustomerNote: false,
@@ -320,10 +339,10 @@ private extension PaymentMethodsViewModel {
         }
     }
 
-    func finishOrderPaidByCashFlow() {
+    func finishMarkingOrderAsComplete(with paymentMethod: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
         showLoadingIndicator = false
         presentNoticeSubject.send(.completed)
-        trackFlowCompleted(method: .cash, cardReaderType: .none)
+        trackFlowCompleted(method: paymentMethod, cardReaderType: .none)
     }
 
     /// Observes the store CPP state and update publish variables accordingly.

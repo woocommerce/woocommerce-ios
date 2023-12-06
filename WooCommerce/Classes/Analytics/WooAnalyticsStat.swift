@@ -488,6 +488,10 @@ public enum WooAnalyticsStat: String {
     //
     case cashPaymentTenderViewOnMarkOrderAsCompleteButtonTapped = "cash_payment_tender_view_on_mark_order_as_complete_button_tapped"
 
+    // MARK: Other Payment Methods View Events
+    //
+    case otherPaymentMethodsNoteAdded = "other_payment_methods_note_added"
+
     // MARK: Shipping Labels Events
     //
     case shippingLabelRefundRequested = "shipping_label_refund_requested"

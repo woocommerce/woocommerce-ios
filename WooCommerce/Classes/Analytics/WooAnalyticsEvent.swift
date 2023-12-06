@@ -1172,6 +1172,7 @@ extension WooAnalyticsEvent {
             case cash
             case paymentLink = "payment_link"
             case scanToPay = "scan_to_pay"
+            case otherPaymentMethods = "other_payment_methods"
         }
 
         /// Possible view sources

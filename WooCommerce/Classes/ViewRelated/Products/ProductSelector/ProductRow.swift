@@ -136,11 +136,6 @@ extension ProductRow {
 private enum Layout {
     static let productImageSize: CGFloat = 48.0
     static let cornerRadius: CGFloat = 4.0
-    static let stepperBorderWidth: CGFloat = 1.0
-    static let stepperBorderRadius: CGFloat = 4.0
-    static let stepperButtonSize: CGFloat = 22.0
-    static let stepperPadding: CGFloat = 11.0
-    static let stepperWidth: CGFloat = 112.0
     static let checkImageSize: CGFloat = 24.0
 }
 

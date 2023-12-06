@@ -111,4 +111,42 @@ final class RESTRequestTests: XCTestCase {
             XCTAssertNotEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
         }
     }
+
+    func test_request_body_is_empty_if_skipsEncodingBody_is_true() throws {
+        // Given
+        let methods: [HTTPMethod] = [.post, .put]
+        for method in methods {
+            let request = RESTRequest(siteURL: sampleSiteAddress,
+                                      wooApiVersion: sampleWooApiVersion,
+                                      method: method,
+                                      path: sampleRPC,
+                                      parameters: sampleParameters,
+                                      skipsEncodingBody: true)
+
+            // When
+            let urlRequest = try request.asURLRequest()
+
+            // Then
+            XCTAssertNil(urlRequest.httpBody)
+        }
+    }
+
+    func test_request_body_is_not_empty_if_skipsEncodingBody_is_false() throws {
+        // Given
+        let methods: [HTTPMethod] = [.post, .put]
+        for method in methods {
+            let request = RESTRequest(siteURL: sampleSiteAddress,
+                                      wooApiVersion: sampleWooApiVersion,
+                                      method: method,
+                                      path: sampleRPC,
+                                      parameters: sampleParameters,
+                                      skipsEncodingBody: false)
+
+            // When
+            let urlRequest = try request.asURLRequest()
+
+            // Then
+            XCTAssertNotNil(urlRequest.httpBody)
+        }
+    }
 }

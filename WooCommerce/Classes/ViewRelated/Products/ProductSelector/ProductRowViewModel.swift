@@ -295,6 +295,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return quantity >= maximumQuantity
     }
 
+    var displayNoticeCallback: (Notice?) -> Void
+
     /// Closure to run when the quantity is changed.
     ///
     var quantityUpdatedCallback: (Decimal) -> Void
@@ -302,6 +304,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
     var removeProductIntent: (() -> Void)?
+
+    /// Closure to run to undo decrementing the quantity below the minimum quantity
+    var restoreProductIntent: (() -> Void)?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -342,8 +347,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
+         displayNoticeCallback: @escaping ((Notice?) -> Void) = { _ in },
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: (() -> Void)? = nil,
+         restoreProductIntent: (() -> Void)? = nil,
          configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.selectedState = selectedState
@@ -369,8 +376,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
+        self.displayNoticeCallback = displayNoticeCallback
         self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
+        self.restoreProductIntent = restoreProductIntent
         self.configure = configure
         self.enteredQuantity = quantity
         bindDecrementWillRemoveProduct()
@@ -389,8 +398,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      childProductRows: [ProductRowViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
+                     displayNoticeCallback: @escaping ((Notice?) -> Void) = { _ in },
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {},
+                     restoreProductIntent: (() -> Void)? = nil,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      configure: (() -> Void)? = nil) {
         // Don't show any price for variable products; price will be shown for each product variation.
@@ -469,8 +480,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
+                  displayNoticeCallback: displayNoticeCallback,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent,
+                  restoreProductIntent: restoreProductIntent,
                   configure: configure)
     }
 
@@ -488,8 +501,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
+                     displayNoticeCallback: @escaping ((Notice?) -> Void) = { _ in },
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-                     removeProductIntent: @escaping (() -> Void) = {}) {
+                     removeProductIntent: @escaping (() -> Void) = {},
+                     restoreProductIntent: (() -> Void)? = nil) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             imageURL = URL(string: encodedImageURLString)
@@ -516,8 +531,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
+                  displayNoticeCallback: displayNoticeCallback,
                   quantityUpdatedCallback: quantityUpdatedCallback,
-                  removeProductIntent: removeProductIntent)
+                  removeProductIntent: removeProductIntent,
+                  restoreProductIntent: restoreProductIntent)
     }
 
     /// Determines which product variation details to display.
@@ -592,6 +609,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         guard newQuantity >= minimumQuantity else {
             removeProductIntent?()
+            if let restoreProductIntent {
+                displayNoticeCallback(Notice(title: "You just deleted a thing",
+                                             subtitle: "Maybe you didn't want to?",
+                                             message: "So why?",
+                                             actionTitle: "Restore",
+                                             actionHandler: {
+                    restoreProductIntent()
+                }))
+            }
             return
         }
 

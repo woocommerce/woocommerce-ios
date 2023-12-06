@@ -597,12 +597,19 @@ final class EditableOrderViewModel: ObservableObject {
                                        displayMode: .attributes(attributes),
                                        hasParentProduct: item.parent != nil,
                                        pricedIndividually: pricedIndividually,
+                                       displayNoticeCallback: { [weak self] notice in
+                self?.autodismissableNotice = notice
+            },
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             },
                                        removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)})
+                self?.removeItemFromOrder(item)
+            },
+                                       restoreProductIntent: { [weak self] in
+                self?.syncOrderItems(products: [], variations: [variation])
+            })
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
             // If the parent product is a bundle product, quantity cannot be changed.
             let canChildItemsChangeQuantity = product.productType != .bundle
@@ -623,12 +630,19 @@ final class EditableOrderViewModel: ObservableObject {
                                        hasParentProduct: item.parent != nil,
                                        pricedIndividually: pricedIndividually,
                                        childProductRows: childProductRows,
+                                       displayNoticeCallback: { [weak self] notice in
+                self?.autodismissableNotice = notice
+            },
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             },
                                        removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)},
+                self?.removeItemFromOrder(item)
+            },
+                                       restoreProductIntent: { [weak self] in
+                self?.syncOrderItems(products: [product], variations: [])
+            },
                                        configure: { [weak self] in
                 guard let self else { return }
                 switch product.productType {

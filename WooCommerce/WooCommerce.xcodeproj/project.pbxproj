@@ -516,6 +516,8 @@
 		02DEA23328810B7A0057FC40 /* LoginOnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEA23228810B7A0057FC40 /* LoginOnboardingScreen.swift */; };
 		02DF174B2A4A134B008FD33B /* ProductFormActionsFactory+ProductCreationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF174A2A4A134B008FD33B /* ProductFormActionsFactory+ProductCreationTests.swift */; };
 		02DF980B2A15FD920009E2EA /* StoreCreationStatusChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF980A2A15FD920009E2EA /* StoreCreationStatusChecker.swift */; };
+		02DFD5042B20486C0048CD70 /* ProductStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DFD5032B20486C0048CD70 /* ProductStepper.swift */; };
+		02DFD5062B2048C50048CD70 /* ProductStepperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DFD5052B2048C50048CD70 /* ProductStepperViewModel.swift */; };
 		02DFECE725EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DFECE625EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift */; };
 		02E19B9C284743A40010B254 /* ProductImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E19B9B284743A40010B254 /* ProductImageUploader.swift */; };
 		02E222C829FBA60F004579A1 /* WooAnalyticsEvent+ProductFormAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E222C729FBA60F004579A1 /* WooAnalyticsEvent+ProductFormAI.swift */; };
@@ -3107,6 +3109,8 @@
 		02DEA23228810B7A0057FC40 /* LoginOnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingScreen.swift; sourceTree = "<group>"; };
 		02DF174A2A4A134B008FD33B /* ProductFormActionsFactory+ProductCreationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+ProductCreationTests.swift"; sourceTree = "<group>"; };
 		02DF980A2A15FD920009E2EA /* StoreCreationStatusChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationStatusChecker.swift; sourceTree = "<group>"; };
+		02DFD5032B20486C0048CD70 /* ProductStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStepper.swift; sourceTree = "<group>"; };
+		02DFD5052B2048C50048CD70 /* ProductStepperViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStepperViewModel.swift; sourceTree = "<group>"; };
 		02DFECE625EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationInfoViewController.swift; sourceTree = "<group>"; };
 		02E19B9B284743A40010B254 /* ProductImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageUploader.swift; sourceTree = "<group>"; };
 		02E222C729FBA60F004579A1 /* WooAnalyticsEvent+ProductFormAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductFormAI.swift"; sourceTree = "<group>"; };
@@ -10957,6 +10961,8 @@
 				CC53FB39275697B000C4CA4F /* ProductRowViewModel.swift */,
 				B9B7E2E529FBF96100F9CED1 /* ProductSelectorViewModelTracker.swift */,
 				68AC9D282ACE598B0042F784 /* ProductImageThumbnail.swift */,
+				02DFD5032B20486C0048CD70 /* ProductStepper.swift */,
+				02DFD5052B2048C50048CD70 /* ProductStepperViewModel.swift */,
 			);
 			path = ProductSelector;
 			sourceTree = "<group>";
@@ -13127,6 +13133,7 @@
 				02CA3C9729F8E54D0079E2FF /* BottomSheetPresenter.swift in Sources */,
 				4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */,
 				02F6800325807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift in Sources */,
+				02DFD5042B20486C0048CD70 /* ProductStepper.swift in Sources */,
 				02E8B17723E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift in Sources */,
 				0365986929AFB0C100F297D3 /* SetUpTapToPayInformationViewModel.swift in Sources */,
 				CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */,
@@ -13808,6 +13815,7 @@
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
 				0396CFAD2981476900E91436 /* CardPresentModalBuiltInConnectingFailed.swift in Sources */,
 				02C1853B27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift in Sources */,
+				02DFD5062B2048C50048CD70 /* ProductStepperViewModel.swift in Sources */,
 				26C98F9B29C18ACE00F96503 /* StorePlanBanner.swift in Sources */,
 				EE6A7BA92A7B7BE600D9A028 /* StoreCreationFeaturesQuestionViewModel.swift in Sources */,
 				E10BD16D27CF890800CE6449 /* InPersonPaymentsCountryNotSupportedStripe.swift in Sources */,

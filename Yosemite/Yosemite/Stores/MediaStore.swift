@@ -107,6 +107,7 @@ private extension MediaStore {
                             productID: productID,
                             altText: altText,
                             uploadableMedia: uploadableMedia,
+                            shouldRemoveMediaUponCompletion: true,
                             onCompletion: onCompletion)
             } catch {
                 onCompletion(.failure(error))
@@ -118,17 +119,20 @@ private extension MediaStore {
                      productID: Int64,
                      altText: String?,
                      uploadableMedia media: UploadableMedia,
+                     shouldRemoveMediaUponCompletion: Bool,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.uploadMediaToWordPressSite(siteID: siteID,
                                               productID: productID,
                                               mediaItem: media) { result in
                 // Removes local media after the upload API request.
-                do {
-                    try MediaFileManager().removeLocalMedia(at: media.localURL)
-                } catch {
-                    onCompletion(.failure(error))
-                    return
+                if shouldRemoveMediaUponCompletion {
+                    do {
+                        try MediaFileManager().removeLocalMedia(at: media.localURL)
+                    } catch {
+                        onCompletion(.failure(error))
+                        return
+                    }
                 }
 
                 switch result {
@@ -144,11 +148,13 @@ private extension MediaStore {
                                context: nil,
                                mediaItems: [media]) { result in
                 // Removes local media after the upload API request.
-                do {
-                    try MediaFileManager().removeLocalMedia(at: media.localURL)
-                } catch {
-                    onCompletion(.failure(error))
-                    return
+                if shouldRemoveMediaUponCompletion {
+                    do {
+                        try MediaFileManager().removeLocalMedia(at: media.localURL)
+                    } catch {
+                        onCompletion(.failure(error))
+                        return
+                    }
                 }
 
                 switch result {
@@ -179,6 +185,7 @@ private extension MediaStore {
                         productID: productID,
                         altText: altText,
                         uploadableMedia: uploadableMedia,
+                        shouldRemoveMediaUponCompletion: false,
                         onCompletion: onCompletion)
         }
     }

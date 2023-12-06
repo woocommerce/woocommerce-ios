@@ -43,7 +43,12 @@ final class ProductStepperViewModelTests: XCTestCase {
     func test_decrement_quantity_at_minimum_quantity_removes_product() {
         // Given
         var productRemoved = false
-        let viewModel = ProductStepperViewModel(quantity: 1, name: "", minimumQuantity: 1, maximumQuantity: nil, quantityUpdatedCallback: { _ in })
+        let viewModel = ProductStepperViewModel(quantity: 1,
+                                                name: "",
+                                                minimumQuantity: 1,
+                                                maximumQuantity: nil,
+                                                quantityUpdatedCallback: { _ in },
+                                                removeProductIntent: { productRemoved = true })
 
         // When
         viewModel.decrementQuantity()

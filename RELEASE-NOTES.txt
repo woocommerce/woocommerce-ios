@@ -4,6 +4,7 @@
 -----
 - [*] Payments menu: restored the ability to search for Payments in device Spotlight. [https://github.com/woocommerce/woocommerce-ios/pull/11343]
 - [*] Payments menu: show the selected payment gateway when there's more than one to choose from [https://github.com/woocommerce/woocommerce-ios/pull/11345]
+- [**] Fixed a crash that occurred when reordering product images during the image upload process. Now, users will not be able to reorder images until the upload is complete, providing a smoother and more stable experience. [https://github.com/woocommerce/woocommerce-ios/pull/11350]
 
 16.5
 -----
@@ -15,6 +16,7 @@
 - [internal] Order form: Updated design for product bundles and their bundled items in order creation/editing, to more clearly show the hierarchy and bundled item prices. [https://github.com/woocommerce/woocommerce-ios/pull/11321]
 - [internal] Update Shimmer dependency to avoid high CPU and memory use crashing the app when built with Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11320]
 - [internal] Fix issue with scrolling some views when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11335]
+- [*] Animate display of the onboarding notice in the payments menu [https://github.com/woocommerce/woocommerce-ios/pull/11339]
 
 16.4
 -----

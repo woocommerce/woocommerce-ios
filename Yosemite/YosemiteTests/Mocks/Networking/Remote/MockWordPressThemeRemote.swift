@@ -5,7 +5,7 @@ import Foundation
 ///
 final class MockWordPressThemeRemote {
     private var stubbedSuggestedThemes: [WordPressTheme] = []
-    private var stubbedSuggestedThemeError: Error?
+    private var stubbedSuggestedThemesError: Error?
 
     private var stubbedCurrentTheme: WordPressTheme?
     private var stubbedCurrentThemeError: Error?
@@ -15,7 +15,7 @@ final class MockWordPressThemeRemote {
         case .success(let themes):
             stubbedSuggestedThemes = themes
         case .failure(let error):
-            stubbedSuggestedThemeError = error
+            stubbedSuggestedThemesError = error
         }
     }
 
@@ -31,8 +31,8 @@ final class MockWordPressThemeRemote {
 
 extension MockWordPressThemeRemote: WordPressThemeRemoteProtocol {
     func loadSuggestedThemes() async throws -> [Networking.WordPressTheme] {
-        if let stubbedSuggestedThemeError {
-            throw stubbedSuggestedThemeError
+        if let stubbedSuggestedThemesError {
+            throw stubbedSuggestedThemesError
         }
         return stubbedSuggestedThemes
     }

@@ -257,11 +257,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: ". ")
     }
 
-    /// Quantity of product in the order
+    /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
-    var quantity: Decimal {
-        stepperViewModel.quantity
-    }
+    @Published private(set) var quantity: Decimal
 
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
@@ -320,6 +318,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockStatus = .init(rawValue: stockStatusKey)
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
+        self.quantity = quantity
         self.stepperViewModel = ProductStepperViewModel(quantity: quantity,
                                                         name: name,
                                                         minimumQuantity: minimumQuantity,
@@ -338,6 +337,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.variationDisplayMode = variationDisplayMode
         self.removeProductIntent = removeProductIntent
         self.configure = configure
+
+        observeQuantityFromStepperViewModel()
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -538,6 +539,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     func trackEditDiscountTapped() {
         analytics.track(event: .Orders.productDiscountEditButtonTapped())
+    }
+}
+
+private extension ProductRowViewModel {
+    func observeQuantityFromStepperViewModel() {
+        stepperViewModel.$quantity
+            .assign(to: &$quantity)
     }
 }
 

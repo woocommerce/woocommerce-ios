@@ -28,7 +28,7 @@ struct RESTRequest: Request {
                  apiVersionPath: String?,
                  method: HTTPMethod,
                  path: String,
-                 parameters: [String: Any]) {
+                 parameters: [String: Any]?) {
         self.siteURL = siteURL
         self.apiVersionPath = apiVersionPath
         self.method = method
@@ -45,7 +45,7 @@ struct RESTRequest: Request {
     init(siteURL: String,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any] = [:]) {
+         parameters: [String: Any]? = nil) {
         self.init(siteURL: siteURL, apiVersionPath: nil, method: method, path: path, parameters: parameters)
     }
 
@@ -60,7 +60,7 @@ struct RESTRequest: Request {
          wooApiVersion: WooAPIVersion,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any] = [:]) {
+         parameters: [String: Any]? = nil) {
         self.init(siteURL: siteURL, apiVersionPath: wooApiVersion.path, method: method, path: path, parameters: parameters)
     }
 
@@ -75,7 +75,7 @@ struct RESTRequest: Request {
          wordpressApiVersion: WordPressAPIVersion,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any] = [:]) {
+         parameters: [String: Any]? = nil) {
         self.init(siteURL: siteURL, apiVersionPath: wordpressApiVersion.path, method: method, path: path, parameters: parameters)
     }
 

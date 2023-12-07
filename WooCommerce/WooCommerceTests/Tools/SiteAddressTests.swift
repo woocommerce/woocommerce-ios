@@ -4,9 +4,9 @@ import XCTest
 
 final class SiteAddressTests: XCTestCase {
 
-    func test_the_address_fields_returns_the_expected_values() {
+    func test_the_address_fields_returns_the_expected_values() async {
         // Arrange
-        let siteSettings = mapLoadGeneralSiteSettingsResponse()
+        let siteSettings = await mapLoadGeneralSiteSettingsResponse()
 
         // Act
         let siteAddress = SiteAddress(siteSettings: siteSettings)
@@ -26,17 +26,17 @@ final class SiteAddressTests: XCTestCase {
 private extension SiteAddressTests {
     /// Returns the SiteSettings output upon receiving `filename` (Data Encoded)
     ///
-    func mapGeneralSettings(from filename: String) -> [SiteSetting] {
+    func mapGeneralSettings(from filename: String) async -> [SiteSetting] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! SiteSettingsMapper(siteID: 123, settingsGroup: SiteSettingGroup.general).map(response: response)
+        return try! await SiteSettingsMapper(siteID: 123, settingsGroup: SiteSettingGroup.general).map(response: response)
     }
 
     /// Returns the SiteSetting array as output upon receiving `settings-general`
     ///
-    func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
-        return mapGeneralSettings(from: "settings-general")
+    func mapLoadGeneralSiteSettingsResponse() async -> [SiteSetting] {
+        await mapGeneralSettings(from: "settings-general")
     }
 }

@@ -10,15 +10,14 @@ class NoteWooTests: XCTestCase {
 
     /// Sample Notes
     ///
-    private lazy var sampleNotes: [Note] = {
-        return try! mapNotes(from: "notifications-load-all")
-    }()
-
+    private func sampleNotes() async throws -> [Note] {
+        try await mapNotes(from: "notifications-load-all")
+    }
 
     /// Verifies that `blockForSubject` returns the first block in the `.subject` collection.
     ///
-    func test_blockForSubject_returns_the_first_block_in_the_subject_array() {
-        for note in sampleNotes {
+    func test_blockForSubject_returns_the_first_block_in_the_subject_array() async throws {
+        for note in try await sampleNotes() {
             XCTAssertEqual(note.blockForSubject, note.subject.first)
         }
     }
@@ -26,8 +25,8 @@ class NoteWooTests: XCTestCase {
     /// Verifies that `blockForSnippet` returns the last block in the `.subject` collection, whenever there's at least 2 subject
     /// blocks.
     ///
-    func test_blockForSnippet_returns_the_last_subject_block_whenever_there_is_more_than_one_entity_in_such_array() {
-        for note in sampleNotes {
+    func test_blockForSnippet_returns_the_last_subject_block_whenever_there_is_more_than_one_entity_in_such_array() async throws {
+        for note in try await sampleNotes() {
             let expected = (note.subject.count > 1) ? note.subject.last : nil
             XCTAssertEqual(note.blockForSnippet, expected)
         }
@@ -35,8 +34,8 @@ class NoteWooTests: XCTestCase {
 
     /// Verifies that the Product Metadata is successfully extracted from Store Review Notifications.
     ///
-    func test_product_metadata_is_successfully_extracted_from_store_review_notification() {
-        guard let reviewNote = sampleNotes.first(where: { $0.subkind == .storeReview }), let product = reviewNote.product else {
+    func test_product_metadata_is_successfully_extracted_from_store_review_notification() async throws {
+        guard let reviewNote = try await sampleNotes().first(where: { $0.subkind == .storeReview }), let product = reviewNote.product else {
             XCTFail()
             return
         }
@@ -47,16 +46,16 @@ class NoteWooTests: XCTestCase {
 
     /// Verifies that no Product Metadata can be extracted from non Store Review Notifications.
     ///
-    func test_product_metadata_is_null_for_non_review_notifications() {
-        for note in sampleNotes where note.subkind != .storeReview {
+    func test_product_metadata_is_null_for_non_review_notifications() async throws {
+        for note in try await sampleNotes() where note.subkind != .storeReview {
             XCTAssertNil(note.product)
         }
     }
 
     /// Verifies that the Star Rating property can be effectively extracted from Store Review Notifications.
     ///
-    func test_starRating_is_successfully_extracted_from_store_review_notification() {
-        guard let reviewNote = sampleNotes.first(where: { $0.subkind == .storeReview }) else {
+    func test_starRating_is_successfully_extracted_from_store_review_notification() async throws {
+        guard let reviewNote = try await sampleNotes().first(where: { $0.subkind == .storeReview }) else {
             XCTFail()
             return
         }
@@ -66,8 +65,8 @@ class NoteWooTests: XCTestCase {
 
     /// Verifies that no Star Rating can be extracted from non Store Review Notifications.
     ///
-    func test_starRating_calculated_property_returns_nil_whenever_the_receiver_is_not_a_store_review_note() {
-        for note in sampleNotes where note.subkind != .storeReview {
+    func test_starRating_calculated_property_returns_nil_whenever_the_receiver_is_not_a_store_review_note() async throws {
+        for note in try await sampleNotes() where note.subkind != .storeReview {
             XCTAssertNil(note.starRating)
         }
     }
@@ -80,8 +79,8 @@ private extension NoteWooTests {
 
     /// Returns the NoteListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapNotes(from filename: String) throws -> [Note] {
+    func mapNotes(from filename: String) async throws -> [Note] {
         let response = Loader.contentsOf(filename)!
-        return try NoteListMapper().map(response: response)
+        return try await NoteListMapper().map(response: response)
     }
 }

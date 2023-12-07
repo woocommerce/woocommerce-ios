@@ -18,8 +18,8 @@ final class AggregateDataHelperTests: XCTestCase {
 
     /// Verifies all refunds are loaded
     ///
-    func testRefundsCount() {
-        let refunds = mapLoadAllRefundsResponse()
+    func testRefundsCount() async {
+        let refunds = await mapLoadAllRefundsResponse()
         let expected = 4
         let actual = refunds.count
 
@@ -28,8 +28,8 @@ final class AggregateDataHelperTests: XCTestCase {
 
     /// Verifies refunded products are calculated correctly.
     ///
-    func testRefundedProductsCount() {
-        let refunds = mapLoadAllRefundsResponse()
+    func testRefundedProductsCount() async {
+        let refunds = await mapLoadAllRefundsResponse()
         let expected = Decimal(8)
         let actual = AggregateDataHelper.refundedProductsCount(from: refunds)
 
@@ -38,12 +38,12 @@ final class AggregateDataHelperTests: XCTestCase {
 
     /// Verifies refunded products are combined and sorted correctly.
     ///
-    func testRefundedProductsSortedSuccessfully() {
+    func testRefundedProductsSortedSuccessfully() async {
         let productID: Int64 = 1
         // The itemID (63 in this case) is relevant to retrieve the attributes. A refund order item has in its properties the refunded item id, to be used
         // to query the attibutes from the order items.
         let orderItems = [MockOrderItem.sampleItem(itemID: 63, productID: productID, quantity: 3, attributes: testOrderItemAttributes)]
-        let refunds = mapLoadAllRefundsResponse()
+        let refunds = await mapLoadAllRefundsResponse()
         let expectedProducts = expectedRefundedProducts()
 
         guard let actualProducts = AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: orderItems) else {
@@ -67,15 +67,15 @@ final class AggregateDataHelperTests: XCTestCase {
 
     /// Verifies that aggregate order items filter out objects with zero quantities.
     ///
-    func testAggregateOrderItemsFilterOutZeroQuantities() {
-        let orders = mapLoadAllOrdersResponse()
+    func testAggregateOrderItemsFilterOutZeroQuantities() async {
+        let orders = await mapLoadAllOrdersResponse()
 
         guard let order = orders.first(where: { $0.orderID == orderID }) else {
             XCTFail("Error: could not find order with the specified orderID.")
             return
         }
 
-        let refunds = mapLoadAllRefundsResponse()
+        let refunds = await mapLoadAllRefundsResponse()
         let expectedCount = 7
         let actual = AggregateDataHelper.combineOrderItems(order.items, with: refunds)
 
@@ -194,34 +194,34 @@ private extension AggregateDataHelperTests {
 
     /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrders(from filename: String) -> [Order] {
+    func mapOrders(from filename: String) async -> [Order] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! OrderListMapper(siteID: dummySiteID).map(response: response)
+        return try! await OrderListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the RefundListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapRefunds(from filename: String) -> [Refund] {
+    func mapRefunds(from filename: String) async -> [Refund] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! RefundListMapper(siteID: dummySiteID, orderID: orderID).map(response: response)
+        return try! await RefundListMapper(siteID: dummySiteID, orderID: orderID).map(response: response)
     }
 
     /// Returns the OrderListMapper output upon receiving `orders-load-all`
     ///
-    func mapLoadAllOrdersResponse() -> [Order] {
-        return mapOrders(from: "orders-load-all")
+    func mapLoadAllOrdersResponse() async -> [Order] {
+        await mapOrders(from: "orders-load-all")
     }
 
     /// Returns the RefundListMapper output upon receiving `order-560-all-refunds`
     ///
-    func mapLoadAllRefundsResponse() -> [Refund] {
-        return mapRefunds(from: "order-560-all-refunds")
+    func mapLoadAllRefundsResponse() async -> [Refund] {
+        await mapRefunds(from: "order-560-all-refunds")
     }
 
     /// Returns the sorted, expected array of refunded products

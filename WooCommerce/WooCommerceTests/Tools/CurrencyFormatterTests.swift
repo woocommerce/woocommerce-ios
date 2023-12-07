@@ -9,12 +9,17 @@ import WooFoundation
 class CurrencyFormatterTests: XCTestCase {
     private let sampleLocale = Locale(identifier: "en")
 
-    private lazy var sampleCurrencySettings = CurrencySettings(siteSettings: setUpSampleSiteSettings())
+    private var sampleCurrencySettings: CurrencySettings!
+
+    override func setUp() async throws {
+        try await super.setUp()
+        sampleCurrencySettings = CurrencySettings(siteSettings: await setUpSampleSiteSettings())
+    }
 
     /// Sample Site Settings
     ///
-    private func setUpSampleSiteSettings() -> [SiteSetting] {
-        let settings = mapLoadGeneralSiteSettingsResponse()
+    private func setUpSampleSiteSettings() async -> [SiteSetting] {
+        let settings = await mapLoadGeneralSiteSettingsResponse()
         var siteSettings: [SiteSetting] = []
 
         siteSettings.append(settings[14])
@@ -508,17 +513,17 @@ class CurrencyFormatterTests: XCTestCase {
 extension CurrencyFormatterTests {
     /// Returns the SiteSettings output upon receiving `filename` (Data Encoded)
     ///
-    func mapGeneralSettings(from filename: String) -> [SiteSetting] {
+    func mapGeneralSettings(from filename: String) async -> [SiteSetting] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! SiteSettingsMapper(siteID: 123, settingsGroup: SiteSettingGroup.general).map(response: response)
+        return try! await SiteSettingsMapper(siteID: 123, settingsGroup: SiteSettingGroup.general).map(response: response)
     }
 
     /// Returns the OrderNotesMapper output upon receiving `settings-general`
     ///
-    func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
-        return mapGeneralSettings(from: "settings-general")
+    func mapLoadGeneralSiteSettingsResponse() async -> [SiteSetting] {
+        await mapGeneralSettings(from: "settings-general")
     }
 }

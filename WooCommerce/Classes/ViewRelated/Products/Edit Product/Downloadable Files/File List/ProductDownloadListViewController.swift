@@ -39,8 +39,8 @@ final class ProductDownloadListViewController: UIViewController {
 
     private let localFileUploader: LocalFileUploader
 
-    private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
-    private var onWPMediaPickerCompletion: WordPressMediaLibraryPickerViewController.Completion?
+    private var onDeviceLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
+    private var onWPLibraryPickerCompletion: WordPressMediaLibraryPickerViewController.Completion?
     private let productImageActionHandler: ProductImageActionHandler?
     private var cancellable: AnyCancellable?
 
@@ -77,10 +77,10 @@ final class ProductDownloadListViewController: UIViewController {
         localFileUploader = .init(siteID: product.siteID, productID: product.productID, stores: stores)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
-        onDeviceMediaLibraryPickerCompletion = { [weak self] assets in
+        onDeviceLibraryPickerCompletion = { [weak self] assets in
             self?.onDeviceMediaLibraryPickerCompletion(assets: assets)
         }
-        onWPMediaPickerCompletion = { [weak self] mediaItems in
+        onWPLibraryPickerCompletion = { [weak self] mediaItems in
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         }
         cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in

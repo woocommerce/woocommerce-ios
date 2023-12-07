@@ -9,7 +9,7 @@ final class PluginListViewController: UIViewController, GhostableViewController 
 
     @IBOutlet private var tableView: UITableView!
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: HeadlineLabelTableViewCell.self,
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self,
                                                                                                 rowsPerSection: [10],
                                                                                                 isScrollEnabled: false))
 
@@ -53,7 +53,7 @@ private extension PluginListViewController {
     }
 
     func configureTableView() {
-        tableView.registerNib(for: HeadlineLabelTableViewCell.self)
+        tableView.registerNib(for: TitleAndSubtitleAndStatusTableViewCell.self)
         tableView.estimatedRowHeight = CGFloat(44)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
@@ -105,9 +105,14 @@ extension PluginListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)
+        let cell = tableView.dequeueReusableCell(TitleAndSubtitleAndStatusTableViewCell.self, for: indexPath)
         let cellModel = viewModel.cellModelForRow(at: indexPath)
-        cell.update(style: .bodyWithLineLimit(count: 2), headline: cellModel.name, body: cellModel.description)
+        // TODO: Change statusBackgroundColor or font based on plugin status being out of date (or not)
+        cell.configureCell(viewModel: TitleAndSubtitleAndStatusTableViewCell.ViewModel(title: cellModel.name,
+                                                                                       subtitle: cellModel.description,
+                                                                                       accessibilityLabel: "",
+                                                                                       status: cellModel.upToDate,
+                                                                                       statusBackgroundColor: .gray(.shade5)))
         return cell
     }
 

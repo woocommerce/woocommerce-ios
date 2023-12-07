@@ -18,19 +18,14 @@ final class PluginListViewModel {
 
     /// Results controller for the plugin list
     ///
-    private lazy var resultsController: ResultsController<StorageSitePlugin> = {
+    private lazy var resultsController: ResultsController<StorageSystemPlugin> = {
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
-        let nameDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.name, ascending: true)
-        // Results need to be grouped in sections so sorting by section is required.
-        // Make sure this sort descriptor is first in the list to make grouping works.
-        let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
-        let resultsController = ResultsController<StorageSitePlugin>(
+        let nameDescriptor = NSSortDescriptor(keyPath: \StorageSystemPlugin.name, ascending: true)
+        let resultsController = ResultsController<StorageSystemPlugin>(
             storageManager: storageManager,
-            sectionNameKeyPath: "status",
             matching: predicate,
-            sortedBy: [statusDescriptor, nameDescriptor]
+            sortedBy: [nameDescriptor]
         )
-
         do {
             try resultsController.performFetch()
         } catch {
@@ -126,11 +121,13 @@ extension PluginListViewModel {
     ///
     func cellModelForRow(at indexPath: IndexPath) -> PluginListCellViewModel {
         let plugin = resultsController.object(at: indexPath)
+        let isUpToDate: Bool = (plugin.version == plugin.versionLatest)
         // Plugin name and description can sometimes contain HTML tags and entities
         // so it's best to be extra safe by removing them
         return PluginListCellViewModel(
             name: plugin.name.strippedHTML,
-            description: plugin.descriptionRaw.strippedHTML
+            description: "Version: \(plugin.version) - Latest Version: \(plugin.versionLatest) ",
+            upToDate: isUpToDate ? "Up to date" : "Update available"
         )
     }
 }
@@ -155,6 +152,7 @@ private extension PluginListViewModel {
 // MARK: - Model for plugin list cells
 //
 struct PluginListCellViewModel {
-     let name: String
-     let description: String
+    let name: String
+    let description: String
+    let upToDate: String
  }

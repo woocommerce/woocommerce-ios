@@ -242,16 +242,18 @@ public class Remote: NSObject {
 
                 switch result {
                 case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        let parsed = try mapper.map(response: data)
-                        continuation.resume(returning: parsed)
-                    } catch {
-                        DDLogError("<> Mapping Error: \(error)")
-                        self.handleResponseError(error: error, for: request)
-                        self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                        continuation.resume(throwing: error)
+                    Task {
+                        do {
+                            let validator = request.responseDataValidator()
+                            try validator.validate(data: data)
+                            let parsed = try await mapper.map(response: data)
+                            continuation.resume(returning: parsed)
+                        } catch {
+                            DDLogError("<> Mapping Error: \(error)")
+                            self.handleResponseError(error: error, for: request)
+                            self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                            continuation.resume(throwing: error)
+                        }
                     }
                 case .failure(let error):
                     continuation.resume(throwing: self.mapNetworkError(error: error, for: request))

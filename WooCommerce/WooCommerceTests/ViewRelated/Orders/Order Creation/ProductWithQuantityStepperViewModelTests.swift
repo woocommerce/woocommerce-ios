@@ -47,4 +47,35 @@ final class ProductWithQuantityStepperViewModelTests: XCTestCase {
         XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).isReadOnly, "Child product should not be read only")
         XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[1]).isReadOnly, "Child product variation should not be read only")
     }
+
+    // MARK: - Quantity
+
+    func test_ProductStepperViewModel_and_ProductRowViewModel_quantity_have_the_same_initial_value() {
+        // When
+        let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 2,
+                                                                                    name: "",
+                                                                                    quantityUpdatedCallback: { _ in }),
+                                                            rowViewModel: .init(product: .fake()),
+                                                            canChangeQuantity: true)
+
+        // Then
+        XCTAssertEqual(viewModel.stepperViewModel.quantity, 2)
+        XCTAssertEqual(viewModel.rowViewModel.quantity, 2)
+    }
+
+    func test_ProductStepperViewModel_quantity_change_updates_ProductRowViewModel_quantity() {
+        // Given
+        let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 2,
+                                                                                    name: "",
+                                                                                    quantityUpdatedCallback: { _ in }),
+                                                            rowViewModel: .init(product: .fake()),
+                                                            canChangeQuantity: true)
+
+        // When
+        viewModel.stepperViewModel.incrementQuantity()
+
+        // Then
+        XCTAssertEqual(viewModel.stepperViewModel.quantity, 3)
+        XCTAssertEqual(viewModel.rowViewModel.quantity, 3)
+    }
 }

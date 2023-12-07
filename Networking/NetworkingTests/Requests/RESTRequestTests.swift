@@ -123,6 +123,7 @@ final class RESTRequestTests: XCTestCase {
                                       parameters: nil)
             // When
             let urlRequest = try request.asURLRequest()
+
             // Then
             XCTAssertNil(urlRequest.httpBody)
         }
@@ -139,6 +140,7 @@ final class RESTRequestTests: XCTestCase {
                                       parameters: sampleParameters)
             // When
             let urlRequest = try request.asURLRequest()
+
             // Then
             XCTAssertNotNil(urlRequest.httpBody)
         }

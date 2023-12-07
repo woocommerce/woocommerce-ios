@@ -132,6 +132,10 @@ private extension BillingInformationViewController {
             self?.messageCustomerHandler()
         }
 
+        actionSheet.addDefaultActionWithTitle(ContactAction.copyPhoneNumber) { [weak self] _ in
+            self?.copyPhoneNumberHandler()
+        }
+
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.sourceView = sourceView
         popoverController?.sourceRect = sourceView.bounds
@@ -205,6 +209,14 @@ private extension BillingInformationViewController {
         present(actionSheet, animated: true)
 
         ServiceLocator.analytics.track(.orderDetailCustomerEmailMenuTapped)
+    }
+
+    private func copyPhoneNumberHandler() {
+        guard let phone = order.billingAddress?.phone else {
+            return
+        }
+        ServiceLocator.analytics.track(.orderDetailCustomerCopyNumberOptionTapped)
+        sendToPasteboard(phone, includeTrailingNewline: false)
     }
 
     private func copyEmailHandler() {
@@ -390,7 +402,12 @@ private extension BillingInformationViewController {
             return true
         }
 
-        cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction]
+        let copyAccessibilityAction = UIAccessibilityCustomAction(name: ContactAction.copyPhoneNumber) { [weak self] _ in
+            self?.copyPhoneNumberHandler()
+            return true
+        }
+
+        cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction, copyAccessibilityAction]
     }
 
     func setupBillingEmail(cell: WooBasicTableViewCell) {
@@ -577,6 +594,11 @@ private extension BillingInformationViewController {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let call = NSLocalizedString("Call", comment: "Call phone number button title")
         static let message = NSLocalizedString("Message", comment: "Message phone number button title")
+        static let copyPhoneNumber = NSLocalizedString(
+            "billingInformationViewController.action.copyPhoneNumber",
+            value: "Copy phone number",
+            comment: "Button to copy phone number to clipboard"
+        )
         static let copyEmail = NSLocalizedString("Copy email address", comment: "Copy email address button title")
         static let email = NSLocalizedString("Email", comment: "Title of Email accessibility action, opens a compose view")
     }

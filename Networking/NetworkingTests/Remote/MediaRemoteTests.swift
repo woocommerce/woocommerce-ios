@@ -113,7 +113,7 @@ final class MediaRemoteTests: XCTestCase {
         XCTAssertEqual(textMedia.mimeType, "text/plain")
         XCTAssertEqual(textMedia.title?.rendered, "Xanh-3")
         XCTAssertEqual(textMedia.src, "https://ninja.media/wp-content/uploads/2023/12/Xanh-3.txt")
-        
+
         let imageMedia = mediaItems[1]
         XCTAssertEqual(imageMedia.mediaID, 22)
         XCTAssertEqual(imageMedia.date, Date(timeIntervalSince1970: 1637546157))

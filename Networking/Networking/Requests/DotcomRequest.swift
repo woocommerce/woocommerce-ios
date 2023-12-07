@@ -97,11 +97,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
     func asURLRequest() throws -> URLRequest {
         let dotcomURL = URL(string: Settings.wordpressApiBaseURL + wordpressApiVersion.path + path)!
         let dotcomRequest = try URLRequest(url: dotcomURL, method: method, headers: headers)
-        if let parameters {
-            return try encoding.encode(dotcomRequest, with: parameters)
-        } else {
-            return dotcomRequest
-        }
+        return try encoding.encode(dotcomRequest, with: parameters)
     }
 
     func responseDataValidator() -> ResponseDataValidator {

@@ -88,9 +88,6 @@ struct RESTRequest: Request {
             .filter { $0.isEmpty == false }
         let url = try components.joined(separator: "/").asURL()
         let request = try URLRequest(url: url, method: method)
-        guard let parameters else {
-            return request
-        }
         switch method {
         case .post, .put:
             return try JSONEncoding.default.encode(request, with: parameters)

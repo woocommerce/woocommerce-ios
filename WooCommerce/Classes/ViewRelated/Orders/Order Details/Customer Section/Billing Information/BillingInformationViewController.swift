@@ -1,4 +1,5 @@
 import UIKit
+import MessageUI
 import Yosemite
 
 
@@ -114,9 +115,6 @@ private extension BillingInformationViewController {
 // MARK: - Initiate communication with a customer (i.e. via email, phone call, sms)
 //
 private extension BillingInformationViewController {
-    func displayEmailComposerIfPossible(from: UIViewController) -> Bool {
-        return emailComposer.displayEmailComposerIfPossible(for: order, from: from)
-    }
 
     /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
     ///
@@ -190,9 +188,9 @@ private extension BillingInformationViewController {
                                                                              "type": "sms"])
     }
 
-    /// Create an action sheet that offers the option to copy the email address
+    /// Create an action sheet that offers the option to copy the email address and/or send email.
     ///
-    func displayEmailCopyAlert(from sourceView: UIView) {
+    func displayEmailActionAlert(from sourceView: UIView) {
         guard order.billingAddress?.email != nil else {
             return
         }
@@ -201,6 +199,13 @@ private extension BillingInformationViewController {
         actionSheet.view.tintColor = .text
 
         actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
+
+        if MFMailComposeViewController.canSendMail() {
+            actionSheet.addDefaultActionWithTitle(ContactAction.email) { [weak self] _ in
+                self?.emailCustomerHandler()
+            }
+        }
+
         actionSheet.addDefaultActionWithTitle(ContactAction.copyEmail) { [weak self] _ in
             self?.copyEmailHandler()
         }
@@ -297,28 +302,22 @@ extension BillingInformationViewController: UITableViewDelegate {
                 let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
                 displayContactCustomerAlert(from: cell)
             }
-            break
 
         case .billingEmail:
             // When changing actions for this cell, please make corresponding accessibility action changes
             // in BillingInformationViewController.setupBillingEmail(cell:)
-            emailCustomerHandler()
+            if let indexPath = sections.indexPathForRow(.billingEmail),
+                let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
+                displayEmailActionAlert(from: cell)
+            }
 
-            break
         default:
             break
         }
     }
 
     private func emailCustomerHandler() {
-        ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
-        guard displayEmailComposerIfPossible(from: self) else {
-            if let indexPath = sections.indexPathForRow(.billingEmail),
-                let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
-                displayEmailCopyAlert(from: cell)
-            }
-            return
-        }
+        _ = emailComposer.displayEmailComposerIfPossible(for: order, from: self)
     }
 
     func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {

@@ -13,11 +13,8 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Fields are parsed correctly.
     ///
-    func test_Order_fields_are_properly_parsed() {
-        guard let order = mapLoadOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_fields_are_properly_parsed() async throws {
+        let order = try await mapLoadOrderResponse()
 
         let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:12")
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
@@ -46,11 +43,8 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Fields are parsed correctly when response has no data envelope.
     ///
-    func test_Order_fields_are_properly_parsed_when_response_has_no_data_envelope() {
-        guard let order = mapLoadOrderResponseWithoutDataEnvelope() else {
-            XCTFail()
-            return
-        }
+    func test_Order_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let order = try await mapLoadOrderResponseWithoutDataEnvelope()
 
         let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:12")
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
@@ -78,11 +72,8 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Address fields are parsed correctly.
     ///
-    func test_Order_addresses_are_correctly_parsed() {
-        guard let order = mapLoadOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_addresses_are_correctly_parsed() async throws {
+        let order = try await mapLoadOrderResponse()
 
         let dummyAddresses = [order.shippingAddress, order.billingAddress].compactMap({ $0 })
         XCTAssertEqual(dummyAddresses.count, 2)
@@ -103,8 +94,9 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that Order shipping phone is parsed correctly from metadata.
     ///
-    func test_Order_shipping_phone_is_correctly_parsed_from_metadata() {
-        guard let order = mapLoadFullyRefundedOrderResponse(), let shippingAddress = order.shippingAddress else {
+    func test_Order_shipping_phone_is_correctly_parsed_from_metadata() async throws {
+        let order = try await mapLoadFullyRefundedOrderResponse()
+        guard let shippingAddress = order.shippingAddress else {
             XCTFail("Expected a mapped order response with a non-nil shipping address.")
             return
         }
@@ -114,11 +106,8 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Items are parsed correctly.
     ///
-    func test_Order_items_are_correctly_parsed() {
-        guard let order = mapLoadOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_items_are_correctly_parsed() async throws {
+        let order = try await mapLoadOrderResponse()
 
         let firstItem = order.items[0]
         XCTAssertEqual(firstItem.itemID, 890)
@@ -137,11 +126,8 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that Order Items with a decimal quantity are parsed properly
     ///
-    func test_Order_items_with_decimal_quantity_are_correctly_parsed() {
-        guard let order = mapLoadOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_items_with_decimal_quantity_are_correctly_parsed() async throws {
+        let order = try await mapLoadOrderResponse()
 
         let secondItem = order.items[1]
         XCTAssertEqual(secondItem.itemID, 891)
@@ -150,11 +136,8 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
     ///
-    func test_Order_has_default_dateCreated_when_null_date_received() {
-        guard let brokenOrder = mapLoadBrokenOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_has_default_dateCreated_when_null_date_received() async throws {
+        let brokenOrder = try await mapLoadBrokenOrderResponse()
 
         let format = DateFormatter()
         format.dateStyle = .short
@@ -169,11 +152,8 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that the coupon fields for an Order are correctly parsed.
     ///
-    func test_Order_coupon_fields_are_correctly_parsed() {
-        guard let order = mapLoadOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_coupon_fields_are_correctly_parsed() async throws {
+        let order = try await mapLoadOrderResponse()
 
         XCTAssertNotNil(order.coupons)
         XCTAssertEqual(order.coupons.count, 1)
@@ -191,22 +171,15 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order with no refunds is correctly parsed to an empty array.
     ///
-    func test_Order_refund_condensed_fields_do_not_exist_are_parsed_correctly() {
-        guard let order = mapLoadOrderResponse() else {
-            XCTFail()
-            return
-        }
-
+    func test_Order_refund_condensed_fields_do_not_exist_are_parsed_correctly() async throws {
+        let order = try await mapLoadOrderResponse()
         XCTAssertEqual(order.refunds, [])
     }
 
     /// Verifies that an Order with refund fields are correctly parsed.
     ///
-    func test_Order_full_refund_fields_are_parsed_correctly() {
-        guard let order = mapLoadFullyRefundedOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_full_refund_fields_are_parsed_correctly() async throws {
+        let order = try await mapLoadFullyRefundedOrderResponse()
 
         let refunds = order.refunds
         XCTAssertEqual(refunds.count, 1)
@@ -223,11 +196,8 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order with multiple, partial refunds have the refunds fields correctly parsed.
     ///
-    func test_Order_partial_refund_fields_are_parsed_correctly() {
-        guard let order = mapLoadPartiallRefundedOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_partial_refund_fields_are_parsed_correctly() async throws {
+        let order = try await mapLoadPartialRefundedOrderResponse()
 
         let refunds = order.refunds
         XCTAssertEqual(refunds.count, 2)
@@ -245,9 +215,9 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order ignores deleted refunds.
     ///
-    func test_Order_deleted_refund_fields_are_ignored() throws {
+    func test_Order_deleted_refund_fields_are_ignored() async throws {
         // When
-        let order = try XCTUnwrap(mapLoadOrderWithDeletedRefundsResponse())
+        let order = try await mapLoadOrderWithDeletedRefundsResponse()
 
         // Then
         XCTAssertEqual(order.refunds.count, 1)
@@ -258,9 +228,9 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(refund.total, "-16.00")
     }
 
-    func test_taxes_are_parsed_correctly() throws {
+    func test_taxes_are_parsed_correctly() async throws {
         // When
-        let order = try XCTUnwrap(mapLoadOrderResponse())
+        let order = try await mapLoadOrderResponse()
         let shippingLine = try XCTUnwrap(order.shippingLines.first)
 
         // Then
@@ -268,8 +238,8 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(shippingLine.taxes, [expectedTax])
     }
 
-    func test_OrderLineItem_attributes_are_parsed_correctly() throws {
-        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesResponse())
+    func test_OrderLineItem_attributes_are_parsed_correctly() async throws {
+        let order = try await mapLoadOrderWithLineItemAttributesResponse()
 
         let lineItems = order.items
         XCTAssertEqual(lineItems.count, 2)
@@ -291,8 +261,8 @@ final class OrderMapperTests: XCTestCase {
     }
 
     /// The attributes API support are added in WC version 4.7, and WC version 4.6.1 returns a different structure of order line item attributes.
-    func test_OrderLineItem_attributes_are_empty_before_API_support() throws {
-        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse())
+    func test_OrderLineItem_attributes_are_empty_before_API_support() async throws {
+        let order = try await mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse()
 
         let lineItems = order.items
         XCTAssertEqual(lineItems.count, 1)
@@ -302,11 +272,8 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(variationLineItem.name, "Hoodie - Green, No")
     }
 
-    func test_Order_fees_are_correctly_parsed() {
-        guard let order = mapLoadOrderResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_fees_are_correctly_parsed() async throws {
+        let order = try await mapLoadOrderResponse()
 
         XCTAssertNotNil(order.fees)
         XCTAssertEqual(order.fees.count, 1)
@@ -326,11 +293,8 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(fee.attributes, [])
     }
 
-    func test_Order_fees_are_correctly_parsed_when_special_characters() {
-        guard let order = mapLoadOrderWithSpecialCharactersResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_fees_are_correctly_parsed_when_special_characters() async throws {
+        let order = try await mapLoadOrderWithSpecialCharactersResponse()
 
         XCTAssertNotNil(order.fees)
         XCTAssertEqual(order.fees.count, 1)
@@ -350,9 +314,9 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(fee.attributes, [])
     }
 
-    func test_order_line_item_attributes_handle_unexpected_formatted_attributes() throws {
+    func test_order_line_item_attributes_handle_unexpected_formatted_attributes() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadOrderWithFaultyAttributesResponse())
+        let order = try await mapLoadOrderWithFaultyAttributesResponse()
 
         // When
         let attributes = try XCTUnwrap(order.items.first?.attributes)
@@ -362,8 +326,8 @@ final class OrderMapperTests: XCTestCase {
         assertEqual(attributes, expectedAttributes)
     }
 
-    func test_order_tax_lines_are_parsed_successfully() throws {
-        let order = try XCTUnwrap(mapLoadOrderResponse())
+    func test_order_tax_lines_are_parsed_successfully() async throws {
+        let order = try await mapLoadOrderResponse()
 
         XCTAssertNotNil(order.taxes)
         XCTAssertEqual(order.taxes.count, 1)
@@ -380,23 +344,23 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(tax.attributes, [])
     }
 
-    func test_order_charge_id_is_parsed_successfully() throws {
-        let order = try XCTUnwrap(mapLoadOrderWithChargeResponse())
+    func test_order_charge_id_is_parsed_successfully() async throws {
+        let order = try await mapLoadOrderWithChargeResponse()
 
         XCTAssertEqual(order.chargeID, "ch_3KMuym2EdyGr1FMV0uQZeFqm")
     }
 
-    func test_order_custom_fields_correctly_remove_internal_metadata() throws {
+    func test_order_custom_fields_correctly_remove_internal_metadata() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadFullyRefundedOrderResponse())
+        let order = try await mapLoadFullyRefundedOrderResponse()
 
         // Then
         XCTAssertEqual(order.customFields.count, 4)
     }
 
-    func test_order_custom_fields_are_parsed_correctly() throws {
+    func test_order_custom_fields_are_parsed_correctly() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadFullyRefundedOrderResponse())
+        let order = try await mapLoadFullyRefundedOrderResponse()
 
         // When
         let customField = try XCTUnwrap(order.customFields.first)
@@ -406,15 +370,15 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(customField, expectedCustomField)
     }
 
-    func test_order_renewal_subscription_id_is_parsed_successfully() throws {
-        let order = try XCTUnwrap(mapLoadOrderWithSubscriptionRenewal())
+    func test_order_renewal_subscription_id_is_parsed_successfully() async throws {
+        let order = try await mapLoadOrderWithSubscriptionRenewal()
 
         XCTAssertEqual(order.renewalSubscriptionID, "282")
     }
 
-    func test_order_applied_gift_cards_are_parsed_successfully() throws {
+    func test_order_applied_gift_cards_are_parsed_successfully() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadOrderWithGiftCards())
+        let order = try await mapLoadOrderWithGiftCards()
 
         // When
         let giftCard = try XCTUnwrap(order.appliedGiftCards.first)
@@ -425,9 +389,9 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(giftCard.amount, 20)
     }
 
-    func test_order_line_items_parse_bundled_item_parent_correctly() throws {
+    func test_order_line_items_parse_bundled_item_parent_correctly() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadOrderWithBundledLineItems())
+        let order = try await mapLoadOrderWithBundledLineItems()
 
         // When
         let lineItems = order.items
@@ -440,9 +404,9 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(bundledItem.parent, 752)
     }
 
-    func test_order_line_items_parse_composite_product_component_parent_correctly() throws {
+    func test_order_line_items_parse_composite_product_component_parent_correctly() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadOrderWithCompositeProduct())
+        let order = try await mapLoadOrderWithCompositeProduct()
 
         // When
         let lineItems = order.items
@@ -455,18 +419,18 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(component.parent, 830)
     }
 
-    func test_that_order_alternative_types_are_properly_parsed() throws {
+    func test_that_order_alternative_types_are_properly_parsed() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadOrderResponseWithAlternativeTypes())
+        let order = try await mapLoadOrderResponseWithAlternativeTypes()
 
         // Then
         XCTAssertEqual(order.shippingLines.first?.taxes.first?.taxID, 1)
         XCTAssertEqual(order.items.first?.sku, "123")
     }
 
-    func test_order_line_item_addons_without_ID_are_parsed_correctly() throws {
+    func test_order_line_item_addons_without_ID_are_parsed_correctly() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadOrderWithAddOnButNoAddIDResponse())
+        let order = try await mapLoadOrderWithAddOnButNoAddIDResponse()
 
         // When
         let addOns = try XCTUnwrap(order.items.first?.addOns)
@@ -475,9 +439,9 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(addOns, [.init(addOnID: nil, key: "As a Gift", value: "No")])
     }
 
-    func test_order_line_item_addons_with_all_types_are_decoded_correctly() throws {
+    func test_order_line_item_addons_with_all_types_are_decoded_correctly() async throws {
         // Given
-        let order = try XCTUnwrap(mapLoadOrderWithAllAddOnTypesResponse())
+        let order = try await mapLoadOrderWithAllAddOnTypesResponse()
 
         // When
         let addOns = try XCTUnwrap(order.items.first?.addOns)
@@ -504,117 +468,118 @@ private extension OrderMapperTests {
 
     /// Returns the Order output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrder(from filename: String) -> Order? {
+    func mapOrder(from filename: String) async throws -> Order {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try! OrderMapper(siteID: dummySiteID).map(response: response)
+        return try await OrderMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the Order output upon receiving `order`
     ///
-    func mapLoadOrderResponse() -> Order? {
-        return mapOrder(from: "order")
+    func mapLoadOrderResponse() async throws -> Order {
+        try await mapOrder(from: "order")
     }
 
-    func mapLoadOrderWithSpecialCharactersResponse() -> Order? {
-        return mapOrder(from: "order-with-special-character-currency")
+    func mapLoadOrderWithSpecialCharactersResponse() async throws -> Order {
+        try await mapOrder(from: "order-with-special-character-currency")
     }
 
     /// Returns the Order output upon receiving `order-without-data`
     ///
-    func mapLoadOrderResponseWithoutDataEnvelope() -> Order? {
-        return mapOrder(from: "order-without-data")
+    func mapLoadOrderResponseWithoutDataEnvelope() async throws -> Order {
+        try await mapOrder(from: "order-without-data")
     }
 
     /// Returns the Order output upon receiving `broken-order`
     ///
-    func mapLoadBrokenOrderResponse() -> Order? {
-        return mapOrder(from: "broken-order")
+    func mapLoadBrokenOrderResponse() async throws -> Order {
+        try await mapOrder(from: "broken-order")
     }
 
     /// Returns the Order output upon receiving `order-fully-refunded`
     ///
-    func mapLoadFullyRefundedOrderResponse() -> Order? {
-        return mapOrder(from: "order-fully-refunded")
+    func mapLoadFullyRefundedOrderResponse() async throws -> Order {
+        try await mapOrder(from: "order-fully-refunded")
     }
 
     /// Returns the Order output upon receiving `order-details-partially-refunded`
     ///
-    func mapLoadPartiallRefundedOrderResponse() -> Order? {
-        return mapOrder(from: "order-details-partially-refunded")
+    func mapLoadPartialRefundedOrderResponse() async throws -> Order {
+        try await mapOrder(from: "order-details-partially-refunded")
     }
 
     /// Returns the Order output upon receiving `order-with-line-item-attributes`
     ///
-    func mapLoadOrderWithLineItemAttributesResponse() -> Order? {
-        return mapOrder(from: "order-with-line-item-attributes")
+    func mapLoadOrderWithLineItemAttributesResponse() async throws -> Order {
+        try await mapOrder(from: "order-with-line-item-attributes")
     }
 
     /// Returns the Order output upon receiving `order-with-faulty-attributes`
     /// Where the `value` to `_measurement_data` is not a `string` but a `JSON object`
     ///
-    func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
-        return mapOrder(from: "order-with-faulty-attributes")
+    func mapLoadOrderWithFaultyAttributesResponse() async throws -> Order {
+        try await mapOrder(from: "order-with-faulty-attributes")
     }
 
     /// Returns the Order output with a line item with a product add-on but no ID.
-    func mapLoadOrderWithAddOnButNoAddIDResponse() -> Order? {
-        mapOrder(from: "order-with-subscription-renewal")
+    func mapLoadOrderWithAddOnButNoAddIDResponse() async throws -> Order {
+        try await mapOrder(from: "order-with-subscription-renewal")
     }
 
     /// Returns the Order output with a line item with all types of product add-ons.
-    func mapLoadOrderWithAllAddOnTypesResponse() -> Order? {
-        return mapOrder(from: "order-with-all-addon-types")
+    func mapLoadOrderWithAllAddOnTypesResponse() async throws -> Order {
+        try await mapOrder(from: "order-with-all-addon-types")
     }
 
     /// Returns the Order output upon receiving `order-with-line-item-attributes-before-API-support`
     ///
-    func mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse() -> Order? {
-        return mapOrder(from: "order-with-line-item-attributes-before-API-support")
+    func mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse() async throws -> Order {
+        try await mapOrder(from: "order-with-line-item-attributes-before-API-support")
     }
 
     /// Returns the Order output upon receiving `order-with-deleted-refunds`
     ///
-    func mapLoadOrderWithDeletedRefundsResponse() -> Order? {
-        return mapOrder(from: "order-with-deleted-refunds")
+    func mapLoadOrderWithDeletedRefundsResponse() async throws -> Order {
+        try await mapOrder(from: "order-with-deleted-refunds")
     }
 
     /// Returns the Order output upon receiving `order-with-charge`
     ///
-    func mapLoadOrderWithChargeResponse() -> Order? {
-        return mapOrder(from: "order-with-charge")
+    func mapLoadOrderWithChargeResponse() async throws -> Order {
+        try await mapOrder(from: "order-with-charge")
     }
 
     /// Returns the Order output upon receiving `order-with-subscription-renewal`
     ///
-    func mapLoadOrderWithSubscriptionRenewal() -> Order? {
-        return mapOrder(from: "order-with-subscription-renewal")
+    func mapLoadOrderWithSubscriptionRenewal() async throws -> Order {
+        try await mapOrder(from: "order-with-subscription-renewal")
     }
 
     /// Returns the Order output upon receiving `order-with-gift-cards`
     ///
-    func mapLoadOrderWithGiftCards() -> Order? {
-        return mapOrder(from: "order-with-gift-cards")
+    func mapLoadOrderWithGiftCards() async throws -> Order {
+        try await mapOrder(from: "order-with-gift-cards")
     }
 
     /// Returns the Order output upon receiving `order-with-bundled-line-items`
     ///
-    func mapLoadOrderWithBundledLineItems() -> Order? {
-        return mapOrder(from: "order-with-bundled-line-items")
+    func mapLoadOrderWithBundledLineItems() async throws -> Order {
+        try await mapOrder(from: "order-with-bundled-line-items")
     }
 
     /// Returns the Order output upon receiving `order-with-composite-product`
     ///
-    func mapLoadOrderWithCompositeProduct() -> Order? {
-        return mapOrder(from: "order-with-composite-product")
+    func mapLoadOrderWithCompositeProduct() async throws -> Order {
+        try await mapOrder(from: "order-with-composite-product")
     }
 
     /// Returns the Order output upon receiving `order-alternative-types`
     ///
-    func mapLoadOrderResponseWithAlternativeTypes() -> Order? {
-        return mapOrder(from: "order-alternative-types")
+    func mapLoadOrderResponseWithAlternativeTypes() async throws -> Order {
+        try await mapOrder(from: "order-alternative-types")
     }
 
+    struct FileNotFoundError: Error {}
 }

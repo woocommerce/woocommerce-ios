@@ -11,11 +11,8 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the hourly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func test_hourly_unit_stat_fields_are_properly_parsed() {
-        guard let hourlyStats = mapOrderStatsWithHourlyUnitResponse() else {
-            XCTFail()
-            return
-        }
+    func test_hourly_unit_stat_fields_are_properly_parsed() async throws {
+        let hourlyStats = try await mapOrderStatsWithHourlyUnitResponse()
 
         XCTAssertEqual(hourlyStats.siteID, Constants.siteID)
         XCTAssertEqual(hourlyStats.granularity, .hourly)
@@ -41,11 +38,8 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the daily unit OrderStatsV4 fields are parsed correctly.
     ///
-    func test_daily_unit_stat_fields_are_properly_parsed() {
-        guard let dailyStats = mapOrderStatsWithDailyUnitResponse() else {
-            XCTFail()
-            return
-        }
+    func test_daily_unit_stat_fields_are_properly_parsed() async throws {
+        let dailyStats = try await mapOrderStatsWithDailyUnitResponse()
 
         XCTAssertEqual(dailyStats.siteID, Constants.siteID)
         XCTAssertEqual(dailyStats.granularity, .daily)
@@ -71,11 +65,8 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the weekly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func test_weekly_unit_stat_fields_are_properly_parsed() {
-        guard let weeklyStats = mapOrderStatsWithWeeklyUnitResponse() else {
-            XCTFail()
-            return
-        }
+    func test_weekly_unit_stat_fields_are_properly_parsed() async throws {
+        let weeklyStats = try await mapOrderStatsWithWeeklyUnitResponse()
 
         XCTAssertEqual(weeklyStats.siteID, Constants.siteID)
         XCTAssertEqual(weeklyStats.granularity, .weekly)
@@ -101,11 +92,8 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the monthly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func test_monthly_unit_stat_fields_are_properly_parsed() {
-        guard let monthlyStats = mapOrderStatsWithMonthlyUnitResponse() else {
-            XCTFail()
-            return
-        }
+    func test_monthly_unit_stat_fields_are_properly_parsed() async throws {
+        let monthlyStats = try await mapOrderStatsWithMonthlyUnitResponse()
 
         XCTAssertEqual(monthlyStats.siteID, Constants.siteID)
         XCTAssertEqual(monthlyStats.granularity, .monthly)
@@ -131,11 +119,8 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the yearly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func test_yearly_unit_stat_fields_are_properly_parsed() {
-        guard let yearlyStats = mapOrderStatsWithYearlyUnitResponse() else {
-            XCTFail()
-            return
-        }
+    func test_yearly_unit_stat_fields_are_properly_parsed() async throws {
+        let yearlyStats = try await mapOrderStatsWithYearlyUnitResponse()
 
         XCTAssertEqual(yearlyStats.siteID, Constants.siteID)
         XCTAssertEqual(yearlyStats.granularity, .yearly)
@@ -162,11 +147,8 @@ final class OrderStatsV4MapperTests: XCTestCase {
     /// Verifies that all of the yearly unit OrderStatsV4 fields are parsed correctly
     /// if the response contains no data envelope.
     ///
-    func test_yearly_unit_stat_fields_are_properly_parsed_without_data_envelope() {
-        guard let yearlyStats = mapOrderStatsWithYearlyUnitResponseWithoutDataEnvelope() else {
-            XCTFail()
-            return
-        }
+    func test_yearly_unit_stat_fields_are_properly_parsed_without_data_envelope() async throws {
+        let yearlyStats = try await mapOrderStatsWithYearlyUnitResponseWithoutDataEnvelope()
 
         XCTAssertEqual(yearlyStats.siteID, Constants.siteID)
         XCTAssertEqual(yearlyStats.granularity, .yearly)
@@ -194,48 +176,50 @@ final class OrderStatsV4MapperTests: XCTestCase {
 private extension OrderStatsV4MapperTests {
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-hour`
     ///
-    func mapOrderStatsWithHourlyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-hour", granularity: .hourly)
+    func mapOrderStatsWithHourlyUnitResponse() async throws -> OrderStatsV4 {
+        try await mapStatItems(from: "order-stats-v4-hour", granularity: .hourly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
     ///
-    func mapOrderStatsWithDailyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-daily", granularity: .daily)
+    func mapOrderStatsWithDailyUnitResponse() async throws -> OrderStatsV4 {
+        try await mapStatItems(from: "order-stats-v4-daily", granularity: .daily)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
     ///
-    func mapOrderStatsWithWeeklyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-defaults", granularity: .weekly)
+    func mapOrderStatsWithWeeklyUnitResponse() async throws -> OrderStatsV4 {
+        try await mapStatItems(from: "order-stats-v4-defaults", granularity: .weekly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-month`
     ///
-    func mapOrderStatsWithMonthlyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-month", granularity: .monthly)
+    func mapOrderStatsWithMonthlyUnitResponse() async throws -> OrderStatsV4 {
+        try await mapStatItems(from: "order-stats-v4-month", granularity: .monthly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-year`
     ///
-    func mapOrderStatsWithYearlyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-year", granularity: .yearly)
+    func mapOrderStatsWithYearlyUnitResponse() async throws -> OrderStatsV4 {
+        try await mapStatItems(from: "order-stats-v4-year", granularity: .yearly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-year-without-data`
     ///
-    func mapOrderStatsWithYearlyUnitResponseWithoutDataEnvelope() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-year-without-data", granularity: .yearly)
+    func mapOrderStatsWithYearlyUnitResponseWithoutDataEnvelope() async throws -> OrderStatsV4 {
+        try await mapStatItems(from: "order-stats-v4-year-without-data", granularity: .yearly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapStatItems(from filename: String, granularity: StatsGranularityV4) -> OrderStatsV4? {
+    func mapStatItems(from filename: String, granularity: StatsGranularityV4) async throws -> OrderStatsV4 {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try! OrderStatsV4Mapper(siteID: Constants.siteID,
+        return try await OrderStatsV4Mapper(siteID: Constants.siteID,
                                        granularity: granularity).map(response: response)
     }
+
+    struct FileNotFoundError: Error {}
 }

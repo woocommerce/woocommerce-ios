@@ -13,8 +13,8 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Fields are parsed correctly.
     ///
-    func test_order_fields_are_properly_parsed() {
-        let orders = mapLoadAllOrdersResponse()
+    func test_order_fields_are_properly_parsed() async {
+        let orders = await mapLoadAllOrdersResponse()
         XCTAssert(orders.count == 4)
 
         let firstOrder = orders[0]
@@ -42,8 +42,8 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Fields are parsed correctly when the response has no data envelope.
     ///
-    func test_order_fields_are_properly_parsed_when_the_response_has_no_data_envelope() {
-        let orders = mapLoadAllOrdersResponseWithoutDataEnvelope()
+    func test_order_fields_are_properly_parsed_when_the_response_has_no_data_envelope() async {
+        let orders = await mapLoadAllOrdersResponseWithoutDataEnvelope()
         XCTAssert(orders.count == 1)
 
         let firstOrder = orders[0]
@@ -71,16 +71,16 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that the siteID field is properly set.
     ///
-    func test_site_identifier_is_properly_injected_into_every_order() {
-        for order in mapLoadAllOrdersResponse() {
+    func test_site_identifier_is_properly_injected_into_every_order() async {
+        for order in await mapLoadAllOrdersResponse() {
             XCTAssertEqual(order.siteID, dummySiteID)
         }
     }
 
     /// Verifies that all of the Order Address fields are parsed correctly.
     ///
-    func test_order_addresses_are_correctly_parsed() {
-        let orders = mapLoadAllOrdersResponse()
+    func test_order_addresses_are_correctly_parsed() async {
+        let orders = await mapLoadAllOrdersResponse()
         XCTAssert(orders.count == 4)
 
         let firstOrder = orders[0]
@@ -108,8 +108,8 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Items are parsed correctly.
     ///
-    func test_order_items_are_correctly_parsed() {
-        let order = mapLoadAllOrdersResponse()[0]
+    func test_order_items_are_correctly_parsed() async {
+        let order = await mapLoadAllOrdersResponse()[0]
         XCTAssertEqual(order.items.count, 2)
 
         let firstItem = order.items[0]
@@ -129,8 +129,8 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
     ///
-    func test_order_has_default_date_created_when_null_date_received() {
-        let orders = mapLoadBrokenOrderResponse()
+    func test_order_has_default_date_created_when_null_date_received() async {
+        let orders = await mapLoadBrokenOrderResponse()
         XCTAssert(orders.count == 1)
 
         let brokenOrder = orders[0]
@@ -150,8 +150,8 @@ class OrderListMapperTests: XCTestCase {
     ///
     /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
     ///
-    func test_order_list_with_breaking_format_is_properly_parsed() {
-        let orders = mapLoadBrokenOrdersResponseMarkII()
+    func test_order_list_with_breaking_format_is_properly_parsed() async {
+        let orders = await mapLoadBrokenOrdersResponseMarkII()
         XCTAssertEqual(orders.count, 6)
 
         for order in orders {
@@ -171,35 +171,35 @@ private extension OrderListMapperTests {
 
     /// Returns the [Order] output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrders(from filename: String) -> [Order] {
+    func mapOrders(from filename: String) async -> [Order] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! OrderListMapper(siteID: dummySiteID).map(response: response)
+        return try! await OrderListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the [Order] output upon receiving `orders-load-all`
     ///
-    func mapLoadAllOrdersResponse() -> [Order] {
-        return mapOrders(from: "orders-load-all")
+    func mapLoadAllOrdersResponse() async -> [Order] {
+        await mapOrders(from: "orders-load-all")
     }
 
     /// Returns the [Order] output upon receiving `orders-load-all-without-data`
     ///
-    func mapLoadAllOrdersResponseWithoutDataEnvelope() -> [Order] {
-        return mapOrders(from: "orders-load-all-without-data")
+    func mapLoadAllOrdersResponseWithoutDataEnvelope() async -> [Order] {
+        await mapOrders(from: "orders-load-all-without-data")
     }
 
     /// Returns the [Order] output upon receiving `broken-order`
     ///
-    func mapLoadBrokenOrderResponse() -> [Order] {
-        return mapOrders(from: "broken-orders")
+    func mapLoadBrokenOrderResponse() async -> [Order] {
+        await mapOrders(from: "broken-orders")
     }
 
     /// Returns the [Order] output upon receiving `broken-orders-mark-2`
     ///
-    func mapLoadBrokenOrdersResponseMarkII() -> [Order] {
-        return mapOrders(from: "broken-orders-mark-2")
+    func mapLoadBrokenOrdersResponseMarkII() async -> [Order] {
+        await mapOrders(from: "broken-orders-mark-2")
     }
 }

@@ -10,12 +10,12 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
     /// Order ID for testing.
     private let sampleOrderID: Int64 = 630
 
-    func test_order_shipping_labels_and_settings_are_properly_parsed() throws {
+    func test_order_shipping_labels_and_settings_are_properly_parsed() async throws {
         // Given
         let jsonData = try XCTUnwrap(Loader.contentsOf("order-shipping-labels"))
 
         // When
-        let response = try OrderShippingLabelListMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: jsonData)
+        let response = try await OrderShippingLabelListMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: jsonData)
 
         // Then
         XCTAssertEqual(response.settings, .init(siteID: sampleSiteID, orderID: sampleOrderID, paperSize: .label))
@@ -77,12 +77,12 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
         XCTAssertEqual(response.shippingLabels, [shippingLabelWithoutRefund, shippingLabelWithRefund])
     }
 
-    func test_order_shipping_labels_and_settings_are_properly_parsed_when_response_has_no_data_envelope() throws {
+    func test_order_shipping_labels_and_settings_are_properly_parsed_when_response_has_no_data_envelope() async throws {
         // Given
         let jsonData = try XCTUnwrap(Loader.contentsOf("order-shipping-labels-without-data"))
 
         // When
-        let response = try OrderShippingLabelListMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: jsonData)
+        let response = try await OrderShippingLabelListMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: jsonData)
 
         // Then
         XCTAssertEqual(response.settings, .init(siteID: sampleSiteID, orderID: sampleOrderID, paperSize: .label))

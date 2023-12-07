@@ -8,8 +8,8 @@ class OrderNotesMapperTests: XCTestCase {
 
     /// Verifies that all of the OrderNote Fields are parsed correctly.
     ///
-    func test_Note_fields_are_properly_parsed() {
-        let notes = mapLoadAllOrderNotesResponse()
+    func test_Note_fields_are_properly_parsed() async {
+        let notes = await mapLoadAllOrderNotesResponse()
         XCTAssertEqual(notes.count, 19)
 
         let firstNote = notes[0]
@@ -33,8 +33,8 @@ class OrderNotesMapperTests: XCTestCase {
 
     /// Verifies that all of the OrderNote Fields are parsed correctly.
     ///
-    func test_Note_fields_are_properly_parsed_when_response_has_no_data_envelope() {
-        let notes = mapLoadAllOrderNotesResponseWithoutDataEnvelope()
+    func test_Note_fields_are_properly_parsed_when_response_has_no_data_envelope() async {
+        let notes = await mapLoadAllOrderNotesResponseWithoutDataEnvelope()
         XCTAssertEqual(notes.count, 2)
 
         let firstNote = notes[0]
@@ -58,8 +58,8 @@ class OrderNotesMapperTests: XCTestCase {
 
     /// Verifies that an Note in a broken state does [gets default values] | [gets skipped while parsing]
     ///
-    func test_Note_has_default_dateCreated_when_null_date_received() {
-        let notes = mapLoadBrokenOrderNotesResponse()
+    func test_Note_has_default_dateCreated_when_null_date_received() async {
+        let notes = await mapLoadBrokenOrderNotesResponse()
         XCTAssert(notes.count == 1)
 
         let brokenNote = notes[0]
@@ -79,29 +79,29 @@ private extension OrderNotesMapperTests {
 
     /// Returns the [OrderNote] output upon receiving `filename` (Data Encoded)
     ///
-    func mapNotes(from filename: String) -> [OrderNote] {
+    func mapNotes(from filename: String) async -> [OrderNote] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! OrderNotesMapper().map(response: response)
+        return try! await OrderNotesMapper().map(response: response)
     }
 
     /// Returns the [OrderNote] output upon receiving `order-notes`
     ///
-    func mapLoadAllOrderNotesResponse() -> [OrderNote] {
-        return mapNotes(from: "order-notes")
+    func mapLoadAllOrderNotesResponse() async -> [OrderNote] {
+        await mapNotes(from: "order-notes")
     }
 
     /// Returns the [OrderNote] output upon receiving `order-notes-without-data`
     ///
-    func mapLoadAllOrderNotesResponseWithoutDataEnvelope() -> [OrderNote] {
-        return mapNotes(from: "order-notes-without-data")
+    func mapLoadAllOrderNotesResponseWithoutDataEnvelope() async -> [OrderNote] {
+        await mapNotes(from: "order-notes-without-data")
     }
 
     /// Returns the [OrderNote] output upon receiving `broken-order`
     ///
-    func mapLoadBrokenOrderNotesResponse() -> [OrderNote] {
-        return mapNotes(from: "broken-notes")
+    func mapLoadBrokenOrderNotesResponse() async -> [OrderNote] {
+        await mapNotes(from: "broken-notes")
     }
 }

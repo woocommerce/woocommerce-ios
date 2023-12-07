@@ -41,7 +41,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     let hasParentProduct: Bool
 
     /// Child product rows, if the product is the parent of child order items
-    @Published private(set) var childProductRows: [ProductRowViewModel]
+    @Published private(set) var childProductRows: [ProductWithQuantityStepperViewModel]
 
     /// Whether a product in an order item is configurable
     ///
@@ -299,7 +299,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
          pricedIndividually: Bool = true,
-         childProductRows: [ProductRowViewModel] = [],
+         childProductRows: [ProductWithQuantityStepperViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
@@ -342,7 +342,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
-                     childProductRows: [ProductRowViewModel] = [],
+                     childProductRows: [ProductWithQuantityStepperViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -400,7 +400,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         if product.productType == .bundle {
             for child in childProductRows {
-                child.isReadOnly = true // Can't edit child bundle items separate from bundle configuration
+                child.rowViewModel.isReadOnly = true // Can't edit child bundle items separate from bundle configuration
             }
         }
 

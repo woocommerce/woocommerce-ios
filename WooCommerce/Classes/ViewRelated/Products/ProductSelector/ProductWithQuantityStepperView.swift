@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class ProductWithQuantityStepperViewModel: ObservableObject {
+final class ProductWithQuantityStepperViewModel: ObservableObject, Identifiable {
     let stepperViewModel: ProductStepperViewModel
     let rowViewModel: ProductRowViewModel
 

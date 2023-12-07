@@ -292,7 +292,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View models for each product row in the order.
     ///
-    @Published private(set) var productRows: [ProductRowViewModel] = []
+    @Published private(set) var productRows: [ProductWithQuantityStepperViewModel] = []
 
     /// View models for each custom amount in the order.
     ///
@@ -575,7 +575,7 @@ final class EditableOrderViewModel: ObservableObject {
     func createProductRowViewModel(for item: OrderItem,
                                    childItems: [OrderItem] = [],
                                    canChangeQuantity: Bool,
-                                   pricedIndividually: Bool = true) -> ProductRowViewModel? {
+                                   pricedIndividually: Bool = true) -> ProductWithQuantityStepperViewModel? {
         guard item.quantity > 0 else {
             // Don't render any item with `.zero` quantity.
             return nil
@@ -588,21 +588,30 @@ final class EditableOrderViewModel: ObservableObject {
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let variableProduct = allProducts.first(where: { $0.productID == item.productID })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
-            return ProductRowViewModel(id: item.itemID,
-                                       productVariation: variation,
-                                       discount: passingDiscountValue,
-                                       name: item.name,
-                                       quantity: item.quantity,
-                                       canChangeQuantity: canChangeQuantity,
-                                       displayMode: .attributes(attributes),
-                                       hasParentProduct: item.parent != nil,
-                                       pricedIndividually: pricedIndividually,
-                                       quantityUpdatedCallback: { [weak self] _ in
-                guard let self = self else { return }
+            let rowViewModel = ProductRowViewModel(id: item.itemID,
+                                                   productVariation: variation,
+                                                   discount: passingDiscountValue,
+                                                   name: item.name,
+                                                   quantity: item.quantity,
+                                                   canChangeQuantity: canChangeQuantity,
+                                                   displayMode: .attributes(attributes),
+                                                   hasParentProduct: item.parent != nil,
+                                                   pricedIndividually: pricedIndividually,
+                                                   quantityUpdatedCallback: { [weak self] _ in
+                guard let self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             },
-                                       removeProductIntent: { [weak self] in
+                                                   removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
+            let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
+                                                           name: item.name,
+                                                           quantityUpdatedCallback: { [weak self] _ in
+                guard let self else { return }
+                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
+            }, removeProductIntent: { [weak self] in
+                self?.removeItemFromOrder(item)
+            })
+            return ProductWithQuantityStepperViewModel(stepperViewModel: stepperViewModel, rowViewModel: rowViewModel, canChangeQuantity: canChangeQuantity)
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
             // If the parent product is a bundle product, quantity cannot be changed.
             let canChildItemsChangeQuantity = product.productType != .bundle
@@ -615,21 +624,21 @@ final class EditableOrderViewModel: ObservableObject {
                 }()
                 return createProductRowViewModel(for: childItem, canChangeQuantity: canChildItemsChangeQuantity, pricedIndividually: pricedIndividually)
             }
-            return ProductRowViewModel(id: item.itemID,
-                                       product: product,
-                                       discount: passingDiscountValue,
-                                       quantity: item.quantity,
-                                       canChangeQuantity: canChangeQuantity,
-                                       hasParentProduct: item.parent != nil,
-                                       pricedIndividually: pricedIndividually,
-                                       childProductRows: childProductRows,
-                                       quantityUpdatedCallback: { [weak self] _ in
+            let rowViewModel = ProductRowViewModel(id: item.itemID,
+                                                   product: product,
+                                                   discount: passingDiscountValue,
+                                                   quantity: item.quantity,
+                                                   canChangeQuantity: canChangeQuantity,
+                                                   hasParentProduct: item.parent != nil,
+                                                   pricedIndividually: pricedIndividually,
+                                                   childProductRows: childProductRows,
+                                                   quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             },
-                                       removeProductIntent: { [weak self] in
+                                                   removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)},
-                                       configure: { [weak self] in
+                                                   configure: { [weak self] in
                 guard let self else { return }
                 switch product.productType {
                     case .bundle:
@@ -644,6 +653,15 @@ final class EditableOrderViewModel: ObservableObject {
                         break
                 }
             })
+            let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
+                                                           name: item.name,
+                                                           quantityUpdatedCallback: { [weak self] _ in
+                guard let self else { return }
+                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
+            }, removeProductIntent: { [weak self] in
+                self?.removeItemFromOrder(item)
+            })
+            return ProductWithQuantityStepperViewModel(stepperViewModel: stepperViewModel, rowViewModel: rowViewModel, canChangeQuantity: canChangeQuantity)
         } else {
             DDLogInfo("No product or variation found. Couldn't create the product row")
             return nil
@@ -1285,7 +1303,7 @@ private extension EditableOrderViewModel {
         orderSynchronizer.orderPublisher
             .map { $0.items }
             .removeDuplicates()
-            .map { [weak self] items -> [ProductRowViewModel] in
+            .map { [weak self] items -> [ProductWithQuantityStepperViewModel] in
                 guard let self = self else { return [] }
                 return self.createProductRows(items: items)
             }
@@ -1344,7 +1362,7 @@ private extension EditableOrderViewModel {
             return
         }
         // Increase quantity if exists
-        let match = productRows.first(where: { $0.productOrVariationID == item.itemID })
+        let match = productRows.first(where: { $0.rowViewModel.productOrVariationID == item.itemID })
         match?.stepperViewModel.incrementQuantity()
     }
 
@@ -1798,7 +1816,7 @@ private extension EditableOrderViewModel {
             return nil
         }
 
-        return ProductInOrderViewModel(productRowViewModel: rowViewModel,
+        return ProductInOrderViewModel(productRowViewModel: rowViewModel.rowViewModel,
                                        productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
                                        showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty,
                                        onRemoveProduct: { [weak self] in
@@ -1851,8 +1869,8 @@ private extension EditableOrderViewModel {
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.
     ///
-    func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
-        items.compactMap { item -> ProductRowViewModel? in
+    func createProductRows(items: [OrderItem]) -> [ProductWithQuantityStepperViewModel] {
+        items.compactMap { item -> ProductWithQuantityStepperViewModel? in
             guard item.parent == nil else { // Don't create a separate product row for child items
                 return nil
             }

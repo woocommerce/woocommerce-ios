@@ -3,18 +3,20 @@ import Kingfisher
 
 struct SimplifiedProductRow: View {
 
-    @ObservedObject var viewModel: ProductRowViewModel
+    @ObservedObject var viewModel: ProductStepperViewModel
+    private let canChangeQuantity: Bool
 
-    init(viewModel: ProductRowViewModel) {
+    init(viewModel: ProductStepperViewModel, canChangeQuantity: Bool) {
         self.viewModel = viewModel
+        self.canChangeQuantity = canChangeQuantity
     }
 
     var body: some View {
         HStack(alignment: .center) {
             Text(Localization.orderCountLabel)
             Spacer()
-            ProductStepper(viewModel: viewModel.stepperViewModel)
-                .renderedIf(viewModel.canChangeQuantity)
+            ProductStepper(viewModel: viewModel)
+                .renderedIf(canChangeQuantity)
         }
     }
 }

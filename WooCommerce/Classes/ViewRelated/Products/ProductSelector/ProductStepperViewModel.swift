@@ -45,8 +45,8 @@ final class ProductStepperViewModel: ObservableObject {
 
     init(quantity: Decimal,
          name: String,
-         minimumQuantity: Decimal,
-         maximumQuantity: Decimal?,
+         minimumQuantity: Decimal = 1,
+         maximumQuantity: Decimal? = nil,
          quantityUpdatedCallback: @escaping (Decimal) -> Void,
          removeProductIntent: (() -> Void)? = nil) {
         self.quantity = quantity

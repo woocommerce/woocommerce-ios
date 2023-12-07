@@ -284,8 +284,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          quantity: Decimal = 1,
-         minimumQuantity: Decimal = 1,
-         maximumQuantity: Decimal? = nil,
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,

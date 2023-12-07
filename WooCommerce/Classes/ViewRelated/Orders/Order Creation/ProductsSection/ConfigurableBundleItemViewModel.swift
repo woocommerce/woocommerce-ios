@@ -105,8 +105,6 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                                       stockQuantity: nil,
                                                       manageStock: false,
                                                       quantity: quantity,
-                                                      minimumQuantity: bundleItem.minQuantity,
-                                                      maximumQuantity: bundleItem.maxQuantity,
                                                       imageURL: product.imageURL,
                                                       hasParentProduct: false,
                                                       isConfigurable: false)
@@ -168,8 +166,6 @@ private extension ConfigurableBundleItemViewModel {
                                                           stockQuantity: nil,
                                                           manageStock: false,
                                                           quantity: self.quantity,
-                                                          minimumQuantity: self.bundleItem.minQuantity,
-                                                          maximumQuantity: self.bundleItem.maxQuantity,
                                                           imageURL: self.product.imageURL,
                                                           hasParentProduct: false,
                                                           isConfigurable: false)

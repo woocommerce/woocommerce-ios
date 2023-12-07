@@ -468,6 +468,18 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
+
+    /// Verifies that default store is reset when initialized in an unexpected state: deauthenticated state with default store set.
+    ///
+    func test_it_resets_default_store_when_initialized_with_deauthenticated_state_and_default_store_set() {
+        // Given
+        let sessionManager = SessionManager.makeForTesting(defaultSite: Site.fake().copy(siteID: 123))
+        let manager = DefaultStoresManager(sessionManager: sessionManager)
+
+        // Assert
+        XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertTrue(manager.needsDefaultStore)
+    }
 }
 
 

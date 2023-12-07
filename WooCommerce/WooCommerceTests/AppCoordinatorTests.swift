@@ -571,14 +571,12 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_appCoordinator_start_resets_default_store_and_proceeds_to_login_when_isAuthenticated_and_needsDefaultStore_are_false() {
         // Given
-        sessionManager = .makeForTesting(authenticated: false, defaultSite: Site.fake().copy(siteID: 123))
-        stores = MockStoresManager(sessionManager: sessionManager)
-        let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
-                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
-        coordinator = appCoordinator
-
+        stores.updateDefaultStore(storeID: 123)
         XCTAssertFalse(stores.isAuthenticated)
         XCTAssertFalse(stores.needsDefaultStore)
+
+        let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()

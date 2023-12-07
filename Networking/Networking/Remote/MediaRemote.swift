@@ -122,8 +122,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         let path = "sites/\(siteID)/media/new"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1,
                                     method: .post,
-                                    path: path,
-                                    encoding: nil)
+                                    path: path)
         let mapper = MediaListMapper()
 
         enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
@@ -163,7 +162,6 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
                                             method: .post,
                                             path: path,
-                                            encoding: nil,
                                             availableAsRESTRequest: true)
             let mapper = WordPressMediaMapper()
 

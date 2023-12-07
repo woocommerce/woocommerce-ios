@@ -2142,6 +2142,7 @@
 		DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */; };
 		DE0A2EAF281BA278007A8015 /* ProductCategorySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */; };
 		DE0A2EB1281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EB0281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift */; };
+		DE0CDC942B1ECFF000C98800 /* LocalFileUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0CDC932B1ECFF000C98800 /* LocalFileUploader.swift */; };
 		DE126D0B26CA2331007F901D /* ValidationErrorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0A26CA2331007F901D /* ValidationErrorRow.swift */; };
 		DE126D0D26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0C26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift */; };
 		DE126D0F26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0E26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift */; };
@@ -4751,6 +4752,7 @@
 		DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelector.swift; sourceTree = "<group>"; };
 		DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModel.swift; sourceTree = "<group>"; };
 		DE0A2EB0281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModelTests.swift; sourceTree = "<group>"; };
+		DE0CDC932B1ECFF000C98800 /* LocalFileUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileUploader.swift; sourceTree = "<group>"; };
 		DE126D0A26CA2331007F901D /* ValidationErrorRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationErrorRow.swift; sourceTree = "<group>"; };
 		DE126D0C26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		DE126D0E26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormInputViewModelTests.swift; sourceTree = "<group>"; };
@@ -8374,6 +8376,7 @@
 		77E53EB5250E6972003D385F /* Downloadable Files */ = {
 			isa = PBXGroup;
 			children = (
+				DE0CDC932B1ECFF000C98800 /* LocalFileUploader.swift */,
 				77E53EC62510C3F4003D385F /* File List */,
 				773077E7251E943600178696 /* Add or Edit File */,
 				45F627B12536037400894B86 /* Settings */,
@@ -12628,6 +12631,7 @@
 				025FA38B2522CB4D0054CA57 /* AppCoordinator.swift in Sources */,
 				02CEBB8024C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift in Sources */,
 				022C7D792979778E0036568D /* DomainSettingsDomainCreditView.swift in Sources */,
+				DE0CDC942B1ECFF000C98800 /* LocalFileUploader.swift in Sources */,
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B6F3796A29378B3900718561 /* AnalyticsHubMonthToDateRangeData.swift in Sources */,
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,

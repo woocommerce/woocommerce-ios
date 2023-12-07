@@ -55,6 +55,12 @@ public final class MediaStore: Store {
             retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let altText, let filename, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, altText: altText, filename: filename, onCompletion: onCompletion)
+        case let .uploadFile(siteID, productID, localURL, altText, onCompletion):
+            uploadFile(siteID: siteID,
+                       productID: productID,
+                       localURL: localURL,
+                       altText: altText,
+                       onCompletion: onCompletion)
         case .updateProductID(let siteID,
                             let productID,
                              let mediaID,
@@ -101,6 +107,7 @@ private extension MediaStore {
                             productID: productID,
                             altText: altText,
                             uploadableMedia: uploadableMedia,
+                            shouldRemoveFileUponCompletion: true,
                             onCompletion: onCompletion)
             } catch {
                 onCompletion(.failure(error))
@@ -112,17 +119,20 @@ private extension MediaStore {
                      productID: Int64,
                      altText: String?,
                      uploadableMedia media: UploadableMedia,
+                     shouldRemoveFileUponCompletion: Bool,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.uploadMediaToWordPressSite(siteID: siteID,
                                               productID: productID,
                                               mediaItem: media) { result in
                 // Removes local media after the upload API request.
-                do {
-                    try MediaFileManager().removeLocalMedia(at: media.localURL)
-                } catch {
-                    onCompletion(.failure(error))
-                    return
+                if shouldRemoveFileUponCompletion {
+                    do {
+                        try MediaFileManager().removeLocalMedia(at: media.localURL)
+                    } catch {
+                        onCompletion(.failure(error))
+                        return
+                    }
                 }
 
                 switch result {
@@ -137,11 +147,13 @@ private extension MediaStore {
                                productID: productID,
                                mediaItems: [media]) { result in
                 // Removes local media after the upload API request.
-                do {
-                    try MediaFileManager().removeLocalMedia(at: media.localURL)
-                } catch {
-                    onCompletion(.failure(error))
-                    return
+                if shouldRemoveFileUponCompletion {
+                    do {
+                        try MediaFileManager().removeLocalMedia(at: media.localURL)
+                    } catch {
+                        onCompletion(.failure(error))
+                        return
+                    }
                 }
 
                 switch result {
@@ -155,6 +167,25 @@ private extension MediaStore {
                     onCompletion(.failure(error))
                 }
             }
+        }
+    }
+
+    func uploadFile(siteID: Int64,
+                    productID: Int64,
+                    localURL: URL,
+                    altText: String?,
+                    onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        Task { @MainActor in
+            let uploadableMedia = UploadableMedia(localURL: localURL,
+                                                  filename: localURL.lastPathComponent,
+                                                  mimeType: localURL.mimeTypeForPathExtension,
+                                                  altText: altText)
+            uploadMedia(siteID: siteID,
+                        productID: productID,
+                        altText: altText,
+                        uploadableMedia: uploadableMedia,
+                        shouldRemoveFileUponCompletion: false,
+                        onCompletion: onCompletion)
         }
     }
 

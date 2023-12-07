@@ -2,6 +2,8 @@ import Combine
 import UIKit
 import Yosemite
 import Photos
+import MobileCoreServices
+import enum Networking.DotcomError
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -22,10 +24,20 @@ final class ProductDownloadListViewController: UIViewController {
     private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
         return DeviceMediaLibraryPicker(allowsMultipleImages: false, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
+
     private lazy var wpMediaLibraryPicker: WordPressMediaLibraryImagePickerCoordinator =
         .init(siteID: product.siteID,
               allowsMultipleImages: false,
               onCompletion: onWPMediaPickerCompletion)
+
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
+    private let localFileUploader: LocalFileUploader
+
     private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
     private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
     private let productImageActionHandler: ProductImageActionHandler?
@@ -46,6 +58,7 @@ final class ProductDownloadListViewController: UIViewController {
                                                               productID: .product(id: product.productID),
                                                               imageStatuses: [],
                                                               stores: stores)
+        localFileUploader = .init(siteID: product.siteID, productID: product.productID, stores: stores)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         onDeviceMediaLibraryPickerCompletion = { [weak self] assets in
@@ -171,8 +184,10 @@ extension ProductDownloadListViewController {
             self?.dismiss(animated: true) { [weak self] in
                 guard let self = self else { return }
                 switch action {
-                case .device:
+                case .deviceMedia:
                     self.showDeviceMediaLibraryPicker(origin: self)
+                case .deviceDocument:
+                    self.showDeviceDocumentPicker(origin: self)
                 case .wordPressMediaLibrary:
                     self.showSiteMediaPicker(origin: self)
                 case .fileURL:
@@ -311,8 +326,49 @@ private extension ProductDownloadListViewController {
         deviceMediaLibraryPicker.presentPicker(origin: origin)
     }
 
+    func showDeviceDocumentPicker(origin: UIViewController) {
+        let types: [UTType] = [.pdf, .text, .spreadsheet, .audio, .video, .zip, .presentation]
+        let importMenu = UIDocumentPickerViewController(forOpeningContentTypes: types)
+        importMenu.allowsMultipleSelection = false
+        importMenu.delegate = self
+        origin.present(importMenu, animated: true)
+    }
+
     func showSiteMediaPicker(origin: UIViewController) {
         wpMediaLibraryPicker.start(from: origin)
+    }
+}
+
+extension ProductDownloadListViewController: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        // we don't support multiple selections, so we expect only one URL to be returned.
+        guard let url = urls.first else {
+            return
+        }
+
+        controller.dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+            self.loadingView.showLoader(in: self.view)
+        }
+
+        Task { @MainActor in
+            do {
+                let media = try await localFileUploader.uploadFile(url: url)
+                addDownloadableFile(fileName: media.name, fileURL: media.src)
+                loadingView.hideLoader()
+            } catch {
+                loadingView.hideLoader()
+                let errorMessage: String = {
+                    if case DotcomError.unknown(let code, _) = error,
+                       code == Constants.unsupportedMimeTypeCode {
+                        return Localization.unsupportedFileType
+                    }
+                    return Localization.errorUploadingLocalFile
+                }()
+                let notice = Notice(title: errorMessage, feedbackType: .error)
+                noticePresenter.enqueue(notice: notice)
+            }
+        }
     }
 }
 
@@ -404,11 +460,22 @@ private extension ProductDownloadListViewController {
                                                               comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
         static let cancelAction = NSLocalizedString("Cancel",
                                                     comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
+        static let unsupportedFileType = NSLocalizedString(
+            "productDownloadListViewController.notice.unsupportedFileType",
+            value: "The selected file type is not supported.",
+            comment: "Alert message about an unsupported file type when uploading file for a downloadable product."
+        )
+        static let errorUploadingLocalFile = NSLocalizedString(
+            "productDownloadListViewController.notice.errorUploadingLocalFile",
+            value: "Error uploading the file. Please try again.",
+            comment: "Alert message to inform the user about a failure in uploading file for a downloadable product."
+        )
     }
 }
 
 extension ProductDownloadListViewController {
     private enum Constants {
         static let defaultAddProductDownloadID: String = ""
+        static let unsupportedMimeTypeCode = "unsupported_mime_type"
     }
 }

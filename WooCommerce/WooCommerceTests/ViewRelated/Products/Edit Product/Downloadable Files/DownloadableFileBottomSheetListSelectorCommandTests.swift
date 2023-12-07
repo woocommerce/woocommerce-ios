@@ -7,7 +7,7 @@ final class DownloadableFileBottomSheetListSelectorCommandTests: XCTestCase {
 
     func test_callback_is_called_on_selection() {
         // Arrange
-        let actions: [DownloadableFileSource] = [.device, .wordPressMediaLibrary, .fileURL]
+        let actions: [DownloadableFileSource] = [.deviceMedia, .deviceDocument, .wordPressMediaLibrary, .fileURL]
         var selectedActions = [DownloadableFileSource]()
         let command = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { selected in
                                                                     selectedActions.append(selected)
@@ -16,13 +16,15 @@ final class DownloadableFileBottomSheetListSelectorCommandTests: XCTestCase {
         // Action
         command.handleSelectedChange(selected: .fileURL)
         command.handleSelectedChange(selected: .wordPressMediaLibrary)
-        command.handleSelectedChange(selected: .device)
+        command.handleSelectedChange(selected: .deviceMedia)
+        command.handleSelectedChange(selected: .deviceDocument)
 
         // Assert
         let expectedActions: [DownloadableFileSource] = [
             .fileURL,
             .wordPressMediaLibrary,
-            .device
+            .deviceMedia,
+            .deviceDocument
         ]
         XCTAssertEqual(selectedActions, expectedActions)
     }

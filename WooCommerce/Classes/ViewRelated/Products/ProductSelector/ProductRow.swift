@@ -143,7 +143,6 @@ struct ProductRow_Previews: PreviewProvider {
                                             stockStatusKey: "instock",
                                             stockQuantity: 7,
                                             manageStock: true,
-                                            canChangeQuantity: true,
                                             imageURL: nil,
                                             hasParentProduct: false,
                                             isConfigurable: true)
@@ -154,7 +153,6 @@ struct ProductRow_Previews: PreviewProvider {
                                                           stockStatusKey: "instock",
                                                           stockQuantity: 7,
                                                           manageStock: true,
-                                                          canChangeQuantity: false,
                                                           imageURL: nil,
                                                           hasParentProduct: true,
                                                           isConfigurable: false)

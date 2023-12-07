@@ -593,14 +593,9 @@ final class EditableOrderViewModel: ObservableObject {
                                                    discount: passingDiscountValue,
                                                    name: item.name,
                                                    quantity: item.quantity,
-                                                   canChangeQuantity: canChangeQuantity,
                                                    displayMode: .attributes(attributes),
                                                    hasParentProduct: item.parent != nil,
                                                    pricedIndividually: pricedIndividually,
-                                                   quantityUpdatedCallback: { [weak self] _ in
-                guard let self else { return }
-                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
-            },
                                                    removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
@@ -628,14 +623,9 @@ final class EditableOrderViewModel: ObservableObject {
                                                    product: product,
                                                    discount: passingDiscountValue,
                                                    quantity: item.quantity,
-                                                   canChangeQuantity: canChangeQuantity,
                                                    hasParentProduct: item.parent != nil,
                                                    pricedIndividually: pricedIndividually,
                                                    childProductRows: childProductRows,
-                                                   quantityUpdatedCallback: { [weak self] _ in
-                guard let self = self else { return }
-                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
-            },
                                                    removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)},
                                                    configure: { [weak self] in

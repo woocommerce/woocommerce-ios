@@ -365,14 +365,14 @@ private extension CollapsibleProductRowCard {
 struct CollapsibleProductCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
-        let rowViewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+        let rowViewModel = ProductRowViewModel(product: product)
         let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
                                                                                     name: "",
                                                                                     quantityUpdatedCallback: { _ in }),
                                                             rowViewModel: rowViewModel,
                                                             canChangeQuantity: true)
-        let childViewModels = [ProductRowViewModel(id: 2, product: product, canChangeQuantity: true, hasParentProduct: true),
-                               ProductRowViewModel(id: 3, product: product, canChangeQuantity: true, hasParentProduct: true)]
+        let childViewModels = [ProductRowViewModel(id: 2, product: product, hasParentProduct: true),
+                               ProductRowViewModel(id: 3, product: product, hasParentProduct: true)]
             .map {
                 ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
                                                                             name: "",
@@ -383,7 +383,6 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
         let bundleParentRowViewModel = ProductRowViewModel(id: 1,
                                                            product: product
             .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]),
-                                                           canChangeQuantity: true,
                                                            childProductRows: childViewModels,
                                                            configure: {})
         let bundleParentViewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,

@@ -107,7 +107,6 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                                       quantity: quantity,
                                                       minimumQuantity: bundleItem.minQuantity,
                                                       maximumQuantity: bundleItem.maxQuantity,
-                                                      canChangeQuantity: canChangeQuantity,
                                                       imageURL: product.imageURL,
                                                       hasParentProduct: false,
                                                       isConfigurable: false)
@@ -171,8 +170,6 @@ private extension ConfigurableBundleItemViewModel {
                                                           quantity: self.quantity,
                                                           minimumQuantity: self.bundleItem.minQuantity,
                                                           maximumQuantity: self.bundleItem.maxQuantity,
-                                                          // TODO-jc: remove
-                                                          canChangeQuantity: isOptionalAndSelected,
                                                           imageURL: self.product.imageURL,
                                                           hasParentProduct: false,
                                                           isConfigurable: false)

@@ -8,12 +8,6 @@ import WooFoundation
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
 
-    // TODO-jc: remove
-    /// Whether the product quantity can be changed.
-    /// Controls whether the stepper is rendered.
-    ///
-    let canChangeQuantity: Bool
-
     /// Whether the product row is read-only. Defaults to `false`.
     ///
     /// Used to remove product editing controls for read-only order items (e.g. child items of a product bundle).
@@ -292,7 +286,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          quantity: Decimal = 1,
          minimumQuantity: Decimal = 1,
          maximumQuantity: Decimal? = nil,
-         canChangeQuantity: Bool,
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
@@ -303,7 +296,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
-         quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: (() -> Void)? = nil,
          configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
@@ -318,7 +310,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
-        self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
         self.pricedIndividually = pricedIndividually
@@ -338,14 +329,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      product: Product,
                      discount: Decimal? = nil,
                      quantity: Decimal = 1,
-                     canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
                      childProductRows: [ProductWithQuantityStepperViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
-                     quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {},
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      configure: (() -> Void)? = nil) {
@@ -415,7 +404,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   stockQuantity: stockQuantity,
                   manageStock: manageStock,
                   quantity: quantity,
-                  canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
@@ -425,7 +413,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
-                  quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent,
                   configure: configure)
     }
@@ -437,14 +424,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      discount: Decimal? = nil,
                      name: String,
                      quantity: Decimal = 1,
-                     canChangeQuantity: Bool,
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
-                     quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
@@ -463,7 +448,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   stockQuantity: productVariation.stockQuantity,
                   manageStock: productVariation.manageStock,
                   quantity: quantity,
-                  canChangeQuantity: canChangeQuantity,
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
@@ -472,7 +456,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
-                  quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)
     }
 

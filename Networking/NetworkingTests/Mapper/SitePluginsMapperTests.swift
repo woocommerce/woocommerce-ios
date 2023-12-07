@@ -11,8 +11,8 @@ class SitePluginsMapperTests: XCTestCase {
 
     /// Verifies the SitePlugin fields are parsed correctly.
     ///
-    func test_SitePlugin_fields_are_properly_parsed() {
-        let plugins = mapLoadSitePluginsResponse()
+    func test_SitePlugin_fields_are_properly_parsed() async {
+        let plugins = await mapLoadSitePluginsResponse()
         XCTAssertEqual(plugins.count, 5)
 
         let helloDollyPlugin = plugins[0]
@@ -42,8 +42,8 @@ class SitePluginsMapperTests: XCTestCase {
 
     /// Verifies the SitePlugin fields are parsed correctly.
     ///
-    func test_SitePlugin_fields_are_properly_parsed_when_response_has_no_data_envelope() {
-        let plugins = mapLoadSitePluginsResponseWithoutDataEnvelope()
+    func test_SitePlugin_fields_are_properly_parsed_when_response_has_no_data_envelope() async {
+        let plugins = await mapLoadSitePluginsResponseWithoutDataEnvelope()
         XCTAssertEqual(plugins.count, 3)
 
         let helloDollyPlugin = plugins[0]
@@ -67,23 +67,23 @@ private extension SitePluginsMapperTests {
 
     /// Returns the SitePluginsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapPlugins(from filename: String) -> [SitePlugin] {
+    func mapPlugins(from filename: String) async -> [SitePlugin] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! SitePluginsMapper(siteID: dummySiteID).map(response: response)
+        return try! await SitePluginsMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the SitePluginsMapper output upon receiving `plugins`
     ///
-    func mapLoadSitePluginsResponse() -> [SitePlugin] {
-        return mapPlugins(from: "plugins")
+    func mapLoadSitePluginsResponse() async -> [SitePlugin] {
+        return await mapPlugins(from: "plugins")
     }
 
     /// Returns the SitePluginsMapper output upon receiving `plugins-without-data`
     ///
-    func mapLoadSitePluginsResponseWithoutDataEnvelope() -> [SitePlugin] {
-        return mapPlugins(from: "plugins-without-data")
+    func mapLoadSitePluginsResponseWithoutDataEnvelope() async -> [SitePlugin] {
+        return await mapPlugins(from: "plugins-without-data")
     }
 }

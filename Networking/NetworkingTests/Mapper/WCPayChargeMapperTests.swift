@@ -8,29 +8,29 @@ class WCPayChargeMapperTests: XCTestCase {
 
     /// Verifies that the WCPayCharge is parsed.
     ///
-    func test_WCPayCharge_map_parses_data_in_response() throws {
-        let wcpayCharge = try mapRetrieveWCPayChargeResponse()
+    func test_WCPayCharge_map_parses_data_in_response() async throws {
+        let wcpayCharge = try await mapRetrieveWCPayChargeResponse()
         XCTAssertNotNil(wcpayCharge)
     }
 
     /// Verifies that the WCPayCharge is parsed.
     ///
-    func test_WCPayCharge_map_parses_data_in_response_without_data_envelope() throws {
-        let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .cardPresentWithoutDataEnvelope)
+    func test_WCPayCharge_map_parses_data_in_response_without_data_envelope() async throws {
+        let wcpayCharge = try await mapRetrieveWCPayChargeResponse(responseName: .cardPresentWithoutDataEnvelope)
         XCTAssertNotNil(wcpayCharge)
     }
 
     /// Verifies that the `siteID` is added in the mapper, because it's not provided by the API endpoint
     ///
-    func test_WCPayCharge_map_includes_siteID_in_parsed_results() throws {
-        let wcpayCharge = try mapRetrieveWCPayChargeResponse()
+    func test_WCPayCharge_map_includes_siteID_in_parsed_results() async throws {
+        let wcpayCharge = try await mapRetrieveWCPayChargeResponse()
         XCTAssertEqual(wcpayCharge.siteID, dummySiteID)
     }
 
     /// Verifies that the fields are all parsed correctly for a card present payment
     ///
-    func test_WCPayCharge_map_parses_all_fields_in_result_for_card_present() throws {
-        let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .cardPresent)
+    func test_WCPayCharge_map_parses_all_fields_in_result_for_card_present() async throws {
+        let wcpayCharge = try await mapRetrieveWCPayChargeResponse(responseName: .cardPresent)
 
         let expectedCreatedDate = Date.init(timeIntervalSince1970: 1643280767) //2022-01-27 10:52:47 UTC
 
@@ -62,8 +62,8 @@ class WCPayChargeMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly for an interac present payment
     ///
-    func test_WCPayCharge_map_parses_all_fields_in_result_for_interac_present() throws {
-        let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .interacPresent)
+    func test_WCPayCharge_map_parses_all_fields_in_result_for_interac_present() async throws {
+        let wcpayCharge = try await mapRetrieveWCPayChargeResponse(responseName: .interacPresent)
 
         let expectedCreatedDate = Date.init(timeIntervalSince1970: 1647257154) //2022-03-14 11:25:54 UTC
 
@@ -95,8 +95,8 @@ class WCPayChargeMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly for a card present payment
     ///
-    func test_WCPayCharge_map_parses_all_fields_in_result_for_card_present_with_nulls() throws {
-        let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .cardPresentMinimal)
+    func test_WCPayCharge_map_parses_all_fields_in_result_for_card_present_with_nulls() async throws {
+        let wcpayCharge = try await mapRetrieveWCPayChargeResponse(responseName: .cardPresentMinimal)
 
         let expectedCreatedDate = Date.init(timeIntervalSince1970: 1643799478) //2022-02-02 10:57:58 UTC
 
@@ -128,8 +128,8 @@ class WCPayChargeMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly for a card payment
     ///
-    func test_WCPayCharge_map_parses_all_fields_in_result_for_card() throws {
-        let wcpayCharge = try mapRetrieveWCPayChargeResponse(responseName: .card)
+    func test_WCPayCharge_map_parses_all_fields_in_result_for_card() async throws {
+        let wcpayCharge = try await mapRetrieveWCPayChargeResponse(responseName: .card)
 
         let expectedCreatedDate = Date.init(timeIntervalSince1970: 1643378348) //2022-01-28 13:59:08 UTC
 
@@ -162,18 +162,18 @@ private extension WCPayChargeMapperTests {
 
     /// Returns the CouponMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapWCPayCharge(from filename: String) throws -> WCPayCharge {
+    func mapWCPayCharge(from filename: String) async throws -> WCPayCharge {
         guard let response = Loader.contentsOf(filename) else {
             throw FileNotFoundError()
         }
 
-        return try WCPayChargeMapper(siteID: dummySiteID).map(response: response)
+        return try await WCPayChargeMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the CouponMapper output from `coupon.json`
     ///
-    func mapRetrieveWCPayChargeResponse(responseName: ChargeResponse = .cardPresent) throws -> WCPayCharge {
-        return try mapWCPayCharge(from: responseName.rawValue)
+    func mapRetrieveWCPayChargeResponse(responseName: ChargeResponse = .cardPresent) async throws -> WCPayCharge {
+        try await mapWCPayCharge(from: responseName.rawValue)
     }
 
     struct FileNotFoundError: Error {}

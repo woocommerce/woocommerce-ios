@@ -5,25 +5,25 @@ final class SubscriptionListMapperTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 12983476
 
-    func test_SubscriptionList_map_parses_all_subscriptions_in_response() throws {
+    func test_SubscriptionList_map_parses_all_subscriptions_in_response() async throws {
         // Given
-        let subscriptions = try mapLoadSubscriptionListResponseWithDataEnvelope()
+        let subscriptions = try await mapLoadSubscriptionListResponseWithDataEnvelope()
 
         // Then
         XCTAssertEqual(subscriptions.count, 2)
     }
 
-    func test_SubscriptionList_map_parses_all_coupons_in_response_without_data_envelope() throws {
+    func test_SubscriptionList_map_parses_all_coupons_in_response_without_data_envelope() async throws {
         // Given
-        let subscriptions = try mapLoadSubscriptionListResponseWithoutDataEnvelope()
+        let subscriptions = try await mapLoadSubscriptionListResponseWithoutDataEnvelope()
 
         // Then
         XCTAssertEqual(subscriptions.count, 2)
     }
 
-    func test_SubscriptionList_map_includes_siteID_in_parsed_results() throws {
+    func test_SubscriptionList_map_includes_siteID_in_parsed_results() async throws {
         // Given
-        let subscriptions = try mapLoadSubscriptionListResponseWithDataEnvelope()
+        let subscriptions = try await mapLoadSubscriptionListResponseWithDataEnvelope()
 
         // Then
         XCTAssertTrue(subscriptions.count > 0)
@@ -32,9 +32,9 @@ final class SubscriptionListMapperTests: XCTestCase {
         }
     }
 
-    func test_SubscriptionList_map_parses_all_fields_in_result() throws {
+    func test_SubscriptionList_map_parses_all_fields_in_result() async throws {
         // Given
-        let subscriptions = try mapLoadSubscriptionListResponseWithDataEnvelope()
+        let subscriptions = try await mapLoadSubscriptionListResponseWithDataEnvelope()
         let subscription = subscriptions[0]
 
         // Then
@@ -63,23 +63,23 @@ private extension SubscriptionListMapperTests {
 
     /// Returns the SubscriptionListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapSubscriptions(from filename: String) throws -> [Subscription] {
+    func mapSubscriptions(from filename: String) async throws -> [Subscription] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try SubscriptionListMapper(siteID: sampleSiteID).map(response: response)
+        return try await SubscriptionListMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the SubscriptionListMapper output from `subscription-list.json`
     ///
-    func mapLoadSubscriptionListResponseWithDataEnvelope() throws -> [Subscription] {
-        return try mapSubscriptions(from: "subscription-list")
+    func mapLoadSubscriptionListResponseWithDataEnvelope() async throws -> [Subscription] {
+        return try await mapSubscriptions(from: "subscription-list")
     }
 
     /// Returns the SubscriptionListMapper output from `subscription-list-without-data.json`
     ///
-    func mapLoadSubscriptionListResponseWithoutDataEnvelope() throws -> [Subscription] {
-        return try mapSubscriptions(from: "subscription-list-without-data")
+    func mapLoadSubscriptionListResponseWithoutDataEnvelope() async throws -> [Subscription] {
+        return try await mapSubscriptions(from: "subscription-list-without-data")
     }
 }

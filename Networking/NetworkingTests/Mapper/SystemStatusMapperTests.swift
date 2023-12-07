@@ -9,9 +9,9 @@ final class SystemStatusMapperTests: XCTestCase {
     ///
     private let dummySiteID: Int64 = 999999
 
-    func test_system_status_fields_are_properly_parsed() throws {
+    func test_system_status_fields_are_properly_parsed() async throws {
         // When
-        let report = try mapLoadSystemStatusResponse()
+        let report = try await mapLoadSystemStatusResponse()
 
         // Then
         XCTAssertEqual(report.environment?.homeURL, "https://additional-beetle.jurassic.ninja")
@@ -59,9 +59,9 @@ final class SystemStatusMapperTests: XCTestCase {
         XCTAssertEqual(report.postTypeCounts.count, 3)
     }
 
-    func test_system_status_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
+    func test_system_status_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
         // When
-        let report = try mapLoadSystemStatusResponseWithoutDataEnvelope()
+        let report = try await mapLoadSystemStatusResponseWithoutDataEnvelope()
 
         // Then
         XCTAssertEqual(report.environment?.homeURL, "https://additional-beetle.jurassic.ninja")
@@ -114,23 +114,23 @@ private extension SystemStatusMapperTests {
 
     /// Returns the SystemStatusMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapReport(from filename: String) throws -> SystemStatus {
+    func mapReport(from filename: String) async throws -> SystemStatus {
         guard let response = Loader.contentsOf(filename) else {
             throw NetworkError.notFound()
         }
 
-        return try SystemStatusMapper(siteID: dummySiteID).map(response: response)
+        return try await SystemStatusMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the SystemStatus output upon receiving `systemStatus.json`
     ///
-    func mapLoadSystemStatusResponse() throws -> SystemStatus {
-        return try mapReport(from: "systemStatus")
+    func mapLoadSystemStatusResponse() async throws -> SystemStatus {
+        try await mapReport(from: "systemStatus")
     }
 
     /// Returns the SystemStatus output upon receiving `systemStatus-without-data.json`
     ///
-    func mapLoadSystemStatusResponseWithoutDataEnvelope() throws -> SystemStatus {
-        return try mapReport(from: "systemStatus-without-data")
+    func mapLoadSystemStatusResponseWithoutDataEnvelope() async throws -> SystemStatus {
+        try await mapReport(from: "systemStatus-without-data")
     }
 }

@@ -7,8 +7,8 @@ import XCTest
 final class UserMapperTests: XCTestCase {
     private let testSiteID: Int64 = 123
 
-    func test_User_fields_are_properly_parsed_with_data_envelope() {
-        guard let user = mapUserFromMockResponseWithDataEnvelope() else {
+    func test_User_fields_are_properly_parsed_with_data_envelope() async {
+        guard let user = await mapUserFromMockResponseWithDataEnvelope() else {
             XCTFail()
             return
         }
@@ -23,8 +23,8 @@ final class UserMapperTests: XCTestCase {
         XCTAssertEqual(user.siteID, testSiteID)
     }
 
-    func test_User_fields_are_properly_parsed_without_data_envelope() {
-        guard let user = mapUserFromMockResponseWithoutDataEnvelope() else {
+    func test_User_fields_are_properly_parsed_without_data_envelope() async {
+        guard let user = await mapUserFromMockResponseWithoutDataEnvelope() else {
             XCTFail()
             return
         }
@@ -41,23 +41,23 @@ final class UserMapperTests: XCTestCase {
 }
 
 private extension UserMapperTests {
-    func mapUserFromMockResponseWithDataEnvelope() -> User? {
+    func mapUserFromMockResponseWithDataEnvelope() async -> User? {
         // Note: the JSON content is shortened due to the "fields" parameter
         // usage in UserRemote.
         guard let response = Loader.contentsOf("user-complete") else {
             return nil
         }
 
-        return try? UserMapper(siteID: testSiteID).map(response: response)
+        return try? await UserMapper(siteID: testSiteID).map(response: response)
     }
 
-    func mapUserFromMockResponseWithoutDataEnvelope() -> User? {
+    func mapUserFromMockResponseWithoutDataEnvelope() async -> User? {
         // Note: the JSON content is shortened due to the "fields" parameter
         // usage in UserRemote.
         guard let response = Loader.contentsOf("user-complete-without-data") else {
             return nil
         }
 
-        return try? UserMapper(siteID: testSiteID).map(response: response)
+        return try? await UserMapper(siteID: testSiteID).map(response: response)
     }
 }

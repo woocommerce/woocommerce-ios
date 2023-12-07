@@ -9,8 +9,8 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the day unit TopEarnerStats fields are parsed correctly.
     ///
-    func test_day_unit_stat_fields_are_properly_parsed() {
-        guard let dayStats = mapTopEarnerStatsWithDayUnitResponse() else {
+    func test_day_unit_stat_fields_are_properly_parsed() async {
+        guard let dayStats = await mapTopEarnerStatsWithDayUnitResponse() else {
             XCTFail()
             return
         }
@@ -33,8 +33,8 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the week unit TopEarnerStats fields are parsed correctly.
     ///
-    func test_week_unit_stat_fields_are_properly_parsed() {
-        guard let weekStats = mapTopEarnerStatsWithWeekUnitResponse() else {
+    func test_week_unit_stat_fields_are_properly_parsed() async {
+        guard let weekStats = await mapTopEarnerStatsWithWeekUnitResponse() else {
             XCTFail()
             return
         }
@@ -66,8 +66,8 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the month unit TopEarnerStats fields are parsed correctly.
     ///
-    func test_month_unit_stat_fields_are_properly_parsed() {
-        guard let monthStats = mapTopEarnerStatsWithMonthUnitResponse() else {
+    func test_month_unit_stat_fields_are_properly_parsed() async {
+        guard let monthStats = await mapTopEarnerStatsWithMonthUnitResponse() else {
             XCTFail()
             return
         }
@@ -99,8 +99,8 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the year unit TopEarnerStats fields are parsed correctly.
     ///
-    func test_year_unit_stat_fields_are_properly_parsed() {
-        guard let yearStats = mapTopEarnerStatsWithYearUnitResponse() else {
+    func test_year_unit_stat_fields_are_properly_parsed() async {
+        guard let yearStats = await mapTopEarnerStatsWithYearUnitResponse() else {
             XCTFail()
             return
         }
@@ -138,35 +138,35 @@ private extension TopEarnerStatsMapperTests {
 
     /// Returns the TopEarnerStatsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapStatItems(from filename: String) -> TopEarnerStats? {
+    func mapStatItems(from filename: String) async -> TopEarnerStats? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! TopEarnerStatsMapper(siteID: sampleSiteID).map(response: response)
+        return try! await TopEarnerStatsMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-day`
     ///
-    func mapTopEarnerStatsWithDayUnitResponse() -> TopEarnerStats? {
-        return mapStatItems(from: "top-performers-day")
+    func mapTopEarnerStatsWithDayUnitResponse() async -> TopEarnerStats? {
+        await mapStatItems(from: "top-performers-day")
     }
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-week`
     ///
-    func mapTopEarnerStatsWithWeekUnitResponse() -> TopEarnerStats? {
-        return mapStatItems(from: "top-performers-week")
+    func mapTopEarnerStatsWithWeekUnitResponse() async -> TopEarnerStats? {
+        await mapStatItems(from: "top-performers-week")
     }
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-month`
     ///
-    func mapTopEarnerStatsWithMonthUnitResponse() -> TopEarnerStats? {
-        return mapStatItems(from: "top-performers-month")
+    func mapTopEarnerStatsWithMonthUnitResponse() async -> TopEarnerStats? {
+        await mapStatItems(from: "top-performers-month")
     }
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-year`
     ///
-    func mapTopEarnerStatsWithYearUnitResponse() -> TopEarnerStats? {
-        return mapStatItems(from: "top-performers-year")
+    func mapTopEarnerStatsWithYearUnitResponse() async -> TopEarnerStats? {
+        await mapStatItems(from: "top-performers-year")
     }
 }

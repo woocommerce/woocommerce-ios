@@ -11,7 +11,7 @@ final class SystemPluginMapperTests: XCTestCase {
 
     /// Verifies the SystemPlugin fields are parsed correctly for an active plugin
     ///
-    func test_active_plugin_fields_are_properly_parsed() throws {
+    func test_active_plugin_fields_are_properly_parsed() async throws {
         // Given
         let expectedSiteId: Int64 = 999999
         let expectedPlugin = "woocommerce/woocommerce.php"
@@ -25,7 +25,7 @@ final class SystemPluginMapperTests: XCTestCase {
         let expectedActive = true
 
         // When
-        let systemPlugins = try mapLoadSystemStatusResponse()
+        let systemPlugins = try await mapLoadSystemStatusResponse()
 
         // Then
         XCTAssertEqual(systemPlugins.count, 6)
@@ -46,7 +46,7 @@ final class SystemPluginMapperTests: XCTestCase {
 
     /// Verifies the SystemPlugin fields are parsed correctly for an inactive plugin
     ///
-    func test_inactive_plugin_fields_are_properly_parsed() throws {
+    func test_inactive_plugin_fields_are_properly_parsed() async throws {
         // Given
         let expectedSiteId: Int64 = 999999
         let expectedPlugin = "hello.php"
@@ -60,7 +60,7 @@ final class SystemPluginMapperTests: XCTestCase {
         let expectedActive = false
 
         // When
-        let systemPlugins = try mapLoadSystemStatusResponse()
+        let systemPlugins = try await mapLoadSystemStatusResponse()
 
         // Then
         XCTAssertEqual(systemPlugins.count, 6)
@@ -79,9 +79,9 @@ final class SystemPluginMapperTests: XCTestCase {
         XCTAssertEqual(systemPlugin.active, expectedActive)
     }
 
-    func test_plugins_are_parsed_successfully_when_response_has_no_data_envelope() throws {
+    func test_plugins_are_parsed_successfully_when_response_has_no_data_envelope() async throws {
         // When
-        let plugins = try mapLoadSystemStatusResponseWithoutDataEnvelope()
+        let plugins = try await mapLoadSystemStatusResponseWithoutDataEnvelope()
 
         // Then
         XCTAssertEqual(plugins.count, 2)
@@ -105,24 +105,24 @@ private extension SystemPluginMapperTests {
 
     /// Returns the SystemStatusMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapPlugins(from filename: String) throws -> [SystemPlugin] {
+    func mapPlugins(from filename: String) async throws -> [SystemPlugin] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try SystemPluginMapper(siteID: dummySiteID).map(response: response)
+        return try await SystemPluginMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the SystemStatusMapper output upon receiving `systemStatusWithPluginsOnly`
     ///
-    func mapLoadSystemStatusResponse() throws -> [SystemPlugin] {
-        return try mapPlugins(from: "systemStatusWithPluginsOnly")
+    func mapLoadSystemStatusResponse() async throws -> [SystemPlugin] {
+        return try await mapPlugins(from: "systemStatusWithPluginsOnly")
     }
 
     /// Returns the SystemStatusMapper output upon receiving
     /// `systemStatusWithPluginsOnly-without-data`
     ///
-    func mapLoadSystemStatusResponseWithoutDataEnvelope() throws -> [SystemPlugin] {
-        return try mapPlugins(from: "systemStatusWithPluginsOnly-without-data")
+    func mapLoadSystemStatusResponseWithoutDataEnvelope() async throws -> [SystemPlugin] {
+        return try await mapPlugins(from: "systemStatusWithPluginsOnly-without-data")
     }
 }

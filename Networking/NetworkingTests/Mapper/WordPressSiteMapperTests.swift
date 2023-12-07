@@ -6,8 +6,8 @@ import XCTest
 ///
 final class WordPressSiteMapperTests: XCTestCase {
 
-    func test_response_is_properly_parsed() throws {
-        let site = try XCTUnwrap(mapWordPressSiteInfoResponse())
+    func test_response_is_properly_parsed() async throws {
+        let site = try await mapWordPressSiteInfoResponse()
         XCTAssertEqual(site.name, "My WordPress Site")
         XCTAssertEqual(site.description, "Just another WordPress site")
         XCTAssertEqual(site.url, "https://test.com")
@@ -24,11 +24,13 @@ private extension WordPressSiteMapperTests {
 
     /// Returns the WordPressSiteMapper output upon receiving success response
     ///
-    func mapWordPressSiteInfoResponse() -> WordPressSite? {
+    func mapWordPressSiteInfoResponse() async throws -> WordPressSite {
         guard let response = Loader.contentsOf("wordpress-site-info") else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try? WordPressSiteMapper().map(response: response)
+        return try await WordPressSiteMapper().map(response: response)
     }
+
+    struct FileNotFoundError: Error {}
 }

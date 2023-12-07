@@ -9,8 +9,8 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the day unit SiteVisitStats fields are parsed correctly.
     ///
-    func test_day_unit_stat_fields_are_properly_parsed() {
-        guard let dayStats = mapSiteVisitStatsWithDayUnitResponse() else {
+    func test_day_unit_stat_fields_are_properly_parsed() async {
+        guard let dayStats = await mapSiteVisitStatsWithDayUnitResponse() else {
             XCTFail()
             return
         }
@@ -33,8 +33,8 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the week unit SiteVisitStats fields are parsed correctly.
     ///
-    func test_week_unit_stat_fields_are_properly_parsed() {
-        guard let weekStats = mapSiteVisitStatsWithWeekUnitResponse() else {
+    func test_week_unit_stat_fields_are_properly_parsed() async {
+        guard let weekStats = await mapSiteVisitStatsWithWeekUnitResponse() else {
             XCTFail()
             return
         }
@@ -57,8 +57,8 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the month unit SiteVisitStats fields are parsed correctly.
     ///
-    func test_month_unit_stat_fields_are_properly_parsed() {
-        guard let monthStats = mapSiteVisitStatsWithMonthUnitResponse() else {
+    func test_month_unit_stat_fields_are_properly_parsed() async {
+        guard let monthStats = await mapSiteVisitStatsWithMonthUnitResponse() else {
             XCTFail()
             return
         }
@@ -81,8 +81,8 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the year unit SiteVisitStats fields are parsed correctly.
     ///
-    func test_year_unit_stat_fields_are_properly_parsed() {
-        guard let yearStats = mapSiteVisitStatsWithYearUnitResponse() else {
+    func test_year_unit_stat_fields_are_properly_parsed() async {
+        guard let yearStats = await mapSiteVisitStatsWithYearUnitResponse() else {
             XCTFail()
             return
         }
@@ -111,35 +111,35 @@ private extension SiteVisitStatsMapperTests {
 
     /// Returns the SiteVisitStatsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapSiteVisitStatItems(from filename: String) -> SiteVisitStats? {
+    func mapSiteVisitStatItems(from filename: String) async -> SiteVisitStats? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! SiteVisitStatsMapper(siteID: sampleSiteID).map(response: response)
+        return try! await SiteVisitStatsMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-day`
     ///
-    func mapSiteVisitStatsWithDayUnitResponse() -> SiteVisitStats? {
-        return mapSiteVisitStatItems(from: "site-visits-day")
+    func mapSiteVisitStatsWithDayUnitResponse() async -> SiteVisitStats? {
+        await mapSiteVisitStatItems(from: "site-visits-day")
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-week`
     ///
-    func mapSiteVisitStatsWithWeekUnitResponse() -> SiteVisitStats? {
-        return mapSiteVisitStatItems(from: "site-visits-week")
+    func mapSiteVisitStatsWithWeekUnitResponse() async -> SiteVisitStats? {
+        await mapSiteVisitStatItems(from: "site-visits-week")
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-month`
     ///
-    func mapSiteVisitStatsWithMonthUnitResponse() -> SiteVisitStats? {
-        return mapSiteVisitStatItems(from: "site-visits-month")
+    func mapSiteVisitStatsWithMonthUnitResponse() async -> SiteVisitStats? {
+        await mapSiteVisitStatItems(from: "site-visits-month")
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-year`
     ///
-    func mapSiteVisitStatsWithYearUnitResponse() -> SiteVisitStats? {
-        return mapSiteVisitStatItems(from: "site-visits-year")
+    func mapSiteVisitStatsWithYearUnitResponse() async -> SiteVisitStats? {
+        await mapSiteVisitStatItems(from: "site-visits-year")
     }
 }

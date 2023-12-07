@@ -12,8 +12,8 @@ class SiteSettingsMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
-    func test_SiteSetting_fields_are_properly_parsed() {
-        let settings = mapLoadGeneralSiteSettingsResponse()
+    func test_SiteSetting_fields_are_properly_parsed() async {
+        let settings = await mapLoadGeneralSiteSettingsResponse()
         XCTAssertEqual(settings.count, 20)
 
         let firstSetting = settings[0]
@@ -44,8 +44,8 @@ class SiteSettingsMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly when response has no data envelope.
     ///
-    func test_SiteSetting_fields_are_properly_parsed_when_response_has_no_data_envelope() {
-        let settings = mapLoadGeneralSiteSettingsResponseWithoutDataEnvelope()
+    func test_SiteSetting_fields_are_properly_parsed_when_response_has_no_data_envelope() async {
+        let settings = await mapLoadGeneralSiteSettingsResponseWithoutDataEnvelope()
         XCTAssertEqual(settings.count, 20)
 
         let firstSetting = settings[0]
@@ -76,8 +76,8 @@ class SiteSettingsMapperTests: XCTestCase {
 
     /// Verifies that a SiteSetting in a broken state gets default values
     ///
-    func test_SiteSettings_are_properly_parsed_when_nulls_received() {
-        let settings = mapLoadBrokenGeneralSiteSettingsResponse()
+    func test_SiteSettings_are_properly_parsed_when_nulls_received() async {
+        let settings = await mapLoadBrokenGeneralSiteSettingsResponse()
         XCTAssertEqual(settings.count, 1)
 
         let firstSetting = settings[0]
@@ -97,29 +97,29 @@ private extension SiteSettingsMapperTests {
 
     /// Returns the [SiteSetting] output upon receiving `filename` (Data Encoded)
     ///
-    func mapGeneralSettings(from filename: String) -> [SiteSetting] {
+    func mapGeneralSettings(from filename: String) async -> [SiteSetting] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! SiteSettingsMapper(siteID: dummySiteID, settingsGroup: SiteSettingGroup.general).map(response: response)
+        return try! await SiteSettingsMapper(siteID: dummySiteID, settingsGroup: SiteSettingGroup.general).map(response: response)
     }
 
     /// Returns the [SiteSetting] output upon receiving `settings-general`
     ///
-    func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
-        return mapGeneralSettings(from: "settings-general")
+    func mapLoadGeneralSiteSettingsResponse() async -> [SiteSetting] {
+        return await mapGeneralSettings(from: "settings-general")
     }
 
     /// Returns the [SiteSetting] output upon receiving `settings-general-without-data`
     ///
-    func mapLoadGeneralSiteSettingsResponseWithoutDataEnvelope() -> [SiteSetting] {
-        return mapGeneralSettings(from: "settings-general-without-data")
+    func mapLoadGeneralSiteSettingsResponseWithoutDataEnvelope() async -> [SiteSetting] {
+        return await mapGeneralSettings(from: "settings-general-without-data")
     }
 
     /// Returns the [SiteSetting] output upon receiving `broken-settings-general`
     ///
-    func mapLoadBrokenGeneralSiteSettingsResponse() -> [SiteSetting] {
-        return mapGeneralSettings(from: "broken-settings-general")
+    func mapLoadBrokenGeneralSiteSettingsResponse() async -> [SiteSetting] {
+        return await mapGeneralSettings(from: "broken-settings-general")
     }
 }

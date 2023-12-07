@@ -9,9 +9,9 @@ final class SiteSummaryStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the summary stats fields are parsed correctly
     ///
-    func test_summary_stat_fields_are_properly_parsed() {
+    func test_summary_stat_fields_are_properly_parsed() async throws {
         // Given
-        guard let summaryStats = mapSiteSummaryStats(from: "site-summary-stats") else {
+        guard let summaryStats = await mapSiteSummaryStats(from: "site-summary-stats") else {
             XCTFail()
             return
         }
@@ -31,11 +31,11 @@ private extension SiteSummaryStatsMapperTests {
 
     /// Returns the SiteSummaryStatsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapSiteSummaryStats(from filename: String) -> SiteSummaryStats? {
+    func mapSiteSummaryStats(from filename: String) async -> SiteSummaryStats? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! SiteSummaryStatsMapper(siteID: sampleSiteID).map(response: response)
+        return try! await SiteSummaryStatsMapper(siteID: sampleSiteID).map(response: response)
     }
 }

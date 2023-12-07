@@ -4,8 +4,8 @@ import XCTest
 /// StoreOnboardingTaskListMapper Unit Tests
 ///
 final class StoreOnboardingTaskListMapperTests: XCTestCase {
-    func test_onboarding_tasks_response_is_properly_parsed() throws {
-        guard let tasks = mapStoreOnboardingTasksResponse() else {
+    func test_onboarding_tasks_response_is_properly_parsed() async throws {
+        guard let tasks = await mapStoreOnboardingTasksResponse() else {
             XCTFail()
             return
         }
@@ -15,8 +15,8 @@ final class StoreOnboardingTaskListMapperTests: XCTestCase {
         XCTAssertEqual(task.type, .addFirstProduct)
     }
 
-    func test_onboarding_tasks_response_without_data_envelope_is_properly_parsed() throws {
-        guard let tasks = mapStoreOnboardingTasksResponseWithoutDataEnvelope() else {
+    func test_onboarding_tasks_response_without_data_envelope_is_properly_parsed() async throws {
+        guard let tasks = await mapStoreOnboardingTasksResponseWithoutDataEnvelope() else {
             XCTFail()
             return
         }
@@ -38,19 +38,19 @@ final class StoreOnboardingTaskListMapperTests: XCTestCase {
 // MARK: - Private Methods.
 //
 private extension StoreOnboardingTaskListMapperTests {
-    func mapStoreOnboardingTasksResponse() -> [StoreOnboardingTask]? {
+    func mapStoreOnboardingTasksResponse() async -> [StoreOnboardingTask]? {
         guard let response = Loader.contentsOf("store-onboarding-tasks") else {
             return nil
         }
 
-        return try? StoreOnboardingTaskListMapper().map(response: response)
+        return try? await StoreOnboardingTaskListMapper().map(response: response)
     }
 
-    func mapStoreOnboardingTasksResponseWithoutDataEnvelope() -> [StoreOnboardingTask]? {
+    func mapStoreOnboardingTasksResponseWithoutDataEnvelope() async -> [StoreOnboardingTask]? {
         guard let response = Loader.contentsOf("store-onboarding-tasks-without-data") else {
             return nil
         }
 
-        return try? StoreOnboardingTaskListMapper().map(response: response)
+        return try? await StoreOnboardingTaskListMapper().map(response: response)
     }
 }

@@ -5,33 +5,33 @@ final class SubscriptionMapperTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 12983476
 
-    func test_Subscription_map_parses_subscription_in_response() throws {
+    func test_Subscription_map_parses_subscription_in_response() async throws {
         // Given
-        let subscription = try mapLoadSubscriptionResponseWithDataEnvelope()
+        let subscription = try await mapLoadSubscriptionResponseWithDataEnvelope()
 
         // Then
         XCTAssertNotNil(subscription)
     }
 
-    func test_Subscription_map_parses_subscription_in_response_without_data_envelope() throws {
+    func test_Subscription_map_parses_subscription_in_response_without_data_envelope() async throws {
         // Given
-        let subscription = try mapLoadSubscriptionResponseWithoutDataEnvelope()
+        let subscription = try await mapLoadSubscriptionResponseWithoutDataEnvelope()
 
         // Then
         XCTAssertNotNil(subscription)
     }
 
-    func test_Subscription_map_includes_siteID_in_parsed_result() throws {
+    func test_Subscription_map_includes_siteID_in_parsed_result() async throws {
         // Given
-        let subscription = try mapLoadSubscriptionResponseWithDataEnvelope()
+        let subscription = try await mapLoadSubscriptionResponseWithDataEnvelope()
 
         // Then
         XCTAssertEqual(subscription.siteID, sampleSiteID)
     }
 
-    func test_Subscription_map_parses_all_fields_in_result() throws {
+    func test_Subscription_map_parses_all_fields_in_result() async throws {
         // Given
-        let subscription = try mapLoadSubscriptionResponseWithDataEnvelope()
+        let subscription = try await mapLoadSubscriptionResponseWithDataEnvelope()
 
         // Then
         let expectedSubscription = Subscription(siteID: sampleSiteID,
@@ -56,24 +56,24 @@ private extension SubscriptionMapperTests {
 
     /// Returns the SubscriptionMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapSubscription(from filename: String) throws -> Subscription {
+    func mapSubscription(from filename: String) async throws -> Subscription {
         guard let response = Loader.contentsOf(filename) else {
             throw FileNotFoundError()
         }
 
-        return try SubscriptionMapper(siteID: sampleSiteID).map(response: response)
+        return try await SubscriptionMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the SubscriptionMapper output from `subscription.json`
     ///
-    func mapLoadSubscriptionResponseWithDataEnvelope() throws -> Subscription {
-        return try mapSubscription(from: "subscription")
+    func mapLoadSubscriptionResponseWithDataEnvelope() async throws -> Subscription {
+        try await mapSubscription(from: "subscription")
     }
 
     /// Returns the SubscriptionMapper output from `subscription-without-data.json`
     ///
-    func mapLoadSubscriptionResponseWithoutDataEnvelope() throws -> Subscription {
-        return try mapSubscription(from: "subscription-without-data")
+    func mapLoadSubscriptionResponseWithoutDataEnvelope() async throws -> Subscription {
+        try await mapSubscription(from: "subscription-without-data")
     }
 
     struct FileNotFoundError: Error {}

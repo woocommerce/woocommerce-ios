@@ -6,7 +6,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
     ///
     private let dummySiteID: Int64 = 123
 
-    func test_WCAnalyticsCustomer_array_is_correctly_mapped_from_encoded_data() {
+    func test_WCAnalyticsCustomer_array_is_correctly_mapped_from_encoded_data() async throws {
         // Given
         let mapper = WCAnalyticsCustomerMapper(siteID: dummySiteID)
 
@@ -17,10 +17,11 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         }
 
         // Then
-        XCTAssertNotNil(try? mapper.map(response: data))
+        let parsed = try await mapper.map(response: data)
+        XCTAssertNotNil(parsed)
     }
 
-    func test_WCAnalyticsCustomer_array_maps_all_available_entities() {
+    func test_WCAnalyticsCustomer_array_maps_all_available_entities() async throws {
         // Given
         let mapper = WCAnalyticsCustomerMapper(siteID: dummySiteID)
         var customers: [WCAnalyticsCustomer] = []
@@ -32,13 +33,13 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
             XCTFail("Data couldn't be loaded")
             return
         }
-        customers = try! mapper.map(response: data)
+        customers = try await mapper.map(response: data)
 
         // Then
         XCTAssertEqual(customers.count, 4)
     }
 
-    func test_WCAnalyticsCustomer_array_response_values_are_correctly_parsed() {
+    func test_WCAnalyticsCustomer_array_response_values_are_correctly_parsed() async throws {
         // Given
         let mapper = WCAnalyticsCustomerMapper(siteID: dummySiteID)
 
@@ -47,7 +48,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
             XCTFail("Data couldn't be loaded")
             return
         }
-        let customers = try! mapper.map(response: data)
+        let customers = try await mapper.map(response: data)
 
         // Then
         XCTAssertEqual(customers[0].userID, 0)
@@ -60,7 +61,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         XCTAssertEqual(customers[3].name, "John Doe")
     }
 
-    func test_WCAnalyticsCustomer_array_maps_all_available_entities_if_response_has_no_data_envelope() {
+    func test_WCAnalyticsCustomer_array_maps_all_available_entities_if_response_has_no_data_envelope() async throws {
         // Given
         let mapper = WCAnalyticsCustomerMapper(siteID: dummySiteID)
         var customers: [WCAnalyticsCustomer] = []
@@ -72,7 +73,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
             XCTFail("Data couldn't be loaded")
             return
         }
-        customers = try! mapper.map(response: data)
+        customers = try await mapper.map(response: data)
 
         // Then
         XCTAssertEqual(customers.count, 2)

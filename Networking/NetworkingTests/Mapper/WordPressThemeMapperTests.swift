@@ -5,8 +5,8 @@ final class WordPressThemeMapperTests: XCTestCase {
 
     /// Verifies that the object is parsed.
     ///
-    func test_WordPressThemeMapper_parses_all_contents_in_response() throws {
-        let theme = try XCTUnwrap(mapLoadWordPressThemeResponse())
+    func test_WordPressThemeMapper_parses_all_contents_in_response() async throws {
+        let theme = try await mapLoadWordPressThemeResponse()
 
         XCTAssertEqual(theme.id, "maywood")
         XCTAssertEqual(theme.name, "Maywood")
@@ -22,17 +22,19 @@ private extension WordPressThemeMapperTests {
 
     /// Returns the WordPressThemeMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapWordPressTheme(from filename: String) throws -> WordPressTheme? {
+    func mapWordPressTheme(from filename: String) async throws -> WordPressTheme {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try WordPressThemeMapper().map(response: response)
+        return try await WordPressThemeMapper().map(response: response)
     }
 
     /// Returns the WordPressThemeMapper output from `theme-mine-success.json`
     ///
-    func mapLoadWordPressThemeResponse() throws -> WordPressTheme? {
-        return try mapWordPressTheme(from: "theme-mine-success")
+    func mapLoadWordPressThemeResponse() async throws -> WordPressTheme {
+        try await mapWordPressTheme(from: "theme-mine-success")
     }
+
+    struct FileNotFoundError: Error {}
 }

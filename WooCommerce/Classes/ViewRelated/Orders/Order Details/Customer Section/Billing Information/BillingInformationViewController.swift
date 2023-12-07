@@ -101,6 +101,7 @@ private extension BillingInformationViewController {
     /// Presents EditOrderAddressForm modal view
     ///
     func editBillingAddress() {
+        ServiceLocator.analytics.track(.orderDetailCustomerAddressEditTapped)
         let viewModel = EditOrderAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
             self?.order = updatedOrder
             self?.reloadSections()
@@ -194,8 +195,6 @@ private extension BillingInformationViewController {
         guard order.billingAddress?.email != nil else {
             return
         }
-
-        ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
@@ -301,6 +300,7 @@ extension BillingInformationViewController: UITableViewDelegate {
         switch sections[indexPath.section].rows[indexPath.row] {
         case .billingAddress:
             sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
+            ServiceLocator.analytics.track(.orderDetailCustomerAddressTapped)
 
         case .billingPhone:
             if let indexPath = sections.indexPathForRow(.billingPhone),

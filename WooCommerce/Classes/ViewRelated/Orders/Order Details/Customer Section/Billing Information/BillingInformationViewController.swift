@@ -22,6 +22,12 @@ final class BillingInformationViewController: UIViewController {
     ///
     let editingEnabled: Bool
 
+    private lazy var noticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
+
     /// Designated Initializer
     ///
     init(order: Order, editingEnabled: Bool) {
@@ -217,6 +223,9 @@ private extension BillingInformationViewController {
         }
         ServiceLocator.analytics.track(.orderDetailCustomerCopyNumberOptionTapped)
         sendToPasteboard(phone, includeTrailingNewline: false)
+
+        let notice = Notice(title: ContactAction.copied, feedbackType: .success)
+        noticePresenter.enqueue(notice: notice)
     }
 
     private func copyEmailHandler() {
@@ -226,6 +235,9 @@ private extension BillingInformationViewController {
 
         ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
         sendToPasteboard(email, includeTrailingNewline: false)
+
+        let notice = Notice(title: ContactAction.copied, feedbackType: .success)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -601,6 +613,11 @@ private extension BillingInformationViewController {
         )
         static let copyEmail = NSLocalizedString("Copy email address", comment: "Copy email address button title")
         static let email = NSLocalizedString("Email", comment: "Title of Email accessibility action, opens a compose view")
+        static let copied = NSLocalizedString(
+            "billingInformationViewController.action.copied",
+            value: "Copied to clipboard.",
+            comment: "Message to display when a phone number or email address has been copied to clipboard"
+        )
     }
 
     enum Constants {

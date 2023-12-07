@@ -81,14 +81,14 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
                                                                                     name: "",
                                                                                     quantityUpdatedCallback: { _ in }),
-                                                            rowViewModel: .init(product: product,
-                                                                                childProductRows: childProductRows),
-                                                            canChangeQuantity: true)
+                                                            rowViewModel: .init(product: product),
+                                                            canChangeQuantity: true,
+                                                            childProductRows: childProductRows)
 
         // Then
         XCTAssertTrue(viewModel.canChangeQuantity)
-        XCTAssertEqual(viewModel.rowViewModel.childProductRows.count, 2)
-        XCTAssertFalse(try XCTUnwrap(viewModel.rowViewModel.childProductRows[0]).canChangeQuantity)
+        XCTAssertEqual(viewModel.childProductRows.count, 2)
+        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).canChangeQuantity)
     }
 
     func test_view_model_creates_expected_label_for_product_with_managed_stock() {
@@ -650,73 +650,6 @@ final class ProductRowViewModelTests: XCTestCase {
             // Then
             XCTAssertFalse(viewModel.isConfigurable)
         }
-    }
-
-    // MARK: - `isReadOnly`
-
-    func test_isReadOnly_is_false_for_products_by_default() {
-        // Given
-        let product = Product.fake()
-
-        // When
-        let viewModel = ProductRowViewModel(product: product)
-
-        // Then
-        XCTAssertFalse(viewModel.isReadOnly, "Product should not be read only")
-    }
-
-    func test_isReadOnly_is_false_for_non_bundle_parent_and_child_items() throws {
-        // Given
-        let parent = Product.fake()
-        let children = [ProductRowViewModel(product: .fake()),
-                        ProductRowViewModel(productVariation: .fake(), name: "Variation", displayMode: .stock)]
-            .map {
-                ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
-                                                                            name: "",
-                                                                            quantityUpdatedCallback: { _ in }),
-                                                    rowViewModel: $0,
-                                                    canChangeQuantity: true)
-            }
-
-        // When
-        let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
-                                                                                    name: "",
-                                                                                    quantityUpdatedCallback: { _ in }),
-                                                            rowViewModel: .init(product: parent, childProductRows: children),
-                                                            canChangeQuantity: false)
-
-        // Then
-        XCTAssertFalse(viewModel.rowViewModel.isReadOnly, "Parent product should not be read only")
-        XCTAssertFalse(try XCTUnwrap(viewModel.rowViewModel.childProductRows[0]).rowViewModel.isReadOnly, "Child product should not be read only")
-        XCTAssertFalse(try XCTUnwrap(viewModel.rowViewModel.childProductRows[1]).rowViewModel.isReadOnly, "Child product variation should not be read only")
-    }
-
-    func test_isReadOnly_is_false_for_bundle_parent_and_true_for_bundle_child_items() throws {
-        // Given
-        let parent = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue)
-        let children = [ProductRowViewModel(product: .fake()),
-                        ProductRowViewModel(productVariation: .fake(), name: "Variation", displayMode: .stock)]
-            .map {
-                ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
-                                                                            name: "",
-                                                                            quantityUpdatedCallback: { _ in }),
-                                                    rowViewModel: $0,
-                                                    canChangeQuantity: false)
-            }
-
-        // When
-        let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
-                                                                                    name: "",
-                                                                                    quantityUpdatedCallback: { _ in }),
-                                                            rowViewModel: .init(product: parent, childProductRows: children),
-                                                            canChangeQuantity: true)
-
-        // Then
-        XCTAssertFalse(viewModel.rowViewModel.isReadOnly, "Parent product should not be read only")
-        XCTAssertTrue(try XCTUnwrap(viewModel.rowViewModel.childProductRows[0]).rowViewModel.isReadOnly,
-                      "Child product should be read only")
-        XCTAssertTrue(try XCTUnwrap(viewModel.rowViewModel.childProductRows[1]).rowViewModel.isReadOnly,
-                      "Child product variation should be read only")
     }
 }
 

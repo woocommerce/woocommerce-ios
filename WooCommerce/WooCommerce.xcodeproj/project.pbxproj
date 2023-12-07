@@ -221,6 +221,7 @@
 		024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF31C23743045006658FE /* TextList+AztecFormatting.swift */; };
 		024DF31F23743045006658FE /* Header+AztecFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF31D23743045006658FE /* Header+AztecFormatting.swift */; };
 		024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF32023744798006658FE /* AztecFormatBarCommandCoordinator.swift */; };
+		024EB5812B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024EB5802B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift */; };
 		024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024EFA6823FCC10B00F36918 /* Product+Media.swift */; };
 		024F1452250B65A40003030A /* AddProductCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024F1451250B65A40003030A /* AddProductCoordinatorTests.swift */; };
 		02503C632538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02503C622538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift */; };
@@ -2816,6 +2817,7 @@
 		024DF31C23743045006658FE /* TextList+AztecFormatting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TextList+AztecFormatting.swift"; sourceTree = "<group>"; };
 		024DF31D23743045006658FE /* Header+AztecFormatting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Header+AztecFormatting.swift"; sourceTree = "<group>"; };
 		024DF32023744798006658FE /* AztecFormatBarCommandCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecFormatBarCommandCoordinator.swift; sourceTree = "<group>"; };
+		024EB5802B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductWithQuantityStepperViewModelTests.swift; sourceTree = "<group>"; };
 		024EFA6823FCC10B00F36918 /* Product+Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+Media.swift"; sourceTree = "<group>"; };
 		024F1451250B65A40003030A /* AddProductCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductCoordinatorTests.swift; sourceTree = "<group>"; };
 		02503C622538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariationFormActionsFactory+ReadonlyVariationTests.swift"; sourceTree = "<group>"; };
@@ -9659,6 +9661,7 @@
 				EEB221A629B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift */,
 				B9DC770429F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift */,
 				02DFD5072B205AEF0048CD70 /* ProductStepperViewModelTests.swift */,
+				024EB5802B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift */,
 			);
 			path = "Order Creation";
 			sourceTree = "<group>";
@@ -14192,6 +14195,7 @@
 				267D6882296485850072ED0C /* ProductVariationGeneratorTests.swift in Sources */,
 				0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */,
 				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,
+				024EB5812B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift in Sources */,
 				57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */,
 				020BE77723B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift in Sources */,
 				020BE77323B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift in Sources */,

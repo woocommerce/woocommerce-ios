@@ -32,7 +32,7 @@ struct CollapsibleProductCard: View {
     }
 
     var body: some View {
-        if viewModel.rowViewModel.childProductRows.isEmpty {
+        if viewModel.childProductRows.isEmpty {
             CollapsibleProductRowCard(viewModel: viewModel,
                                       flow: flow,
                                       shouldDisableDiscountEditing: shouldDisableDiscountEditing,
@@ -54,7 +54,7 @@ struct CollapsibleProductCard: View {
                     .overlay(Color(.separator))
 
                 // Child products
-                ForEach(viewModel.rowViewModel.childProductRows) { childRow in
+                ForEach(viewModel.childProductRows) { childRow in
                     CollapsibleProductRowCard(viewModel: childRow,
                                               flow: flow,
                                               shouldDisableDiscountEditing: shouldDisableDiscountEditing,
@@ -171,7 +171,7 @@ private struct CollapsibleProductRowCard: View {
 
             Group {
                 SimplifiedProductRow(viewModel: viewModel.stepperViewModel, canChangeQuantity: viewModel.canChangeQuantity)
-                    .renderedIf(!viewModel.rowViewModel.isReadOnly)
+                    .renderedIf(!viewModel.isReadOnly)
                 HStack {
                     Text(Localization.priceLabel)
                     CollapsibleProductCardPriceSummary(viewModel: viewModel.rowViewModel)
@@ -179,13 +179,13 @@ private struct CollapsibleProductRowCard: View {
                 HStack {
                     discountRow
                 }
-                .renderedIf(!viewModel.rowViewModel.isReadOnly)
+                .renderedIf(!viewModel.isReadOnly)
                 HStack {
                     Text(Localization.priceAfterDiscountLabel)
                     Spacer()
                     Text(viewModel.rowViewModel.totalPriceAfterDiscountLabel ?? "")
                 }
-                .renderedIf(viewModel.rowViewModel.hasDiscount && !viewModel.rowViewModel.isReadOnly)
+                .renderedIf(viewModel.rowViewModel.hasDiscount && !viewModel.isReadOnly)
             }
             .padding(.top)
 
@@ -225,7 +225,7 @@ private struct CollapsibleProductRowCard: View {
                     .renderedIf(shouldShowInfoTooltip)
                 }
             }
-            .renderedIf(!viewModel.rowViewModel.isReadOnly)
+            .renderedIf(!viewModel.isReadOnly)
         })
         .onTapGesture {
             dismissTooltip()
@@ -383,13 +383,13 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
         let bundleParentRowViewModel = ProductRowViewModel(id: 1,
                                                            product: product
             .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]),
-                                                           childProductRows: childViewModels,
                                                            configure: {})
         let bundleParentViewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
                                                                                                 name: "",
                                                                                                 quantityUpdatedCallback: { _ in }),
                                                                         rowViewModel: bundleParentRowViewModel,
-                                                                        canChangeQuantity: true)
+                                                                        canChangeQuantity: true,
+                                                                        childProductRows: childViewModels)
         VStack {
             CollapsibleProductCard(viewModel: viewModel,
                                       flow: .creation,

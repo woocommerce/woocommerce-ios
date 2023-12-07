@@ -9,14 +9,32 @@ final class ProductWithQuantityStepperViewModel: ObservableObject, Identifiable 
     ///
     @Published private(set) var canChangeQuantity: Bool
 
-    init(stepperViewModel: ProductStepperViewModel, rowViewModel: ProductRowViewModel, canChangeQuantity: Bool) {
+    // TODO: 11357 - move to `CollapsibleProductCard`'s own view model
+    /// Whether the product row is read-only. Defaults to `false`.
+    ///
+    /// Used to remove product editing controls for read-only order items (e.g. child items of a product bundle).
+    let isReadOnly: Bool
+
+    // TODO: 11357 - move to `CollapsibleProductCard`'s own view model
+    /// Child product rows, if the product is the parent of child order items
+    @Published private(set) var childProductRows: [ProductWithQuantityStepperViewModel]
+
+    init(stepperViewModel: ProductStepperViewModel,
+         rowViewModel: ProductRowViewModel,
+         canChangeQuantity: Bool,
+         isReadOnly: Bool = false,
+         childProductRows: [ProductWithQuantityStepperViewModel] = []) {
         self.stepperViewModel = stepperViewModel
         self.rowViewModel = rowViewModel
         self.canChangeQuantity = canChangeQuantity
+        self.isReadOnly = isReadOnly
+        self.childProductRows = childProductRows
 
         observeQuantityFromStepperViewModel()
     }
+}
 
+private extension ProductWithQuantityStepperViewModel {
     func observeQuantityFromStepperViewModel() {
         stepperViewModel.$quantity
             .assign(to: &rowViewModel.$quantity)

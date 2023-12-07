@@ -8,11 +8,6 @@ import WooFoundation
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
 
-    /// Whether the product row is read-only. Defaults to `false`.
-    ///
-    /// Used to remove product editing controls for read-only order items (e.g. child items of a product bundle).
-    private(set) var isReadOnly: Bool = false
-
     /// Unique ID for the view model.
     ///
     let id: Int64
@@ -33,9 +28,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
-
-    /// Child product rows, if the product is the parent of child order items
-    @Published private(set) var childProductRows: [ProductWithQuantityStepperViewModel]
 
     /// Whether a product in an order item is configurable
     ///
@@ -290,7 +282,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
          pricedIndividually: Bool = true,
-         childProductRows: [ProductWithQuantityStepperViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
@@ -311,7 +302,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
         self.pricedIndividually = pricedIndividually
-        self.childProductRows = childProductRows
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
@@ -330,7 +320,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
-                     childProductRows: [ProductWithQuantityStepperViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      removeProductIntent: @escaping (() -> Void) = {},
@@ -385,12 +374,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
 
-        if product.productType == .bundle {
-            for child in childProductRows {
-                child.rowViewModel.isReadOnly = true // Can't edit child bundle items separate from bundle configuration
-            }
-        }
-
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -407,7 +390,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
                   pricedIndividually: pricedIndividually,
-                  childProductRows: childProductRows,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,

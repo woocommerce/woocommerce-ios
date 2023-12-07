@@ -575,6 +575,7 @@ final class EditableOrderViewModel: ObservableObject {
     func createProductRowViewModel(for item: OrderItem,
                                    childItems: [OrderItem] = [],
                                    canChangeQuantity: Bool,
+                                   isReadOnly: Bool = false,
                                    pricedIndividually: Bool = true) -> ProductWithQuantityStepperViewModel? {
         guard item.quantity > 0 else {
             // Don't render any item with `.zero` quantity.
@@ -617,7 +618,11 @@ final class EditableOrderViewModel: ObservableObject {
                     }
                     return bundledItem.pricedIndividually
                 }()
-                return createProductRowViewModel(for: childItem, canChangeQuantity: canChildItemsChangeQuantity, pricedIndividually: pricedIndividually)
+                let isReadOnly = product.productType == .bundle
+                return createProductRowViewModel(for: childItem,
+                                                 canChangeQuantity: canChildItemsChangeQuantity,
+                                                 isReadOnly: isReadOnly,
+                                                 pricedIndividually: pricedIndividually)
             }
             let rowViewModel = ProductRowViewModel(id: item.itemID,
                                                    product: product,
@@ -625,7 +630,6 @@ final class EditableOrderViewModel: ObservableObject {
                                                    quantity: item.quantity,
                                                    hasParentProduct: item.parent != nil,
                                                    pricedIndividually: pricedIndividually,
-                                                   childProductRows: childProductRows,
                                                    removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)},
                                                    configure: { [weak self] in
@@ -651,7 +655,11 @@ final class EditableOrderViewModel: ObservableObject {
             }, removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)
             })
-            return ProductWithQuantityStepperViewModel(stepperViewModel: stepperViewModel, rowViewModel: rowViewModel, canChangeQuantity: canChangeQuantity)
+            return ProductWithQuantityStepperViewModel(stepperViewModel: stepperViewModel,
+                                                       rowViewModel: rowViewModel,
+                                                       canChangeQuantity: canChangeQuantity,
+                                                       isReadOnly: isReadOnly,
+                                                       childProductRows: childProductRows)
         } else {
             DDLogInfo("No product or variation found. Couldn't create the product row")
             return nil

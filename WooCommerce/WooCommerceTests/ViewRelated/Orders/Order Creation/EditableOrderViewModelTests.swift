@@ -2817,7 +2817,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
         XCTAssertEqual(parentOrderItemRow.rowViewModel.quantity, 2)
 
-        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.rowViewModel.childProductRows[0])
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
         XCTAssertEqual(childOrderItemRow.rowViewModel.quantity, 1)
     }
 
@@ -2843,7 +2843,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
         XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
 
-        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.rowViewModel.childProductRows[0])
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
         XCTAssertFalse(childOrderItemRow.canChangeQuantity)
     }
 
@@ -2873,7 +2873,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(parentOrderItemRow.rowViewModel.quantity, 2)
         XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
 
-        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.rowViewModel.childProductRows[0])
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
         XCTAssertEqual(childOrderItemRow.rowViewModel.quantity, 1)
         XCTAssertTrue(childOrderItemRow.canChangeQuantity)
     }
@@ -3154,8 +3154,29 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try XCTUnwrap(productRow).rowViewModel.pricedIndividually)
-        XCTAssertFalse(try XCTUnwrap(productRow?.rowViewModel.childProductRows[0]).rowViewModel.pricedIndividually)
-        XCTAssertTrue(try XCTUnwrap(productRow?.rowViewModel.childProductRows[1]).rowViewModel.pricedIndividually)
+        XCTAssertFalse(try XCTUnwrap(productRow?.childProductRows[0]).rowViewModel.pricedIndividually)
+        XCTAssertTrue(try XCTUnwrap(productRow?.childProductRows[1]).rowViewModel.pricedIndividually)
+    }
+
+    func test_createProductRowViewModel_sets_isReadOnly_to_false_for_bundle_parent_and_true_for_bundle_child_items() throws {
+        // Given
+        let bundledItems = [ProductBundleItem.fake().copy(productID: 2, pricedIndividually: false),
+                            ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
+        let product = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
+        storageManager.insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
+                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 1)
+        let childItems = [OrderItem.fake().copy(productID: 2, quantity: 1),
+                          OrderItem.fake().copy(productID: 3, variationID: 4, quantity: 1)]
+        let productRow = try XCTUnwrap(viewModel.createProductRowViewModel(for: orderItem, childItems: childItems, canChangeQuantity: true))
+
+        // Then
+        XCTAssertFalse(productRow.isReadOnly, "Parent product should not be read only")
+        XCTAssertTrue(try XCTUnwrap(productRow.childProductRows[0]).isReadOnly, "Child product should be read only")
+        XCTAssertTrue(try XCTUnwrap(productRow.childProductRows[1]).isReadOnly, "Child product variation should be read only")
     }
 }
 

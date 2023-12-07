@@ -9,7 +9,7 @@ struct ShipmentTrackingProviderListMapper: Mapper {
         self.siteID = siteID
     }
 
-    func map(response: Data) throws -> [ShipmentTrackingProviderGroup] {
+    func map(response: Data) async throws -> [ShipmentTrackingProviderGroup] {
         let decoder = JSONDecoder()
         let rawDictionary: ShipmentTrackingProviderListEnvelope.RawData
         if hasDataEnvelope(in: response) {

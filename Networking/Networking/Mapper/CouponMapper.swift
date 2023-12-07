@@ -10,7 +10,7 @@ struct CouponMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into `Coupon`.
     ///
-    func map(response: Data) throws -> Coupon {
+    func map(response: Data) async throws -> Coupon {
         let decoder = Coupon.decoder
         if hasDataEnvelope(in: response) {
             let coupon = try decoder.decode(CouponEnvelope.self, from: response).coupon

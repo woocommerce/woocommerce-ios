@@ -6,7 +6,7 @@ struct WooCommerceAvailabilityMapper: Mapper {
 
     /// Any store with valid WooCommerce site settings response data is considered to have an active WooCommerce plugin.
     ///
-    func map(response: Data) throws -> Bool {
+    func map(response: Data) async throws -> Bool {
         true
     }
 }

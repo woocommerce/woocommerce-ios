@@ -7,7 +7,7 @@ struct NoteHashListMapper: Mapper {
 
     /// (Attempts) to convert an instance of Data into an array of NoteHash Entities.
     ///
-    func map(response: Data) throws -> [NoteHash] {
+    func map(response: Data) async throws -> [NoteHash] {
         return try JSONDecoder().decode(NoteHashesEnvelope.self, from: response).hashes
     }
 }

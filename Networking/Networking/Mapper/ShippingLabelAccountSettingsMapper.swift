@@ -10,7 +10,7 @@ struct ShippingLabelAccountSettingsMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into ShippingLabelAccountSettings.
     ///
-    func map(response: Data) throws -> ShippingLabelAccountSettings {
+    func map(response: Data) async throws -> ShippingLabelAccountSettings {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.yearMonthDayDateFormatter)
         decoder.userInfo = [

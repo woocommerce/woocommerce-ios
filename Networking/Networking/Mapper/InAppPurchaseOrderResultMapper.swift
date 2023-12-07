@@ -7,7 +7,7 @@ struct InAppPurchaseOrderResultMapper: Mapper {
 
     /// (Attempts) to extract the order ID from a given JSON Encoded response.
     ///
-    func map(response: Data) throws -> Int {
+    func map(response: Data) async throws -> Int {
 
         let dictionary = try JSONDecoder().decode([String: AnyDecodable].self, from: response)
         guard let orderId = (dictionary[Constants.orderIdKey]?.value as? Int) else {

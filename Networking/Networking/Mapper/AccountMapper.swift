@@ -7,7 +7,7 @@ class AccountMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an Account entity.
     ///
-    func map(response: Data) throws -> Account {
+    func map(response: Data) async throws -> Account {
         let decoder = JSONDecoder()
         return try decoder.decode(Account.self, from: response)
     }

@@ -17,7 +17,7 @@ struct ShippingLabelPurchaseMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [ShippingLabelPurchase].
     ///
-    func map(response: Data) throws -> [ShippingLabelPurchase] {
+    func map(response: Data) async throws -> [ShippingLabelPurchase] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
         decoder.userInfo = [

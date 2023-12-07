@@ -14,7 +14,7 @@ struct OrderMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [Order].
     ///
-    func map(response: Data) throws -> Order {
+    func map(response: Data) async throws -> Order {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

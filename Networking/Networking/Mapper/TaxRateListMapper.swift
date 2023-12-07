@@ -11,7 +11,7 @@ struct TaxRateListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [TaxRate].
     ///
-    func map(response: Data) throws -> [TaxRate] {
+    func map(response: Data) async throws -> [TaxRate] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

@@ -13,7 +13,7 @@ struct ProductCategoryListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [ProductCategory].
     ///
-    func map(response: Data) throws -> [ProductCategory] {
+    func map(response: Data) async throws -> [ProductCategory] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

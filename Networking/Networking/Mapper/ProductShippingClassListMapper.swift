@@ -11,7 +11,7 @@ struct ProductShippingClassListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [ProductShippingClass].
     ///
-    func map(response: Data) throws -> [ProductShippingClass] {
+    func map(response: Data) async throws -> [ProductShippingClass] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

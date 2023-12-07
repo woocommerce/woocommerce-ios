@@ -9,7 +9,7 @@ struct BlazeCampaignListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into `[BlazeCampaign]`.
     ///
-    func map(response: Data) throws -> [BlazeCampaign] {
+    func map(response: Data) async throws -> [BlazeCampaign] {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.userInfo = [

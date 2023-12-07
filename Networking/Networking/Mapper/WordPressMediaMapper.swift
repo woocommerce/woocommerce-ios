@@ -2,7 +2,7 @@
 ///
 struct WordPressMediaMapper: Mapper {
     /// (Attempts) to convert data into a WordPressMedia.
-    func map(response: Data) throws -> WordPressMedia {
+    func map(response: Data) async throws -> WordPressMedia {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(Constants.dateFormatterForDecoding)
         return try decoder.decode(WordPressMedia.self, from: response)
@@ -13,7 +13,7 @@ struct WordPressMediaMapper: Mapper {
 ///
 struct WordPressMediaListMapper: Mapper {
     /// (Attempts) to convert data into a WordPressMedia list.
-    func map(response: Data) throws -> [WordPressMedia] {
+    func map(response: Data) async throws -> [WordPressMedia] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(Constants.dateFormatterForDecoding)
         return try decoder.decode([WordPressMedia].self, from: response)

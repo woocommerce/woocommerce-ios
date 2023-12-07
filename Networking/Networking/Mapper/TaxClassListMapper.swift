@@ -12,7 +12,7 @@ struct TaxClassListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [TaxClass].
     ///
-    func map(response: Data) throws -> [TaxClass] {
+    func map(response: Data) async throws -> [TaxClass] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

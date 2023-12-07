@@ -19,7 +19,7 @@ struct RefundListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [Refund].
     ///
-    func map(response: Data) throws -> [Refund] {
+    func map(response: Data) async throws -> [Refund] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

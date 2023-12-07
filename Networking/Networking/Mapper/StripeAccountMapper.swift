@@ -6,7 +6,7 @@ struct StripeAccountMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an account.
     ///
-    func map(response: Data) throws -> StripeAccount {
+    func map(response: Data) async throws -> StripeAccount {
         let decoder = JSONDecoder()
 
         /// Needed for currentDeadline, which is given as a UNIX timestamp.

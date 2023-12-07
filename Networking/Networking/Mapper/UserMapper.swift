@@ -10,7 +10,7 @@ struct UserMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into User.
     ///
-    func map(response: Data) throws -> User {
+    func map(response: Data) async throws -> User {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

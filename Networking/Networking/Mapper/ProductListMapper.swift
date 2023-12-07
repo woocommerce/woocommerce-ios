@@ -12,7 +12,7 @@ struct ProductListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [Product].
     ///
-    func map(response: Data) throws -> [Product] {
+    func map(response: Data) async throws -> [Product] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

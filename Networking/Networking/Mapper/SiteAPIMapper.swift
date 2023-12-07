@@ -12,7 +12,7 @@ struct SiteAPIMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [SiteSetting].
     ///
-    func map(response: Data) throws -> SiteAPI {
+    func map(response: Data) async throws -> SiteAPI {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

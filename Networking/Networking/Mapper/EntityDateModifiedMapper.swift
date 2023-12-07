@@ -6,7 +6,7 @@ struct EntityDateModifiedMapper: Mapper {
 
     /// (Attempts) to convert an instance of Data into a date
     ///
-    func map(response: Data) throws -> Date {
+    func map(response: Data) async throws -> Date {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 

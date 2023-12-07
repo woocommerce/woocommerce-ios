@@ -4,7 +4,7 @@ import Foundation
 /// Mapper: IAP-WPCOM transaction verification result
 ///
 struct InAppPurchasesTransactionMapper: Mapper {
-    func map(response: Data) throws -> InAppPurchasesTransactionResponse {
+    func map(response: Data) async throws -> InAppPurchasesTransactionResponse {
         let decoder = JSONDecoder()
         return try decoder.decode(InAppPurchasesTransactionResponse.self, from: response)
     }

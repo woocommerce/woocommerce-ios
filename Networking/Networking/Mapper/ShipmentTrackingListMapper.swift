@@ -19,7 +19,7 @@ struct ShipmentTrackingListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [ShipmentTracking]
     ///
-    func map(response: Data) throws -> [ShipmentTracking] {
+    func map(response: Data) async throws -> [ShipmentTracking] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.yearMonthDayDateFormatter)
         decoder.userInfo = [

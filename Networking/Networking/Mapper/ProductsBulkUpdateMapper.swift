@@ -11,7 +11,7 @@ struct ProductsBulkUpdateMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into Products.
     ///
-    func map(response: Data) throws -> [Product] {
+    func map(response: Data) async throws -> [Product] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

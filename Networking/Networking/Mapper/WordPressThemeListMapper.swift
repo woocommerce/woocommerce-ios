@@ -6,7 +6,7 @@ struct WordPressThemeListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into `[WordPressTheme]`.
     ///
-    func map(response: Data) throws -> [WordPressTheme] {
+    func map(response: Data) async throws -> [WordPressTheme] {
         let decoder = JSONDecoder()
         return try decoder.decode(WordPressThemeListEnvelope.self, from: response).themes
     }

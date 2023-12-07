@@ -6,7 +6,7 @@ import Foundation
 struct ShippingLabelRefundMapper: Mapper {
     /// (Attempts) to convert a dictionary into ShippingLabelRefund.
     ///
-    func map(response: Data) throws -> ShippingLabelRefund {
+    func map(response: Data) async throws -> ShippingLabelRefund {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
         if hasDataEnvelope(in: response) {

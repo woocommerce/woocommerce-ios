@@ -13,7 +13,7 @@ struct TaxRateMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into TaxRate.
     ///
-    func map(response: Data) throws -> TaxRate {
+    func map(response: Data) async throws -> TaxRate {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

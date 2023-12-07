@@ -11,7 +11,7 @@ struct JustInTimeMessageListMapper: Mapper {
 
     /// (Attempts) to convert an array into a Just In Time Message.
     ///
-    func map(response: Data) throws -> [JustInTimeMessage] {
+    func map(response: Data) async throws -> [JustInTimeMessage] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

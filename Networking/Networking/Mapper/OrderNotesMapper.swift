@@ -7,7 +7,7 @@ class OrderNotesMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [OrderNote].
     ///
-    func map(response: Data) throws -> [OrderNote] {
+    func map(response: Data) async throws -> [OrderNote] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 

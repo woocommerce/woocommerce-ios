@@ -5,7 +5,7 @@ import Foundation
 ///
 struct IgnoringResponseMapper: Mapper {
 
-    func map(response: Data) throws -> Void {
+    func map(response: Data) async throws -> Void {
         // Do nothing, accept any type of response, including null
     }
 }

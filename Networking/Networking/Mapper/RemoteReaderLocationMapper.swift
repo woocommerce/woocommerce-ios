@@ -6,7 +6,7 @@ struct RemoteReaderLocationMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a location.
     ///
-    func map(response: Data) throws -> RemoteReaderLocation {
+    func map(response: Data) async throws -> RemoteReaderLocation {
         let decoder = JSONDecoder()
 
         if hasDataEnvelope(in: response) {

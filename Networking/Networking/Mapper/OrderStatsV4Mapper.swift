@@ -18,7 +18,7 @@ struct OrderStatsV4Mapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an OrderStats entity.
     ///
-    func map(response: Data) throws -> OrderStatsV4 {
+    func map(response: Data) async throws -> OrderStatsV4 {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID,

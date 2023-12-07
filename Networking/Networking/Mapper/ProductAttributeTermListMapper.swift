@@ -11,7 +11,7 @@ struct ProductAttributeTermListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into `[ProductAttributeTerm]`.
     ///
-    func map(response: Data) throws -> [ProductAttributeTerm] {
+    func map(response: Data) async throws -> [ProductAttributeTerm] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

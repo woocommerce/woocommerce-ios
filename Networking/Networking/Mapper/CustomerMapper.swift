@@ -9,7 +9,7 @@ struct CustomerMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a `Customer` entity
     ///
-    func map(response: Data) throws -> Customer {
+    func map(response: Data) async throws -> Customer {
         let decoder = JSONDecoder()
         decoder.userInfo = [.siteID: siteID]
         if hasDataEnvelope(in: response) {

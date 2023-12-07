@@ -7,7 +7,7 @@ struct WCPayChargeMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an account.
     ///
-    func map(response: Data) throws -> WCPayCharge {
+    func map(response: Data) async throws -> WCPayCharge {
         let decoder = JSONDecoder()
         decoder.userInfo = [.siteID: siteID]
 

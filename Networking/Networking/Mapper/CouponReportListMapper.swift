@@ -6,7 +6,7 @@ struct CouponReportListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into `[CouponReport]`.
     ///
-    func map(response: Data) throws -> [CouponReport] {
+    func map(response: Data) async throws -> [CouponReport] {
         let decoder = JSONDecoder()
         if hasDataEnvelope(in: response) {
             return try decoder.decode(CouponReportsEnvelope.self, from: response).reports

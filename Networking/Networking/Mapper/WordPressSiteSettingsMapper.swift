@@ -4,7 +4,7 @@ import Foundation
 ///
 struct WordPressSiteSettingsMapper: Mapper {
     /// (Attempts) to convert a dictionary into `WordPressSiteSettings`.
-    func map(response: Data) throws -> WordPressSiteSettings {
+    func map(response: Data) async throws -> WordPressSiteSettings {
         let decoder = JSONDecoder()
         return try decoder.decode(WordPressSiteSettings.self, from: response)
     }

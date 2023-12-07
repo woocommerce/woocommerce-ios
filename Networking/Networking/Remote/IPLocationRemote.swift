@@ -40,7 +40,7 @@ private struct IPCountryCodeMapper: Mapper {
         let countryCode: String
     }
 
-    func map(response: Data) throws -> String {
+    func map(response: Data) async throws -> String {
         try JSONDecoder().decode(Response.self, from: response).countryCode
     }
 }

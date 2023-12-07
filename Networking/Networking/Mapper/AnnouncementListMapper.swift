@@ -5,7 +5,7 @@ struct AnnouncementListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a list of `Announcement`.
     ///
-    func map(response: Data) throws -> [Announcement] {
+    func map(response: Data) async throws -> [Announcement] {
         let decoder = JSONDecoder()
         return try decoder.decode(AnnouncementsContainer.self, from: response).announcements
     }

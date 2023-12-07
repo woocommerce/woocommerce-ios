@@ -3,7 +3,7 @@ import Foundation
 /// Mapper: ProductsTotal
 ///
 struct ProductsTotalMapper: Mapper {
-    func map(response: Data) throws -> Int64 {
+    func map(response: Data) async throws -> Int64 {
         let decoder = JSONDecoder()
         let totals: [ProductTypeTotal]
 

@@ -6,7 +6,7 @@ struct ProductsReportMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into `[ProductsReportItem]`.
     ///
-    func map(response: Data) throws -> [ProductsReportItem] {
+    func map(response: Data) async throws -> [ProductsReportItem] {
         let decoder = JSONDecoder()
         if hasDataEnvelope(in: response) {
             return try decoder.decode(ProductsReportEnvelope.self, from: response).items

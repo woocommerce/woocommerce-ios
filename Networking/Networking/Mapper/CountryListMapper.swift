@@ -7,7 +7,7 @@ struct CountryListMapper: Mapper {
 
     /// (Attempts) to convert an instance of Data into an array of Country Entities.
     ///
-    func map(response: Data) throws -> [Country] {
+    func map(response: Data) async throws -> [Country] {
         if hasDataEnvelope(in: response) {
             return try JSONDecoder().decode(CountryListEnvelope.self, from: response).data
         } else {

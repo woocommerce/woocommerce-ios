@@ -12,7 +12,7 @@ struct PaymentGatewayMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into `PaymentGateway`
     ///
-    func map(response: Data) throws -> PaymentGateway {
+    func map(response: Data) async throws -> PaymentGateway {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID,

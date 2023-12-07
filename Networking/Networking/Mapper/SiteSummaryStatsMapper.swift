@@ -11,7 +11,7 @@ struct SiteSummaryStatsMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an SiteSummaryStats entity.
     ///
-    func map(response: Data) throws -> SiteSummaryStats {
+    func map(response: Data) async throws -> SiteSummaryStats {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID,

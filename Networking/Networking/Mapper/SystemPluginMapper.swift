@@ -11,7 +11,7 @@ struct SystemPluginMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [SystemPlugin].
     ///
-    func map(response: Data) throws -> [SystemPlugin] {
+    func map(response: Data) async throws -> [SystemPlugin] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

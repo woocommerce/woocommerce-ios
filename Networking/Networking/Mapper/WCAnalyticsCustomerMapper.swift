@@ -9,7 +9,7 @@ struct WCAnalyticsCustomerMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a `[WCAnalyticsCustomer]` entity
     ///
-    func map(response: Data) throws -> [WCAnalyticsCustomer] {
+    func map(response: Data) async throws -> [WCAnalyticsCustomer] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [.siteID: siteID]

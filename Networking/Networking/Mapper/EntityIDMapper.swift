@@ -6,7 +6,7 @@ struct EntityIDMapper: Mapper {
 
     /// (Attempts) to convert an instance of Data into an into an ID
     ///
-    func map(response: Data) throws -> Int64 {
+    func map(response: Data) async throws -> Int64 {
         let decoder = JSONDecoder()
 
         if hasDataEnvelope(in: response) {

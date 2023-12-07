@@ -7,7 +7,7 @@ struct ApplicationPasswordMapper: Mapper {
     ///
     let wpOrgUsername: String
 
-    func map(response: Data) throws -> ApplicationPassword {
+    func map(response: Data) async throws -> ApplicationPassword {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .wpOrgUsername: wpOrgUsername

@@ -231,7 +231,7 @@ private struct SiteCurrentPlanResponseMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a WPCom site plan entity.
     ///
-    func map(response: Data) throws -> [String: SiteCurrentPlanResponse] {
+    func map(response: Data) async throws -> [String: SiteCurrentPlanResponse] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode([String: SiteCurrentPlanResponse].self, from: response)

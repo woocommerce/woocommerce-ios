@@ -5,7 +5,7 @@ import Foundation
 struct ShippingLabelCreationEligibilityMapper: Mapper {
     /// (Attempts) to convert a dictionary into ShippingLabelAccountSettings.
     ///
-    func map(response: Data) throws -> ShippingLabelCreationEligibilityResponse {
+    func map(response: Data) async throws -> ShippingLabelCreationEligibilityResponse {
         let decoder = JSONDecoder()
         if hasDataEnvelope(in: response) {
             return try decoder.decode(ShippingLabelCreationEligibilityMapperEnvelope.self, from: response).eligibility

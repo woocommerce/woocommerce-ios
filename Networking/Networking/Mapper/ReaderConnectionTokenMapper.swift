@@ -4,7 +4,7 @@ struct ReaderConnectionTokenMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a connection token.
     ///
-    func map(response: Data) throws -> ReaderConnectionToken {
+    func map(response: Data) async throws -> ReaderConnectionToken {
         let decoder = JSONDecoder()
 
         if hasDataEnvelope(in: response) {

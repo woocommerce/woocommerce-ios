@@ -4,7 +4,7 @@ import Foundation
 ///
 struct WordPressSiteMapper: Mapper {
 
-    func map(response: Data) throws -> WordPressSite {
+    func map(response: Data) async throws -> WordPressSite {
         let decoder = JSONDecoder()
         return try decoder.decode(WordPressSite.self, from: response)
     }

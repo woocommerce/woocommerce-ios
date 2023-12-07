@@ -3,7 +3,7 @@ import Foundation
 /// Mapper: StoreOnboardingTask
 ///
 struct StoreOnboardingTaskListMapper: Mapper {
-    func map(response: Data) throws -> [StoreOnboardingTask] {
+    func map(response: Data) async throws -> [StoreOnboardingTask] {
         let decoder = JSONDecoder()
         let taskGroup: [StoreOnboardingTaskGroup]
 

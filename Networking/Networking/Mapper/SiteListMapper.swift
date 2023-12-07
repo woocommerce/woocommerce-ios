@@ -7,7 +7,7 @@ final class SiteListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [Site].
     ///
-    func map(response: Data) throws -> [Site] {
+    func map(response: Data) async throws -> [Site] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 

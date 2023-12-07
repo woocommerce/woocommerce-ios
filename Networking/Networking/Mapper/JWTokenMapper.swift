@@ -4,7 +4,7 @@ import Foundation
 /// Mapper to parse the JWToken
 ///
 struct JWTokenMapper: Mapper {
-    func map(response: Data) throws -> JWToken {
+    func map(response: Data) async throws -> JWToken {
         let decoder = JSONDecoder()
         let jwt = try decoder.decode(JWTokenResponse.self, from: response).token
 

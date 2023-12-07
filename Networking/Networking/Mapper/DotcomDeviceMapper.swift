@@ -7,7 +7,7 @@ struct DotcomDeviceMapper: Mapper {
 
     /// (Attempts) to convert an instance of Data into an array of Note Entities.
     ///
-    func map(response: Data) throws -> DotcomDevice {
+    func map(response: Data) async throws -> DotcomDevice {
         return try JSONDecoder().decode(DotcomDevice.self, from: response)
     }
 }

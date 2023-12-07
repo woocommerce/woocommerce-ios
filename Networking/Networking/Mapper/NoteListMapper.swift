@@ -7,7 +7,7 @@ struct NoteListMapper: Mapper {
 
     /// (Attempts) to convert an instance of Data into an array of Note Entities.
     ///
-    func map(response: Data) throws -> [Note] {
+    func map(response: Data) async throws -> [Note] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 

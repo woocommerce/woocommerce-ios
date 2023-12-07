@@ -6,7 +6,7 @@ struct RemotePaymentIntentMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an payment intent.
     ///
-    func map(response: Data) throws -> RemotePaymentIntent {
+    func map(response: Data) async throws -> RemotePaymentIntent {
         let decoder = JSONDecoder()
 
         if hasDataEnvelope(in: response) {

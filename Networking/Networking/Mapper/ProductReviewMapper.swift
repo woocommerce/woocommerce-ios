@@ -14,7 +14,7 @@ struct ProductReviewMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into ProductReview.
     ///
-    func map(response: Data) throws -> ProductReview {
+    func map(response: Data) async throws -> ProductReview {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

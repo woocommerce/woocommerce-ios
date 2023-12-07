@@ -7,7 +7,7 @@ class SitePlanMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a site plan attribute for the site entity.
     ///
-    func map(response: Data) throws -> SitePlan {
+    func map(response: Data) async throws -> SitePlan {
         let decoder = JSONDecoder()
         return try decoder.decode(SitePlan.self, from: response)
     }

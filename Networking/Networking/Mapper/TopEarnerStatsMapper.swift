@@ -12,7 +12,7 @@ struct TopEarnerStatsMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an TopEarnerStats entity.
     ///
-    func map(response: Data) throws -> TopEarnerStats {
+    func map(response: Data) async throws -> TopEarnerStats {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID,

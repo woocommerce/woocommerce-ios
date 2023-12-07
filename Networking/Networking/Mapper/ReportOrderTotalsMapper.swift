@@ -14,7 +14,7 @@ struct ReportOrderTotalsMapper: Mapper {
 
     /// (Attempts) to extract order totals report from a given JSON Encoded response.
     ///
-    func map(response: Data) throws -> [OrderStatus] {
+    func map(response: Data) async throws -> [OrderStatus] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

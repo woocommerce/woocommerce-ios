@@ -6,7 +6,7 @@ import Foundation
 struct ShippingLabelPackagesMapper: Mapper {
     /// (Attempts) to convert a dictionary into ShippingLabelPackagesResponse.
     ///
-    func map(response: Data) throws -> ShippingLabelPackagesResponse {
+    func map(response: Data) async throws -> ShippingLabelPackagesResponse {
         let decoder = JSONDecoder()
         if hasDataEnvelope(in: response) {
             return try decoder.decode(ShippingLabelPackagesMapperEnvelope.self, from: response).data

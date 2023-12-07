@@ -6,7 +6,7 @@ struct WCPayAccountMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an account.
     ///
-    func map(response: Data) throws -> WCPayAccount {
+    func map(response: Data) async throws -> WCPayAccount {
         let decoder = JSONDecoder()
 
         /// Needed for currentDeadline, which is given as a UNIX timestamp.

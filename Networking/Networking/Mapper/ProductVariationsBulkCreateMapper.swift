@@ -17,7 +17,7 @@ struct ProductVariationsBulkCreateMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into ProductVariations.
     ///
-    func map(response: Data) throws -> [ProductVariation] {
+    func map(response: Data) async throws -> [ProductVariation] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

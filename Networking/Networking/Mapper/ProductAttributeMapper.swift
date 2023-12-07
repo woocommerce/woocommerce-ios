@@ -14,7 +14,7 @@ struct ProductAttributeMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into ProductAttribute.
     ///
-    func map(response: Data) throws -> ProductAttribute {
+    func map(response: Data) async throws -> ProductAttribute {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

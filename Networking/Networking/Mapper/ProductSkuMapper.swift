@@ -7,7 +7,7 @@ struct ProductSkuMapper: Mapper {
 
     /// (Attempts) to convert an instance of Data into a Product Sku string
     ///
-    func map(response: Data) throws -> String {
+    func map(response: Data) async throws -> String {
         let decoder = JSONDecoder()
 
         if hasDataEnvelope(in: response) {

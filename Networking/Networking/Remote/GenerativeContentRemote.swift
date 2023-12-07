@@ -312,7 +312,7 @@ private extension GenerativeContentRemote {
 // MARK: - Mapper to parse the `text-completion` endpoint response
 //
 private struct TextCompletionResponseMapper: Mapper {
-    func map(response: Data) throws -> String {
+    func map(response: Data) async throws -> String {
         let decoder = JSONDecoder()
         return try decoder.decode(TextCompletionResponse.self, from: response).completion
     }

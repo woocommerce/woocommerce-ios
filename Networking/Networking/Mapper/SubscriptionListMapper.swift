@@ -10,7 +10,7 @@ struct SubscriptionListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into `[Subscription]`.
     ///
-    func map(response: Data) throws -> [Subscription] {
+    func map(response: Data) async throws -> [Subscription] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

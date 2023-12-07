@@ -1,7 +1,7 @@
 import Foundation
 
 struct WooPaymentsDepositsOverviewMapper: Mapper {
-    func map(response: Data) throws -> WooPaymentsDepositsOverview {
+    func map(response: Data) async throws -> WooPaymentsDepositsOverview {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
 

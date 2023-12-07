@@ -6,7 +6,7 @@ struct JetpackConnectionURLMapper: Mapper {
 
     /// (Attempts) to convert the response into a URL.
     ///
-    func map(response: Data) throws -> URL {
+    func map(response: Data) async throws -> URL {
         guard let escapedString = String(data: response, encoding: .utf8) else {
             throw JetpackConnectionRemote.ConnectionError.malformedURL
         }

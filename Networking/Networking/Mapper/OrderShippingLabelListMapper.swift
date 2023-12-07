@@ -24,7 +24,7 @@ struct OrderShippingLabelListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into OrderShippingLabelListResponse.
     ///
-    func map(response: Data) throws -> OrderShippingLabelListResponse {
+    func map(response: Data) async throws -> OrderShippingLabelListResponse {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
         decoder.userInfo = [

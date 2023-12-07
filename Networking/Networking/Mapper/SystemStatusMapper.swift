@@ -11,7 +11,7 @@ struct SystemStatusMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into SystemStatus
     ///
-    func map(response: Data) throws -> SystemStatus {
+    func map(response: Data) async throws -> SystemStatus {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

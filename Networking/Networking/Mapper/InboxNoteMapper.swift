@@ -11,7 +11,7 @@ struct InboxNoteMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an Inbox Note.
     ///
-    func map(response: Data) throws -> InboxNote {
+    func map(response: Data) async throws -> InboxNote {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

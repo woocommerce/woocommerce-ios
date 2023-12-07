@@ -13,7 +13,7 @@ struct AccountSettingsMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into an AccountSettings entity.
     ///
-    func map(response: Data) throws -> AccountSettings {
+    func map(response: Data) async throws -> AccountSettings {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .userID: userID

@@ -297,6 +297,9 @@ extension BillingInformationViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch sections[indexPath.section].rows[indexPath.row] {
+        case .billingAddress:
+            sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
+
         case .billingPhone:
             if let indexPath = sections.indexPathForRow(.billingPhone),
                 let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
@@ -310,29 +313,11 @@ extension BillingInformationViewController: UITableViewDelegate {
                 let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
                 displayEmailActionAlert(from: cell)
             }
-
-        default:
-            break
         }
     }
 
     private func emailCustomerHandler() {
         _ = emailComposer.displayEmailComposerIfPossible(for: order, from: self)
-    }
-
-    func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
-        return checkIfCopyingIsAllowed(for: indexPath)
-    }
-
-    func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return action == #selector(copy(_:))
-    }
-
-    func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
-        guard action == #selector(copy(_:)) else {
-            return
-        }
-        copyText(at: indexPath)
     }
 }
 
@@ -482,21 +467,6 @@ private extension BillingInformationViewController {
 // MARK: - Pasteboard
 //
 private extension BillingInformationViewController {
-
-    /// Sends the provided Row's text data to the pasteboard
-    ///
-    /// - Parameter indexPath: IndexPath to copy text data from
-    ///
-    func copyText(at indexPath: IndexPath) {
-        let row = sections[indexPath.section].rows[indexPath.row]
-
-        switch row {
-        case .billingAddress:
-            sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
-        default:
-            break // We only send text to the pasteboard from the address rows right meow
-        }
-    }
 
     /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
     /// is nil, nothing is sent to the pasteboard.

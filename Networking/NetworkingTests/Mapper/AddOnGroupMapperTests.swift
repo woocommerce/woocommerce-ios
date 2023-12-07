@@ -5,9 +5,9 @@ class AddOnGroupMapperTests: XCTestCase {
 
     private let dummySiteID: Int64 = 123
 
-    func test_addOnGroups_field_are_properly_parsed() throws {
+    func test_addOnGroups_field_are_properly_parsed() async throws {
         // Given & When
-        let addOnGroups = try XCTUnwrap(mapLoadGroupAddOnsResponse())
+        let addOnGroups = try await mapLoadGroupAddOnsResponse()
 
         // Then
         XCTAssertEqual(addOnGroups.count, 2)
@@ -25,9 +25,9 @@ class AddOnGroupMapperTests: XCTestCase {
         XCTAssertEqual(secondGroup.addOns.count, 1)
     }
 
-    func test_addOnGroups_field_are_properly_parsed_when_response_has_no_data_envelope() throws {
+    func test_addOnGroups_field_are_properly_parsed_when_response_has_no_data_envelope() async throws {
         // Given & When
-        let addOnGroups = try XCTUnwrap(mapLoadGroupAddOnsResponseWithoutDataEnvelope())
+        let addOnGroups = try await mapLoadGroupAddOnsResponseWithoutDataEnvelope()
 
         // Then
         XCTAssertEqual(addOnGroups.count, 2)
@@ -48,17 +48,19 @@ class AddOnGroupMapperTests: XCTestCase {
 
 // MARK: JSON Loading
 private extension AddOnGroupMapperTests {
-    func mapLoadGroupAddOnsResponse() -> [AddOnGroup]? {
+    func mapLoadGroupAddOnsResponse() async throws -> [AddOnGroup] {
         guard let response = Loader.contentsOf("add-on-groups") else {
-            return nil
+            throw FileNotFoundError()
         }
-        return try? AddOnGroupMapper(siteID: dummySiteID).map(response: response)
+        return try await AddOnGroupMapper(siteID: dummySiteID).map(response: response)
     }
 
-    func mapLoadGroupAddOnsResponseWithoutDataEnvelope() -> [AddOnGroup]? {
+    func mapLoadGroupAddOnsResponseWithoutDataEnvelope() async throws -> [AddOnGroup] {
         guard let response = Loader.contentsOf("add-on-groups-without-data") else {
-            return nil
+            throw FileNotFoundError()
         }
-        return try? AddOnGroupMapper(siteID: dummySiteID).map(response: response)
+        return try await AddOnGroupMapper(siteID: dummySiteID).map(response: response)
     }
+
+    struct FileNotFoundError: Error {}
 }

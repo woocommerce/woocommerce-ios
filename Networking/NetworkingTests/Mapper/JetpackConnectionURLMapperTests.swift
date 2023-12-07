@@ -5,8 +5,8 @@ import XCTest
 ///
 final class JetpackConnectionURLMapperTests: XCTestCase {
 
-    func test_url_is_properly_parsed() {
-        guard let url = mapURLFromMockResponse() else {
+    func test_url_is_properly_parsed() async {
+        guard let url = await mapURLFromMockResponse() else {
             XCTFail()
             return
         }
@@ -16,11 +16,11 @@ final class JetpackConnectionURLMapperTests: XCTestCase {
 }
 
 private extension JetpackConnectionURLMapperTests {
-    func mapURLFromMockResponse() -> URL? {
+    func mapURLFromMockResponse() async -> URL? {
         guard let response = Loader.contentsOf("jetpack-connection-url") else {
             return nil
         }
 
-        return try? JetpackConnectionURLMapper().map(response: response)
+        return try? await JetpackConnectionURLMapper().map(response: response)
     }
 }

@@ -4,8 +4,8 @@ import XCTest
 final class AnnouncementListMapperTests: XCTestCase {
     /// Verifies that all of the Announcement fields are properly parsed.
     ///
-    func test_announcements_are_properly_parsed() {
-        let announcements = mapLoadAnnouncementListResponse()
+    func test_announcements_are_properly_parsed() async {
+        let announcements = await mapLoadAnnouncementListResponse()
 
         assertEqual(1, announcements.count)
         let firstItem = announcements[0]
@@ -28,11 +28,11 @@ final class AnnouncementListMapperTests: XCTestCase {
 }
 
 private extension AnnouncementListMapperTests {
-    func mapLoadAnnouncementListResponse() -> [Announcement] {
+    func mapLoadAnnouncementListResponse() async -> [Announcement] {
         guard let response = Loader.contentsOf("announcements") else {
             return []
         }
 
-        return (try? AnnouncementListMapper().map(response: response)) ?? []
+        return (try? await AnnouncementListMapper().map(response: response)) ?? []
     }
 }

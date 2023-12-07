@@ -9,8 +9,8 @@ final class BlazeCampaignListMapperTests: XCTestCase {
 
     /// Verifies that the whole list is parsed.
     ///
-    func test_BlazeCampaignListMapper_parses_all_contents_in_response() throws {
-        let campaigns = try mapLoadBlazeCampaignListResponse()
+    func test_BlazeCampaignListMapper_parses_all_contents_in_response() async throws {
+        let campaigns = try await mapLoadBlazeCampaignListResponse()
         XCTAssertEqual(campaigns.count, 1)
 
         let item = try XCTUnwrap(campaigns.first)
@@ -33,17 +33,17 @@ private extension BlazeCampaignListMapperTests {
 
     /// Returns the BlazeCampaignListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapBlazeCampaignList(from filename: String) throws -> [BlazeCampaign] {
+    func mapBlazeCampaignList(from filename: String) async throws -> [BlazeCampaign] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try BlazeCampaignListMapper(siteID: dummySiteID).map(response: response)
+        return try await BlazeCampaignListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the BlazeCampaignListMapper output from `blaze-campaigns-success.json`
     ///
-    func mapLoadBlazeCampaignListResponse() throws -> [BlazeCampaign] {
-        return try mapBlazeCampaignList(from: "blaze-campaigns-success")
+    func mapLoadBlazeCampaignListResponse() async throws -> [BlazeCampaign] {
+        try await mapBlazeCampaignList(from: "blaze-campaigns-success")
     }
 }

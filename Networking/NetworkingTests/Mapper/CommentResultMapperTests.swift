@@ -8,8 +8,8 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that the broken response causes the mapper to return an unknown status
     ///
-    func test_broken_response_returns_unknown_status() {
-        let commentStatus = try? mapLoadBrokenResponse()
+    func test_broken_response_returns_unknown_status() async {
+        let commentStatus = try? await mapLoadBrokenResponse()
 
         XCTAssertNotNil(commentStatus)
         XCTAssertEqual(commentStatus, .unknown)
@@ -17,8 +17,8 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that an approved status response is properly parsed (YAY!).
     ///
-    func test_sample_approved_response_loaded() {
-        let commentStatus = try? mapApprovedResponse()
+    func test_sample_approved_response_loaded() async {
+        let commentStatus = try? await mapApprovedResponse()
 
         XCTAssertNotNil(commentStatus)
         XCTAssertEqual(commentStatus, .approved)
@@ -26,8 +26,8 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that an unapproved status response is properly parsed (YAY!).
     ///
-    func test_sample_unapproved_response_loaded() {
-        let commentStatus = try? mapUnapprovedResponse()
+    func test_sample_unapproved_response_loaded() async {
+        let commentStatus = try? await mapUnapprovedResponse()
 
         XCTAssertNotNil(commentStatus)
         XCTAssertEqual(commentStatus, .unapproved)
@@ -35,8 +35,8 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that a spam status response is properly parsed (YAY!).
     ///
-    func test_sample_spam_response_loaded() {
-        let commentStatus = try? mapSpamResponse()
+    func test_sample_spam_response_loaded() async {
+        let commentStatus = try? await mapSpamResponse()
 
         XCTAssertNotNil(commentStatus)
         XCTAssertEqual(commentStatus, .spam)
@@ -44,8 +44,8 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that a trash status response is properly parsed (YAY!).
     ///
-    func test_sample_trash_response_loaded() {
-        let commentStatus = try? mapTrashResponse()
+    func test_sample_trash_response_loaded() async {
+        let commentStatus = try? await mapTrashResponse()
 
         XCTAssertNotNil(commentStatus)
         XCTAssertEqual(commentStatus, .trash)
@@ -59,40 +59,40 @@ private extension CommentResultMapperTests {
 
     /// Returns the CommentResultMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapCommentResult(from filename: String) throws -> CommentStatus {
+    func mapCommentResult(from filename: String) async throws -> CommentStatus {
         let response = Loader.contentsOf(filename)!
         let mapper = CommentResultMapper()
 
-        return try mapper.map(response: response)
+        return try await mapper.map(response: response)
     }
 
     /// Returns the CommentResultMapper output upon receiving an 'approved' status from the endpoint
     ///
-    func mapApprovedResponse() throws -> CommentStatus {
-        return try mapCommentResult(from: "comment-moderate-approved")
+    func mapApprovedResponse() async throws -> CommentStatus {
+        return try await mapCommentResult(from: "comment-moderate-approved")
     }
 
     /// Returns the CommentResultMapper output upon receiving an 'unapproved' status from the endpoint
     ///
-    func mapUnapprovedResponse() throws -> CommentStatus {
-        return try mapCommentResult(from: "comment-moderate-unapproved")
+    func mapUnapprovedResponse() async throws -> CommentStatus {
+        return try await mapCommentResult(from: "comment-moderate-unapproved")
     }
 
     /// Returns the CommentResultMapper output upon receiving an 'spam' status from the endpoint
     ///
-    func mapSpamResponse() throws -> CommentStatus {
-        return try mapCommentResult(from: "comment-moderate-spam")
+    func mapSpamResponse() async throws -> CommentStatus {
+        return try await mapCommentResult(from: "comment-moderate-spam")
     }
 
     /// Returns the CommentResultMapper output upon receiving an 'trash' status from the endpoint
     ///
-    func mapTrashResponse() throws -> CommentStatus {
-        return try mapCommentResult(from: "comment-moderate-trash")
+    func mapTrashResponse() async throws -> CommentStatus {
+        return try await mapCommentResult(from: "comment-moderate-trash")
     }
 
     /// Returns the CommentResultMapper output upon receiving a broken response.
     ///
-    func mapLoadBrokenResponse() throws -> CommentStatus {
-        return try mapCommentResult(from: "generic_error")
+    func mapLoadBrokenResponse() async throws -> CommentStatus {
+        return try await mapCommentResult(from: "generic_error")
     }
 }

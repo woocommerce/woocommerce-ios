@@ -2,7 +2,7 @@ import XCTest
 @testable import Networking
 
 final class InAppPurchasesProductsMapperTests: XCTestCase {
-    func test_iap_products_list_is_decoded_from_json_response() throws {
+    func test_iap_products_list_is_decoded_from_json_response() async throws {
         // Given
         let jsonData = try XCTUnwrap(Loader.contentsOf("iap-products"))
         let expectedProductIdentifiers = [
@@ -10,7 +10,7 @@ final class InAppPurchasesProductsMapperTests: XCTestCase {
         ]
 
         // When
-        let products = try InAppPurchasesProductMapper().map(response: jsonData)
+        let products = try await InAppPurchasesProductMapper().map(response: jsonData)
 
         // Then
         assertEqual(expectedProductIdentifiers, products)

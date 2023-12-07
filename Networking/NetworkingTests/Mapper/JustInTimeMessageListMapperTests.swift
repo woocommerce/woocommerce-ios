@@ -9,25 +9,25 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
 
     /// Verifies that the message is parsed.
     ///
-    func test_JustInTimeMessageListMapper_parses_the_JustInTimeMessage_in_response() throws {
-        let justInTimeMessages = try mapLoadJustInTimeMessageListResponse()
+    func test_JustInTimeMessageListMapper_parses_the_JustInTimeMessage_in_response() async throws {
+        let justInTimeMessages = try await mapLoadJustInTimeMessageListResponse()
         XCTAssertNotNil(justInTimeMessages)
-        assertEqual(1, justInTimeMessages?.count)
+        assertEqual(1, justInTimeMessages.count)
     }
 
     /// Verifies that the message is parsed.
     ///
-    func test_JustInTimeMessageListMapper_parses_the_JustInTimeMessage_in_response_without_data_envelope() throws {
-        let justInTimeMessages = try mapLoadJustInTimeMessageListResponseWithoutDataEnvelope()
+    func test_JustInTimeMessageListMapper_parses_the_JustInTimeMessage_in_response_without_data_envelope() async throws {
+        let justInTimeMessages = try await mapLoadJustInTimeMessageListResponseWithoutDataEnvelope()
         XCTAssertNotNil(justInTimeMessages)
-        assertEqual(1, justInTimeMessages?.count)
+        assertEqual(1, justInTimeMessages.count)
     }
 
     /// Verifies that the fields are all parsed correctly.
     ///
-    func test_JustInTimeMessageListMapper_parses_all_fields_in_result() throws {
+    func test_JustInTimeMessageListMapper_parses_all_fields_in_result() async throws {
         // Given, When
-        let justInTimeMessage = try XCTUnwrap(mapLoadJustInTimeMessageListResponse()).first
+        let justInTimeMessage = try await mapLoadJustInTimeMessageListResponse().first
 
         // Then
         let expectedJustInTimeMessage = JustInTimeMessage(
@@ -47,9 +47,9 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly.
     ///
-    func test_JustInTimeMessageListMapper_parses_correctly_when_nonessential_keys_are_missing() throws {
+    func test_JustInTimeMessageListMapper_parses_correctly_when_nonessential_keys_are_missing() async throws {
         // Given, When
-        let justInTimeMessage = try XCTUnwrap(mapLoadJustInTimeMessageListWithoutNonessentialKeysResponse()).first
+        let justInTimeMessage = try await mapLoadJustInTimeMessageListWithoutNonessentialKeysResponse().first
 
         // Then
         let expectedJustInTimeMessage = JustInTimeMessage(siteID: dummySiteID,
@@ -73,27 +73,29 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
 private extension JustInTimeMessageListMapperTests {
     /// Returns the JustInTimeMessageMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapJustInTimeMessageList(from filename: String) throws -> [JustInTimeMessage]? {
+    func mapJustInTimeMessageList(from filename: String) async throws -> [JustInTimeMessage] {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try JustInTimeMessageListMapper(siteID: dummySiteID).map(response: response)
+        return try await JustInTimeMessageListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the JustInTimeMessageListMapper output from `just-in-time-message-list.json`
     ///
-    func mapLoadJustInTimeMessageListResponse() throws -> [JustInTimeMessage]? {
-        return try mapJustInTimeMessageList(from: "just-in-time-message-list")
+    func mapLoadJustInTimeMessageListResponse() async throws -> [JustInTimeMessage] {
+        return try await mapJustInTimeMessageList(from: "just-in-time-message-list")
     }
 
-    func mapLoadJustInTimeMessageListWithoutNonessentialKeysResponse() throws -> [JustInTimeMessage]? {
-        return try mapJustInTimeMessageList(from: "just-in-time-message-list-without-nonessential-keys")
+    func mapLoadJustInTimeMessageListWithoutNonessentialKeysResponse() async throws -> [JustInTimeMessage] {
+        return try await mapJustInTimeMessageList(from: "just-in-time-message-list-without-nonessential-keys")
     }
 
     /// Returns the JustInTimeMessageListMapper output from `just-in-time-message-list-without-data.json`
     ///
-    func mapLoadJustInTimeMessageListResponseWithoutDataEnvelope() throws -> [JustInTimeMessage]? {
-        return try mapJustInTimeMessageList(from: "just-in-time-message-list-without-data")
+    func mapLoadJustInTimeMessageListResponseWithoutDataEnvelope() async throws -> [JustInTimeMessage] {
+        return try await mapJustInTimeMessageList(from: "just-in-time-message-list-without-data")
     }
+
+    struct FileNotFoundError: Error {}
 }

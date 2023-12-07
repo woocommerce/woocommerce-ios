@@ -4,13 +4,13 @@ import XCTest
 final class AIProductMapperTests: XCTestCase {
     private let siteID: Int64 = 123
 
-    func test_it_maps_AIProduct_correctly_from_AI_json_response() throws {
+    func test_it_maps_AIProduct_correctly_from_AI_json_response() async throws {
         // Given
         let data = try retrieveGenerateProductResponse()
         let mapper = AIProductMapper(siteID: siteID)
 
         // When
-        let product = try mapper.map(response: data)
+        let product = try await mapper.map(response: data)
 
         // Then
         XCTAssertEqual(product.name, "Cookie")
@@ -26,13 +26,13 @@ final class AIProductMapperTests: XCTestCase {
         XCTAssertEqual(product.price, "250")
     }
 
-    func test_it_maps_AIProduct_correctly_when_no_shipping_info_available() throws {
+    func test_it_maps_AIProduct_correctly_when_no_shipping_info_available() async throws {
         // Given
         let data = try retrieveGenerateProductNoShippingInfoResponse()
         let mapper = AIProductMapper(siteID: siteID)
 
         // When
-        let product = try mapper.map(response: data)
+        let product = try await mapper.map(response: data)
 
         // Then
         XCTAssertEqual(product.name, "Cookie")
@@ -48,13 +48,13 @@ final class AIProductMapperTests: XCTestCase {
         XCTAssertEqual(product.price, "250")
     }
 
-    func test_it_maps_AIProduct_correctly_when_no_weight_info_available() throws {
+    func test_it_maps_AIProduct_correctly_when_no_weight_info_available() async throws {
         // Given
         let data = try retrieveGenerateProductNoWeightInfoResponse()
         let mapper = AIProductMapper(siteID: siteID)
 
         // When
-        let product = try mapper.map(response: data)
+        let product = try await mapper.map(response: data)
 
         // Then
         XCTAssertEqual(product.name, "Cookie")
@@ -70,13 +70,13 @@ final class AIProductMapperTests: XCTestCase {
         XCTAssertEqual(product.price, "250")
     }
 
-    func test_it_maps_AIProduct_correctly_when_no_dimensions_info_available() throws {
+    func test_it_maps_AIProduct_correctly_when_no_dimensions_info_available() async throws {
         // Given
         let data = try retrieveGenerateProductNoDimensionsInfoResponse()
         let mapper = AIProductMapper(siteID: siteID)
 
         // When
-        let product = try mapper.map(response: data)
+        let product = try await mapper.map(response: data)
 
         // Then
         XCTAssertEqual(product.name, "Cookie")

@@ -9,30 +9,30 @@ final class InboxNoteMapperTests: XCTestCase {
 
     /// Verifies that the inbox note is parsed.
     ///
-    func test_InboxNoteMapper_parses_the_InboxNote_in_response() throws {
-        let inboxNote = try mapLoadInboxNoteResponse()
+    func test_InboxNoteMapper_parses_the_InboxNote_in_response() async throws {
+        let inboxNote = try await mapLoadInboxNoteResponse()
         XCTAssertNotNil(inboxNote)
     }
 
     /// Verifies that the inbox note is parsed when response has no data envelope.
     ///
-    func test_InboxNoteMapper_parses_the_InboxNote_in_response_without_data_envelope() throws {
-        let inboxNote = try mapLoadInboxNoteResponseWithoutDataEnvelope()
+    func test_InboxNoteMapper_parses_the_InboxNote_in_response_without_data_envelope() async throws {
+        let inboxNote = try await mapLoadInboxNoteResponseWithoutDataEnvelope()
         XCTAssertNotNil(inboxNote)
     }
 
     /// Verifies that the `siteID` is added in the mapper, because it's not provided by the API endpoint.
     ///
-    func test_InboxNoteMapper_includes_siteID_in_parsed_result() throws {
-        let inboxNote = try mapLoadInboxNoteResponse()
-        XCTAssertEqual(inboxNote?.siteID, dummySiteID)
+    func test_InboxNoteMapper_includes_siteID_in_parsed_result() async throws {
+        let inboxNote = try await mapLoadInboxNoteResponse()
+        XCTAssertEqual(inboxNote.siteID, dummySiteID)
     }
 
     /// Verifies that the fields are all parsed correctly.
     ///
-    func test_InboxNoteMapper_parses_all_fields_in_result() throws {
+    func test_InboxNoteMapper_parses_all_fields_in_result() async throws {
         // Given
-        let inboxNote = try mapLoadInboxNoteResponse()
+        let inboxNote = try await mapLoadInboxNoteResponse()
 
         // When
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
@@ -60,9 +60,9 @@ final class InboxNoteMapperTests: XCTestCase {
 
     /// Verifies that `isRead` field is set to `false` when the corresponding API field (`is_read`) is not available.
     ///
-    func test_InboxNoteMapper_sets_isRead_to_false_when_API_field_is_unavailable() throws {
+    func test_InboxNoteMapper_sets_isRead_to_false_when_API_field_is_unavailable() async throws {
         // When
-        let inboxNote = try XCTUnwrap(mapLoadInboxNoteWithoutIsReadResponse())
+        let inboxNote = try await mapLoadInboxNoteWithoutIsReadResponse()
 
         // Then
         XCTAssertFalse(inboxNote.isRead)
@@ -76,29 +76,31 @@ private extension InboxNoteMapperTests {
 
     /// Returns the InboxNoteMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapInboxNote(from filename: String) throws -> InboxNote? {
+    func mapInboxNote(from filename: String) async throws -> InboxNote {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try InboxNoteMapper(siteID: dummySiteID).map(response: response)
+        return try await InboxNoteMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the InboxNoteMapper output from `inbox-note.json`
     ///
-    func mapLoadInboxNoteResponse() throws -> InboxNote? {
-        return try mapInboxNote(from: "inbox-note")
+    func mapLoadInboxNoteResponse() async throws -> InboxNote {
+        try await mapInboxNote(from: "inbox-note")
     }
 
     /// Returns the InboxNoteMapper output from `inbox-note-without-data.json`
     ///
-    func mapLoadInboxNoteResponseWithoutDataEnvelope() throws -> InboxNote? {
-        return try mapInboxNote(from: "inbox-note-without-data")
+    func mapLoadInboxNoteResponseWithoutDataEnvelope() async throws -> InboxNote {
+        try await mapInboxNote(from: "inbox-note-without-data")
     }
 
     /// Returns the InboxNoteMapper output from `inbox-note-without-isRead.json`
     ///
-    func mapLoadInboxNoteWithoutIsReadResponse() throws -> InboxNote? {
-        try mapInboxNote(from: "inbox-note-without-isRead")
+    func mapLoadInboxNoteWithoutIsReadResponse() async throws -> InboxNote {
+        try await mapInboxNote(from: "inbox-note-without-isRead")
     }
+
+    struct FileNotFoundError: Error {}
 }

@@ -3,9 +3,9 @@ import XCTest
 
 final class EntityDateModifiedMapperTests: XCTestCase {
 
-    func test_date_modified_is_properly_parsed() throws {
+    func test_date_modified_is_properly_parsed() async throws {
         // Given
-        let dates = [mapLoadDatesResponse(), mapLoadDatesResponseWithoutData()]
+        let dates = [await mapLoadDatesResponse(), await mapLoadDatesResponseWithoutData()]
         let expectedDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2023-03-29T03:23:02")
 
         for date in dates {
@@ -22,23 +22,23 @@ private extension EntityDateModifiedMapperTests {
 
     /// Returns the EntityIDMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapDate(from filename: String) -> Date? {
+    func mapDate(from filename: String) async -> Date? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! EntityDateModifiedMapper().map(response: response)
+        return try! await EntityDateModifiedMapper().map(response: response)
     }
 
     /// Returns the EntityIDMapper output upon receiving `date-modified-gmt`
     ///
-    func mapLoadDatesResponse() -> Date? {
-        mapDate(from: "date-modified-gmt")
+    func mapLoadDatesResponse() async -> Date? {
+        await mapDate(from: "date-modified-gmt")
     }
 
     /// Returns the EntityIDMapper output upon receiving `date-modified-gmt-without-data`
     ///
-    func mapLoadDatesResponseWithoutData() -> Date? {
-        mapDate(from: "date-modified-gmt-without-data")
+    func mapLoadDatesResponseWithoutData() async -> Date? {
+        await mapDate(from: "date-modified-gmt-without-data")
     }
 }

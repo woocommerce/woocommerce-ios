@@ -16,7 +16,7 @@ class CustomerMapperTests: XCTestCase {
 
     /// Verifies that the Customer object can be mapped fron the Encoded data
     ///
-    func test_Customer_is_mapped_from_encoded_data() {
+    func test_Customer_is_mapped_from_encoded_data() async throws {
         // Given
         let mapper = CustomerMapper(siteID: dummySiteID)
         guard let data = Loader.contentsOf(filename) else {
@@ -25,7 +25,7 @@ class CustomerMapperTests: XCTestCase {
         }
 
         // When
-        let customer = try? mapper.map(response: data)
+        let customer = try await mapper.map(response: data)
 
         // Then
         XCTAssertNotNil(mapper)
@@ -34,9 +34,9 @@ class CustomerMapperTests: XCTestCase {
 
     /// Verifies that all of the Customer response values are parsed correctly
     ///
-    func test_Customer_response_values_are_correctly_parsed() throws {
+    func test_Customer_response_values_are_correctly_parsed() async throws {
         // Given
-        guard let customer = try mapCustomer(from: filename) else {
+        guard let customer = try await mapCustomer(from: filename) else {
             XCTFail()
             return
         }
@@ -66,9 +66,9 @@ class CustomerMapperTests: XCTestCase {
 
     /// Verifies that all of the Customer response values are parsed correctly
     ///
-    func test_Customer_response_values_are_correctly_parsed_when_response_has_no_data_envelope() throws {
+    func test_Customer_response_values_are_correctly_parsed_when_response_has_no_data_envelope() async throws {
         // Given
-        guard let customer = try mapCustomer(from: fileNameWithoutDataEnvelope) else {
+        guard let customer = try await mapCustomer(from: fileNameWithoutDataEnvelope) else {
             XCTFail()
             return
         }
@@ -100,10 +100,10 @@ class CustomerMapperTests: XCTestCase {
 private extension CustomerMapperTests {
     /// Returns the CustomerMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapCustomer(from filename: String) throws -> Customer? {
+    func mapCustomer(from filename: String) async throws -> Customer? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
-        return try! CustomerMapper(siteID: dummySiteID).map(response: response)
+        return try await CustomerMapper(siteID: dummySiteID).map(response: response)
     }
 }

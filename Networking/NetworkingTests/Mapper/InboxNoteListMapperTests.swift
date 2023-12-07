@@ -9,22 +9,22 @@ final class InboxNoteListMapperTests: XCTestCase {
 
     /// Verifies that the whole list is parsed.
     ///
-    func test_InboxNoteListMapper_parses_all_InboxNotes_in_response() throws {
-        let inboxNotes = try mapLoadInboxNoteListResponse()
+    func test_InboxNoteListMapper_parses_all_InboxNotes_in_response() async throws {
+        let inboxNotes = try await mapLoadInboxNoteListResponse()
         XCTAssertEqual(inboxNotes.count, 24)
     }
 
     /// Verifies that the whole list is parsed when response has no data envelope.
     ///
-    func test_InboxNoteListMapper_parses_all_InboxNotes_in_response_without_data_envelope() throws {
-        let inboxNotes = try mapLoadInboxNoteListResponseWithoutDataEnvelope()
+    func test_InboxNoteListMapper_parses_all_InboxNotes_in_response_without_data_envelope() async throws {
+        let inboxNotes = try await mapLoadInboxNoteListResponseWithoutDataEnvelope()
         XCTAssertEqual(inboxNotes.count, 2)
     }
 
     /// Verifies that the `siteID` is added in the mapper, to all results, because it's not provided by the API endpoint.
     ///
-    func test_InboxNoteListMapper_includes_siteID_in_parsed_results() throws {
-        let inboxNotes = try mapLoadInboxNoteListResponse()
+    func test_InboxNoteListMapper_includes_siteID_in_parsed_results() async throws {
+        let inboxNotes = try await mapLoadInboxNoteListResponse()
         XCTAssertTrue(inboxNotes.count > 0)
 
         for inboxNote in inboxNotes {
@@ -34,9 +34,9 @@ final class InboxNoteListMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly.
     ///
-    func test_InboxNoteListMapper_parses_all_fields_in_result() throws {
+    func test_InboxNoteListMapper_parses_all_fields_in_result() async throws {
         // Given
-        let inboxNotes = try mapLoadInboxNoteListResponse()
+        let inboxNotes = try await mapLoadInboxNoteListResponse()
         let inboxNote = inboxNotes[0]
 
         // When
@@ -71,23 +71,23 @@ private extension InboxNoteListMapperTests {
 
     /// Returns the InboxNoteListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapInboxNoteList(from filename: String) throws -> [InboxNote] {
+    func mapInboxNoteList(from filename: String) async throws -> [InboxNote] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try InboxNoteListMapper(siteID: dummySiteID).map(response: response)
+        return try await InboxNoteListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the InboxNoteListMapper output from `inbox-note-list.json`
     ///
-    func mapLoadInboxNoteListResponse() throws -> [InboxNote] {
-        return try mapInboxNoteList(from: "inbox-note-list")
+    func mapLoadInboxNoteListResponse() async throws -> [InboxNote] {
+        return try await mapInboxNoteList(from: "inbox-note-list")
     }
 
     /// Returns the InboxNoteListMapper output from `inbox-note-list-without-data.json`
     ///
-    func mapLoadInboxNoteListResponseWithoutDataEnvelope() throws -> [InboxNote] {
-        return try mapInboxNoteList(from: "inbox-note-list-without-data")
+    func mapLoadInboxNoteListResponseWithoutDataEnvelope() async throws -> [InboxNote] {
+        return try await mapInboxNoteList(from: "inbox-note-list-without-data")
     }
 }

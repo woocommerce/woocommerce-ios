@@ -8,8 +8,8 @@ class CountryListMapperTests: XCTestCase {
 
     /// Verifies that the Country List is parsed correctly.
     ///
-    func test_countries_are_properly_parsed() {
-        guard let countries = mapCountriesResponse() else {
+    func test_countries_are_properly_parsed() async {
+        guard let countries = await mapCountriesResponse() else {
             XCTFail()
             return
         }
@@ -22,8 +22,8 @@ class CountryListMapperTests: XCTestCase {
         XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
     }
 
-    func test_countries_are_properly_parsed_if_the_response_has_no_data_envelope() {
-        guard let countries = mapCountriesResponseWithoutDataEnvelope() else {
+    func test_countries_are_properly_parsed_if_the_response_has_no_data_envelope() async {
+        guard let countries = await mapCountriesResponseWithoutDataEnvelope() else {
             XCTFail()
             return
         }
@@ -43,23 +43,23 @@ private extension CountryListMapperTests {
 
     /// Returns the CountryListMapperTests output upon receiving `filename` (Data Encoded)
     ///
-    func mapCountries(from filename: String) -> [Country]? {
+    func mapCountries(from filename: String) async -> [Country]? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! CountryListMapper().map(response: response)
+        return try! await CountryListMapper().map(response: response)
     }
 
     /// Returns the [Country] output upon receiving `countries`
     ///
-    func mapCountriesResponse() -> [Country]? {
-        return mapCountries(from: "countries")
+    func mapCountriesResponse() async -> [Country]? {
+        return await mapCountries(from: "countries")
     }
 
     /// Returns the [Country] output upon receiving `countries-without-data`
     ///
-    func mapCountriesResponseWithoutDataEnvelope() -> [Country]? {
-        return mapCountries(from: "countries-without-data")
+    func mapCountriesResponseWithoutDataEnvelope() async -> [Country]? {
+        return await mapCountries(from: "countries-without-data")
     }
 }

@@ -8,8 +8,8 @@ final class AccountMapperTests: XCTestCase {
 
     /// Verifies that all of the Account fields are properly parsed.
     ///
-    func test_Account_fields_are_properly_parsed() {
-        guard let account = mapLoadAccountResponse() else {
+    func test_Account_fields_are_properly_parsed() async {
+        guard let account = await mapLoadAccountResponse() else {
             XCTFail()
             return
         }
@@ -23,8 +23,8 @@ final class AccountMapperTests: XCTestCase {
 
     /// Verifies that all of the Site fields are properly parsed.
     ///
-    func test_Site_fields_are_properly_parsed() {
-        let sites = mapLoadSitesResponse()
+    func test_Site_fields_are_properly_parsed() async {
+        let sites = await mapLoadSitesResponse()
         XCTAssert(sites?.count == 2)
 
         // The first site is a Jetpack site.
@@ -78,8 +78,8 @@ final class AccountMapperTests: XCTestCase {
 
     /// Verifies that the Plan field for Site is properly parsed.
     ///
-    func test_SitePlan_field_is_properly_parsed() {
-        let site = mapLoadSitePlanResponse()
+    func test_SitePlan_field_is_properly_parsed() async {
+        let site = await mapLoadSitePlanResponse()
 
         XCTAssertEqual(site!.siteID, 1112233334444555)
         XCTAssertEqual(site!.shortName, "Business")
@@ -94,31 +94,31 @@ private extension AccountMapperTests {
 
     /// Returns the AccountMapper output upon receiving `me` mock response (Data Encoded).
     ///
-    func mapLoadAccountResponse() -> Account? {
+    func mapLoadAccountResponse() async -> Account? {
         guard let response = Loader.contentsOf("me") else {
             return nil
         }
 
-        return try? AccountMapper().map(response: response)
+        return try? await AccountMapper().map(response: response)
     }
 
     /// Returns the SiteListMapper output upon receiving `me/sites` mock response (Data Encoded).
     ///
-    func mapLoadSitesResponse() -> [Site]? {
+    func mapLoadSitesResponse() async -> [Site]? {
         guard let response = Loader.contentsOf("sites") else {
             return nil
         }
 
-        return try? SiteListMapper().map(response: response)
+        return try? await SiteListMapper().map(response: response)
     }
 
     /// Returns the SitePlanMapper output upon receiving `sites/$site` mock response (Data Encoded).
     ///
-    func mapLoadSitePlanResponse() -> SitePlan? {
+    func mapLoadSitePlanResponse() async -> SitePlan? {
         guard let response = Loader.contentsOf("site-plan") else {
             return nil
         }
 
-        return try? SitePlanMapper().map(response: response)
+        return try? await SitePlanMapper().map(response: response)
     }
 }

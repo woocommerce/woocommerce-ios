@@ -5,9 +5,9 @@ final class CouponReportListMapperTests: XCTestCase {
 
     /// Verifies that the whole list is parsed.
     ///
-    func test_mapper_parses_all_reports_in_response() throws {
+    func test_mapper_parses_all_reports_in_response() async throws {
         // Given
-        let reports = try mapLoadAllCouponReportsResponseWithDataEnvelope()
+        let reports = try await mapLoadAllCouponReportsResponseWithDataEnvelope()
 
         // Then
         XCTAssertEqual(reports.count, 1)
@@ -15,9 +15,9 @@ final class CouponReportListMapperTests: XCTestCase {
 
     /// Verifies that the whole list is parsed.
     ///
-    func test_mapper_parses_all_reports_in_response_without_data_envelop() throws {
+    func test_mapper_parses_all_reports_in_response_without_data_envelop() async throws {
         // Given
-        let reports = try mapLoadAllCouponReportsResponseWithoutDataEnvelope()
+        let reports = try await mapLoadAllCouponReportsResponseWithoutDataEnvelope()
 
         // Then
         XCTAssertEqual(reports.count, 1)
@@ -25,9 +25,9 @@ final class CouponReportListMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly
     ///
-    func test_mapper_parses_all_fields_in_result() throws {
+    func test_mapper_parses_all_fields_in_result() async throws {
         // Given
-        let reports = try mapLoadAllCouponReportsResponseWithDataEnvelope()
+        let reports = try await mapLoadAllCouponReportsResponseWithDataEnvelope()
         let report = reports[0]
         let expectedReport = CouponReport(couponID: 571, amount: 12, ordersCount: 1)
 
@@ -42,23 +42,23 @@ private extension CouponReportListMapperTests {
 
     /// Returns the CouponReportListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapReports(from filename: String) throws -> [CouponReport] {
+    func mapReports(from filename: String) async throws -> [CouponReport] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try CouponReportListMapper().map(response: response)
+        return try await CouponReportListMapper().map(response: response)
     }
 
     /// Returns the CouponsReport list from `coupon-reports.json`
     ///
-    func mapLoadAllCouponReportsResponseWithDataEnvelope() throws -> [CouponReport] {
-        return try mapReports(from: "coupon-reports")
+    func mapLoadAllCouponReportsResponseWithDataEnvelope() async throws -> [CouponReport] {
+        return try await mapReports(from: "coupon-reports")
     }
 
     /// Returns the CouponsReport list from `coupon-reports-without-data.json`
     ///
-    func mapLoadAllCouponReportsResponseWithoutDataEnvelope() throws -> [CouponReport] {
-        return try mapReports(from: "coupon-reports-without-data")
+    func mapLoadAllCouponReportsResponseWithoutDataEnvelope() async throws -> [CouponReport] {
+        return try await mapReports(from: "coupon-reports-without-data")
     }
 }

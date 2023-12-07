@@ -8,8 +8,8 @@ class AccountSettingsMapperTests: XCTestCase {
 
     /// Verifies that all of the AccountSettings fields are properly parsed.
     ///
-    func test_Account_fields_are_properly_parsed() {
-        guard let account = mapLoadAccountSettingsResponse() else {
+    func test_Account_fields_are_properly_parsed() async {
+        guard let account = await mapLoadAccountSettingsResponse() else {
             XCTFail()
             return
         }
@@ -29,11 +29,11 @@ private extension AccountSettingsMapperTests {
 
     /// Returns the AccountSettingsMapper output upon receiving `me-settings` mock response (Data Encoded).
     ///
-    func mapLoadAccountSettingsResponse() -> AccountSettings? {
+    func mapLoadAccountSettingsResponse() async -> AccountSettings? {
         guard let response = Loader.contentsOf("me-settings") else {
             return nil
         }
 
-        return try? AccountSettingsMapper(userID: 10).map(response: response)
+        return try? await AccountSettingsMapper(userID: 10).map(response: response)
     }
 }

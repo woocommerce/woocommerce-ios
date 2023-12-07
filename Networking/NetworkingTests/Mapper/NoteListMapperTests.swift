@@ -8,18 +8,18 @@ class NoteListMapperTests: XCTestCase {
 
     /// Sample Notes: 99 Entries!
     ///
-    private lazy var sampleNotes: [Note] = {
-        return try! mapLoadAllNotificationsResponse()
-    }()
+    private var sampleNotes: [Note]!
 
 
     /// Broken Notes: 2 (Hopefully gracefully handled) Scenarios.
     ///
-    private lazy var brokenNotes: [Note] = {
-        return try! mapLoadBrokenNotificationsResponse()
-    }()
+    private var brokenNotes: [Note]!
 
-
+    override func setUp() async throws {
+        try await super.setUp()
+        sampleNotes = try! await mapLoadAllNotificationsResponse()
+        brokenNotes = try! await mapLoadBrokenNotificationsResponse()
+    }
 
     /// Verifies that all of the Sample Notifications are properly parsed.
     ///
@@ -268,20 +268,20 @@ private extension NoteListMapperTests {
 
     /// Returns the NoteListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapNotes(from filename: String) throws -> [Note] {
+    func mapNotes(from filename: String) async throws -> [Note] {
         let response = Loader.contentsOf(filename)!
-        return try NoteListMapper().map(response: response)
+        return try await NoteListMapper().map(response: response)
     }
 
     /// Returns the NoteListMapper output upon receiving `notifications` endpoint's response.
     ///
-    func mapLoadAllNotificationsResponse() throws -> [Note] {
-        return try mapNotes(from: "notifications-load-all")
+    func mapLoadAllNotificationsResponse() async throws -> [Note] {
+        try await mapNotes(from: "notifications-load-all")
     }
 
     /// Returns the NoteListMapper output upon receiving `notifications` endpoint's response.
     ///
-    func mapLoadBrokenNotificationsResponse() throws -> [Note] {
-        return try mapNotes(from: "broken-notifications")
+    func mapLoadBrokenNotificationsResponse() async throws -> [Note] {
+        try await mapNotes(from: "broken-notifications")
     }
 }

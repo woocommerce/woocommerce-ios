@@ -5,9 +5,9 @@ import XCTest
 ///
 final class JetpackUserMapperTests: XCTestCase {
 
-    func test_all_fields_are_parsed_properly_when_user_is_connected() throws {
+    func test_all_fields_are_parsed_properly_when_user_is_connected() async throws {
         // Given
-        let user = try mapUserFromMockResponse()
+        let user = try await mapUserFromMockResponse()
         let wpcomUser = try XCTUnwrap(user.wpcomUser)
 
         // Then
@@ -23,9 +23,9 @@ final class JetpackUserMapperTests: XCTestCase {
         XCTAssertEqual(wpcomUser.avatar, "http://2.gravatar.com/avatar/5e1a8fhjd")
     }
 
-    func test_all_fields_are_parsed_properly_when_user_is_not_connected() throws {
+    func test_all_fields_are_parsed_properly_when_user_is_not_connected() async throws {
         // Given
-        let user = try mapNotConnectedUserFromMockResponse()
+        let user = try await mapNotConnectedUserFromMockResponse()
 
         // Then
         XCTAssertFalse(user.isPrimary)
@@ -37,20 +37,20 @@ final class JetpackUserMapperTests: XCTestCase {
 }
 
 private extension JetpackUserMapperTests {
-    func mapUserFromMockResponse() throws -> JetpackUser {
+    func mapUserFromMockResponse() async throws -> JetpackUser {
         guard let response = Loader.contentsOf("jetpack-connected-user") else {
             throw FileNotFoundError()
         }
 
-        return try JetpackUserMapper().map(response: response)
+        return try await JetpackUserMapper().map(response: response)
     }
 
-    func mapNotConnectedUserFromMockResponse() throws -> JetpackUser {
+    func mapNotConnectedUserFromMockResponse() async throws -> JetpackUser {
         guard let response = Loader.contentsOf("jetpack-user-not-connected") else {
             throw FileNotFoundError()
         }
 
-        return try JetpackUserMapper().map(response: response)
+        return try await JetpackUserMapper().map(response: response)
     }
 
     struct FileNotFoundError: Error {}

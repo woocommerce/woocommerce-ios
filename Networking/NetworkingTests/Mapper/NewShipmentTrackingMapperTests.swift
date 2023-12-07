@@ -13,8 +13,8 @@ final class NewShipmentTrackingMapperTests: XCTestCase {
     ///
     private let dummyOrderID: Int64 = 99999999
 
-    func test_tracking_fields_are_properly_parsed() throws {
-        let shipmentTracking = try mapLoadShipmentTrackingResponse()
+    func test_tracking_fields_are_properly_parsed() async throws {
+        let shipmentTracking = try await mapLoadShipmentTrackingResponse()
         let shipmentTrackingShipDate = DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-03-12")
         XCTAssertEqual(shipmentTracking.siteID, dummySiteID)
         XCTAssertEqual(shipmentTracking.orderID, dummyOrderID)
@@ -25,8 +25,8 @@ final class NewShipmentTrackingMapperTests: XCTestCase {
         XCTAssertEqual(shipmentTracking.dateShipped, shipmentTrackingShipDate)
     }
 
-    func test_tracking_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let shipmentTracking = try mapLoadShipmentTrackingResponseWithoutDataEnvelope()
+    func test_tracking_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let shipmentTracking = try await mapLoadShipmentTrackingResponseWithoutDataEnvelope()
         let shipmentTrackingShipDate = DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-03-12")
         XCTAssertEqual(shipmentTracking.siteID, dummySiteID)
         XCTAssertEqual(shipmentTracking.orderID, dummyOrderID)
@@ -45,24 +45,24 @@ private extension NewShipmentTrackingMapperTests {
 
     /// Returns the NewShipmentTrackingMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapShipmentTracking(from filename: String) throws -> ShipmentTracking {
+    func mapShipmentTracking(from filename: String) async throws -> ShipmentTracking {
         guard let response = Loader.contentsOf(filename) else {
             throw ParsingError.unableToLoadFile
         }
 
-        return try! NewShipmentTrackingMapper(siteID: dummySiteID, orderID: dummyOrderID).map(response: response)
+        return try await NewShipmentTrackingMapper(siteID: dummySiteID, orderID: dummyOrderID).map(response: response)
     }
 
     /// Returns the NewShipmentTrackingMapper output upon receiving `shipment_tracking_new`
     ///
-    func mapLoadShipmentTrackingResponse() throws -> ShipmentTracking {
-        try mapShipmentTracking(from: "shipment_tracking_new")
+    func mapLoadShipmentTrackingResponse() async throws -> ShipmentTracking {
+        try await mapShipmentTracking(from: "shipment_tracking_new")
     }
 
     /// Returns the NewShipmentTrackingMapper output upon receiving `shipment_tracking_new-without-data`
     ///
-    func mapLoadShipmentTrackingResponseWithoutDataEnvelope() throws -> ShipmentTracking {
-        try mapShipmentTracking(from: "shipment_tracking_new-without-data")
+    func mapLoadShipmentTrackingResponseWithoutDataEnvelope() async throws -> ShipmentTracking {
+        try await mapShipmentTracking(from: "shipment_tracking_new-without-data")
     }
 }
 

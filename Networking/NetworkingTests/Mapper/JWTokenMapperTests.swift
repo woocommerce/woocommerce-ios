@@ -2,13 +2,13 @@ import XCTest
 @testable import Networking
 
 final class JWTokenMapperTests: XCTestCase {
-    func test_it_maps_JWToken_correctly_from_token_response() throws {
+    func test_it_maps_JWToken_correctly_from_token_response() async throws {
         // Given
         let data = try retrieveJWTResponse()
         let mapper = JWTokenMapper()
 
         // When
-        let jwtoken = try mapper.map(response: data)
+        let jwtoken = try await mapper.map(response: data)
 
         // Then
         XCTAssertEqual(jwtoken.expiryDate.timeIntervalSince1970, 7282344061)

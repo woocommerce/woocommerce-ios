@@ -6,8 +6,8 @@ import XCTest
 final class ApplicationPasswordNameAndUUIDMapperTests: XCTestCase {
     /// Verifies that GET application password response is parsed properly
     ///
-    func test_response_is_properly_parsed_when_loading_all_application_passwords() throws {
-        guard let passwords = mapGetApplicationPasswordsResponse() else {
+    func test_response_is_properly_parsed_when_loading_all_application_passwords() async throws {
+        guard let passwords = await mapGetApplicationPasswordsResponse() else {
             XCTFail()
             return
         }
@@ -24,11 +24,11 @@ private extension ApplicationPasswordNameAndUUIDMapperTests {
 
     /// Returns the ApplicationPasswordNameAndUUIDMapper output upon receiving success response
     ///
-    func mapGetApplicationPasswordsResponse() -> [ApplicationPasswordNameAndUUID]? {
+    func mapGetApplicationPasswordsResponse() async -> [ApplicationPasswordNameAndUUID]? {
         guard let response = Loader.contentsOf("get-application-passwords-success") else {
             return nil
         }
 
-        return try? ApplicationPasswordNameAndUUIDMapper().map(response: response)
+        return try? await ApplicationPasswordNameAndUUIDMapper().map(response: response)
     }
 }

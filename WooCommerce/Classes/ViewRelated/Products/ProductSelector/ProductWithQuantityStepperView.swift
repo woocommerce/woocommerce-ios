@@ -15,6 +15,7 @@ struct ProductWithQuantityStepperView: View {
     }
 }
 
+#if canImport(SwiftUI) && DEBUG
 struct ProductWithQuantityStepperView_Previews: PreviewProvider {
     static var previews: some View {
         let stepperViewModel = ProductStepperViewModel(quantity: 2,
@@ -27,3 +28,4 @@ struct ProductWithQuantityStepperView_Previews: PreviewProvider {
         }
     }
 }
+#endif

@@ -3,7 +3,8 @@ import Yosemite
 
 /// Actions in the downloadable file form bottom sheet to add a new downloadable file.
 enum DownloadableFileSource {
-    case device
+    case deviceMedia
+    case deviceDocument
     case wordPressMediaLibrary
     case fileURL
 }
@@ -11,9 +12,14 @@ enum DownloadableFileSource {
 extension DownloadableFileSource {
     var title: String {
         switch self {
-        case .device:
-            return NSLocalizedString("From device",
-                                     comment: "Title of the downloadable file bottom sheet action for adding file from device.")
+        case .deviceMedia:
+            return NSLocalizedString("downloadableFileSource.deviceMedia",
+                                     value: "Media on device",
+                                     comment: "Title of the downloadable file bottom sheet action for adding media from device.")
+        case .deviceDocument:
+            return NSLocalizedString("downloadableFileSource.deviceDocument",
+                                     value: "Document on device",
+                                     comment: "Title of the downloadable file bottom sheet action for adding document from device.")
         case .wordPressMediaLibrary:
             return NSLocalizedString("From WordPress Media Library",
                                      comment: "Title of the downloadable file bottom sheet action for adding file from WordPress Media Library.")
@@ -25,8 +31,10 @@ extension DownloadableFileSource {
 
     var image: UIImage {
         switch self {
-        case .device:
+        case .deviceMedia:
             return .invisibleImage
+        case .deviceDocument:
+            return .documentImage
         case .wordPressMediaLibrary:
             return .cameraImage
         case .fileURL:

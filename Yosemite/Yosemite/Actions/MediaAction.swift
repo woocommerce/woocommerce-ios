@@ -25,6 +25,14 @@ public enum MediaAction: Action {
                      filename: String?,
                      onCompletion: (Result<Media, Error>) -> Void)
 
+    /// Uploads a local file to the site's WP Media Library.
+    ///
+    case uploadFile(siteID: Int64,
+                    productID: Int64,
+                    localURL: URL,
+                    altText: String?,
+                    onCompletion: (Result<Media, Error>) -> Void)
+
     /// Updates the `parent_id` of the media using the provided `productID`.
     ///
     case updateProductID(siteID: Int64,

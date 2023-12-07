@@ -503,6 +503,69 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(error, .unauthorized)
     }
 
+    // MARK: test cases for `MediaAction.uploadFile`
+
+    func test_uploadFile_returns_uploaded_media() throws {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let fileURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let path = "sites/\(sampleSiteID)/media/new"
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: fileURL, fileManager: fileManager)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadFile(siteID: self.sampleSiteID, productID: self.sampleProductID, localURL: fileURL, altText: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let media = try XCTUnwrap(result.get())
+        XCTAssertNotNil(media)
+
+        // Verifies that the file is not removed after the media is uploaded.
+        XCTAssertTrue(fileManager.fileExists(atPath: fileURL.path))
+    }
+
+    func test_uploadFile_returns_error_upon_response_error() {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let fileURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let path = "sites/\(sampleSiteID)/media/new"
+        network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: fileURL, fileManager: fileManager)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadFile(siteID: self.sampleSiteID, productID: self.sampleProductID, localURL: fileURL, altText: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+
+        // Verifies that the file is not removed after the media is uploaded.
+        XCTAssertTrue(fileManager.fileExists(atPath: fileURL.path))
+    }
+
     // MARK: test cases for `MediaAction.updateProductID`
 
     /// Verifies that `MediaAction.updateProductID` returns the expected response.

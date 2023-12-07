@@ -246,10 +246,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     @Published var quantity: Decimal
 
-    /// Closure to run when the quantity is decremented below the minimum quantity.
-    ///
-    let removeProductIntent: (() -> Void)?
-
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
 
@@ -285,7 +281,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
-         removeProductIntent: (() -> Void)? = nil,
          configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.selectedState = selectedState
@@ -307,7 +302,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
-        self.removeProductIntent = removeProductIntent
         self.configure = configure
     }
 
@@ -322,7 +316,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
-                     removeProductIntent: @escaping (() -> Void) = {},
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      configure: (() -> Void)? = nil) {
         // Don't show any price for variable products; price will be shown for each product variation.
@@ -393,7 +386,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
-                  removeProductIntent: removeProductIntent,
                   configure: configure)
     }
 
@@ -409,8 +401,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                     analytics: Analytics = ServiceLocator.analytics,
-                     removeProductIntent: @escaping (() -> Void) = {}) {
+                     analytics: Analytics = ServiceLocator.analytics) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             imageURL = URL(string: encodedImageURLString)
@@ -435,8 +426,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   pricedIndividually: pricedIndividually,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
-                  analytics: analytics,
-                  removeProductIntent: removeProductIntent)
+                  analytics: analytics)
     }
 
     /// Determines which product variation details to display.

@@ -213,7 +213,7 @@ private struct CollapsibleProductRowCard: View {
                     .padding()
 
                 Button(Localization.removeProductLabel) {
-                    if let removeProductIntent = viewModel.rowViewModel.removeProductIntent {
+                    if let removeProductIntent = viewModel.stepperViewModel.removeProductIntent {
                         removeProductIntent()
                     }
                 }

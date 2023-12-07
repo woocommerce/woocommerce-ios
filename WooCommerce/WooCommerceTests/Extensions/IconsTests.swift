@@ -148,6 +148,10 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(deleteCellImage.size, CGSize(width: 22, height: 22))
     }
 
+    func test_documentImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.documentImage)
+    }
+
     func test_domainCreditImage_is_not_nil() {
         XCTAssertNotNil(UIImage.domainCreditImage)
     }

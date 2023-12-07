@@ -9,6 +9,8 @@ import Combine
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
 
+    let stepperViewModel: ProductStepperViewModel
+
     /// Whether the product quantity can be changed.
     /// Controls whether the stepper is rendered.
     ///
@@ -256,52 +258,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: ". ")
     }
 
-    /// Quantity of product in the order
+    /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
     @Published private(set) var quantity: Decimal
 
-    /// Quantity as shown in the text field. This may be uncommitted, in which case it could differ from `quantity`
-    ///
-    @Published var enteredQuantity: Decimal
-
-    /// When a decrement action would remove the product, we can use this property to emphasise that to the user
-    ///
-    @Published var decrementWillRemoveProduct: Bool = false
-
-    /// Minimum value of the product quantity
-    ///
-    private let minimumQuantity: Decimal
-
-    /// Optional maximum value of the product quantity
-    ///
-    private let maximumQuantity: Decimal?
-
-    /// Whether the quantity can be decremented.
-    ///
-    var shouldDisableQuantityDecrementer: Bool {
-        if removeProductIntent != nil { // Allow decrementing below minimum quantity to remove product
-            return quantity < minimumQuantity
-        } else {
-            return quantity <= minimumQuantity
-        }
-    }
-
-    /// Whether the quantity can be incremented.
-    ///
-    var shouldDisableQuantityIncrementer: Bool {
-        guard let maximumQuantity else {
-            return false
-        }
-        return quantity >= maximumQuantity
-    }
-
-    /// Closure to run when the quantity is changed.
-    ///
-    var quantityUpdatedCallback: (Decimal) -> Void
-
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
-    var removeProductIntent: (() -> Void)?
+    let removeProductIntent: (() -> Void)?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -357,8 +320,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
-        self.minimumQuantity = minimumQuantity
-        self.maximumQuantity = maximumQuantity
+        self.stepperViewModel = ProductStepperViewModel(quantity: quantity,
+                                                        name: name,
+                                                        minimumQuantity: minimumQuantity,
+                                                        maximumQuantity: maximumQuantity,
+                                                        quantityUpdatedCallback: quantityUpdatedCallback,
+                                                        removeProductIntent: removeProductIntent)
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
@@ -369,11 +336,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
-        self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
         self.configure = configure
-        self.enteredQuantity = quantity
-        bindDecrementWillRemoveProduct()
+
+        observeQuantityFromStepperViewModel()
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -568,60 +534,19 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
     }
 
-    private func bindDecrementWillRemoveProduct() {
-        $enteredQuantity
-            .map { [weak self] enteredQuantity in
-                guard let self,
-                    self.removeProductIntent != nil else {
-                    return false
-                }
-                return enteredQuantity <= self.minimumQuantity
-            }
-            .assign(to: &$decrementWillRemoveProduct)
-    }
-
-    func resetEnteredQuantity() {
-        enteredQuantity = quantity
-    }
-
-    func changeQuantity(to newQuantity: Decimal) {
-        guard newQuantity != quantity else {
-            // This stops unnecessary order edit submissions when editing starts via the text field
-            return
-        }
-
-        guard newQuantity >= minimumQuantity else {
-            removeProductIntent?()
-            return
-        }
-
-        if let maximumQuantity,
-            newQuantity > maximumQuantity {
-            return
-        }
-
-        quantity = newQuantity
-        quantityUpdatedCallback(newQuantity)
-    }
-
-    /// Increment the product quantity.
-    ///
-    func incrementQuantity() {
-        changeQuantity(to: quantity + 1)
-    }
-
-    /// Decrement the product quantity.
-    ///
-    func decrementQuantity() {
-        changeQuantity(to: quantity - 1)
-    }
-
     func trackAddDiscountTapped() {
         analytics.track(event: .Orders.productDiscountAddButtonTapped())
     }
 
     func trackEditDiscountTapped() {
         analytics.track(event: .Orders.productDiscountEditButtonTapped())
+    }
+}
+
+private extension ProductRowViewModel {
+    func observeQuantityFromStepperViewModel() {
+        stepperViewModel.$quantity
+            .assign(to: &$quantity)
     }
 }
 

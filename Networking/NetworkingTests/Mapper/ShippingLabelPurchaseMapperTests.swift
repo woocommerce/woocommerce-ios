@@ -13,8 +13,8 @@ class ShippingLabelPurchaseMapperTests: XCTestCase {
 
     /// Verifies that the Shipping Label Purchase is parsed correctly.
     ///
-    func test_ShippingLabelPurchase_is_properly_parsed() {
-        guard let shippingLabelList = mapLoadShippingLabelPurchase(),
+    func test_ShippingLabelPurchase_is_properly_parsed() async {
+        guard let shippingLabelList = await mapLoadShippingLabelPurchase(),
               let shippingLabel = shippingLabelList.first else {
             XCTFail()
             return
@@ -36,8 +36,8 @@ class ShippingLabelPurchaseMapperTests: XCTestCase {
 
     /// Verifies that the Shipping Label Purchase is parsed correctly.
     ///
-    func test_ShippingLabelPurchase_is_properly_parsed_when_response_has_no_data_envelope() {
-        guard let shippingLabelList = mapLoadShippingLabelPurchaseWithoutDataEnvelope(),
+    func test_ShippingLabelPurchase_is_properly_parsed_when_response_has_no_data_envelope() async {
+        guard let shippingLabelList = await mapLoadShippingLabelPurchaseWithoutDataEnvelope(),
               let shippingLabel = shippingLabelList.first else {
             XCTFail()
             return
@@ -64,23 +64,23 @@ private extension ShippingLabelPurchaseMapperTests {
 
     /// Returns the ShippingLabelPurchaseMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapShippingLabelPurchase(from filename: String) -> [ShippingLabelPurchase]? {
+    func mapShippingLabelPurchase(from filename: String) async -> [ShippingLabelPurchase]? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! ShippingLabelPurchaseMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: response)
+        return try! await ShippingLabelPurchaseMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: response)
     }
 
     /// Returns the ShippingLabelPurchaseMapper output upon receiving `shipping-label-purchase-success`
     ///
-    func mapLoadShippingLabelPurchase() -> [ShippingLabelPurchase]? {
-        return mapShippingLabelPurchase(from: "shipping-label-purchase-success")
+    func mapLoadShippingLabelPurchase() async -> [ShippingLabelPurchase]? {
+        await mapShippingLabelPurchase(from: "shipping-label-purchase-success")
     }
 
     /// Returns the ShippingLabelPurchaseMapper output upon receiving `shipping-label-purchase-success-without-data`
     ///
-    func mapLoadShippingLabelPurchaseWithoutDataEnvelope() -> [ShippingLabelPurchase]? {
-        return mapShippingLabelPurchase(from: "shipping-label-purchase-success-without-data")
+    func mapLoadShippingLabelPurchaseWithoutDataEnvelope() async -> [ShippingLabelPurchase]? {
+        await mapShippingLabelPurchase(from: "shipping-label-purchase-success-without-data")
     }
 }

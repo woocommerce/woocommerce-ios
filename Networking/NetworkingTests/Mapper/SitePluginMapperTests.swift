@@ -11,8 +11,8 @@ final class SitePluginMapperTests: XCTestCase {
 
     /// Verifies the SitePlugin fields are parsed correctly.
     ///
-    func test_SitePlugin_fields_are_properly_parsed() throws {
-        let plugin = try XCTUnwrap(mapPlugin(from: "plugin"))
+    func test_SitePlugin_fields_are_properly_parsed() async throws {
+        let plugin = try await mapPlugin(from: "plugin")
         XCTAssertEqual(plugin.plugin, "jetpack/jetpack")
         XCTAssertEqual(plugin.siteID, dummySiteID)
         XCTAssertEqual(plugin.status, .active)
@@ -28,8 +28,8 @@ final class SitePluginMapperTests: XCTestCase {
 
     /// Verifies the SitePlugin fields are parsed correctly when there's no data envelope wrapping the response.
     ///
-    func test_SitePlugin_fields_are_properly_parsed_for_response_without_data_envelope() throws {
-        let plugin = try XCTUnwrap(mapPluginWithoutEnvelope(from: "site-plugin-without-envelope"))
+    func test_SitePlugin_fields_are_properly_parsed_for_response_without_data_envelope() async throws {
+        let plugin = try await mapPluginWithoutEnvelope(from: "site-plugin-without-envelope")
         XCTAssertEqual(plugin.plugin, "jetpack/jetpack")
         XCTAssertEqual(plugin.siteID, -1)
         XCTAssertEqual(plugin.status, .active)
@@ -53,22 +53,24 @@ private extension SitePluginMapperTests {
 
     /// Returns the SitePluginMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapPlugin(from filename: String) -> SitePlugin? {
+    func mapPlugin(from filename: String) async throws -> SitePlugin {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try? SitePluginMapper(siteID: dummySiteID).map(response: response)
+        return try await SitePluginMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the SitePluginMapper output upon receiving `filename` (Data Encoded)
     /// The decoder should not include data envelope.
     ///
-    func mapPluginWithoutEnvelope(from filename: String) -> SitePlugin? {
+    func mapPluginWithoutEnvelope(from filename: String) async throws -> SitePlugin {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try? SitePluginMapper().map(response: response)
+        return try await SitePluginMapper().map(response: response)
     }
+
+    struct FileNotFoundError: Error {}
 }

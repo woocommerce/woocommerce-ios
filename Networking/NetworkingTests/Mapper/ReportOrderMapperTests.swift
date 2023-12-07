@@ -12,15 +12,15 @@ class ReportOrderMapperTests: XCTestCase {
 
     /// Verifies that the broken response causes the mapper to return an unknown status
     ///
-    func test_broken_response_returns_unknown_status() {
-        let reportTotals = try? mapLoadBrokenResponse()
+    func test_broken_response_returns_unknown_status() async {
+        let reportTotals = try? await mapLoadBrokenResponse()
         XCTAssertNil(reportTotals)
     }
 
     /// Verifies that a valid report totals response is properly parsed (YAY!).
     ///
-    func test_sample_response_loaded() {
-        guard let results = try? mapSuccessfulResponse() else {
+    func test_sample_response_loaded() async {
+        guard let results = try? await mapSuccessfulResponse() else {
             XCTFail("Sample order report totals didn't load.")
             return
         }
@@ -95,21 +95,21 @@ private extension ReportOrderMapperTests {
 
     /// Returns the ReportOrderMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrderStatusResult(from filename: String) throws -> [OrderStatus] {
+    func mapOrderStatusResult(from filename: String) async throws -> [OrderStatus] {
         let response = Loader.contentsOf(filename)!
         let mapper = ReportOrderTotalsMapper(siteID: 1234)
-        return try mapper.map(response: response)
+        return try await mapper.map(response: response)
     }
 
     /// Returns the ReportOrderMapper output upon receiving data from the endpoint
     ///
-    func mapSuccessfulResponse() throws -> [OrderStatus] {
-        return try mapOrderStatusResult(from: "report-orders")
+    func mapSuccessfulResponse() async throws -> [OrderStatus] {
+        return try await mapOrderStatusResult(from: "report-orders")
     }
 
     /// Returns the ReportOrderMapper output upon receiving a broken response.
     ///
-    func mapLoadBrokenResponse() throws -> [OrderStatus] {
-        return try mapOrderStatusResult(from: "generic_error")
+    func mapLoadBrokenResponse() async throws -> [OrderStatus] {
+        return try await mapOrderStatusResult(from: "generic_error")
     }
 }

@@ -11,8 +11,8 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
 
     /// Verifies that the Shipping Label Account Settings are parsed correctly.
     ///
-    func test_Account_Settings_are_properly_parsed() {
-        guard let settings = mapLoadShippingLabelAccountSettings() else {
+    func test_Account_Settings_are_properly_parsed() async {
+        guard let settings = await mapLoadShippingLabelAccountSettings() else {
             XCTFail()
             return
         }
@@ -33,8 +33,8 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
 
     /// Verifies that the Shipping Label Account Settings are parsed correctly.
     ///
-    func test_Account_Settings_are_properly_parsed_when_response_has_no_data_envelope() {
-        guard let settings = mapLoadShippingLabelAccountSettingsWithoutDataEnvelope() else {
+    func test_Account_Settings_are_properly_parsed_when_response_has_no_data_envelope() async {
+        guard let settings = await mapLoadShippingLabelAccountSettingsWithoutDataEnvelope() else {
             XCTFail()
             return
         }
@@ -55,8 +55,8 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
 
     /// Verifies that the Shipping Label Account Settings without any payment methods are parsed correctly.
     ///
-    func test_Account_Settings_without_payment_methods_are_properly_parsed() {
-        guard let settings = mapLoadIncompleteShippingLabelAccountSettings() else {
+    func test_Account_Settings_without_payment_methods_are_properly_parsed() async {
+        guard let settings = await mapLoadIncompleteShippingLabelAccountSettings() else {
             XCTFail()
             return
         }
@@ -83,30 +83,30 @@ private extension ShippingLabelAccountSettingsMapperTests {
 
     /// Returns the ShippingLabelAccountSettingsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapAccountSettings(from filename: String) -> ShippingLabelAccountSettings? {
+    func mapAccountSettings(from filename: String) async -> ShippingLabelAccountSettings? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! ShippingLabelAccountSettingsMapper(siteID: sampleSiteID).map(response: response)
+        return try! await ShippingLabelAccountSettingsMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the ShippingLabelAccountSettingsMapper output upon receiving `shipping-label-account-settings`
     ///
-    func mapLoadShippingLabelAccountSettings() -> ShippingLabelAccountSettings? {
-        return mapAccountSettings(from: "shipping-label-account-settings")
+    func mapLoadShippingLabelAccountSettings() async -> ShippingLabelAccountSettings? {
+        await mapAccountSettings(from: "shipping-label-account-settings")
     }
 
     /// Returns the ShippingLabelAccountSettingsMapper output upon receiving `shipping-label-account-settings-without-data`
     ///
-    func mapLoadShippingLabelAccountSettingsWithoutDataEnvelope() -> ShippingLabelAccountSettings? {
-        return mapAccountSettings(from: "shipping-label-account-settings-without-data")
+    func mapLoadShippingLabelAccountSettingsWithoutDataEnvelope() async -> ShippingLabelAccountSettings? {
+        await mapAccountSettings(from: "shipping-label-account-settings-without-data")
     }
 
     /// Returns the ShippingLabelAccountSettingsMapper output upon receiving `shipping-label-account-settings-no-payment-methods`
     ///
-    func mapLoadIncompleteShippingLabelAccountSettings() -> ShippingLabelAccountSettings? {
-        return mapAccountSettings(from: "shipping-label-account-settings-no-payment-methods")
+    func mapLoadIncompleteShippingLabelAccountSettings() async -> ShippingLabelAccountSettings? {
+        await mapAccountSettings(from: "shipping-label-account-settings-no-payment-methods")
     }
 }
 

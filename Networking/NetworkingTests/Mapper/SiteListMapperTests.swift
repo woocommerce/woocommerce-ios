@@ -3,9 +3,9 @@ import XCTest
 
 final class SiteListMapperTests: XCTestCase {
 
-    func test_site_without_can_blaze_key_is_parsed_successfully() throws {
+    func test_site_without_can_blaze_key_is_parsed_successfully() async throws {
         // Given
-        let sites = mapLoadSiteListResponse()
+        let sites = try await mapLoadSiteListResponse()
 
         // Then
         let second = try XCTUnwrap(sites[safe: 1])
@@ -14,9 +14,9 @@ final class SiteListMapperTests: XCTestCase {
 
     /// `sites-malformed.json` contains a correct site and a site without options(malformed)
     ///
-    func test_malformed_sites_are_evicted_from_site_list() throws {
+    func test_malformed_sites_are_evicted_from_site_list() async throws {
         // Given
-        let sites = mapLoadMalformedSiteListResponse()
+        let sites = try await mapLoadMalformedSiteListResponse()
 
         // Then
         XCTAssertEqual(sites.count, 1)
@@ -27,19 +27,21 @@ final class SiteListMapperTests: XCTestCase {
 }
 
 private extension SiteListMapperTests {
-    func mapSiteListData(from filename: String) -> [Site] {
+    func mapSiteListData(from filename: String) async throws -> [Site] {
         guard let response = Loader.contentsOf(filename) else {
-            return []
+            throw FileNotFoundError()
         }
 
-        return (try? SiteListMapper().map(response: response)) ?? []
+        return try await SiteListMapper().map(response: response)
     }
 
-    func mapLoadSiteListResponse() -> [Site] {
-        mapSiteListData(from: "sites")
+    func mapLoadSiteListResponse() async throws -> [Site] {
+        try await mapSiteListData(from: "sites")
     }
 
-    func mapLoadMalformedSiteListResponse() -> [Site] {
-        return mapSiteListData(from: "sites-malformed")
+    func mapLoadMalformedSiteListResponse() async throws -> [Site] {
+        try await mapSiteListData(from: "sites-malformed")
     }
+
+    struct FileNotFoundError: Error {}
 }

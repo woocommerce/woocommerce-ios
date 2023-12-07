@@ -10,36 +10,36 @@ class ShippingLabelCreationEligibilityMapperTests: XCTestCase {
     /// Sample Order ID
     private let sampleOrderID: Int64 = 123
 
-    func test_shipping_label_creation_eligibility_success_is_properly_parsed() throws {
+    func test_shipping_label_creation_eligibility_success_is_properly_parsed() async throws {
         // Given
-        let response = try XCTUnwrap(mapEligibilityResponse(from: "shipping-label-eligibility-success"))
+        let response = try await mapEligibilityResponse(from: "shipping-label-eligibility-success")
 
         // Then
         XCTAssertEqual(response.isEligible, true)
         XCTAssertEqual(response.reason, nil)
     }
 
-    func test_shipping_label_creation_eligibility_success_is_properly_parsed_when_response_has_no_data_envelope() throws {
+    func test_shipping_label_creation_eligibility_success_is_properly_parsed_when_response_has_no_data_envelope() async throws {
         // Given
-        let response = try XCTUnwrap(mapEligibilityResponse(from: "shipping-label-eligibility-success-without-data"))
+        let response = try await mapEligibilityResponse(from: "shipping-label-eligibility-success-without-data")
 
         // Then
         XCTAssertEqual(response.isEligible, true)
         XCTAssertEqual(response.reason, nil)
     }
 
-    func test_shipping_label_creation_eligibility_failure_is_properly_parsed() throws {
+    func test_shipping_label_creation_eligibility_failure_is_properly_parsed() async throws {
         // Given
-        let response = try XCTUnwrap(mapEligibilityResponse(from: "shipping-label-eligibility-failure"))
+        let response = try await mapEligibilityResponse(from: "shipping-label-eligibility-failure")
 
         // Then
         XCTAssertEqual(response.isEligible, false)
         XCTAssertEqual(response.reason, "no_selected_payment_method_and_user_cannot_manage_payment_methods")
     }
 
-    func test_shipping_label_creation_eligibility_failure_is_properly_parsed_when_response_has_no_data_envelope() throws {
+    func test_shipping_label_creation_eligibility_failure_is_properly_parsed_when_response_has_no_data_envelope() async throws {
         // Given
-        let response = try XCTUnwrap(mapEligibilityResponse(from: "shipping-label-eligibility-failure-without-data"))
+        let response = try await mapEligibilityResponse(from: "shipping-label-eligibility-failure-without-data")
 
         // Then
         XCTAssertEqual(response.isEligible, false)
@@ -53,11 +53,13 @@ private extension ShippingLabelCreationEligibilityMapperTests {
 
     /// Returns the `ShippingLabelCreationEligibilityMapper` output upon receiving `filename` (Data Encoded)
     ///
-    func mapEligibilityResponse(from filename: String) -> ShippingLabelCreationEligibilityResponse? {
+    func mapEligibilityResponse(from filename: String) async throws -> ShippingLabelCreationEligibilityResponse {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try? ShippingLabelCreationEligibilityMapper().map(response: response)
+        return try await ShippingLabelCreationEligibilityMapper().map(response: response)
     }
+
+    struct FileNotFoundError: Error {}
 }

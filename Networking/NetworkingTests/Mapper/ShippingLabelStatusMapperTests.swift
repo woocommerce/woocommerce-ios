@@ -13,9 +13,9 @@ class ShippingLabelStatusMapperTests: XCTestCase {
 
     /// Verifies that the Shipping Label Status Polling Response is parsed correctly when it receives a purchased shipping label.
     ///
-    func test_ShippingLabelStatusPollingResponse_is_properly_parsed_for_purchased_label() {
+    func test_ShippingLabelStatusPollingResponse_is_properly_parsed_for_purchased_label() async {
         // Given
-        guard let shippingLabelList = mapLoadShippingLabelStatus(),
+        guard let shippingLabelList = await mapLoadShippingLabelStatus(),
               let shippingLabelResponse = shippingLabelList.first else {
             XCTFail()
             return
@@ -47,9 +47,9 @@ class ShippingLabelStatusMapperTests: XCTestCase {
         XCTAssertEqual(shippingLabel?.productNames, ["WordPress Pennant"])
     }
 
-    func test_ShippingLabelStatusPollingResponse_is_properly_parsed_for_purchased_label_when_response_has_no_data_envelope() {
+    func test_ShippingLabelStatusPollingResponse_is_properly_parsed_for_purchased_label_when_response_has_no_data_envelope() async {
         // Given
-        guard let shippingLabelList = mapLoadShippingLabelStatusWithoutDataEnvelope(),
+        guard let shippingLabelList = await mapLoadShippingLabelStatusWithoutDataEnvelope(),
               let shippingLabelResponse = shippingLabelList.first else {
             XCTFail()
             return
@@ -83,8 +83,8 @@ class ShippingLabelStatusMapperTests: XCTestCase {
 
     /// Verifies that the Shipping Label Status Polling Response is parsed correctly when it receives a pending shipping label purchase.
     ///
-    func test_ShippingLabelStatusPollingResponse_is_properly_parsed_for_pending_label_purchase() {
-        guard let shippingLabelList = mapLoadShippingLabelPurchaseStatus(),
+    func test_ShippingLabelStatusPollingResponse_is_properly_parsed_for_pending_label_purchase() async {
+        guard let shippingLabelList = await mapLoadShippingLabelPurchaseStatus(),
               let shippingLabelResponse = shippingLabelList.first else {
             XCTFail()
             return
@@ -101,29 +101,29 @@ private extension ShippingLabelStatusMapperTests {
 
     /// Returns the ShippingLabelStatusMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapShippingLabelStatus(from filename: String) -> [ShippingLabelStatusPollingResponse]? {
+    func mapShippingLabelStatus(from filename: String) async -> [ShippingLabelStatusPollingResponse]? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! ShippingLabelStatusMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: response)
+        return try! await ShippingLabelStatusMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: response)
     }
 
     /// Returns the ShippingLabelStatusMapper output upon receiving `shipping-label-status-success`
     ///
-    func mapLoadShippingLabelStatus() -> [ShippingLabelStatusPollingResponse]? {
-        return mapShippingLabelStatus(from: "shipping-label-status-success")
+    func mapLoadShippingLabelStatus() async -> [ShippingLabelStatusPollingResponse]? {
+        await mapShippingLabelStatus(from: "shipping-label-status-success")
     }
 
     /// Returns the ShippingLabelStatusMapper output upon receiving `shipping-label-status-success-without-data`
     ///
-    func mapLoadShippingLabelStatusWithoutDataEnvelope() -> [ShippingLabelStatusPollingResponse]? {
-        return mapShippingLabelStatus(from: "shipping-label-status-success-without-data")
+    func mapLoadShippingLabelStatusWithoutDataEnvelope() async -> [ShippingLabelStatusPollingResponse]? {
+        await mapShippingLabelStatus(from: "shipping-label-status-success-without-data")
     }
 
     /// Returns the ShippingLabelStatusMapper output upon receiving `shipping-label-purchase-success`
     ///
-    func mapLoadShippingLabelPurchaseStatus() -> [ShippingLabelStatusPollingResponse]? {
-        return mapShippingLabelStatus(from: "shipping-label-purchase-success")
+    func mapLoadShippingLabelPurchaseStatus() async -> [ShippingLabelStatusPollingResponse]? {
+        await mapShippingLabelStatus(from: "shipping-label-purchase-success")
     }
 }

@@ -20,8 +20,8 @@ class SiteAPIMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
-    func test_SiteSetting_fields_are_properly_parsed() {
-        let apiSettings = mapLoadSiteAPIResponse()
+    func test_SiteSetting_fields_are_properly_parsed() async {
+        let apiSettings = await mapLoadSiteAPIResponse()
 
         XCTAssertNotNil(apiSettings)
         XCTAssertEqual(apiSettings?.siteID, dummySiteID)
@@ -32,8 +32,8 @@ class SiteAPIMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
-    func test_SiteSetting_fields_are_properly_parsed_when_response_has_no_data_envelope() {
-        let apiSettings = mapLoadSiteAPIResponseWithoutDataEnvelope()
+    func test_SiteSetting_fields_are_properly_parsed_when_response_has_no_data_envelope() async {
+        let apiSettings = await mapLoadSiteAPIResponseWithoutDataEnvelope()
 
         XCTAssertNotNil(apiSettings)
         XCTAssertEqual(apiSettings?.siteID, dummySiteID)
@@ -44,8 +44,8 @@ class SiteAPIMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
-    func test_broken_SiteSetting_fields_are_properly_parsed() {
-        let apiSettings = mapLoadBrokenSiteAPIResponse()
+    func test_broken_SiteSetting_fields_are_properly_parsed() async {
+        let apiSettings = await mapLoadBrokenSiteAPIResponse()
 
         XCTAssertNotNil(apiSettings)
         XCTAssertEqual(apiSettings?.siteID, dummySiteID)
@@ -62,29 +62,29 @@ private extension SiteAPIMapperTests {
 
     /// Returns the SiteAPIMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapSiteAPIData(from filename: String) -> SiteAPI? {
+    func mapSiteAPIData(from filename: String) async -> SiteAPI? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! SiteAPIMapper(siteID: dummySiteID).map(response: response)
+        return try! await SiteAPIMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the SiteAPIMapper output upon receiving `site-api`
     ///
-    func mapLoadSiteAPIResponse() -> SiteAPI? {
-        return mapSiteAPIData(from: "site-api")
+    func mapLoadSiteAPIResponse() async -> SiteAPI? {
+        await mapSiteAPIData(from: "site-api")
     }
 
     /// Returns the SiteAPIMapper output upon receiving `site-api-without-data`
     ///
-    func mapLoadSiteAPIResponseWithoutDataEnvelope() -> SiteAPI? {
-        return mapSiteAPIData(from: "site-api-without-data")
+    func mapLoadSiteAPIResponseWithoutDataEnvelope() async -> SiteAPI? {
+        await mapSiteAPIData(from: "site-api-without-data")
     }
 
     /// Returns the SiteAPIMapper output upon receiving `site-api`
     ///
-    func mapLoadBrokenSiteAPIResponse() -> SiteAPI? {
-        return mapSiteAPIData(from: "site-api-no-woo")
+    func mapLoadBrokenSiteAPIResponse() async -> SiteAPI? {
+        await mapSiteAPIData(from: "site-api-no-woo")
     }
 }

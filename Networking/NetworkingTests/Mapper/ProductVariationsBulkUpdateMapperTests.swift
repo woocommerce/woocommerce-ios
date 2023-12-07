@@ -15,8 +15,8 @@ final class ProductVariationsBulkUpdateMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
-    func test_ProductVariation_fields_are_properly_parsed() throws {
-        let productVariations = try XCTUnwrap(mapLoadProductVariationBulkUpdateResponse())
+    func test_ProductVariation_fields_are_properly_parsed() async throws {
+        let productVariations = try await mapLoadProductVariationBulkUpdateResponse()
         XCTAssertTrue(productVariations.count == 1)
 
         let variation = try XCTUnwrap(productVariations.first)
@@ -25,8 +25,8 @@ final class ProductVariationsBulkUpdateMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
-    func test_ProductVariation_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let productVariations = try XCTUnwrap(mapLoadProductVariationBulkUpdateResponseWithoutDataEnvelope())
+    func test_ProductVariation_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let productVariations = try await mapLoadProductVariationBulkUpdateResponseWithoutDataEnvelope()
         XCTAssertTrue(productVariations.count == 1)
 
         let variation = try XCTUnwrap(productVariations.first)
@@ -40,23 +40,25 @@ private extension ProductVariationsBulkUpdateMapperTests {
 
     /// Returns the ProductVariationsBulkUpdateMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductVariations(from filename: String) -> [ProductVariation]? {
+    func mapProductVariations(from filename: String) async throws -> [ProductVariation] {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try? ProductVariationsBulkUpdateMapper(siteID: dummySiteID, productID: dummyProductID).map(response: response)
+        return try await ProductVariationsBulkUpdateMapper(siteID: dummySiteID, productID: dummyProductID).map(response: response)
     }
 
     /// Returns the ProductVariationsBulkUpdateMapper output upon receiving `product`
     ///
-    func mapLoadProductVariationBulkUpdateResponse() -> [ProductVariation]? {
-        return mapProductVariations(from: "product-variations-bulk-update")
+    func mapLoadProductVariationBulkUpdateResponse() async throws -> [ProductVariation] {
+        try await mapProductVariations(from: "product-variations-bulk-update")
     }
 
     /// Returns the ProductVariationsBulkUpdateMapper output upon receiving `product`
     ///
-    func mapLoadProductVariationBulkUpdateResponseWithoutDataEnvelope() -> [ProductVariation]? {
-        return mapProductVariations(from: "product-variations-bulk-update-without-data")
+    func mapLoadProductVariationBulkUpdateResponseWithoutDataEnvelope() async throws -> [ProductVariation] {
+        try await mapProductVariations(from: "product-variations-bulk-update-without-data")
     }
+
+    struct FileNotFoundError: Error {}
 }

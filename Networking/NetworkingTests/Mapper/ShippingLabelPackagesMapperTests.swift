@@ -8,8 +8,8 @@ final class ShippingLabelPackagesMapperTests: XCTestCase {
 
     /// Verifies that all of the ShippingLabelPackagesResponse Fields are parsed correctly.
     ///
-    func test_ShippingLabelPackages_fields_are_properly_parsed() throws {
-        let shippingLabelPackages = try XCTUnwrap(mapLoadShippingLabelPackagesResponse())
+    func test_ShippingLabelPackages_fields_are_properly_parsed() async throws {
+        let shippingLabelPackages = try await mapLoadShippingLabelPackagesResponse()
 
         XCTAssertEqual(shippingLabelPackages.storeOptions, sampleShippingLabelStoreOptions())
         XCTAssertEqual(shippingLabelPackages.customPackages, sampleShippingLabelCustomPackages())
@@ -21,8 +21,8 @@ final class ShippingLabelPackagesMapperTests: XCTestCase {
 
     /// Verifies that all of the ShippingLabelPackagesResponse Fields are parsed correctly.
     ///
-    func test_ShippingLabelPackages_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let shippingLabelPackages = try XCTUnwrap(mapLoadShippingLabelPackagesResponseWithoutDataEnvelope())
+    func test_ShippingLabelPackages_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let shippingLabelPackages = try await mapLoadShippingLabelPackagesResponseWithoutDataEnvelope()
 
         XCTAssertEqual(shippingLabelPackages.storeOptions, sampleShippingLabelStoreOptions())
         XCTAssertEqual(shippingLabelPackages.customPackages.first?.title, "Small box")
@@ -34,26 +34,28 @@ final class ShippingLabelPackagesMapperTests: XCTestCase {
 private extension ShippingLabelPackagesMapperTests {
     /// Returns the ProductVariationMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapShippingLabelPackages(from filename: String) -> ShippingLabelPackagesResponse? {
+    func mapShippingLabelPackages(from filename: String) async throws -> ShippingLabelPackagesResponse {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+           throw FileNotFoundError()
         }
 
-        return try? ShippingLabelPackagesMapper().map(response: response)
+        return try await ShippingLabelPackagesMapper().map(response: response)
     }
 
     /// Returns the ShippingLabelPackagesMapper output upon receiving `shipping-label-packages-success`
     ///
-    func mapLoadShippingLabelPackagesResponse() -> ShippingLabelPackagesResponse? {
-        return mapShippingLabelPackages(from: "shipping-label-packages-success")
+    func mapLoadShippingLabelPackagesResponse() async throws -> ShippingLabelPackagesResponse {
+        try await mapShippingLabelPackages(from: "shipping-label-packages-success")
     }
 
     /// Returns the ShippingLabelPackagesMapper output upon receiving
     /// `shipping-label-packages-success-without-data`
     ///
-    func mapLoadShippingLabelPackagesResponseWithoutDataEnvelope() -> ShippingLabelPackagesResponse? {
-        return mapShippingLabelPackages(from: "shipping-label-packages-success-without-data")
+    func mapLoadShippingLabelPackagesResponseWithoutDataEnvelope() async throws -> ShippingLabelPackagesResponse {
+        try await mapShippingLabelPackages(from: "shipping-label-packages-success-without-data")
     }
+
+    struct FileNotFoundError: Error {}
 }
 
 private extension ShippingLabelPackagesMapperTests {

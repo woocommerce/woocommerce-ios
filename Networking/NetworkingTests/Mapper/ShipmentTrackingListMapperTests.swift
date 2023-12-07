@@ -16,8 +16,8 @@ final class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly for multiple tracking JSON objects.
     ///
-    func test_tracking_fields_are_properly_parsed_for_multiple() {
-        let shipmentTrackings = mapLoadMultipleTrackingsResponse()
+    func test_tracking_fields_are_properly_parsed_for_multiple() async {
+        let shipmentTrackings = await mapLoadMultipleTrackingsResponse()
         XCTAssertEqual(shipmentTrackings.count, 4)
 
         let firstTracking = shipmentTrackings.first
@@ -42,8 +42,8 @@ final class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly for a single tracking JSON object.
     ///
-    func test_tracking_fields_are_properly_parsed_for_single() {
-        let shipmentTrackings = mapLoadSingleTrackingsResponse()
+    func test_tracking_fields_are_properly_parsed_for_single() async {
+        let shipmentTrackings = await mapLoadSingleTrackingsResponse()
         XCTAssertEqual(shipmentTrackings.count, 1)
 
         let firstTracking = shipmentTrackings.first
@@ -59,15 +59,15 @@ final class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly an empty JSON array.
     ///
-    func test_tracking_fields_are_properly_parsed_for_empty() {
-        let shipmentTrackings = mapLoadEmptyTrackingsResponse()
+    func test_tracking_fields_are_properly_parsed_for_empty() async {
+        let shipmentTrackings = await mapLoadEmptyTrackingsResponse()
         XCTAssertEqual(shipmentTrackings.count, 0)
     }
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly for a single tracking JSON object.
     ///
-    func test_tracking_fields_are_properly_parsed_when_response_has_no_data_envelope() {
-        let shipmentTrackings = mapLoadSingleTrackingsResponseWithoutDataEnvelope()
+    func test_tracking_fields_are_properly_parsed_when_response_has_no_data_envelope() async {
+        let shipmentTrackings = await mapLoadSingleTrackingsResponseWithoutDataEnvelope()
         XCTAssertEqual(shipmentTrackings.count, 1)
 
         let firstTracking = shipmentTrackings.first
@@ -89,35 +89,35 @@ private extension ShipmentTrackingListMapperTests {
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapShipmentTrackings(from filename: String) -> [ShipmentTracking] {
+    func mapShipmentTrackings(from filename: String) async -> [ShipmentTracking] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! ShipmentTrackingListMapper(siteID: dummySiteID, orderID: dummyOrderID).map(response: response)
+        return try! await ShipmentTrackingListMapper(siteID: dummySiteID, orderID: dummyOrderID).map(response: response)
     }
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_single`
     ///
-    func mapLoadSingleTrackingsResponse() -> [ShipmentTracking] {
-        return mapShipmentTrackings(from: "shipment_tracking_single")
+    func mapLoadSingleTrackingsResponse() async -> [ShipmentTracking] {
+        await mapShipmentTrackings(from: "shipment_tracking_single")
     }
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_multiple`
     ///
-    func mapLoadMultipleTrackingsResponse() -> [ShipmentTracking] {
-        return mapShipmentTrackings(from: "shipment_tracking_multiple")
+    func mapLoadMultipleTrackingsResponse() async -> [ShipmentTracking] {
+        await mapShipmentTrackings(from: "shipment_tracking_multiple")
     }
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_empty`
     ///
-    func mapLoadEmptyTrackingsResponse() -> [ShipmentTracking] {
-        return mapShipmentTrackings(from: "shipment_tracking_empty")
+    func mapLoadEmptyTrackingsResponse() async -> [ShipmentTracking] {
+        await mapShipmentTrackings(from: "shipment_tracking_empty")
     }
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_single_without_data`
     ///
-    func mapLoadSingleTrackingsResponseWithoutDataEnvelope() -> [ShipmentTracking] {
-        return mapShipmentTrackings(from: "shipment_tracking_single_without_data")
+    func mapLoadSingleTrackingsResponseWithoutDataEnvelope() async -> [ShipmentTracking] {
+        await mapShipmentTrackings(from: "shipment_tracking_single_without_data")
     }
 }

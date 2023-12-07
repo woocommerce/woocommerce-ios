@@ -16,8 +16,8 @@ final class RefundListMapperTests: XCTestCase {
 
     /// Verifies that all the Refund fields are parsed correctly.
     ///
-    func test_Refund_fields_are_properly_parsed() {
-        let result = [mapLoadAllRefundsResponse(), mapLoadAllRefundsResponseWithoutDataEnvelope()]
+    func test_Refund_fields_are_properly_parsed() async throws {
+        let result = [try await mapLoadAllRefundsResponse(), try await mapLoadAllRefundsResponseWithoutDataEnvelope()]
         for refunds in result {
             XCTAssertEqual(refunds.count, 2)
 
@@ -56,8 +56,8 @@ final class RefundListMapperTests: XCTestCase {
 
     /// Verifies that all of the Refunded Order Items are parsed correctly.
     ///
-    func test_Refund_items_are_correctly_parsed() {
-        let refunds = mapLoadAllRefundsResponse()
+    func test_Refund_items_are_correctly_parsed() async throws {
+        let refunds = try await mapLoadAllRefundsResponse()
         XCTAssertEqual(refunds.count, 2)
 
         let refund = refunds[0]
@@ -117,23 +117,23 @@ private extension RefundListMapperTests {
 
     /// Returns the RefundListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapRefunds(from filename: String) -> [Refund] {
+    func mapRefunds(from filename: String) async throws -> [Refund] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! RefundListMapper(siteID: dummySiteID, orderID: orderID).map(response: response)
+        return try await RefundListMapper(siteID: dummySiteID, orderID: orderID).map(response: response)
     }
 
     /// Returns the RefundListMapper output upon receiving `refunds-all`
     ///
-    func mapLoadAllRefundsResponse() -> [Refund] {
-        return mapRefunds(from: "refunds-all")
+    func mapLoadAllRefundsResponse() async throws -> [Refund] {
+        try await mapRefunds(from: "refunds-all")
     }
 
     /// Returns the RefundListMapper output upon receiving `refunds-all-without-data`
     ///
-    func mapLoadAllRefundsResponseWithoutDataEnvelope() -> [Refund] {
-        return mapRefunds(from: "refunds-all-without-data")
+    func mapLoadAllRefundsResponseWithoutDataEnvelope() async throws -> [Refund] {
+        try await mapRefunds(from: "refunds-all-without-data")
     }
 }

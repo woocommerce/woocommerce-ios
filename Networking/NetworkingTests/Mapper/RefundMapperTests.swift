@@ -16,14 +16,9 @@ final class RefundMapperTests: XCTestCase {
 
     /// Verifies that all of the Refund fields are parsed correctly.
     ///
-    func test_Refund_fields_are_properly_parsed() {
-        let results = [mapLoadRefundResponse(), mapLoadRefundResponseWithoutDataEnvelope()]
+    func test_Refund_fields_are_properly_parsed() async throws {
+        let results = [try await mapLoadRefundResponse(), try await mapLoadRefundResponseWithoutDataEnvelope()]
         for refund in results {
-            guard let refund else {
-                XCTFail("No mock file found.")
-                return
-            }
-
             XCTAssertEqual(refund.siteID, dummySiteID)
             XCTAssertEqual(refund.refundID, 562)
 
@@ -39,12 +34,8 @@ final class RefundMapperTests: XCTestCase {
 
     /// Verifies that all of the Refunded Order Items are parsed correctly.
     ///
-    func test_Refund_items_are_correctly_parsed() {
-        guard let refund = mapLoadRefundResponse() else {
-            XCTFail("Failed to load `refund-single.json` file.")
-            return
-        }
-
+    func test_Refund_items_are_correctly_parsed() async throws {
+        let refund = try await mapLoadRefundResponse()
         guard let item = refund.items.first else {
             XCTFail("Failed to load `refund-single.json` file")
             return
@@ -65,9 +56,9 @@ final class RefundMapperTests: XCTestCase {
         XCTAssertEqual(item.price, NSDecimalNumber(integerLiteral: 27))
     }
 
-    func test_refund_shipping_lines_are_correctly_parsed() {
-        guard let refund = mapLoadRefundResponse(),
-              let shippingLine = refund.shippingLines?.first,
+    func test_refund_shipping_lines_are_correctly_parsed() async throws {
+        let refund = try await mapLoadRefundResponse()
+        guard let shippingLine = refund.shippingLines?.first,
               let taxLine = shippingLine.taxes.first else {
             XCTFail("Failed to load `refund-single.json` file.")
             return
@@ -146,27 +137,28 @@ final class RefundMapperTests: XCTestCase {
 /// Private Methods.
 ///
 private extension RefundMapperTests {
+    struct FileNotFoundError: Error {}
 
     /// Returns the RefundMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapRefund(from filename: String) -> Refund? {
+    func mapRefund(from filename: String) async throws -> Refund {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try! RefundMapper(siteID: dummySiteID, orderID: orderID).map(response: response)
+        return try await RefundMapper(siteID: dummySiteID, orderID: orderID).map(response: response)
     }
 
     /// Returns the RefundsMapper output upon receiving `refund-single`
     ///
-    func mapLoadRefundResponse() -> Refund? {
-        return mapRefund(from: "refund-single")
+    func mapLoadRefundResponse() async throws -> Refund {
+        try await mapRefund(from: "refund-single")
     }
 
     /// Returns the RefundsMapper output upon receiving `refund-single-without-data`
     ///
-    func mapLoadRefundResponseWithoutDataEnvelope() -> Refund? {
-        return mapRefund(from: "refund-single-without-data")
+    func mapLoadRefundResponseWithoutDataEnvelope() async throws -> Refund {
+        try await mapRefund(from: "refund-single-without-data")
     }
 
     /// Creates a dummy refund with items and taxes

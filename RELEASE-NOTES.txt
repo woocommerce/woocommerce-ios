@@ -2,6 +2,7 @@
 
 16.6
 -----
+- [**] Order form: quantity can now be typed in [https://github.com/woocommerce/woocommerce-ios/pull/11349]
 - [*] Payments: Supress displaying an error when the card reader connection is manually cancelled [https://github.com/woocommerce/woocommerce-ios/pull/11230]
 - [internal] Fix runtime warning when uploading media when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11355]
 - [*] Products: Downloadable products now accept local files of types other than images. [https://github.com/woocommerce/woocommerce-ios/pull/11353]

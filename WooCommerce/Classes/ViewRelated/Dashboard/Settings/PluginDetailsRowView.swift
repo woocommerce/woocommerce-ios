@@ -1,6 +1,63 @@
 import SwiftUI
 import Yosemite
 
+struct PluginListView: View {
+    @ObservedObject var viewModel: PluginListViewModel
+
+    @State private var showModal = false
+
+    var body: some View {
+        NavigationRow(selectable: true, content: {
+            Text("Plugins")
+        }, action: {
+            showModal = true
+        })
+        .sheet(isPresented: $showModal, content: {
+            PluginListDetailView(viewModel: viewModel)
+        })
+    }
+}
+
+struct PluginListDetailView: View {
+
+    private let viewModel: PluginListViewModel
+
+    init(viewModel: PluginListViewModel) {
+        self.viewModel = viewModel
+    }
+
+    @State private var showWebView = false
+
+    var updateUrl: URL? {
+        // TODO: Inject from storesManager.sessionManager.defaultSite?.pluginsURL,
+        return URL(string: "https://woo.com")!
+    }
+
+    var body: some View {
+        ScrollView {
+            Spacer()
+            ForEach(viewModel.pluginList(), id: \.self) { plugin in
+                VStack {
+                    NavigationRow(content: {
+                        Text(plugin.name)
+                        Text(plugin.description)
+                        Text(plugin.upToDate)
+                            .foregroundColor(.green)
+                    }, action: {
+                        showWebView = true
+                    })
+                    .sheet(isPresented: $showWebView, content: {
+                        if let updateUrl = updateUrl {
+                            SafariView(url: updateUrl)
+                        }
+                    })
+                }
+                Divider()
+            }
+        }
+    }
+}
+
 struct PluginDetailsRowView: View {
     @ObservedObject var viewModel: PluginDetailsViewModel
 

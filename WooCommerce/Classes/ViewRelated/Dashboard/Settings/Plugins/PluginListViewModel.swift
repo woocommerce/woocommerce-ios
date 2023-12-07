@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-final class PluginListViewModel {
+final class PluginListViewModel: ObservableObject {
 
     /// ID of the site to load plugins for
     ///
@@ -130,6 +130,17 @@ extension PluginListViewModel {
             upToDate: isUpToDate ? "Up to date" : "Update available"
         )
     }
+
+    func pluginList() -> [PluginListCellViewModel] {
+        let plugins = resultsController.fetchedObjects.map {
+            PluginListCellViewModel(
+                name: $0.name,
+                description: "Version: \($0.version) - Latest Version: \($0.versionLatest) ",
+                upToDate: "Up to date"
+            )
+        }
+        return plugins
+    }
 }
 
 // MARK: - Localization
@@ -151,7 +162,8 @@ private extension PluginListViewModel {
 
 // MARK: - Model for plugin list cells
 //
-struct PluginListCellViewModel {
+struct PluginListCellViewModel: Hashable {
+    let id: UUID = UUID()
     let name: String
     let description: String
     let upToDate: String

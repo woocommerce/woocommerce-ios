@@ -271,8 +271,9 @@ private extension SettingsViewModel {
                 return nil
             }
 
+            // TODO: Temporary. newPlugins, and plugins rows exist at the same time
             return Section(title: Localization.pluginsTitle,
-                           rows: [.plugins, .woocommerceDetails],
+                           rows: [.newPlugins, .plugins, .woocommerceDetails],
                            footerHeight: UITableView.automaticDimension)
         }()
 

@@ -140,6 +140,8 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
+        case let cell as HostingTableViewCell<PluginListView> where row == .newPlugins:
+            configurePluginList(cell: cell)
         case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
         case let cell as BasicTableViewCell where row == .domain:
@@ -191,6 +193,13 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = Localization.plugins
+    }
+
+    func configurePluginList(cell: HostingTableViewCell<PluginListView>) {
+        let pluginListViewModel = PluginListViewModel(siteID: stores.sessionManager.defaultStoreID ?? 0)
+        let view = PluginListView.init(viewModel: pluginListViewModel)
+        cell.host(view, parent: self)
+        cell.selectionStyle = .none
     }
 
     func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowView>) {
@@ -689,6 +698,7 @@ extension SettingsViewController {
 
         // Plugins
         case plugins
+        case newPlugins
         case woocommerceDetails
 
         // Store settings
@@ -722,7 +732,7 @@ extension SettingsViewController {
 
         fileprivate var registerWithNib: Bool {
             switch self {
-            case .woocommerceDetails:
+            case .woocommerceDetails, .newPlugins:
                 return false
             default:
                 return true
@@ -737,6 +747,8 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .plugins:
                 return BasicTableViewCell.self
+            case .newPlugins:
+                return HostingTableViewCell<PluginListView>.self
             case .woocommerceDetails:
                 return HostingTableViewCell<PluginDetailsRowView>.self
             case .support:

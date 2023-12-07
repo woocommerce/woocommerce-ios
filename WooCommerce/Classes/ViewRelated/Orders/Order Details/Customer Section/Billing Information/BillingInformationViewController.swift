@@ -234,6 +234,7 @@ private extension BillingInformationViewController {
             return
         }
 
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailCopyOptionTapped)
         sendToPasteboard(email, includeTrailingNewline: false)
     }
 }
@@ -319,6 +320,7 @@ extension BillingInformationViewController: UITableViewDelegate {
 
     private func emailCustomerHandler() {
         _ = emailComposer.displayEmailComposerIfPossible(for: order, from: self)
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailOptionTapped)
     }
 }
 

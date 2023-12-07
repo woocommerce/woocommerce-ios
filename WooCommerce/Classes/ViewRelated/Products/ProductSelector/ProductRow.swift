@@ -185,7 +185,7 @@ private struct ProductStepper: View {
                       value: $textFieldValue,
                       format: .number)
             .textFieldStyle(.roundedBorder)
-            .keyboardType(.decimalPad)
+            .keyboardType(.numberPad)
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: true, vertical: false)
             .focused($textFieldFocused)

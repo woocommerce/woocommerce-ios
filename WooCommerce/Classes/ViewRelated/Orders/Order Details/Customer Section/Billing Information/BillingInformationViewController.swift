@@ -195,6 +195,8 @@ private extension BillingInformationViewController {
             return
         }
 
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
+
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -232,7 +234,6 @@ private extension BillingInformationViewController {
             return
         }
 
-        ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
         sendToPasteboard(email, includeTrailingNewline: false)
     }
 }

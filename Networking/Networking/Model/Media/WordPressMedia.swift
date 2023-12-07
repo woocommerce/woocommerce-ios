@@ -65,24 +65,6 @@ public extension WordPressMedia {
         public let fileName: String?
         public let sizes: [String: MediaSizeDetails]?
 
-        init(width: Double?, height: Double?, fileName: String?, sizes: [String: WordPressMedia.MediaSizeDetails]?) {
-            self.width = width
-            self.height = height
-            self.fileName = fileName
-            self.sizes = sizes
-        }
-
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-
-            let width = try container.decodeIfPresent(Double.self, forKey: .width)
-            let height = try container.decodeIfPresent(Double.self, forKey: .height)
-            let fileName = try container.decodeIfPresent(String.self, forKey: .fileName)
-            let sizes = try container.decodeIfPresent([String: WordPressMedia.MediaSizeDetails].self, forKey: .sizes)
-
-            self.init(width: width, height: height, fileName: fileName, sizes: sizes)
-        }
-
         enum CodingKeys: String, CodingKey {
             case width
             case height

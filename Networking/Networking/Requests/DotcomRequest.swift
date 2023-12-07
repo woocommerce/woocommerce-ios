@@ -55,7 +55,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
         self.wordpressApiVersion = wordpressApiVersion
         self.method = method
         self.path = path
-        self.parameters = parameters ?? [:]
+        self.parameters = parameters
         self.headers = headers ?? [:]
         self.encoding = encoding
         self.availableAsRESTRequest = false
@@ -86,7 +86,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
         self.wordpressApiVersion = wordpressApiVersion
         self.method = method
         self.path = path
-        self.parameters = parameters ?? [:]
+        self.parameters = parameters
         self.headers = headers ?? [:]
         self.encoding = encoding
         self.availableAsRESTRequest = availableAsRESTRequest

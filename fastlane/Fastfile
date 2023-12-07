@@ -260,11 +260,11 @@ platform :ios do
 
     generate_strings_file_for_glotpress
 
-    UI.important('Pushing changes to remote and triggering the beta build')
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-
     push_to_git_remote(tags: false)
+
     trigger_beta_build(branch_to_build: "release/#{release_version_current}")
+
+    create_release_management_pull_request(base_branch: 'trunk', title: "Merge #{release_version_current} code freeze to trunk")
   end
 
   # Updates the `AppStoreStrings.pot` file with the latest content from the `release_notes.txt` files and the other text sources.
@@ -352,8 +352,15 @@ platform :ios do
     UI.important('Pushing changes to remote and triggering the beta build')
     UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
 
+    # Create an intermediate branch
+    new_beta_branch_name = "new_beta/#{build_code_current}"
+    Fastlane::Helper::GitHelper.create_branch(new_beta_branch_name)
+
     push_to_git_remote(tags: false)
-    trigger_beta_build(branch_to_build: "release/#{release_version_current}")
+
+    trigger_beta_build(branch_to_build: new_beta_branch_name)
+
+    create_release_management_pull_request(base_branch: "release/#{release_version_current}", title: "Merge #{build_code_current} to #{release_branch}")
   end
 
   #####################################################################################
@@ -512,6 +519,7 @@ platform :ios do
 
     push_to_git_remote(tags: false)
     trigger_release_build(branch_to_build: "release/#{version}")
+    create_release_management_pull_request(base_branch: 'trunk', title: "Merge #{release_version_current} final to trunk")
   end
 
   #####################################################################################
@@ -1389,3 +1397,17 @@ TEST_ANALYTICS_ENVIRONMENT = %w[
   BUILDKITE_MESSAGE
   BUILDKITE_BUILD_URL
 ].freeze
+
+# -----------------------------------------------------------------------------------
+# Release Management Utils
+# -----------------------------------------------------------------------------------
+def create_release_management_pull_request(base_branch:, title:)
+  create_pull_request(
+    api_token: get_required_env('GITHUB_TOKEN'),
+    repo: GITHUB_REPO,
+    title: title,
+    head: Fastlane::Helper::GitHelper.current_git_branch,
+    base: base_branch,
+    labels: 'Releases'
+  )
+end

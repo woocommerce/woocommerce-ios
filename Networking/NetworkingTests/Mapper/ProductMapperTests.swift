@@ -20,8 +20,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Verifies that all of the Product Fields are parsed correctly.
     ///
-    func test_Product_fields_are_properly_parsed() throws {
-        let productsToTest = try mapLoadProductResponse()
+    func test_Product_fields_are_properly_parsed() async throws {
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             XCTAssertEqual(product.siteID, dummySiteID)
             XCTAssertEqual(product.productID, dummyProductID)
@@ -108,8 +108,8 @@ final class ProductMapperTests: XCTestCase {
     /// Verifies that the fields of the Product with alternative types are parsed correctly when they have different types than in the struct.
     /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, `soldIndividually`, `purchasable`, and `permalink`  allow alternative types.
     ///
-    func test_that_product_alternative_types_are_properly_parsed() throws {
-        let product = try XCTUnwrap(mapLoadProductResponseWithAlternativeTypes())
+    func test_that_product_alternative_types_are_properly_parsed() async throws {
+        let product = try await mapLoadProductResponseWithAlternativeTypes()
 
         XCTAssertEqual(product.price, "17")
         XCTAssertEqual(product.regularPrice, "12.89")
@@ -132,11 +132,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string
     ///
-    func test_that_product_sale_price_is_properly_parsed() {
-        guard let product = mapLoadProductOnSaleWithEmptySalePriceResponse() else {
-            XCTFail("Failed to parse product")
-            return
-        }
+    func test_that_product_sale_price_is_properly_parsed() async throws {
+        let product = try await mapLoadProductOnSaleWithEmptySalePriceResponse()
 
         XCTAssertEqual(product.salePrice, "0")
         XCTAssertTrue(product.onSale)
@@ -144,8 +141,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that ProductTypeKey converts to a ProductType enum properly.
     ///
-    func test_that_product_type_key_converts_to_enum_properly() throws {
-        let productsToTest = try mapLoadProductResponse()
+    func test_that_product_type_key_converts_to_enum_properly() async throws {
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             let customType = ProductType(rawValue: "booking")
             XCTAssertEqual(product.productTypeKey, "booking")
@@ -155,8 +152,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that categories are properly mapped.
     ///
-    func test_that_product_categories_are_properly_mapped() throws {
-        let productsToTest = try mapLoadProductResponse()
+    func test_that_product_categories_are_properly_mapped() async throws {
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             let categories = product.categories
             XCTAssertEqual(categories.count, 1)
@@ -172,8 +169,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that tags are properly mapped.
     ///
-    func test_that_product_tags_are_properly_mapped() throws {
-        let productsToTest = try mapLoadProductResponse()
+    func test_that_product_tags_are_properly_mapped() async throws {
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             let tags = product.tags
             XCTAssertNotNil(tags)
@@ -188,8 +185,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that product images are properly mapped.
     ///
-    func test_that_product_images_are_properly_mapped() throws {
-        let productsToTest = try mapLoadProductResponse()
+    func test_that_product_images_are_properly_mapped() async throws {
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             let images = product.images
             XCTAssertEqual(images.count, 1)
@@ -209,9 +206,9 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that product downloadable files are properly mapped.
     ///
-    func test_that_product_downloadable_files_are_properly_mapped() throws {
+    func test_that_product_downloadable_files_are_properly_mapped() async throws {
         // Given
-        let productsToTest = try mapLoadProductResponse()
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             // When
             let files = product.downloads
@@ -229,8 +226,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that product attributes are properly mapped
     ///
-    func test_that_product_attributes_are_properly_mapped() throws {
-        let productsToTest = try mapLoadProductResponse()
+    func test_that_product_attributes_are_properly_mapped() async throws {
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             let attributes = product.attributes
             XCTAssertEqual(attributes.count, 2)
@@ -254,8 +251,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that the default product attributes map properly
     ///
-    func test_that_default_product_attributes_map_properly() throws {
-        let productsToTest = try mapLoadProductResponse()
+    func test_that_default_product_attributes_map_properly() async throws {
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             let defaultAttributes = product.defaultAttributes
             XCTAssertEqual(defaultAttributes.count, 2)
@@ -275,8 +272,8 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that product add-ons are properly parsed.
     ///
-    func test_product_add_ons_are_properly_parsed() throws {
-        let productsToTest = try mapLoadProductResponse()
+    func test_product_add_ons_are_properly_parsed() async throws {
+        let productsToTest = try await mapLoadProductResponse()
         for product in productsToTest {
             let addOns = product.addOns
             XCTAssertEqual(addOns.count, 3)
@@ -291,18 +288,18 @@ final class ProductMapperTests: XCTestCase {
         }
     }
 
-    func test_product_image_alt_is_nil_when_malformed() throws {
+    func test_product_image_alt_is_nil_when_malformed() async throws {
         // Given
-        let product = try XCTUnwrap(mapLoadProductWithMalformedImageAltAndVariations())
+        let product = try await mapLoadProductWithMalformedImageAltAndVariations()
 
         // Then
         XCTAssertFalse(product.images.isEmpty)
         XCTAssertNil(product.images.first?.alt)
     }
 
-    func test_product_variation_list_is_empty_when_malformed() throws {
+    func test_product_variation_list_is_empty_when_malformed() async throws {
         // Given
-        let product = try XCTUnwrap(mapLoadProductWithMalformedImageAltAndVariations())
+        let product = try await mapLoadProductWithMalformedImageAltAndVariations()
 
         // Then
         XCTAssertTrue(product.variations.isEmpty)
@@ -310,9 +307,9 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that products with the `bundle` product type are properly parsed.
     ///
-    func test_product_bundles_are_properly_parsed() throws {
+    func test_product_bundles_are_properly_parsed() async throws {
         // Given
-        let product = try XCTUnwrap(mapLoadProductBundleResponse())
+        let product = try await mapLoadProductBundleResponse()
         let bundledItem = try XCTUnwrap(product.bundledItems.first)
 
         // Then
@@ -346,9 +343,9 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that products with the `composite` product type are properly parsed.
     ///
-    func test_composite_products_are_properly_parsed() throws {
+    func test_composite_products_are_properly_parsed() async throws {
         // Given
-        let product = try XCTUnwrap(mapLoadCompositeProductResponse())
+        let product = try await mapLoadCompositeProductResponse()
         let compositeComponent = try XCTUnwrap(product.compositeComponents.first)
 
         // Then
@@ -369,9 +366,9 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that products with the `subscription` product type are properly parsed.
     ///
-    func test_subscription_products_are_properly_parsed() throws {
+    func test_subscription_products_are_properly_parsed() async throws {
         // Given
-        let product = try XCTUnwrap(mapLoadSubscriptionProductResponse())
+        let product = try await mapLoadSubscriptionProductResponse()
         let subscriptionSettings = try XCTUnwrap(product.subscription)
 
         // Then
@@ -389,9 +386,9 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that products with the `subscription` product type are properly parsed when sync renewal value is in dict format.
     ///
-    func test_subscription_products_with_sync_renewals_in_dict_format_are_properly_parsed() throws {
+    func test_subscription_products_with_sync_renewals_in_dict_format_are_properly_parsed() async throws {
         // Given
-        let product = try XCTUnwrap(mapProduct(from: "product-subscription-sync-renewals-day-month-format"))
+        let product = try await mapProduct(from: "product-subscription-sync-renewals-day-month-format")
         let subscriptionSettings = try XCTUnwrap(product.subscription)
 
         // Then
@@ -410,9 +407,9 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that products with the `subscription` product type are properly parsed when sync renewal value is in dict format with int values.
     ///
-    func test_subscription_products_with_sync_renewals_in_dict_format_with_int_values_are_properly_parsed() throws {
+    func test_subscription_products_with_sync_renewals_in_dict_format_with_int_values_are_properly_parsed() async throws {
         // Given
-        let product = try XCTUnwrap(mapProduct(from: "product-subscription-sync-renewals-day-month-format-int-values"))
+        let product = try await mapProduct(from: "product-subscription-sync-renewals-day-month-format-int-values")
         let subscriptionSettings = try XCTUnwrap(product.subscription)
 
         // Then
@@ -431,9 +428,9 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that `subscription` is nil when parsing non-subscription product response
     ///
-    func test_subscription_is_nil_when_parsing_non_subscription_product_response() throws {
+    func test_subscription_is_nil_when_parsing_non_subscription_product_response() async throws {
         // Given
-        let productsToTest = try XCTUnwrap(mapLoadProductResponse())
+        let productsToTest = try await mapLoadProductResponse()
 
         // Then
         for product in productsToTest {
@@ -443,9 +440,9 @@ final class ProductMapperTests: XCTestCase {
 
     /// Test that products with properties from the Min/Max Quantities extension are properly parsed.
     ///
-    func test_min_max_quantities_are_properly_parsed() throws {
+    func test_min_max_quantities_are_properly_parsed() async throws {
         // Given
-        let product = try XCTUnwrap(mapLoadMinMaxQuantitiesProductResponse())
+        let product = try await mapLoadMinMaxQuantitiesProductResponse()
 
         // Then
         XCTAssertEqual(product.minAllowedQuantity, "4")
@@ -462,67 +459,61 @@ private extension ProductMapperTests {
 
     /// Returns the ProductMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProduct(from filename: String) -> Product? {
+    func mapProduct(from filename: String) async throws -> Product {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw ProductMapperTestsError.unableToLoadFile
         }
 
-        return try! ProductMapper(siteID: dummySiteID).map(response: response)
+        return try await ProductMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the ProductMapper output upon receiving `product`
     ///
-    func mapLoadProductResponse() throws -> [Product] {
-        guard let product = mapProduct(from: "product") else {
-            throw ProductMapperTestsError.unableToLoadFile
-        }
-
-        guard let productWithoutDataEnvelope = mapProduct(from: "product-without-data") else {
-            throw ProductMapperTestsError.unableToLoadFile
-        }
-
+    func mapLoadProductResponse() async throws -> [Product] {
+        let product = try await mapProduct(from: "product")
+        let productWithoutDataEnvelope = try await mapProduct(from: "product-without-data")
         return [product, productWithoutDataEnvelope]
     }
 
     /// Returns the ProductMapper output upon receiving `product-alternative-types`
     ///
-    func mapLoadProductResponseWithAlternativeTypes() -> Product? {
-        return mapProduct(from: "product-alternative-types")
+    func mapLoadProductResponseWithAlternativeTypes() async throws -> Product {
+        try await mapProduct(from: "product-alternative-types")
     }
 
     /// Returns the ProductMapper output upon receiving `product` on sale, with empty sale price
     ///
-    func mapLoadProductOnSaleWithEmptySalePriceResponse() -> Product? {
-        return mapProduct(from: "product-on-sale-with-empty-sale-price")
+    func mapLoadProductOnSaleWithEmptySalePriceResponse() async throws -> Product {
+        try await mapProduct(from: "product-on-sale-with-empty-sale-price")
     }
 
     /// Returns the ProductMapper output upon receiving `product` with malformed image `alt` and `variations`
     ///
-    func mapLoadProductWithMalformedImageAltAndVariations() -> Product? {
-        return mapProduct(from: "product-malformed-variations-and-image-alt")
+    func mapLoadProductWithMalformedImageAltAndVariations() async throws -> Product {
+        try await mapProduct(from: "product-malformed-variations-and-image-alt")
     }
 
     /// Returns the ProductMapper output upon receiving `product-bundle`
     ///
-    func mapLoadProductBundleResponse() -> Product? {
-        return mapProduct(from: "product-bundle")
+    func mapLoadProductBundleResponse() async throws -> Product {
+        try await mapProduct(from: "product-bundle")
     }
 
     /// Returns the ProductMapper output upon receiving `product-composite`
     ///
-    func mapLoadCompositeProductResponse() -> Product? {
-        return mapProduct(from: "product-composite")
+    func mapLoadCompositeProductResponse() async throws -> Product {
+        try await mapProduct(from: "product-composite")
     }
 
     /// Returns the ProductMapper output upon receiving `product-subscription`
     ///
-    func mapLoadSubscriptionProductResponse() -> Product? {
-        return mapProduct(from: "product-subscription")
+    func mapLoadSubscriptionProductResponse() async throws -> Product {
+        try await mapProduct(from: "product-subscription")
     }
 
     /// Returns the ProductMapper output upon receiving `product-min-max-quantities`
     ///
-    func mapLoadMinMaxQuantitiesProductResponse() -> Product? {
-        return mapProduct(from: "product-min-max-quantities")
+    func mapLoadMinMaxQuantitiesProductResponse() async throws -> Product {
+        try await mapProduct(from: "product-min-max-quantities")
     }
 }

@@ -12,8 +12,8 @@ final class ProductCategoryMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCategory Fields are parsed correctly.
     ///
-    func test_ProductCategory_fields_are_properly_parsed() throws {
-        let productCategory = try XCTUnwrap(mapProductCategoryResponse())
+    func test_ProductCategory_fields_are_properly_parsed() async throws {
+        let productCategory = try await mapProductCategoryResponse()
 
         XCTAssertEqual(productCategory.categoryID, 104)
         XCTAssertEqual(productCategory.parentID, 0)
@@ -24,8 +24,8 @@ final class ProductCategoryMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCategory Fields are parsed correctly.
     ///
-    func test_ProductCategory_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let productCategory = try XCTUnwrap(mapProductCategoryResponseWithoutDataEnvelope())
+    func test_ProductCategory_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let productCategory = try await mapProductCategoryResponseWithoutDataEnvelope()
 
         XCTAssertEqual(productCategory.categoryID, 104)
         XCTAssertEqual(productCategory.parentID, 0)
@@ -42,23 +42,25 @@ private extension ProductCategoryMapperTests {
 
     /// Returns the ProducCategoryMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductCategory(from filename: String) throws -> ProductCategory? {
+    func mapProductCategory(from filename: String) async throws -> ProductCategory {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try ProductCategoryMapper(siteID: dummySiteID).map(response: response)
+        return try await ProductCategoryMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the ProductCategoryMapper output upon receiving `category`
     ///
-    func mapProductCategoryResponse() throws -> ProductCategory? {
-        return try mapProductCategory(from: "category")
+    func mapProductCategoryResponse() async throws -> ProductCategory {
+        return try await mapProductCategory(from: "category")
     }
 
     /// Returns the ProductCategoryMapper output upon receiving `category-without-data`
     ///
-    func mapProductCategoryResponseWithoutDataEnvelope() throws -> ProductCategory? {
-        return try mapProductCategory(from: "category-without-data")
+    func mapProductCategoryResponseWithoutDataEnvelope() async throws -> ProductCategory {
+        return try await mapProductCategory(from: "category-without-data")
     }
+
+    struct FileNotFoundError: Error {}
 }

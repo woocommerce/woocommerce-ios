@@ -8,8 +8,8 @@ final class PostMapperTests: XCTestCase {
 
     /// Verifies that all of the Post fields are parsed correctly.
     ///
-    func test_fields_are_properly_parsed() {
-        guard let sitePost = mapSitePost() else {
+    func test_fields_are_properly_parsed() async {
+        guard let sitePost = await mapSitePost() else {
             XCTFail()
             return
         }
@@ -26,11 +26,11 @@ private extension PostMapperTests {
 
     /// Returns the PostMapper output upon receiving `site-post` json (Data Encoded)
     ///
-    func mapSitePost() -> Post? {
+    func mapSitePost() async -> Post? {
         guard let response = Loader.contentsOf("site-post") else {
             return nil
         }
 
-        return try! PostMapper().map(response: response)
+        return try! await PostMapper().map(response: response)
     }
 }

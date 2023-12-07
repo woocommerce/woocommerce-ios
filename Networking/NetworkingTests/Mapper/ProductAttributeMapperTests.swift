@@ -12,8 +12,8 @@ final class ProductAttributeMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductAttribute Fields are parsed correctly.
     ///
-    func test_ProductAttribute_fields_are_properly_parsed() throws {
-        let productAttribute = try XCTUnwrap(mapProductAttributeResponse())
+    func test_ProductAttribute_fields_are_properly_parsed() async throws {
+        let productAttribute = try await mapProductAttributeResponse()
 
         XCTAssertEqual(productAttribute.attributeID, 1)
         XCTAssertEqual(productAttribute.name, "Color")
@@ -25,8 +25,8 @@ final class ProductAttributeMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductAttribute Fields are parsed correctly when response has no data envelope
     ///
-    func test_ProductAttribute_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let productAttribute = try XCTUnwrap(mapProductAttributeResponseWithoutDataEnvelope())
+    func test_ProductAttribute_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let productAttribute = try await mapProductAttributeResponseWithoutDataEnvelope()
 
         XCTAssertEqual(productAttribute.attributeID, 1)
         XCTAssertEqual(productAttribute.name, "Color")
@@ -44,23 +44,25 @@ private extension ProductAttributeMapperTests {
 
     /// Returns the ProductAttributeMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductAttribute(from filename: String) throws -> ProductAttribute? {
+    func mapProductAttribute(from filename: String) async throws -> ProductAttribute {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try ProductAttributeMapper(siteID: dummySiteID).map(response: response)
+        return try await ProductAttributeMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the ProductAttributeMapper output upon receiving `product-attribute-create`
     ///
-    func mapProductAttributeResponse() throws -> ProductAttribute? {
-        return try mapProductAttribute(from: "product-attribute-create")
+    func mapProductAttributeResponse() async throws -> ProductAttribute {
+        try await mapProductAttribute(from: "product-attribute-create")
     }
 
     /// Returns the ProductAttributeMapper output upon receiving `product-attribute-create-without-data`
     ///
-    func mapProductAttributeResponseWithoutDataEnvelope() throws -> ProductAttribute? {
-        try mapProductAttribute(from: "product-attribute-create-without-data")
+    func mapProductAttributeResponseWithoutDataEnvelope() async throws -> ProductAttribute {
+        try await mapProductAttribute(from: "product-attribute-create-without-data")
     }
+
+    struct FileNotFoundError: Error {}
 }

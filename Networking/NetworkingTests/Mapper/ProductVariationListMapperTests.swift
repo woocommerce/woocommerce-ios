@@ -15,9 +15,14 @@ final class ProductVariationListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
-    func test_ProductVariation_fields_are_properly_parsed() throws {
-        let productVariations = [try XCTUnwrap(mapLoadProductVariationListResponse()?.first),
-                                 try XCTUnwrap(mapLoadProductVariationListResponseWithoutDataEnvelope()?.first)]
+    func test_ProductVariation_fields_are_properly_parsed() async throws {
+        let productVariations = try await {
+            let productVariationListResponse = try await mapLoadProductVariationListResponse()
+            let productVariationListResponseWithoutDataEnvelope = try await mapLoadProductVariationListResponseWithoutDataEnvelope()
+            return [try XCTUnwrap(productVariationListResponse.first),
+                    try XCTUnwrap(productVariationListResponseWithoutDataEnvelope.first)]
+        }()
+
         for productVariation in productVariations {
             XCTAssertEqual(productVariation.siteID, dummySiteID)
             XCTAssertEqual(productVariation.productID, dummyProductID)
@@ -71,8 +76,11 @@ final class ProductVariationListMapperTests: XCTestCase {
     /// Verifies that the fields of the ProductVariation with alternative types are parsed correctly when they have different types than in the struct.
     /// Currently, `price`, `salePrice` and `manageStock` allow alternative types.
     ///
-    func test_that_ProductVariation_alternative_types_are_properly_parsed() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithAlternativeTypes()?.first)
+    func test_that_ProductVariation_alternative_types_are_properly_parsed() async throws {
+        let productVariation = try await {
+            let productVariationList = try await mapLoadProductVariationListResponseWithAlternativeTypes()
+            return try XCTUnwrap(productVariationList.first)
+        }()
 
         XCTAssertEqual(productVariation.price, "16")
         XCTAssertEqual(productVariation.salePrice, "12.5")
@@ -82,8 +90,11 @@ final class ProductVariationListMapperTests: XCTestCase {
 
     /// Verifies that the `salePrice` field of the ProductVariation is parsed to "0" when the product variation is on sale and the sale price is an empty string
     ///
-    func test_that_ProductVariation_salePrice_is_properly_parsed_when_on_sale() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductVariationOnSaleWithEmptySalePriceResponse()?.first)
+    func test_that_ProductVariation_salePrice_is_properly_parsed_when_on_sale() async throws {
+        let productVariation = try await {
+            let productVariationList = try await mapLoadProductVariationOnSaleWithEmptySalePriceResponse()
+            return try XCTUnwrap(productVariationList.first)
+        }()
 
         XCTAssertEqual(productVariation.salePrice, "0")
         XCTAssertTrue(productVariation.onSale)
@@ -92,8 +103,8 @@ final class ProductVariationListMapperTests: XCTestCase {
     /// Verifies that the `manageStock` field of the ProductVariation is parsed to `false` when the product variation has the same stock
     /// management as its parent product (API value for `manage_stock` is `parent`).
     ///
-    func test_that_ProductVariation_manageStock_is_false_when_the_API_value_is_parent() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithTwoManageStockStates()?[1])
+    func test_that_ProductVariation_manageStock_is_false_when_the_API_value_is_parent() async throws {
+        let productVariation = try await mapLoadProductVariationListResponseWithTwoManageStockStates()[1]
 
         XCTAssertFalse(productVariation.manageStock)
     }
@@ -101,8 +112,11 @@ final class ProductVariationListMapperTests: XCTestCase {
     /// Verifies that the `manageStock` field of the ProductVariation is parsed to `true` when the product variation's stock management is enabled
     /// (API value for `manage_stock` is `true`).
     ///
-    func test_that_ProductVariation_manageStock_is_true_when_the_API_value_is_true() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithTwoManageStockStates()?.first)
+    func test_that_ProductVariation_manageStock_is_true_when_the_API_value_is_true() async throws {
+        let productVariation = try await {
+            let productVariationList = try await mapLoadProductVariationListResponseWithTwoManageStockStates()
+            return try XCTUnwrap(productVariationList.first)
+        }()
 
         XCTAssertTrue(productVariation.manageStock)
     }
@@ -114,41 +128,43 @@ private extension ProductVariationListMapperTests {
 
     /// Returns the ProductVariationListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductVariations(from filename: String) -> [ProductVariation]? {
+    func mapProductVariations(from filename: String) async throws -> [ProductVariation] {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try? ProductVariationListMapper(siteID: dummySiteID, productID: dummyProductID).map(response: response)
+        return try await ProductVariationListMapper(siteID: dummySiteID, productID: dummyProductID).map(response: response)
     }
 
     /// Returns the ProductVariationListMapper output upon receiving `product`
     ///
-    func mapLoadProductVariationListResponse() -> [ProductVariation]? {
-        return mapProductVariations(from: "product-variations-load-all")
+    func mapLoadProductVariationListResponse() async throws -> [ProductVariation] {
+        try await mapProductVariations(from: "product-variations-load-all")
     }
 
     /// Returns the ProductVariationListMapper output upon receiving `product`
     ///
-    func mapLoadProductVariationListResponseWithoutDataEnvelope() -> [ProductVariation]? {
-        return mapProductVariations(from: "product-variations-load-all-without-data")
+    func mapLoadProductVariationListResponseWithoutDataEnvelope() async throws -> [ProductVariation] {
+        try await mapProductVariations(from: "product-variations-load-all-without-data")
     }
 
     /// Returns the ProductVariationListMapper output upon receiving `product-alternative-types`
     ///
-    func mapLoadProductVariationListResponseWithAlternativeTypes() -> [ProductVariation]? {
-        return mapProductVariations(from: "product-variations-load-all-alternative-types")
+    func mapLoadProductVariationListResponseWithAlternativeTypes() async throws -> [ProductVariation] {
+        try await mapProductVariations(from: "product-variations-load-all-alternative-types")
     }
 
     /// Returns the ProductVariationListMapper output upon receiving a product variation on sale, with empty sale price
     ///
-    func mapLoadProductVariationOnSaleWithEmptySalePriceResponse() -> [ProductVariation]? {
-        return mapProductVariations(from: "product-variations-load-all-first-on-sale-empty-sale-price")
+    func mapLoadProductVariationOnSaleWithEmptySalePriceResponse() async throws -> [ProductVariation] {
+        try await mapProductVariations(from: "product-variations-load-all-first-on-sale-empty-sale-price")
     }
 
     /// Returns the ProductVariationListMapper output upon receiving two variations with different `manageStock` states
     ///
-    func mapLoadProductVariationListResponseWithTwoManageStockStates() -> [ProductVariation]? {
-        return mapProductVariations(from: "product-variations-load-all-manage-stock-two-states")
+    func mapLoadProductVariationListResponseWithTwoManageStockStates() async throws -> [ProductVariation] {
+        try await mapProductVariations(from: "product-variations-load-all-manage-stock-two-states")
     }
+
+    struct FileNotFoundError: Error {}
 }

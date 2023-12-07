@@ -12,8 +12,8 @@ final class ProductAttributeListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductAttribute Fields are parsed correctly.
     ///
-    func test_ProductAttribute_fields_are_properly_parsed() throws {
-        let productAttributes = try mapProductAttributesResponse()
+    func test_ProductAttribute_fields_are_properly_parsed() async throws {
+        let productAttributes = try await mapProductAttributesResponse()
         XCTAssertEqual(productAttributes.count, 2)
 
         let secondProductAttribute = productAttributes[1]
@@ -28,8 +28,8 @@ final class ProductAttributeListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductAttribute Fields are parsed correctly when response has no data envelope
     ///
-    func test_ProductAttribute_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let productAttributes = try mapProductAttributeResponseWithoutDataEnvelope()
+    func test_ProductAttribute_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let productAttributes = try await mapProductAttributeResponseWithoutDataEnvelope()
         XCTAssertEqual(productAttributes.count, 2)
 
         let secondProductAttribute = productAttributes[1]
@@ -50,22 +50,22 @@ private extension ProductAttributeListMapperTests {
 
     /// Returns the ProductAttributeMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductAttribute(from filename: String) throws -> [ProductAttribute] {
+    func mapProductAttribute(from filename: String) async throws -> [ProductAttribute] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try ProductAttributeListMapper(siteID: dummySiteID).map(response: response)
+        return try await ProductAttributeListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the ProductAttributeListMapper output upon receiving `product-attribute-all`
     ///
-    func mapProductAttributesResponse() throws -> [ProductAttribute] {
-        return try mapProductAttribute(from: "product-attributes-all")
+    func mapProductAttributesResponse() async throws -> [ProductAttribute] {
+        try await mapProductAttribute(from: "product-attributes-all")
     }
 
     /// Returns the ProductAttributeListMapper output upon receiving `product-attributes-all-without-data`
     ///
-    func mapProductAttributeResponseWithoutDataEnvelope() throws -> [ProductAttribute] {
-        try mapProductAttribute(from: "product-attributes-all-without-data")
+    func mapProductAttributeResponseWithoutDataEnvelope() async throws -> [ProductAttribute] {
+        try await mapProductAttribute(from: "product-attributes-all-without-data")
     }}

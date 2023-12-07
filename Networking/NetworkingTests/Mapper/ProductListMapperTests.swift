@@ -15,8 +15,8 @@ final class ProductListMapperTests: XCTestCase {
 
     /// Verifies that all of the Product Fields are parsed correctly.
     ///
-    func test_Product_fields_are_properly_parsed() throws {
-        for products in try mapLoadAllProductsResponse() {
+    func test_Product_fields_are_properly_parsed() async throws {
+        for products in try await mapLoadAllProductsResponse() {
             XCTAssertEqual(products.count, 10)
 
             let firstProduct = products[0]
@@ -97,8 +97,8 @@ final class ProductListMapperTests: XCTestCase {
 
     /// Test that ProductTypeKey converts to
     /// a ProductType enum properly.
-    func test_that_productTypeKey_converts_to_enum_properly() throws {
-        for products in try mapLoadAllProductsResponse() {
+    func test_that_productTypeKey_converts_to_enum_properly() async throws {
+        for products in try await mapLoadAllProductsResponse() {
 
             let firstProduct = products[0]
             let customType = ProductType(rawValue: "booking")
@@ -129,8 +129,8 @@ final class ProductListMapperTests: XCTestCase {
 
     /// Test that categories are properly mapped.
     ///
-    func test_that_product_categories_are_properly_mapped() throws {
-        for products in try mapLoadAllProductsResponse() {
+    func test_that_product_categories_are_properly_mapped() async throws {
+        for products in try await mapLoadAllProductsResponse() {
             let firstProduct = products[0]
             let categories = firstProduct.categories
             XCTAssertEqual(categories.count, 1)
@@ -145,8 +145,8 @@ final class ProductListMapperTests: XCTestCase {
 
     /// Test that tags are properly mapped.
     ///
-    func test_that_product_tags_are_properly_mapped() throws {
-        for products in try mapLoadAllProductsResponse() {
+    func test_that_product_tags_are_properly_mapped() async throws {
+        for products in try await mapLoadAllProductsResponse() {
             let firstProduct = products[0]
             let tags = firstProduct.tags
             XCTAssert(tags.count == 9)
@@ -160,8 +160,8 @@ final class ProductListMapperTests: XCTestCase {
 
     /// Test that product images are properly mapped.
     ///
-    func test_that_product_images_are_properly_mapped() throws {
-        for products in try mapLoadAllProductsResponse() {
+    func test_that_product_images_are_properly_mapped() async throws {
+        for products in try await mapLoadAllProductsResponse() {
             let product = products[1]
             let images = product.images
             XCTAssertEqual(images.count, 1)
@@ -181,8 +181,8 @@ final class ProductListMapperTests: XCTestCase {
 
     /// Test that product attributes are properly mapped
     ///
-    func test_that_product_attributes_are_properly_mapped() throws {
-        for products in try mapLoadAllProductsResponse() {
+    func test_that_product_attributes_are_properly_mapped() async throws {
+        for products in try await mapLoadAllProductsResponse() {
             let product = products[4]
             let attributes = product.attributes
             XCTAssertEqual(attributes.count, 2)
@@ -205,8 +205,8 @@ final class ProductListMapperTests: XCTestCase {
 
     /// Test that the default product attributes map properly
     ///
-    func test_that_default_product_attributes_map_properly() throws {
-        for products in try mapLoadAllProductsResponse() {
+    func test_that_default_product_attributes_map_properly() async throws {
+        for products in try await mapLoadAllProductsResponse() {
             let product = products[4]
             let defaultAttributes = product.defaultAttributes
             XCTAssertEqual(defaultAttributes.count, 2)
@@ -231,19 +231,19 @@ private extension ProductListMapperTests {
 
     /// Returns the ProductListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProducts(from filename: String) throws -> [Product] {
+    func mapProducts(from filename: String) async throws -> [Product] {
         guard let response = Loader.contentsOf(filename) else {
             throw ProductListMapperTestsError.unableToLoadFile
         }
 
-        return try ProductListMapper(siteID: dummySiteID).map(response: response)
+        return try await ProductListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the ProductListMapper output upon receiving `products-load-all` and `products-load-all-without-data`
     ///
-    func mapLoadAllProductsResponse() throws -> [[Product]] {
-        let products = try mapProducts(from: "products-load-all")
-        let productsWithoutDataEnvelope = try mapProducts(from: "products-load-all-without-data")
+    func mapLoadAllProductsResponse() async throws -> [[Product]] {
+        let products = try await mapProducts(from: "products-load-all")
+        let productsWithoutDataEnvelope = try await mapProducts(from: "products-load-all-without-data")
 
         return [products, productsWithoutDataEnvelope]
     }

@@ -6,8 +6,8 @@ final class ProductAttributeTermListMapperTests: XCTestCase {
     ///
     private let dummySiteID: Int64 = 33334444
 
-    func test_productAttributeTerm_fields_are_correctly_mapped() throws {
-        let terms = try mapLoadAllProductAttributeTermsResponse()
+    func test_productAttributeTerm_fields_are_correctly_mapped() async throws {
+        let terms = try await mapLoadAllProductAttributeTermsResponse()
         XCTAssertEqual(terms.count, 3)
 
         let secondTerm = terms[1]
@@ -16,8 +16,8 @@ final class ProductAttributeTermListMapperTests: XCTestCase {
         XCTAssertEqual(secondTerm, expectedTerm)
     }
 
-    func test_productAttributeTerm_fields_are_correctly_mapped_when_response_has_no_data_envelope() throws {
-        let terms = try mapLoadAllProductAttributeTermsResponseWithoutDataEnvelope()
+    func test_productAttributeTerm_fields_are_correctly_mapped_when_response_has_no_data_envelope() async throws {
+        let terms = try await mapLoadAllProductAttributeTermsResponseWithoutDataEnvelope()
         XCTAssertEqual(terms.count, 3)
 
         let secondTerm = terms[1]
@@ -29,19 +29,19 @@ final class ProductAttributeTermListMapperTests: XCTestCase {
 
 // MARK: Helpers
 private extension ProductAttributeTermListMapperTests {
-    func mapProductAttributeTerms(from filename: String) throws -> [ProductAttributeTerm] {
+    func mapProductAttributeTerms(from filename: String) async throws -> [ProductAttributeTerm] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try ProductAttributeTermListMapper(siteID: dummySiteID).map(response: response)
+        return try await ProductAttributeTermListMapper(siteID: dummySiteID).map(response: response)
     }
 
-    func mapLoadAllProductAttributeTermsResponse() throws -> [ProductAttributeTerm] {
-        return try mapProductAttributeTerms(from: "product-attribute-terms")
+    func mapLoadAllProductAttributeTermsResponse() async throws -> [ProductAttributeTerm] {
+        return try await mapProductAttributeTerms(from: "product-attribute-terms")
     }
 
-    func mapLoadAllProductAttributeTermsResponseWithoutDataEnvelope() throws -> [ProductAttributeTerm] {
-        return try mapProductAttributeTerms(from: "product-attribute-terms-without-data")
+    func mapLoadAllProductAttributeTermsResponseWithoutDataEnvelope() async throws -> [ProductAttributeTerm] {
+        return try await mapProductAttributeTerms(from: "product-attribute-terms-without-data")
     }
 }

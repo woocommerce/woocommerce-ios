@@ -14,16 +14,16 @@ final class ProductVariationMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
-    func test_ProductVariation_fields_are_properly_parsed() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductVariationResponse())
+    func test_ProductVariation_fields_are_properly_parsed() async throws {
+        let productVariation = try await mapLoadProductVariationResponse()
 
         XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
     }
 
     /// Verifies that all of the ProductVariation Fields are parsed correctly when response has no data envelope.
     ///
-    func test_ProductVariation_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductVariationResponseWithoutDataEnvelope())
+    func test_ProductVariation_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let productVariation = try await mapLoadProductVariationResponseWithoutDataEnvelope()
 
         XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
     }
@@ -31,8 +31,8 @@ final class ProductVariationMapperTests: XCTestCase {
     /// Verifies that the fields of the Product Variations with alternative types are parsed correctly when they have different types than in the struct.
     /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, `purchasable`, and `permalink`  allow alternative types.
     ///
-    func test_that_product_variations_alternative_types_are_properly_parsed() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductVariationResponseWithAlternativeTypes())
+    func test_that_product_variations_alternative_types_are_properly_parsed() async throws {
+        let productVariation = try await mapLoadProductVariationResponseWithAlternativeTypes()
 
         XCTAssertEqual(productVariation.price, "13.99")
         XCTAssertEqual(productVariation.regularPrice, "16")
@@ -49,9 +49,9 @@ final class ProductVariationMapperTests: XCTestCase {
 
     /// Test that the fields for variations of a subscription product are properly parsed.
     ///
-    func test_subscription_variations_are_properly_parsed() throws {
+    func test_subscription_variations_are_properly_parsed() async throws {
         // Given
-        let productVariation = try XCTUnwrap(mapLoadSubscriptionVariationResponse())
+        let productVariation = try await mapLoadSubscriptionVariationResponse()
         let subscriptionSettings = try XCTUnwrap(productVariation.subscription)
 
         // Then
@@ -68,9 +68,9 @@ final class ProductVariationMapperTests: XCTestCase {
 
     /// Test that the fields for variations of a subscription product are properly parsed when missing fields.
     ///
-    func test_subscription_variations_are_properly_parsed_when_response_has_missing_fields() throws {
+    func test_subscription_variations_are_properly_parsed_when_response_has_missing_fields() async throws {
         // Given
-        let productVariation = try XCTUnwrap(mapLoadSubscriptionVariationIncompleteResponse())
+        let productVariation = try await mapLoadSubscriptionVariationIncompleteResponse()
         let subscriptionSettings = try XCTUnwrap(productVariation.subscription)
 
         // Then
@@ -87,9 +87,9 @@ final class ProductVariationMapperTests: XCTestCase {
 
     /// Test that subscription is nil when parsing non-subscription product response
     ///
-    func test_subscription_is_nil_when_parsing_non_subscription_product_response() throws {
+    func test_subscription_is_nil_when_parsing_non_subscription_product_response() async throws {
         // Given
-        let productVariation = try XCTUnwrap(mapLoadProductVariationResponse())
+        let productVariation = try await mapLoadProductVariationResponse()
 
         // Then
         XCTAssertNil(productVariation.subscription)
@@ -97,9 +97,9 @@ final class ProductVariationMapperTests: XCTestCase {
 
     /// Test that product variations with properties from the Min/Max Quantities extension are properly parsed.
     ///
-    func test_min_max_quantities_are_properly_parsed() throws {
+    func test_min_max_quantities_are_properly_parsed() async throws {
         // Given
-        let productVariation = try XCTUnwrap(mapLoadMinMaxQuantityVariationResponse())
+        let productVariation = try await mapLoadMinMaxQuantityVariationResponse()
 
         // Then
         XCTAssertEqual(productVariation.minAllowedQuantity, "6")
@@ -114,49 +114,51 @@ final class ProductVariationMapperTests: XCTestCase {
 private extension ProductVariationMapperTests {
     /// Returns the ProductVariationMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductVariation(from filename: String) -> ProductVariation? {
+    func mapProductVariation(from filename: String) async throws -> ProductVariation {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try? ProductVariationMapper(siteID: dummySiteID, productID: dummyProductID).map(response: response)
+        return try await ProductVariationMapper(siteID: dummySiteID, productID: dummyProductID).map(response: response)
     }
 
     /// Returns the ProductVariationMapper output upon receiving `ProductVariation`
     ///
-    func mapLoadProductVariationResponse() -> ProductVariation? {
-        return mapProductVariation(from: "product-variation-update")
+    func mapLoadProductVariationResponse() async throws -> ProductVariation {
+        try await mapProductVariation(from: "product-variation-update")
     }
 
     /// Returns the ProductVariationMapper output upon receiving `ProductVariation`
     ///
-    func mapLoadProductVariationResponseWithoutDataEnvelope() -> ProductVariation? {
-        return mapProductVariation(from: "product-variation-update-without-data")
+    func mapLoadProductVariationResponseWithoutDataEnvelope() async throws -> ProductVariation {
+        try await mapProductVariation(from: "product-variation-update-without-data")
     }
 
     /// Returns the ProductVariationMapper output upon receiving `ProductVariation`
     ///
-    func mapLoadProductVariationResponseWithAlternativeTypes() -> ProductVariation? {
-        return mapProductVariation(from: "product-variation-alternative-types")
+    func mapLoadProductVariationResponseWithAlternativeTypes() async throws -> ProductVariation {
+        try await mapProductVariation(from: "product-variation-alternative-types")
     }
 
     /// Returns the ProductVariationMapper output upon receiving `product-variation-subscription`
     ///
-    func mapLoadSubscriptionVariationResponse() -> ProductVariation? {
-        return mapProductVariation(from: "product-variation-subscription")
+    func mapLoadSubscriptionVariationResponse() async throws -> ProductVariation {
+        try await mapProductVariation(from: "product-variation-subscription")
     }
 
     /// Returns the ProductVariationMapper output upon receiving `product-variation-subscription-incomplete`
     ///
-    func mapLoadSubscriptionVariationIncompleteResponse() -> ProductVariation? {
-        return mapProductVariation(from: "product-variation-subscription-incomplete")
+    func mapLoadSubscriptionVariationIncompleteResponse() async throws -> ProductVariation {
+        try await mapProductVariation(from: "product-variation-subscription-incomplete")
     }
 
     /// Returns the ProductVariationMapper output upon receiving `product-variation-min-max-quantities`
     ///
-    func mapLoadMinMaxQuantityVariationResponse() -> ProductVariation? {
-        return mapProductVariation(from: "product-variation-min-max-quantities")
+    func mapLoadMinMaxQuantityVariationResponse() async throws -> ProductVariation {
+        try await mapProductVariation(from: "product-variation-min-max-quantities")
     }
+
+    struct FileNotFoundError: Error {}
 }
 
 private extension ProductVariationMapperTests {

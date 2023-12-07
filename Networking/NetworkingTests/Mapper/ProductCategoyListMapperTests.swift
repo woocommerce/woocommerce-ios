@@ -8,8 +8,8 @@ final class ProductCategoryListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCategory Fields are parsed correctly.
     ///
-    func test_ProductCategory_fields_are_properly_parsed() throws {
-        let productCategories = try mapLoadAllProductCategoriesResponse()
+    func test_ProductCategory_fields_are_properly_parsed() async throws {
+        let productCategories = try await mapLoadAllProductCategoriesResponse()
         XCTAssertEqual(productCategories.count, 2)
 
         let secondProductCategory = productCategories[1]
@@ -22,8 +22,8 @@ final class ProductCategoryListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCategory Fields are parsed correctly.
     ///
-    func test_ProductCategory_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let productCategories = try mapLoadAllProductCategoriesResponseWithoutDataEnvelope()
+    func test_ProductCategory_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let productCategories = try await mapLoadAllProductCategoriesResponseWithoutDataEnvelope()
         XCTAssertEqual(productCategories.count, 2)
 
         let secondProductCategory = productCategories[1]
@@ -36,8 +36,8 @@ final class ProductCategoryListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCategory Fields under `create` field are parsed correctly.
     ///
-    func test_ProductCategory_fields_when_created_are_properly_parsed() throws {
-        let categories = try mapLoadProductCategoriesCreatedResponse()
+    func test_ProductCategory_fields_when_created_are_properly_parsed() async throws {
+        let categories = try await mapLoadProductCategoriesCreatedResponse()
         XCTAssertEqual(categories.count, 1)
 
         let first = categories[0]
@@ -50,8 +50,8 @@ final class ProductCategoryListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCategory Fields under `create` field are parsed correctly without data enveloper.
     ///
-    func test_ProductCategory_fields_when_created_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let categories = try mapLoadProductCategoriesCreatedResponseWithoutDataEnvelope()
+    func test_ProductCategory_fields_when_created_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let categories = try await mapLoadProductCategoriesCreatedResponseWithoutDataEnvelope()
         XCTAssertEqual(categories.count, 1)
 
         let first = categories[0]
@@ -70,35 +70,35 @@ private extension ProductCategoryListMapperTests {
 
     /// Returns the ProducCategoryListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductCategories(from filename: String, responseType: ProductCategoryListMapper.ResponseType) throws -> [ProductCategory] {
+    func mapProductCategories(from filename: String, responseType: ProductCategoryListMapper.ResponseType) async throws -> [ProductCategory] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try ProductCategoryListMapper(siteID: dummySiteID, responseType: responseType).map(response: response)
+        return try await ProductCategoryListMapper(siteID: dummySiteID, responseType: responseType).map(response: response)
     }
 
     /// Returns the ProductCategoryListMapper output upon receiving `categories-all`
     ///
-    func mapLoadAllProductCategoriesResponse() throws -> [ProductCategory] {
-        return try mapProductCategories(from: "categories-all", responseType: .load)
+    func mapLoadAllProductCategoriesResponse() async throws -> [ProductCategory] {
+        try await mapProductCategories(from: "categories-all", responseType: .load)
     }
 
     /// Returns the ProductCategoryListMapper output upon receiving `categories-all-without-data`
     ///
-    func mapLoadAllProductCategoriesResponseWithoutDataEnvelope() throws -> [ProductCategory] {
-        return try mapProductCategories(from: "categories-all-without-data", responseType: .load)
+    func mapLoadAllProductCategoriesResponseWithoutDataEnvelope() async throws -> [ProductCategory] {
+        try await mapProductCategories(from: "categories-all-without-data", responseType: .load)
     }
 
     /// Returns the ProductCategoryListMapper output upon receiving `product-categories-created`
     ///
-    func mapLoadProductCategoriesCreatedResponse() throws -> [ProductCategory] {
-        return try mapProductCategories(from: "product-categories-created", responseType: .create)
+    func mapLoadProductCategoriesCreatedResponse() async throws -> [ProductCategory] {
+        try await mapProductCategories(from: "product-categories-created", responseType: .create)
     }
 
     /// Returns the ProductCategoryListMapper output upon receiving `product-categories-created-without-data`
     ///
-    func mapLoadProductCategoriesCreatedResponseWithoutDataEnvelope() throws -> [ProductCategory] {
-        return try mapProductCategories(from: "product-categories-created-without-data", responseType: .create)
+    func mapLoadProductCategoriesCreatedResponseWithoutDataEnvelope() async throws -> [ProductCategory] {
+        try await mapProductCategories(from: "product-categories-created-without-data", responseType: .create)
     }
 }

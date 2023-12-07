@@ -9,22 +9,22 @@ final class PaymentGatewayMapperTests: XCTestCase {
 
     /// Verifies that the PaymentGateway is parsed.
     ///
-    func test_PaymentGateway_map_parses_all_paymentGateways_in_response() throws {
-        let paymentGateway = try mapRetrievePaymentGatewayResponse()
+    func test_PaymentGateway_map_parses_all_paymentGateways_in_response() async throws {
+        let paymentGateway = try await mapRetrievePaymentGatewayResponse()
         XCTAssertNotNil(paymentGateway)
     }
 
     /// Verifies that the `siteID` is added in the mapper, because it's not provided by the API endpoint
     ///
-    func test_PaymentGatewaysList_map_includes_siteID_in_parsed_results() throws {
-        let paymentGateway = try mapRetrievePaymentGatewayResponse()
+    func test_PaymentGatewaysList_map_includes_siteID_in_parsed_results() async throws {
+        let paymentGateway = try await mapRetrievePaymentGatewayResponse()
         XCTAssertEqual(paymentGateway.siteID, dummySiteID)
     }
 
     /// Verifies that the fields are all parsed correctly
     ///
-    func test_PaymentGatewaysList_map_parses_all_fields_in_result() throws {
-        let paymentGateway = try mapRetrievePaymentGatewayResponse()
+    func test_PaymentGatewaysList_map_parses_all_fields_in_result() async throws {
+        let paymentGateway = try await mapRetrievePaymentGatewayResponse()
 
         let expectedPaymentGateway = PaymentGateway(siteID: dummySiteID,
                                                     gatewayID: "cod",
@@ -39,8 +39,8 @@ final class PaymentGatewayMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly
     ///
-    func test_PaymentGatewaysList_map_parses_all_fields_in_result_when_response_has_no_data_envelope() throws {
-        let paymentGateway = try mapRetrievePaymentGatewayResponseWithoutDataEnvelope()
+    func test_PaymentGatewaysList_map_parses_all_fields_in_result_when_response_has_no_data_envelope() async throws {
+        let paymentGateway = try await mapRetrievePaymentGatewayResponseWithoutDataEnvelope()
 
         let expectedPaymentGateway = PaymentGateway(siteID: dummySiteID,
                                                     gatewayID: "cod",
@@ -61,24 +61,24 @@ private extension PaymentGatewayMapperTests {
 
     /// Returns the PaymentGatewayMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapPaymentGateway(from filename: String) throws -> PaymentGateway {
+    func mapPaymentGateway(from filename: String) async throws -> PaymentGateway {
         guard let response = Loader.contentsOf(filename) else {
             throw FileNotFoundError()
         }
 
-        return try PaymentGatewayMapper(siteID: dummySiteID).map(response: response)
+        return try await PaymentGatewayMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the PaymentGateway output from `payment-gateway-cod.json`
     ///
-    func mapRetrievePaymentGatewayResponse() throws -> PaymentGateway {
-        return try mapPaymentGateway(from: "payment-gateway-cod")
+    func mapRetrievePaymentGatewayResponse() async throws -> PaymentGateway {
+        try await mapPaymentGateway(from: "payment-gateway-cod")
     }
 
     /// Returns the PaymentGateway output from `payment-gateway-cod-without-data.json`
     ///
-    func mapRetrievePaymentGatewayResponseWithoutDataEnvelope() throws -> PaymentGateway {
-        return try mapPaymentGateway(from: "payment-gateway-cod-without-data")
+    func mapRetrievePaymentGatewayResponseWithoutDataEnvelope() async throws -> PaymentGateway {
+        try await mapPaymentGateway(from: "payment-gateway-cod-without-data")
     }
 
     struct FileNotFoundError: Error {}

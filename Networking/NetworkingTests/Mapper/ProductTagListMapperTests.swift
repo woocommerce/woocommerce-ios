@@ -8,8 +8,8 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields are parsed correctly.
     ///
-    func test_ProductTag_fields_are_properly_parsed() throws {
-        let tags = try mapLoadAllProductTagsResponse()
+    func test_ProductTag_fields_are_properly_parsed() async throws {
+        let tags = try await mapLoadAllProductTagsResponse()
         XCTAssertEqual(tags.count, 4)
 
         let secondTag = tags[1]
@@ -20,8 +20,8 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields are parsed correctly.
     ///
-    func test_ProductTag_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let tags = try mapLoadAllProductTagsResponseWithoutDataEnvelope()
+    func test_ProductTag_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let tags = try await mapLoadAllProductTagsResponseWithoutDataEnvelope()
         XCTAssertEqual(tags.count, 4)
 
         let secondTag = tags[1]
@@ -32,8 +32,8 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields under `create` field are parsed correctly.
     ///
-    func test_ProductTag_fields_when_created_are_properly_parsed() throws {
-        let tags = try mapLoadProductTagsCreatedResponse()
+    func test_ProductTag_fields_when_created_are_properly_parsed() async throws {
+        let tags = try await mapLoadProductTagsCreatedResponse()
         XCTAssertEqual(tags.count, 2)
 
         let firstTag = tags[0]
@@ -44,8 +44,8 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields under `create` field are parsed correctly.
     ///
-    func test_ProductTag_fields_when_created_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let tags = try mapLoadProductTagsCreatedResponseWithoutDataEnvelope()
+    func test_ProductTag_fields_when_created_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let tags = try await mapLoadProductTagsCreatedResponseWithoutDataEnvelope()
         XCTAssertEqual(tags.count, 2)
 
         let firstTag = tags[0]
@@ -56,8 +56,8 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields under `delete` field are parsed correctly.
     ///
-    func test_ProductTag_fields_when_deleted_are_properly_parsed() throws {
-        let tags = try mapLoadProductTagsDeletedResponse()
+    func test_ProductTag_fields_when_deleted_are_properly_parsed() async throws {
+        let tags = try await mapLoadProductTagsDeletedResponse()
         XCTAssertEqual(tags.count, 1)
 
         let firstTag = tags[0]
@@ -68,8 +68,8 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields under `delete` field are parsed correctly.
     ///
-    func test_ProductTag_fields_when_deleted_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let tags = try mapLoadProductTagsDeletedResponseWithoutDataEnvelope()
+    func test_ProductTag_fields_when_deleted_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let tags = try await mapLoadProductTagsDeletedResponseWithoutDataEnvelope()
         XCTAssertEqual(tags.count, 1)
 
         let firstTag = tags[0]
@@ -86,47 +86,47 @@ private extension ProductTagListMapperTests {
 
     /// Returns the ProductTagListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductTags(from filename: String, responseType: ProductTagListMapper.ResponseType) throws -> [ProductTag] {
+    func mapProductTags(from filename: String, responseType: ProductTagListMapper.ResponseType) async throws -> [ProductTag] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try ProductTagListMapper(siteID: dummySiteID, responseType: responseType).map(response: response)
+        return try await ProductTagListMapper(siteID: dummySiteID, responseType: responseType).map(response: response)
     }
 
     /// Returns the ProductTagListMapper output upon receiving `product-tags-all`
     ///
-    func mapLoadAllProductTagsResponse() throws -> [ProductTag] {
-        return try mapProductTags(from: "product-tags-all", responseType: .load)
+    func mapLoadAllProductTagsResponse() async throws -> [ProductTag] {
+        try await mapProductTags(from: "product-tags-all", responseType: .load)
     }
 
     /// Returns the ProductTagListMapper output upon receiving `product-tags-all-without-data`
     ///
-    func mapLoadAllProductTagsResponseWithoutDataEnvelope() throws -> [ProductTag] {
-        return try mapProductTags(from: "product-tags-all-without-data", responseType: .load)
+    func mapLoadAllProductTagsResponseWithoutDataEnvelope() async throws -> [ProductTag] {
+        try await mapProductTags(from: "product-tags-all-without-data", responseType: .load)
     }
 
     /// Returns the ProductTagListMapper output upon receiving `product-tags-created`
     ///
-    func mapLoadProductTagsCreatedResponse() throws -> [ProductTag] {
-        return try mapProductTags(from: "product-tags-created", responseType: .create)
+    func mapLoadProductTagsCreatedResponse() async throws -> [ProductTag] {
+        try await mapProductTags(from: "product-tags-created", responseType: .create)
     }
 
     /// Returns the ProductTagListMapper output upon receiving `product-tags-created-without-data`
     ///
-    func mapLoadProductTagsCreatedResponseWithoutDataEnvelope() throws -> [ProductTag] {
-        return try mapProductTags(from: "product-tags-created-without-data", responseType: .create)
+    func mapLoadProductTagsCreatedResponseWithoutDataEnvelope() async throws -> [ProductTag] {
+        try await mapProductTags(from: "product-tags-created-without-data", responseType: .create)
     }
 
     /// Returns the ProductTagListMapper output upon receiving `product-tags-deleted`
     ///
-    func mapLoadProductTagsDeletedResponse() throws -> [ProductTag] {
-        return try mapProductTags(from: "product-tags-deleted", responseType: .delete)
+    func mapLoadProductTagsDeletedResponse() async throws -> [ProductTag] {
+        try await mapProductTags(from: "product-tags-deleted", responseType: .delete)
     }
 
     /// Returns the ProductTagListMapper output upon receiving `product-tags-deleted-without-data`
     ///
-    func mapLoadProductTagsDeletedResponseWithoutDataEnvelope() throws -> [ProductTag] {
-        return try mapProductTags(from: "product-tags-deleted-without-data", responseType: .delete)
+    func mapLoadProductTagsDeletedResponseWithoutDataEnvelope() async throws -> [ProductTag] {
+        try await mapProductTags(from: "product-tags-deleted-without-data", responseType: .delete)
     }
 }

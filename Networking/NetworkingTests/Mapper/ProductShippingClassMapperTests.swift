@@ -10,8 +10,8 @@ final class ProductShippingClassMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductShippingClass Fields are parsed correctly.
     ///
-    func test_ProductShippingClass_fields_are_properly_parsed() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductShippingClassResponse())
+    func test_ProductShippingClass_fields_are_properly_parsed() async throws {
+        let productVariation = try await mapLoadProductShippingClassResponse()
 
         let expected = ProductShippingClass(count: 3,
                                             descriptionHTML: "Limited offer!",
@@ -25,8 +25,8 @@ final class ProductShippingClassMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductShippingClass Fields are parsed correctly when response has no data envelope.
     ///
-    func test_ProductShippingClass_fields_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        let productVariation = try XCTUnwrap(mapLoadProductShippingClassResponseWithoutDataEnvelope())
+    func test_ProductShippingClass_fields_are_properly_parsed_when_response_has_no_data_envelope() async throws {
+        let productVariation = try await mapLoadProductShippingClassResponseWithoutDataEnvelope()
 
         let expected = ProductShippingClass(count: 3,
                                             descriptionHTML: "Limited offer!",
@@ -44,23 +44,25 @@ final class ProductShippingClassMapperTests: XCTestCase {
 private extension ProductShippingClassMapperTests {
     /// Returns the ProductShippingClassMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductShippingClass(from filename: String) -> ProductShippingClass? {
+    func mapProductShippingClass(from filename: String) async throws -> ProductShippingClass {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            throw FileNotFoundError()
         }
 
-        return try? ProductShippingClassMapper(siteID: dummySiteID).map(response: response)
+        return try await ProductShippingClassMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the ProductShippingClassMapper output upon receiving `product-shipping-classes-load-one`
     ///
-    func mapLoadProductShippingClassResponse() -> ProductShippingClass? {
-        return mapProductShippingClass(from: "product-shipping-classes-load-one")
+    func mapLoadProductShippingClassResponse() async throws -> ProductShippingClass {
+        try await mapProductShippingClass(from: "product-shipping-classes-load-one")
     }
 
     /// Returns the ProductShippingClassMapper output upon receiving `product-shipping-classes-load-one-without-data`
     ///
-    func mapLoadProductShippingClassResponseWithoutDataEnvelope() -> ProductShippingClass? {
-        return mapProductShippingClass(from: "product-shipping-classes-load-one-without-data")
+    func mapLoadProductShippingClassResponseWithoutDataEnvelope() async throws -> ProductShippingClass {
+        try await mapProductShippingClass(from: "product-shipping-classes-load-one-without-data")
     }
+
+    struct FileNotFoundError: Error {}
 }

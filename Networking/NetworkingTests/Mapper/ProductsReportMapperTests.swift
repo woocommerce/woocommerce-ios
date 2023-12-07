@@ -5,9 +5,9 @@ final class ProductsReportMapperTests: XCTestCase {
 
     /// Verifies that the whole list is parsed.
     ///
-    func test_mapper_parses_all_products_in_response() throws {
+    func test_mapper_parses_all_products_in_response() async throws {
         // Given
-        let products = try mapLoadProductsReportResponseWithDataEnvelope()
+        let products = try await mapLoadProductsReportResponseWithDataEnvelope()
 
         // Then
         XCTAssertEqual(products.count, 2)
@@ -15,9 +15,9 @@ final class ProductsReportMapperTests: XCTestCase {
 
     /// Verifies that the whole list is parsed.
     ///
-    func test_mapper_parses_all_products_in_response_without_data_envelope() throws {
+    func test_mapper_parses_all_products_in_response_without_data_envelope() async throws {
         // Given
-        let products = try mapLoadProductsReportResponseWithoutDataEnvelope()
+        let products = try await mapLoadProductsReportResponseWithoutDataEnvelope()
 
         // Then
         XCTAssertEqual(products.count, 2)
@@ -25,9 +25,9 @@ final class ProductsReportMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly
     ///
-    func test_mapper_parses_all_fields_in_result() throws {
+    func test_mapper_parses_all_fields_in_result() async throws {
         // Given
-        let products = try mapLoadProductsReportResponseWithDataEnvelope()
+        let products = try await mapLoadProductsReportResponseWithDataEnvelope()
         let product = products[0]
         let expectedProduct = ProductsReportItem(productID: 233,
                                                  productName: "Colorful Sunglasses Subscription",
@@ -47,23 +47,23 @@ private extension ProductsReportMapperTests {
 
     /// Returns the ProductsReportMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapReport(from filename: String) throws -> [ProductsReportItem] {
+    func mapReport(from filename: String) async throws -> [ProductsReportItem] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try ProductsReportMapper().map(response: response)
+        return try await ProductsReportMapper().map(response: response)
     }
 
     /// Returns the ProductsReportItem list from `coupon-reports.json`
     ///
-    func mapLoadProductsReportResponseWithDataEnvelope() throws -> [ProductsReportItem] {
-        return try mapReport(from: "reports-products")
+    func mapLoadProductsReportResponseWithDataEnvelope() async throws -> [ProductsReportItem] {
+        try await mapReport(from: "reports-products")
     }
 
     /// Returns the ProductsReportItem list from `coupon-reports-without-data.json`
     ///
-    func mapLoadProductsReportResponseWithoutDataEnvelope() throws -> [ProductsReportItem] {
-        return try mapReport(from: "reports-products-without-data")
+    func mapLoadProductsReportResponseWithoutDataEnvelope() async throws -> [ProductsReportItem] {
+        try await mapReport(from: "reports-products-without-data")
     }
 }

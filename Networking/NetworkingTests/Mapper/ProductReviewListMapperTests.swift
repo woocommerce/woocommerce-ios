@@ -9,8 +9,8 @@ final class ProductReviewListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductReview Fields are parsed correctly.
     ///
-    func test_ProductReview_fields_are_properly_parsed() {
-        let productReviews = mapLoadAllProductReviewsResponse()
+    func test_ProductReview_fields_are_properly_parsed() async {
+        let productReviews = await mapLoadAllProductReviewsResponse()
         XCTAssertEqual(productReviews.count, 2)
 
         let firstProductReview = productReviews[0]
@@ -34,8 +34,8 @@ final class ProductReviewListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductReview Fields are parsed correctly.
     ///
-    func test_ProductReview_fields_are_properly_parsed_when_response_has_no_data_envelope() {
-        let productReviews = mapLoadAllProductReviewsResponseWithoutDataEnvelope()
+    func test_ProductReview_fields_are_properly_parsed_when_response_has_no_data_envelope() async {
+        let productReviews = await mapLoadAllProductReviewsResponseWithoutDataEnvelope()
         XCTAssertEqual(productReviews.count, 2)
 
         let firstProductReview = productReviews[0]
@@ -65,23 +65,23 @@ private extension ProductReviewListMapperTests {
 
     /// Returns the ProducReviewtListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductReviews(from filename: String) -> [ProductReview] {
+    func mapProductReviews(from filename: String) async -> [ProductReview] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! ProductReviewListMapper(siteID: dummySiteID).map(response: response)
+        return try! await ProductReviewListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the ProductListMapper output upon receiving `reviews-all`
     ///
-    func mapLoadAllProductReviewsResponse() -> [ProductReview] {
-        return mapProductReviews(from: "reviews-all")
+    func mapLoadAllProductReviewsResponse() async -> [ProductReview] {
+        await mapProductReviews(from: "reviews-all")
     }
 
     /// Returns the ProductListMapper output upon receiving `reviews-all-without-data`
     ///
-    func mapLoadAllProductReviewsResponseWithoutDataEnvelope() -> [ProductReview] {
-        return mapProductReviews(from: "reviews-all-without-data")
+    func mapLoadAllProductReviewsResponseWithoutDataEnvelope() async -> [ProductReview] {
+        await mapProductReviews(from: "reviews-all-without-data")
     }
 }

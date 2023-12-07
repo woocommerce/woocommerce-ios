@@ -8,25 +8,25 @@ final class PaymentGatewayListMapperTests: XCTestCase {
     ///
     static let sampleSiteID: Int64 = 123
 
-    func test_payment_gateway_list_is_decoded_from_json_response() throws {
+    func test_payment_gateway_list_is_decoded_from_json_response() async throws {
         // Given
         let jsonData = try XCTUnwrap(Loader.contentsOf("payment-gateway-list"))
         let expectedGateways = [Self.bankTransferGateway, Self.checkGateway, Self.cashGateway, Self.paypalGateway]
 
         // When
-        let gateways = try PaymentGatewayListMapper(siteID: Self.sampleSiteID).map(response: jsonData)
+        let gateways = try await PaymentGatewayListMapper(siteID: Self.sampleSiteID).map(response: jsonData)
 
         // Then
         assertEqual(expectedGateways, gateways)
     }
 
-    func test_payment_gateway_list_is_decoded_from_json_response_without_data_envelope() throws {
+    func test_payment_gateway_list_is_decoded_from_json_response_without_data_envelope() async throws {
         // Given
         let jsonData = try XCTUnwrap(Loader.contentsOf("payment-gateway-list-without-data"))
         let expectedGateways = [Self.bankTransferGateway, Self.checkGateway, Self.cashGateway, Self.paypalGateway]
 
         // When
-        let gateways = try PaymentGatewayListMapper(siteID: Self.sampleSiteID).map(response: jsonData)
+        let gateways = try await PaymentGatewayListMapper(siteID: Self.sampleSiteID).map(response: jsonData)
 
         // Then
         assertEqual(expectedGateways, gateways)

@@ -1345,7 +1345,7 @@ private extension EditableOrderViewModel {
         }
         // Increase quantity if exists
         let match = productRows.first(where: { $0.productOrVariationID == item.itemID })
-        match?.incrementQuantity()
+        match?.stepperViewModel.incrementQuantity()
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1863,7 +1863,7 @@ private extension EditableOrderViewModel {
             }
 
             // Observe changes to the product quantity
-            productRowViewModel.$quantity
+            productRowViewModel.stepperViewModel.$quantity
                 .dropFirst() // Omit the default/initial quantity to prevent a double trigger.
                 // The quantity can be incremented/decremented quickly, and the order sync can be blocking (e.g. with bundle configuration).
                 // To avoid the UI being blocked for each quantity update, a debounce is added to wait for the final quantity

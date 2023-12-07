@@ -305,7 +305,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.changeSelectionStateForProduct(with: anotherProduct.productID)
         productSelectorViewModel.completeMultipleSelection()
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
-        viewModel.productRows[0].incrementQuantity()
+        viewModel.productRows[0].stepperViewModel.incrementQuantity()
 
         // Then
         XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
@@ -325,7 +325,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[0].quantity, 1)
 
         // When
-        viewModel.productRows[0].decrementQuantity()
+        viewModel.productRows[0].stepperViewModel.decrementQuantity()
 
         // Then
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product.productID }))
@@ -382,7 +382,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When
-            self.viewModel.productRows[0].incrementQuantity()
+            self.viewModel.productRows[0].stepperViewModel.incrementQuantity()
         }
 
         // Then
@@ -841,7 +841,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
 
         // When & Then
-        viewModel.productRows[0].incrementQuantity()
+        viewModel.productRows[0].stepperViewModel.incrementQuantity()
 
         // Debounce makes the quantity update async even though the duration is 0.
         waitUntil {
@@ -1170,7 +1170,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
-        viewModel.productRows[0].incrementQuantity()
+        viewModel.productRows[0].stepperViewModel.incrementQuantity()
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [

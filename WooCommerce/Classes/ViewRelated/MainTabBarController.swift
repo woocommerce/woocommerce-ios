@@ -443,13 +443,13 @@ extension MainTabBarController {
     }
 
     static func presentPayments() {
-        switchToHubMenuTab()
+        switchToHubMenuTab() {
+            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+                return
+            }
 
-        guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-            return
+            hubMenuViewController.showPaymentsMenu()
         }
-
-        hubMenuViewController.showPaymentsMenu()
     }
 
     static func presentCoupons() {

@@ -58,9 +58,6 @@ final class BillingInformationViewController: UIViewController {
 
     private let messageComposerPresenter: MessageComposerPresenter = ServiceLocator.messageComposerPresenter
 
-    /// Haptic Feedback!
-    ///
-    private let hapticGenerator = UINotificationFeedbackGenerator()
 }
 
 // MARK: - Interface Initialization
@@ -223,9 +220,6 @@ private extension BillingInformationViewController {
         }
         ServiceLocator.analytics.track(.orderDetailCustomerCopyNumberOptionTapped)
         sendToPasteboard(phone, includeTrailingNewline: false)
-
-        let notice = Notice(title: ContactAction.copied, feedbackType: .success)
-        noticePresenter.enqueue(notice: notice)
     }
 
     private func copyEmailHandler() {
@@ -235,9 +229,6 @@ private extension BillingInformationViewController {
 
         ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
         sendToPasteboard(email, includeTrailingNewline: false)
-
-        let notice = Notice(title: ContactAction.copied, feedbackType: .success)
-        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -523,7 +514,8 @@ private extension BillingInformationViewController {
             text += "\n"
         }
         UIPasteboard.general.string = text
-        hapticGenerator.notificationOccurred(.success)
+        let notice = Notice(title: ContactAction.copied, feedbackType: .success)
+        noticePresenter.enqueue(notice: notice)
     }
 
     /// Checks if copying the row data at the provided indexPath is allowed
@@ -608,7 +600,7 @@ private extension BillingInformationViewController {
         static let message = NSLocalizedString("Message", comment: "Message phone number button title")
         static let copyPhoneNumber = NSLocalizedString(
             "billingInformationViewController.action.copyPhoneNumber",
-            value: "Copy phone number",
+            value: "Copy number",
             comment: "Button to copy phone number to clipboard"
         )
         static let copyEmail = NSLocalizedString("Copy email address", comment: "Copy email address button title")

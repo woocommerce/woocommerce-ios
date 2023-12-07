@@ -8,6 +8,8 @@ import WooFoundation
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
 
+    let stepperViewModel: ProductStepperViewModel
+
     /// Whether the product quantity can be changed.
     /// Controls whether the stepper is rendered.
     ///
@@ -255,44 +257,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: ". ")
     }
 
-    /// Quantity of product in the order
+    /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
     @Published private(set) var quantity: Decimal
 
-    /// Minimum value of the product quantity
-    ///
-    private let minimumQuantity: Decimal
-
-    /// Optional maximum value of the product quantity
-    ///
-    private let maximumQuantity: Decimal?
-
-    /// Whether the quantity can be decremented.
-    ///
-    var shouldDisableQuantityDecrementer: Bool {
-        if removeProductIntent != nil { // Allow decrementing below minimum quantity to remove product
-            return quantity < minimumQuantity
-        } else {
-            return quantity <= minimumQuantity
-        }
-    }
-
-    /// Whether the quantity can be incremented.
-    ///
-    var shouldDisableQuantityIncrementer: Bool {
-        guard let maximumQuantity else {
-            return false
-        }
-        return quantity >= maximumQuantity
-    }
-
-    /// Closure to run when the quantity is changed.
-    ///
-    var quantityUpdatedCallback: (Decimal) -> Void
-
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
-    var removeProductIntent: (() -> Void)?
+    let removeProductIntent: (() -> Void)?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -348,8 +319,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
-        self.minimumQuantity = minimumQuantity
-        self.maximumQuantity = maximumQuantity
+        self.stepperViewModel = ProductStepperViewModel(quantity: quantity,
+                                                        name: name,
+                                                        minimumQuantity: minimumQuantity,
+                                                        maximumQuantity: maximumQuantity,
+                                                        quantityUpdatedCallback: quantityUpdatedCallback,
+                                                        removeProductIntent: removeProductIntent)
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
@@ -360,9 +335,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
-        self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
         self.configure = configure
+
+        observeQuantityFromStepperViewModel()
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -557,36 +533,19 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
     }
 
-    /// Increment the product quantity.
-    ///
-    func incrementQuantity() {
-        if let maximumQuantity, quantity >= maximumQuantity {
-            return
-        }
-
-        quantity += 1
-
-        quantityUpdatedCallback(quantity)
-    }
-
-    /// Decrement the product quantity.
-    ///
-    func decrementQuantity() {
-        guard quantity > minimumQuantity else {
-            removeProductIntent?()
-            return
-        }
-        quantity -= 1
-
-        quantityUpdatedCallback(quantity)
-    }
-
     func trackAddDiscountTapped() {
         analytics.track(event: .Orders.productDiscountAddButtonTapped())
     }
 
     func trackEditDiscountTapped() {
         analytics.track(event: .Orders.productDiscountEditButtonTapped())
+    }
+}
+
+private extension ProductRowViewModel {
+    func observeQuantityFromStepperViewModel() {
+        stepperViewModel.$quantity
+            .assign(to: &$quantity)
     }
 }
 

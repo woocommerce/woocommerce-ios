@@ -30,7 +30,7 @@ enum WooActivityType: String {
 }
 
 extension SearchableActivityConvertible where Self: UIViewController {
-    internal func registerUserActivity() {
+    func createUserActivity() -> NSUserActivity {
         let activity = NSUserActivity(activityType: activityType)
         activity.title = activityTitle
 
@@ -49,6 +49,11 @@ extension SearchableActivityConvertible where Self: UIViewController {
         activity.isEligibleForHandoff = false
 
         activity.isEligibleForPrediction = true
+        return activity
+    }
+
+    func registerUserActivity() {
+        let activity = createUserActivity()
 
         // Set the UIViewController's userActivity property, which is defined in UIResponder. Doing this allows
         // UIKit to automagically manage this user activity (e.g. making it current when needed)

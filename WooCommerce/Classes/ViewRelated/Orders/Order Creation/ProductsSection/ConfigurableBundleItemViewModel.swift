@@ -109,7 +109,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                     imageURL: product.imageURL,
                                     hasParentProduct: false,
                                     isConfigurable: false)
-        productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
+        productRowViewModel.stepperViewModel.quantityUpdatedCallback = { [weak self] quantity in
             guard let self else { return }
             self.quantity = quantity
             self.analytics.track(event: .Orders.orderFormBundleProductConfigurationChanged(changedField: .quantity))
@@ -167,7 +167,7 @@ private extension ConfigurableBundleItemViewModel {
                                                           imageURL: self.product.imageURL,
                                                           hasParentProduct: false,
                                                           isConfigurable: false)
-            productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
+            productRowViewModel.stepperViewModel.quantityUpdatedCallback = { [weak self] quantity in
                 self?.quantity = quantity
             }
             return productRowViewModel

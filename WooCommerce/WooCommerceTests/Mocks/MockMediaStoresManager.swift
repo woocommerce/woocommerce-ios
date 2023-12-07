@@ -44,6 +44,12 @@ final class MockMediaStoresManager: DefaultStoresManager {
                 return
             }
             onCompletion(.success(media))
+        case .uploadFile(_, _, _, _, let onCompletion):
+            guard let media else {
+                onCompletion(.failure(MediaActionError.unknown))
+                return
+            }
+            onCompletion(.success(media))
         }
     }
 }

@@ -214,16 +214,22 @@ public class Remote: NSObject {
                                                 return
                                             }
 
-                                            do {
-                                                let validator = request.responseDataValidator()
-                                                try validator.validate(data: data)
-                                                let parsed = try mapper.map(response: data)
-                                                completion(.success(parsed))
-                                            } catch {
-                                                self.handleResponseError(error: error, for: request)
-                                                self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                                                DDLogError("<> Mapping Error: \(error)")
-                                                completion(.failure(error))
+                                            Task {
+                                                do {
+                                                    let validator = request.responseDataValidator()
+                                                    try validator.validate(data: data)
+                                                    let parsed = try await mapper.map(response: data)
+                                                    await MainActor.run {
+                                                        completion(.success(parsed))
+                                                    }
+                                                } catch {
+                                                    self.handleResponseError(error: error, for: request)
+                                                    self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                                                    DDLogError("<> Mapping Error: \(error)")
+                                                    await MainActor.run {
+                                                        completion(.failure(error))
+                                                    }
+                                                }
                                             }
         }
     }

@@ -150,12 +150,14 @@ private extension DefaultApplicationPasswordUseCase {
                 guard let self else { return }
                 switch result {
                 case .success(let data):
-                    do {
-                        let mapper = ApplicationPasswordMapper(wpOrgUsername: self.username)
-                        let password = try mapper.map(response: data)
-                        continuation.resume(returning: password)
-                    } catch {
-                        continuation.resume(throwing: error)
+                    Task {
+                        do {
+                            let mapper = ApplicationPasswordMapper(wpOrgUsername: self.username)
+                            let password = try await mapper.map(response: data)
+                            continuation.resume(returning: password)
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 case .failure(let error):
                     guard let error = error as? AFError else {
@@ -189,16 +191,18 @@ private extension DefaultApplicationPasswordUseCase {
             network.responseData(for: request) { result in
                 switch result {
                 case .success(let data):
-                    do {
-                        let mapper = ApplicationPasswordNameAndUUIDMapper()
-                        let list = try mapper.map(response: data)
-                        if let item = list.first(where: { $0.name == passwordName }) {
-                            continuation.resume(returning: item.uuid)
-                        } else {
-                            continuation.resume(throwing: ApplicationPasswordUseCaseError.unableToFindPasswordUUID)
+                    Task {
+                        do {
+                            let mapper = ApplicationPasswordNameAndUUIDMapper()
+                            let list = try await mapper.map(response: data)
+                            if let item = list.first(where: { $0.name == passwordName }) {
+                                continuation.resume(returning: item.uuid)
+                            } else {
+                                continuation.resume(throwing: ApplicationPasswordUseCaseError.unableToFindPasswordUUID)
+                            }
+                        } catch {
+                            continuation.resume(throwing: error)
                         }
-                    } catch {
-                        continuation.resume(throwing: error)
                     }
                 case .failure(let error):
                     continuation.resume(throwing: error)

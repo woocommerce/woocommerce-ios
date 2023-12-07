@@ -433,7 +433,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.productRows.map { $0.rowViewModel }.contains(where: { $0.productOrVariationID == product0.productID }))
-        XCTAssertEqual(viewModel.productRows.map { $0.rowViewModel }.map { $0.id }, [expectedRemainingRow].map { $0.id })
+        XCTAssertEqual(viewModel.productRows.map { $0.rowViewModel }.map { $0.id }, [expectedRemainingRow].map { $0.rowViewModel }.map { $0.id })
     }
 
     func test_view_model_is_updated_when_product_is_removed_from_order_using_product_row_ID() throws {
@@ -456,7 +456,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.productRows.map { $0.rowViewModel }.contains(where: { $0.productOrVariationID == product0.productID }))
-        XCTAssertEqual(viewModel.productRows.map { $0.rowViewModel }.map { $0.id }, [expectedRemainingRow].map { $0.id })
+        XCTAssertEqual(viewModel.productRows.map { $0.rowViewModel }.map { $0.id }, [expectedRemainingRow].map { $0.rowViewModel }.map { $0.id })
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {

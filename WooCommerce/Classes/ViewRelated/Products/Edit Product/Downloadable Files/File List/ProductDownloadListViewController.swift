@@ -49,6 +49,21 @@ final class ProductDownloadListViewController: UIViewController {
     private let loadingView = LoadingView(waitMessage: Localization.loadingMessage,
                                           backgroundColor: UIColor.black.withAlphaComponent(0.4))
 
+    private lazy var downloadSettingsBarButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: .moreImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentMoreActionSheetMenu(_:)))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = Localization.moreBarButtonAccessibilityLabel
+        return button
+    }()
+
+    private lazy var doneBarButton = UIBarButtonItem(title: Localization.doneButton,
+                                                     style: .done,
+                                                     target: self,
+                                                     action: #selector(doneButtonTapped))
+
     init(product: ProductFormDataModel,
          stores: StoresManager = ServiceLocator.stores,
          completion: @escaping Completion) {
@@ -73,7 +88,7 @@ final class ProductDownloadListViewController: UIViewController {
                 return
             }
             self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
-            self?.loadingView.hideLoader()
+            self?.updateLoadingState(false)
         }
     }
 
@@ -136,24 +151,8 @@ private extension ProductDownloadListViewController {
 
     func configureRightButtons() {
         var rightBarButtonItems = [UIBarButtonItem]()
-
-        let downloadSettingsBarButton: UIBarButtonItem = {
-            let button = UIBarButtonItem(image: .moreImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(presentMoreActionSheetMenu(_:)))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = Localization.moreBarButtonAccessibilityLabel
-            return button
-        }()
         rightBarButtonItems.append(downloadSettingsBarButton)
-
-        let doneBarButton = UIBarButtonItem(title: Localization.doneButton,
-                                             style: .done,
-                                             target: self,
-                                             action: #selector(doneButtonTapped))
         rightBarButtonItems.append(doneBarButton)
-
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }
 }
@@ -349,16 +348,16 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
 
         controller.dismiss(animated: true) { [weak self] in
             guard let self else { return }
-            self.loadingView.showLoader(in: self.view)
+            self.updateLoadingState(true)
         }
 
         Task { @MainActor in
             do {
                 let media = try await localFileUploader.uploadFile(url: url)
                 addDownloadableFile(fileName: media.name, fileURL: media.src)
-                loadingView.hideLoader()
+                updateLoadingState(false)
             } catch {
-                loadingView.hideLoader()
+                updateLoadingState(false)
                 let errorMessage: String = {
                     if case DotcomError.unknown(let code, _) = error,
                        code == Constants.unsupportedMimeTypeCode {
@@ -371,6 +370,17 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
             }
         }
     }
+
+    func updateLoadingState(_ isLoading: Bool) {
+        doneBarButton.isEnabled = !isLoading
+        downloadSettingsBarButton.isEnabled = !isLoading
+
+        if isLoading {
+            loadingView.showLoader(in: view)
+        } else {
+            loadingView.hideLoader()
+        }
+    }
 }
 
 // MARK: Action handling for device media library picker
@@ -381,7 +391,7 @@ private extension ProductDownloadListViewController {
             return
         }
         productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
-        loadingView.showLoader(in: view)
+        updateLoadingState(true)
     }
 }
 

@@ -119,6 +119,18 @@ final class MediaRemoteTests: XCTestCase {
 
     // MARK: - uploadMedia
 
+    func test_uploadMedia_does_not_send_data_in_request_body() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.uploadMedia(for: self.sampleSiteID, productID: sampleProductID, mediaItems: [], completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        XCTAssertNil(try request.asURLRequest().httpBody)
+    }
+
     /// Verifies that `uploadMedia` properly parses the `media-upload` sample response.
     ///
     func test_uploadMedia_properly_returns_parsed_media() throws {
@@ -158,6 +170,18 @@ final class MediaRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
+    }
+
+    func test_uploadMediaToWordPressSite_does_not_send_data_in_request_body() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.uploadMediaToWordPressSite(siteID: sampleSiteID, productID: sampleProductID, mediaItem: .fake(), completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        XCTAssertNil(try request.asURLRequest().httpBody)
     }
 
     /// Verifies that `uploadMediaToWordPressSite` properly parses the `media-upload-to-wordpress-site` sample response.

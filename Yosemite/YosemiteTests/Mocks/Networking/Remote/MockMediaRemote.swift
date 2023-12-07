@@ -92,7 +92,6 @@ extension MockMediaRemote: MediaRemoteProtocol {
 
     func uploadMedia(for siteID: Int64,
                      productID: Int64,
-                     context: String?,
                      mediaItems: [UploadableMedia],
                      completion: @escaping (Result<[Media], Error>) -> Void) {
         invocations.append(.uploadMedia(siteID: siteID))

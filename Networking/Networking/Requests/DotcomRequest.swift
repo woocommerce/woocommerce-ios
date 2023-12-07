@@ -55,7 +55,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
         self.wordpressApiVersion = wordpressApiVersion
         self.method = method
         self.path = path
-        self.parameters = parameters ?? [:]
+        self.parameters = parameters
         self.headers = headers ?? [:]
         self.encoding = encoding
         self.availableAsRESTRequest = false
@@ -69,6 +69,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
     ///     - path: RPC that should be executed.
     ///     - parameters: Collection of String parameters to be passed over to our target RPC.
     ///     - headers: Headers used in the URLRequest
+    ///     - encoding: How the parameters are encoded. Default to use `URLEncoding`.
     ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
     ///
     init(wordpressApiVersion: WordPressAPIVersion,
@@ -85,7 +86,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
         self.wordpressApiVersion = wordpressApiVersion
         self.method = method
         self.path = path
-        self.parameters = parameters ?? [:]
+        self.parameters = parameters
         self.headers = headers ?? [:]
         self.encoding = encoding
         self.availableAsRESTRequest = availableAsRESTRequest
@@ -126,7 +127,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
                            wooApiVersion: .none,
                            method: method,
                            path: wordpressApiVersion.path + pathWithoutSiteInfo,
-                           parameters: parameters ?? [:])
+                           parameters: parameters)
     }
 }
 

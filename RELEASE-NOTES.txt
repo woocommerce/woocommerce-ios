@@ -2,6 +2,7 @@
 
 16.6
 -----
+- [internal] Fix runtime warning when uploading media when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11355]
 - [*] Products: Downloadable products now accept local files of types other than images. [https://github.com/woocommerce/woocommerce-ios/pull/11353]
 - [*] Payments menu: restored the ability to search for Payments in device Spotlight. [https://github.com/woocommerce/woocommerce-ios/pull/11343]
 - [*] Payments menu: show the selected payment gateway when there's more than one to choose from [https://github.com/woocommerce/woocommerce-ios/pull/11345]

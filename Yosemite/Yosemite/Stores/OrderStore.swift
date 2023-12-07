@@ -147,7 +147,8 @@ private extension OrderStore {
                              modifiedAfter: Date?,
                              deleteAllBeforeSaving: Bool,
                              pageSize: Int,
-                             onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+                             onCompletion: @escaping (TimeInterval, Result<ListResponse<Order, FaultyOrder>, Error>) -> Void) {
+//                             onCompletion: @escaping (TimeInterval, Error?) -> Void) {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
 
@@ -161,6 +162,7 @@ private extension OrderStore {
         var hasDeletedAllOrders = false
         let serialQueue = DispatchQueue(label: "orders_sync", qos: .userInitiated)
         let startTime = Date()
+        var ordersResult: Result<ListResponse<Order, FaultyOrder>, Error>!
 
         // Delete all the orders if we haven't yet.
         // This should only be called inside the `serialQueue` block.
@@ -199,14 +201,16 @@ private extension OrderStore {
                     }
 
                     switch result {
-                    case .success(let orders):
+                    case .success(let listResponse):
                         if deleteAllBeforeSaving {
                             deleteAllOrdersOnce()
                         }
 
-                        self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: completion)
+                        ordersResult = .success(listResponse)
+                        self.upsertStoredOrdersInBackground(readOnlyOrders: listResponse.elements, onCompletion: completion)
                     case .failure(let error):
-                        fetchErrors.append(error)
+                        ordersResult = .failure(error)
+//                        fetchErrors.append(error)
                         completion()
                     }
                 }
@@ -229,7 +233,8 @@ private extension OrderStore {
         }
 
         group.notify(queue: .main) {
-            onCompletion(Date().timeIntervalSince(startTime), fetchErrors.first)
+            onCompletion(Date().timeIntervalSince(startTime), ordersResult)
+//            onCompletion(Date().timeIntervalSince(startTime), fetchErrors.first)
         }
     }
 
@@ -242,7 +247,8 @@ private extension OrderStore {
                            modifiedAfter: Date?,
                            pageNumber: Int,
                            pageSize: Int,
-                           onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+                           onCompletion: @escaping (TimeInterval, Result<ListResponse<Order, FaultyOrder>, Error>) -> Void) {
+//                           onCompletion: @escaping (TimeInterval, Error?) -> Void) {
         let startTime = Date()
         remote.loadAllOrders(for: siteID,
                              statuses: statuses,
@@ -252,12 +258,12 @@ private extension OrderStore {
                              pageNumber: pageNumber,
                              pageSize: pageSize) { [weak self] result in
             switch result {
-            case .success(let orders):
-                self?.upsertStoredOrdersInBackground(readOnlyOrders: orders) {
-                    onCompletion(Date().timeIntervalSince(startTime), nil)
+            case .success(let listResponse):
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: listResponse.elements) {
+                    onCompletion(Date().timeIntervalSince(startTime), .success(listResponse))
                 }
             case .failure(let error):
-                onCompletion(Date().timeIntervalSince(startTime), error)
+                onCompletion(Date().timeIntervalSince(startTime), .failure(error))
             }
         }
     }
@@ -276,7 +282,7 @@ private extension OrderStore {
         remote.loadAllOrders(for: siteID, pageNumber: Default.firstPageNumber, pageSize: 1) { result in
             switch result {
             case .success(let orders):
-                onCompletion(.success(orders.isEmpty == false))
+                onCompletion(.success(orders.elements.isEmpty == false))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

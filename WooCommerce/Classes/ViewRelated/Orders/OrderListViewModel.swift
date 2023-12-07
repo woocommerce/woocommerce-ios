@@ -3,6 +3,7 @@ import Experiments
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
+import Networking
 
 /// ViewModel for `OrderListViewController`.
 ///
@@ -154,6 +155,10 @@ final class OrderListViewModel {
     /// Set when sync fails, and used to display the corresponding error loading data banner
     ///
     @Published var dataLoadingError: Error? = nil
+
+    /// Set when sync fails, and used to display the corresponding error loading data banner
+    ///
+    @Published var partialDataLoadingErrors: [Faulty<FaultyOrder>] = []
 
     /// Determines what top banner should be shown
     ///
@@ -310,17 +315,18 @@ final class OrderListViewModel {
                                pageSize: Int,
                                reason: OrderListSyncActionUseCase.SyncReason?,
                                lastFullSyncTimestamp: Date?,
-                               completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
+                               completionHandler: @escaping (TimeInterval, Result<ListResponse<Order, FaultyOrder>, Error>) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
                                  lastFullSyncTimestamp: lastFullSyncTimestamp,
-                                 completionHandler: { [weak self] timeInterval, error in
+                                 completionHandler: { [weak self] timeInterval, result in
+//                                 completionHandler: { [weak self] timeInterval, error in
             /// A bit of a side-effect: `onDidChangeContent` is not called for first load
             self?.ippSurveySource = self?.feedbackBannerSurveySource()
-            completionHandler(timeInterval, error)
+            completionHandler(timeInterval, result)
         })
     }
 
@@ -548,23 +554,27 @@ extension OrderListViewModel {
     /// Figures out what top banner should be shown based on the view model internal state.
     ///
     private func bindTopBannerState() {
-        let ippSurvey = $ippSurveySource.removeDuplicates()
+        let ippSurvey = $ippSurveySource.removeDuplicates()        
+        let combined = Publishers.CombineLatest4($dataLoadingError, $hideIPPFeedbackBanner, ippSurvey, $hideOrdersBanners)
+        combined.combineLatest($partialDataLoadingErrors).map { combined, partialDataLoadingErrors -> TopBanner in
+            let (loadingError, hasDismissedIPPFeedbackBanner, inPersonPaymentsSurvey, hasDismissedOrdersBanners) = combined
 
-        Publishers.CombineLatest4($dataLoadingError, $hideIPPFeedbackBanner, ippSurvey, $hideOrdersBanners)
-            .map { loadingError, hasDismissedIPPFeedbackBanner, inPersonPaymentsSurvey, hasDismissedOrdersBanners -> TopBanner in
+            if let loadingError {
+                return .error(loadingError)
+            }
 
-                if let loadingError {
-                    return .error(loadingError)
-                }
+            if partialDataLoadingErrors.isNotEmpty {
+                return .partialError(partialDataLoadingErrors)
+            }
 
                 if !hasDismissedIPPFeedbackBanner,
-                   let inPersonPaymentsSurvey = inPersonPaymentsSurvey {
-                    return .inPersonPaymentsFeedback(inPersonPaymentsSurvey)
-                }
-
-                return hasDismissedOrdersBanners ? .none : .orderCreation
+               let inPersonPaymentsSurvey = inPersonPaymentsSurvey {
+                return .inPersonPaymentsFeedback(inPersonPaymentsSurvey)
             }
-            .assign(to: &$topBanner)
+
+            return hasDismissedOrdersBanners ? .none : .orderCreation
+        }
+        .assign(to: &$topBanner)
     }
 }
 
@@ -612,6 +622,7 @@ extension OrderListViewModel {
     ///
     enum TopBanner: Equatable {
         case error(Error)
+        case partialError([Faulty<FaultyOrder>])
         case orderCreation
         case inPersonPaymentsFeedback(SurveyViewController.Source)
         case none

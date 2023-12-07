@@ -26,7 +26,8 @@ public class OrdersRemote: Remote {
                               modifiedAfter: Date? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
-                              completion: @escaping (Result<[Order], Error>) -> Void) {
+                              completion: @escaping (Result<ListResponse<Order, FaultyOrder>, Error>) -> Void) {
+//                              completion: @escaping (Result<[Order], Error>) -> Void) {
         let utcDateFormatter = DateFormatter.Defaults.iso8601
 
         let statusesString: String? = statuses?.isEmpty == true ? Defaults.statusAny : statuses?.joined(separator: ",")
@@ -58,7 +59,8 @@ public class OrdersRemote: Remote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
+        let mapper = OrderListTestMapper(siteID: siteID)
+//        let mapper = OrderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

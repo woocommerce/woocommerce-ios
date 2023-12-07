@@ -11,6 +11,17 @@ class OrderListMapperTests: XCTestCase {
     private let dummySiteID: Int64 = 242424
 
 
+    func test_test() throws {
+
+        guard let response = Loader.contentsOf("faulty-orders-load-all") else {
+            return XCTFail("No orders-load-all file")
+        }
+
+        let mapped = try OrderListTestMapper(siteID: dummySiteID).map(response: response)
+        print("GOOD: \(mapped.elements.count)")
+        print("BAD: \(mapped.fails.count)")
+    }
+
     /// Verifies that all of the Order Fields are parsed correctly.
     ///
     func test_order_fields_are_properly_parsed() {

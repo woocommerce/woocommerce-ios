@@ -7,6 +7,9 @@ import SafariServices
 import SwiftUI
 import WooFoundation
 
+import struct Networking.Faulty
+import struct Networking.FaultyOrder
+
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
 protocol OrderListViewControllerDelegate: AnyObject {
@@ -263,6 +266,8 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error(let error):
                     self.setErrorTopBanner(for: error)
+                case .partialError(let faulties):
+                    self.setFaultyTopBanner(faulties: faulties)
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
                 case .inPersonPaymentsFeedback(let survey):
@@ -389,19 +394,22 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             pageNumber: pageNumber,
             pageSize: pageSize,
             reason: SyncReason(rawValue: reason ?? ""),
-            lastFullSyncTimestamp: lastFullSyncTimestamp) { [weak self] totalDuration, error in
+            lastFullSyncTimestamp: lastFullSyncTimestamp) { [weak self] totalDuration, result in
+            //lastFullSyncTimestamp: lastFullSyncTimestamp) { [weak self] totalDuration, error in
                 guard let self = self else {
                     return
                 }
 
-                if let error {
+                switch result {
+                case .failure(let error):
                     ServiceLocator.analytics.track(event: .ordersListLoadError(error))
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     self.viewModel.dataLoadingError = error
-                } else {
+                case .success(let response):
                     if pageNumber == self.syncingCoordinator.pageFirstIndex {
                         // save timestamp of last successful update
                         self.lastFullSyncTimestamp = Date()
+                        self.viewModel.partialDataLoadingErrors.removeAll()
                     }
 
                     let totalCompletedOrderCount = self.viewModel.totalCompletedOrderCount(pageNumber: pageNumber)
@@ -409,10 +417,30 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                                                                             pageNumber: pageNumber,
                                                                             filters: self.viewModel.filters,
                                                                             totalCompletedOrders: totalCompletedOrderCount))
+
+                    self.viewModel.partialDataLoadingErrors.append(contentsOf: response.fails)
                 }
 
+//                if let error {
+//                    ServiceLocator.analytics.track(event: .ordersListLoadError(error))
+//                    DDLogError("⛔️ Error synchronizing orders: \(error)")
+//                    self.viewModel.dataLoadingError = error
+//                } else {
+//                    if pageNumber == self.syncingCoordinator.pageFirstIndex {
+//                        // save timestamp of last successful update
+//                        self.lastFullSyncTimestamp = Date()
+//                    }
+//
+//                    let totalCompletedOrderCount = self.viewModel.totalCompletedOrderCount(pageNumber: pageNumber)
+//                    ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
+//                                                                            pageNumber: pageNumber,
+//                                                                            filters: self.viewModel.filters,
+//                                                                            totalCompletedOrders: totalCompletedOrderCount))
+//                }
+//
                 self.transitionToResultsUpdatedState()
-                onCompletion?(error == nil)
+                //onCompletion?(error == nil)
+                onCompletion?(result.isSuccess)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -828,6 +856,14 @@ private extension OrderListViewController {
             let supportForm = SupportFormHostingController(viewModel: .init())
             supportForm.show(from: self)
         })
+        showTopBannerView()
+    }
+
+    func setFaultyTopBanner(faulties: [Faulty<FaultyOrder>]) {
+        topBannerView = ErrorTopBannerFactory.createFaultyTopBanner {
+            let list = FaultyOrdersListViewController(faulties: faulties)
+            self.show(list, sender: self)
+        }
         showTopBannerView()
     }
 

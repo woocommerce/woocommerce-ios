@@ -2,6 +2,7 @@ import Foundation
 
 import enum Yosemite.OrderAction
 import struct Yosemite.OrderStatus
+import Networking
 
 /// Returns what `OrderAction` should be used when synchronizing a list of orders.
 ///
@@ -56,7 +57,8 @@ struct OrderListSyncActionUseCase {
                    pageSize: Int,
                    reason: SyncReason?,
                    lastFullSyncTimestamp: Date?,
-                   completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
+                   completionHandler: @escaping (TimeInterval, Result<ListResponse<Order, FaultyOrder>, Error>) -> Void) -> OrderAction {
+//                   completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let statuses = (filters?.orderStatus ?? []).map { $0.rawValue }
         let startDate = filters?.dateRange?.computedStartDate
         let endDate = filters?.dateRange?.computedEndDate

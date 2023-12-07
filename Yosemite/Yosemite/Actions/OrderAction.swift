@@ -34,7 +34,8 @@ public enum OrderAction: Action {
         modifiedAfter: Date? = nil,
         deleteAllBeforeSaving: Bool,
         pageSize: Int,
-        onCompletion: (TimeInterval, Error?) -> Void
+        onCompletion: (TimeInterval, Result<ListResponse<Order, FaultyOrder>, Error>) -> Void
+//        onCompletion: (TimeInterval, Error?) -> Void
     )
 
     /// Synchronizes the Orders matching the specified criteria.
@@ -54,7 +55,8 @@ public enum OrderAction: Action {
                            modifiedAfter: Date? = nil,
                            pageNumber: Int,
                            pageSize: Int,
-                           onCompletion: (TimeInterval, Error?) -> Void)
+                           onCompletion: (TimeInterval, Result<ListResponse<Order, FaultyOrder>, Error>) -> Void)
+//                           onCompletion: (TimeInterval, Error?) -> Void)
 
     /// Nukes all of the cached orders.
     ///

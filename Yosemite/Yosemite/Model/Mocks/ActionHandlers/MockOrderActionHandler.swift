@@ -11,7 +11,8 @@ struct MockOrderActionHandler: MockActionHandler {
     func handle(action: ActionType) {
         switch action {
             case .fetchFilteredOrders(let siteID, _, _, _, _, _, _, let onCompletion):
-                fetchFilteredAndAllOrders(siteID: siteID, onCompletion: onCompletion)
+                // fetchFilteredAndAllOrders(siteID: siteID, onCompletion: onCompletion)
+                unimplementedAction(action: action)
             case .retrieveOrder(let siteID, let orderID, let onCompletion):
                 onCompletion(objectGraph.order(forSiteId: siteID, orderId: orderID), nil)
             default: unimplementedAction(action: action)

@@ -199,6 +199,7 @@
 		262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */; };
 		263659DC2A264A3E00607A0D /* IPLocationRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263659DB2A264A3E00607A0D /* IPLocationRemote.swift */; };
 		263659DE2A2694A000607A0D /* IPLocationRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263659DD2A2694A000607A0D /* IPLocationRemoteTests.swift */; };
+		263D545D2B1FB718001CEBF3 /* faulty-orders-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 263D545C2B1FB718001CEBF3 /* faulty-orders-load-all.json */; };
 		263E37D22641ACEA00260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D12641ACEA00260D3B /* Codegen */; };
 		263E383F2641FF1600260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E383E2641FF1600260D3B /* Codegen */; };
 		263E38402641FF1600260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E383E2641FF1600260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -1218,6 +1219,7 @@
 		262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapperTests.swift; sourceTree = "<group>"; };
 		263659DB2A264A3E00607A0D /* IPLocationRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPLocationRemote.swift; sourceTree = "<group>"; };
 		263659DD2A2694A000607A0D /* IPLocationRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPLocationRemoteTests.swift; sourceTree = "<group>"; };
+		263D545C2B1FB718001CEBF3 /* faulty-orders-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "faulty-orders-load-all.json"; sourceTree = "<group>"; };
 		265BCA01243056E3004E53EE /* categories-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-all.json"; sourceTree = "<group>"; };
 		265EFBDB285257950033BD33 /* Order+Fallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Fallbacks.swift"; sourceTree = "<group>"; };
 		26615472242D596B00A31661 /* ProductCategoriesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoriesRemote.swift; sourceTree = "<group>"; };
@@ -2755,6 +2757,7 @@
 				DEF13C5F29668C420024A02B /* order-without-data.json */,
 				034480C227A42F9100DFACD2 /* order-with-charge.json */,
 				02C254D62563999200A04423 /* order-shipping-labels.json */,
+				263D545C2B1FB718001CEBF3 /* faulty-orders-load-all.json */,
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 				DEF13C5D296686AB0024A02B /* orders-load-all-without-data.json */,
 				74C8F06520EEB76400B6EDC9 /* order-notes.json */,
@@ -3606,6 +3609,7 @@
 				4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */,
 				EE57C1562980F3BF00BC31E7 /* shipment_tracking_single_without_data.json in Resources */,
 				03DCB77E262738E300C8953D /* coupon.json in Resources */,
+				263D545D2B1FB718001CEBF3 /* faulty-orders-load-all.json in Resources */,
 				688908AE28FF920C0081A07E /* customer-2.json in Resources */,
 				034480C327A42F9100DFACD2 /* order-with-charge.json in Resources */,
 				74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */,

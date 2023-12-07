@@ -172,7 +172,15 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let shippingTotal = try container.decode(String.self, forKey: .shippingTotal)
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
-        let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
+
+        let paymentMethodID: String = try {
+            if Int.random(in: 1...10) % 2 == 0 {
+                return try container.decode(String.self, forKey: .paymentMethodID)
+            } else {
+                return "\(try container.decode(Int.self, forKey: .paymentMethodID))"
+            }
+        }()
+//        let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
         // "payment_url" is only available on stores stores with version >= 6.4

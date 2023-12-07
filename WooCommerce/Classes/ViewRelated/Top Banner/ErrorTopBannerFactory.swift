@@ -25,6 +25,21 @@ struct ErrorTopBannerFactory {
         return topBannerView
     }
 
+    static func createFaultyTopBanner(onSeeFaultiesButtonPressed: @escaping () -> Void) -> TopBannerView {
+        let onFaultiesPressed = TopBannerViewModel.ActionButton(title: "See problematic orders", action: { _ in onSeeFaultiesButtonPressed() })
+        let viewModel = TopBannerViewModel(title: "We can't display all of your orders",
+                                           infoText: "There is a problem with some of your orders, please follow these instructions to troubleshoot them.",
+                                           icon: .infoOutlineImage,
+                                           isExpanded: true,
+                                           shouldResizeInfo: false,
+                                           topButton: .none,
+                                           actionButtons: [onFaultiesPressed])
+        let topBannerView = TopBannerView(viewModel: viewModel)
+        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+
+        return topBannerView
+    }
+
     static func troubleshootUrl(for error: Error) -> URL {
         return ErrorType(error: error).troubleshootUrl
     }

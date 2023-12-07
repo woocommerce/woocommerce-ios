@@ -131,8 +131,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
                            wooApiVersion: .none,
                            method: method,
                            path: wordpressApiVersion.path + pathWithoutSiteInfo,
-                           parameters: parameters ?? [:],
-                           skipsEncodingBody: encoding == nil)
+                           parameters: parameters ?? [:])
     }
 }
 

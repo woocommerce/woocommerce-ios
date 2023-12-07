@@ -24,22 +24,16 @@ struct RESTRequest: Request {
     ///
     let parameters: [String: Any]?
 
-    /// Whether the request body should be kept empty
-    ///
-    let skipsEncodingBody: Bool
-
     private init(siteURL: String,
                  apiVersionPath: String?,
                  method: HTTPMethod,
                  path: String,
-                 parameters: [String: Any],
-                 skipsEncodingBody: Bool = false) {
+                 parameters: [String: Any]) {
         self.siteURL = siteURL
         self.apiVersionPath = apiVersionPath
         self.method = method
         self.path = path
         self.parameters = parameters
-        self.skipsEncodingBody = skipsEncodingBody
     }
 
     /// - Parameters:
@@ -51,14 +45,8 @@ struct RESTRequest: Request {
     init(siteURL: String,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any] = [:],
-         skipsEncodingBody: Bool = false) {
-        self.init(siteURL: siteURL,
-                  apiVersionPath: nil,
-                  method: method,
-                  path: path,
-                  parameters: parameters,
-                  skipsEncodingBody: skipsEncodingBody)
+         parameters: [String: Any] = [:]) {
+        self.init(siteURL: siteURL, apiVersionPath: nil, method: method, path: path, parameters: parameters)
     }
 
     /// - Parameters:
@@ -72,14 +60,8 @@ struct RESTRequest: Request {
          wooApiVersion: WooAPIVersion,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any] = [:],
-         skipsEncodingBody: Bool = false) {
-        self.init(siteURL: siteURL,
-                  apiVersionPath: wooApiVersion.path,
-                  method: method,
-                  path: path,
-                  parameters: parameters,
-                  skipsEncodingBody: skipsEncodingBody)
+         parameters: [String: Any] = [:]) {
+        self.init(siteURL: siteURL, apiVersionPath: wooApiVersion.path, method: method, path: path, parameters: parameters)
     }
 
     /// - Parameters:
@@ -93,14 +75,8 @@ struct RESTRequest: Request {
          wordpressApiVersion: WordPressAPIVersion,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any] = [:],
-         skipsEncodingBody: Bool = false) {
-        self.init(siteURL: siteURL,
-                  apiVersionPath: wordpressApiVersion.path,
-                  method: method,
-                  path: path,
-                  parameters: parameters,
-                  skipsEncodingBody: skipsEncodingBody)
+         parameters: [String: Any] = [:]) {
+        self.init(siteURL: siteURL, apiVersionPath: wordpressApiVersion.path, method: method, path: path, parameters: parameters)
     }
 
     /// Returns a URLRequest instance representing the current REST API Request.
@@ -112,9 +88,6 @@ struct RESTRequest: Request {
             .filter { $0.isEmpty == false }
         let url = try components.joined(separator: "/").asURL()
         let request = try URLRequest(url: url, method: method)
-        guard !skipsEncodingBody else {
-            return request
-        }
         switch method {
         case .post, .put:
             return try JSONEncoding.default.encode(request, with: parameters)

@@ -8,7 +8,6 @@ import TestKit
 
 /// Remote UnitTests
 ///
-@MainActor
 final class RemoteTests: XCTestCase {
 
     /// Sample Request
@@ -1026,7 +1025,7 @@ private class DummyMapper: Mapper {
     ///
     var input: Data?
 
-    func map(response: Data) throws -> Any {
+    func map(response: Data) async throws -> Any {
         input = response
         return response
     }
@@ -1036,7 +1035,7 @@ private class DummyMapper: Mapper {
 ///
 private class FailingDummyMapper: Mapper {
 
-    func map(response: Data) throws -> Any {
+    func map(response: Data) async throws -> Any {
         let decoder = JSONDecoder()
         return try decoder.decode(String.self, from: Data())
     }

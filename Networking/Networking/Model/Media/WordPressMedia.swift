@@ -59,10 +59,29 @@ extension WordPressMedia: Decodable {
 public extension WordPressMedia {
     /// Details about a WordPress site media.
     struct MediaDetails: Decodable, Equatable {
-        public let width: Double
-        public let height: Double
-        public let fileName: String
-        public let sizes: [String: MediaSizeDetails]
+
+        public let width: Double?
+        public let height: Double?
+        public let fileName: String?
+        public let sizes: [String: MediaSizeDetails]?
+
+        init(width: Double?, height: Double?, fileName: String?, sizes: [String: WordPressMedia.MediaSizeDetails]?) {
+            self.width = width
+            self.height = height
+            self.fileName = fileName
+            self.sizes = sizes
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            let width = try container.decodeIfPresent(Double.self, forKey: .width)
+            let height = try container.decodeIfPresent(Double.self, forKey: .height)
+            let fileName = try container.decodeIfPresent(String.self, forKey: .fileName)
+            let sizes = try container.decodeIfPresent([String: WordPressMedia.MediaSizeDetails].self, forKey: .sizes)
+
+            self.init(width: width, height: height, fileName: fileName, sizes: sizes)
+        }
 
         enum CodingKeys: String, CodingKey {
             case width
@@ -90,7 +109,7 @@ public extension WordPressMedia {
     /// Title of the WordPress site media.
     struct MediaTitle: Decodable, Equatable {
         /// `GET` media list request's `title` field only contains `rendered`, while `POST` media request includes both `raw` and `rendered`.
-        let rendered: String
+        public let rendered: String
 
         enum CodingKeys: String, CodingKey {
             case rendered

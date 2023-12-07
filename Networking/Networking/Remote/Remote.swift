@@ -160,13 +160,13 @@ public class Remote: NSObject {
     /// - Returns: A publisher that emits result upon completion.
     func enqueue<M: Mapper>(_ request: Request, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
         network.responseDataPublisher(for: request)
-            .map { [weak self] (result: Result<Data, Error>) -> Result<M.Output, Error> in
+            .asyncMap { [weak self] (result: Result<Data, Error>) -> Result<M.Output, Error> in
                 switch result {
                 case .success(let data):
                     do {
                         let validator = request.responseDataValidator()
                         try validator.validate(data: data)
-                        let parsed = try mapper.map(response: data)
+                        let parsed = try await mapper.map(response: data)
                         return .success(parsed)
                     } catch {
                         DDLogError("<> Mapping Error: \(error)")
@@ -176,6 +176,7 @@ public class Remote: NSObject {
                     return .failure(self?.mapNetworkError(error: error, for: request) ?? error)
                 }
             }
+            .receive(on: DispatchQueue.main)
             .handleEvents(receiveOutput: { [weak self] result in
                 if let dotcomError = result.failure as? DotcomError {
                     self?.handleResponseError(error: dotcomError, for: request)

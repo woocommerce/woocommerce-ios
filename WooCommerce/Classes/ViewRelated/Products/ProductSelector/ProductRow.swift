@@ -59,50 +59,43 @@ struct ProductRow: View {
     }
 
     var body: some View {
-        VStack {
-            AdaptiveStack(horizontalAlignment: .leading) {
-                HStack(alignment: .center) {
-                    if multipleSelectionsEnabled {
-                        if let selectionHandler = onCheckboxSelected {
-                            checkbox.onTapGesture {
-                                selectionHandler()
-                            }
-                        } else {
-                            checkbox
-                        }
+        HStack(alignment: .center) {
+            if multipleSelectionsEnabled {
+                if let selectionHandler = onCheckboxSelected {
+                    checkbox.onTapGesture {
+                        selectionHandler()
                     }
-
-                    // Product image
-                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
-                                          productImageSize: Layout.productImageSize,
-                                          scale: scale,
-                                          productImageCornerRadius: Layout.cornerRadius,
-                                          foregroundColor: Color(UIColor.listSmallIcon))
-
-                    // Product details
-                    VStack(alignment: .leading) {
-                        Text(viewModel.name)
-                            .bodyStyle()
-                        Text(viewModel.productDetailsLabel)
-                            .subheadlineStyle()
-                            .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
-                        Text(viewModel.secondaryProductDetailsLabel)
-                            .subheadlineStyle()
-                            .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)
-                    }
-                    .multilineTextAlignment(.leading)
+                } else {
+                    checkbox
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
-                .accessibilityElement(children: .ignore)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(viewModel.productAccessibilityLabel)
-                .accessibilityHint(accessibilityHint)
-
-                ProductStepper(viewModel: viewModel.stepperViewModel)
-                    .renderedIf(viewModel.canChangeQuantity)
             }
+
+            // Product image
+            ProductImageThumbnail(productImageURL: viewModel.imageURL,
+                                  productImageSize: Layout.productImageSize,
+                                  scale: scale,
+                                  productImageCornerRadius: Layout.cornerRadius,
+                                  foregroundColor: Color(UIColor.listSmallIcon))
+
+            // Product details
+            VStack(alignment: .leading) {
+                Text(viewModel.name)
+                    .bodyStyle()
+                Text(viewModel.productDetailsLabel)
+                    .subheadlineStyle()
+                    .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
+                Text(viewModel.secondaryProductDetailsLabel)
+                    .subheadlineStyle()
+                    .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)
+            }
+            .multilineTextAlignment(.leading)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(viewModel.productAccessibilityLabel)
+        .accessibilityHint(accessibilityHint)
     }
 
     private var checkbox: some View {

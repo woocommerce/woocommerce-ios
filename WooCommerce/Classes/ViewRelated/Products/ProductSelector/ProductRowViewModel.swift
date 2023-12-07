@@ -8,8 +8,7 @@ import WooFoundation
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
 
-    let stepperViewModel: ProductStepperViewModel
-
+    // TODO-jc: remove
     /// Whether the product quantity can be changed.
     /// Controls whether the stepper is rendered.
     ///
@@ -259,7 +258,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
-    @Published private(set) var quantity: Decimal
+    @Published var quantity: Decimal
 
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
@@ -319,12 +318,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
-        self.stepperViewModel = ProductStepperViewModel(quantity: quantity,
-                                                        name: name,
-                                                        minimumQuantity: minimumQuantity,
-                                                        maximumQuantity: maximumQuantity,
-                                                        quantityUpdatedCallback: quantityUpdatedCallback,
-                                                        removeProductIntent: removeProductIntent)
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
@@ -337,8 +330,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.variationDisplayMode = variationDisplayMode
         self.removeProductIntent = removeProductIntent
         self.configure = configure
-
-        observeQuantityFromStepperViewModel()
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -539,13 +530,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     func trackEditDiscountTapped() {
         analytics.track(event: .Orders.productDiscountEditButtonTapped())
-    }
-}
-
-private extension ProductRowViewModel {
-    func observeQuantityFromStepperViewModel() {
-        stepperViewModel.$quantity
-            .assign(to: &$quantity)
     }
 }
 

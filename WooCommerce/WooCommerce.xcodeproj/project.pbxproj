@@ -583,6 +583,7 @@
 		02FADAA52A607CEE00FE8683 /* MockImageTextScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */; };
 		02FADAA72A608F6B00FE8683 /* ImageTextScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADAA62A608F6B00FE8683 /* ImageTextScannerTests.swift */; };
 		02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */; };
+		02FE734B2B21613D00CD486B /* ProductWithQuantityStepperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE734A2B21613D00CD486B /* ProductWithQuantityStepperView.swift */; };
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
 		02FFDDC62A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FFDDC52A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift */; };
 		0300201029C0EBA400B09777 /* ReaderConnectionUnderlyingErrorDisplaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0300200F29C0EBA400B09777 /* ReaderConnectionUnderlyingErrorDisplaying.swift */; };
@@ -3178,6 +3179,7 @@
 		02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageTextScanner.swift; sourceTree = "<group>"; };
 		02FADAA62A608F6B00FE8683 /* ImageTextScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTextScannerTests.swift; sourceTree = "<group>"; };
 		02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingViewController.swift; sourceTree = "<group>"; };
+		02FE734A2B21613D00CD486B /* ProductWithQuantityStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductWithQuantityStepperView.swift; sourceTree = "<group>"; };
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarControllerTests.swift; sourceTree = "<group>"; };
 		02FFDDC52A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Blaze.swift"; sourceTree = "<group>"; };
 		0300200F29C0EBA400B09777 /* ReaderConnectionUnderlyingErrorDisplaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderConnectionUnderlyingErrorDisplaying.swift; sourceTree = "<group>"; };
@@ -10969,6 +10971,7 @@
 				68AC9D282ACE598B0042F784 /* ProductImageThumbnail.swift */,
 				02DFD5032B20486C0048CD70 /* ProductStepper.swift */,
 				02DFD5052B2048C50048CD70 /* ProductStepperViewModel.swift */,
+				02FE734A2B21613D00CD486B /* ProductWithQuantityStepperView.swift */,
 			);
 			path = ProductSelector;
 			sourceTree = "<group>";
@@ -13704,6 +13707,7 @@
 				03582BE2299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift in Sources */,
 				02F36F472978349500D97EA0 /* DomainPurchaseSuccessView.swift in Sources */,
 				B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */,
+				02FE734B2B21613D00CD486B /* ProductWithQuantityStepperView.swift in Sources */,
 				DEDA8DBC2B1983570076BF0F /* ThemeSettingView.swift in Sources */,
 				03825FE92A97B63800363BDA /* AdaptiveImage.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,

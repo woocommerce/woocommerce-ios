@@ -21,4 +21,4 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
-      bundle exec fastlane new_hotfix_release version:$VERSION skip_confirm:true
+      bundle exec fastlane new_hotfix_release version:${VERSION} skip_confirm:true

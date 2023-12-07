@@ -11,5 +11,5 @@ protocol Mapper {
 
     /// Maps a Backend Response into a generic entity of Type `Output`. This method *can throw* errors.
     ///
-    func map(response: Data) throws -> Output
+    func map(response: Data) async throws -> Output
 }

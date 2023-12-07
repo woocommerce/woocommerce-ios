@@ -127,7 +127,7 @@ a  concrete `Mapper` implementation:
     ```
     protocol Mapper {
         associatedtype Output
-        func map(response: Data) throws -> Output
+        func map(response: Data) async throws -> Output
     }
     ```
 

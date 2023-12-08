@@ -161,7 +161,6 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
-        let shouldShowDownloadableProduct = product.downloadable
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
@@ -174,7 +173,7 @@ private extension ProductFormActionsFactory {
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
-            shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
+            .downloadableFiles(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             .productType(editable: canEditProductType)
@@ -426,7 +425,7 @@ private extension ProductFormActionsFactory {
             return (product.upsellIDs.count > 0 || product.crossSellIDs.count > 0)
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloadableFiles:
-            return product.downloadable
+            return product.downloadableFiles.isNotEmpty
         case .shortDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.

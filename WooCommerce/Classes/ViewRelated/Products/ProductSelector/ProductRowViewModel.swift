@@ -27,7 +27,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let name: String
 
-    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
     /// Whether a product in an order item is configurable
     ///
     let isConfigurable: Bool
@@ -200,7 +199,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     @Published var quantity: Decimal
 
-    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
 

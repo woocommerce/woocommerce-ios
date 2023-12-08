@@ -213,4 +213,38 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         // Then
         assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
     }
+
+    // MARK: - `isConfigurable`
+
+    func test_isConfigurable_set_to_false_if_true_and_configure_is_nil() {
+        // Given
+        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: true,
+                                                           productViewModel: .init(product: .fake()),
+                                                           stepperViewModel: .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }))
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_set_to_true_if_true_and_configure_is_not_nil() {
+        // Given
+        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: true,
+                                                           productViewModel: .init(product: .fake()),
+                                                           stepperViewModel: .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }),
+                                                           configure: {})
+
+        // Then
+        XCTAssertTrue(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_set_to_false_if_false() {
+        // Given
+        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: false,
+                                                           productViewModel: .init(product: .fake()),
+                                                           stepperViewModel: .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }),
+                                                           configure: {})
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigurable)
+    }
 }

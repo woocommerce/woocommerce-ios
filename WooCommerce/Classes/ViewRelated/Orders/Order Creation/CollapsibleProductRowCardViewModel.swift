@@ -36,6 +36,12 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     /// Used to remove product editing controls for read-only order items (e.g. child items of a product bundle).
     let isReadOnly: Bool
 
+    /// Whether a product in an order item is configurable
+    let isConfigurable: Bool
+
+    /// Closure to configure a product if it is configurable.
+    let configure: (() -> Void)?
+
     let productViewModel: ProductRowViewModel
     let stepperViewModel: ProductStepperViewModel
     let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
@@ -45,12 +51,16 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 
     init(hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
+         isConfigurable: Bool = false,
          productViewModel: ProductRowViewModel,
          stepperViewModel: ProductStepperViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         configure: (() -> Void)? = nil) {
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
+        self.isConfigurable = configure != nil ? isConfigurable : false
+        self.configure = configure
         self.productViewModel = productViewModel
         self.stepperViewModel = stepperViewModel
         self.priceSummaryViewModel = .init(pricedIndividually: productViewModel.pricedIndividually,

@@ -58,5 +58,22 @@ extension WooAnalyticsEvent {
                               properties: [:],
                               error: error)
         }
+
+        enum Survey {
+            static func confirmationViewDisplayed() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .productCreationAISurveyConfirmationViewDisplayed,
+                                  properties: [:])
+            }
+
+            static func startSurvey() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .productCreationAISurveyStartSurveyButtonTapped,
+                                  properties: [:])
+            }
+
+            static func skip() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .productCreationAISurveySkipButtonTapped,
+                                  properties: [:])
+            }
+        }
     }
 }

@@ -8,7 +8,6 @@ import TestKit
 
 /// Remote UnitTests
 ///
-@MainActor
 final class RemoteTests: XCTestCase {
 
     /// Sample Request

@@ -1,12 +1,1 @@
-- [**] Order form: quantity can now be typed in [https://github.com/woocommerce/woocommerce-ios/pull/11349]
-- [*] Payments: Supress displaying an error when the card reader connection is manually cancelled [https://github.com/woocommerce/woocommerce-ios/pull/11230]
-- [internal] Fix runtime warning when uploading media when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11355]
-- [*] Products: Downloadable products now accept local files of types other than images. [https://github.com/woocommerce/woocommerce-ios/pull/11353]
-- [*] Products: Downloadable products now accept file types other than images from WordPress media library. [https://github.com/woocommerce/woocommerce-ios/pull/11356]
-- [*] Payments menu: restored the ability to search for Payments in device Spotlight. [https://github.com/woocommerce/woocommerce-ios/pull/11343]
-- [*] Payments menu: show the selected payment gateway when there's more than one to choose from [https://github.com/woocommerce/woocommerce-ios/pull/11345]
-- [**] Fixed a crash that occurred when reordering product images during the image upload process. Now, users will not be able to reorder images until the upload is complete, providing a smoother and more stable experience. [https://github.com/woocommerce/woocommerce-ios/pull/11350]
-- [internal] Process network response in background thread to avoid blocking main thread. [https://github.com/woocommerce/woocommerce-ios/pull/11381]
-- [**] Attempted to fix a crash that has been occurring for some users during magic link login. [https://github.com/woocommerce/woocommerce-ios/pull/11373]
-- [*] Fixed a crash due to using unavailable system image in devices below iOS 16.0. [https://github.com/woocommerce/woocommerce-ios/pull/11394]
-
+Good news everyone! We've introduced some game-changing updates to enhance your experience. Say goodbye to delays during order creation—now you can type in the quantity and speed up your process effortlessly. Downloadable products have also received an upgrade; they now accept a variety of file types beyond just images. Additionally, we've made crucial stability improvements, ensuring a smoother and more reliable overall usage. Dive in now and explore these fantastic enhancements!

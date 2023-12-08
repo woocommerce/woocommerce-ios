@@ -26,7 +26,7 @@ final class EditProductCategoryListViewController: UIViewController {
 
         let productCategoryListViewModel = ProductCategoryListViewModel(siteID: product.siteID,
                                                                         selectedCategories: product.categories)
-        let configuration = ProductCategoryListViewController.Configuration(updateEnabled: true)
+        let configuration = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true, updateEnabled: true)
         productCategoryListViewController = ProductCategoryListViewController(viewModel: productCategoryListViewModel, configuration: configuration)
         viewModel = EditProductCategoryListViewModel(product: product,
                                                      baseProductCategoryListViewModel: productCategoryListViewController.viewModel,

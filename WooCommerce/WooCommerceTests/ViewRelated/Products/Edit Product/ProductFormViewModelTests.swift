@@ -702,17 +702,30 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertTrue(isCallbackCalled)
     }
 
-    func test_updateDownloadableFiles_does_not_change_downloadable_when_not_simplifiedProductEditingEnabled() {
+    func test_updateDownloadableFiles_sets_downloadable_when_adding_files() {
         // Given
-        let product = Product.fake().copy(downloadable: true, downloads: [.fake()])
+        let product = Product.fake().copy(downloadable: false, downloads: [.fake()])
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        viewModel.updateDownloadableFiles(downloadableFiles: [.fake()], downloadLimit: 0, downloadExpiry: 0)
+
+        // Then
+        XCTAssertTrue(viewModel.productModel.downloadable)
+    }
+    
+    func test_updateDownloadableFiles_does_not_change_downloadable_when_empty_files() {
+        // Given
+        let product = Product.fake().copy(downloadable: false, downloads: [.fake()])
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
         viewModel.updateDownloadableFiles(downloadableFiles: [], downloadLimit: 0, downloadExpiry: 0)
 
         // Then
-        XCTAssertTrue(viewModel.productModel.downloadable)
+        XCTAssertFalse(viewModel.productModel.downloadable)
     }
+
 
     // MARK: Subscription Free trial
 

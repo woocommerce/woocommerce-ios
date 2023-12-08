@@ -476,7 +476,7 @@ final class StoresManagerTests: XCTestCase {
         let sessionManager = SessionManager.makeForTesting(defaultSite: Site.fake().copy(siteID: 123))
         let manager = DefaultStoresManager(sessionManager: sessionManager)
 
-        // Assert
+        // Then
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertTrue(manager.needsDefaultStore)
     }

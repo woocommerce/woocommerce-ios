@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.7
+-----
+- [*] Order editing: fixed bug preventing retry for errors when editing or creating an order [https://github.com/woocommerce/woocommerce-ios/pull/11391]
+
 16.6
 -----
 - [**] Order form: quantity can now be typed in [https://github.com/woocommerce/woocommerce-ios/pull/11349]

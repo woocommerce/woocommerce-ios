@@ -15,7 +15,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     private let sampleConfiguration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: .US)
 
     override func setUp() {
-        let sessionManager = SessionManager.makeForTesting()
+        let sessionManager = SessionManager.makeForTesting(authenticated: true)
         sessionManager.setStoreId(sampleSiteID)
         stores = MockStoresManager(sessionManager: sessionManager)
         connectionControllerFactory = MockBuiltInCardReaderConnectionControllerFactory()

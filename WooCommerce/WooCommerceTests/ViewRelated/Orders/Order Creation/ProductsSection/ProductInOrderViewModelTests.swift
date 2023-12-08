@@ -11,7 +11,7 @@ final class ProductInOrderViewModelTests: XCTestCase {
 
         analytics = MockAnalyticsProvider()
         let product = Product.fake()
-        let productRowViewModel = ProductRowViewModel(product: product, quantity: 0, canChangeQuantity: true)
+        let productRowViewModel = ProductRowViewModel(product: product, quantity: 0)
         viewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel,
                                             productDiscountConfiguration: nil,
                                             showCouponsAndDiscountsAlert: false,

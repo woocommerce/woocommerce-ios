@@ -31,7 +31,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     }
 
     /// For rendering the product row with the quantity setting UI.
-    @Published private(set) var productRowViewModel: ProductRowViewModel
+    @Published private(set) var productWithStepperViewModel: ProductWithQuantityStepperViewModel
     @Published var quantity: Decimal
     @Published var isOptionalAndSelected: Bool = false
 
@@ -95,21 +95,26 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         self.variableProductSettings = variableProductSettings
         self.analytics = analytics
         isVariable = product.productType == .variable
-        productRowViewModel = .init(productOrVariationID: bundleItem.productID,
-                                    name: bundleItem.title,
-                                    sku: nil,
-                                    price: nil,
-                                    stockStatusKey: "",
-                                    stockQuantity: nil,
-                                    manageStock: false,
-                                    quantity: quantity,
-                                    minimumQuantity: bundleItem.minQuantity,
-                                    maximumQuantity: bundleItem.maxQuantity,
-                                    canChangeQuantity: !isOptional || isOptionalAndSelected,
-                                    imageURL: product.imageURL,
-                                    hasParentProduct: false,
-                                    isConfigurable: false)
-        productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
+
+        let canChangeQuantity = !isOptional || isOptionalAndSelected
+        let productRowViewModel = ProductRowViewModel(productOrVariationID: bundleItem.productID,
+                                                      name: bundleItem.title,
+                                                      sku: nil,
+                                                      price: nil,
+                                                      stockStatusKey: "",
+                                                      stockQuantity: nil,
+                                                      manageStock: false,
+                                                      quantity: quantity,
+                                                      imageURL: product.imageURL,
+                                                      hasParentProduct: false,
+                                                      isConfigurable: false)
+        let stepperViewModel = ProductStepperViewModel(quantity: quantity,
+                                                       name: bundleItem.title,
+                                                       minimumQuantity: bundleItem.minQuantity,
+                                                       maximumQuantity: bundleItem.maxQuantity,
+                                                       quantityUpdatedCallback: { _ in })
+        self.productWithStepperViewModel = .init(stepperViewModel: stepperViewModel, rowViewModel: productRowViewModel, canChangeQuantity: canChangeQuantity)
+        stepperViewModel.quantityUpdatedCallback = { [weak self] quantity in
             guard let self else { return }
             self.quantity = quantity
             self.analytics.track(event: .Orders.orderFormBundleProductConfigurationChanged(changedField: .quantity))
@@ -161,18 +166,19 @@ private extension ConfigurableBundleItemViewModel {
                                                           stockQuantity: nil,
                                                           manageStock: false,
                                                           quantity: self.quantity,
-                                                          minimumQuantity: self.bundleItem.minQuantity,
-                                                          maximumQuantity: self.bundleItem.maxQuantity,
-                                                          canChangeQuantity: isOptionalAndSelected,
                                                           imageURL: self.product.imageURL,
                                                           hasParentProduct: false,
                                                           isConfigurable: false)
-            productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
+            let stepperViewModel = ProductStepperViewModel(quantity: quantity,
+                                                           name: bundleItem.title,
+                                                           minimumQuantity: bundleItem.minQuantity,
+                                                           maximumQuantity: bundleItem.maxQuantity,
+                                                           quantityUpdatedCallback: { [weak self] quantity in
                 self?.quantity = quantity
-            }
-            return productRowViewModel
+            })
+            return .init(stepperViewModel: stepperViewModel, rowViewModel: productRowViewModel, canChangeQuantity: isOptionalAndSelected)
         }
-        .assign(to: &$productRowViewModel)
+        .assign(to: &$productWithStepperViewModel)
     }
 
     func observeSelectedVariationForSelectableAttributes() {

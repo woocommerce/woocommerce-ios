@@ -128,6 +128,7 @@ class DefaultStoresManager: StoresManager {
 
         isLoggedIn = isAuthenticated
 
+        fullyDeauthenticateIfNeeded()
         restoreSessionAccountIfPossible()
         restoreSessionSiteIfPossible()
     }
@@ -214,6 +215,19 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
+    }
+
+    /// Fully deauthenticates the user, if needed.
+    ///
+    /// This handles the scenario where `DefaultStoresManager` can't be initialized
+    /// in an authenticated state, but the default store is unexpectedly still set.
+    ///
+    func fullyDeauthenticateIfNeeded() {
+        guard !isLoggedIn && !needsDefaultStore else {
+            return
+        }
+
+        deauthenticate()
     }
 
     /// Switches the state to a Deauthenticated one.

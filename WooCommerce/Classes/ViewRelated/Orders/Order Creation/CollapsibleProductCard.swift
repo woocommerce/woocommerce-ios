@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Displays a single collapsible product row or grouped parent and child product rows
 struct CollapsibleProductCard: View {
-    @ObservedObject var viewModel: ProductRowViewModel
+    @ObservedObject var viewModel: ProductWithQuantityStepperViewModel
 
     /// Used for tracking order form events.
     private let flow: WooAnalyticsEvent.Orders.Flow
@@ -19,7 +19,7 @@ struct CollapsibleProductCard: View {
 
     @ScaledMetric private var scale: CGFloat = 1
 
-    init(viewModel: ProductRowViewModel,
+    init(viewModel: ProductWithQuantityStepperViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
          shouldDisableDiscountEditing: Bool,
          shouldDisallowDiscounts: Bool,
@@ -84,7 +84,7 @@ private extension CollapsibleProductCard {
 }
 
 private struct CollapsibleProductRowCard: View {
-    @ObservedObject var viewModel: ProductRowViewModel
+    @ObservedObject var viewModel: ProductWithQuantityStepperViewModel
 
     /// Used for tracking order form events.
     private let flow: WooAnalyticsEvent.Orders.Flow
@@ -114,11 +114,11 @@ private struct CollapsibleProductRowCard: View {
 
     private func dismissTooltip() {
         if shouldShowInfoTooltip {
-            shouldShowInfoTooltip.toggle()
+            shouldShowInfoTooltip = false
         }
     }
 
-    init(viewModel: ProductRowViewModel,
+    init(viewModel: ProductWithQuantityStepperViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
          shouldDisableDiscountEditing: Bool,
          shouldDisallowDiscounts: Bool,
@@ -135,28 +135,29 @@ private struct CollapsibleProductRowCard: View {
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
                         shouldShowDividers: false,
-                        hasSubtleChevron: viewModel.hasParentProduct,
+                        hasSubtleChevron: viewModel.rowViewModel.hasParentProduct,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
-                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
-                                          productImageSize: viewModel.hasParentProduct ? Layout.childProductImageSize : Layout.parentProductImageSize,
+                    ProductImageThumbnail(productImageURL: viewModel.rowViewModel.imageURL,
+                                          productImageSize: viewModel.rowViewModel.hasParentProduct ?
+                                          Layout.childProductImageSize : Layout.parentProductImageSize,
                                           scale: scale,
                                           productImageCornerRadius: Layout.productImageCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
-                    .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
+                    .padding(.leading, viewModel.rowViewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     VStack(alignment: .leading) {
-                        Text(viewModel.name)
-                            .font(viewModel.hasParentProduct ? .subheadline : .none)
+                        Text(viewModel.rowViewModel.name)
+                            .font(viewModel.rowViewModel.hasParentProduct ? .subheadline : .none)
                             .foregroundColor(Color(.text))
-                        Text(viewModel.orderProductDetailsLabel)
+                        Text(viewModel.rowViewModel.orderProductDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
-                        Text(viewModel.skuLabel)
+                        Text(viewModel.rowViewModel.skuLabel)
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
-                        CollapsibleProductCardPriceSummary(viewModel: viewModel)
+                        CollapsibleProductCardPriceSummary(viewModel: viewModel.rowViewModel)
                             .font(.subheadline)
                             .renderedIf(isCollapsed)
                     }
@@ -166,65 +167,68 @@ private struct CollapsibleProductRowCard: View {
                 dismissTooltip()
             }
         }, content: {
-            Divider()
+            VStack(spacing: 16.0) {
+                Divider()
 
-            Group {
-                SimplifiedProductRow(viewModel: viewModel)
+                SimplifiedProductRow(viewModel: viewModel.stepperViewModel, canChangeQuantity: viewModel.canChangeQuantity)
                     .renderedIf(!viewModel.isReadOnly)
+
                 HStack {
                     Text(Localization.priceLabel)
-                    CollapsibleProductCardPriceSummary(viewModel: viewModel)
+                    CollapsibleProductCardPriceSummary(viewModel: viewModel.rowViewModel)
                 }
-                HStack {
-                    discountRow
-                }
+                .frame(minHeight: Layout.rowMinHeight)
+
+                Divider()
+
+                discountRow
+                .frame(minHeight: Layout.rowMinHeight)
                 .renderedIf(!viewModel.isReadOnly)
+
                 HStack {
                     Text(Localization.priceAfterDiscountLabel)
                     Spacer()
-                    Text(viewModel.totalPriceAfterDiscountLabel ?? "")
+                    Text(viewModel.rowViewModel.totalPriceAfterDiscountLabel ?? "")
                 }
-                .renderedIf(viewModel.hasDiscount && !viewModel.isReadOnly)
-            }
-            .padding(.top)
-
-            Group {
-                Divider()
-                    .padding()
+                .frame(minHeight: Layout.rowMinHeight)
+                .renderedIf(viewModel.rowViewModel.hasDiscount && !viewModel.isReadOnly)
 
                 Button(Localization.configureBundleProduct) {
-                    viewModel.configure?()
+                    viewModel.rowViewModel.configure?()
                     ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productCard))
                 }
                 .buttonStyle(IconButtonStyle(icon: .cogImage))
-            }
-            .renderedIf(viewModel.isConfigurable)
-            .onAppear {
-                guard !hasTrackedBundleProductConfigureCTAShownEvent else {
-                    return
+                .frame(minHeight: Layout.rowMinHeight)
+                .renderedIf(viewModel.rowViewModel.isConfigurable)
+                .onAppear {
+                    guard !hasTrackedBundleProductConfigureCTAShownEvent else {
+                        return
+                    }
+                    ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productCard))
+                    hasTrackedBundleProductConfigureCTAShownEvent = true
                 }
-                ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productCard))
-                hasTrackedBundleProductConfigureCTAShownEvent = true
-            }
 
-            Group {
-                Divider()
-                    .padding()
-
-                Button(Localization.removeProductLabel) {
-                    if let removeProductIntent = viewModel.removeProductIntent {
+                if !viewModel.isReadOnly,
+                   let removeProductIntent = viewModel.rowViewModel.removeProductIntent {
+                    Button {
                         removeProductIntent()
+                    } label: {
+                        HStack {
+                            Image(systemName: "xmark.circle")
+                                .font(.system(size: Layout.deleteIconSize))
+                            Text(Localization.removeProductLabel)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(Color(.error))
+                    }
+                    .frame(minHeight: Layout.rowMinHeight)
+                    .overlay {
+                        TooltipView(toolTipTitle: Localization.discountTooltipTitle,
+                                    toolTipDescription: Localization.discountTooltipDescription, offset: nil)
+                        .renderedIf(shouldShowInfoTooltip)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .foregroundColor(Color(.error))
-                .overlay {
-                    TooltipView(toolTipTitle: Localization.discountTooltipTitle,
-                                toolTipDescription: Localization.discountTooltipDescription, offset: nil)
-                    .renderedIf(shouldShowInfoTooltip)
-                }
             }
-            .renderedIf(!viewModel.isReadOnly)
         })
         .onTapGesture {
             dismissTooltip()
@@ -243,55 +247,56 @@ private struct CollapsibleProductRowCard: View {
 
 private extension CollapsibleProductRowCard {
     func trackAddDiscountTapped() {
-        viewModel.trackAddDiscountTapped()
+        viewModel.rowViewModel.trackAddDiscountTapped()
     }
 
     func trackEditDiscountTapped() {
-        viewModel.trackEditDiscountTapped()
+        viewModel.rowViewModel.trackEditDiscountTapped()
     }
 }
 
 private extension CollapsibleProductRowCard {
     @ViewBuilder var discountRow: some View {
-        if !viewModel.hasDiscount || shouldDisallowDiscounts {
-            Button(Localization.addDiscountLabel) {
-                trackAddDiscountTapped()
-                onAddDiscount(viewModel.id)
-            }
-            .buttonStyle(PlusButtonStyle())
-            .disabled(shouldDisallowDiscounts)
-        } else {
-            HStack {
-                Button(action: {
-                    trackEditDiscountTapped()
-                    onAddDiscount(viewModel.id)
-                }, label: {
-                    HStack {
-                        Text(Localization.discountLabel)
-                        Image(uiImage: .pencilImage)
-                            .resizable()
-                            .frame(width: Layout.iconSize, height: Layout.iconSize)
-                    }
-                })
-                Spacer()
-                if let discountLabel = viewModel.discountLabel {
-                    Text(minusSign + discountLabel)
-                        .foregroundColor(.green)
+        HStack {
+            if !viewModel.rowViewModel.hasDiscount || shouldDisallowDiscounts {
+                Button(Localization.addDiscountLabel) {
+                    trackAddDiscountTapped()
+                    onAddDiscount(viewModel.rowViewModel.id)
                 }
+                .buttonStyle(PlusButtonStyle())
+                .disabled(shouldDisallowDiscounts)
+            } else {
+                HStack {
+                    Button(action: {
+                        trackEditDiscountTapped()
+                        onAddDiscount(viewModel.rowViewModel.id)
+                    }, label: {
+                        HStack {
+                            Text(Localization.discountLabel)
+                            Image(uiImage: .pencilImage)
+                                .resizable()
+                                .frame(width: Layout.iconSize, height: Layout.iconSize)
+                        }
+                    })
+                    Spacer()
+                    if let discountLabel = viewModel.rowViewModel.discountLabel {
+                        Text(minusSign + discountLabel)
+                            .foregroundColor(.green)
+                    }
+                }
+                // Redacts the discount editing row while product data is reloaded during remote sync.
+                // This avoids showing an out-of-date discount while hasn't synched
+                .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
             }
-            // Redacts the discount editing row while product data is reloaded during remote sync.
-            // This avoids showing an out-of-date discount while hasn't synched
-            .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
+            Spacer()
+            Button {
+                shouldShowInfoTooltip.toggle()
+            } label: {
+                Image(systemName: "questionmark.circle")
+                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+            }
+            .renderedIf(shouldDisallowDiscounts)
         }
-        Spacer()
-            .renderedIf(!viewModel.hasDiscount)
-        Button {
-            shouldShowInfoTooltip.toggle()
-        } label: {
-            Image(systemName: "questionmark.circle")
-                .foregroundColor(Color(.wooCommercePurple(.shade60)))
-        }
-        .renderedIf(shouldDisallowDiscounts)
     }
 }
 
@@ -330,6 +335,8 @@ private extension CollapsibleProductRowCard {
         static let childProductImageSize: CGFloat = 40.0
         static let productImageCornerRadius: CGFloat = 4.0
         static let iconSize: CGFloat = 16
+        static let deleteIconSize: CGFloat = 24.0
+        static let rowMinHeight: CGFloat = 40.0
     }
 
     enum Localization {
@@ -364,14 +371,31 @@ private extension CollapsibleProductRowCard {
 struct CollapsibleProductCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        let childViewModels = [ProductRowViewModel(id: 2, product: product, canChangeQuantity: true, hasParentProduct: true),
-                               ProductRowViewModel(id: 3, product: product, canChangeQuantity: true, hasParentProduct: true)]
-        let bundleParentViewModel = ProductRowViewModel(id: 1,
-                                                  product: product.copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]),
-                                                  canChangeQuantity: true,
-                                                  childProductRows: childViewModels,
-                                                  configure: {})
+        let rowViewModel = ProductRowViewModel(product: product)
+        let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
+                                                                                    name: "",
+                                                                                    quantityUpdatedCallback: { _ in }),
+                                                            rowViewModel: rowViewModel,
+                                                            canChangeQuantity: true)
+        let childViewModels = [ProductRowViewModel(id: 2, product: product, hasParentProduct: true),
+                               ProductRowViewModel(id: 3, product: product, hasParentProduct: true)]
+            .map {
+                ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
+                                                                            name: "",
+                                                                            quantityUpdatedCallback: { _ in }),
+                                                    rowViewModel: $0,
+                                                    canChangeQuantity: true)
+            }
+        let bundleParentRowViewModel = ProductRowViewModel(id: 1,
+                                                           product: product
+            .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]),
+                                                           configure: {})
+        let bundleParentViewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
+                                                                                                name: "",
+                                                                                                quantityUpdatedCallback: { _ in }),
+                                                                        rowViewModel: bundleParentRowViewModel,
+                                                                        canChangeQuantity: true,
+                                                                        childProductRows: childViewModels)
         VStack {
             CollapsibleProductCard(viewModel: viewModel,
                                       flow: .creation,

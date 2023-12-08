@@ -3,17 +3,18 @@ import Foundation
 /// Protocol for `MediaRemote` mainly used for mocking.
 public protocol MediaRemoteProtocol {
     func loadMediaLibrary(for siteID: Int64,
+                          imagesOnly: Bool,
                           pageNumber: Int,
                           pageSize: Int,
                           context: String?,
                           completion: @escaping (Result<[Media], Error>) -> Void)
     func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                           imagesOnly: Bool,
                                            pageNumber: Int,
                                            pageSize: Int,
                                            completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
     func uploadMedia(for siteID: Int64,
                      productID: Int64,
-                     context: String?,
                      mediaItems: [UploadableMedia],
                      completion: @escaping (Result<[Media], Error>) -> Void)
     func uploadMediaToWordPressSite(siteID: Int64,
@@ -38,11 +39,13 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
+    ///   - imagesOnly: Whether only images should be loaded.
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadMediaLibrary(for siteID: Int64,
+                                 imagesOnly: Bool,
                                  pageNumber: Int = Default.pageNumber,
                                  pageSize: Int = 25,
                                  context: String? = Default.context,
@@ -52,8 +55,8 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type,file",
-            ParameterKey.mimeType: "image"
-        ]
+            ParameterKey.mimeType: imagesOnly ? "image" : nil
+        ].compactMapValues { $0 }
 
         let path = "sites/\(siteID)/media"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1,
@@ -70,10 +73,12 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
+    ///   - imagesOnly: Whether only images should be loaded.
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.
     public func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                                  imagesOnly: Bool,
                                                   pageNumber: Int = Default.pageNumber,
                                                   pageSize: Int = 25,
                                                   completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
@@ -81,8 +86,8 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
-            ParameterKey.mimeType: "image"
-        ]
+            ParameterKey.mimeType: imagesOnly ? "image" : nil
+        ].compactMapValues { $0 }
 
         let path = "sites/\(siteID)/media"
         do {
@@ -112,12 +117,8 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     public func uploadMedia(for siteID: Int64,
                             productID: Int64,
-                            context: String? = Default.context,
                             mediaItems: [UploadableMedia],
                             completion: @escaping (Result<[Media], Error>) -> Void) {
-        let parameters = [
-            ParameterKey.contextKey: context ?? Default.context,
-        ]
 
         let formParameters: [String: String] = [Int](0..<mediaItems.count).reduce(into: [:]) { (parentIDsByKey, index) in
             parentIDsByKey["attrs[\(index)][parent_id]"] = "\(productID)"
@@ -127,8 +128,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         let path = "sites/\(siteID)/media/new"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1,
                                     method: .post,
-                                    path: path,
-                                    parameters: parameters)
+                                    path: path)
         let mapper = MediaListMapper()
 
         enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
@@ -165,7 +165,10 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         ].compactMapValues { $0 }
         let path = "sites/\(siteID)/media"
         do {
-            let request = try DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: nil, availableAsRESTRequest: true)
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                            method: .post,
+                                            path: path,
+                                            availableAsRESTRequest: true)
             let mapper = WordPressMediaMapper()
 
             enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in

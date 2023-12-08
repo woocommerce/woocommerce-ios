@@ -39,8 +39,6 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productVariationRows.count, 1)
 
         let productVariationRow = viewModel.productVariationRows[0]
-        XCTAssertFalse(productVariationRow.canChangeQuantity,
-                       "Product variation row canChangeQuantity property should be false but is true instead")
         XCTAssertEqual(productVariationRow.name, "Blue - Any Size")
     }
 

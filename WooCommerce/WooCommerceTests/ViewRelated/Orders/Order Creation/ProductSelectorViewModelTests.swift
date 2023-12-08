@@ -44,7 +44,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalSelectedItemsCount, 0)
     }
 
-    func test_view_model_adds_product_rows_with_unchangeable_quantity() {
+    func test_view_model_adds_product_rows() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
         insert(product)
@@ -54,9 +54,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1)
-
-        let productRow = viewModel.productRows[0]
-        XCTAssertFalse(productRow.canChangeQuantity, "Product row canChangeQuantity property should be false but is true instead")
     }
 
     func test_scrolling_indicator_appears_only_during_sync() {

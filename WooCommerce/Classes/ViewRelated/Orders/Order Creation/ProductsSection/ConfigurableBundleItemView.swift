@@ -23,7 +23,7 @@ struct ConfigurableBundleItemView: View {
                 }
                 .disabled(!viewModel.isOptional)
 
-                ProductRow(viewModel: viewModel.productRowViewModel)
+                ProductWithQuantityStepperView(viewModel: viewModel.productWithStepperViewModel)
             }
 
             HStack(spacing: 0) {

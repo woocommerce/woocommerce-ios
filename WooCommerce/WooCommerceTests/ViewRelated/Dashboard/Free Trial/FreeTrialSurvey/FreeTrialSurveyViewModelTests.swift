@@ -195,7 +195,7 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
     func test_threeDaysAfterStillExploring_local_notification_is_scheduled_if_submitted_answer_is_stillExploring() throws {
         // Given
         let sampleSiteID: Int64 = 123
-        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: Site.fake().copy(siteID: sampleSiteID)))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: Site.fake().copy(siteID: sampleSiteID)))
 
         let pushNotesManager = MockPushNotificationsManager()
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,

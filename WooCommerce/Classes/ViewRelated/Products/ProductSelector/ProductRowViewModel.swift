@@ -2,21 +2,12 @@ import Experiments
 import Foundation
 import Yosemite
 import WooFoundation
+import Combine
 
 /// View model for product rows or cards, e.g. `ProductRow` or `CollapsibleProductCard`.
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
-
-    /// Whether the product quantity can be changed.
-    /// Controls whether the stepper is rendered.
-    ///
-    let canChangeQuantity: Bool
-
-    /// Whether the product row is read-only. Defaults to `false`.
-    ///
-    /// Used to remove product editing controls for read-only order items (e.g. child items of a product bundle).
-    private(set) var isReadOnly: Bool = false
 
     /// Unique ID for the view model.
     ///
@@ -38,9 +29,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
-
-    /// Child product rows, if the product is the parent of child order items
-    @Published private(set) var childProductRows: [ProductRowViewModel]
 
     /// Whether a product in an order item is configurable
     ///
@@ -255,44 +243,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: ". ")
     }
 
-    /// Quantity of product in the order
+    /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
-    @Published private(set) var quantity: Decimal
-
-    /// Minimum value of the product quantity
-    ///
-    private let minimumQuantity: Decimal
-
-    /// Optional maximum value of the product quantity
-    ///
-    private let maximumQuantity: Decimal?
-
-    /// Whether the quantity can be decremented.
-    ///
-    var shouldDisableQuantityDecrementer: Bool {
-        if removeProductIntent != nil { // Allow decrementing below minimum quantity to remove product
-            return quantity < minimumQuantity
-        } else {
-            return quantity <= minimumQuantity
-        }
-    }
-
-    /// Whether the quantity can be incremented.
-    ///
-    var shouldDisableQuantityIncrementer: Bool {
-        guard let maximumQuantity else {
-            return false
-        }
-        return quantity >= maximumQuantity
-    }
-
-    /// Closure to run when the quantity is changed.
-    ///
-    var quantityUpdatedCallback: (Decimal) -> Void
+    @Published var quantity: Decimal
 
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
-    var removeProductIntent: (() -> Void)?
+    let removeProductIntent: (() -> Void)?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -320,20 +277,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          quantity: Decimal = 1,
-         minimumQuantity: Decimal = 1,
-         maximumQuantity: Decimal? = nil,
-         canChangeQuantity: Bool,
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
          pricedIndividually: Bool = true,
-         childProductRows: [ProductRowViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
-         quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: (() -> Void)? = nil,
          configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
@@ -348,19 +300,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
-        self.minimumQuantity = minimumQuantity
-        self.maximumQuantity = maximumQuantity
-        self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
         self.pricedIndividually = pricedIndividually
-        self.childProductRows = childProductRows
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
-        self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
         self.configure = configure
     }
@@ -371,14 +318,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      product: Product,
                      discount: Decimal? = nil,
                      quantity: Decimal = 1,
-                     canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
-                     childProductRows: [ProductRowViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
-                     quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {},
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      configure: (() -> Void)? = nil) {
@@ -431,12 +375,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
 
-        if product.productType == .bundle {
-            for child in childProductRows {
-                child.isReadOnly = true // Can't edit child bundle items separate from bundle configuration
-            }
-        }
-
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -448,17 +386,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   stockQuantity: stockQuantity,
                   manageStock: manageStock,
                   quantity: quantity,
-                  canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
                   pricedIndividually: pricedIndividually,
-                  childProductRows: childProductRows,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
-                  quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent,
                   configure: configure)
     }
@@ -470,14 +405,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      discount: Decimal? = nil,
                      name: String,
                      quantity: Decimal = 1,
-                     canChangeQuantity: Bool,
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
-                     quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
@@ -496,7 +429,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   stockQuantity: productVariation.stockQuantity,
                   manageStock: productVariation.manageStock,
                   quantity: quantity,
-                  canChangeQuantity: canChangeQuantity,
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
@@ -505,7 +437,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
-                  quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)
     }
 
@@ -555,30 +486,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private func createAttributesText(from attributes: [VariationAttributeViewModel]) -> String {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
-    }
-
-    /// Increment the product quantity.
-    ///
-    func incrementQuantity() {
-        if let maximumQuantity, quantity >= maximumQuantity {
-            return
-        }
-
-        quantity += 1
-
-        quantityUpdatedCallback(quantity)
-    }
-
-    /// Decrement the product quantity.
-    ///
-    func decrementQuantity() {
-        guard quantity > minimumQuantity else {
-            removeProductIntent?()
-            return
-        }
-        quantity -= 1
-
-        quantityUpdatedCallback(quantity)
     }
 
     func trackAddDiscountTapped() {

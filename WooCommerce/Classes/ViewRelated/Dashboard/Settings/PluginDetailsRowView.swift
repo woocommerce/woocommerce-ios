@@ -62,7 +62,7 @@ final class PluginManagementService {
 struct PluginListDetailView: View {
 
     @ObservedObject private var viewModel: PluginListViewModel
-    private let service: PluginManagementService = PluginManagementService(managePluginVia: .apiCall)
+    private let service: PluginManagementService = PluginManagementService(managePluginVia: .webView)
 
     init(viewModel: PluginListViewModel) {
         self.viewModel = viewModel
@@ -72,7 +72,7 @@ struct PluginListDetailView: View {
     @State private var isLoading = false
     @State var webViewPresented = false
 
-    var updateUrl: URL? {
+    var updateURL: URL? {
         let pluginsURL = ServiceLocator.stores.sessionManager.defaultSite?.pluginsURL
         return URL(string: pluginsURL ?? "https://woo.com")!
     }
@@ -89,6 +89,16 @@ struct PluginListDetailView: View {
                 NavigationRow(content: {
                     PluginDetailsRowContent(viewModel: pluginDetailsViewModel)
                         .redacted(reason: isLoading ? .placeholder : [])
+                        .sheet(isPresented: $webViewPresented,
+                               onDismiss: {
+                            isLoading = false
+                            // Get up-to-date data after dismissing, to confirm was updated via web
+                            pluginDetailsViewModel.refreshPlugin()
+                        }, content: {
+                            if let updateURL = updateURL {
+                                SafariView(url: updateURL)
+                            }
+                        })
                 }, action: {
                     service.updatePlugin(plugin.name) { result in
                         switch result {
@@ -96,7 +106,7 @@ struct PluginListDetailView: View {
                             print("\(plugin.name) tapped")
                             isLoading = false
                             if service.managePluginVia == .webView {
-                                webViewPresented = true
+                                webViewPresented.toggle()
                             }
                         }
                     }

@@ -47,8 +47,8 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     private let analytics: Analytics
 
     init(canChangeQuantity: Bool,
-         hasParentProduct: Bool,
-         isReadOnly: Bool,
+         hasParentProduct: Bool = false,
+         isReadOnly: Bool = false,
          productViewModel: ProductRowViewModel,
          stepperViewModel: ProductStepperViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -60,6 +60,8 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.stepperViewModel = stepperViewModel
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
+
+        observeProductQuantityFromStepperViewModel()
     }
 
     func trackAddDiscountTapped() {
@@ -97,5 +99,12 @@ extension CollapsibleProductRowCardViewModel {
 
     var hasDiscount: Bool {
         productViewModel.discount != nil
+    }
+}
+
+private extension CollapsibleProductRowCardViewModel {
+    func observeProductQuantityFromStepperViewModel() {
+        stepperViewModel.$quantity
+            .assign(to: &productViewModel.$quantity)
     }
 }

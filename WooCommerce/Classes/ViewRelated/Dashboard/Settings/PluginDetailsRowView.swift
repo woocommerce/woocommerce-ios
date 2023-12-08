@@ -18,32 +18,91 @@ struct PluginListView: View {
     }
 }
 
+// Temporary service for testing plugin management via webview or api calls:
+final class PluginManagementService {
+    enum ManageVia {
+        case webView
+        case apiCall
+    }
+
+    let managePluginVia: ManageVia
+
+    var siteID: Int64 {
+        ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+    }
+
+    init(managePluginVia: ManageVia) {
+        self.managePluginVia = managePluginVia
+    }
+
+    func updatePlugin(_ pluginName: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        /* TODO:
+         - Indeally a new action for updating, since only install is not enough (need uninstall first) or we'll get a [folder_exists] error
+         - Plugin name cannot be used here, we need the slug
+         */
+        if managePluginVia == .apiCall {
+            let action = SitePluginAction.installSitePlugin(siteID: siteID,
+                                                            slug: pluginName,
+                                                            onCompletion: { result in
+                switch result {
+                case .success:
+                    onCompletion(.success(()))
+                case .failure(let error):
+                    DDLogError("Failed to install/update '\(pluginName)'. Error: \(error)")
+                    onCompletion(.failure(error))
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        } else if managePluginVia == .webView {
+            onCompletion(.success(()))
+        }
+    }
+}
+
 struct PluginListDetailView: View {
 
-    private let viewModel: PluginListViewModel
+    @ObservedObject private var viewModel: PluginListViewModel
+    private let service: PluginManagementService = PluginManagementService(managePluginVia: .apiCall)
 
     init(viewModel: PluginListViewModel) {
         self.viewModel = viewModel
     }
 
     @State private var showWebView = false
+    @State private var isLoading = false
+    @State var webViewPresented = false
 
     var updateUrl: URL? {
-        // TODO: Inject from storesManager.sessionManager.defaultSite?.pluginsURL,
-        return URL(string: "https://woo.com")!
+        let pluginsURL = ServiceLocator.stores.sessionManager.defaultSite?.pluginsURL
+        return URL(string: pluginsURL ?? "https://woo.com")!
+    }
+
+    var siteID: Int64 {
+        ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
     }
 
     var body: some View {
         ScrollView {
             ForEach(viewModel.pluginList(), id: \.self) { plugin in
-                let pluginDetailsViewModel = PluginDetailsViewModel(siteID: 215063064,
+                let pluginDetailsViewModel = PluginDetailsViewModel(siteID: siteID,
                                                                     pluginName: plugin.name)
                 NavigationRow(content: {
                     PluginDetailsRowContent(viewModel: pluginDetailsViewModel)
+                        .redacted(reason: isLoading ? .placeholder : [])
                 }, action: {
-                    print("\(plugin.name) tapped")
-                    
+                    service.updatePlugin(plugin.name) { result in
+                        switch result {
+                        default:
+                            print("\(plugin.name) tapped")
+                            isLoading = false
+                            if service.managePluginVia == .webView {
+                                webViewPresented = true
+                            }
+                        }
+                    }
+                    isLoading = true
                 })
+                Divider()
             }
         }
     }

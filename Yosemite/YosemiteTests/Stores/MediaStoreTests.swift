@@ -62,6 +62,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -99,6 +100,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -124,6 +126,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -146,6 +149,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -170,6 +174,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let _: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -196,6 +201,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -226,6 +232,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -255,6 +262,7 @@ final class MediaStoreTests: XCTestCase {
         // When
         let result: Result<[Media], Error> = waitFor { promise in
             let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
                                                           pageNumber: 1,
                                                           pageSize: 20) { result in
                 promise(result)
@@ -700,6 +708,32 @@ final class MediaStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure as? DotcomError)
         XCTAssertEqual(error, .unauthorized)
+    }
+
+    func test_toMedia_converts_rendered_title_to_file_name_if_media_detail_is_not_available() {
+        // Given
+        let wpMedia = WordPressMedia.fake().copy(slug: "test",
+                                                 details: nil,
+                                                 title: .init(rendered: "Test"))
+
+        // When
+        let converted = wpMedia.toMedia()
+
+        // Then
+        XCTAssertEqual(converted.filename, "Test")
+    }
+
+    func test_toMedia_converts_slug_to_file_name_if_rendered_title_and_media_detail_are_not_available() {
+        // Given
+        let wpMedia = WordPressMedia.fake().copy(slug: "test",
+                                                 details: nil,
+                                                 title: nil)
+
+        // When
+        let converted = wpMedia.toMedia()
+
+        // Then
+        XCTAssertEqual(converted.filename, "test")
     }
 }
 

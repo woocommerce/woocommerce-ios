@@ -6,6 +6,14 @@ final class ProductStepperViewModel: ObservableObject {
     ///
     @Published private(set) var quantity: Decimal
 
+    /// Quantity as shown in the text field. This may be uncommitted, in which case it could differ from `quantity`
+    ///
+    @Published var enteredQuantity: Decimal
+
+    /// When a decrement action would remove the product, we can use this property to emphasise that to the user
+    ///
+    @Published var decrementWillRemoveProduct: Bool = false
+
     let accessibilityLabel: String
 
     /// Minimum value of the product quantity
@@ -55,30 +63,56 @@ final class ProductStepperViewModel: ObservableObject {
         self.maximumQuantity = maximumQuantity
         self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
+        self.enteredQuantity = quantity
+        bindDecrementWillRemoveProduct()
+    }
+
+    private func bindDecrementWillRemoveProduct() {
+        $enteredQuantity
+            .map { [weak self] enteredQuantity in
+                guard let self,
+                    self.removeProductIntent != nil else {
+                    return false
+                }
+                return enteredQuantity <= self.minimumQuantity
+            }
+            .assign(to: &$decrementWillRemoveProduct)
+    }
+
+    func resetEnteredQuantity() {
+        enteredQuantity = quantity
+    }
+
+    func changeQuantity(to newQuantity: Decimal) {
+        guard newQuantity != quantity else {
+            // This stops unnecessary order edit submissions when editing starts via the text field
+            return
+        }
+
+        guard newQuantity >= minimumQuantity else {
+            removeProductIntent?()
+            return
+        }
+
+        if let maximumQuantity,
+            newQuantity > maximumQuantity {
+            return
+        }
+
+        quantity = newQuantity
+        quantityUpdatedCallback(newQuantity)
     }
 
     /// Increment the product quantity.
     ///
     func incrementQuantity() {
-        if let maximumQuantity, quantity >= maximumQuantity {
-            return
-        }
-
-        quantity += 1
-
-        quantityUpdatedCallback(quantity)
+        changeQuantity(to: quantity + 1)
     }
 
     /// Decrement the product quantity.
     ///
     func decrementQuantity() {
-        guard quantity > minimumQuantity else {
-            removeProductIntent?()
-            return
-        }
-        quantity -= 1
-
-        quantityUpdatedCallback(quantity)
+        changeQuantity(to: quantity - 1)
     }
 }
 

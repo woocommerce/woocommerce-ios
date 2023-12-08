@@ -43,6 +43,7 @@ extension WordPressMediaLibraryPickerDataSource {
 ///
 final class WordPressMediaLibraryPickerDataSource: NSObject {
     private let siteID: Int64
+    private let imagesOnly: Bool
     private let syncingCoordinator: SyncingCoordinator
 
     /// Called when the media data have changed from outside of `loadData` calls. For example, this is called when the media data for the next page return.
@@ -52,8 +53,9 @@ final class WordPressMediaLibraryPickerDataSource: NSObject {
 
     private lazy var mediaGroup: WPMediaGroup = MediaGroup(mediaItems: mediaItems)
 
-    init(siteID: Int64) {
+    init(siteID: Int64, imagesOnly: Bool) {
         self.siteID = siteID
+        self.imagesOnly = imagesOnly
         mediaItems = []
         syncingCoordinator = SyncingCoordinator(pageSize: Constants.numberOfItemsPerPage)
         super.init()
@@ -128,7 +130,7 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
     }
 
     func mediaTypeFilter() -> WPMediaType {
-        return .image
+        return imagesOnly ? .image : .all
     }
 
     func ascendingOrdering() -> Bool {
@@ -163,6 +165,7 @@ extension WordPressMediaLibraryPickerDataSource: SyncingCoordinatorDelegate {
 private extension WordPressMediaLibraryPickerDataSource {
     func retrieveMedia(pageNumber: Int, pageSize: Int, completion: @escaping (_ mediaItems: [Media], _ error: Error?) -> Void) {
         let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
+                                                      imagesOnly: imagesOnly,
                                                       pageNumber: pageNumber,
                                                       pageSize: pageSize) { result in
             switch result {

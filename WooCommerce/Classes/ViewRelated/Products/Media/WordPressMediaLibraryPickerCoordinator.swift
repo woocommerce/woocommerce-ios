@@ -4,27 +4,30 @@ import struct Yosemite.Media
 
 /// Coordinates navigation for picking media from the site's WordPress media library.
 /// `NSObject` is required for `UIAdaptivePresentationControllerDelegate` conformance.
-final class WordPressMediaLibraryImagePickerCoordinator: NSObject {
-    typealias Completion = WordPressMediaLibraryImagePickerViewController.Completion
+final class WordPressMediaLibraryPickerCoordinator: NSObject {
+    typealias Completion = WordPressMediaLibraryPickerViewController.Completion
 
     private var origin: UIViewController?
 
     private let siteID: Int64
-    private let allowsMultipleImages: Bool
+    private let imagesOnly: Bool
+    private let allowsMultipleSelections: Bool
     private let onCompletion: Completion
 
-    init(siteID: Int64, allowsMultipleImages: Bool, onCompletion: @escaping Completion) {
+    init(siteID: Int64, imagesOnly: Bool, allowsMultipleSelections: Bool, onCompletion: @escaping Completion) {
         self.siteID = siteID
-        self.allowsMultipleImages = allowsMultipleImages
+        self.imagesOnly = imagesOnly
+        self.allowsMultipleSelections = allowsMultipleSelections
         self.onCompletion = onCompletion
     }
 
     /// Starts navigation to show the media picker.
     /// - Parameter origin: View controller to present the media picker.
     func start(from origin: UIViewController) {
-        let wordPressMediaPickerViewController = WordPressMediaLibraryImagePickerViewController(
+        let wordPressMediaPickerViewController = WordPressMediaLibraryPickerViewController(
             siteID: siteID,
-            allowsMultipleImages: allowsMultipleImages) { [weak self] selectedMediaItems in
+            imagesOnly: imagesOnly,
+            allowsMultipleSelections: allowsMultipleSelections) { [weak self] selectedMediaItems in
                 self?.dismissAndComplete(with: selectedMediaItems)
             }
         self.origin = origin
@@ -34,13 +37,13 @@ final class WordPressMediaLibraryImagePickerCoordinator: NSObject {
     }
 }
 
-extension WordPressMediaLibraryImagePickerCoordinator: UIAdaptivePresentationControllerDelegate {
+extension WordPressMediaLibraryPickerCoordinator: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         onCompletion([])
     }
 }
 
-private extension WordPressMediaLibraryImagePickerCoordinator {
+private extension WordPressMediaLibraryPickerCoordinator {
     func dismissAndComplete(with mediaItems: [Media]) {
         let shouldAnimateMediaLibraryDismissal = mediaItems.isEmpty
         origin?.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in

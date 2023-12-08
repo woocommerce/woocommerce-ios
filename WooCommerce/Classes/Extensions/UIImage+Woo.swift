@@ -532,6 +532,12 @@ extension UIImage {
         return UIImage(named: "ai-description-celebration")!
     }
 
+    /// Product Creation AI Survey image
+    ///
+    static var productCreationAISurveyImage: UIImage {
+        return UIImage(named: "product-creation-ai-survey")!
+    }
+
     /// Launch store Image
     ///
     static var launchStoreImage: UIImage {

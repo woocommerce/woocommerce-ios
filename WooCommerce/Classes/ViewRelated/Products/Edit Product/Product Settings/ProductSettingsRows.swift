@@ -8,7 +8,7 @@ import Yosemite
 protocol ProductSettingsRowMediator {
 
     /// Update the cell UI and bind to events if needed.
-    func configure(cell: UITableViewCell)
+    func configure(cell: UITableViewCell, sourceViewController: UIViewController)
 
     /// Show a reusable ViewController like AztecEditorViewController.
     ///
@@ -34,7 +34,7 @@ enum ProductSettingsRows {
             self.settings = settings
         }
 
-        func configure(cell: UITableViewCell) {
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
             guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
@@ -91,7 +91,7 @@ enum ProductSettingsRows {
             self.settings = settings
         }
 
-        func configure(cell: UITableViewCell) {
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
             guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
@@ -134,7 +134,7 @@ enum ProductSettingsRows {
             self.settings = settings
         }
 
-        func configure(cell: UITableViewCell) {
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
             guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
@@ -166,7 +166,7 @@ enum ProductSettingsRows {
             self.settings = settings
         }
 
-        func configure(cell: UITableViewCell) {
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
             guard let cell = cell as? SwitchTableViewCell else {
                 return
             }
@@ -196,7 +196,7 @@ enum ProductSettingsRows {
              self.settings = settings
          }
 
-          func configure(cell: UITableViewCell) {
+          func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
              guard let cell = cell as? SwitchTableViewCell else {
                  return
              }
@@ -206,7 +206,20 @@ enum ProductSettingsRows {
              cell.isOn = settings.downloadable
              cell.onChange = { newValue in
                  //TODO: Add analytics M5
-                 self.settings.downloadable = newValue
+                 if !newValue {
+                     cell.isOn = true
+                     let alert = UIAlertController(title: Localization.downloadableProductAlertTitle,
+                                                   message: Localization.downloadableProductAlertHint,
+                                                   preferredStyle: .alert)
+                     alert.addAction(UIAlertAction(title: Localization.downloadableProductAlertConfirm, style: .default) {_ in
+                         cell.isOn = false
+                         self.settings.downloadable = false
+                     })
+                     alert.addAction(UIAlertAction(title: Localization.downloadableProductAlertCancel, style: .cancel))
+                     sourceViewController.present(alert, animated: true)
+                 } else {
+                     self.settings.downloadable = newValue
+                 }
              }
          }
 
@@ -226,7 +239,7 @@ enum ProductSettingsRows {
             self.settings = settings
         }
 
-        func configure(cell: UITableViewCell) {
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
             guard let cell = cell as? SwitchTableViewCell else {
                 return
             }
@@ -256,7 +269,7 @@ enum ProductSettingsRows {
             self.settings = settings
         }
 
-        func configure(cell: UITableViewCell) {
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
             guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
@@ -287,7 +300,7 @@ enum ProductSettingsRows {
             self.settings = settings
         }
 
-        func configure(cell: UITableViewCell) {
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
             guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
@@ -318,7 +331,7 @@ enum ProductSettingsRows {
             self.settings = settings
         }
 
-        func configure(cell: UITableViewCell) {
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
             guard let cell = cell as? TitleAndValueTableViewCell else {
                 return
             }
@@ -350,6 +363,16 @@ extension ProductSettingsRows {
         static let catalogVisibility = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
         static let virtualProduct = NSLocalizedString("Virtual Product", comment: "Virtual Product label in Product Settings")
         static let downloadableProduct = NSLocalizedString("Downloadable Product", comment: "Downloadable Product label in Product Settings")
+        static let downloadableProductAlertTitle = NSLocalizedString(
+            "Are you sure you want to remove the ability to download files when product is purchased?",
+            comment: "Confirm the change to make the product non downloadable"
+        )
+        static let downloadableProductAlertHint = NSLocalizedString(
+            "All files currently attached to this product will be removed.",
+            comment: "Confirm the change to make the product non downloadable"
+        )
+        static let downloadableProductAlertConfirm = NSLocalizedString("Yes, change", comment: "Confirm button in the product downloadables alert")
+        static let downloadableProductAlertCancel = NSLocalizedString("Cancel", comment: "Cancel button in the product downloadables alert")
         static let enableReviews = NSLocalizedString("Enable Reviews", comment: "Enable Reviews label in Product Settings")
         static let slug = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
         static let purchaseNote = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")

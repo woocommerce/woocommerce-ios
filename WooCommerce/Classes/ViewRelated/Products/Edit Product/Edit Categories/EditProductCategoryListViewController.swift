@@ -71,7 +71,7 @@ private extension EditProductCategoryListViewController {
 
     func configureTitle() {
         title = viewModel.screenTitle
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .listForeground(modal: false)
     }
 
     func configureProductCategoryListView() {

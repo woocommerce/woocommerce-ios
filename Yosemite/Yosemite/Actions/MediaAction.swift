@@ -7,11 +7,13 @@ public enum MediaAction: Action {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
+    ///   - imagesOnly: Whether only images should be loaded.
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The maximum number of media items to return per page.
     ///   - onCompletion: Closure to be executed upon completion.
     ///
     case retrieveMediaLibrary(siteID: Int64,
+                              imagesOnly: Bool,
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: (Result<[Media], Error>) -> Void)

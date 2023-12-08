@@ -1,7 +1,7 @@
+import Alamofire
 import Foundation
 import XCTest
 @testable import Networking
-
 
 /// WordPress.com Requests Unit Tests
 ///
@@ -93,6 +93,20 @@ final class DotcomRequestTests: XCTestCase {
             let value = String(components[1])
 
             XCTAssertEqual(value, sampleParameters[key])
+        }
+    }
+
+    func test_httpBody_is_nil_if_parameters_is_nil() throws {
+        // Given
+        let methods: [HTTPMethod] = [.post, .put]
+        for method in methods {
+            let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: method, path: sampleRPC, parameters: nil)
+
+            // When
+            let urlRequest = try request.asURLRequest()
+
+            // Then
+            XCTAssertNil(urlRequest.httpBody)
         }
     }
 

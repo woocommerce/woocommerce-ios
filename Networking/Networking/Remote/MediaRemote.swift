@@ -13,7 +13,6 @@ public protocol MediaRemoteProtocol {
                                            completion: @escaping (Result<[WordPressMedia], Error>) -> Void)
     func uploadMedia(for siteID: Int64,
                      productID: Int64,
-                     context: String?,
                      mediaItems: [UploadableMedia],
                      completion: @escaping (Result<[Media], Error>) -> Void)
     func uploadMediaToWordPressSite(siteID: Int64,
@@ -112,12 +111,8 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     public func uploadMedia(for siteID: Int64,
                             productID: Int64,
-                            context: String? = Default.context,
                             mediaItems: [UploadableMedia],
                             completion: @escaping (Result<[Media], Error>) -> Void) {
-        let parameters = [
-            ParameterKey.contextKey: context ?? Default.context,
-        ]
 
         let formParameters: [String: String] = [Int](0..<mediaItems.count).reduce(into: [:]) { (parentIDsByKey, index) in
             parentIDsByKey["attrs[\(index)][parent_id]"] = "\(productID)"
@@ -127,8 +122,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         let path = "sites/\(siteID)/media/new"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1,
                                     method: .post,
-                                    path: path,
-                                    parameters: parameters)
+                                    path: path)
         let mapper = MediaListMapper()
 
         enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
@@ -165,7 +159,10 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         ].compactMapValues { $0 }
         let path = "sites/\(siteID)/media"
         do {
-            let request = try DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: nil, availableAsRESTRequest: true)
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                            method: .post,
+                                            path: path,
+                                            availableAsRESTRequest: true)
             let mapper = WordPressMediaMapper()
 
             enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in

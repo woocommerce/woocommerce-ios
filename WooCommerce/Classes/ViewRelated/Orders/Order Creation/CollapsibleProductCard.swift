@@ -114,7 +114,7 @@ private struct CollapsibleProductRowCard: View {
 
     private func dismissTooltip() {
         if shouldShowInfoTooltip {
-            shouldShowInfoTooltip.toggle()
+            shouldShowInfoTooltip = false
         }
     }
 
@@ -167,65 +167,68 @@ private struct CollapsibleProductRowCard: View {
                 dismissTooltip()
             }
         }, content: {
-            Divider()
+            VStack(spacing: 16.0) {
+                Divider()
 
-            Group {
                 SimplifiedProductRow(viewModel: viewModel.stepperViewModel, canChangeQuantity: viewModel.canChangeQuantity)
                     .renderedIf(!viewModel.isReadOnly)
+
                 HStack {
                     Text(Localization.priceLabel)
                     CollapsibleProductCardPriceSummary(viewModel: viewModel.rowViewModel)
                 }
-                HStack {
-                    discountRow
-                }
+                .frame(minHeight: Layout.rowMinHeight)
+
+                Divider()
+
+                discountRow
+                .frame(minHeight: Layout.rowMinHeight)
                 .renderedIf(!viewModel.isReadOnly)
+
                 HStack {
                     Text(Localization.priceAfterDiscountLabel)
                     Spacer()
                     Text(viewModel.rowViewModel.totalPriceAfterDiscountLabel ?? "")
                 }
+                .frame(minHeight: Layout.rowMinHeight)
                 .renderedIf(viewModel.rowViewModel.hasDiscount && !viewModel.isReadOnly)
-            }
-            .padding(.top)
-
-            Group {
-                Divider()
-                    .padding()
 
                 Button(Localization.configureBundleProduct) {
                     viewModel.rowViewModel.configure?()
                     ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productCard))
                 }
                 .buttonStyle(IconButtonStyle(icon: .cogImage))
-            }
-            .renderedIf(viewModel.rowViewModel.isConfigurable)
-            .onAppear {
-                guard !hasTrackedBundleProductConfigureCTAShownEvent else {
-                    return
+                .frame(minHeight: Layout.rowMinHeight)
+                .renderedIf(viewModel.rowViewModel.isConfigurable)
+                .onAppear {
+                    guard !hasTrackedBundleProductConfigureCTAShownEvent else {
+                        return
+                    }
+                    ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productCard))
+                    hasTrackedBundleProductConfigureCTAShownEvent = true
                 }
-                ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productCard))
-                hasTrackedBundleProductConfigureCTAShownEvent = true
-            }
 
-            Group {
-                Divider()
-                    .padding()
-
-                Button(Localization.removeProductLabel) {
-                    if let removeProductIntent = viewModel.rowViewModel.removeProductIntent {
+                if !viewModel.isReadOnly,
+                   let removeProductIntent = viewModel.rowViewModel.removeProductIntent {
+                    Button {
                         removeProductIntent()
+                    } label: {
+                        HStack {
+                            Image(systemName: "xmark.circle")
+                                .font(.system(size: Layout.deleteIconSize))
+                            Text(Localization.removeProductLabel)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(Color(.error))
+                    }
+                    .frame(minHeight: Layout.rowMinHeight)
+                    .overlay {
+                        TooltipView(toolTipTitle: Localization.discountTooltipTitle,
+                                    toolTipDescription: Localization.discountTooltipDescription, offset: nil)
+                        .renderedIf(shouldShowInfoTooltip)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .foregroundColor(Color(.error))
-                .overlay {
-                    TooltipView(toolTipTitle: Localization.discountTooltipTitle,
-                                toolTipDescription: Localization.discountTooltipDescription, offset: nil)
-                    .renderedIf(shouldShowInfoTooltip)
-                }
             }
-            .renderedIf(!viewModel.isReadOnly)
         })
         .onTapGesture {
             dismissTooltip()
@@ -254,45 +257,46 @@ private extension CollapsibleProductRowCard {
 
 private extension CollapsibleProductRowCard {
     @ViewBuilder var discountRow: some View {
-        if !viewModel.rowViewModel.hasDiscount || shouldDisallowDiscounts {
-            Button(Localization.addDiscountLabel) {
-                trackAddDiscountTapped()
-                onAddDiscount(viewModel.rowViewModel.id)
-            }
-            .buttonStyle(PlusButtonStyle())
-            .disabled(shouldDisallowDiscounts)
-        } else {
-            HStack {
-                Button(action: {
-                    trackEditDiscountTapped()
+        HStack {
+            if !viewModel.rowViewModel.hasDiscount || shouldDisallowDiscounts {
+                Button(Localization.addDiscountLabel) {
+                    trackAddDiscountTapped()
                     onAddDiscount(viewModel.rowViewModel.id)
-                }, label: {
-                    HStack {
-                        Text(Localization.discountLabel)
-                        Image(uiImage: .pencilImage)
-                            .resizable()
-                            .frame(width: Layout.iconSize, height: Layout.iconSize)
-                    }
-                })
-                Spacer()
-                if let discountLabel = viewModel.rowViewModel.discountLabel {
-                    Text(minusSign + discountLabel)
-                        .foregroundColor(.green)
                 }
+                .buttonStyle(PlusButtonStyle())
+                .disabled(shouldDisallowDiscounts)
+            } else {
+                HStack {
+                    Button(action: {
+                        trackEditDiscountTapped()
+                        onAddDiscount(viewModel.rowViewModel.id)
+                    }, label: {
+                        HStack {
+                            Text(Localization.discountLabel)
+                            Image(uiImage: .pencilImage)
+                                .resizable()
+                                .frame(width: Layout.iconSize, height: Layout.iconSize)
+                        }
+                    })
+                    Spacer()
+                    if let discountLabel = viewModel.rowViewModel.discountLabel {
+                        Text(minusSign + discountLabel)
+                            .foregroundColor(.green)
+                    }
+                }
+                // Redacts the discount editing row while product data is reloaded during remote sync.
+                // This avoids showing an out-of-date discount while hasn't synched
+                .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
             }
-            // Redacts the discount editing row while product data is reloaded during remote sync.
-            // This avoids showing an out-of-date discount while hasn't synched
-            .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
+            Spacer()
+            Button {
+                shouldShowInfoTooltip.toggle()
+            } label: {
+                Image(systemName: "questionmark.circle")
+                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+            }
+            .renderedIf(shouldDisallowDiscounts)
         }
-        Spacer()
-            .renderedIf(!viewModel.rowViewModel.hasDiscount)
-        Button {
-            shouldShowInfoTooltip.toggle()
-        } label: {
-            Image(systemName: "questionmark.circle")
-                .foregroundColor(Color(.wooCommercePurple(.shade60)))
-        }
-        .renderedIf(shouldDisallowDiscounts)
     }
 }
 
@@ -331,6 +335,8 @@ private extension CollapsibleProductRowCard {
         static let childProductImageSize: CGFloat = 40.0
         static let productImageCornerRadius: CGFloat = 4.0
         static let iconSize: CGFloat = 16
+        static let deleteIconSize: CGFloat = 24.0
+        static let rowMinHeight: CGFloat = 40.0
     }
 
     enum Localization {

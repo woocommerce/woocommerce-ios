@@ -2,6 +2,7 @@ import Experiments
 import Foundation
 import Yosemite
 import WooFoundation
+import Combine
 
 /// View model for product rows or cards, e.g. `ProductRow` or `CollapsibleProductCard`.
 ///

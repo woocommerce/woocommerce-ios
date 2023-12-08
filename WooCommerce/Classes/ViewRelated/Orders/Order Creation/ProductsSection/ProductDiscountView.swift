@@ -5,7 +5,7 @@ struct ProductDiscountView: View {
     private let imageURL: URL?
     private let name: String
     private let stockLabel: String
-    private let productRowViewModel: CollapsibleProductRowCardViewModel
+    private let productRowViewModel: ProductRowViewModel
 
     private let minusSign: String = NumberFormatter().minusSign
 
@@ -16,7 +16,7 @@ struct ProductDiscountView: View {
     init(imageURL: URL?,
          name: String,
          stockLabel: String,
-         productRowViewModel: CollapsibleProductRowCardViewModel,
+         productRowViewModel: ProductRowViewModel,
          discountViewModel: FeeOrDiscountLineDetailsViewModel) {
         self.imageURL = imageURL
         self.name = name
@@ -36,7 +36,7 @@ struct ProductDiscountView: View {
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     VStack(alignment: .leading) {
                         Text(name)
-                        CollapsibleProductCardPriceSummary(viewModel: productRowViewModel.productViewModel)
+                        CollapsibleProductCardPriceSummary(viewModel: productRowViewModel)
                     }
                 }
                 .padding()
@@ -65,7 +65,7 @@ struct ProductDiscountView: View {
                     HStack {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
-                        if let price = productRowViewModel.productViewModel.price {
+                        if let price = productRowViewModel.price {
                             Text(discountViewModel.calculatePriceAfterDiscount(price))
                         }
                     }
@@ -82,7 +82,7 @@ struct ProductDiscountView: View {
                     .renderedIf(discountViewModel.hasInputAmount)
                 }
             }
-            .navigationTitle(Text(productRowViewModel.hasDiscount ? Localization.editDiscountLabel : Localization.addDiscountLabel))
+            .navigationTitle(Text(productRowViewModel.discount != nil ? Localization.editDiscountLabel : Localization.addDiscountLabel))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

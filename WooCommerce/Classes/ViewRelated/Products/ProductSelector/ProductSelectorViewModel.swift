@@ -706,7 +706,6 @@ private extension ProductSelectorViewModel {
                 self?.onConfigureProductRow?(product)
             }
             return ProductRowViewModel(product: product,
-                                       canChangeQuantity: false,
                                        selectedState: selectedState,
                                        featureFlagService: featureFlagService,
                                        configure: configure)
@@ -734,7 +733,6 @@ extension ProductSelectorViewModel {
                             stockStatusKey: ProductStockStatus.inStock.rawValue,
                             stockQuantity: 1,
                             manageStock: false,
-                            canChangeQuantity: false,
                             imageURL: nil,
                             hasParentProduct: false,
                             isConfigurable: false)

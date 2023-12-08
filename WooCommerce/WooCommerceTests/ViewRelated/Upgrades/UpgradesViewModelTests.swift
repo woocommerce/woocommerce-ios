@@ -22,7 +22,7 @@ final class UpgradesViewModelTests: XCTestCase {
 
         let site = Site.fake().copy(isSiteOwner: isSiteOwner)
 
-        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
             case .isRemoteFeatureFlagEnabled(.hardcodedPlanUpgradeDetailsMilestone1AreAccurate, defaultValue: _, let completion):

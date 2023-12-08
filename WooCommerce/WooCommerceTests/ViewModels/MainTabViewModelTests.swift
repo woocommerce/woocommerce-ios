@@ -52,7 +52,7 @@ final class MainTabViewModelTests: XCTestCase {
 
     func test_loadHubMenuTabBadge_when_should_show_reviews_badge_only_calls_onMenuBadgeShouldBeDisplayed_with_type_secondary() {
         // Given
-        let sessionManager = SessionManager.makeForTesting()
+        let sessionManager = SessionManager.makeForTesting(authenticated: true)
         sessionManager.setStoreId(sampleStoreID)
         let storesManager = MockStoresManager(sessionManager: sessionManager)
 

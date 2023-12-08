@@ -11,6 +11,7 @@
 - [*] Payments menu: show the selected payment gateway when there's more than one to choose from [https://github.com/woocommerce/woocommerce-ios/pull/11345]
 - [**] Fixed a crash that occurred when reordering product images during the image upload process. Now, users will not be able to reorder images until the upload is complete, providing a smoother and more stable experience. [https://github.com/woocommerce/woocommerce-ios/pull/11350]
 - [internal] Process network response in background thread to avoid blocking main thread. [https://github.com/woocommerce/woocommerce-ios/pull/11381]
+- [**] Attempted to fix a crash that has been occurring for some users during magic link login. [https://github.com/woocommerce/woocommerce-ios/pull/11373]
 
 16.5
 -----

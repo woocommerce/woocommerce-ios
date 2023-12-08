@@ -1,4 +1,5 @@
 import UIKit
+import MessageUI
 import Yosemite
 
 
@@ -21,6 +22,12 @@ final class BillingInformationViewController: UIViewController {
     /// Allows editing of billing address
     ///
     let editingEnabled: Bool
+
+    private lazy var noticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
 
     /// Designated Initializer
     ///
@@ -52,9 +59,6 @@ final class BillingInformationViewController: UIViewController {
 
     private let messageComposerPresenter: MessageComposerPresenter = ServiceLocator.messageComposerPresenter
 
-    /// Haptic Feedback!
-    ///
-    private let hapticGenerator = UINotificationFeedbackGenerator()
 }
 
 // MARK: - Interface Initialization
@@ -97,6 +101,7 @@ private extension BillingInformationViewController {
     /// Presents EditOrderAddressForm modal view
     ///
     func editBillingAddress() {
+        ServiceLocator.analytics.track(.orderDetailCustomerAddressEditTapped)
         let viewModel = EditOrderAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
             self?.order = updatedOrder
             self?.reloadSections()
@@ -111,9 +116,6 @@ private extension BillingInformationViewController {
 // MARK: - Initiate communication with a customer (i.e. via email, phone call, sms)
 //
 private extension BillingInformationViewController {
-    func displayEmailComposerIfPossible(from: UIViewController) -> Bool {
-        return emailComposer.displayEmailComposerIfPossible(for: order, from: from)
-    }
 
     /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
     ///
@@ -130,6 +132,10 @@ private extension BillingInformationViewController {
 
         actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
             self?.messageCustomerHandler()
+        }
+
+        actionSheet.addDefaultActionWithTitle(ContactAction.copyPhoneNumber) { [weak self] _ in
+            self?.copyPhoneNumberHandler()
         }
 
         let popoverController = actionSheet.popoverPresentationController
@@ -183,9 +189,9 @@ private extension BillingInformationViewController {
                                                                              "type": "sms"])
     }
 
-    /// Create an action sheet that offers the option to copy the email address
+    /// Create an action sheet that offers the option to copy the email address and/or send email.
     ///
-    func displayEmailCopyAlert(from sourceView: UIView) {
+    func displayEmailActionAlert(from sourceView: UIView) {
         guard order.billingAddress?.email != nil else {
             return
         }
@@ -194,6 +200,13 @@ private extension BillingInformationViewController {
         actionSheet.view.tintColor = .text
 
         actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
+
+        if MFMailComposeViewController.canSendMail() {
+            actionSheet.addDefaultActionWithTitle(ContactAction.email) { [weak self] _ in
+                self?.emailCustomerHandler()
+            }
+        }
+
         actionSheet.addDefaultActionWithTitle(ContactAction.copyEmail) { [weak self] _ in
             self?.copyEmailHandler()
         }
@@ -207,12 +220,20 @@ private extension BillingInformationViewController {
         ServiceLocator.analytics.track(.orderDetailCustomerEmailMenuTapped)
     }
 
+    private func copyPhoneNumberHandler() {
+        guard let phone = order.billingAddress?.phone else {
+            return
+        }
+        ServiceLocator.analytics.track(.orderDetailCustomerCopyNumberOptionTapped)
+        sendToPasteboard(phone, includeTrailingNewline: false)
+    }
+
     private func copyEmailHandler() {
         guard let email = order.billingAddress?.email else {
             return
         }
 
-        ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailCopyOptionTapped)
         sendToPasteboard(email, includeTrailingNewline: false)
     }
 }
@@ -277,48 +298,29 @@ extension BillingInformationViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch sections[indexPath.section].rows[indexPath.row] {
+        case .billingAddress:
+            sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
+            ServiceLocator.analytics.track(.orderDetailCustomerAddressTapped)
+
         case .billingPhone:
             if let indexPath = sections.indexPathForRow(.billingPhone),
                 let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
                 displayContactCustomerAlert(from: cell)
             }
-            break
 
         case .billingEmail:
             // When changing actions for this cell, please make corresponding accessibility action changes
             // in BillingInformationViewController.setupBillingEmail(cell:)
-            emailCustomerHandler()
-
-            break
-        default:
-            break
+            if let indexPath = sections.indexPathForRow(.billingEmail),
+                let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
+                displayEmailActionAlert(from: cell)
+            }
         }
     }
 
     private func emailCustomerHandler() {
-        ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
-        guard displayEmailComposerIfPossible(from: self) else {
-            if let indexPath = sections.indexPathForRow(.billingEmail),
-                let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
-                displayEmailCopyAlert(from: cell)
-            }
-            return
-        }
-    }
-
-    func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
-        return checkIfCopyingIsAllowed(for: indexPath)
-    }
-
-    func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return action == #selector(copy(_:))
-    }
-
-    func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
-        guard action == #selector(copy(_:)) else {
-            return
-        }
-        copyText(at: indexPath)
+        _ = emailComposer.displayEmailComposerIfPossible(for: order, from: self)
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailOptionTapped)
     }
 }
 
@@ -390,7 +392,12 @@ private extension BillingInformationViewController {
             return true
         }
 
-        cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction]
+        let copyAccessibilityAction = UIAccessibilityCustomAction(name: ContactAction.copyPhoneNumber) { [weak self] _ in
+            self?.copyPhoneNumberHandler()
+            return true
+        }
+
+        cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction, copyAccessibilityAction]
     }
 
     func setupBillingEmail(cell: WooBasicTableViewCell) {
@@ -464,21 +471,6 @@ private extension BillingInformationViewController {
 //
 private extension BillingInformationViewController {
 
-    /// Sends the provided Row's text data to the pasteboard
-    ///
-    /// - Parameter indexPath: IndexPath to copy text data from
-    ///
-    func copyText(at indexPath: IndexPath) {
-        let row = sections[indexPath.section].rows[indexPath.row]
-
-        switch row {
-        case .billingAddress:
-            sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
-        default:
-            break // We only send text to the pasteboard from the address rows right meow
-        }
-    }
-
     /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
     /// is nil, nothing is sent to the pasteboard.
     ///
@@ -494,7 +486,8 @@ private extension BillingInformationViewController {
             text += "\n"
         }
         UIPasteboard.general.string = text
-        hapticGenerator.notificationOccurred(.success)
+        let notice = Notice(title: ContactAction.copied, feedbackType: .success)
+        noticePresenter.enqueue(notice: notice)
     }
 
     /// Checks if copying the row data at the provided indexPath is allowed
@@ -577,8 +570,18 @@ private extension BillingInformationViewController {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let call = NSLocalizedString("Call", comment: "Call phone number button title")
         static let message = NSLocalizedString("Message", comment: "Message phone number button title")
+        static let copyPhoneNumber = NSLocalizedString(
+            "billingInformationViewController.action.copyPhoneNumber",
+            value: "Copy number",
+            comment: "Button to copy phone number to clipboard"
+        )
         static let copyEmail = NSLocalizedString("Copy email address", comment: "Copy email address button title")
         static let email = NSLocalizedString("Email", comment: "Title of Email accessibility action, opens a compose view")
+        static let copied = NSLocalizedString(
+            "billingInformationViewController.action.copied",
+            value: "Copied to clipboard.",
+            comment: "Message to display when a phone number or email address has been copied to clipboard"
+        )
     }
 
     enum Constants {

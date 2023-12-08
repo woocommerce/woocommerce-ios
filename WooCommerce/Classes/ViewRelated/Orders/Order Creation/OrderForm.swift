@@ -457,7 +457,7 @@ private struct ProductsSection: View {
                         ProductDiscountView(imageURL: selectedProduct.productRowViewModel.imageURL,
                                             name: selectedProduct.productRowViewModel.name,
                                             stockLabel: selectedProduct.productRowViewModel.stockQuantityLabel,
-                                            productRowViewModel: selectedProduct.productRowViewModel,
+                                            productRowViewModel: productRow.productRow,
                                             discountViewModel: selectedProduct.discountDetailsViewModel)
                     })
                     .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in

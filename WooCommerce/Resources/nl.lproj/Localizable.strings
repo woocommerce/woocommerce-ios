@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-12-06 12:54:05+0000 */
+/* Translation-Revision-Date: 2023-12-08 20:51:11+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -9807,7 +9807,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "addCustomAmountPercentageView.amount.title" = "Bedrag";
 
 /* Title for entering an custom amount through a percentage */
-"addCustomAmountPercentageView.percentageTextField.title" = "Of voer het percentage van het ordertotaal in (%1$@)";
+"addCustomAmountPercentageView.percentageTextField.title" = "Of voer het percentage van het ordertotaal in";
 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Btw rekenen";
@@ -10114,7 +10114,7 @@ which should be translated separately and considered part of this sentence. */
 "orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle" = "Vast bedrag";
 
 /* Button title for the percentage option in the custom amounts option sheet. */
-"orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "Of voer het percentage van het ordertotaal in (%1$@)";
+"orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "Of voer het percentage van het ordertotaal in";
 
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Aangepaste bedragen";

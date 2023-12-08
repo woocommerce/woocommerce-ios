@@ -27,9 +27,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let name: String
 
-    /// Whether a product in an order item has a parent order item
-    let hasParentProduct: Bool
-
+    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
     /// Whether a product in an order item is configurable
     ///
     let isConfigurable: Bool
@@ -92,15 +90,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return currencyFormatter.formatAmount(price)
     }
 
-    /// Formatted discount label for an individual product
-    ///
-    var discountLabel: String? {
-        guard let discount = discount else {
-            return nil
-        }
-        return currencyFormatter.formatAmount(discount)
-    }
-
     /// Formatted price label from multiplying product's price and quantity.
     ///
     var priceBeforeDiscountsLabel: String? {
@@ -130,6 +119,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
+    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
     /// Formatted price label based on a product's price. Accounting for discounts, if any.
     /// e.g: If price is $5 and discount is $1, outputs "$4.00"
     ///
@@ -145,21 +135,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
     }
 
-    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
-    /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
-    ///
-    var totalPriceAfterDiscountLabel: String? {
-        guard let price = price,
-              let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
-        }
-        let subtotalDecimal = priceDecimal.multiplying(by: quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
-
-        return currencyFormatter.formatAmount(totalPriceAfterDiscount)
-
-    }
-
     /// Formatted price label based on a product's price and quantity.
     /// Reads as '8 x $10.00'
     ///
@@ -170,10 +145,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     }
 
     private(set) var discount: Decimal?
-
-    var hasDiscount: Bool {
-        discount != nil
-    }
 
     /// Whether product discounts are disallowed,
     /// defaults to `false`
@@ -207,6 +178,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: " • ")
     }
 
+    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
     /// Label showing product details for a product in an order.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
     ///
@@ -228,7 +200,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Label showing product SKU
     ///
-    lazy var skuLabel: String = {
+    private(set) lazy var skuLabel: String = {
         guard let sku = sku, sku.isNotEmpty else {
             return ""
         }
@@ -247,6 +219,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     @Published var quantity: Decimal
 
+    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
 
@@ -277,7 +250,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
-         hasParentProduct: Bool,
          pricedIndividually: Bool = true,
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -296,7 +268,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.manageStock = manageStock
         self.quantity = quantity
         self.imageURL = imageURL
-        self.hasParentProduct = hasParentProduct
         self.pricedIndividually = pricedIndividually
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
@@ -313,7 +284,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      discount: Decimal? = nil,
                      quantity: Decimal = 1,
                      selectedState: ProductRow.SelectedState = .notSelected,
-                     hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
@@ -382,7 +352,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
-                  hasParentProduct: hasParentProduct,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
@@ -399,7 +368,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      quantity: Decimal = 1,
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
-                     hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics) {
@@ -423,7 +391,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
-                  hasParentProduct: hasParentProduct,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
@@ -476,14 +443,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private func createAttributesText(from attributes: [VariationAttributeViewModel]) -> String {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
-    }
-
-    func trackAddDiscountTapped() {
-        analytics.track(event: .Orders.productDiscountAddButtonTapped())
-    }
-
-    func trackEditDiscountTapped() {
-        analytics.track(event: .Orders.productDiscountEditButtonTapped())
     }
 }
 

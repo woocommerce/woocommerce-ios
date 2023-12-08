@@ -174,8 +174,8 @@ private struct CollapsibleProductRowCard: View {
                     Text(Localization.orderCountLabel)
                     Spacer()
                     ProductStepper(viewModel: viewModel.stepperViewModel)
-                        .renderedIf(!viewModel.isReadOnly)
                 }
+                .renderedIf(!viewModel.isReadOnly)
 
                 HStack {
                     Text(Localization.priceLabel)

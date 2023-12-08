@@ -173,6 +173,8 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.aiPromptTone] = nil
         defaults[.hasDisplayedTipAfterBlazeCampaignCreation] = nil
         defaults[.hasDismissedBlazeSectionOnMyStore] = nil
+        defaults[.numberOfTimesAIProductCreated] = nil
+        defaults[.haveAskedConfirmationToShowProductCreationAISurvey] = nil
     }
 
     /// Deletes application password

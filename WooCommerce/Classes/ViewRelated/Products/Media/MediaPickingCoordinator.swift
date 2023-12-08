@@ -21,9 +21,10 @@ final class MediaPickingCoordinator {
         return DeviceMediaLibraryPicker(allowsMultipleImages: allowsMultipleImages, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
-    private lazy var wpMediaLibraryPicker: WordPressMediaLibraryImagePickerCoordinator =
+    private lazy var wpMediaLibraryPicker: WordPressMediaLibraryPickerCoordinator =
         .init(siteID: siteID,
-              allowsMultipleImages: allowsMultipleImages,
+              imagesOnly: true,
+              allowsMultipleSelections: allowsMultipleImages,
               onCompletion: onWPMediaPickerCompletion)
 
     private let siteID: Int64
@@ -32,7 +33,7 @@ final class MediaPickingCoordinator {
     private let analytics: Analytics
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
     private let onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion
-    private let onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion
+    private let onWPMediaPickerCompletion: WordPressMediaLibraryPickerViewController.Completion
 
     init(siteID: Int64,
          allowsMultipleImages: Bool,
@@ -40,7 +41,7 @@ final class MediaPickingCoordinator {
          analytics: Analytics = ServiceLocator.analytics,
          onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
          onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
-         onWPMediaPickerCompletion: @escaping WordPressMediaLibraryImagePickerViewController.Completion) {
+         onWPMediaPickerCompletion: @escaping WordPressMediaLibraryPickerViewController.Completion) {
         self.siteID = siteID
         self.allowsMultipleImages = allowsMultipleImages
         self.flow = flow

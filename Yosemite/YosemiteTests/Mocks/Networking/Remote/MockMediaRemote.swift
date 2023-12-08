@@ -72,7 +72,12 @@ extension MockMediaRemote {
 // MARK: - MediaRemoteProtocol
 
 extension MockMediaRemote: MediaRemoteProtocol {
-    func loadMediaLibrary(for siteID: Int64, pageNumber: Int, pageSize: Int, context: String?, completion: @escaping (Result<[Media], Error>) -> Void) {
+    func loadMediaLibrary(for siteID: Int64,
+                          imagesOnly: Bool,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          context: String?,
+                          completion: @escaping (Result<[Media], Error>) -> Void) {
         invocations.append(.loadMediaLibrary(siteID: siteID))
         guard let result = loadMediaLibraryResultsBySiteID[siteID] else {
             XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")
@@ -81,7 +86,11 @@ extension MockMediaRemote: MediaRemoteProtocol {
         completion(result)
     }
 
-    func loadMediaLibraryFromWordPressSite(siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
+    func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                           imagesOnly: Bool,
+                                           pageNumber: Int,
+                                           pageSize: Int,
+                                           completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
         invocations.append(.loadMediaLibraryFromWordPressSite(siteID: siteID))
         guard let result = loadMediaLibraryFromWordPressSiteResultsBySiteID[siteID] else {
             XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")

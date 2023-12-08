@@ -51,8 +51,12 @@ public final class MediaStore: Store {
         }
 
         switch action {
-        case .retrieveMediaLibrary(let siteID, let pageNumber, let pageSize, let onCompletion):
-            retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .retrieveMediaLibrary(siteID, imagesOnly, pageNumber, pageSize, onCompletion):
+            retrieveMediaLibrary(siteID: siteID,
+                                 imagesOnly: imagesOnly,
+                                 pageNumber: pageNumber,
+                                 pageSize: pageSize,
+                                 onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let altText, let filename, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, altText: altText, filename: filename, onCompletion: onCompletion)
         case let .uploadFile(siteID, productID, localURL, altText, onCompletion):
@@ -72,21 +76,24 @@ public final class MediaStore: Store {
 
 private extension MediaStore {
     func retrieveMediaLibrary(siteID: Int64,
+                              imagesOnly: Bool,
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (Result<[Media], Error>) -> Void) {
         if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.loadMediaLibraryFromWordPressSite(siteID: siteID,
+                                                     imagesOnly: imagesOnly,
                                                      pageNumber: pageNumber,
                                                      pageSize: pageSize) { result in
                 onCompletion(result.map { $0.map { $0.toMedia() } })
             }
         } else {
             remote.loadMediaLibrary(for: siteID,
-                                       pageNumber: pageNumber,
-                                       pageSize: pageSize,
-                                       context: nil,
-                                       completion: onCompletion)
+                                    imagesOnly: imagesOnly,
+                                    pageNumber: pageNumber,
+                                    pageSize: pageSize,
+                                    context: nil,
+                                    completion: onCompletion)
         }
     }
 
@@ -230,10 +237,10 @@ extension WordPressMedia {
         .init(mediaID: mediaID,
               date: date,
               fileExtension: fileExtension,
-              filename: details?.fileName ?? "",
+              filename: details?.fileName ?? title?.rendered ?? slug,
               mimeType: mimeType,
               src: src,
-              thumbnailURL: details?.sizes["thumbnail"]?.src,
+              thumbnailURL: details?.sizes?["thumbnail"]?.src,
               name: slug,
               alt: alt,
               height: details?.height,

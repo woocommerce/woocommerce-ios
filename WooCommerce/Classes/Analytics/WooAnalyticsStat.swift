@@ -328,6 +328,8 @@ public enum WooAnalyticsStat: String {
     case tapToPaySetupSuccessDoneTapped = "tap_to_pay_set_up_success_done_tapped"
     case tapToPaySummaryShown = "tap_to_pay_summary_shown"
     case aboutTapToPayOrderCardReaderTapped = "about_tap_to_pay_order_card_reader_tapped"
+    case tapToPayAutoRefundSuccess = "card_present_tap_to_pay_test_payment_refund_success"
+    case tapToPayAutoRefundFailed = "card_present_tap_to_pay_test_payment_refund_failed"
 
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"

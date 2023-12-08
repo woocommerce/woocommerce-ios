@@ -144,12 +144,15 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                     }
                     if let error {
                         self.shouldShowTrialOrderDetails = true
+                        analytics.track(event: .init(statName: .tapToPayAutoRefundFailed, properties: [:], error: error))
                         return DDLogError("Could not refund Tap to Pay trial payment: \(error)")
                     }
                     guard refund != nil else {
                         self.shouldShowTrialOrderDetails = true
+                        analytics.track(.tapToPayAutoRefundFailed)
                         return DDLogError("Unexpected response when refunding Tap to Pay trial payment for order: \(summaryViewModel.orderID)")
                     }
+                    analytics.track(.tapToPayAutoRefundSuccess)
                     self.dismiss?()
                     ServiceLocator.noticePresenter.enqueue(
                         notice: Notice(title: Localization.paymentRefundNoticeTitle,

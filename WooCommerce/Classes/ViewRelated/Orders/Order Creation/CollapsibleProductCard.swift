@@ -170,8 +170,12 @@ private struct CollapsibleProductRowCard: View {
             VStack(spacing: 16.0) {
                 Divider()
 
-                SimplifiedProductRow(viewModel: viewModel.stepperViewModel, canChangeQuantity: viewModel.canChangeQuantity)
-                    .renderedIf(!viewModel.isReadOnly)
+                HStack {
+                    Text(Localization.orderCountLabel)
+                    Spacer()
+                    ProductStepper(viewModel: viewModel.stepperViewModel)
+                        .renderedIf(!viewModel.isReadOnly)
+                }
 
                 HStack {
                     Text(Localization.priceLabel)
@@ -364,6 +368,9 @@ private extension CollapsibleProductRowCard {
         static let configureBundleProduct = NSLocalizedString(
             "Configure",
             comment: "Text in the product row card to configure a bundle product")
+        static let orderCountLabel = NSLocalizedString(
+            "Order Count",
+            comment: "Text in the product row card that indicates the product quantity in an order")
     }
 }
 

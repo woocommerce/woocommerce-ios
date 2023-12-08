@@ -1,34 +1,6 @@
 import SwiftUI
 import Kingfisher
 
-struct SimplifiedProductRow: View {
-
-    @ObservedObject var viewModel: ProductStepperViewModel
-    private let canChangeQuantity: Bool
-
-    init(viewModel: ProductStepperViewModel, canChangeQuantity: Bool) {
-        self.viewModel = viewModel
-        self.canChangeQuantity = canChangeQuantity
-    }
-
-    var body: some View {
-        HStack(alignment: .center) {
-            Text(Localization.orderCountLabel)
-            Spacer()
-            ProductStepper(viewModel: viewModel)
-                .renderedIf(canChangeQuantity)
-        }
-    }
-}
-
-private extension SimplifiedProductRow {
-    enum Localization {
-        static let orderCountLabel = NSLocalizedString(
-            "Order Count",
-            comment: "Text in the product row card that indicates the product quantity in an order")
-    }
-}
-
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
 struct ProductRow: View {

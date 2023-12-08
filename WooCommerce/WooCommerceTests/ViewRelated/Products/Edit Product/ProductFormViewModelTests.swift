@@ -713,7 +713,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.productModel.downloadable)
     }
-    
+
     func test_updateDownloadableFiles_does_not_change_downloadable_when_empty_files() {
         // Given
         let product = Product.fake().copy(downloadable: false, downloads: [.fake()])

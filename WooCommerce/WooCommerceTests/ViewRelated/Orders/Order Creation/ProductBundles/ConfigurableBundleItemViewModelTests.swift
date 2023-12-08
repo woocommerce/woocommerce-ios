@@ -431,7 +431,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
                                                         analytics: analytics)
 
         // When
-        viewModel.productRowViewModel.stepperViewModel.quantityUpdatedCallback(12)
+        viewModel.productWithStepperViewModel.stepperViewModel.quantityUpdatedCallback(12)
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["order_form_bundle_product_configuration_changed"])

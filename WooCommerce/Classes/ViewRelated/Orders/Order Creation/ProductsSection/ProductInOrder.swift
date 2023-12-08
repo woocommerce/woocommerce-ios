@@ -143,7 +143,6 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             stockStatusKey: "instock",
                                             stockQuantity: 7,
                                             manageStock: true,
-                                            canChangeQuantity: false,
                                                imageURL: nil,
                                                hasParentProduct: true,
                                                isConfigurable: true)

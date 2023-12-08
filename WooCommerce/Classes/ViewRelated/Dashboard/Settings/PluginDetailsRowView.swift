@@ -35,24 +35,15 @@ struct PluginListDetailView: View {
 
     var body: some View {
         ScrollView {
-            Spacer()
             ForEach(viewModel.pluginList(), id: \.self) { plugin in
-                VStack {
-                    NavigationRow(content: {
-                        Text(plugin.name)
-                        Text(plugin.description)
-                        Text(plugin.upToDate)
-                            .foregroundColor(.green)
-                    }, action: {
-                        showWebView = true
-                    })
-                    .sheet(isPresented: $showWebView, content: {
-                        if let updateUrl = updateUrl {
-                            SafariView(url: updateUrl)
-                        }
-                    })
-                }
-                Divider()
+                let pluginDetailsViewModel = PluginDetailsViewModel(siteID: 215063064,
+                                                                    pluginName: plugin.name)
+                NavigationRow(content: {
+                    PluginDetailsRowContent(viewModel: pluginDetailsViewModel)
+                }, action: {
+                    print("\(plugin.name) tapped")
+                    
+                })
             }
         }
     }

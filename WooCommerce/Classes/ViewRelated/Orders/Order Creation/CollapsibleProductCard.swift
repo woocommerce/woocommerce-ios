@@ -209,7 +209,7 @@ private struct CollapsibleProductRowCard: View {
                 }
 
                 if !viewModel.isReadOnly,
-                   let removeProductIntent = viewModel.rowViewModel.removeProductIntent {
+                   let removeProductIntent = viewModel.stepperViewModel.removeProductIntent {
                     Button {
                         removeProductIntent()
                     } label: {

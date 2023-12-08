@@ -596,9 +596,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                    quantity: item.quantity,
                                                    displayMode: .attributes(attributes),
                                                    hasParentProduct: item.parent != nil,
-                                                   pricedIndividually: pricedIndividually,
-                                                   removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)})
+                                                   pricedIndividually: pricedIndividually)
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
                                                            name: item.name,
                                                            quantityUpdatedCallback: { [weak self] _ in
@@ -630,8 +628,6 @@ final class EditableOrderViewModel: ObservableObject {
                                                    quantity: item.quantity,
                                                    hasParentProduct: item.parent != nil,
                                                    pricedIndividually: pricedIndividually,
-                                                   removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)},
                                                    configure: { [weak self] in
                 guard let self else { return }
                 switch product.productType {

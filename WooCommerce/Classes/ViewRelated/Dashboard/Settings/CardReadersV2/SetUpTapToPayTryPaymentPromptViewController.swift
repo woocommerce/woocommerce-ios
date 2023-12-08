@@ -46,7 +46,6 @@ final class SetUpTapToPayTryPaymentPromptViewController: UIHostingController<Set
 
 struct SetUpTapToPayPaymentPromptView: View {
     @ObservedObject var viewModel: SetUpTapToPayTryPaymentPromptViewModel
-    @State var paymentFlowFinished: Bool = false
 
     weak var rootViewController: UIViewController?
 
@@ -98,11 +97,18 @@ struct SetUpTapToPayPaymentPromptView: View {
             })
             .buttonStyle(SecondaryButtonStyle())
             if let summaryViewModel = viewModel.summaryViewModel {
-                LazyNavigationLink(destination: paymentFlow(summaryViewModel: summaryViewModel), isActive: $viewModel.summaryActive) {
+                LazyNavigationLink(destination: paymentFlow(summaryViewModel: summaryViewModel),
+                                   isActive: $viewModel.summaryActive) {
                     EmptyView()
                 }
 
-                LazyNavigationLink(destination: completedOrder(summaryViewModel: summaryViewModel), isActive: $paymentFlowFinished) {
+                LazyNavigationLink(destination: ProgressView(),
+                                   isActive: $viewModel.refundInProgress) {
+                    EmptyView()
+                }
+
+                LazyNavigationLink(destination: completedOrder(summaryViewModel: summaryViewModel),
+                                   isActive: $viewModel.shouldShowTrialOrderDetails) {
                     EmptyView()
                 }
             }
@@ -116,7 +122,7 @@ struct SetUpTapToPayPaymentPromptView: View {
         SimplePaymentsSummary(
             dismiss: {
                 viewModel.summaryActive = false
-                paymentFlowFinished = true
+                viewModel.paymentFlowFinished = true
             },
             rootViewController: rootViewController?.navigationController,
             viewModel: summaryViewModel.simplePaymentSummaryViewModel)

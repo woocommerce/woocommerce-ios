@@ -299,14 +299,13 @@ final class OrdersRootViewController: UIViewController {
                 image: .emptySearchResultsImage
             )
             emptyStateViewController.configure(config)
-            splitViewController?.showDetailViewController(UINavigationController(rootViewController: emptyStateViewController), sender: nil)
+            splitViewController?.showDetailViewController(emptyStateViewController, sender: nil)
             return
         }
 
         let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
-        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
-        splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
+        splitViewController?.showDetailViewController(orderDetailsViewController, sender: nil)
     }
 }
 

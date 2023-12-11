@@ -181,12 +181,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .inventorySettings(editable: true),
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
+                                                                       .downloadableFiles(editable: true),
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -767,11 +768,12 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .subscriptionExpiry(editable: true),
                                                                        .reviews,
                                                                        .inventorySettings(editable: true),
+                                                                       .downloadableFiles(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editDownloadableFiles, .editShortDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 

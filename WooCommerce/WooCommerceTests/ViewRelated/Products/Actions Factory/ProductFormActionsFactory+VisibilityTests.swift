@@ -145,7 +145,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
     func test_downloadableFiles_row_is_visible_for_downloadable_product_with_non_empty_downloadableFiles() {
         // Arrange
-        let product = Fixtures.downloadableProduct
+        let product = Fixtures.downloadableProduct.copy(downloads: [.fake()])
         let model = EditableProductModel(product: product)
 
         // Action

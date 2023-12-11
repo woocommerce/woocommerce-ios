@@ -1479,6 +1479,7 @@
 		9379E1A6225537D0006A6BE4 /* TestingAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934CB124224EAB540005CCB9 /* TestingAppDelegate.swift */; };
 		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */; };
+		953728F82B23635300FDF1D1 /* UIAlertController+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */; };
 		A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */; };
 		A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE852578E76600C655E0 /* MockStorageManager.swift */; };
 		A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */; };
@@ -4066,6 +4067,7 @@
 		9379E1A4225536AD006A6BE4 /* TestAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestAssets.xcassets; sourceTree = "<group>"; };
 		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
 		93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySettingsTests.swift; sourceTree = "<group>"; };
+		953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+helpers.swift"; sourceTree = "<group>"; };
 		9D2992FEF3D1246B8CCC2EBB /* Pods-WooCommerceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MockStorageManager+Sample.swift"; path = "../../../Yosemite/YosemiteTests/Mocks/MockStorageManager+Sample.swift"; sourceTree = "<group>"; };
 		A650BE852578E76600C655E0 /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockStorageManager.swift; path = ../../../Yosemite/YosemiteTests/Mocks/MockStorageManager.swift; sourceTree = "<group>"; };
@@ -10697,6 +10699,7 @@
 				45C8B25C231529410002FA77 /* CustomerInfoTableViewCellTests.swift */,
 				45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */,
 				02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */,
+				953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */,
 			);
 			path = ViewRelated;
 			sourceTree = "<group>";
@@ -14694,6 +14697,7 @@
 				02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */,
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
 				CCCFFC5D2934F0BA006130AF /* StatsIntervalDataParserTests.swift in Sources */,
+				953728F82B23635300FDF1D1 /* UIAlertController+helpers.swift in Sources */,
 				02645D8A27BA2EDB0065DC68 /* NSAttributedString+AttributesTests.swift in Sources */,
 				6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */,
 				B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */,

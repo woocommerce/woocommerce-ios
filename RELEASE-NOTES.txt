@@ -6,6 +6,7 @@
 - [*] Product Creation AI: Show survey to collect user feedback. [https://github.com/woocommerce/woocommerce-ios/pull/11390]
 - [*] Edit Products: category list is now searchable. [https://github.com/woocommerce/woocommerce-ios/pull/11380]
 - [*] Show one time shipping setting status in product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/11403]
+- [*] Edit Products: make downloadable files more discoverable [https://github.com/woocommerce/woocommerce-ios/pull/11388]
 
 16.6
 -----

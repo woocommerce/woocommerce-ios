@@ -22,6 +22,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                                           .editInventorySettings,
                                                                           .editCategories,
                                                                           .editTags,
+                                                                          .editDownloadableFiles,
                                                                           .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
@@ -41,13 +42,17 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editTags, .editShortDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings,
+                                                                          .editCategories,
+                                                                          .editTags,
+                                                                          .editDownloadableFiles,
+                                                                          .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
     func testDataHasEditProductsRelease3ButNoShippingActionsForADownloadableProductWhenBothFeatureFlagsAreOn() {
         // Arrange
-        let product = Fixtures.downloadableProduct
+        let product = Fixtures.downloadableProduct.copy(downloads: [.fake()])
         let model = EditableProductModel(product: product)
 
         // Action

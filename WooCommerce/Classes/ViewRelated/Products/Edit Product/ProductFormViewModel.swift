@@ -459,7 +459,9 @@ extension ProductFormViewModel {
     }
 
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
-        product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
+        let newDownloadableStatus = product.downloadable ? true : downloadableFiles.isNotEmpty
+        product = EditableProductModel(product: product.product.copy(downloadable: newDownloadableStatus,
+                                                                     downloads: downloadableFiles,
                                                                      downloadLimit: downloadLimit,
                                                                      downloadExpiry: downloadExpiry))
     }

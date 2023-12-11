@@ -10,6 +10,8 @@ struct UpdateProductInventoryView: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    @State private var isPresentingDetailsView = false
+
     @State private var isKeyboardVisible = false
 
     init(inventoryItem: InventoryItem, siteID: Int64) {
@@ -88,9 +90,14 @@ struct UpdateProductInventoryView: View {
                         .disabled(!viewModel.enableQuantityButton)
                         .padding(.bottom, Layout.mediumSpacing)
 
-                        Button(Localization.viewProductDetailsButtonTitle) {}
+                        Button(Localization.viewProductDetailsButtonTitle) {
+                            isPresentingDetailsView = true
+                        }
                             .buttonStyle(SecondaryButtonStyle())
                             .padding(.bottom)
+                            .sheet(isPresented: $isPresentingDetailsView) {
+                                viewModel.productDetailsView()
+                            }
                     }
                     .padding()
                     .frame(minHeight: geometry.size.height)

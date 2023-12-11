@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import SwiftUI
 
 /// An item whose inventory can be displayed and managed
 ///
@@ -11,6 +12,7 @@ protocol InventoryItem {
 
     func retrieveName(with stores: StoresManager, siteID: Int64) async throws -> String
     func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws
+    func detailsView() -> ProductLoaderView
 }
 
 extension SKUSearchResult {
@@ -46,6 +48,10 @@ extension Product: InventoryItem {
                 stores.dispatch(action)
             }
         }
+    }
+
+    func detailsView() -> ProductLoaderView {
+        ProductLoaderView(model: .product(productID: productID), siteID: siteID, forceReadOnly: true)
     }
 }
 
@@ -86,6 +92,10 @@ extension ProductVariation: InventoryItem {
                 stores.dispatch(action)
             }
         }
+    }
+
+    func detailsView() -> ProductLoaderView {
+        ProductLoaderView(model: .productVariation(productID: productID, variationID: productVariationID), siteID: siteID, forceReadOnly: true)
     }
 }
 
@@ -158,6 +168,10 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         }
 
         try? await updateStockQuantity(with: quantityDecimal)
+    }
+
+    func productDetailsView() -> some View {
+        inventoryItem.detailsView()
     }
 }
 

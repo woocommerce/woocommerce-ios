@@ -190,47 +190,53 @@ enum ProductSettingsRows {
     }
 
     struct DownloadableProduct: ProductSettingsRowMediator {
-         private let settings: ProductSettings
+        private let settings: ProductSettings
 
-          init(_ settings: ProductSettings) {
-             self.settings = settings
-         }
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
 
-          func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
-             guard let cell = cell as? SwitchTableViewCell else {
-                 return
-             }
+        func configure(cell: UITableViewCell, sourceViewController: UIViewController) {
+            guard let cell = cell as? SwitchTableViewCell else {
+                return
+            }
 
             let title = Localization.downloadableProduct
-             cell.title = title
-             cell.isOn = settings.downloadable
-             cell.onChange = { newValue in
-                 //TODO: Add analytics M5
-                 if !newValue {
-                     cell.isOn = true
-                     let alert = UIAlertController(title: Localization.downloadableProductAlertTitle,
-                                                   message: Localization.downloadableProductAlertHint,
-                                                   preferredStyle: .alert)
-                     alert.addAction(UIAlertAction(title: Localization.downloadableProductAlertConfirm, style: .default) {_ in
-                         cell.isOn = false
-                         self.settings.downloadable = false
-                     })
-                     alert.addAction(UIAlertAction(title: Localization.downloadableProductAlertCancel, style: .cancel))
-                     sourceViewController.present(alert, animated: true)
-                 } else {
-                     self.settings.downloadable = newValue
-                 }
-             }
-         }
+            cell.title = title
+            cell.isOn = settings.downloadable
+            cell.onChange = { newValue in
+                //TODO: Add analytics M5
+                if newValue == false {
+                    self.showConfirmAlert(from: sourceViewController,
+                                          onConfirm: { self.settings.downloadable = false },
+                                          onCancel: { cell.isOn = true })
+                } else {
+                    self.settings.downloadable = newValue
+                }
+            }
+        }
 
-          func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-             // Empty because we don't need to handle the tap on this cell
-         }
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            // Empty because we don't need to handle the tap on this cell
+        }
 
-          let reuseIdentifier: String = SwitchTableViewCell.reuseIdentifier
+        func showConfirmAlert(from: UIViewController, onConfirm: @escaping () -> Void, onCancel: @escaping () -> Void) {
+            let alert = UIAlertController(title: Localization.downloadableProductAlertTitle,
+                                          message: Localization.downloadableProductAlertHint,
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: Localization.downloadableProductAlertConfirm, style: .default) {_ in
+                onConfirm()
+            })
+            alert.addAction(UIAlertAction(title: Localization.downloadableProductAlertCancel, style: .cancel) {_ in
+                onCancel()
+            })
+            from.present(alert, animated: true)
+        }
 
-          let cellTypes: [UITableViewCell.Type] = [SwitchTableViewCell.self]
-     }
+        let reuseIdentifier: String = SwitchTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SwitchTableViewCell.self]
+    }
 
     struct ReviewsAllowed: ProductSettingsRowMediator {
         private let settings: ProductSettings

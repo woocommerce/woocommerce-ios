@@ -1,32 +1,6 @@
 import SwiftUI
 import Kingfisher
 
-struct SimplifiedProductRow: View {
-
-    @ObservedObject var viewModel: ProductRowViewModel
-
-    init(viewModel: ProductRowViewModel) {
-        self.viewModel = viewModel
-    }
-
-    var body: some View {
-        HStack(alignment: .center) {
-            Text(Localization.orderCountLabel)
-            Spacer()
-            ProductStepper(viewModel: viewModel.stepperViewModel)
-                .renderedIf(viewModel.canChangeQuantity)
-        }
-    }
-}
-
-private extension SimplifiedProductRow {
-    enum Localization {
-        static let orderCountLabel = NSLocalizedString(
-            "Order Count",
-            comment: "Text in the product row card that indicates the product quantity in an order")
-    }
-}
-
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
 struct ProductRow: View {
@@ -59,50 +33,43 @@ struct ProductRow: View {
     }
 
     var body: some View {
-        VStack {
-            AdaptiveStack(horizontalAlignment: .leading) {
-                HStack(alignment: .center) {
-                    if multipleSelectionsEnabled {
-                        if let selectionHandler = onCheckboxSelected {
-                            checkbox.onTapGesture {
-                                selectionHandler()
-                            }
-                        } else {
-                            checkbox
-                        }
+        HStack(alignment: .center) {
+            if multipleSelectionsEnabled {
+                if let selectionHandler = onCheckboxSelected {
+                    checkbox.onTapGesture {
+                        selectionHandler()
                     }
-
-                    // Product image
-                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
-                                          productImageSize: Layout.productImageSize,
-                                          scale: scale,
-                                          productImageCornerRadius: Layout.cornerRadius,
-                                          foregroundColor: Color(UIColor.listSmallIcon))
-
-                    // Product details
-                    VStack(alignment: .leading) {
-                        Text(viewModel.name)
-                            .bodyStyle()
-                        Text(viewModel.productDetailsLabel)
-                            .subheadlineStyle()
-                            .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
-                        Text(viewModel.secondaryProductDetailsLabel)
-                            .subheadlineStyle()
-                            .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)
-                    }
-                    .multilineTextAlignment(.leading)
+                } else {
+                    checkbox
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
-                .accessibilityElement(children: .ignore)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(viewModel.productAccessibilityLabel)
-                .accessibilityHint(accessibilityHint)
-
-                ProductStepper(viewModel: viewModel.stepperViewModel)
-                    .renderedIf(viewModel.canChangeQuantity)
             }
+
+            // Product image
+            ProductImageThumbnail(productImageURL: viewModel.imageURL,
+                                  productImageSize: Layout.productImageSize,
+                                  scale: scale,
+                                  productImageCornerRadius: Layout.cornerRadius,
+                                  foregroundColor: Color(UIColor.listSmallIcon))
+
+            // Product details
+            VStack(alignment: .leading) {
+                Text(viewModel.name)
+                    .bodyStyle()
+                Text(viewModel.productDetailsLabel)
+                    .subheadlineStyle()
+                    .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
+                Text(viewModel.secondaryProductDetailsLabel)
+                    .subheadlineStyle()
+                    .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)
+            }
+            .multilineTextAlignment(.leading)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(viewModel.productAccessibilityLabel)
+        .accessibilityHint(accessibilityHint)
     }
 
     private var checkbox: some View {
@@ -148,9 +115,7 @@ struct ProductRow_Previews: PreviewProvider {
                                             stockStatusKey: "instock",
                                             stockQuantity: 7,
                                             manageStock: true,
-                                            canChangeQuantity: true,
                                             imageURL: nil,
-                                            hasParentProduct: false,
                                             isConfigurable: true)
         let viewModelWithoutStepper = ProductRowViewModel(productOrVariationID: 1,
                                                           name: "Love Ficus",
@@ -159,9 +124,7 @@ struct ProductRow_Previews: PreviewProvider {
                                                           stockStatusKey: "instock",
                                                           stockQuantity: 7,
                                                           manageStock: true,
-                                                          canChangeQuantity: false,
                                                           imageURL: nil,
-                                                          hasParentProduct: true,
                                                           isConfigurable: false)
 
         ProductRow(viewModel: viewModel)

@@ -79,7 +79,14 @@ final class AppCoordinator {
 
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
-                case (false, true), (false, false):
+                case (false, true):
+                    self.displayAuthenticatorWithOnboardingIfNeeded()
+                case (false, false):
+                    // This is not an expected auth state. When the user is logged out, we expect the default store will not be set.
+                    // Starting the auth flow from this state seems to cause a crash: peaMlT-hY-p2
+                    // To get into the expected logged-out state, we can fully deauthenticate before starting the auth flow.
+                    DDLogWarn("⚠️ Unexpected authentication state: Unauthenticated user has a default store set.")
+                    stores.deauthenticate()
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (true, true):
                     self.displayLoggedInStateWithoutDefaultStore()

@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Displays a single collapsible product row or grouped parent and child product rows
 struct CollapsibleProductCard: View {
-    @ObservedObject var viewModel: ProductRowViewModel
+    private let viewModel: CollapsibleProductCardViewModel
 
     /// Used for tracking order form events.
     private let flow: WooAnalyticsEvent.Orders.Flow
@@ -19,7 +19,7 @@ struct CollapsibleProductCard: View {
 
     @ScaledMetric private var scale: CGFloat = 1
 
-    init(viewModel: ProductRowViewModel,
+    init(viewModel: CollapsibleProductCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
          shouldDisableDiscountEditing: Bool,
          shouldDisallowDiscounts: Bool,
@@ -33,7 +33,7 @@ struct CollapsibleProductCard: View {
 
     var body: some View {
         if viewModel.childProductRows.isEmpty {
-            CollapsibleProductRowCard(viewModel: viewModel,
+            CollapsibleProductRowCard(viewModel: viewModel.productRow,
                                       flow: flow,
                                       shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                       shouldDisallowDiscounts: shouldDisallowDiscounts,
@@ -44,7 +44,7 @@ struct CollapsibleProductCard: View {
         } else {
             VStack(spacing: 0) {
                 // Parent product
-                CollapsibleProductRowCard(viewModel: viewModel,
+                CollapsibleProductRowCard(viewModel: viewModel.productRow,
                                           flow: flow,
                                           shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                           shouldDisallowDiscounts: shouldDisallowDiscounts,
@@ -84,7 +84,7 @@ private extension CollapsibleProductCard {
 }
 
 private struct CollapsibleProductRowCard: View {
-    @ObservedObject var viewModel: ProductRowViewModel
+    private let viewModel: CollapsibleProductRowCardViewModel
 
     /// Used for tracking order form events.
     private let flow: WooAnalyticsEvent.Orders.Flow
@@ -118,7 +118,7 @@ private struct CollapsibleProductRowCard: View {
         }
     }
 
-    init(viewModel: ProductRowViewModel,
+    init(viewModel: CollapsibleProductRowCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
          shouldDisableDiscountEditing: Bool,
          shouldDisallowDiscounts: Bool,
@@ -139,24 +139,25 @@ private struct CollapsibleProductRowCard: View {
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
-                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
-                                          productImageSize: viewModel.hasParentProduct ? Layout.childProductImageSize : Layout.parentProductImageSize,
+                    ProductImageThumbnail(productImageURL: viewModel.productViewModel.imageURL,
+                                          productImageSize: viewModel.hasParentProduct ?
+                                          Layout.childProductImageSize : Layout.parentProductImageSize,
                                           scale: scale,
                                           productImageCornerRadius: Layout.productImageCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     VStack(alignment: .leading) {
-                        Text(viewModel.name)
+                        Text(viewModel.productViewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)
                             .foregroundColor(Color(.text))
-                        Text(viewModel.orderProductDetailsLabel)
+                        Text(viewModel.productViewModel.orderProductDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
-                        Text(viewModel.skuLabel)
+                        Text(viewModel.productViewModel.skuLabel)
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
-                        CollapsibleProductCardPriceSummary(viewModel: viewModel)
+                        CollapsibleProductCardPriceSummary(viewModel: viewModel.productViewModel)
                             .font(.subheadline)
                             .renderedIf(isCollapsed)
                     }
@@ -169,12 +170,16 @@ private struct CollapsibleProductRowCard: View {
             VStack(spacing: 16.0) {
                 Divider()
 
-                SimplifiedProductRow(viewModel: viewModel)
-                    .renderedIf(!viewModel.isReadOnly)
+                HStack {
+                    Text(Localization.orderCountLabel)
+                    Spacer()
+                    ProductStepper(viewModel: viewModel.stepperViewModel)
+                }
+                .renderedIf(!viewModel.isReadOnly)
 
                 HStack {
                     Text(Localization.priceLabel)
-                    CollapsibleProductCardPriceSummary(viewModel: viewModel)
+                    CollapsibleProductCardPriceSummary(viewModel: viewModel.productViewModel)
                 }
                 .frame(minHeight: Layout.rowMinHeight)
 
@@ -193,12 +198,12 @@ private struct CollapsibleProductRowCard: View {
                 .renderedIf(viewModel.hasDiscount && !viewModel.isReadOnly)
 
                 Button(Localization.configureBundleProduct) {
-                    viewModel.configure?()
+                    viewModel.productViewModel.configure?()
                     ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productCard))
                 }
                 .buttonStyle(IconButtonStyle(icon: .cogImage))
                 .frame(minHeight: Layout.rowMinHeight)
-                .renderedIf(viewModel.isConfigurable)
+                .renderedIf(viewModel.productViewModel.isConfigurable)
                 .onAppear {
                     guard !hasTrackedBundleProductConfigureCTAShownEvent else {
                         return
@@ -208,7 +213,7 @@ private struct CollapsibleProductRowCard: View {
                 }
 
                 if !viewModel.isReadOnly,
-                   let removeProductIntent = viewModel.removeProductIntent {
+                   let removeProductIntent = viewModel.stepperViewModel.removeProductIntent {
                     Button {
                         removeProductIntent()
                     } label: {
@@ -363,6 +368,9 @@ private extension CollapsibleProductRowCard {
         static let configureBundleProduct = NSLocalizedString(
             "Configure",
             comment: "Text in the product row card to configure a bundle product")
+        static let orderCountLabel = NSLocalizedString(
+            "Order Count",
+            comment: "Text in the product row card that indicates the product quantity in an order")
     }
 }
 
@@ -370,20 +378,60 @@ private extension CollapsibleProductRowCard {
 struct CollapsibleProductCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        let childViewModels = [ProductRowViewModel(id: 2, product: product, canChangeQuantity: true, hasParentProduct: true),
-                               ProductRowViewModel(id: 3, product: product, canChangeQuantity: true, hasParentProduct: true)]
-        let bundleParentViewModel = ProductRowViewModel(id: 1,
-                                                  product: product.copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]),
-                                                  canChangeQuantity: true,
-                                                  childProductRows: childViewModels,
-                                                  configure: {})
+        let productViewModel = ProductRowViewModel(product: product)
+        let rowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
+                                                              hasParentProduct: false,
+                                                              isReadOnly: false,
+                                                              productViewModel: productViewModel,
+                                                              stepperViewModel: .init(quantity: 1,
+                                                                                      name: "",
+                                                                                      quantityUpdatedCallback: { _ in }))
+        let viewModel = CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
+
+        let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
+                                                              hasParentProduct: false,
+                                                              isReadOnly: true,
+                                                              productViewModel: productViewModel,
+                                                              stepperViewModel: .init(quantity: 1,
+                                                                                      name: "",
+                                                                                      quantityUpdatedCallback: { _ in }))
+        let readOnlyViewModel = CollapsibleProductCardViewModel(productRow: readOnlyRowViewModel, childProductRows: [])
+
+        let childViewModels = [ProductRowViewModel(id: 2, product: product),
+                               ProductRowViewModel(id: 3, product: product)]
+            .map {
+                CollapsibleProductRowCardViewModel(canChangeQuantity: false,
+                                                   hasParentProduct: true,
+                                                   isReadOnly: false,
+                                                   productViewModel: $0,
+                                                   stepperViewModel: .init(quantity: 1,
+                                                                           name: "",
+                                                                           quantityUpdatedCallback: { _ in }))
+            }
+        let bundleParentProductViewModel = ProductRowViewModel(id: 1,
+                                                           product: product
+            .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]),
+                                                           configure: {})
+        let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
+                                                                          hasParentProduct: false,
+                                                                          isReadOnly: false,
+                                                                          productViewModel: bundleParentProductViewModel,
+                                                                          stepperViewModel: .init(quantity: 1,
+                                                                                                  name: "",
+                                                                                                  quantityUpdatedCallback: { _ in }))
+        let bundleParentViewModel = CollapsibleProductCardViewModel(productRow: bundleParentRowViewModel,
+                                                                    childProductRows: childViewModels)
         VStack {
             CollapsibleProductCard(viewModel: viewModel,
                                       flow: .creation,
                                       shouldDisableDiscountEditing: false,
                                       shouldDisallowDiscounts: false,
                                       onAddDiscount: { _ in })
+            CollapsibleProductCard(viewModel: readOnlyViewModel,
+                                   flow: .creation,
+                                   shouldDisableDiscountEditing: false,
+                                   shouldDisallowDiscounts: false,
+                                   onAddDiscount: { _ in })
             CollapsibleProductCard(viewModel: bundleParentViewModel,
                                       flow: .creation,
                                       shouldDisableDiscountEditing: false,

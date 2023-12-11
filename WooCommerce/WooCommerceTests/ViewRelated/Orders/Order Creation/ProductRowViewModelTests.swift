@@ -6,13 +6,6 @@ import WooFoundation
 @testable import WooCommerce
 
 final class ProductRowViewModelTests: XCTestCase {
-    var analytics: MockAnalyticsProvider!
-
-    override func setUp() {
-        super.setUp()
-        analytics = MockAnalyticsProvider()
-    }
-
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
         let rowID = Int64(0)
@@ -22,14 +15,13 @@ final class ProductRowViewModelTests: XCTestCase {
                                           images: [ProductImage.fake().copy(src: imageURLString)])
 
         // When
-        let viewModel = ProductRowViewModel(id: rowID, product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(id: rowID, product: product)
 
         // Then
         XCTAssertEqual(viewModel.id, rowID)
         XCTAssertEqual(viewModel.productOrVariationID, product.productID)
         XCTAssertEqual(viewModel.name, product.name)
         XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
-        XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)
         XCTAssertEqual(viewModel.numberOfVariations, 0)
     }
@@ -39,7 +31,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "variable", variations: [0, 1, 2])
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         XCTAssertEqual(viewModel.numberOfVariations, 3)
@@ -55,30 +47,14 @@ final class ProductRowViewModelTests: XCTestCase {
                                                             image: ProductImage.fake().copy(src: imageURLString))
 
         // When
-        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, canChangeQuantity: false, displayMode: .stock)
+        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, displayMode: .stock)
 
         // Then
         XCTAssertEqual(viewModel.id, rowID)
         XCTAssertEqual(viewModel.productOrVariationID, productVariation.productVariationID)
         XCTAssertEqual(viewModel.name, name)
         XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
-        XCTAssertFalse(viewModel.canChangeQuantity)
         XCTAssertEqual(viewModel.quantity, 1)
-    }
-
-    func test_viewModel_is_created_with_correct_initial_values_from_product_with_child_product_rows() {
-        // Given
-        let product = Product.fake()
-        let childProductRows = [ProductRowViewModel(product: .fake(), canChangeQuantity: false),
-                                ProductRowViewModel(product: .fake(), canChangeQuantity: false)]
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true, childProductRows: childProductRows)
-
-        // Then
-        XCTAssertTrue(viewModel.canChangeQuantity)
-        XCTAssertEqual(viewModel.childProductRows.count, 2)
-        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).canChangeQuantity)
     }
 
     func test_view_model_creates_expected_label_for_product_with_managed_stock() {
@@ -87,7 +63,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(manageStock: true, stockQuantity: stockQuantity, stockStatusKey: "instock")
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
@@ -102,7 +78,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(stockStatusKey: "instock")
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let expectedStockLabel = NSLocalizedString("In stock", comment: "Display label for the product's inventory stock status")
@@ -115,7 +91,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(stockStatusKey: "outofstock")
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let expectedStockLabel = NSLocalizedString("Out of stock", comment: "Display label for the product's inventory stock status")
@@ -130,7 +106,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, currencyFormatter: currencyFormatter)
+        let viewModel = ProductRowViewModel(product: product, currencyFormatter: currencyFormatter)
 
         // Then
         let expectedPriceLabel = "2.50"
@@ -146,7 +122,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
 
         // When
-        let viewModel = ProductRowViewModel(product: product, discount: discount, canChangeQuantity: false, currencyFormatter: currencyFormatter)
+        let viewModel = ProductRowViewModel(product: product, discount: discount, currencyFormatter: currencyFormatter)
 
         // Then
         let expectedPriceLabel = "2.50" + " - " + (currencyFormatter.formatAmount(discount) ?? "")
@@ -161,25 +137,10 @@ final class ProductRowViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, currencyFormatter: currencyFormatter)
+        let viewModel = ProductRowViewModel(product: product, currencyFormatter: currencyFormatter)
 
         // Then
         let expectedPriceLabel = "$0.00"
-        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
-    }
-
-    func test_view_model_updates_price_label_when_quantity_changes() {
-        // Given
-        let product = Product.fake().copy(price: "2.50")
-        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, currencyFormatter: currencyFormatter)
-        viewModel.stepperViewModel.incrementQuantity()
-
-        // Then
-        let expectedPriceLabel = "$5.00"
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
                       "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
@@ -189,7 +150,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "variable", stockStatusKey: "instock", variations: [0, 1])
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let expectedProductDetailsLabel = "In stock • 2 variations"
@@ -202,7 +163,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let attributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
 
         // When
-        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, displayMode: .attributes(attributes))
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", displayMode: .attributes(attributes))
 
         // Then
         let expectedAttributesText = "Blue, Any Size"
@@ -217,7 +178,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")], stockStatus: .inStock)
 
         // When
-        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: false, displayMode: .stock)
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", displayMode: .stock)
 
         // Then
         let expectedStockText = "In stock"
@@ -233,7 +194,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(sku: sku)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
@@ -247,7 +208,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(sku: sku)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let expectedSKULabel = ""
@@ -260,7 +221,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(sku: sku)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
@@ -274,7 +235,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(sku: sku)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let expectedSKULabel = ""
@@ -288,7 +249,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
+        let viewModel = ProductRowViewModel(product: product, featureFlagService: featureFlagService, configure: {})
 
         // Then
         let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
@@ -304,7 +265,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
+        let viewModel = ProductRowViewModel(product: product, featureFlagService: featureFlagService, configure: {})
 
         // Then
         XCTAssertEqual(viewModel.secondaryProductDetailsLabel, ProductType.bundle.description)
@@ -316,7 +277,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(stockStatusKey: stockStatus.rawValue)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         assertEqual(stockStatus.description, viewModel.orderProductDetailsLabel)
@@ -331,7 +292,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let attributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
 
         // When
-        let viewModel = ProductRowViewModel(productVariation: variation, name: "", canChangeQuantity: true, displayMode: .attributes(attributes))
+        let viewModel = ProductRowViewModel(productVariation: variation, name: "", displayMode: .attributes(attributes))
 
         // Then
         XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(variationAttribute), "Label should contain variation attribute")
@@ -345,39 +306,11 @@ final class ProductRowViewModelTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
+        let viewModel = ProductRowViewModel(product: product, featureFlagService: featureFlagService, configure: {})
 
         // Then
         XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(ProductType.bundle.description), "Label should contain product type (Bundle)")
         XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
-    }
-
-    func test_productRow_when_add_discount_button_is_tapped_then_orderProductDiscountAddButtonTapped_is_tracked() {
-        // Given
-        let product = Product.fake()
-        let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: true,
-                                            analytics: WooAnalytics(analyticsProvider: analytics))
-
-        // When
-        viewModel.trackAddDiscountTapped()
-
-        // Then
-        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAddButtonTapped.rawValue)
-    }
-
-    func test_productRow_when_edit_discount_button_is_tapped_then_orderProductDiscountEditButtonTapped_is_tracked() {
-        // Given
-        let product = Product.fake()
-        let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: true,
-                                            analytics: WooAnalytics(analyticsProvider: analytics))
-
-        // When
-        viewModel.trackEditDiscountTapped()
-
-        // Then
-        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountEditButtonTapped.rawValue)
     }
 
     func test_productAccessibilityLabel_is_created_with_expected_details_from_product() {
@@ -386,7 +319,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, currencyFormatter: currencyFormatter)
+        let viewModel = ProductRowViewModel(product: product, currencyFormatter: currencyFormatter)
 
         // Then
         let expectedLabel = "Test Product. In stock. $10.00. 2 variations. SKU: 123456"
@@ -399,7 +332,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService(productBundles: false))
 
         // Then
@@ -414,7 +346,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService())
 
         // Then
@@ -429,7 +360,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService())
 
         // Then
@@ -444,7 +374,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService(productBundles: false))
 
         // Then
@@ -461,7 +390,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService())
 
         // Then
@@ -472,25 +400,6 @@ final class ProductRowViewModelTests: XCTestCase {
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
-    func test_when_product_row_discount_is_nil_then_viewModel_hasDiscount_is_false() {
-        let price = "2.50"
-        let product = Product.fake().copy(price: price)
-
-        let viewModel = ProductRowViewModel(product: product, discount: nil, quantity: 1, canChangeQuantity: true)
-
-        XCTAssertFalse(viewModel.hasDiscount)
-    }
-
-    func test_when_product_row_discount_is_not_nil_then_viewModel_hasDiscount() {
-        let price = "2.50"
-        let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
-
-        let viewModel = ProductRowViewModel(product: product, discount: discount, quantity: 1, canChangeQuantity: true)
-
-        XCTAssertTrue(viewModel.hasDiscount)
-    }
-
     func test_product_row_priceQuantityLine_returns_properly_formatted_priceQuantityLine() {
         // Given
         let price = "10.71"
@@ -498,7 +407,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity)
 
         // Then
         assertEqual("8 × $10.71", viewModel.priceQuantityLine)
@@ -511,7 +420,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: false, pricedIndividually: false)
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity, pricedIndividually: false)
 
         // Then
         assertEqual("8 × $0.00", viewModel.priceQuantityLine)
@@ -523,7 +432,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: true)
+        let viewModel = ProductRowViewModel(product: product, pricedIndividually: true)
 
         // Then
         assertEqual(price, viewModel.price)
@@ -535,34 +444,10 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: false)
+        let viewModel = ProductRowViewModel(product: product, pricedIndividually: false)
 
         // Then
         assertEqual("0", viewModel.price)
-    }
-
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
-        let price = "2.50"
-        let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
-
-        let viewModel = ProductRowViewModel(product: product, discount: discount, quantity: 1, canChangeQuantity: true)
-
-        assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
-    }
-
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
-        let price = "2.50"
-        let quantity: Decimal = 10
-        let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
-
-        let viewModel = ProductRowViewModel(product: product,
-                                            discount: discount,
-                                            quantity: quantity,
-                                            canChangeQuantity: true)
-
-        assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
     }
 
     func test_product_row_priceQuantityLine_when_product_has_no_price_then_returns_properly_formatted_priceQuantityLine() {
@@ -571,7 +456,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy()
 
         // When
-        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity)
 
         // Then
         assertEqual("8 × -", viewModel.priceQuantityLine)
@@ -585,7 +470,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService(productBundlesInOrderForm: false))
 
         // Then
@@ -598,7 +482,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
 
         // Then
@@ -611,7 +494,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
                                             configure: {})
 
@@ -625,7 +507,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductRowViewModel(product: product,
-                                            canChangeQuantity: false,
                                             featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
                                             configure: nil)
 
@@ -642,56 +523,12 @@ final class ProductRowViewModelTests: XCTestCase {
 
             // When
             let viewModel = ProductRowViewModel(product: product,
-                                                canChangeQuantity: false,
                                                 featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
                                                 configure: {})
 
             // Then
             XCTAssertFalse(viewModel.isConfigurable)
         }
-    }
-
-    // MARK: - `isReadOnly`
-
-    func test_isReadOnly_is_false_for_products_by_default() {
-        // Given
-        let product = Product.fake()
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-
-        // Then
-        XCTAssertFalse(viewModel.isReadOnly, "Product should not be read only")
-    }
-
-    func test_isReadOnly_is_false_for_non_bundle_parent_and_child_items() throws {
-        // Given
-        let parent = Product.fake()
-        let children: [ProductRowViewModel] = [.init(product: .fake(), canChangeQuantity: true),
-                                               .init(productVariation: .fake(), name: "Variation", canChangeQuantity: true, displayMode: .stock)]
-
-        // When
-        let viewModel = ProductRowViewModel(product: parent, canChangeQuantity: true, childProductRows: children)
-
-        // Then
-        XCTAssertFalse(viewModel.isReadOnly, "Parent product should not be read only")
-        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).isReadOnly, "Child product should not be read only")
-        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[1]).isReadOnly, "Child product variation should not be read only")
-    }
-
-    func test_isReadOnly_is_false_for_bundle_parent_and_true_for_bundle_child_items() throws {
-        // Given
-        let parent = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue)
-        let children: [ProductRowViewModel] = [.init(product: .fake(), canChangeQuantity: false),
-                                               .init(productVariation: .fake(), name: "Variation", canChangeQuantity: false, displayMode: .stock)]
-
-        // When
-        let viewModel = ProductRowViewModel(product: parent, canChangeQuantity: true, childProductRows: children)
-
-        // Then
-        XCTAssertFalse(viewModel.isReadOnly, "Parent product should not be read only")
-        XCTAssertTrue(try XCTUnwrap(viewModel.childProductRows[0]).isReadOnly, "Child product should be read only")
-        XCTAssertTrue(try XCTUnwrap(viewModel.childProductRows[1]).isReadOnly, "Child product variation should be read only")
     }
 }
 

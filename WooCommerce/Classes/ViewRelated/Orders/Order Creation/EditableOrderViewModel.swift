@@ -292,7 +292,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View models for each product row in the order.
     ///
-    @Published private(set) var productRows: [ProductRowViewModel] = []
+    @Published private(set) var productRows: [CollapsibleProductCardViewModel] = []
 
     /// View models for each custom amount in the order.
     ///
@@ -575,7 +575,8 @@ final class EditableOrderViewModel: ObservableObject {
     func createProductRowViewModel(for item: OrderItem,
                                    childItems: [OrderItem] = [],
                                    canChangeQuantity: Bool,
-                                   pricedIndividually: Bool = true) -> ProductRowViewModel? {
+                                   isReadOnly: Bool = false,
+                                   pricedIndividually: Bool = true) -> CollapsibleProductCardViewModel? {
         guard item.quantity > 0 else {
             // Don't render any item with `.zero` quantity.
             return nil
@@ -588,21 +589,28 @@ final class EditableOrderViewModel: ObservableObject {
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let variableProduct = allProducts.first(where: { $0.productID == item.productID })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
-            return ProductRowViewModel(id: item.itemID,
-                                       productVariation: variation,
-                                       discount: passingDiscountValue,
-                                       name: item.name,
-                                       quantity: item.quantity,
-                                       canChangeQuantity: canChangeQuantity,
-                                       displayMode: .attributes(attributes),
-                                       hasParentProduct: item.parent != nil,
-                                       pricedIndividually: pricedIndividually,
-                                       quantityUpdatedCallback: { [weak self] _ in
-                guard let self = self else { return }
+            let productViewModel = ProductRowViewModel(id: item.itemID,
+                                                   productVariation: variation,
+                                                   discount: passingDiscountValue,
+                                                   name: item.name,
+                                                   quantity: item.quantity,
+                                                   displayMode: .attributes(attributes),
+                                                   pricedIndividually: pricedIndividually)
+            let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
+                                                           name: item.name,
+                                                           quantityUpdatedCallback: { [weak self] _ in
+                guard let self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
-            },
-                                       removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)})
+            }, removeProductIntent: { [weak self] in
+                self?.removeItemFromOrder(item)
+            })
+            let rowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: canChangeQuantity,
+                                                                  hasParentProduct: item.parent != nil,
+                                                                  isReadOnly: isReadOnly,
+                                                                  productViewModel: productViewModel,
+                                                                  stepperViewModel: stepperViewModel,
+                                                                  analytics: analytics)
+            return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
             // If the parent product is a bundle product, quantity cannot be changed.
             let canChildItemsChangeQuantity = product.productType != .bundle
@@ -613,23 +621,18 @@ final class EditableOrderViewModel: ObservableObject {
                     }
                     return bundledItem.pricedIndividually
                 }()
-                return createProductRowViewModel(for: childItem, canChangeQuantity: canChildItemsChangeQuantity, pricedIndividually: pricedIndividually)
+                let isReadOnly = product.productType == .bundle
+                return createProductRowViewModel(for: childItem,
+                                                 canChangeQuantity: canChildItemsChangeQuantity,
+                                                 isReadOnly: isReadOnly,
+                                                 pricedIndividually: pricedIndividually)
             }
-            return ProductRowViewModel(id: item.itemID,
-                                       product: product,
-                                       discount: passingDiscountValue,
-                                       quantity: item.quantity,
-                                       canChangeQuantity: canChangeQuantity,
-                                       hasParentProduct: item.parent != nil,
-                                       pricedIndividually: pricedIndividually,
-                                       childProductRows: childProductRows,
-                                       quantityUpdatedCallback: { [weak self] _ in
-                guard let self = self else { return }
-                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
-            },
-                                       removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)},
-                                       configure: { [weak self] in
+            let productViewModel = ProductRowViewModel(id: item.itemID,
+                                                   product: product,
+                                                   discount: passingDiscountValue,
+                                                   quantity: item.quantity,
+                                                   pricedIndividually: pricedIndividually,
+                                                   configure: { [weak self] in
                 guard let self else { return }
                 switch product.productType {
                     case .bundle:
@@ -644,6 +647,21 @@ final class EditableOrderViewModel: ObservableObject {
                         break
                 }
             })
+            let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
+                                                           name: item.name,
+                                                           quantityUpdatedCallback: { [weak self] _ in
+                guard let self else { return }
+                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
+            }, removeProductIntent: { [weak self] in
+                self?.removeItemFromOrder(item)
+            })
+            let rowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: canChangeQuantity,
+                                                                  hasParentProduct: item.parent != nil,
+                                                                  isReadOnly: isReadOnly,
+                                                                  productViewModel: productViewModel,
+                                                                  stepperViewModel: stepperViewModel,
+                                                                  analytics: analytics)
+            return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: childProductRows.map { $0.productRow })
         } else {
             DDLogInfo("No product or variation found. Couldn't create the product row")
             return nil
@@ -1285,7 +1303,7 @@ private extension EditableOrderViewModel {
         orderSynchronizer.orderPublisher
             .map { $0.items }
             .removeDuplicates()
-            .map { [weak self] items -> [ProductRowViewModel] in
+            .map { [weak self] items -> [CollapsibleProductCardViewModel] in
                 guard let self = self else { return [] }
                 return self.createProductRows(items: items)
             }
@@ -1344,8 +1362,8 @@ private extension EditableOrderViewModel {
             return
         }
         // Increase quantity if exists
-        let match = productRows.first(where: { $0.productOrVariationID == item.itemID })
-        match?.stepperViewModel.incrementQuantity()
+        let match = productRows.first(where: { $0.productRow.productViewModel.productOrVariationID == item.itemID })
+        match?.productRow.stepperViewModel.incrementQuantity()
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1798,7 +1816,7 @@ private extension EditableOrderViewModel {
             return nil
         }
 
-        return ProductInOrderViewModel(productRowViewModel: rowViewModel,
+        return ProductInOrderViewModel(productRowViewModel: rowViewModel.productRow.productViewModel,
                                        productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
                                        showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty,
                                        onRemoveProduct: { [weak self] in
@@ -1851,8 +1869,8 @@ private extension EditableOrderViewModel {
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.
     ///
-    func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
-        items.compactMap { item -> ProductRowViewModel? in
+    func createProductRows(items: [OrderItem]) -> [CollapsibleProductCardViewModel] {
+        items.compactMap { item -> CollapsibleProductCardViewModel? in
             guard item.parent == nil else { // Don't create a separate product row for child items
                 return nil
             }
@@ -1863,7 +1881,7 @@ private extension EditableOrderViewModel {
             }
 
             // Observe changes to the product quantity
-            productRowViewModel.stepperViewModel.$quantity
+            productRowViewModel.productRow.stepperViewModel.$quantity
                 .dropFirst() // Omit the default/initial quantity to prevent a double trigger.
                 // The quantity can be incremented/decremented quickly, and the order sync can be blocking (e.g. with bundle configuration).
                 // To avoid the UI being blocked for each quantity update, a debounce is added to wait for the final quantity

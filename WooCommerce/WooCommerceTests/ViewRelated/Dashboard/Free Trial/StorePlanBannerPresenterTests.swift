@@ -51,7 +51,7 @@ final class StorePlanBannerPresenterTests: XCTestCase {
     func test_banner_is_displayed_when_site_plan_is_free_and_site_was_ecommerce_trial() {
         // Given
         let defaultSite = Site.fake().copy(siteID: siteID, isWordPressComStore: false, wasEcommerceTrial: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: defaultSite))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: defaultSite))
         presenter = StorePlanBannerPresenter(viewController: UIViewController(),
                                              containerView: containerView,
                                              siteID: siteID,
@@ -73,7 +73,7 @@ final class StorePlanBannerPresenterTests: XCTestCase {
     func test_banner_is_dismissed_when_connection_is_lost() {
         // Given
         let defaultSite = Site.fake().copy(siteID: siteID, isWordPressComStore: false, wasEcommerceTrial: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: defaultSite))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: defaultSite))
         let connectivityObserver = MockConnectivityObserver()
         presenter = StorePlanBannerPresenter(viewController: UIViewController(),
                                              containerView: containerView,

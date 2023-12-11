@@ -85,9 +85,9 @@ private extension ProductCreationAISurveyConfirmationView {
 
 struct ProductCreationAISurveyConfirmationView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductCreationAISurveyConfirmationView(viewModel: .init(onTappingStartTheSurvey: {}, onTappingSkip: {}))
+        ProductCreationAISurveyConfirmationView(viewModel: .init(onStart: {}, onSkip: {}))
 
-        ProductCreationAISurveyConfirmationView(viewModel: .init(onTappingStartTheSurvey: {}, onTappingSkip: {}))
+        ProductCreationAISurveyConfirmationView(viewModel: .init(onStart: {}, onSkip: {}))
             .preferredColorScheme(.dark)
     }
 }

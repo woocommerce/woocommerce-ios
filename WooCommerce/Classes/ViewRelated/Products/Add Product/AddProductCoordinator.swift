@@ -366,14 +366,14 @@ private extension AddProductCoordinator {
             return
         }
 
-        let controller = ProductCreationAISurveyConfirmationHostingController(viewModel: .init(onTappingStartTheSurvey: { [weak self] in
+        let controller = ProductCreationAISurveyConfirmationHostingController(viewModel: .init(onStart: { [weak self] in
             guard let self else { return }
 
             self.productCreationAISurveyPresenter.dismiss(onDismiss: { [weak self] in
                 let survey = SurveyCoordinatingController(survey: .productCreationAI)
                 self?.navigationController.present(survey, animated: true, completion: nil)
             })
-        }, onTappingSkip: { [weak self] in
+        }, onSkip: { [weak self] in
             self?.productCreationAISurveyPresenter.dismiss()
         }))
 

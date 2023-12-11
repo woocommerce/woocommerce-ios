@@ -2,25 +2,25 @@ import UIKit
 
 /// View model for `ProductCreationAISurveyConfirmationView`.
 struct ProductCreationAISurveyConfirmationViewModel {
-    private let onTappingStartTheSurvey: () -> Void
-    private let onTappingSkip: () -> Void
+    private let onStart: () -> Void
+    private let onSkip: () -> Void
     private let analytics: Analytics
 
-    init(onTappingStartTheSurvey: @escaping () -> Void,
-         onTappingSkip: @escaping () -> Void,
+    init(onStart: @escaping () -> Void,
+         onSkip: @escaping () -> Void,
          analytics: Analytics = ServiceLocator.analytics) {
-        self.onTappingStartTheSurvey = onTappingStartTheSurvey
-        self.onTappingSkip = onTappingSkip
+        self.onStart = onStart
+        self.onSkip = onSkip
         self.analytics = analytics
     }
 
     func didTapStartTheSurvey() {
         analytics.track(event: .ProductCreationAI.Survey.startSurvey())
-        onTappingStartTheSurvey()
+        onStart()
     }
 
     func didTapSkip() {
         analytics.track(event: .ProductCreationAI.Survey.skip())
-        onTappingSkip()
+        onSkip()
     }
 }

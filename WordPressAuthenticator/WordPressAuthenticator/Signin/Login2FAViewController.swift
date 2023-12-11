@@ -316,7 +316,6 @@ extension Login2FAViewController {
         displayError(message: "")
 
         configureViewLoading(false)
-        let err = error as NSError
         let bad2FAMessage = NSLocalizedString("Whoops, that's not a valid two-factor verification code. Double-check your code and try again!", comment: "Error message shown when an incorrect two factor code is provided.")
         if (error as? WordPressComOAuthError)?.authenticationFailureKind == .invalidOneTimePassword {
             // Invalid verification code.

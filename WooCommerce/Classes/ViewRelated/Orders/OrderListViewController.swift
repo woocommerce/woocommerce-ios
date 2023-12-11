@@ -265,12 +265,6 @@ private extension OrderListViewController {
                     self.setErrorTopBanner(for: error)
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
-                case .inPersonPaymentsFeedback(let survey):
-                    if self.inPersonPaymentsSurveyVariation != survey {
-                        self.inPersonPaymentsSurveyVariation = survey
-                        self.viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
-                    }
-                    self.setIPPFeedbackTopBanner(survey: survey)
                 }
             }
             .store(in: &cancellables)
@@ -843,81 +837,6 @@ private extension OrderListViewController {
             self?.present(surveyNavigation, animated: true, completion: nil)
         })
         showTopBannerView()
-    }
-
-    /// Sets the `topBannerView` property to an IPP feedback banner.
-    ///
-    func setIPPFeedbackTopBanner(survey: SurveyViewController.Source) {
-        topBannerView = createIPPFeedbackTopBanner(survey: survey)
-        showTopBannerView()
-    }
-
-    private func createIPPFeedbackTopBanner(survey: SurveyViewController.Source) -> TopBannerView {
-        var bannerTitle = ""
-        var bannerText = ""
-        var campaign: FeatureAnnouncementCampaign = .inPersonPaymentsCashOnDelivery
-
-        switch survey {
-        case .inPersonPaymentsCashOnDelivery :
-            bannerTitle = Localization.inPersonPaymentsCashOnDeliveryBannerTitle
-            bannerText = Localization.inPersonPaymentsCashOnDeliveryBannerContent
-            campaign = .inPersonPaymentsCashOnDelivery
-        case .inPersonPaymentsFirstTransaction:
-            bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerTitle
-            bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerContent
-            campaign = .inPersonPaymentsFirstTransaction
-        case .inPersonPaymentsPowerUsers:
-            bannerTitle = Localization.inPersonPaymentsPowerUsersBannerTitle
-            bannerTitle = Localization.inPersonPaymentsPowerUsersBannerContent
-            campaign = .inPersonPaymentsPowerUsers
-        default:
-            break
-        }
-
-        let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { [weak self] _ in
-            self?.displayIPPFeedbackBannerSurvey(survey: survey)
-            self?.viewModel.IPPFeedbackBannerCTATapped(for: campaign)
-            self?.viewModel.IPPFeedbackBannerWasSubmitted()
-        })
-
-        let viewModel = TopBannerViewModel(
-            title: bannerTitle,
-            infoText: bannerText,
-            icon: UIImage.commentContent,
-            isExpanded: true,
-            topButton: .dismiss(handler: {
-                self.showIPPFeedbackDismissAlert(survey: survey, campaign: campaign)
-            }),
-            actionButtons: [shareIPPFeedbackAction]
-        )
-        let topBannerView = TopBannerView(viewModel: viewModel)
-        topBannerView.translatesAutoresizingMaskIntoConstraints = false
-        return topBannerView
-    }
-
-    private func displayIPPFeedbackBannerSurvey(survey: SurveyViewController.Source) {
-        let surveyNavigation = SurveyCoordinatingController(survey: survey)
-        self.present(surveyNavigation, animated: true, completion: nil)
-    }
-
-    private func showIPPFeedbackDismissAlert(survey: SurveyViewController.Source, campaign: FeatureAnnouncementCampaign ) {
-        let actionSheet = UIAlertController(
-            title: Localization.dismissTitle,
-            message: Localization.dismissMessage,
-            preferredStyle: .alert
-        )
-
-        let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in
-            self?.viewModel.IPPFeedbackBannerRemindMeLaterTapped(for: campaign)
-        }
-        actionSheet.addAction(remindMeLaterAction)
-
-        let dontShowAgainAction = UIAlertAction( title: Localization.dontShowAgain, style: .default) { [weak self] _ in
-            self?.viewModel.IPPFeedbackBannerDontShowAgainTapped(for: campaign)
-        }
-        actionSheet.addAction(dontShowAgainAction)
-
-        self.present(actionSheet, animated: true)
     }
 
     func allViewModels() -> [OrderDetailsViewModel] {

@@ -68,9 +68,6 @@ extension SurveyViewController {
         case addOnsI1
         case orderCreation
         case couponManagement
-        case inPersonPaymentsCashOnDelivery
-        case inPersonPaymentsFirstTransaction
-        case inPersonPaymentsPowerUsers
         case storeSetup
         case tapToPayFirstPayment
 
@@ -107,21 +104,6 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
-            case .inPersonPaymentsCashOnDelivery:
-                return WooConstants.URLs.inPersonPaymentsCashOnDeliveryFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .inPersonPaymentsFirstTransaction:
-                return WooConstants.URLs.inPersonPaymentsFirstTransactionFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .inPersonPaymentsPowerUsers:
-                return WooConstants.URLs.inPersonPaymentsPowerUsersFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
             case .storeSetup:
                 return WooConstants.URLs.storeSetupFeedback
                     .asURL()
@@ -137,7 +119,7 @@ extension SurveyViewController {
 
         fileprivate var title: String {
             switch self {
-            case .inAppFeedback, .inPersonPaymentsCashOnDelivery, .inPersonPaymentsFirstTransaction, .inPersonPaymentsPowerUsers:
+            case .inAppFeedback:
                 return Localization.title
             case .productsFeedback, .shippingLabelsRelease3Feedback, .addOnsI1, .orderCreation, .couponManagement, .storeSetup, .tapToPayFirstPayment:
                 return Localization.giveFeedback
@@ -159,12 +141,6 @@ extension SurveyViewController {
                 return .orderCreation
             case .couponManagement:
                 return .couponManagement
-            case .inPersonPaymentsCashOnDelivery:
-                return .inPersonPaymentsCashOnDeliveryBanner
-            case .inPersonPaymentsFirstTransaction:
-                return .inPersonPaymentsFirstTransactionBanner
-            case .inPersonPaymentsPowerUsers:
-                return .inPersonPaymentsPowerUsersBanner
             case .storeSetup:
                 return .storeSetup
             case .tapToPayFirstPayment:

@@ -17,12 +17,12 @@ import WordPressKit
         password: String,
         multifactorCode: String?,
         success: @escaping (_ authToken: String?) -> Void,
-        needsMultifactor: ((_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo?) -> Void)?,
+        needsMultifactor: @escaping ((_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo?) -> Void),
         failure: ((_ error: Error) -> Void)?
     ) {
-        self.client.authenticateWithUsername(username, password: password, multifactorCode: multifactorCode, needsMultifactor: needsMultifactor, success: success, failure: { error in
-            if error.code == WordPressComOAuthError.needsMultifactorCode.rawValue {
-                needsMultifactor?(0, nil)
+        self.client.authenticate(username: username, password: password, multifactorCode: multifactorCode, needsMultifactor: needsMultifactor, success: success, failure: { error in
+            if case let .endpointError(authenticationFailure) = error, authenticationFailure.kind == .needsMultifactorCode {
+                needsMultifactor(0, nil)
             } else {
                 failure?(error)
             }
@@ -35,7 +35,7 @@ import WordPressKit
         success: @escaping () -> Void,
         failure: @escaping (_ error: Error) -> Void
     ) {
-        self.client.requestOneTimeCodeWithUsername(username, password: password, success: success, failure: failure)
+        self.client.requestOneTimeCode(username: username, password: password, success: success, failure: failure)
     }
 
     public func requestSocial2FACode(
@@ -44,7 +44,7 @@ import WordPressKit
         success: @escaping (_ newNonce: String) -> Void,
         failure: @escaping (_ error: Error, _ newNonce: String?) -> Void
     ) {
-        self.client.requestSocial2FACodeWithUserID(userID, nonce: nonce, success: success, failure: failure)
+        self.client.requestSocial2FACode(userID: userID, nonce: nonce, success: success, failure: failure)
     }
 
     public func authenticate(
@@ -55,8 +55,8 @@ import WordPressKit
         existingUserNeedsConnection: @escaping (_ email: String) -> Void,
         failure: @escaping (_ error: Error) -> Void
     ) {
-        self.client.authenticateWithIDToken(
-            socialIDToken,
+        self.client.authenticate(
+            socialIDToken: socialIDToken,
             service: service,
             success: success,
             needsMultifactor: needsMultifactor,
@@ -73,8 +73,8 @@ import WordPressKit
         success: @escaping (_ authToken: String?) -> Void,
         failure: @escaping (_ error: Error) -> Void
     ) {
-        self.client.authenticateSocialLoginUser(
-            userID,
+        self.client.authenticate(
+            socialLoginUserID: userID,
             authType: authType,
             twoStepCode: twoStepCode,
             twoStepNonce: twoStepNonce,

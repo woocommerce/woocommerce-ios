@@ -400,68 +400,6 @@ final class ProductRowViewModelTests: XCTestCase {
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
-    func test_product_row_priceQuantityLine_returns_properly_formatted_priceQuantityLine() {
-        // Given
-        let price = "10.71"
-        let quantity: Decimal = 8
-        let product = Product.fake().copy(price: price)
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, quantity: quantity)
-
-        // Then
-        assertEqual("8 × $10.71", viewModel.priceQuantityLine)
-    }
-
-    func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine_for_product_not_pricedIndividually() {
-        // Given
-        let price = "10.71"
-        let quantity: Decimal = 8
-        let product = Product.fake().copy(price: price)
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, quantity: quantity, pricedIndividually: false)
-
-        // Then
-        assertEqual("8 × $0.00", viewModel.priceQuantityLine)
-    }
-
-    func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_pricedIndividually() {
-        // Given
-        let price = "10.71"
-        let product = Product.fake().copy(price: price)
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, pricedIndividually: true)
-
-        // Then
-        assertEqual(price, viewModel.price)
-    }
-
-    func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_not_pricedIndividually() {
-        // Given
-        let price = "10.71"
-        let product = Product.fake().copy(price: price)
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, pricedIndividually: false)
-
-        // Then
-        assertEqual("0", viewModel.price)
-    }
-
-    func test_product_row_priceQuantityLine_when_product_has_no_price_then_returns_properly_formatted_priceQuantityLine() {
-        // Given
-        let quantity: Decimal = 8
-        let product = Product.fake().copy()
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, quantity: quantity)
-
-        // Then
-        assertEqual("8 × -", viewModel.priceQuantityLine)
-    }
-
     // MARK: - `isConfigurable`
 
     func test_isConfigurable_is_false_for_bundle_product_when_feature_flag_is_disabled() {

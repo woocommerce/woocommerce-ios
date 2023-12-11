@@ -161,7 +161,6 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
-        let shouldShowDownloadableProduct = product.downloadable
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
@@ -174,7 +173,7 @@ private extension ProductFormActionsFactory {
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
-            shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
+            .downloadableFiles(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             .productType(editable: canEditProductType)
@@ -307,7 +306,6 @@ private extension ProductFormActionsFactory {
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
         let canEditProductType = editable
-        let shouldShowDownloadableProduct = product.downloadable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [
@@ -321,7 +319,7 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
-            shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
+            .downloadableFiles(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             .productType(editable: canEditProductType)

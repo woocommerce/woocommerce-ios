@@ -42,6 +42,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 
     let productViewModel: ProductRowViewModel
     let stepperViewModel: ProductStepperViewModel
+    let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
@@ -58,6 +59,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.isReadOnly = isReadOnly
         self.productViewModel = productViewModel
         self.stepperViewModel = stepperViewModel
+        self.priceSummaryViewModel = .init(pricedIndividually: productViewModel.pricedIndividually,
+                                           quantity: stepperViewModel.quantity,
+                                           price: productViewModel.price)
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
 

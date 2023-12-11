@@ -379,8 +379,7 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let productViewModel = ProductRowViewModel(product: product)
-        let rowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                              hasParentProduct: false,
+        let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                               isReadOnly: false,
                                                               productViewModel: productViewModel,
                                                               stepperViewModel: .init(quantity: 1,
@@ -388,20 +387,18 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
                                                                                       quantityUpdatedCallback: { _ in }))
         let viewModel = CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
 
-        let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                              hasParentProduct: false,
-                                                              isReadOnly: true,
-                                                              productViewModel: productViewModel,
-                                                              stepperViewModel: .init(quantity: 1,
-                                                                                      name: "",
-                                                                                      quantityUpdatedCallback: { _ in }))
+        let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
+                                                                      isReadOnly: true,
+                                                                      productViewModel: productViewModel,
+                                                                      stepperViewModel: .init(quantity: 1,
+                                                                                              name: "",
+                                                                                              quantityUpdatedCallback: { _ in }))
         let readOnlyViewModel = CollapsibleProductCardViewModel(productRow: readOnlyRowViewModel, childProductRows: [])
 
         let childViewModels = [ProductRowViewModel(id: 2, product: product),
                                ProductRowViewModel(id: 3, product: product)]
             .map {
-                CollapsibleProductRowCardViewModel(canChangeQuantity: false,
-                                                   hasParentProduct: true,
+                CollapsibleProductRowCardViewModel(hasParentProduct: true,
                                                    isReadOnly: false,
                                                    productViewModel: $0,
                                                    stepperViewModel: .init(quantity: 1,
@@ -412,8 +409,7 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
                                                            product: product
             .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]),
                                                            configure: {})
-        let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                                          hasParentProduct: false,
+        let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                                           isReadOnly: false,
                                                                           productViewModel: bundleParentProductViewModel,
                                                                           stepperViewModel: .init(quantity: 1,

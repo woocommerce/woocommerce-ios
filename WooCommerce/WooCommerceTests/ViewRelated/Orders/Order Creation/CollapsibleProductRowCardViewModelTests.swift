@@ -22,25 +22,21 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let childProductRows = [ProductRowViewModel(product: .fake()),
                                 ProductRowViewModel(product: .fake())]
             .map {
-                CollapsibleProductRowCardViewModel(canChangeQuantity: false,
-                                                   productViewModel: $0,
+                CollapsibleProductRowCardViewModel(productViewModel: $0,
                                                    stepperViewModel: .init(quantity: 1,
                                                                            name: "",
                                                                            quantityUpdatedCallback: { _ in }))
             }
 
         // When
-        let rowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                              productViewModel: .init(product: product),
+        let rowViewModel = CollapsibleProductRowCardViewModel(productViewModel: .init(product: product),
                                                               stepperViewModel: .init(quantity: 1,
                                                                                       name: "",
                                                                                       quantityUpdatedCallback: { _ in }))
         let viewModel = CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: childProductRows)
 
         // Then
-        XCTAssertTrue(viewModel.productRow.canChangeQuantity)
         XCTAssertEqual(viewModel.childProductRows.count, 2)
-        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).canChangeQuantity)
     }
 
     func test_view_model_updates_price_label_when_quantity_changes() {
@@ -49,8 +45,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: false,
-                                                           productViewModel: .init(product: product, currencyFormatter: currencyFormatter),
+        let viewModel = CollapsibleProductRowCardViewModel(productViewModel: .init(product: product, currencyFormatter: currencyFormatter),
                                                            stepperViewModel: .init(quantity: 1,
                                                                                    name: "",
                                                                                    quantityUpdatedCallback: { _ in }))
@@ -64,8 +59,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_isReadOnly_and_hasParentProduct_are_false_by_default() {
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           productViewModel: .init(product: .fake()),
+        let viewModel = CollapsibleProductRowCardViewModel(productViewModel: .init(product: .fake()),
                                                            stepperViewModel: .init(quantity: 1,
                                                                                    name: "",
                                                                                    quantityUpdatedCallback: { _ in }))
@@ -79,8 +73,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_ProductStepperViewModel_and_ProductRowViewModel_quantity_have_the_same_initial_value() {
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           hasParentProduct: false,
+        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                            isReadOnly: false,
                                                            productViewModel: .init(product: .fake()),
                                                            stepperViewModel: .init(quantity: 2,
@@ -94,8 +87,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_ProductStepperViewModel_quantity_change_updates_ProductRowViewModel_quantity() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           hasParentProduct: false,
+        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                            isReadOnly: false,
                                                            productViewModel: .init(product: .fake()),
                                                            stepperViewModel: .init(quantity: 2,
@@ -114,8 +106,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_productRow_when_add_discount_button_is_tapped_then_orderProductDiscountAddButtonTapped_is_tracked() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           hasParentProduct: false,
+        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                            isReadOnly: false,
                                                            productViewModel: .init(product: .fake()),
                                                            stepperViewModel: .init(quantity: 2,
@@ -132,8 +123,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_productRow_when_edit_discount_button_is_tapped_then_orderProductDiscountEditButtonTapped_is_tracked() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           hasParentProduct: false,
+        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                            isReadOnly: false,
                                                            productViewModel: .init(product: .fake()),
                                                            stepperViewModel: .init(quantity: 2,
@@ -156,8 +146,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           hasParentProduct: false,
+        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                            isReadOnly: false,
                                                            productViewModel: .init(product: product, discount: nil, quantity: 1),
                                                            stepperViewModel: .init(quantity: 2,
@@ -175,8 +164,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           hasParentProduct: false,
+        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                            isReadOnly: false,
                                                            productViewModel: .init(product: product, discount: discount, quantity: 1),
                                                            stepperViewModel: .init(quantity: 2,
@@ -196,8 +184,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           hasParentProduct: false,
+        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                            isReadOnly: false,
                                                            productViewModel: .init(product: product, discount: discount, quantity: 1),
                                                            stepperViewModel: .init(quantity: 1,
@@ -216,8 +203,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: true,
-                                                           hasParentProduct: false,
+        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                            isReadOnly: false,
                                                            productViewModel: .init(product: product, discount: discount, quantity: quantity),
                                                            stepperViewModel: .init(quantity: quantity,

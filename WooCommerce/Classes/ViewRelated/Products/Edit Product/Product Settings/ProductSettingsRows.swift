@@ -370,15 +370,25 @@ extension ProductSettingsRows {
         static let virtualProduct = NSLocalizedString("Virtual Product", comment: "Virtual Product label in Product Settings")
         static let downloadableProduct = NSLocalizedString("Downloadable Product", comment: "Downloadable Product label in Product Settings")
         static let downloadableProductAlertTitle = NSLocalizedString(
-            "Are you sure you want to remove the ability to download files when product is purchased?",
+            "productSettings.downloadableProductAlertTitle",
+            value: "Are you sure you want to remove the ability to download files when product is purchased?",
             comment: "Confirm the change to make the product non downloadable"
         )
         static let downloadableProductAlertHint = NSLocalizedString(
-            "All files currently attached to this product will be removed.",
+            "productSettings.downloadableProductAlertHint",
+            value: "All files currently attached to this product will be removed.",
             comment: "Confirm the change to make the product non downloadable"
         )
-        static let downloadableProductAlertConfirm = NSLocalizedString("Yes, change", comment: "Confirm button in the product downloadables alert")
-        static let downloadableProductAlertCancel = NSLocalizedString("Cancel", comment: "Cancel button in the product downloadables alert")
+        static let downloadableProductAlertConfirm = NSLocalizedString(
+            "productSettings.downloadableProductAlertConfirm",
+            value: "Yes, change",
+            comment: "Confirm button in the product downloadables alert"
+        )
+        static let downloadableProductAlertCancel = NSLocalizedString(
+            "productSettings.downloadableProductAlertCancel",
+            value: "Cancel",
+            comment: "Cancel button in the product downloadables alert"
+        )
         static let enableReviews = NSLocalizedString("Enable Reviews", comment: "Enable Reviews label in Product Settings")
         static let slug = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
         static let purchaseNote = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")

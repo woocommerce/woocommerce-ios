@@ -59,7 +59,6 @@ final class AddProductCoordinator: Coordinator {
         BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = false
             sheet.detents = [.medium()]
         })

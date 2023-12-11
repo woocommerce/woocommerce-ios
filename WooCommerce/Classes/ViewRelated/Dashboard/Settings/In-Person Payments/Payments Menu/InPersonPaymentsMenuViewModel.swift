@@ -18,7 +18,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var shouldShowOnboarding: Bool = false
     @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
     @Published var presentManagePaymentGateways: Bool = false
-    @Published private(set) var activePaymentGatewayName: String?
+    @Published private(set) var selectedPaymentGatewayName: String?
+    @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
     @Published var presentCollectPayment: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
@@ -98,7 +99,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         Task { @MainActor in
             _ = try? await dependencies.systemStatusService.synchronizeSystemInformation(siteID: siteID)
             await updateOutputProperties()
-            InPersonPaymentsMenuViewController().registerUserActivity()
+            InPersonPaymentsMenuViewController().createUserActivity().becomeCurrent()
         }
     }
 
@@ -254,14 +255,26 @@ private extension InPersonPaymentsMenuViewModel {
         case let .completed(newPluginState):
             cardPresentPaymentsOnboardingNotice = nil
             shouldShowOnboarding = false
-            updateManagePaymentGatewaysRowVisibility(shouldShow: newPluginState.available.count > 1)
+            updateManagePaymentGatewaysRow(pluginState: newPluginState)
             shouldDisableManageCardReaders = false
-            activePaymentGatewayName = newPluginState.preferred.pluginName
         case .selectPlugin(true):
             // Selected plugin was cleared manually (e.g by tapping in this view on the plugin selection row)
             // No need to show the onboarding notice in this case.
-            break
+            updateForIncompleteOnboarding(selectedPlugin: nil)
+        case .pluginUnsupportedVersion(plugin: let plugin),
+                .pluginNotActivated(plugin: let plugin),
+                .pluginSetupNotCompleted(plugin: let plugin),
+                .pluginInTestModeWithLiveStripeAccount(plugin: let plugin),
+                .stripeAccountUnderReview(plugin: let plugin),
+                .stripeAccountOverdueRequirement(plugin: let plugin),
+                .stripeAccountRejected(plugin: let plugin),
+                .codPaymentGatewayNotSetUp(plugin: let plugin),
+                .stripeAccountPendingRequirement(plugin: let plugin, deadline: _),
+                .countryNotSupportedStripe(plugin: let plugin, countryCode: _):
+            updateForIncompleteOnboarding(selectedPlugin: plugin)
+            cardPresentPaymentsOnboardingNotice = onboardingNotice
         default:
+            updateForIncompleteOnboarding(selectedPlugin: nil)
             cardPresentPaymentsOnboardingNotice = onboardingNotice
             break
         }
@@ -270,9 +283,18 @@ private extension InPersonPaymentsMenuViewModel {
         backgroundOnboardingInProgress = false
     }
 
-    func updateManagePaymentGatewaysRowVisibility(shouldShow: Bool) {
+    func updateManagePaymentGatewaysRow(pluginState: CardPresentPaymentsPluginState) {
+        let shouldShow = pluginState.available.count > 1
         shouldShowManagePaymentGatewaysRow = shouldShow
         shouldShowPaymentOptionsSection = shouldShow
+        selectedPaymentGatewayName = pluginState.preferred.pluginName
+        selectedPaymentGatewayPlugin = pluginState.preferred
+    }
+
+    func updateForIncompleteOnboarding(selectedPlugin plugin: CardPresentPaymentsPlugin?) {
+        shouldDisableManageCardReaders = true
+        selectedPaymentGatewayName = plugin?.pluginName
+        selectedPaymentGatewayPlugin = plugin
     }
 
     func updatePayInPersonToggleSelectedPlugin(from state: CardPresentPaymentOnboardingState) {

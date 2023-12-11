@@ -429,6 +429,14 @@ private extension SettingsViewController {
         present(controller, animated: true)
     }
 
+    func showThemeSettings() {
+        guard let site = stores.sessionManager.defaultSite else {
+            return
+        }
+        let controller = ThemeSettingHostingController(siteID: site.siteID)
+        present(controller, animated: true)
+    }
+
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
@@ -637,6 +645,8 @@ extension SettingsViewController: UITableViewDelegate {
             accountSettingsWasPressed()
         case .logout:
             logoutWasPressed()
+        case .themes:
+            showThemeSettings()
         default:
             break
         }

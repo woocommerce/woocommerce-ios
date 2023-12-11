@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-21 09:54:05+0000 */
+/* Translation-Revision-Date: 2023-12-06 10:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -64,9 +64,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%2$@(으)로 끝나는 %1$@ 카드";
-
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
-"%1$@ every %2$@" = "%2$@당 %1$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@(%2$@ 제외)";
@@ -3211,9 +3208,6 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "실험 특성";
 
-/* Label for the expiry setting in the subscription settings screen. */
-"Expire after" = "만료까지 남은 시간";
-
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "만료까지 남은 시간: %@";
 
@@ -3298,9 +3292,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message shown when the order contains multiple fees and shipping lines */
 "Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "수수료 및 배송 상세 정보가 완전하지 않습니다.\n모든 상세 정보를 편집하려면 우커머스 스토어 관리자에서 주문을 확인하세요.";
-
-/* Title on the refund screen that lists the fees total cost */
-"Fees Refund" = "수수료 환불";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "변형을 가져오는 중…";
@@ -3422,9 +3413,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "첫해 무료";
-
-/* Label for the free trial setting in the subscription settings screen. */
-"Free trial" = "무료 평가판";
 
 /* Country option for a site address. */
 "French Guiana" = "프랑스령 기아나";
@@ -5095,8 +5083,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Bolded message confirming that no payment has been taken when the upgrade failed. */
 "No payment has been taken" = "결제가 이루어지지 않았습니다.";
 
-/* Display label when a subscription has no price.
-   Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "가격이 설정되지 않음";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -5128,9 +5115,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "사용 가능한 배송비 없음";
 
-/* Display label when a subscription has no signup fee. */
-"No signup fee" = "등록 수수료 없음";
-
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "이 기기에서 지원되는 연락 방법이 없습니다.";
 
@@ -5142,9 +5126,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No text detected message on the add product from image form. */
 "No text detected. Please select another packaging photo or enter product details manually." = "감지된 텍스트가 없습니다. 다른 포장 사진을 선택하거나 수동으로 상품 상세 정보를 입력하세요.";
-
-/* Display label when a subscription has no trial period. */
-"No trial period" = "무료 평가판 없음";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "생성할 변형 없음";
@@ -5469,8 +5450,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "패키지 규격은 0보다 커야 합니다. 계속하려면 상품 페이지의 배송 섹션에서 아이템의 규격을 업데이트하세요.";
 
-/* Row title for the last paid deposit in the WooPayments Deposits overview
-   The title for the customer payment cell */
+/* The title for the customer payment cell */
 "Paid" = "유료";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -6274,9 +6254,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Refund Details section title */
 "Refund Details" = "환불 정보";
-
-/* Title of the switch in the IssueRefund screen to refund fees */
-"Refund Fees" = "수수료 환불";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
 "Refund Label (%1$@)" = "환불 레이블(%1$@)";
@@ -7180,9 +7157,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "@%1$@(으)로 로그인됨";
 
-/* Label for the signup fee setting in the subscription settings screen. */
-"Signup fee" = "등록 수수료";
-
 /* Display label for simple product type. */
 "Simple" = "심플";
 
@@ -7511,9 +7485,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "지원 요청 제출";
 
-/* Display label for simple subscription product type.
-   Title for Subscription row in the product form screen.
-   Title for the subscription settings in a subscription product. */
+/* Display label for simple subscription product type. */
 "Subscription" = "구독";
 
 /* Subscription title with subscription number. Reads like: 'Subscription #123' */
@@ -7521,9 +7493,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "구독 상태";
-
-/* Label for the subscription price setting in the subscription settings screen. */
-"Subscription price" = "구독 가격";
 
 /* Subscriptions section title
    Title for the Subscriptions / Upgrades view
@@ -8112,9 +8081,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the card reader service experiences an unexpected software error. */
 "The system experienced an unexpected software error" = "시스템에서 예기치 않은 소프트웨어 오류가 발생했음";
 
-/* Error message when the card reader service is busy executing another command. */
-"The system is busy executing another command - please try again" = "시스템에서 다른 명령을 실행하는 중 - 다시 시도하세요.";
-
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "지금은 사이트에 대한 시스템 상태 보고서를 가져올 수 없습니다. 다시 시도해 보세요.";
 
@@ -8655,9 +8621,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when communication with the card reader is disrupted. */
 "Unable to communicate with reader - please try again" = "리더와 통신할 수 없음 - 다시 시도하세요.";
-
-/* Error message when the card reader service attempts to connect to a reader without discovering it first. */
-"Unable to connect to card reader - card reader was not correctly discovered - please try again" = "카드 리더에 연결할 수 없음 - 카드 리더를 제대로 찾지 못했음 - 다시 시도하세요.";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
 "Unable to connect to card reader - the card reader is already in use" = "카드 리더에 연결할 수 없음 - 카드 리더가 이미 사용 중";
@@ -9635,9 +9598,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the quantity rules screen. */
 "You can edit quantity rules in the web dashboard" = "웹 알림판에서 수량 규칙을 편집할 수 있습니다.";
 
-/* Info notice at the bottom of the subscription settings screen. */
-"You can edit subscription settings in the web dashboard" = "웹 알림판에서 구독 설정을 편집할 수 있습니다.";
-
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "메뉴 > 설정에서 도메인 설정을 찾을 수 있습니다.";
 
@@ -9652,9 +9612,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "웹 알림판에서 가변 구독만 추가할 수 있습니다.";
-
-/* Shown in Refunds screen. Refunding fees are currently not supported. */
-"You can refund fees in your store admin" = "스토어 관리자에서 수수료를 환불할 수 있습니다.";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "패키지를 배송하는 데 사용되지 않은 배송 레이블은 환불을 요청할 수 있습니다.\n처리하는 데 14일 이상 걸립니다.";
@@ -9840,26 +9797,32 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[자세히 알아보세요.](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to delete the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.deleteButton" = "사용자 정의 금액 삭제";
+
 /* Button title to confirm the custom amount on the add custom amount view in orders. */
 "addCustomAmount.doneButton" = "사용자 정의 금액 추가";
 
 /* Button title to confirm the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.editButton" = "사용자 정의 금액 편집";
 
-/* Title for the charge taxes toggle in the custom amounts screen. */
-"addCustomAmountView.chargeTaxesToggle.title" = "세금 청구";
-
-/* Placeholder for entering an custom amount through a percentage */
-"addCustomAmountView.percentageTextField.placeholder" = "백분율 입력";
+/* Title above the amount field on the add custom amount view in orders. */
+"addCustomAmountPercentageView.amount.title" = "금액";
 
 /* Title for entering an custom amount through a percentage */
-"addCustomAmountView.percentageTextField.title" = "또는 주문 합계 백분율 입력(%1$@)";
+"addCustomAmountPercentageView.percentageTextField.title" = "주문 합계 백분율 입력";
+
+/* Title for the charge taxes toggle in the custom amounts screen. */
+"addCustomAmountView.chargeTaxesToggle.title" = "세금 청구";
 
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "빠르게 우커머스 시작";
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "아이콘";
+
+/* Button to dismiss the Blaze campaign section on the My Store screen. */
+"blazeCampaignDashboardView.hideBlazeButton" = "Blaze 숨기기";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "취소";
@@ -9890,31 +9853,31 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleItem.add" = "추가";
 
 /* Action to select a variation for a bundle item when it is variable. */
-"configureBundleItem.selectVariation" = "변형 선택";
+"configureBundleItem.chooseVariation" = "변형 선택";
 
 /* Action to update a variation for a bundle item when it is variable. */
 "configureBundleItem.updateVariation" = "변형 업데이트";
 
-/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
-"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "수량은 %1$@~%2$@개여야 합니다.";
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. %1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat" = "%1$@ 수량은 %2$@~%3$@개여야 합니다.";
 
-/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
-"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "수량은 %1$@개 이상이어야 합니다.";
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. %1$@ is the product name. %2$@ is the minimum quantity. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat" = "%1$@ 수량은 %2$@개 이상이어야 합니다.";
 
-/* Error message when a variable bundle item is missing a variation. */
-"configureBundleItemError.missingVariation" = "변형을 선택하세요.";
+/* Error message format when a variable bundle item is missing a variation. %1$@ is the variable product name. */
+"configureBundleItemError.missingVariationFormat" = "%1$@의 변형을 선택하세요.";
 
-/* Error message when a variable bundle item is missing some attributes. */
-"configureBundleItemError.variationMissingAttributes" = "모든 변형 속성에 대한 옵션을 선택하세요.";
+/* Error message format when a variable bundle item is missing some attributes. %1$@ is the variable product name. */
+"configureBundleItemError.variationMissingAttributesFormat" = "%1$@의 모든 변형 속성에 대한 옵션을 선택하세요.";
 
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "닫기";
 
-/* Text for the done button in the bundle product configuration screen in the order form. */
-"configureBundleProduct.done" = "완료";
-
 /* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
 "configureBundleProduct.retry" = "다시 시도";
+
+/* Text for the save button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.save" = "구성 저장";
 
 /* Title for the bundle product configuration screen in the order form. */
 "configureBundleProduct.title" = "구성";
@@ -9940,21 +9903,65 @@ which should be translated separately and considered part of this sentence. */
 /* Used in configureBundleProductValidationError strings for the singular form of item. */
 "configureBundleProductValidationError.itemSingular" = "아이템";
 
+/* Title of the error notice when the bundle configuration is currently invalid in the bundle product configuration screen. */
+"configureBundleProductValidationError.title" = "구성 필수";
+
+/* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
+"configureBundleProductValidationSuccess.title" = "구성 완료";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "일";
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "일";
 
-/* Display label when a subscription has no trial period.
-   Title for Subscription Free Trial row in the product form screen. */
-"defaultProductFormTableViewModel.noFreeTrial" = "무료 평가판";
+/* Title for Subscription expiry row in the product form screen. */
+"defaultProductFormTableViewModel.expireAfter" = "만료까지 남은 시간";
+
+/* Display label when a subscription has no trial period. */
+"defaultProductFormTableViewModel.freeTrialRow.noTrialPeriod" = "무료 평가판 없음";
+
+/* Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.freeTrialRow.title" = "무료 평가판";
+
+/* Display label when a subscription never expires. */
+"defaultProductFormTableViewModel.neverExpire" = "만료 기간 없음";
 
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "정상 가격: %1$@ %2$@";
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "등록 수수료: %1$@";
+
+/* Accessibility label for the collapse chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.hide" = "예치금 상세 정보 숨기기";
+
+/* Accessibility label for the expand chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.show" = "예치금 상세 정보 표시";
+
+/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.depositTable.last.title" = "마지막";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.canceled.title" = "취소됨";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.estimated.title" = "예상됨";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.failed.title" = "실패";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.inTransit.title" = "전환 중";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.paid.title" = "결제됨";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.pending.title" = "대기 중";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.unknown.title" = "알 수 없음";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "전자상거래";
@@ -10032,6 +10039,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "카드 리더";
 
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.depositSummary.loading.accessibilityLabel" = "잔액 로드 중...";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
 "menu.payments.inPersonPayments.learnMore.link" = "더 알아보기";
@@ -10105,6 +10115,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "사용자 정의 금액";
+
+/* Button title for the fixed amount option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle" = "고정 금액";
+
+/* Button title for the percentage option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "주문 합계 백분율";
+
+/* Title text of the confirmation dialog that shows the add custom amounts options. */
+"orderForm.customAmounts.addOptionsDialogTitle" = "사용자 정의 금액을 어떻게 추가하시겠어요?";
 
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "사용자 정의 금액";
@@ -10190,8 +10209,14 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
-/* Action to configure a product row in the product selector. */
-"productSelector.configureProductRow" = "구성";
+/* Subtitle for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.subtitle" = "활성화하면 최초 주문에 한 번 배송비가 청구됩니다.";
+
+/* Subtitle for the One time shipping product shipping setting when it is disabled. */
+"productShippingSettings.oneTimeShipping.subtitleDisabled" = "이 설정을 활성화하려면 구독에 무료 평가판 또는 동기화된 갱신 날짜가 없어야 합니다.";
+
+/* Title for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.title" = "1회 배송";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld번 평가됨";
@@ -10199,8 +10224,17 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the number of product ratings in singular form */
 "rated once" = "한 번 평가됨";
 
+/* Title on the refund screen that lists the custom amounts total cost */
+"refundCustomAmountsDetails.totalTitle" = "사용자 정의 금액 환불";
+
+/* Title of the switch in the IssueRefund screen to refund customAmounts */
+"refundIssue.customAmounts.title" = "환불 사용자 정의 금액";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "결제 완료됨";
+
+/* Navigates to Themes screen. */
+"settingsViewController.themesRow" = "테마";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10257,6 +10291,19 @@ which should be translated separately and considered part of this sentence. */
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "오늘의 통계를 가져올 수 없음";
 
+/* Title of the button to save subscription's expire after info. */
+"subscriptionExpiryView.done" = "완료";
+
+/* Title for the expire after row in add or edit subscription expire after info screen.
+   Title for the Subscription expire after screen of the subscription product. */
+"subscriptionExpiryView.expireAfter" = "만료까지 남은 시간";
+
+/* Subtitle text to explain subscription expire after value. */
+"subscriptionExpiryView.expireAfterSubtitle" = "이 기간이 지나면 구독이 자동으로 만료됩니다. 이 기간에는 무료 평가판 또는 동기화된 첫 갱신 날짜 이전까지의 시간이 포함됩니다.";
+
+/* Title for the Expire after screen of the subscription product. */
+"subscriptionExpiryView.neverExpire" = "만료 기간 없음";
+
 /* Title of the button to save subscription's free trial info. */
 "subscriptionTrialView.done" = "완료";
 
@@ -10285,6 +10332,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "알 수 없는 url";
+
+/* Cancel button title on the update product inventory view. */
+"updateProductInventoryView.cancelButtonTitle" = "취소";
+
+/* Navigation bar title of the update product inventory view. */
+"updateProductInventoryView.navigationBarTitle" = "상품";
+
+/* Product name label in the update product inventory view. */
+"updateProductInventoryView.productNameTitle" = "상품 이름";
+
+/* Product quantity label in the update product inventory view. */
+"updateProductInventoryView.productQuantityTitle" = "수량";
+
+/* Stock quantity button when a tap increases the stock once. */
+"updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle" = "수량 + 1";
+
+/* Stock quantity button when the user adds a custom quantity. */
+"updateProductInventoryView.quantityButton.updateQuantityButtonTitle" = "수량 업데이트";
+
+/* Product detailsl button title. */
+"updateProductInventoryView.viewProductDetailsButtonTitle" = "상품 상세 정보 보기";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "무시";

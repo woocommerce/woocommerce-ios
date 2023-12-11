@@ -319,6 +319,48 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.hasDisplayedTipAfterBlazeCampaignCreation])
     }
 
+    /// Verifies that `numberOfTimesAIProductCreated` is set to `nil` upon reset
+    ///
+    func test_numberOfTimesAIProductCreated_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[UserDefaults.Key.numberOfTimesAIProductCreated] = 3
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesAIProductCreated] as? Int), 3)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesAIProductCreated])
+    }
+
+    /// Verifies that `didSuggestProductCreationAISurvey` is set to `nil` upon reset
+    ///
+    func test_didSuggestProductCreationAISurvey_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.didSuggestProductCreationAISurvey] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.didSuggestProductCreationAISurvey] as? Bool))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.didSuggestProductCreationAISurvey])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

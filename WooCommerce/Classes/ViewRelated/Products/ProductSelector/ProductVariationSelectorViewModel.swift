@@ -324,7 +324,6 @@ private extension ProductVariationSelectorViewModel {
                 let selectedState: ProductRow.SelectedState = selectedIDs.contains(variation.productVariationID) ? .selected : .notSelected
                 return ProductRowViewModel(productVariation: variation,
                                            name: ProductVariationFormatter().generateName(for: variation, from: self.productAttributes),
-                                           canChangeQuantity: false,
                                            displayMode: .stock,
                                            selectedState: selectedState)
             }
@@ -352,9 +351,7 @@ extension ProductVariationSelectorViewModel {
                             stockStatusKey: ProductStockStatus.inStock.rawValue,
                             stockQuantity: 1,
                             manageStock: false,
-                            canChangeQuantity: false,
                             imageURL: nil,
-                            hasParentProduct: false,
                             isConfigurable: false)
     }
 

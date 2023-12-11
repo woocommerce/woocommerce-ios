@@ -143,9 +143,7 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             stockStatusKey: "instock",
                                             stockQuantity: 7,
                                             manageStock: true,
-                                            canChangeQuantity: false,
                                                imageURL: nil,
-                                               hasParentProduct: true,
                                                isConfigurable: true)
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
                                                 productDiscountConfiguration: nil, showCouponsAndDiscountsAlert: false,

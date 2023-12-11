@@ -328,6 +328,8 @@ public enum WooAnalyticsStat: String {
     case tapToPaySetupSuccessDoneTapped = "tap_to_pay_set_up_success_done_tapped"
     case tapToPaySummaryShown = "tap_to_pay_summary_shown"
     case aboutTapToPayOrderCardReaderTapped = "about_tap_to_pay_order_card_reader_tapped"
+    case tapToPayAutoRefundSuccess = "card_present_tap_to_pay_test_payment_refund_success"
+    case tapToPayAutoRefundFailed = "card_present_tap_to_pay_test_payment_refund_failed"
 
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
@@ -353,11 +355,15 @@ public enum WooAnalyticsStat: String {
     case orderNoteEmailCustomerToggled = "add_order_note_email_note_to_customer_toggled"
     case orderDetailAddTrackingButtonTapped = "order_detail_tracking_add_tracking_button_tapped"
     case orderDetailShowBillingTapped = "order_detail_customer_info_show_billing_tapped"
-    case orderDetailCustomerEmailTapped = "order_detail_customer_info_email_menu_email_tapped"
+    case orderDetailCustomerAddressTapped = "order_detail_customer_address_tapped"
+    case orderDetailCustomerAddressEditTapped = "order_detail_customer_address_edit_tapped"
     case orderDetailCustomerEmailMenuTapped = "order_detail_customer_info_email_menu_tapped"
+    case orderDetailCustomerEmailOptionTapped = "order_detail_customer_info_email_option_tapped"
+    case orderDetailCustomerEmailCopyOptionTapped = "order_detail_customer_info_email_copy_option_tapped"
     case orderDetailCustomerPhoneMenuTapped = "order_detail_customer_info_phone_menu_tapped"
     case orderDetailCustomerPhoneOptionTapped = "order_detail_customer_info_phone_menu_phone_tapped"
     case orderDetailCustomerSMSOptionTapped = "order_detail_customer_info_phone_menu_sms_tapped"
+    case orderDetailCustomerCopyNumberOptionTapped = "order_detail_customer_info_phone_menu_copy_tapped"
     case orderDetailOrderStatusEditButtonTapped = "order_detail_order_status_edit_button_tapped"
     case orderDetailRefundDetailTapped = "order_detail_refund_detail_tapped"
     case orderDetailAddOnsViewed = "order_detail_addons_viewed"
@@ -863,6 +869,9 @@ public enum WooAnalyticsStat: String {
     case productCreationAISaveAsDraftButtonTapped = "product_creation_ai_save_as_draft_button_tapped"
     case productCreationAISaveAsDraftSuccess = "product_creation_ai_save_as_draft_success"
     case productCreationAISaveAsDraftFailed = "product_creation_ai_save_as_draft_failed"
+    case productCreationAISurveyConfirmationViewDisplayed = "product_creation_ai_survey_confirmation_view_displayed"
+    case productCreationAISurveyStartSurveyButtonTapped = "product_creation_ai_survey_start_survey_button_tapped"
+    case productCreationAISurveySkipButtonTapped = "product_creation_ai_survey_skip_button_tapped"
 
     // MARK: Remote Request Events
     //

@@ -20,29 +20,29 @@ struct ProductCreationAISurveyConfirmationView: View {
     init(viewModel: ProductCreationAISurveyConfirmationViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         ScrollableVStack(spacing: Layout.verticalSpacing) {
             Image(uiImage: UIImage.productCreationAISurveyImage)
-            
+
             Group {
                 Text(Localization.title)
                     .headlineStyle()
                     .multilineTextAlignment(.center)
-                
+
                 Text(Localization.subtitle)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
                     .multilineTextAlignment(.center)
             }
             .padding(.horizontal, Layout.textHorizontalPadding)
-            
+
             Button(Localization.startTheSurvey) {
                 viewModel.didTapStartTheSurvey()
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.horizontal, Layout.buttonHorizontalPadding)
-            
+
             Button(Localization.skip) {
                 viewModel.didTapSkip()
             }

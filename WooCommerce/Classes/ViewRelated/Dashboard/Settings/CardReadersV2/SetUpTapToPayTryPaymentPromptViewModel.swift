@@ -104,7 +104,6 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                                                                                   presentNoticeSubject: self.presentNoticeSubject,
                                                                                   analyticsFlow: .tapToPayTryAPayment),
                     siteID: self.siteID,
-                    orderID: order.orderID,
                     order: order)
 
 
@@ -225,6 +224,9 @@ extension SetUpTapToPayTryPaymentPromptViewModel {
 struct TryAPaymentSummaryViewModel {
     let simplePaymentSummaryViewModel: SimplePaymentsSummaryViewModel
     let siteID: Int64
-    let orderID: Int64
     let order: Order
+
+    var orderID: Int64 {
+        order.orderID
+    }
 }

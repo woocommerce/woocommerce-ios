@@ -46,3 +46,15 @@ private extension WordPressTheme {
         case demoURI = "demo_uri"
     }
 }
+
+extension WordPressTheme {
+    var themeThumbnailURL: URL? {
+        if self.demoURI.isEmpty {
+            return nil
+        }
+
+        // Build theme screenshot URL using mShots.
+        let urlStr = "https://s0.wp.com/mshots/v1/\(self.demoURI)?demo=true/?w=1200&h=2400&vpw=400&vph=800"
+        return URL(string: urlStr)
+    }
+}

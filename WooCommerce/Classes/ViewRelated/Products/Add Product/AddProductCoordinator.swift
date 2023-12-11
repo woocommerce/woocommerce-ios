@@ -360,7 +360,7 @@ private extension AddProductCoordinator {
     ///
     func presentProductCreationAIFeedbackIfApplicable() {
         let useCase = ProductCreationAISurveyUseCase()
-        useCase.numberOfTimesAIProductCreated += 1
+        useCase.didCreateAIProduct()
 
         guard useCase.shouldShowProductCreationAISurvey() else {
             return

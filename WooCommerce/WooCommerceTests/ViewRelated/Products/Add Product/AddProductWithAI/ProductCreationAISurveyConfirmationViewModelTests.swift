@@ -6,8 +6,8 @@ final class ProductCreationAISurveyConfirmationViewModelTests: XCTestCase {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let sut = ProductCreationAISurveyConfirmationViewModel(onTappingStartTheSurvey: {},
-                                                               onTappingSkip: {},
+        let sut = ProductCreationAISurveyConfirmationViewModel(onStart: {},
+                                                               onSkip: {},
                                                                analytics: analytics)
 
         // When
@@ -21,8 +21,8 @@ final class ProductCreationAISurveyConfirmationViewModelTests: XCTestCase {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let sut = ProductCreationAISurveyConfirmationViewModel(onTappingStartTheSurvey: {},
-                                                               onTappingSkip: {},
+        let sut = ProductCreationAISurveyConfirmationViewModel(onStart: {},
+                                                               onSkip: {},
                                                                analytics: analytics)
 
         // When

@@ -2,32 +2,6 @@ import XCTest
 @testable import WooCommerce
 
 final class ProductCreationAISurveyUseCaseTests: XCTestCase {
-    func test_it_saves_numberOfTimesAIProductCreated_to_defaults() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = ProductCreationAISurveyUseCase(defaults: defaults)
-
-        // When
-        sut.numberOfTimesAIProductCreated = 5
-
-        // Then
-        XCTAssertEqual(try XCTUnwrap(defaults.integer(forKey: UserDefaults.Key.numberOfTimesAIProductCreated.rawValue)), 5)
-    }
-
-    func test_numberOfTimesAIProductCreated_is_restored_from_user_defaults() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults.set(3, forKey: UserDefaults.Key.numberOfTimesAIProductCreated.rawValue)
-
-        // When
-        let sut = ProductCreationAISurveyUseCase(defaults: defaults)
-
-        // Then
-        XCTAssertEqual(sut.numberOfTimesAIProductCreated, 3)
-    }
-
     func test_shouldShowProductCreationAISurvey_is_false_when_number_of_AI_generation_is_less_than_3() throws {
         // Given
         let uuid = UUID().uuidString
@@ -35,7 +9,8 @@ final class ProductCreationAISurveyUseCaseTests: XCTestCase {
 
         // When
         let sut = ProductCreationAISurveyUseCase(defaults: defaults)
-        sut.numberOfTimesAIProductCreated = Int.random(in: 0..<3)
+        sut.didCreateAIProduct()
+        sut.didCreateAIProduct()
 
         // Then
         XCTAssertFalse(sut.shouldShowProductCreationAISurvey())
@@ -48,7 +23,10 @@ final class ProductCreationAISurveyUseCaseTests: XCTestCase {
 
         // When
         let sut = ProductCreationAISurveyUseCase(defaults: defaults)
-        sut.numberOfTimesAIProductCreated = 4
+        sut.didCreateAIProduct()
+        sut.didCreateAIProduct()
+        sut.didCreateAIProduct()
+        sut.didCreateAIProduct()
 
         // Then
         XCTAssertTrue(sut.shouldShowProductCreationAISurvey())
@@ -62,7 +40,10 @@ final class ProductCreationAISurveyUseCaseTests: XCTestCase {
         // When
         let sut = ProductCreationAISurveyUseCase(defaults: defaults)
         defaults.set(true, forKey: UserDefaults.Key.didSuggestProductCreationAISurvey.rawValue)
-        sut.numberOfTimesAIProductCreated = 4
+        sut.didCreateAIProduct()
+        sut.didCreateAIProduct()
+        sut.didCreateAIProduct()
+        sut.didCreateAIProduct()
 
         // Then
         XCTAssertFalse(sut.shouldShowProductCreationAISurvey())

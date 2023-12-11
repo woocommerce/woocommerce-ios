@@ -12,7 +12,7 @@ final class ProductCreationAISurveyUseCase {
         self.analytics = analytics
     }
 
-    var numberOfTimesAIProductCreated: Int {
+    private var numberOfTimesAIProductCreated: Int {
         get {
             defaults.integer(forKey: UserDefaults.Key.numberOfTimesAIProductCreated.rawValue)
         }
@@ -35,5 +35,11 @@ final class ProductCreationAISurveyUseCase {
     func didSuggestProductCreationAISurvey() {
         analytics.track(event: .ProductCreationAI.Survey.confirmationViewDisplayed())
         defaults[.didSuggestProductCreationAISurvey] = true
+    }
+
+    /// Increments the AI product created count by 1
+    ///
+    func didCreateAIProduct() {
+        numberOfTimesAIProductCreated += 1
     }
 }

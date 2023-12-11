@@ -412,8 +412,16 @@ private extension ProductFormActionsFactory {
             let hasStockData = product.manageStock ? product.stockQuantity != nil: true
             return product.sku != nil || hasStockData
         case .shippingSettings:
-            return product.weight.isNilOrEmpty == false ||
-                product.dimensions.height.isNotEmpty || product.dimensions.width.isNotEmpty || product.dimensions.length.isNotEmpty
+            let shouldShowOneTimeShipping = {
+                guard product.productType == .subscription || product.productType == .variableSubscription else {
+                    return false
+                }
+                return product.subscription?.oneTimeShipping == true
+            }()
+
+            return product.weight.isNilOrEmpty == false
+            || product.dimensions.height.isNotEmpty || product.dimensions.width.isNotEmpty || product.dimensions.length.isNotEmpty
+            || shouldShowOneTimeShipping
         case .addOns:
             return addOnsFeatureEnabled && product.hasAddOns
         case .categories:

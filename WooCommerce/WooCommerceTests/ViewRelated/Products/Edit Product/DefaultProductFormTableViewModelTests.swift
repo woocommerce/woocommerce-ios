@@ -170,6 +170,136 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertEqual(shippingViewModel?.details, "Weight: 1,6\(weightUnit)\nDimensions: 2,9 x 1,1 x 113 \(dimensionUnit)")
     }
 
+    func test_shipping_settings_row_displays_one_time_shipping_text_for_subscription_product_if_setting_enabled() {
+        // Given
+        let product = Product.fake()
+            .copy(productTypeKey: ProductType.subscription.rawValue,
+                  subscription: .fake().copy(trialLength: "0",
+                                             oneTimeShipping: true,
+                                             paymentSyncDate: "0"))
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var shippingViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .shipping(viewModel, _) = row {
+                shippingViewModel = viewModel
+                break
+            }
+        }
+
+        XCTAssertTrue(shippingViewModel?.details?.contains(DefaultProductFormTableViewModel.Localization.oneTimeShippingEnabled) == true)
+    }
+
+    func test_shipping_settings_row_displays_one_time_shipping_text_for_variable_subscription_product_if_setting_enabled() {
+        // Given
+        let product = Product.fake()
+            .copy(productTypeKey: ProductType.variableSubscription.rawValue,
+                  subscription: .fake().copy(trialLength: "0",
+                                             oneTimeShipping: true,
+                                             paymentSyncDate: "0"))
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var shippingViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .shipping(viewModel, _) = row {
+                shippingViewModel = viewModel
+                break
+            }
+        }
+
+        XCTAssertTrue(shippingViewModel?.details?.contains(DefaultProductFormTableViewModel.Localization.oneTimeShippingEnabled) == true)
+    }
+
+    func test_shipping_settings_row_does_not_display_one_time_shipping_text_for_subscription_product_if_setting_disabled() {
+        // Given
+        let product = Product.fake()
+            .copy(productTypeKey: ProductType.subscription.rawValue,
+                  subscription: .fake().copy(trialLength: "0",
+                                             oneTimeShipping: false,
+                                             paymentSyncDate: "0"))
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var shippingViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .shipping(viewModel, _) = row {
+                shippingViewModel = viewModel
+                break
+            }
+        }
+
+        let hasOneTimeShippingEnabledLabel = shippingViewModel?.details?.contains(DefaultProductFormTableViewModel.Localization.oneTimeShippingEnabled) ?? false
+        XCTAssertFalse(hasOneTimeShippingEnabledLabel)
+    }
+
+    func test_shipping_settings_row_does_not_display_one_time_shipping_text_for_non_subscription_product_types() {
+        // Given
+        let product = Product.fake()
+            .copy(productTypeKey: ProductType.simple.rawValue,
+                  subscription: .fake().copy(trialLength: "0",
+                                             oneTimeShipping: true,
+                                             paymentSyncDate: "0"))
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var shippingViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .shipping(viewModel, _) = row {
+                shippingViewModel = viewModel
+                break
+            }
+        }
+
+        let hasOneTimeShippingEnabledLabel = shippingViewModel?.details?.contains(DefaultProductFormTableViewModel.Localization.oneTimeShippingEnabled) ?? false
+        XCTAssertFalse(hasOneTimeShippingEnabledLabel)
+    }
+
     // MARK: Subscription free trial
 
     func test_subscription_free_trial_row_returns_expected_details_with_singular_format() throws {

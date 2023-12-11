@@ -9,7 +9,6 @@ struct ProductWithQuantityStepperView: View {
             AdaptiveStack(horizontalAlignment: .leading) {
                 ProductRow(viewModel: viewModel.rowViewModel)
                 ProductStepper(viewModel: viewModel.stepperViewModel)
-                    .renderedIf(viewModel.canChangeQuantity)
             }
         }
     }
@@ -23,8 +22,8 @@ struct ProductWithQuantityStepperView_Previews: PreviewProvider {
                                                        quantityUpdatedCallback: { _ in })
         let rowViewModel = ProductRowViewModel(product: .swiftUIPreviewSample())
         VStack {
-            ProductWithQuantityStepperView(viewModel: .init(stepperViewModel: stepperViewModel, rowViewModel: rowViewModel, canChangeQuantity: true))
-            ProductWithQuantityStepperView(viewModel: .init(stepperViewModel: stepperViewModel, rowViewModel: rowViewModel, canChangeQuantity: false))
+            ProductWithQuantityStepperView(viewModel: .init(stepperViewModel: stepperViewModel, rowViewModel: rowViewModel))
+            ProductWithQuantityStepperView(viewModel: .init(stepperViewModel: stepperViewModel, rowViewModel: rowViewModel))
         }
     }
 }

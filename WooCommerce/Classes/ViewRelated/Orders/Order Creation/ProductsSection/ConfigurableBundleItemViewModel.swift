@@ -30,6 +30,9 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         isOptional ? isOptionalAndSelected: true
     }
 
+    /// Whether the product quantity can be changed.
+    /// Controls whether the stepper is rendered.
+    @Published private(set) var canChangeQuantity: Bool
     /// For rendering the product row with the quantity setting UI.
     @Published private(set) var productWithStepperViewModel: ProductWithQuantityStepperViewModel
     @Published var quantity: Decimal
@@ -97,6 +100,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         isVariable = product.productType == .variable
 
         let canChangeQuantity = !isOptional || isOptionalAndSelected
+        self.canChangeQuantity = canChangeQuantity
         let productRowViewModel = ProductRowViewModel(productOrVariationID: bundleItem.productID,
                                                       name: bundleItem.title,
                                                       sku: nil,
@@ -106,14 +110,13 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                                       manageStock: false,
                                                       quantity: quantity,
                                                       imageURL: product.imageURL,
-                                                      hasParentProduct: false,
                                                       isConfigurable: false)
         let stepperViewModel = ProductStepperViewModel(quantity: quantity,
                                                        name: bundleItem.title,
                                                        minimumQuantity: bundleItem.minQuantity,
                                                        maximumQuantity: bundleItem.maxQuantity,
                                                        quantityUpdatedCallback: { _ in })
-        self.productWithStepperViewModel = .init(stepperViewModel: stepperViewModel, rowViewModel: productRowViewModel, canChangeQuantity: canChangeQuantity)
+        self.productWithStepperViewModel = .init(stepperViewModel: stepperViewModel, rowViewModel: productRowViewModel)
         stepperViewModel.quantityUpdatedCallback = { [weak self] quantity in
             guard let self else { return }
             self.quantity = quantity
@@ -156,29 +159,8 @@ private extension ConfigurableBundleItemViewModel {
         guard isOptional else {
             return
         }
-        $isOptionalAndSelected.compactMap { [weak self] isOptionalAndSelected in
-            guard let self else { return nil }
-            let productRowViewModel = ProductRowViewModel(productOrVariationID: self.product.productID,
-                                                          name: self.bundleItem.title,
-                                                          sku: nil,
-                                                          price: nil,
-                                                          stockStatusKey: "",
-                                                          stockQuantity: nil,
-                                                          manageStock: false,
-                                                          quantity: self.quantity,
-                                                          imageURL: self.product.imageURL,
-                                                          hasParentProduct: false,
-                                                          isConfigurable: false)
-            let stepperViewModel = ProductStepperViewModel(quantity: quantity,
-                                                           name: bundleItem.title,
-                                                           minimumQuantity: bundleItem.minQuantity,
-                                                           maximumQuantity: bundleItem.maxQuantity,
-                                                           quantityUpdatedCallback: { [weak self] quantity in
-                self?.quantity = quantity
-            })
-            return .init(stepperViewModel: stepperViewModel, rowViewModel: productRowViewModel, canChangeQuantity: isOptionalAndSelected)
-        }
-        .assign(to: &$productWithStepperViewModel)
+        $isOptionalAndSelected
+            .assign(to: &$canChangeQuantity)
     }
 
     func observeSelectedVariationForSelectableAttributes() {

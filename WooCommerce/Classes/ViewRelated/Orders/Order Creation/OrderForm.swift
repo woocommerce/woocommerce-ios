@@ -262,11 +262,11 @@ struct OrderForm: View {
             }
         }
         .wooNavigationBarStyle()
-        .notice($viewModel.autodismissableNotice)
-        .notice($viewModel.fixedNotice, autoDismiss: false)
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
+        .notice($viewModel.autodismissableNotice)
+        .notice($viewModel.fixedNotice, autoDismiss: false)
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {

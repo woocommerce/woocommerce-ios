@@ -52,20 +52,34 @@ struct UpdateProductInventoryView: View {
                         Divider()
                             .padding(.trailing, -Layout.mediumSpacing)
 
-                        HStack {
-                            Text(Localization.productQuantityTitle)
-                            Spacer()
-                            TextField("", text: $viewModel.quantity)
-                                .textFieldStyle(.roundedBorder)
-                                .keyboardType(.numberPad)
-                                .multilineTextAlignment(.trailing)
-                                .frame(maxWidth: 200, alignment: .trailing)
-                                .fixedSize()
+                        Group {
+                            Text(Localization.stockNotManagedLabel)
+                                .subheadlineStyle()
+                                .renderedIf(viewModel.viewMode == .stockManagementNeedsToBeEnabled)
+
+                            HStack {
+                                Text(Localization.productQuantityTitle)
+                                Spacer()
+                                TextField("", text: $viewModel.quantity)
+                                    .textFieldStyle(.roundedBorder)
+                                    .keyboardType(.numberPad)
+                                    .multilineTextAlignment(.trailing)
+                                    .frame(maxWidth: 200, alignment: .trailing)
+                                    .fixedSize()
+                            }
+                            .renderedIf(viewModel.viewMode == .stockCanBeManaged)
                         }
                         .padding([.top, .bottom], Layout.mediumSpacing)
 
                         Divider()
                             .padding(.trailing, -Layout.mediumSpacing)
+
+                        Button(Localization.manageStockButtonTitle) {
+
+                        }
+                        .buttonStyle(LinkButtonStyle())
+                        .padding([.top, .bottom], Layout.mediumSpacing)
+                        .renderedIf(viewModel.viewMode == .stockManagementNeedsToBeEnabled)
 
                         Spacer()
 
@@ -89,6 +103,7 @@ struct UpdateProductInventoryView: View {
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPrimaryButtonLoading))
                         .disabled(!viewModel.enableQuantityButton)
                         .padding(.bottom, Layout.mediumSpacing)
+                        .renderedIf(viewModel.viewMode == .stockCanBeManaged)
 
                         Button(Localization.viewProductDetailsButtonTitle) {
                             isPresentingDetailsView = true
@@ -128,6 +143,12 @@ extension UpdateProductInventoryView {
         static let productNameTitle = NSLocalizedString("updateProductInventoryView.productNameTitle",
                                                         value: "Product Name",
                                                         comment: "Product name label in the update product inventory view.")
+        static let stockNotManagedLabel = NSLocalizedString("updateProductInventoryView.stockNotManagedLabel",
+                                                        value: "Stock not managed",
+                                                        comment: "Label to show when the stock is not managed")
+        static let manageStockButtonTitle = NSLocalizedString("updateProductInventoryView.manageStockButton.title",
+                                                        value: "Manage stock",
+                                                        comment: "Title of the button that enables managing stock")
         static let productQuantityTitle = NSLocalizedString("updateProductInventoryView.productQuantityTitle",
                                                             value: "Quantity",
                                                             comment: "Product quantity label in the update product inventory view.")

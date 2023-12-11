@@ -106,6 +106,11 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         case customQuantity
     }
 
+    enum ViewMode {
+        case stockCanBeManaged
+        case stockManagementNeedsToBeEnabled
+    }
+
     let inventoryItem: InventoryItem
     private let stores: StoresManager
 
@@ -114,6 +119,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.inventoryItem = inventoryItem
         self.stores = stores
+        self.viewMode = inventoryItem.manageStock ? .stockCanBeManaged : .stockManagementNeedsToBeEnabled
 
         quantity = inventoryItem.stockQuantity?.formatted() ?? ""
 
@@ -140,6 +146,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     @Published var isPrimaryButtonLoading: Bool = false
     @Published var enableQuantityButton: Bool = true
     @Published var showLoadingName: Bool = true
+    @Published var viewMode: ViewMode = .stockCanBeManaged
     @Published var name: String = ""
     @Published var updateQuantityButtonMode: UpdateQuantityButtonMode = .increaseOnce
 

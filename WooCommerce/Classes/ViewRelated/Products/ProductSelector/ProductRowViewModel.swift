@@ -108,22 +108,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
-    /// Formatted price label based on a product's price. Accounting for discounts, if any.
-    /// e.g: If price is $5 and discount is $1, outputs "$4.00"
-    ///
-    var priceAfterDiscountLabel: String? {
-        guard let price = price else {
-            return nil
-        }
-        guard let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
-        }
-        let priceAfterDiscount = priceDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
-
-        return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
-    }
-
     private(set) var discount: Decimal?
 
     /// Whether product discounts are disallowed,

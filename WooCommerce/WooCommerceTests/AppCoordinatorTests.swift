@@ -568,6 +568,25 @@ final class AppCoordinatorTests: XCTestCase {
         }
         XCTAssertNil(loginNavigationController.presentedViewController)
     }
+
+    func test_appCoordinator_start_resets_default_store_and_proceeds_to_login_when_isAuthenticated_and_needsDefaultStore_are_false() {
+        // Given
+        stores.updateDefaultStore(storeID: 123)
+        XCTAssertFalse(stores.isAuthenticated)
+        XCTAssertFalse(stores.needsDefaultStore)
+
+        let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        waitUntil {
+            self.window.rootViewController is LoginNavigationController
+        }
+        XCTAssertTrue(stores.needsDefaultStore)
+    }
 }
 
 private extension AppCoordinatorTests {

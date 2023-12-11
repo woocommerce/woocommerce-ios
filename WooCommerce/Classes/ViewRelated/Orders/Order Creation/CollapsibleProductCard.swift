@@ -157,7 +157,7 @@ private struct CollapsibleProductRowCard: View {
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
-                        CollapsibleProductCardPriceSummary(viewModel: viewModel.productViewModel)
+                        CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel)
                             .font(.subheadline)
                             .renderedIf(isCollapsed)
                     }
@@ -179,7 +179,7 @@ private struct CollapsibleProductRowCard: View {
 
                 HStack {
                     Text(Localization.priceLabel)
-                    CollapsibleProductCardPriceSummary(viewModel: viewModel.productViewModel)
+                    CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel)
                 }
                 .frame(minHeight: Layout.rowMinHeight)
 
@@ -300,31 +300,6 @@ private extension CollapsibleProductRowCard {
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
             }
             .renderedIf(shouldDisallowDiscounts)
-        }
-    }
-}
-
-struct CollapsibleProductCardPriceSummary: View {
-
-    @ObservedObject var viewModel: ProductRowViewModel
-
-    init(viewModel: ProductRowViewModel) {
-        self.viewModel = viewModel
-    }
-
-    var body: some View {
-        HStack {
-            HStack {
-                Text(viewModel.priceQuantityLine)
-                    .foregroundColor(.secondary)
-                Spacer()
-            }
-            if let price = viewModel.priceBeforeDiscountsLabel {
-                Text(price)
-                    .if(!viewModel.pricedIndividually) {
-                        $0.foregroundColor(.secondary)
-                    }
-            }
         }
     }
 }

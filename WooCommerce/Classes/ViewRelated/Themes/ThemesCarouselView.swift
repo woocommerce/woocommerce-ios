@@ -30,7 +30,7 @@ struct ThemesCarouselView: View {
                 // Demo for correct state
                 ForEach(themesInfo, id: \.name) { theme in
                     if let themeUrl = getThemeUrl(themeUrl: theme.url) {
-                        themeImage(url: themeUrl)
+                        themeImageCard(url: themeUrl)
                     } else {
                         themeNameCard(name: theme.name)
                     }
@@ -47,7 +47,7 @@ struct ThemesCarouselView: View {
 }
 
 private extension ThemesCarouselView {
-    func themeImage(url: URL) -> some View {
+    func themeImageCard(url: URL) -> some View {
         KFImage(url)
             .resizable()
             .aspectRatio(contentMode: .fit)

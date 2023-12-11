@@ -12,7 +12,10 @@ struct UpdateProductInventoryView: View {
 
     @State private var isKeyboardVisible = false
 
-    init(inventoryItem: InventoryItem, siteID: Int64) {
+    var onUpdatedInventory: (() -> ())
+
+    init(inventoryItem: InventoryItem, siteID: Int64, onUpdatedInventory: @escaping (() -> ())) {
+        self.onUpdatedInventory = onUpdatedInventory
         viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem, siteID: siteID)
     }
 
@@ -80,6 +83,7 @@ struct UpdateProductInventoryView: View {
                                 Task { @MainActor in
                                     do {
                                         try await viewModel.onTapUpdateStockQuantity()
+                                        onUpdatedInventory()
                                         dismiss()
                                     } catch {
                                         displayErrorNotice()

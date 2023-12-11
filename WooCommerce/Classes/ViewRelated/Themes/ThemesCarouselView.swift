@@ -77,9 +77,8 @@ private extension ThemesCarouselView {
                     VStack {
                         Spacer()
                         Text(lastMessageHeading)
-                            .foregroundColor(Color(.secondaryLabel))
                             .bold()
-                            .bodyStyle()
+                            .secondaryBodyStyle()
                             .padding(.horizontal, Layout.contentPadding)
 
                         Spacer()

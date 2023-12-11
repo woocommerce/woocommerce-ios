@@ -61,7 +61,7 @@ final class ProductCreationAISurveyUseCaseTests: XCTestCase {
 
         // When
         let sut = ProductCreationAISurveyUseCase(defaults: defaults)
-        defaults.set(true, forKey: UserDefaults.Key.haveAskedConfirmationToShowProductCreationAISurvey.rawValue)
+        defaults.set(true, forKey: UserDefaults.Key.didSuggestProductCreationAISurvey.rawValue)
         sut.numberOfTimesAIProductCreated = 4
 
         // Then
@@ -78,7 +78,7 @@ final class ProductCreationAISurveyUseCaseTests: XCTestCase {
                                                  analytics: analytics)
 
         // When
-        sut.didAskConfirmationToShowProductCreationAISurvey()
+        sut.didSuggestProductCreationAISurvey()
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "product_creation_ai_survey_confirmation_view_displayed" }))
@@ -91,9 +91,9 @@ final class ProductCreationAISurveyUseCaseTests: XCTestCase {
         let sut = ProductCreationAISurveyUseCase(defaults: defaults)
 
         // When
-        sut.didAskConfirmationToShowProductCreationAISurvey()
+        sut.didSuggestProductCreationAISurvey()
 
         // Then
-        XCTAssertEqual(try XCTUnwrap(defaults.bool(forKey: UserDefaults.Key.haveAskedConfirmationToShowProductCreationAISurvey.rawValue)), true)
+        XCTAssertEqual(try XCTUnwrap(defaults.bool(forKey: UserDefaults.Key.didSuggestProductCreationAISurvey.rawValue)), true)
     }
 }

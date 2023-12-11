@@ -27,13 +27,13 @@ final class ProductCreationAISurveyUseCase {
         guard numberOfTimesAIProductCreated >= 3 else {
             return false
         }
-        return !defaults.bool(forKey: UserDefaults.Key.haveAskedConfirmationToShowProductCreationAISurvey.rawValue)
+        return !defaults.bool(forKey: UserDefaults.Key.didSuggestProductCreationAISurvey.rawValue)
     }
 
     /// Saves that we have asked the user to provide feedback in survey
     ///
-    func didAskConfirmationToShowProductCreationAISurvey() {
+    func didSuggestProductCreationAISurvey() {
         analytics.track(event: .ProductCreationAI.Survey.confirmationViewDisplayed())
-        defaults[.haveAskedConfirmationToShowProductCreationAISurvey] = true
+        defaults[.didSuggestProductCreationAISurvey] = true
     }
 }

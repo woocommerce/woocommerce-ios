@@ -51,7 +51,7 @@ extension UserDefaults {
 
         // Product Creation AI
         case numberOfTimesAIProductCreated
-        case haveAskedConfirmationToShowProductCreationAISurvey
+        case didSuggestProductCreationAISurvey
     }
 }
 

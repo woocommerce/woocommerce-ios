@@ -378,7 +378,7 @@ private extension AddProductCoordinator {
         }))
 
         productCreationAISurveyPresenter.present(controller, from: navigationController)
-        useCase.didAskConfirmationToShowProductCreationAISurvey()
+        useCase.didSuggestProductCreationAISurvey()
     }
 
     /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.

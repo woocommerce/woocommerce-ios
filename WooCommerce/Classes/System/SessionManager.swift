@@ -174,7 +174,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.hasDisplayedTipAfterBlazeCampaignCreation] = nil
         defaults[.hasDismissedBlazeSectionOnMyStore] = nil
         defaults[.numberOfTimesAIProductCreated] = nil
-        defaults[.haveAskedConfirmationToShowProductCreationAISurvey] = nil
+        defaults[.didSuggestProductCreationAISurvey] = nil
     }
 
     /// Deletes application password

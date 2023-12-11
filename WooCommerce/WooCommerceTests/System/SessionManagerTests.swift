@@ -340,25 +340,25 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesAIProductCreated])
     }
 
-    /// Verifies that `haveAskedConfirmationToShowProductCreationAISurvey` is set to `nil` upon reset
+    /// Verifies that `didSuggestProductCreationAISurvey` is set to `nil` upon reset
     ///
-    func test_haveAskedConfirmationToShowProductCreationAISurvey_is_set_to_nil_upon_reset() throws {
+    func test_didSuggestProductCreationAISurvey_is_set_to_nil_upon_reset() throws {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
 
         // When
-        defaults[.haveAskedConfirmationToShowProductCreationAISurvey] = true
+        defaults[.didSuggestProductCreationAISurvey] = true
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.haveAskedConfirmationToShowProductCreationAISurvey] as? Bool))
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.didSuggestProductCreationAISurvey] as? Bool))
 
         // When
         sut.reset()
 
         // Then
-        XCTAssertNil(defaults[.haveAskedConfirmationToShowProductCreationAISurvey])
+        XCTAssertNil(defaults[.didSuggestProductCreationAISurvey])
     }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain

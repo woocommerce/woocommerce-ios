@@ -22,34 +22,36 @@ struct ProductCreationAISurveyConfirmationView: View {
     }
 
     var body: some View {
-        ScrollableVStack(spacing: Layout.verticalSpacing) {
-            Image(uiImage: UIImage.productCreationAISurveyImage)
+        ScrollView {
+            VStack(spacing: Layout.verticalSpacing) {
+                Image(uiImage: UIImage.productCreationAISurveyImage)
 
-            Group {
-                Text(Localization.title)
-                    .headlineStyle()
-                    .multilineTextAlignment(.center)
+                Group {
+                    Text(Localization.title)
+                        .headlineStyle()
+                        .multilineTextAlignment(.center)
 
-                Text(Localization.subtitle)
-                    .foregroundColor(Color(.text))
-                    .subheadlineStyle()
-                    .multilineTextAlignment(.center)
+                    Text(Localization.subtitle)
+                        .foregroundColor(Color(.text))
+                        .subheadlineStyle()
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.horizontal, Layout.textHorizontalPadding)
+
+                Button(Localization.startTheSurvey) {
+                    viewModel.didTapStartTheSurvey()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, Layout.buttonHorizontalPadding)
+
+                Button(Localization.skip) {
+                    viewModel.didTapSkip()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding(.horizontal, Layout.buttonHorizontalPadding)
             }
-            .padding(.horizontal, Layout.textHorizontalPadding)
-
-            Button(Localization.startTheSurvey) {
-                viewModel.didTapStartTheSurvey()
-            }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(.horizontal, Layout.buttonHorizontalPadding)
-
-            Button(Localization.skip) {
-                viewModel.didTapSkip()
-            }
-            .buttonStyle(SecondaryButtonStyle())
-            .padding(.horizontal, Layout.buttonHorizontalPadding)
+            .padding(insets: Layout.insets)
         }
-        .padding(insets: Layout.insets)
     }
 }
 

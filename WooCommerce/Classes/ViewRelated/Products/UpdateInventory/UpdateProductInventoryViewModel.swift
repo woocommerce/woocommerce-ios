@@ -145,7 +145,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     var imageURL: URL? {
         inventoryItem.imageURL
     }
-    
+
     @Published var notice: Notice?
 
     func onTapIncreaseStockQuantityOnce() async {

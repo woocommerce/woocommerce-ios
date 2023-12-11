@@ -138,7 +138,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_viewModel_for_downloadable_simple_product_not_downloadable() {
+    func test_viewModel_for_not_downloadable_simple_product() {
         // Arrange
         let product = Fixtures.virtualSimpleProduct
         let model = EditableProductModel(product: product)

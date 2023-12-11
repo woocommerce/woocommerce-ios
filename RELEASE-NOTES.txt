@@ -3,6 +3,10 @@
 16.7
 -----
 - [*] Order editing: fixed bug preventing retry for errors when editing or creating an order [https://github.com/woocommerce/woocommerce-ios/pull/11391]
+- [*] Payments: Tap to Pay trial payments are now automatically refunded [https://github.com/woocommerce/woocommerce-ios/pull/11395]
+- [*] Product Creation AI: Show survey to collect user feedback. [https://github.com/woocommerce/woocommerce-ios/pull/11390]
+- [*] Edit Products: category list is now searchable. [https://github.com/woocommerce/woocommerce-ios/pull/11380]
+- [*] Show one time shipping setting status in product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/11403]
 
 16.6
 -----
@@ -16,6 +20,7 @@
 - [**] Fixed a crash that occurred when reordering product images during the image upload process. Now, users will not be able to reorder images until the upload is complete, providing a smoother and more stable experience. [https://github.com/woocommerce/woocommerce-ios/pull/11350]
 - [internal] Process network response in background thread to avoid blocking main thread. [https://github.com/woocommerce/woocommerce-ios/pull/11381]
 - [**] Attempted to fix a crash that has been occurring for some users during magic link login. [https://github.com/woocommerce/woocommerce-ios/pull/11373]
+- [*] Fixed a crash due to using unavailable system image in devices below iOS 16.0. [https://github.com/woocommerce/woocommerce-ios/pull/11394]
 
 16.5
 -----

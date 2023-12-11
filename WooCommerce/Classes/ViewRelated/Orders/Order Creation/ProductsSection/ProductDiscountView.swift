@@ -82,7 +82,7 @@ struct ProductDiscountView: View {
                     .renderedIf(discountViewModel.hasInputAmount)
                 }
             }
-            .navigationTitle(Text(productRowViewModel.hasDiscount ? Localization.editDiscountLabel : Localization.addDiscountLabel))
+            .navigationTitle(Text(productRowViewModel.discount != nil ? Localization.editDiscountLabel : Localization.addDiscountLabel))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

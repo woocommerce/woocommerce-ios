@@ -6,13 +6,6 @@ import WooFoundation
 @testable import WooCommerce
 
 final class ProductRowViewModelTests: XCTestCase {
-    var analytics: MockAnalyticsProvider!
-
-    override func setUp() {
-        super.setUp()
-        analytics = MockAnalyticsProvider()
-    }
-
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
         let rowID = Int64(0)
@@ -62,33 +55,6 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.name, name)
         XCTAssertEqual(viewModel.imageURL, URL(string: imageURLString))
         XCTAssertEqual(viewModel.quantity, 1)
-    }
-
-    func test_viewModel_is_created_with_correct_initial_values_from_product_with_child_product_rows() {
-        // Given
-        let product = Product.fake()
-        let childProductRows = [ProductRowViewModel(product: .fake()),
-                                ProductRowViewModel(product: .fake())]
-            .map {
-                ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
-                                                                            name: "",
-                                                                            quantityUpdatedCallback: { _ in }),
-                                                    rowViewModel: $0,
-                                                    canChangeQuantity: false)
-            }
-
-        // When
-        let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
-                                                                                    name: "",
-                                                                                    quantityUpdatedCallback: { _ in }),
-                                                            rowViewModel: .init(product: product),
-                                                            canChangeQuantity: true,
-                                                            childProductRows: childProductRows)
-
-        // Then
-        XCTAssertTrue(viewModel.canChangeQuantity)
-        XCTAssertEqual(viewModel.childProductRows.count, 2)
-        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).canChangeQuantity)
     }
 
     func test_view_model_creates_expected_label_for_product_with_managed_stock() {
@@ -177,25 +143,6 @@ final class ProductRowViewModelTests: XCTestCase {
         let expectedPriceLabel = "$0.00"
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
                       "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
-    }
-
-    func test_view_model_updates_price_label_when_quantity_changes() {
-        // Given
-        let product = Product.fake().copy(price: "2.50")
-        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
-
-        // When
-        let viewModel = ProductWithQuantityStepperViewModel(stepperViewModel: .init(quantity: 1,
-                                                                                    name: "",
-                                                                                    quantityUpdatedCallback: { _ in }),
-                                                            rowViewModel: .init(product: product, currencyFormatter: currencyFormatter),
-                                                            canChangeQuantity: false)
-        viewModel.stepperViewModel.incrementQuantity()
-
-        // Then
-        let expectedPriceLabel = "$5.00"
-        XCTAssertTrue(viewModel.rowViewModel.productDetailsLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.rowViewModel.productDetailsLabel)\"")
     }
 
     func test_view_model_creates_expected_product_details_label_for_variable_product() {
@@ -366,32 +313,6 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
     }
 
-    func test_productRow_when_add_discount_button_is_tapped_then_orderProductDiscountAddButtonTapped_is_tracked() {
-        // Given
-        let product = Product.fake()
-        let viewModel = ProductRowViewModel(product: product,
-                                            analytics: WooAnalytics(analyticsProvider: analytics))
-
-        // When
-        viewModel.trackAddDiscountTapped()
-
-        // Then
-        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAddButtonTapped.rawValue)
-    }
-
-    func test_productRow_when_edit_discount_button_is_tapped_then_orderProductDiscountEditButtonTapped_is_tracked() {
-        // Given
-        let product = Product.fake()
-        let viewModel = ProductRowViewModel(product: product,
-                                            analytics: WooAnalytics(analyticsProvider: analytics))
-
-        // When
-        viewModel.trackEditDiscountTapped()
-
-        // Then
-        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountEditButtonTapped.rawValue)
-    }
-
     func test_productAccessibilityLabel_is_created_with_expected_details_from_product() {
         // Given
         let product = Product.fake().copy(name: "Test Product", sku: "123456", price: "10", stockStatusKey: "instock", variations: [1, 2])
@@ -479,25 +400,6 @@ final class ProductRowViewModelTests: XCTestCase {
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
-    func test_when_product_row_discount_is_nil_then_viewModel_hasDiscount_is_false() {
-        let price = "2.50"
-        let product = Product.fake().copy(price: price)
-
-        let viewModel = ProductRowViewModel(product: product, discount: nil, quantity: 1)
-
-        XCTAssertFalse(viewModel.hasDiscount)
-    }
-
-    func test_when_product_row_discount_is_not_nil_then_viewModel_hasDiscount() {
-        let price = "2.50"
-        let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
-
-        let viewModel = ProductRowViewModel(product: product, discount: discount, quantity: 1)
-
-        XCTAssertTrue(viewModel.hasDiscount)
-    }
-
     func test_product_row_priceQuantityLine_returns_properly_formatted_priceQuantityLine() {
         // Given
         let price = "10.71"
@@ -546,29 +448,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // Then
         assertEqual("0", viewModel.price)
-    }
-
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
-        let price = "2.50"
-        let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
-
-        let viewModel = ProductRowViewModel(product: product, discount: discount, quantity: 1)
-
-        assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
-    }
-
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
-        let price = "2.50"
-        let quantity: Decimal = 10
-        let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
-
-        let viewModel = ProductRowViewModel(product: product,
-                                            discount: discount,
-                                            quantity: quantity)
-
-        assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
     }
 
     func test_product_row_priceQuantityLine_when_product_has_no_price_then_returns_properly_formatted_priceQuantityLine() {

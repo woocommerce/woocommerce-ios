@@ -398,9 +398,12 @@ extension UIImage {
     /// Subscription Product
     ///
     static var variableSubscriptionProductImage: UIImage {
-        return UIImage(systemName: "square.3.layers.3d")!
+        if #available(iOS 16.0, *) {
+            return UIImage(systemName: "square.3.layers.3d")!
+        } else {
+            return UIImage(systemName: "square.stack.3d.up")!
+        }
     }
-
 
     /// Filter Icon
     ///

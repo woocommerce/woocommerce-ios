@@ -734,7 +734,6 @@ extension ProductSelectorViewModel {
                             stockQuantity: 1,
                             manageStock: false,
                             imageURL: nil,
-                            hasParentProduct: false,
                             isConfigurable: false)
     }
 

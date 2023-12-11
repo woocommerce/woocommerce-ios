@@ -432,7 +432,7 @@ private extension ProductFormActionsFactory {
             return (product.upsellIDs.count > 0 || product.crossSellIDs.count > 0)
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloadableFiles:
-            return product.downloadable && product.downloadableFiles.isNotEmpty
+            return product.downloadable
         case .shortDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.

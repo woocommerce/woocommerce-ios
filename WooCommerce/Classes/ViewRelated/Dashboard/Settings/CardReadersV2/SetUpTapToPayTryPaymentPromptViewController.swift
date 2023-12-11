@@ -120,10 +120,7 @@ struct SetUpTapToPayPaymentPromptView: View {
     ///
     private func paymentFlow(summaryViewModel: TryAPaymentSummaryViewModel) -> some View {
         SimplePaymentsSummary(
-            dismiss: {
-                viewModel.summaryActive = false
-                viewModel.paymentFlowFinished = true
-            },
+            dismiss: viewModel.onTrialPaymentFlowFinished,
             rootViewController: rootViewController?.navigationController,
             viewModel: summaryViewModel.simplePaymentSummaryViewModel)
         .toolbar {

@@ -25,11 +25,8 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     private let stores: StoresManager
 
     @Published var loading: Bool = false
-    var summaryViewModel: TryAPaymentSummaryViewModel? = nil {
-        didSet {
-            summaryActive = summaryViewModel != nil
-        }
-    }
+
+    var summaryViewModel: TryAPaymentSummaryViewModel? = nil
     @Published var summaryActive: Bool = false
 
     @Published var formattedPaymentAmount: String = ""
@@ -105,6 +102,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                                                                                   analyticsFlow: .tapToPayTryAPayment),
                     siteID: self.siteID,
                     order: order)
+                self.summaryActive = true
 
 
             case .failure(let error):
@@ -188,6 +186,11 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 
     func onAppear() {
         analytics.track(.tapToPaySummaryShown)
+    }
+
+    func onTrialPaymentFlowFinished() {
+        summaryActive = false
+        paymentFlowFinished = true
     }
 
     deinit {

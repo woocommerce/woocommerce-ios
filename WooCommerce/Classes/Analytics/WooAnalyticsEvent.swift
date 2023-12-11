@@ -86,6 +86,8 @@ extension WooAnalyticsEvent {
         case storeSetup = "store_setup"
         /// Tap to Pay on iPhone feedback button shown in the Payments menu after the first payment with TTP
         case tapToPayFirstPaymentPaymentsMenu
+        /// Shown in Product details form for a AI generated product
+        case productCreationAI = "product_creation_ai"
     }
 
     /// The action performed on the survey screen.

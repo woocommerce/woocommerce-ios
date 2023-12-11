@@ -316,14 +316,13 @@ extension Login2FAViewController {
         displayError(message: "")
 
         configureViewLoading(false)
-        let err = error as NSError
         let bad2FAMessage = NSLocalizedString("Whoops, that's not a valid two-factor verification code. Double-check your code and try again!", comment: "Error message shown when an incorrect two factor code is provided.")
-        if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidOneTimePassword.rawValue {
+        if (error as? WordPressComOAuthError)?.authenticationFailureKind == .invalidOneTimePassword {
             // Invalid verification code.
             displayError(message: bad2FAMessage)
-        } else if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidTwoStepCode.rawValue {
+        } else if case let .endpointError(authenticationFailure) = (error as? WordPressComOAuthError), authenticationFailure.kind == .invalidTwoStepCode {
             // Invalid 2FA during social login
-            if let newNonce = (error as NSError).userInfo[WordPressComOAuthClient.WordPressComOAuthErrorNewNonceKey] as? String {
+            if let newNonce = authenticationFailure.newNonce {
                 loginFields.nonceInfo?.updateNonce(with: newNonce)
             }
             displayError(message: bad2FAMessage)

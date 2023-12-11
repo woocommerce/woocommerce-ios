@@ -129,12 +129,12 @@ final class TwoFAViewController: LoginViewController {
         }
 
         configureViewLoading(false)
-        if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidOneTimePassword.rawValue {
+        if (error as? WordPressComOAuthError)?.authenticationFailureKind == .invalidOneTimePassword {
             // Invalid verification code.
             displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
-        } else if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidTwoStepCode.rawValue {
+        } else if case let .endpointError(authenticationFailure) = (error as? WordPressComOAuthError), authenticationFailure.kind == .invalidTwoStepCode {
             // Invalid 2FA during social login
-            if let newNonce = (error as NSError).userInfo[WordPressComOAuthClient.WordPressComOAuthErrorNewNonceKey] as? String {
+            if let newNonce = authenticationFailure.newNonce {
                 loginFields.nonceInfo?.updateNonce(with: newNonce)
             }
             displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)

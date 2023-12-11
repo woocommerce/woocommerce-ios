@@ -42,6 +42,18 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
 
+    /// The product image for the order item
+    ///
+    let imageURL: URL?
+
+    /// The name of the order item
+    ///
+    let name: String
+
+    /// Label showing the product SKU for an order item
+    ///
+    let skuLabel: String
+
     /// Label showing product details for an order item.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
     ///
@@ -57,6 +69,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     init(hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
+         imageURL: URL?,
+         name: String,
+         sku: String?,
          productTypeDescription: String,
          attributes: [VariationAttributeViewModel],
          stockStatus: ProductStockStatus,
@@ -71,6 +86,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false
         self.configure = configure
+        self.imageURL = imageURL
+        self.name = name
+        skuLabel = CollapsibleProductRowCardViewModel.createSKULabel(sku: sku)
         productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
                                                                                            productTypeDescription: productTypeDescription,
                                                                                            attributes: attributes,
@@ -157,6 +175,15 @@ private extension CollapsibleProductRowCardViewModel {
             return stockStatus.description
         }
     }
+
+    /// Creates the label showing the product SKU for an order item.
+    ///
+    static func createSKULabel(sku: String?) -> String {
+        guard let sku = sku, sku.isNotEmpty else {
+            return ""
+        }
+        return String.localizedStringWithFormat(Localization.skuFormat, sku)
+    }
 }
 
 private extension CollapsibleProductRowCardViewModel {
@@ -171,5 +198,8 @@ private extension CollapsibleProductRowCardViewModel {
         static let stockFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.stockFormat",
                                                    value: "%1$@ in stock",
                                                    comment: "Label about product's inventory stock status shown during order creation")
+        static let skuFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
+                                                 value: "SKU: %1$@",
+                                                 comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
     }
 }

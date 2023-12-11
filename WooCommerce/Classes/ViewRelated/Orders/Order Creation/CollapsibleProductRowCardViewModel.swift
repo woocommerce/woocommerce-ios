@@ -42,6 +42,11 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
 
+    /// Label showing product details for an order item.
+    /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
+    ///
+    let productDetailsLabel: String
+
     let productViewModel: ProductRowViewModel
     let stepperViewModel: ProductStepperViewModel
     let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
@@ -52,6 +57,11 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     init(hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
+         productTypeDescription: String,
+         attributes: [VariationAttributeViewModel],
+         stockStatus: ProductStockStatus,
+         stockQuantity: Decimal?,
+         manageStock: Bool,
          productViewModel: ProductRowViewModel,
          stepperViewModel: ProductStepperViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -61,6 +71,12 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false
         self.configure = configure
+        productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
+                                                                                           productTypeDescription: productTypeDescription,
+                                                                                           attributes: attributes,
+                                                                                           stockStatus: stockStatus,
+                                                                                           stockQuantity: stockQuantity,
+                                                                                           manageStock: manageStock)
         self.productViewModel = productViewModel
         self.stepperViewModel = stepperViewModel
         self.priceSummaryViewModel = .init(pricedIndividually: productViewModel.pricedIndividually,
@@ -111,8 +127,49 @@ extension CollapsibleProductRowCardViewModel {
 }
 
 private extension CollapsibleProductRowCardViewModel {
+    /// Creates the label showing product details for an order item.
+    /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
+    ///
+    static func createProductDetailsLabel(isConfigurable: Bool,
+                                          productTypeDescription: String,
+                                          attributes: [VariationAttributeViewModel] = [],
+                                          stockStatus: ProductStockStatus,
+                                          stockQuantity: Decimal?,
+                                          manageStock: Bool) -> String {
+        let productTypeLabel: String? = isConfigurable ? productTypeDescription : nil
+        let attributesLabel: String? = attributes.isNotEmpty ? attributes.map { $0.nameOrValue }.joined(separator: ", ") : nil
+        let stockLabel = createStockText(stockStatus: stockStatus, stockQuantity: stockQuantity, manageStock: manageStock)
+
+        return [productTypeLabel, attributesLabel, stockLabel]
+            .compactMap({ $0 })
+            .filter { $0.isNotEmpty }
+            .joined(separator: " • ")
+    }
+
+    /// Creates the stock text based on a product's stock status/quantity.
+    ///
+    static func createStockText(stockStatus: ProductStockStatus, stockQuantity: Decimal?, manageStock: Bool) -> String {
+        switch (stockStatus, stockQuantity, manageStock) {
+        case (.inStock, .some(let stockQuantity), true):
+            let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
+            return String.localizedStringWithFormat(Localization.stockFormat, localizedStockQuantity)
+        default:
+            return stockStatus.description
+        }
+    }
+}
+
+private extension CollapsibleProductRowCardViewModel {
     func observeProductQuantityFromStepperViewModel() {
         stepperViewModel.$quantity
             .assign(to: &productViewModel.$quantity)
+    }
+}
+
+private extension CollapsibleProductRowCardViewModel {
+    enum Localization {
+        static let stockFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.stockFormat",
+                                                   value: "%1$@ in stock",
+                                                   comment: "Label about product's inventory stock status shown during order creation")
     }
 }

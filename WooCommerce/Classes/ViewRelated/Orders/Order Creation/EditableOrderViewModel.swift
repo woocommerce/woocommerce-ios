@@ -605,6 +605,11 @@ final class EditableOrderViewModel: ObservableObject {
             })
             let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
+                                                                  productTypeDescription: ProductType.variable.description,
+                                                                  attributes: attributes,
+                                                                  stockStatus: variation.stockStatus,
+                                                                  stockQuantity: variation.stockQuantity,
+                                                                  manageStock: variation.manageStock,
                                                                   productViewModel: productViewModel,
                                                                   stepperViewModel: stepperViewModel,
                                                                   analytics: analytics)
@@ -639,6 +644,11 @@ final class EditableOrderViewModel: ObservableObject {
             let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
+                                                                  productTypeDescription: product.productType.description,
+                                                                  attributes: [],
+                                                                  stockStatus: product.productStockStatus,
+                                                                  stockQuantity: product.stockQuantity,
+                                                                  manageStock: product.manageStock,
                                                                   productViewModel: productViewModel,
                                                                   stepperViewModel: stepperViewModel,
                                                                   analytics: analytics,

@@ -142,24 +142,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: " • ")
     }
 
-    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
-    /// Label showing product details for a product in an order.
-    /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
-    ///
-    var orderProductDetailsLabel: String {
-        let attributesLabel: String? = {
-            guard case let .attributes(attributes) = variationDisplayMode else {
-                return nil
-            }
-            return createAttributesText(from: attributes)
-        }()
-        let stockLabel = createStockText()
-        return [productTypeLabel, attributesLabel, stockLabel]
-            .compactMap({ $0 })
-            .filter { $0.isNotEmpty }
-            .joined(separator: " • ")
-    }
-
     private let productTypeLabel: String?
 
     /// Label showing product SKU

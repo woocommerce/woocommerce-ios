@@ -75,7 +75,9 @@ struct UpdateProductInventoryView: View {
                             .padding(.trailing, -Layout.mediumSpacing)
 
                         Button(Localization.manageStockButtonTitle) {
-
+                            Task { @MainActor in
+                                try? await viewModel.onTapManageStock()
+                            }
                         }
                         .buttonStyle(LinkButtonStyle())
                         .padding([.top, .bottom], Layout.mediumSpacing)

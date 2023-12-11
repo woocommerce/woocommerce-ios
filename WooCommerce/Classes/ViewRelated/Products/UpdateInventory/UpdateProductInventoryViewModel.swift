@@ -11,8 +11,9 @@ protocol InventoryItem {
     var imageURL: URL? { get }
 
     func retrieveName(with stores: StoresManager, siteID: Int64) async throws -> String
-    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws
+    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws -> InventoryItem
     func detailsView() -> ProductLoaderView
+    func enableManageStock(stores: StoresManager) async throws -> InventoryItem
 }
 
 extension SKUSearchResult {
@@ -31,14 +32,24 @@ extension Product: InventoryItem {
         name
     }
 
-    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            let newProduct = copy(stockQuantity: newQuantity)
+    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws -> InventoryItem {
+        try await updateProduct(product: copy(stockQuantity: newQuantity), stores: stores)
+    }
 
-            let action = ProductAction.updateProduct(product: newProduct) { result in
+    func detailsView() -> ProductLoaderView {
+        ProductLoaderView(model: .product(productID: productID), siteID: siteID, forceReadOnly: true)
+    }
+
+    func enableManageStock(stores: StoresManager) async throws  -> InventoryItem {
+        try await updateProduct(product: copy(manageStock: true), stores: stores)
+    }
+
+    private func updateProduct(product: Product, stores: StoresManager) async throws  -> InventoryItem {
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = ProductAction.updateProduct(product: product) { result in
                 switch result {
-                case .success(_):
-                    continuation.resume(with: .success(()))
+                case let .success(product):
+                    continuation.resume(with: .success(product))
                 case let .failure(error):
                     continuation.resume(throwing: error)
                 }
@@ -48,10 +59,6 @@ extension Product: InventoryItem {
                 stores.dispatch(action)
             }
         }
-    }
-
-    func detailsView() -> ProductLoaderView {
-        ProductLoaderView(model: .product(productID: productID), siteID: siteID, forceReadOnly: true)
     }
 }
 
@@ -75,14 +82,24 @@ extension ProductVariation: InventoryItem {
         }
     }
 
-    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            let newProductVaiation = copy(stockQuantity: newQuantity)
+    func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws -> InventoryItem {
+        try await updateProductVariation(productVariation: copy(stockQuantity: newQuantity), stores: stores)
+    }
 
-            let action = ProductVariationAction.updateProductVariation(productVariation: newProductVaiation) { result in
+    func enableManageStock(stores: StoresManager) async throws  -> InventoryItem {
+        try await updateProductVariation(productVariation: copy(manageStock: true), stores: stores)
+    }
+
+    func detailsView() -> ProductLoaderView {
+        ProductLoaderView(model: .productVariation(productID: productID, variationID: productVariationID), siteID: siteID, forceReadOnly: true)
+    }
+
+    private func updateProductVariation(productVariation: ProductVariation, stores: StoresManager) async throws -> InventoryItem {
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = ProductVariationAction.updateProductVariation(productVariation: productVariation) { result in
                 switch result {
-                case .success(_):
-                    continuation.resume(with: .success(()))
+                case let .success(variation):
+                    continuation.resume(with: .success(variation))
                 case let .failure(error):
                     continuation.resume(throwing: error)
                 }
@@ -92,10 +109,6 @@ extension ProductVariation: InventoryItem {
                 stores.dispatch(action)
             }
         }
-    }
-
-    func detailsView() -> ProductLoaderView {
-        ProductLoaderView(model: .productVariation(productID: productID, variationID: productVariationID), siteID: siteID, forceReadOnly: true)
     }
 }
 
@@ -111,7 +124,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         case stockManagementNeedsToBeEnabled
     }
 
-    let inventoryItem: InventoryItem
+    private var inventoryItem: InventoryItem
     private let stores: StoresManager
 
     init(inventoryItem: InventoryItem,
@@ -177,6 +190,13 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         try? await updateStockQuantity(with: quantityDecimal)
     }
 
+    func onTapManageStock() async throws {
+        do {
+            inventoryItem = try await inventoryItem.enableManageStock(stores: stores)
+            viewMode = .stockCanBeManaged
+        } catch {}
+    }
+
     func productDetailsView() -> some View {
         inventoryItem.detailsView()
     }
@@ -187,9 +207,12 @@ private extension UpdateProductInventoryViewModel {
         isPrimaryButtonLoading = true
 
         // TODO: Handle error
-        try? await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
+        do {
+            inventoryItem = try await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
 
-        isPrimaryButtonLoading = false
-        updateQuantityButtonMode = .increaseOnce
+            isPrimaryButtonLoading = false
+            updateQuantityButtonMode = .increaseOnce
+        }
+        catch {}
     }
 }

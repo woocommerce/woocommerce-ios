@@ -19,30 +19,10 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
     func test_viewModel_is_created_with_correct_initial_values_from_product_with_child_product_rows() {
         // Given
         let product = Product.fake()
-        let childProductRows = [ProductRowViewModel(product: .fake()),
-                                ProductRowViewModel(product: .fake())]
-            .map {
-                CollapsibleProductRowCardViewModel(productTypeDescription: product.productType.description,
-                                                   attributes: [],
-                                                   stockStatus: product.productStockStatus,
-                                                   stockQuantity: product.stockQuantity,
-                                                   manageStock: product.manageStock,
-                                                   productViewModel: $0,
-                                                   stepperViewModel: .init(quantity: 1,
-                                                                           name: "",
-                                                                           quantityUpdatedCallback: { _ in }))
-            }
+        let childProductRows = [createViewModel(), createViewModel()]
 
         // When
-        let rowViewModel = CollapsibleProductRowCardViewModel(productTypeDescription: product.productType.description,
-                                                              attributes: [],
-                                                              stockStatus: product.productStockStatus,
-                                                              stockQuantity: product.stockQuantity,
-                                                              manageStock: product.manageStock,
-                                                              productViewModel: .init(product: product),
-                                                              stepperViewModel: .init(quantity: 1,
-                                                                                      name: "",
-                                                                                      quantityUpdatedCallback: { _ in }))
+        let rowViewModel = createViewModel()
         let viewModel = CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: childProductRows)
 
         // Then
@@ -55,15 +35,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: product, currencyFormatter: currencyFormatter),
-                                                           stepperViewModel: .init(quantity: 1,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(productViewModel: .init(product: product, currencyFormatter: currencyFormatter))
         viewModel.stepperViewModel.incrementQuantity()
 
         // Then
@@ -93,17 +65,9 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_ProductStepperViewModel_and_ProductRowViewModel_quantity_have_the_same_initial_value() {
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
-                                                           isReadOnly: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: .fake()),
-                                                           stepperViewModel: .init(quantity: 2,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(stepperViewModel: .init(quantity: 2,
+                                                                name: "",
+                                                                quantityUpdatedCallback: { _ in }))
 
         // Then
         XCTAssertEqual(viewModel.stepperViewModel.quantity, 2)
@@ -112,17 +76,9 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_ProductStepperViewModel_quantity_change_updates_ProductRowViewModel_quantity() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
-                                                           isReadOnly: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: .fake()),
-                                                           stepperViewModel: .init(quantity: 2,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(stepperViewModel: .init(quantity: 2,
+                                                                name: "",
+                                                                quantityUpdatedCallback: { _ in }))
 
         // When
         viewModel.stepperViewModel.incrementQuantity()
@@ -136,18 +92,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_productRow_when_add_discount_button_is_tapped_then_orderProductDiscountAddButtonTapped_is_tracked() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
-                                                           isReadOnly: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: .fake()),
-                                                           stepperViewModel: .init(quantity: 2,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }),
-                                                           analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = createViewModel(analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.trackAddDiscountTapped()
@@ -158,18 +103,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_productRow_when_edit_discount_button_is_tapped_then_orderProductDiscountEditButtonTapped_is_tracked() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
-                                                           isReadOnly: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: .fake()),
-                                                           stepperViewModel: .init(quantity: 2,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }),
-                                                           analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = createViewModel(analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.trackEditDiscountTapped()
@@ -186,17 +120,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
-                                                           isReadOnly: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: product, discount: nil, quantity: 1),
-                                                           stepperViewModel: .init(quantity: 2,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(productViewModel: .init(product: product, discount: nil, quantity: 1))
 
         // Then
         XCTAssertFalse(viewModel.hasDiscount)
@@ -209,17 +133,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
-                                                           isReadOnly: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: product, discount: discount, quantity: 1),
-                                                           stepperViewModel: .init(quantity: 2,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(productViewModel: .init(product: product, discount: discount, quantity: 1))
 
         // Then
         XCTAssertTrue(viewModel.hasDiscount)
@@ -234,17 +148,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
-                                                           isReadOnly: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: product, discount: discount, quantity: 1),
-                                                           stepperViewModel: .init(quantity: 1,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(productViewModel: .init(product: product, discount: discount, quantity: 1))
 
         // Then
         assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
@@ -258,17 +162,10 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
-                                                           isReadOnly: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: product, discount: discount, quantity: quantity),
-                                                           stepperViewModel: .init(quantity: quantity,
-                                                                                   name: "",
-                                                                                   quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(productViewModel: .init(product: product, discount: discount, quantity: quantity),
+                                        stepperViewModel: .init(quantity: quantity,
+                                                                name: "",
+                                                                quantityUpdatedCallback: { _ in }))
 
         // Then
         assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
@@ -278,14 +175,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_isConfigurable_set_to_false_if_true_and_configure_is_nil() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: true,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: .fake()),
-                                                           stepperViewModel: .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(isConfigurable: true)
 
         // Then
         XCTAssertFalse(viewModel.isConfigurable)
@@ -293,14 +183,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_isConfigurable_set_to_true_if_true_and_configure_is_not_nil() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: true,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: .fake()),
-                                                           stepperViewModel: .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }),
+        let viewModel = createViewModel(isConfigurable: true,
                                                            configure: {})
 
         // Then
@@ -309,15 +192,8 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_isConfigurable_set_to_false_if_false() {
         // Given
-        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: false,
-                                                           productTypeDescription: "",
-                                                           attributes: [],
-                                                           stockStatus: .inStock,
-                                                           stockQuantity: nil,
-                                                           manageStock: false,
-                                                           productViewModel: .init(product: .fake()),
-                                                           stepperViewModel: .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }),
-                                                           configure: {})
+        let viewModel = createViewModel(isConfigurable: false,
+                                        configure: {})
 
         // Then
         XCTAssertFalse(viewModel.isConfigurable)
@@ -331,14 +207,12 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(stockStatusKey: stockStatus.rawValue)
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: false,
-                                                           productTypeDescription: product.productType.description,
-                                                           attributes: [],
-                                                           stockStatus: product.productStockStatus,
-                                                           stockQuantity: product.stockQuantity,
-                                                           manageStock: product.manageStock,
-                                                           productViewModel: .init(product: product),
-                                                           stepperViewModel: .init(quantity: 1, name: product.name, quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(productTypeDescription: product.productType.description,
+                                        attributes: [],
+                                        stockStatus: product.productStockStatus,
+                                        stockQuantity: product.stockQuantity,
+                                        manageStock: product.manageStock,
+                                        productViewModel: .init(product: product))
 
         // Then
         assertEqual(stockStatus.description, viewModel.productDetailsLabel)
@@ -353,14 +227,11 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let attributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: false,
-                                                           productTypeDescription: ProductType.variable.description,
-                                                           attributes: attributes,
-                                                           stockStatus: variation.stockStatus,
-                                                           stockQuantity: variation.stockQuantity,
-                                                           manageStock: variation.manageStock,
-                                                           productViewModel: .init(productVariation: variation, name: "", displayMode: .attributes(attributes)),
-                                                           stepperViewModel: .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(productTypeDescription: ProductType.variable.description,
+                                        attributes: attributes,
+                                        stockStatus: variation.stockStatus,
+                                        stockQuantity: variation.stockQuantity,
+                                        manageStock: variation.manageStock)
 
         // Then
         XCTAssertTrue(viewModel.productDetailsLabel.contains(variationAttribute), "Label should contain variation attribute")
@@ -373,17 +244,45 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, stockStatusKey: stockStatus.rawValue, bundledItems: [.fake()])
 
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(isConfigurable: true,
-                                                           productTypeDescription: product.productType.description,
-                                                           attributes: [],
-                                                           stockStatus: product.productStockStatus,
-                                                           stockQuantity: product.stockQuantity,
-                                                           manageStock: product.manageStock,
-                                                           productViewModel: .init(product: product),
-                                                           stepperViewModel: .init(quantity: 1, name: product.name, quantityUpdatedCallback: { _ in }))
+        let viewModel = createViewModel(isConfigurable: true,
+                                        productTypeDescription: product.productType.description,
+                                        attributes: [],
+                                        stockStatus: product.productStockStatus,
+                                        stockQuantity: product.stockQuantity,
+                                        manageStock: product.manageStock)
 
         // Then
         XCTAssertTrue(viewModel.productDetailsLabel.contains(ProductType.bundle.description), "Label should contain product type (Bundle)")
         XCTAssertTrue(viewModel.productDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
+    }
+}
+
+private extension CollapsibleProductRowCardViewModelTests {
+    func createViewModel(hasParentProduct: Bool = false,
+                         isReadOnly: Bool = false,
+                         isConfigurable: Bool = false,
+                         productTypeDescription: String = "",
+                         attributes: [VariationAttributeViewModel] = [],
+                         stockStatus: ProductStockStatus = .inStock,
+                         stockQuantity: Decimal? = nil,
+                         manageStock: Bool = false,
+                         productViewModel: ProductRowViewModel = .init(product: .fake()),
+                         stepperViewModel: ProductStepperViewModel = .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }),
+                         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()),
+                         analytics: Analytics = ServiceLocator.analytics,
+                         configure: (() -> Void)? = nil) -> CollapsibleProductRowCardViewModel {
+        CollapsibleProductRowCardViewModel(hasParentProduct: hasParentProduct,
+                                           isReadOnly: isReadOnly,
+                                           isConfigurable: isConfigurable,
+                                           productTypeDescription: productTypeDescription,
+                                           attributes: attributes,
+                                           stockStatus: stockStatus,
+                                           stockQuantity: stockQuantity,
+                                           manageStock: manageStock,
+                                           productViewModel: productViewModel,
+                                           stepperViewModel: stepperViewModel,
+                                           currencyFormatter: currencyFormatter,
+                                           analytics: analytics,
+                                           configure: configure)
     }
 }

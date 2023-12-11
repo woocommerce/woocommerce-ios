@@ -1,6 +1,11 @@
 import Combine
 import Yosemite
 
+enum UpdateInventoryError: Error {
+    case nonSupportedQuantity
+    case generic
+}
+
 /// An item whose inventory can be displayed and managed
 ///
 protocol InventoryItem {
@@ -140,6 +145,8 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     var imageURL: URL? {
         inventoryItem.imageURL
     }
+    
+    @Published var notice: Notice?
 
     func onTapIncreaseStockQuantityOnce() async {
         guard let quantityDecimal = Decimal(string: quantity) else {
@@ -149,15 +156,27 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         let newQuantity = quantityDecimal + 1
         quantity = newQuantity.formatted()
 
-        try? await updateStockQuantity(with: newQuantity)
+        do {
+            try await updateStockQuantity(with: newQuantity)
+        } catch {
+            DDLogError("\(error)")
+        }
     }
 
-    func onTapUpdateStockQuantity() async {
+    func onTapUpdateStockQuantity() async throws {
         guard let quantityDecimal = Decimal(string: quantity) else {
-            return
+            throw UpdateInventoryError.nonSupportedQuantity
         }
 
-        try? await updateStockQuantity(with: quantityDecimal)
+        do {
+            try await updateStockQuantity(with: quantityDecimal)
+        } catch {
+            throw UpdateInventoryError.generic
+        }
+    }
+
+    func makeNotice() -> Notice {
+        Notice(title: "oopsie", feedbackType: .error)
     }
 }
 
@@ -165,8 +184,12 @@ private extension UpdateProductInventoryViewModel {
     func updateStockQuantity(with newQuantity: Decimal) async throws {
         isPrimaryButtonLoading = true
 
-        // TODO: Handle error
-        try? await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
+        do {
+            try await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
+        } catch {
+            isPrimaryButtonLoading = false
+            throw UpdateInventoryError.generic
+        }
 
         isPrimaryButtonLoading = false
         updateQuantityButtonMode = .increaseOnce

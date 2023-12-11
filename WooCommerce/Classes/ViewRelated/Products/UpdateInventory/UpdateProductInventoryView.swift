@@ -16,6 +16,14 @@ struct UpdateProductInventoryView: View {
         viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem, siteID: siteID)
     }
 
+    private func displayErrorNotice() {
+        // Assign notice
+        viewModel.notice = viewModel.makeNotice()
+        // Hide keyboard
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
+    }
+
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -70,8 +78,12 @@ struct UpdateProductInventoryView: View {
                         Group {
                             Button(Localization.updateQuantityButtonTitle) {
                                 Task { @MainActor in
-                                    await viewModel.onTapUpdateStockQuantity()
-                                    dismiss()
+                                    do {
+                                        try await viewModel.onTapUpdateStockQuantity()
+                                        dismiss()
+                                    } catch {
+                                        displayErrorNotice()
+                                    }
                                 }
                             }
                             .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
@@ -102,6 +114,7 @@ struct UpdateProductInventoryView: View {
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in
                         isKeyboardVisible = keyboardHeight > 0
                     }
+                    .notice($viewModel.notice)
                 }
             }
         }

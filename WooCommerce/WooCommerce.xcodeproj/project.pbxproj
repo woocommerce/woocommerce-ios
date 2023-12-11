@@ -1467,6 +1467,8 @@
 		8194A48313C34FE1782D51BC /* Pods_StoreWidgetsExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */; };
 		86023FAA2B15CAD800A28F07 /* ThemesEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86023FA92B15CAD800A28F07 /* ThemesEligibilityUseCase.swift */; };
 		86023FAD2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86023FAC2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift */; };
+		86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */; };
+		8602BC9F2B19AE48001EDF20 /* ProfilerThemesPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */; };
 		860B85F12ADE3A0E00E85884 /* BulletPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860B85F02ADE3A0E00E85884 /* BulletPointView.swift */; };
 		864213022AE77C730036E5A6 /* UIImage+Resizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864213012AE77C730036E5A6 /* UIImage+Resizing.swift */; };
 		86558EA82AD91B7800E10EDF /* BlazeCampaignIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86558EA72AD91B7800E10EDF /* BlazeCampaignIntroView.swift */; };
@@ -4051,6 +4053,8 @@
 		80F9176C2A28638C00890A83 /* products_add_new_grouped_2130.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = products_add_new_grouped_2130.json; sourceTree = "<group>"; };
 		86023FA92B15CAD800A28F07 /* ThemesEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesEligibilityUseCase.swift; sourceTree = "<group>"; };
 		86023FAC2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
+		86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesCarouselView.swift; sourceTree = "<group>"; };
+		8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilerThemesPickerView.swift; sourceTree = "<group>"; };
 		860B85F02ADE3A0E00E85884 /* BulletPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletPointView.swift; sourceTree = "<group>"; };
 		864213012AE77C730036E5A6 /* UIImage+Resizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resizing.swift"; sourceTree = "<group>"; };
 		86558EA72AD91B7800E10EDF /* BlazeCampaignIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignIntroView.swift; sourceTree = "<group>"; };
@@ -8510,6 +8514,8 @@
 			isa = PBXGroup;
 			children = (
 				86023FA92B15CAD800A28F07 /* ThemesEligibilityUseCase.swift */,
+				86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */,
+				8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */,
 			);
 			path = Themes;
 			sourceTree = "<group>";
@@ -12671,6 +12677,7 @@
 				03B9E5292A14F136005C77F5 /* SilenceablePassthroughCardPresentPaymentAlertsPresenter.swift in Sources */,
 				024DF3092372CA00006658FE /* EditorViewProperties.swift in Sources */,
 				45F8C43B2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift in Sources */,
+				8602BC9F2B19AE48001EDF20 /* ProfilerThemesPickerView.swift in Sources */,
 				B6F3796E293796BC00718561 /* AnalyticsHubWeekToDateRangeData.swift in Sources */,
 				DE77889A26FD7EF0008DFF44 /* ShippingLabelPackageItem.swift in Sources */,
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
@@ -13336,6 +13343,7 @@
 				024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */,
 				02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */,
 				B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */,
+				86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
 				3142663F2645E2AB00500598 /* PaymentSettingsFlowViewModelPresenter.swift in Sources */,
 				DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */,

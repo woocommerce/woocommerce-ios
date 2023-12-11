@@ -76,10 +76,6 @@ extension StoreOnboardingTaskViewModel {
                 "Start selling by adding products or services to your store.",
                 comment: "Subtitle of the store onboarding task to add the first product."
             )
-            static let badgeText = NSLocalizedString(
-                "✨ AI content generator available.",
-                comment: "Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI."
-            )
         }
 
         enum LaunchStore {

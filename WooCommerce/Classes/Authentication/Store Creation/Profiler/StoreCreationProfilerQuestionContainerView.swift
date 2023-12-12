@@ -61,26 +61,6 @@ struct StoreCreationProfilerQuestionContainerView: View {
                         viewModel.saveCountry(answer)
                     }
                 }, onSupport: onSupport))
-            case .challenges:
-                StoreCreationChallengesQuestionView(viewModel: .init(onContinue: { answer in
-                    withAnimation {
-                        viewModel.saveChallenges(answer)
-                    }
-                }, onSkip: {
-                    withAnimation {
-                        viewModel.saveChallenges([])
-                    }
-                }))
-            case .features:
-                StoreCreationFeaturesQuestionView(viewModel: .init(onContinue: { answer in
-                    withAnimation {
-                        viewModel.saveFeatures(answer)
-                    }
-                }, onSkip: {
-                    withAnimation {
-                        viewModel.saveFeatures([])
-                    }
-                }))
             }
         }
         .onAppear() {

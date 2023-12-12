@@ -7,6 +7,7 @@
 - [*] Product Creation AI: Show survey to collect user feedback. [https://github.com/woocommerce/woocommerce-ios/pull/11390]
 - [*] Edit Products: category list is now searchable. [https://github.com/woocommerce/woocommerce-ios/pull/11380]
 - [*] Show one time shipping setting status in product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/11403]
+- [*] Remove features and challenges questions from the store creation profiler flow. [https://github.com/woocommerce/woocommerce-ios/pull/11410]
 - [*] Edit Products: make downloadable files more discoverable [https://github.com/woocommerce/woocommerce-ios/pull/11388]
 - [**] [internal] A minor refactor in authentication flow, including but not limited to social sign-in and two factor authentication. [https://github.com/woocommerce/woocommerce-ios/pull/11402]
 - [*] Login: after logging in from the `Create a New Store` CTA in the prologue screen, it should start the store creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/11385]

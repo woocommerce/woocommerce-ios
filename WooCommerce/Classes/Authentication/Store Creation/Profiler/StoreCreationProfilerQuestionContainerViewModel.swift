@@ -6,8 +6,6 @@ enum StoreCreationProfilerQuestion: Int, CaseIterable {
     case sellingStatus = 1
     case category
     case country
-    case challenges
-    case features
 
     /// Progress to display for the profiler flow
     var progress: Double {
@@ -42,8 +40,6 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
             storeAnswers()
         }
     }
-    private var challenges: [StoreCreationChallengesAnswer] = []
-    private var features: [StoreCreationFeaturesAnswer] = []
     private let uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
 
     private var answers: StoreProfilerAnswers {
@@ -96,24 +92,6 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
     func saveCountry(_ answer: CountryCode) {
         storeCountry = answer
-        currentQuestion = .challenges
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerChallengesQuestion))
-    }
-
-    func saveChallenges(_ answer: [StoreCreationChallengesAnswer]) {
-        if answer.isEmpty {
-            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerChallengesQuestion))
-        }
-        challenges = answer
-        currentQuestion = .features
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerFeaturesQuestion))
-    }
-
-    func saveFeatures(_ answer: [StoreCreationFeaturesAnswer]) {
-        if answer.isEmpty {
-            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerFeaturesQuestion))
-        }
-        features = answer
         handleCompletion()
     }
 
@@ -128,9 +106,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
 private extension StoreCreationProfilerQuestionContainerViewModel {
     func handleCompletion() {
-        analytics.track(event: .StoreCreation.siteCreationProfilerData(answers,
-                                                                       challenges: challenges,
-                                                                       features: features))
+        analytics.track(event: .StoreCreation.siteCreationProfilerData(answers))
         completionHandler()
     }
 

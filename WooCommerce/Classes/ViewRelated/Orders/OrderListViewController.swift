@@ -881,40 +881,9 @@ private extension OrderListViewController {
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
 
-        static let inPersonPaymentsCashOnDeliveryBannerTitle = NSLocalizedString("Let us know how we can help",
-                                                           comment: "Title of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsFirstTransactionBannerTitle = NSLocalizedString("Enjoyed your in-person payment?",
-                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsPowerUsersBannerTitle = NSLocalizedString("Let us know what you think",
-                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsCashOnDeliveryBannerContent = NSLocalizedString("Share your own experience or how you collect in-person payments.",
-                                                             comment: "Content of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsFirstTransactionBannerContent = NSLocalizedString("Rate your first in-person payment experience.",
-                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsPowerUsersBannerContent = NSLocalizedString("Tell us all about your experience with in-person payments.",
-                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
-        )
-
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"
         )
-
-        static let dismissTitle = NSLocalizedString("Give feedback",
-                                                    comment: "Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed"
-        )
-
-        static let dismissMessage = NSLocalizedString("No worries! You can always go to Settings in the Menu to send us feedback.",
-                    comment: "Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed")
 
         static let remindMeLater = NSLocalizedString("Remind me later",
                                                      comment: "Title of the button shown when the In-Person Payments feedback banner is dismissed."

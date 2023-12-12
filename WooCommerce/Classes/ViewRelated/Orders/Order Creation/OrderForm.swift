@@ -455,11 +455,7 @@ private struct ProductsSection: View {
                                            shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                            onAddDiscount: viewModel.selectOrderItem)
                     .sheet(item: $viewModel.selectedProductViewModel, content: { selectedProduct in
-                        ProductDiscountView(imageURL: selectedProduct.productRowViewModel.imageURL,
-                                            name: selectedProduct.productRowViewModel.name,
-                                            stockLabel: selectedProduct.productRowViewModel.stockQuantityLabel,
-                                            productRowViewModel: selectedProduct.productRowViewModel,
-                                            discountViewModel: selectedProduct.discountDetailsViewModel)
+                        ProductDiscountView(viewModel: selectedProduct)
                     })
                     .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
                         ConfigurableBundleProductView(viewModel: configurableProductViewModel)

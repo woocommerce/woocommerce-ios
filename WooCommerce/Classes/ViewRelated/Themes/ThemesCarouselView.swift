@@ -28,11 +28,11 @@ struct ThemesCarouselView: View {
         switch viewModel.state {
         case .loading:
             loadingView
-            
+
         case .content(let themes):
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack() {
-                    
+
                     // Theme list
                     ForEach(themes) { theme in
                         if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
@@ -41,12 +41,12 @@ struct ThemesCarouselView: View {
                             themeNameCard(name: theme.name)
                         }
                     }
-                    
+
                     // Message at the end of the carousel
                     lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
                 }
             }
-            
+
         case .error:
             errorView
         }

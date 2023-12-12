@@ -156,11 +156,15 @@ struct OrderForm: View {
         AdaptiveView {
             orderFormSummary
         } secondView: {
-            if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                ProductSelectorView(configuration: ProductSelectorView.Configuration.splitViewAddProductToOrder(),
-                                    source: .orderForm(flow: flow),
-                                    isPresented: .constant(true),
-                                    viewModel: productSelectorViewModel)
+            if let productSelectorViewModel = viewModel.productSelectorViewModel,
+               #available(iOS 16.0, *) {
+                NavigationStack {
+                    ProductSelectorView(configuration: ProductSelectorView.Configuration.splitViewAddProductToOrder(),
+                                        source: .orderForm(flow: flow),
+                                        isPresented: .constant(true),
+                                        viewModel: productSelectorViewModel)
+                }
+                .toolbar(.hidden, for: .navigationBar)
                 .onDisappear {
                     navigationButtonID = UUID()
                 }

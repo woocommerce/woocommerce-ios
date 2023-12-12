@@ -31,7 +31,7 @@ struct ModalOverlay<OverlayContent: View>: View {
                     VStack {
                         content()
                             .padding(16)
-                            .frame(width: geometry.size.width * 0.75)
+                            .frame(maxWidth: geometry.size.width * 0.75)
                             .frame(maxHeight: geometry.size.height * 0.8)
                             .fixedSize(horizontal: false, vertical: true) // these three modifiers define the container size
                             .background(Color(.tertiarySystemBackground))

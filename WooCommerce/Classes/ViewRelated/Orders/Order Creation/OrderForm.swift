@@ -169,6 +169,17 @@ struct OrderForm: View {
                 }
             }
         }
+        .modalOverlay(isPresented: $viewModel.shouldPresentCollectPayment) {
+            if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
+                PaymentMethodsView(dismiss: {
+                    dismissHandler()
+                },
+                                   rootViewController: rootViewController,
+                                   viewModel: collectPaymentViewModel)
+            } else {
+                EmptyView()
+            }
+        }
     }
 
     @ViewBuilder private var orderFormSummary: some View {
@@ -332,19 +343,6 @@ struct OrderForm: View {
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding()
-
-            if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
-                LazyNavigationLink(
-                    destination: PaymentMethodsView(dismiss: {
-                        dismissHandler()
-                    },
-                                                    rootViewController: rootViewController,
-                                                    viewModel: collectPaymentViewModel),
-                    isActive: $viewModel.shouldPresentCollectPayment,
-                    label: {
-                        EmptyView()
-                    })
-            }
         }
     }
 

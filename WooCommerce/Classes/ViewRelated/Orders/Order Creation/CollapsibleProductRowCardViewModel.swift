@@ -164,6 +164,52 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                   configure: configure)
     }
 
+    /// Initialize `CollapsibleProductRowCardViewModel` with a `ProductVariation` and `OrderItem`
+    init(orderItem: OrderItem,
+         variation: ProductVariation,
+         variableProduct: Product?,
+         isReadOnly: Bool,
+         pricedIndividually: Bool,
+         discount: Decimal?,
+         quantityUpdatedCallback: @escaping (Decimal) -> Void,
+         removeProductIntent: (() -> Void)? = nil,
+         configure: (() -> Void)? = nil,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         analytics: Analytics = ServiceLocator.analytics) {
+        let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
+        let productViewModel = ProductRowViewModel(id: orderItem.itemID,
+                                                   productVariation: variation,
+                                                   discount: discount,
+                                                   name: orderItem.name,
+                                                   quantity: orderItem.quantity,
+                                                   displayMode: .attributes(attributes))
+        let stepperViewModel = ProductStepperViewModel(quantity: orderItem.quantity,
+                                                       name: orderItem.name,
+                                                       quantityUpdatedCallback: quantityUpdatedCallback,
+                                                       removeProductIntent: removeProductIntent)
+
+        self.init(id: orderItem.itemID,
+                  productOrVariationID: variation.productVariationID,
+                  hasParentProduct: orderItem.parent != nil,
+                  isReadOnly: isReadOnly,
+                  isConfigurable: false,
+                  imageURL: variation.imageURL,
+                  name: orderItem.name,
+                  sku: orderItem.sku,
+                  price: orderItem.price.description,
+                  pricedIndividually: pricedIndividually,
+                  discount: discount,
+                  productTypeDescription: ProductType.variable.description,
+                  attributes: attributes,
+                  stockStatus: variation.stockStatus,
+                  stockQuantity: variation.stockQuantity,
+                  manageStock: variation.manageStock,
+                  stepperViewModel: stepperViewModel,
+                  currencyFormatter: currencyFormatter,
+                  analytics: analytics,
+                  configure: configure)
+    }
+
     func trackAddDiscountTapped() {
         analytics.track(event: .Orders.productDiscountAddButtonTapped())
     }

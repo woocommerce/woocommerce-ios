@@ -65,6 +65,49 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertTrue(rowViewModel.isConfigurable)
     }
 
+    func test_viewModel_is_created_with_correct_initial_values_from_order_item_and_product_variation() throws {
+        // Given
+        let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
+                                                     image: .fake().copy(src: "https://woo.com/woo.jpg"),
+                                                     stockStatus: .inStock)
+        let variableProduct = Product.fake().copy(productTypeKey: ProductType.variable.description,
+                                                  attributes: [.fake().copy(attributeID: 1, name: "Color", options: ["Blue", "Red"]),
+                                                               .fake().copy(attributeID: 2, name: "Size", options: ["Small", "Large"])])
+        let orderItem = OrderItem.fake().copy(itemID: 1, name: "Order Item", quantity: 2, price: 5, sku: "sku")
+
+        // When
+        let rowViewModel = CollapsibleProductRowCardViewModel(orderItem: orderItem,
+                                                              variation: variation,
+                                                              variableProduct: variableProduct,
+                                                              isReadOnly: false,
+                                                              pricedIndividually: true,
+                                                              discount: nil,
+                                                              quantityUpdatedCallback: { _ in })
+
+        // Then
+        XCTAssertFalse(rowViewModel.isReadOnly)
+        XCTAssertFalse(rowViewModel.hasDiscount)
+        XCTAssertNil(rowViewModel.discount)
+
+        // And it has expected values from order item
+        assertEqual(orderItem.itemID, rowViewModel.id)
+        assertEqual(orderItem.name, rowViewModel.name)
+        XCTAssertTrue(rowViewModel.skuLabel.contains(try XCTUnwrap(orderItem.sku)))
+        assertEqual(orderItem.price.description, rowViewModel.price)
+        assertEqual(orderItem.quantity, rowViewModel.stepperViewModel.quantity)
+        XCTAssertFalse(rowViewModel.hasParentProduct)
+
+        // And it has expected values from variation and variable product
+        let expectedAttributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
+        let firstAttribute = try XCTUnwrap(expectedAttributes[0].nameOrValue)
+        let secondAttribute = try XCTUnwrap(expectedAttributes[1].nameOrValue)
+        assertEqual(variation.imageURL, rowViewModel.imageURL)
+        XCTAssertTrue(rowViewModel.productDetailsLabel.contains(firstAttribute), "Product Details Label: \(rowViewModel.productDetailsLabel)")
+        XCTAssertTrue(rowViewModel.productDetailsLabel.contains(secondAttribute))
+        XCTAssertTrue(rowViewModel.productDetailsLabel.contains(variation.stockStatus.description))
+        XCTAssertFalse(rowViewModel.isConfigurable)
+    }
+
     func test_view_model_updates_price_label_when_quantity_changes() throws {
         // Given
         let price = "2.50"

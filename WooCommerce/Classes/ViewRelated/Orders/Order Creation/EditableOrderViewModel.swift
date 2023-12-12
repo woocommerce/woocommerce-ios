@@ -598,32 +598,18 @@ final class EditableOrderViewModel: ObservableObject {
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let variableProduct = allProducts.first(where: { $0.productID == item.productID })
-            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
-            let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
-                                                           name: item.name,
-                                                           quantityUpdatedCallback: { [weak self] _ in
+            let rowViewModel = CollapsibleProductRowCardViewModel(orderItem: item,
+                                                                  variation: variation,
+                                                                  variableProduct: variableProduct,
+                                                                  isReadOnly: isReadOnly,
+                                                                  pricedIndividually: pricedIndividually,
+                                                                  discount: passingDiscountValue,
+                                                                  quantityUpdatedCallback: { [weak self] _ in
                 guard let self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             }, removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)
             })
-            let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
-                                                                  productOrVariationID: variation.productVariationID,
-                                                                  hasParentProduct: item.parent != nil,
-                                                                  isReadOnly: isReadOnly,
-                                                                  imageURL: variation.imageURL,
-                                                                  name: item.name,
-                                                                  sku: item.sku,
-                                                                  price: item.price.description,
-                                                                  pricedIndividually: pricedIndividually,
-                                                                  discount: passingDiscountValue,
-                                                                  productTypeDescription: ProductType.variable.description,
-                                                                  attributes: attributes,
-                                                                  stockStatus: variation.stockStatus,
-                                                                  stockQuantity: variation.stockQuantity,
-                                                                  manageStock: variation.manageStock,
-                                                                  stepperViewModel: stepperViewModel,
-                                                                  analytics: analytics)
             return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
             let childProductRows = childItems.compactMap { childItem in

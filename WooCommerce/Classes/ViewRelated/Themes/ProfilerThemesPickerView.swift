@@ -6,9 +6,9 @@ struct ProfilerThemesPickerView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    private let carouselViewModel: ThemeCarouselViewModel
+    private let carouselViewModel: ThemesCarouselViewModel
 
-    init(carouselViewModel: ThemeCarouselViewModel) {
+    init(carouselViewModel: ThemesCarouselViewModel) {
         self.carouselViewModel = carouselViewModel
     }
 

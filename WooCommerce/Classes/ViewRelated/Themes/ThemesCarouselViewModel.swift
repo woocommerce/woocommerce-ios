@@ -1,9 +1,9 @@
 import Foundation
 import Yosemite
 
-/// View model for `ThemeCarouselView`
+/// View model for `ThemesCarouselView`
 ///
-final class ThemeCarouselViewModel: ObservableObject {
+final class ThemesCarouselViewModel: ObservableObject {
     enum State {
         case loading
         case error
@@ -31,7 +31,7 @@ final class ThemeCarouselViewModel: ObservableObject {
     }
 }
 
-private extension ThemeCarouselViewModel {
+private extension ThemesCarouselViewModel {
     @MainActor
     func loadSuggestedThemes() async throws -> [WordPressTheme] {
         try await withCheckedThrowingContinuation { continuation in

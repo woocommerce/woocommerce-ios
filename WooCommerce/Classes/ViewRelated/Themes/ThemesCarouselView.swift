@@ -6,7 +6,7 @@ import struct Yosemite.WordPressTheme
 ///
 struct ThemesCarouselView: View {
 
-    @ObservedObject private var viewModel: ThemeCarouselViewModel
+    @ObservedObject private var viewModel: ThemesCarouselViewModel
 
     /// The title of the message at the end of the carousel.
     private let lastMessageHeading: String
@@ -18,7 +18,7 @@ struct ThemesCarouselView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(viewModel: ThemeCarouselViewModel, lastMessageHeading: String, lastMessageContent: String) {
+    init(viewModel: ThemesCarouselViewModel, lastMessageHeading: String, lastMessageContent: String) {
         self.viewModel = viewModel
         self.lastMessageHeading = lastMessageHeading
         self.lastMessageContent = lastMessageContent

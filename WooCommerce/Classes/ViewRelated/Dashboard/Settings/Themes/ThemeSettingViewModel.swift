@@ -11,7 +11,7 @@ final class ThemeSettingViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
-    private(set) var carouselViewModel: ThemeCarouselViewModel
+    private(set) var carouselViewModel: ThemesCarouselViewModel
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,

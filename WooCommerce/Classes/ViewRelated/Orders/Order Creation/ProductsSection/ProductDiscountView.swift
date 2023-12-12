@@ -54,7 +54,7 @@ struct ProductDiscountView: View {
                     HStack {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
-                        if let price = viewModel.productRowViewModel.price {
+                        if let price = viewModel.price {
                             Text(discountDetailsViewModel.calculatePriceAfterDiscount(price))
                         }
                     }
@@ -71,7 +71,7 @@ struct ProductDiscountView: View {
                     .renderedIf(discountDetailsViewModel.hasInputAmount)
                 }
             }
-            .navigationTitle(Text(viewModel.productRowViewModel.discount != nil ? Localization.editDiscountLabel : Localization.addDiscountLabel))
+            .navigationTitle(Text(viewModel.hasDiscount ? Localization.editDiscountLabel : Localization.addDiscountLabel))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

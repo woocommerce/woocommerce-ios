@@ -410,7 +410,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.discountViewModel)
-        XCTAssertEqual(viewModel.discountViewModel?.productRowViewModel.id, expectedRow.id)
+        assertEqual(expectedRow.id, viewModel.discountViewModel?.id)
     }
 
     func test_view_model_is_updated_when_product_is_removed_from_order_using_order_item() throws {

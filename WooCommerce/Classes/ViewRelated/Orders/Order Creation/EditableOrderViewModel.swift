@@ -537,11 +537,12 @@ final class EditableOrderViewModel: ObservableObject {
             return discountViewModel = nil
         }
 
-        discountViewModel = .init(imageURL: rowViewModel.productRow.imageURL,
+        discountViewModel = .init(id: itemID,
+                                  imageURL: rowViewModel.productRow.imageURL,
                                   name: rowViewModel.productRow.name,
+                                  price: rowViewModel.productRow.price,
                                   priceSummary: rowViewModel.productRow.priceSummaryViewModel,
-                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem),
-                                  productRowViewModel: rowViewModel.productRow.productViewModel)
+                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem))
     }
 
     /// Removes an item from the order.

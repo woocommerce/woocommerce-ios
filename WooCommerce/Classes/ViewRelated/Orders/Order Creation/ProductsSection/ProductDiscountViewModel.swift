@@ -3,6 +3,10 @@ import WooFoundation
 import Combine
 
 final class ProductDiscountViewModel: Identifiable {
+    /// Unique ID for the view model.
+    ///
+    let id: Int64
+
     // MARK: Product Details
 
     /// Product image
@@ -10,6 +14,9 @@ final class ProductDiscountViewModel: Identifiable {
 
     /// Product name
     let name: String
+
+    /// Product price
+    let price: String?
 
     /// View model for `CollapsibleProductCardPriceSummary`
     let priceSummary: CollapsibleProductCardPriceSummaryViewModel
@@ -22,6 +29,9 @@ final class ProductDiscountViewModel: Identifiable {
         let baseAmountForDiscountPercentage: Decimal
         let onSaveFormattedDiscount: (String?) -> Void
     }
+
+    /// Whether there is already a discount on the product
+    let hasDiscount: Bool
 
     /// Discount added to the product
     let addedDiscount: Decimal
@@ -40,23 +50,24 @@ final class ProductDiscountViewModel: Identifiable {
     /// Publisher to fire when the view is dismissed
     var viewDismissPublisher = PassthroughSubject<(), Never>()
 
-    let productRowViewModel: ProductRowViewModel
-
     private let currencyFormatter: CurrencyFormatter
 
-    init(imageURL: URL?,
+    init(id: Int64,
+         imageURL: URL?,
          name: String,
+         price: String?,
          priceSummary: CollapsibleProductCardPriceSummaryViewModel,
          discountConfiguration: DiscountConfiguration?,
-         productRowViewModel: ProductRowViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        self.id = id
         self.imageURL = imageURL
         self.name = name
+        self.price = price
         self.priceSummary = priceSummary
         addedDiscount = discountConfiguration?.addedDiscount ?? .zero
+        hasDiscount = addedDiscount != 0
         baseAmountForDiscountPercentage = discountConfiguration?.baseAmountForDiscountPercentage ?? .zero
         onSaveFormattedDiscount = discountConfiguration?.onSaveFormattedDiscount ?? { _ in }
-        self.productRowViewModel = productRowViewModel
         self.currencyFormatter = currencyFormatter
     }
 

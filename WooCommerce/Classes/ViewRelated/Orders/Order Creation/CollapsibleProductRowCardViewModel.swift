@@ -28,10 +28,6 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         productViewModel.id
     }
 
-    /// Whether the product quantity can be changed.
-    /// Controls whether the stepper is rendered.
-    let canChangeQuantity: Bool
-
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
 
@@ -42,22 +38,24 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 
     let productViewModel: ProductRowViewModel
     let stepperViewModel: ProductStepperViewModel
+    let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
-    init(canChangeQuantity: Bool,
-         hasParentProduct: Bool = false,
+    init(hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          productViewModel: ProductRowViewModel,
          stepperViewModel: ProductStepperViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics) {
-        self.canChangeQuantity = canChangeQuantity
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
         self.productViewModel = productViewModel
         self.stepperViewModel = stepperViewModel
+        self.priceSummaryViewModel = .init(pricedIndividually: productViewModel.pricedIndividually,
+                                           quantity: stepperViewModel.quantity,
+                                           price: productViewModel.price)
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
 

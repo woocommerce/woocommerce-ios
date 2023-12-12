@@ -156,6 +156,7 @@ private extension OrderPaymentSection {
                 Image(systemName: "questionmark.circle")
                     .resizable()
                     .frame(width: Constants.sectionPadding, height: Constants.sectionPadding)
+                    .accessibilityLabel(Localization.couponTooltipInformationAccessibilityLabel)
             }
             .renderedIf(viewModel.shouldRenderCouponsInfoTooltip)
         }
@@ -338,6 +339,7 @@ private extension OrderPaymentSection {
             } label: {
                 Image(systemName: "questionmark.circle")
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                    .accessibilityLabel(Localization.taxInformationAccessibilityLabel)
             }
             .renderedIf(viewModel.shouldShowTaxesInfoButton)
 
@@ -449,6 +451,14 @@ private extension OrderPaymentSection {
         static let couponsTooltipDescription = NSLocalizedString(
             "To add Coupons, please remove your Product Discounts",
             comment: "Description text for the coupons row informational tooltip")
+        static let taxInformationAccessibilityLabel = NSLocalizedString(
+            "order.form.paymentSection.taxes.moreInfo.accessibilityLabel",
+            value: "Tax information",
+            comment: "An accessibility label for a More info button, rendered as a question mark icon, which shows tax information.")
+        static let couponTooltipInformationAccessibilityLabel = NSLocalizedString(
+            "order.form.paymentSection.coupon.moreInfo.accessibilityLabel",
+            value: "Coupon information",
+            comment: "An accessibility label for a More info button, rendered as a question mark icon, which shows coupon information.")
     }
 
     enum Constants {

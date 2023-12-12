@@ -262,11 +262,11 @@ struct OrderForm: View {
             }
         }
         .wooNavigationBarStyle()
-        .notice($viewModel.autodismissableNotice)
-        .notice($viewModel.fixedNotice, autoDismiss: false)
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
+        .notice($viewModel.autodismissableNotice)
+        .notice($viewModel.fixedNotice, autoDismiss: false)
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
@@ -439,6 +439,7 @@ private struct ProductsSection: View {
                         }) {
                             Image(uiImage: .plusImage)
                         }
+                        .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     }
@@ -545,6 +546,7 @@ private extension ProductsSection {
                 .foregroundColor(Color(.brand))
             }
         })
+        .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {
@@ -596,6 +598,15 @@ private extension OrderForm {
                                                                                      "when there is a tax rate stored")
         static let storedTaxRateBottomSheetClearTaxRateButtonTitle = NSLocalizedString("Clear address and stop using this rate",
                                                                                        comment: "Title for the button to clear the stored tax rate")
+        static let scanProductButtonAccessibilityLabel = NSLocalizedString(
+            "orderForm.products.add.scan.button.accessibilityLabel",
+            value: "Scan barcode",
+            comment: "Accessibility label for the barcode scanning button to add product")
+
+        static let addProductButtonAccessibilityLabel = NSLocalizedString(
+            "orderForm.products.add.button.accessibilityLabel",
+            value: "Add product",
+            comment: "Accessibility label for the + button to add product using a form")
     }
 
     enum Accessibility {

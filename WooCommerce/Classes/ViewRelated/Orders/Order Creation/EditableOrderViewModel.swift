@@ -574,7 +574,6 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     func createProductRowViewModel(for item: OrderItem,
                                    childItems: [OrderItem] = [],
-                                   canChangeQuantity: Bool,
                                    isReadOnly: Bool = false,
                                    pricedIndividually: Bool = true) -> CollapsibleProductCardViewModel? {
         guard item.quantity > 0 else {
@@ -604,16 +603,13 @@ final class EditableOrderViewModel: ObservableObject {
             }, removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)
             })
-            let rowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: canChangeQuantity,
-                                                                  hasParentProduct: item.parent != nil,
+            let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   productViewModel: productViewModel,
                                                                   stepperViewModel: stepperViewModel,
                                                                   analytics: analytics)
             return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
-            // If the parent product is a bundle product, quantity cannot be changed.
-            let canChildItemsChangeQuantity = product.productType != .bundle
             let childProductRows = childItems.compactMap { childItem in
                 let pricedIndividually = {
                     guard product.productType == .bundle, let bundledItem = product.bundledItems.first(where: { $0.productID == childItem.productID }) else {
@@ -623,7 +619,6 @@ final class EditableOrderViewModel: ObservableObject {
                 }()
                 let isReadOnly = product.productType == .bundle
                 return createProductRowViewModel(for: childItem,
-                                                 canChangeQuantity: canChildItemsChangeQuantity,
                                                  isReadOnly: isReadOnly,
                                                  pricedIndividually: pricedIndividually)
             }
@@ -655,8 +650,7 @@ final class EditableOrderViewModel: ObservableObject {
             }, removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)
             })
-            let rowViewModel = CollapsibleProductRowCardViewModel(canChangeQuantity: canChangeQuantity,
-                                                                  hasParentProduct: item.parent != nil,
+            let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   productViewModel: productViewModel,
                                                                   stepperViewModel: stepperViewModel,
@@ -1812,7 +1806,7 @@ private extension EditableOrderViewModel {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
         guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-              let rowViewModel = createProductRowViewModel(for: orderItem, childItems: [], canChangeQuantity: false) else {
+              let rowViewModel = createProductRowViewModel(for: orderItem, childItems: []) else {
             return nil
         }
 
@@ -1876,7 +1870,7 @@ private extension EditableOrderViewModel {
             }
 
             let childItems = items.filter { $0.parent == item.itemID }
-            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: true) else {
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems) else {
                 return nil
             }
 

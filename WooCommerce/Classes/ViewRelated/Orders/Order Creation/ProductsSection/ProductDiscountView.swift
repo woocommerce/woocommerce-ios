@@ -6,6 +6,7 @@ struct ProductDiscountView: View {
     private let name: String
     private let stockLabel: String
     private let productRowViewModel: ProductRowViewModel
+    private let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
     private let minusSign: String = NumberFormatter().minusSign
 
@@ -23,6 +24,9 @@ struct ProductDiscountView: View {
         self.stockLabel = stockLabel
         self.productRowViewModel = productRowViewModel
         self.discountViewModel = discountViewModel
+        self.priceSummaryViewModel = .init(pricedIndividually: productRowViewModel.pricedIndividually,
+                                           quantity: productRowViewModel.quantity,
+                                           price: productRowViewModel.price)
     }
 
     var body: some View {
@@ -36,7 +40,7 @@ struct ProductDiscountView: View {
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     VStack(alignment: .leading) {
                         Text(name)
-                        CollapsibleProductCardPriceSummary(viewModel: productRowViewModel)
+                        CollapsibleProductCardPriceSummary(viewModel: priceSummaryViewModel)
                     }
                 }
                 .padding()

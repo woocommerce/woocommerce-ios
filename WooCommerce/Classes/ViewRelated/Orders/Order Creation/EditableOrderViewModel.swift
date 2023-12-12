@@ -648,7 +648,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
                                                                   imageURL: product.imageURL,
-                                                                  name: item.name,
+                                                                  name: product.name,
                                                                   sku: product.sku,
                                                                   price: product.price,
                                                                   pricedIndividually: pricedIndividually,

@@ -468,13 +468,14 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        let orderItem = OrderItem.fake().copy(name: product.name, productID: product.productID, quantity: 1)
+        let orderItem = OrderItem.fake().copy(name: "Order Item", productID: product.productID, quantity: 1, price: 9.5)
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
-        let expectedProductRow = ProductRowViewModel(product: product)
-        XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
-        XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
+        assertEqual(orderItem.itemID, productRow?.productRow.id)
+        assertEqual(orderItem.name, productRow?.productRow.name)
+        assertEqual(orderItem.price.description, productRow?.productRow.price)
+        assertEqual(orderItem.quantity, productRow?.productRow.stepperViewModel.quantity)
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product_variation() {
@@ -496,13 +497,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
-        let expectedProductRow = ProductRowViewModel(productVariation: productVariation,
-                                                     name: product.name,
-                                                     quantity: 2,
-                                                     displayMode: .stock)
-        XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
-        XCTAssertEqual(productRow?.productRow.skuLabel, expectedProductRow.skuLabel)
-        XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
+        assertEqual(orderItem.itemID, productRow?.productRow.id)
+        assertEqual(orderItem.name, productRow?.productRow.name)
+        assertEqual(orderItem.price.description, productRow?.productRow.price)
+        assertEqual(orderItem.quantity, productRow?.productRow.stepperViewModel.quantity)
     }
 
     func test_createProductRowViewModel_sets_expected_discount_for_discounted_order_item() {

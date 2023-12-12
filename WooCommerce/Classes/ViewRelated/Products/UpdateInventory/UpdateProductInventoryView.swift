@@ -98,8 +98,14 @@ struct UpdateProductInventoryView: View {
 
                             Button(Localization.increaseStockOnceButtonTitle) {
                                 Task { @MainActor in
-                                    await viewModel.onTapIncreaseStockQuantityOnce()
-                                    dismiss()
+                                    do {
+                                        try await viewModel.onTapIncreaseStockQuantityOnce()
+                                        onUpdatedInventory(viewModel.quantity)
+                                        dismiss()
+                                    } catch {
+                                        let productName = viewModel.name
+                                        displayErrorNotice(productName, error)
+                                    }
                                 }
                             }
                             .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)

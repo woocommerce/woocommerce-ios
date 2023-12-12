@@ -143,7 +143,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
 
         // When
         viewModel.quantity = previousStockQuantity.formatted()
-        await viewModel.onTapIncreaseStockQuantityOnce()
+        try await viewModel.onTapIncreaseStockQuantityOnce()
 
         // Then
         XCTAssertEqual(viewModel.quantity, passedStockQuantity?.formatted())
@@ -172,7 +172,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
 
         // When
         viewModel.quantity = previousStockQuantity.formatted()
-        await viewModel.onTapIncreaseStockQuantityOnce()
+        try await viewModel.onTapIncreaseStockQuantityOnce()
 
         // Then
         XCTAssertEqual(viewModel.quantity, passedStockQuantity?.formatted())

@@ -147,7 +147,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         inventoryItem.imageURL
     }
 
-    func onTapIncreaseStockQuantityOnce() async {
+    func onTapIncreaseStockQuantityOnce() async throws {
         guard let quantityDecimal = Decimal(string: quantity) else {
             return
         }
@@ -158,7 +158,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         do {
             try await updateStockQuantity(with: newQuantity)
         } catch {
-            DDLogError("\(error)")
+            throw UpdateInventoryError.generic
         }
     }
 

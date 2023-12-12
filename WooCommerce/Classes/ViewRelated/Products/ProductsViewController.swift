@@ -1161,29 +1161,14 @@ private extension ProductsViewController {
     }
 
     func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
-        // The feature breaks if the Square plugin is active, since modifies inventory management logic
-        // If the plugin is active, we'll hide the inventory scanner button
-        // More details: https://wp.me/pdfdoF-2Nq
-        isPluginActive(SitePlugin.SupportedPlugin.square) { result in
-            switch result {
+        viewModel.scanToUpdateInventoryButtonShouldBeVisible(completion: { shouldBeVisible in
+            switch shouldBeVisible {
             case true:
-                self.navigationItem.leftBarButtonItem = nil
-            case false:
-                guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
-                      UIImagePickerController.isSourceTypeAvailable(.camera) else {
-                    self.navigationItem.leftBarButtonItem = nil
-                    return
-                }
                 self.navigationItem.leftBarButtonItem = self.createAddOrderByProductScanningButtonItem()
+            case false:
+                self.navigationItem.leftBarButtonItem = nil
             }
-        }
-    }
-
-    func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
-        let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: siteID, systemPluginNameList: [plugin]) { plugin in
-            completion(plugin?.active == true)
-        }
-        ServiceLocator.stores.dispatch(action)
+        })
     }
 
     func createAddOrderByProductScanningButtonItem() -> UIBarButtonItem {

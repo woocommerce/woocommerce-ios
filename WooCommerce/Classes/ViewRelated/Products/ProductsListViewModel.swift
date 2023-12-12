@@ -175,4 +175,33 @@ class ProductListViewModel {
             // TODO: Show error notice
         }
     }
+
+    // The feature breaks if the Square plugin is active, since modifies inventory management logic
+    // If the plugin is active, we'll hide the inventory scanner button
+    // More details: https://wp.me/pdfdoF-2Nq
+    func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void)) {
+        isPluginActive(SitePlugin.SupportedPlugin.square, completion: { isPluginActive in
+            switch isPluginActive {
+            case true:
+                completion(false)
+            case false:
+                guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
+                      UIImagePickerController.isSourceTypeAvailable(.camera) else {
+                    return completion(false)
+                }
+                // If all conditions are met, scan to update inventory should be visible:
+                // 1. No Square plugin
+                // 2. Feature flag
+                // 3. Camera is available
+                completion(true)
+            }
+        })
+    }
+
+    private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
+        let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: siteID, systemPluginNameList: [plugin]) { plugin in
+            completion(plugin?.active == true)
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
 }

@@ -45,7 +45,8 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_isReadOnly_and_hasParentProduct_are_false_by_default() {
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(imageURL: nil,
+        let viewModel = CollapsibleProductRowCardViewModel(id: 1,
+                                                           imageURL: nil,
                                                            name: "",
                                                            sku: nil,
                                                            price: nil,
@@ -281,7 +282,8 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 }
 
 private extension CollapsibleProductRowCardViewModelTests {
-    func createViewModel(hasParentProduct: Bool = false,
+    func createViewModel(id: Int64 = 1,
+                         hasParentProduct: Bool = false,
                          isReadOnly: Bool = false,
                          isConfigurable: Bool = false,
                          imageURL: URL? = nil,
@@ -299,7 +301,8 @@ private extension CollapsibleProductRowCardViewModelTests {
                          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()),
                          analytics: Analytics = ServiceLocator.analytics,
                          configure: (() -> Void)? = nil) -> CollapsibleProductRowCardViewModel {
-        CollapsibleProductRowCardViewModel(hasParentProduct: hasParentProduct,
+        CollapsibleProductRowCardViewModel(id: id,
+                                           hasParentProduct: hasParentProduct,
                                            isReadOnly: isReadOnly,
                                            isConfigurable: isConfigurable,
                                            imageURL: imageURL,

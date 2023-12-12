@@ -613,7 +613,8 @@ final class EditableOrderViewModel: ObservableObject {
             }, removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)
             })
-            let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
+            let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
+                                                                  hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   imageURL: variation.imageURL,
                                                                   name: item.name,
@@ -656,7 +657,8 @@ final class EditableOrderViewModel: ObservableObject {
                 self?.removeItemFromOrder(item)
             })
             let isProductConfigurable = product.productType == .bundle && product.bundledItems.isNotEmpty
-            let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
+            let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
+                                                                  hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
                                                                   imageURL: product.imageURL,

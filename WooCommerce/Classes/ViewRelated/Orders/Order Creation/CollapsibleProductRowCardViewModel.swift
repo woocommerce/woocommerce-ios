@@ -6,7 +6,7 @@ import Yosemite
 /// View model for `CollapsibleProductCard`.
 struct CollapsibleProductCardViewModel: Identifiable {
     var id: Int64 {
-        productRow.productViewModel.id
+        productRow.id
     }
 
     /// The main/parent product row.
@@ -24,9 +24,8 @@ struct CollapsibleProductCardViewModel: Identifiable {
 
 /// View model for `CollapsibleProductRowCard`.
 struct CollapsibleProductRowCardViewModel: Identifiable {
-    var id: Int64 {
-        productViewModel.id
-    }
+    /// Unique ID for view model
+    let id: Int64
 
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
@@ -74,7 +73,8 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
-    init(hasParentProduct: Bool = false,
+    init(id: Int64,
+         hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
          imageURL: URL?,
@@ -93,6 +93,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          configure: (() -> Void)? = nil) {
+        self.id = id
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false

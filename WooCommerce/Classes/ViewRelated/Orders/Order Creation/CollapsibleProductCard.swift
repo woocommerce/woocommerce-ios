@@ -354,7 +354,8 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let productViewModel = ProductRowViewModel(product: product)
-        let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
+        let rowViewModel = CollapsibleProductRowCardViewModel(id: 1,
+                                                              hasParentProduct: false,
                                                               isReadOnly: false,
                                                               imageURL: product.imageURL,
                                                               name: product.name,
@@ -371,7 +372,8 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
                                                                                       quantityUpdatedCallback: { _ in }))
         let viewModel = CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
 
-        let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
+        let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(id: 2,
+                                                                      hasParentProduct: false,
                                                                       isReadOnly: true,
                                                                       imageURL: product.imageURL,
                                                                       name: product.name,
@@ -391,7 +393,8 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
         let childViewModels = [ProductRowViewModel(id: 2, product: product),
                                ProductRowViewModel(id: 3, product: product)]
             .map {
-                CollapsibleProductRowCardViewModel(hasParentProduct: true,
+                CollapsibleProductRowCardViewModel(id: $0.id,
+                                                   hasParentProduct: true,
                                                    isReadOnly: false,
                                                    imageURL: product.imageURL,
                                                    name: product.name,
@@ -410,7 +413,8 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
         let bundleParentProductViewModel = ProductRowViewModel(id: 1,
                                                            product: product
             .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]))
-        let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
+        let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(id: 4,
+                                                                          hasParentProduct: false,
                                                                           isReadOnly: false,
                                                                           isConfigurable: true,
                                                                           imageURL: product.imageURL,

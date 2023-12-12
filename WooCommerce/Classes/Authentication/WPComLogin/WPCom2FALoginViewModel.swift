@@ -91,7 +91,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     func requestOneTimeCode() {
         isRequestingOTP = true
         loginFacade.wordpressComOAuthClientFacade.requestOneTimeCode(
-            withUsername: loginFields.username,
+            username: loginFields.username,
             password: loginFields.password,
             success: { [weak self] in
                 self?.isRequestingOTP = false
@@ -205,14 +205,12 @@ private extension WPCom2FALoginViewModel {
             return .securityKeyChallengeTimeout
         }
 
-        switch (nsError.domain, nsError.code) {
-        case (Constants.oauthErrorDomain,
-              WordPressComOAuthError.invalidOneTimePassword.rawValue):
+        switch error {
+        case let WordPressComOAuthError.endpointError(failure) where failure.kind == .invalidOneTimePassword:
             return .bad2FACode
-        case (Constants.oauthErrorDomain,
-              WordPressComOAuthError.invalidTwoStepCode.rawValue):
+        case let WordPressComOAuthError.endpointError(failure) where failure.kind == .invalidTwoStepCode:
             // Invalid 2FA during social login
-            if let newNonce = (error as NSError).userInfo[WordPressComOAuthClient.WordPressComOAuthErrorNewNonceKey] as? String {
+            if let newNonce = failure.newNonce {
                 loginFields.nonceInfo?.updateNonce(with: newNonce)
             }
             return .bad2FACode
@@ -235,7 +233,6 @@ private extension WPCom2FALoginViewModel {
         // https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/blob/c0d16065c5b5a8e54dbb54cc31c7b3cf28f584f9/WordPressAuthenticator/Signin/Login2FAViewController.swift#L218
         // swiftlint:enable line_length
         static let maximumCodeLength = 8
-        static let oauthErrorDomain = "WordPressComOAuthError"
     }
 }
 

@@ -175,8 +175,8 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     func displayErrorNotice(_ productName: String) {
-        notice =  Notice(title: "Update Inventory Error",
-                         message: "There was an error updating \(productName). Please try again.",
+        notice =  Notice(title: Localization.errorNoticetitle,
+                         message: String.localizedStringWithFormat(Localization.errorNoticeMessage, productName),
                          feedbackType: .error)
     }
 }
@@ -194,5 +194,19 @@ private extension UpdateProductInventoryViewModel {
 
         isPrimaryButtonLoading = false
         updateQuantityButtonMode = .increaseOnce
+    }
+}
+
+private extension UpdateProductInventoryViewModel {
+    struct Localization {
+        static let errorNoticetitle = NSLocalizedString(
+            "errorNoticeTitle.displayErrorNotice.UpdateProductInventoryViewModel",
+            value: "Update Inventory Error",
+            comment: "Title of the notice when inventory fails to be updated.")
+        static let errorNoticeMessage = NSLocalizedString(
+            "errorNoticeMessage.displayErrorNotice.UpdateProductInventoryViewModel",
+            value: "There was an error updating %@. Please try again.",
+            comment: "Message of the notice when inventory fails to be updated" +
+            "Reads like: 'There was an error updating My Product Name. Please try again.'")
     }
 }

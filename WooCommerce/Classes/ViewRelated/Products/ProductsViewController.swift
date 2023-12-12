@@ -1474,7 +1474,8 @@ private extension ProductsViewController {
         static let updateErrorNotice = NSLocalizedString("Cannot update products",
                                                          comment: "Title of the notice when there is an error updating selected products")
         static let updateInventoryNotice = NSLocalizedString(
-            "Quantity updated: %@",
+            "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem",
+            value: "Quantity updated: %@",
             comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
             "Reads like: 'Quantity updated: 2,345'"
         )

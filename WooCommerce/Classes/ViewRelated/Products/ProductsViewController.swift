@@ -297,10 +297,17 @@ private extension ProductsViewController {
 
                 do {
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
-                    self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem, 
+                    self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
                                                                                           siteID: self.viewModel.siteID,
                                                                                           onUpdatedInventory: {
-                        self.presentNotice(title: "Quantity updated") })), animated: true)
+                        var stockQuantity: String {
+                            guard let stock = scannedItem.inventoryItem.stockQuantity else {
+                                return ""
+                            }
+                            return "\(stock)"
+                        }
+
+                        self.presentNotice(title: "Quantity updated: \(stockQuantity)")})), animated: true)
                 } catch {
                     DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
                 }

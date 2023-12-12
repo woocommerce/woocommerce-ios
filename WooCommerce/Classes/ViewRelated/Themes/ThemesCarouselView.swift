@@ -67,6 +67,8 @@ private extension ThemesCarouselView {
                 .secondaryBodyStyle()
             Spacer()
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: Layout.imageHeight)
     }
 
     var errorView: some View {
@@ -83,6 +85,8 @@ private extension ThemesCarouselView {
             }
             Spacer()
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: Layout.imageHeight)
     }
 
     func themeImageCard(url: URL) -> some View {

@@ -301,7 +301,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Selected product view model to render.
     /// Used to open the product details in `ProductDiscountViewModel`.
     ///
-    @Published var selectedProductViewModel: ProductDiscountViewModel? = nil
+    @Published var discountViewModel: ProductDiscountViewModel? = nil
 
     /// Configurable bundle product view model to render.
     /// Used to open the bundle product configuration screen.
@@ -527,11 +527,21 @@ final class EditableOrderViewModel: ObservableObject {
         syncInitialSelectedState()
     }
 
-    /// Selects an order item by setting the `selectedProductViewModel`.
+    /// Sets `discountViewModel` based on the provided order item id.
     ///
-    /// - Parameter id: ID of the order item to select
-    func selectOrderItem(_ id: Int64) {
-        selectedProductViewModel = createSelectedProductViewModel(itemID: id)
+    func setDiscountViewModel(_ itemID: Int64) {
+        // Find order item based on the provided id.
+        // Creates the product row view model needed for `ProductInOrderViewModel`.
+        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
+              let rowViewModel = createProductRowViewModel(for: orderItem, childItems: []) else {
+            return discountViewModel = nil
+        }
+
+        discountViewModel = .init(imageURL: rowViewModel.productRow.imageURL,
+                                  name: rowViewModel.productRow.name,
+                                  priceSummary: rowViewModel.productRow.priceSummaryViewModel,
+                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem),
+                                  productRowViewModel: rowViewModel.productRow.productViewModel)
     }
 
     /// Removes an item from the order.
@@ -1818,23 +1828,6 @@ private extension EditableOrderViewModel {
                                      discount: discount ?? currentDiscount(on: item),
                                      baseSubtotal: baseSubtotal(on: item),
                                      bundleConfiguration: bundleConfiguration)
-    }
-
-    /// Creates a `ProductDiscountViewModel` based on the provided order item id.
-    ///
-    func createSelectedProductViewModel(itemID: Int64) -> ProductDiscountViewModel? {
-        // Find order item based on the provided id.
-        // Creates the product row view model needed for `ProductInOrderViewModel`.
-        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-              let rowViewModel = createProductRowViewModel(for: orderItem, childItems: []) else {
-            return nil
-        }
-
-        return ProductDiscountViewModel(imageURL: rowViewModel.productRow.imageURL,
-                                        name: rowViewModel.productRow.name,
-                                        priceSummary: rowViewModel.productRow.priceSummaryViewModel,
-                                        discountConfiguration: addProductDiscountConfiguration(on: orderItem),
-                                        productRowViewModel: rowViewModel.productRow.productViewModel)
     }
 
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`

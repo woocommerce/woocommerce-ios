@@ -453,9 +453,9 @@ private struct ProductsSection: View {
                                            flow: flow,
                                            shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
                                            shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
-                                           onAddDiscount: viewModel.selectOrderItem)
-                    .sheet(item: $viewModel.selectedProductViewModel, content: { selectedProduct in
-                        ProductDiscountView(viewModel: selectedProduct)
+                                           onAddDiscount: viewModel.setDiscountViewModel)
+                    .sheet(item: $viewModel.discountViewModel, content: { discountViewModel in
+                        ProductDiscountView(viewModel: discountViewModel)
                     })
                     .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
                         ConfigurableBundleProductView(viewModel: configurableProductViewModel)

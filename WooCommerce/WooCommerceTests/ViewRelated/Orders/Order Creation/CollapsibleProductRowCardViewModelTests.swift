@@ -49,6 +49,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let viewModel = CollapsibleProductRowCardViewModel(imageURL: nil,
                                                            name: "",
                                                            sku: nil,
+                                                           price: nil,
                                                            productTypeDescription: "",
                                                            attributes: [],
                                                            stockStatus: .inStock,
@@ -151,7 +152,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = createViewModel(productViewModel: .init(product: product, discount: discount, quantity: 1))
+        let viewModel = createViewModel(price: price, productViewModel: .init(product: product, discount: discount, quantity: 1))
 
         // Then
         assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
@@ -165,7 +166,8 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = createViewModel(productViewModel: .init(product: product, discount: discount, quantity: quantity),
+        let viewModel = createViewModel(price: price,
+                                        productViewModel: .init(product: product, discount: discount, quantity: quantity),
                                         stepperViewModel: .init(quantity: quantity,
                                                                 name: "",
                                                                 quantityUpdatedCallback: { _ in }))
@@ -297,6 +299,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                          imageURL: URL? = nil,
                          name: String = "",
                          sku: String? = nil,
+                         price: String? = nil,
                          productTypeDescription: String = "",
                          attributes: [VariationAttributeViewModel] = [],
                          stockStatus: ProductStockStatus = .inStock,
@@ -313,6 +316,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            imageURL: imageURL,
                                            name: name,
                                            sku: sku,
+                                           price: price,
                                            productTypeDescription: productTypeDescription,
                                            attributes: attributes,
                                            stockStatus: stockStatus,

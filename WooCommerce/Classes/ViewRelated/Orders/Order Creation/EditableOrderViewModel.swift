@@ -593,8 +593,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                    discount: passingDiscountValue,
                                                    name: item.name,
                                                    quantity: item.quantity,
-                                                   displayMode: .attributes(attributes),
-                                                   pricedIndividually: pricedIndividually)
+                                                   displayMode: .attributes(attributes))
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
                                                            name: item.name,
                                                            quantityUpdatedCallback: { [weak self] _ in
@@ -608,6 +607,8 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   imageURL: variation.imageURL,
                                                                   name: item.name,
                                                                   sku: variation.sku,
+                                                                  price: variation.price,
+                                                                  pricedIndividually: pricedIndividually,
                                                                   productTypeDescription: ProductType.variable.description,
                                                                   attributes: attributes,
                                                                   stockStatus: variation.stockStatus,
@@ -633,8 +634,7 @@ final class EditableOrderViewModel: ObservableObject {
             let productViewModel = ProductRowViewModel(id: item.itemID,
                                                    product: product,
                                                    discount: passingDiscountValue,
-                                                   quantity: item.quantity,
-                                                   pricedIndividually: pricedIndividually)
+                                                   quantity: item.quantity)
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
                                                            name: item.name,
                                                            quantityUpdatedCallback: { [weak self] _ in
@@ -650,6 +650,8 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   imageURL: product.imageURL,
                                                                   name: item.name,
                                                                   sku: product.sku,
+                                                                  price: product.price,
+                                                                  pricedIndividually: pricedIndividually,
                                                                   productTypeDescription: product.productType.description,
                                                                   attributes: [],
                                                                   stockStatus: product.productStockStatus,

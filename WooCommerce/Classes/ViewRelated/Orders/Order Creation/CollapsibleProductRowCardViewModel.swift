@@ -54,6 +54,10 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     ///
     let skuLabel: String
 
+    /// Product price
+    ///
+    let price: String?
+
     /// Label showing product details for an order item.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
     ///
@@ -72,6 +76,8 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          imageURL: URL?,
          name: String,
          sku: String?,
+         price: String?,
+         pricedIndividually: Bool = true,
          productTypeDescription: String,
          attributes: [VariationAttributeViewModel],
          stockStatus: ProductStockStatus,
@@ -88,6 +94,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.configure = configure
         self.imageURL = imageURL
         self.name = name
+        self.price = price
         skuLabel = CollapsibleProductRowCardViewModel.createSKULabel(sku: sku)
         productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
                                                                                            productTypeDescription: productTypeDescription,
@@ -97,9 +104,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                                                            manageStock: manageStock)
         self.productViewModel = productViewModel
         self.stepperViewModel = stepperViewModel
-        self.priceSummaryViewModel = .init(pricedIndividually: productViewModel.pricedIndividually,
+        self.priceSummaryViewModel = .init(pricedIndividually: pricedIndividually,
                                            quantity: stepperViewModel.quantity,
-                                           price: productViewModel.price)
+                                           price: price)
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
 
@@ -120,7 +127,7 @@ extension CollapsibleProductRowCardViewModel {
     /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///
     var totalPriceAfterDiscountLabel: String? {
-        guard let price = productViewModel.price,
+        guard let price,
               let priceDecimal = currencyFormatter.convertToDecimal(price) else {
             return nil
         }

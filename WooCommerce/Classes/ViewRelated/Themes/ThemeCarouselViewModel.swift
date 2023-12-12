@@ -25,6 +25,7 @@ final class ThemeCarouselViewModel: ObservableObject {
             let themes = try await loadSuggestedThemes()
             state = .content(themes: themes)
         } catch {
+            DDLogError("⛔️ Error loading suggested themes: \(error)")
             state = .error
         }
     }

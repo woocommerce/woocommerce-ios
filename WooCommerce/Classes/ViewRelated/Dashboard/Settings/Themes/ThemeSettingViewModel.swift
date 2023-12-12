@@ -19,13 +19,13 @@ final class ThemeSettingViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
-        self.carouselViewModel = .init()
+        self.carouselViewModel = .init(stores: stores)
     }
 
     @MainActor
     func updateCurrentThemeName() async {
         loadingCurrentTheme = true
-        let theme = await loadCurrentThemeName()
+        let theme = await loadCurrentTheme()
         currentThemeName = theme?.name ?? ""
         loadingCurrentTheme = false
         await carouselViewModel.fetchThemes(currentThemeID: theme?.id)
@@ -35,7 +35,7 @@ final class ThemeSettingViewModel: ObservableObject {
 private extension ThemeSettingViewModel {
 
     @MainActor
-    func loadCurrentThemeName() async -> WordPressTheme? {
+    func loadCurrentTheme() async -> WordPressTheme? {
         await withCheckedContinuation { continuation in
             stores.dispatch(WordPressThemeAction.loadCurrentTheme(siteID: siteID) { result in
                 switch result {

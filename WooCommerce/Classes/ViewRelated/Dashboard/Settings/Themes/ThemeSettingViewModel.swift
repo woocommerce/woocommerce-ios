@@ -25,14 +25,10 @@ final class ThemeSettingViewModel: ObservableObject {
     @MainActor
     func updateCurrentThemeName() async {
         loadingCurrentTheme = true
-        guard let theme = await loadCurrentThemeName() else {
-            loadingCurrentTheme = false
-            await carouselViewModel.fetchThemes()
-            return
-        }
-        currentThemeName = theme.name
+        let theme = await loadCurrentThemeName()
+        currentThemeName = theme?.name ?? ""
         loadingCurrentTheme = false
-        await carouselViewModel.fetchThemes(currentThemeID: theme.id)
+        await carouselViewModel.fetchThemes(currentThemeID: theme?.id)
     }
 }
 

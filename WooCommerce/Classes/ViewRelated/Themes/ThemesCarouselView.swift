@@ -5,15 +5,6 @@ import struct Yosemite.WordPressTheme
 /// View to display a list of WordPress themes
 ///
 struct ThemesCarouselView: View {
-    /// Tuple array containing theme name and theme Url string pair.
-    let themesInfo: [(name: String, url: String)] = [
-        (name: "Google", url: "google.com"),
-        (name: "Facebook", url: "facebook.com"),
-        (name: "WordPress", url: "wordpress.com"),
-        (name: "Microsoft", url: "microsoft.com"),
-        (name: "Amazon", url: "amazon.com"),
-        (name: "Apple", url: "apple.com")
-    ]
 
     @ObservedObject private var viewModel: ThemeCarouselViewModel
 
@@ -34,29 +25,46 @@ struct ThemesCarouselView: View {
     }
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack() {
-
-                // Demo for correct state
-                ForEach(themesInfo, id: \.name) { theme in
-                    if let themeUrl = getThemeUrl(themeUrl: theme.url) {
-                        themeImageCard(url: themeUrl)
-                    } else {
-                        themeNameCard(name: theme.name)
+        VStack {
+            loadingView
+                .renderedIf(viewModel.fetchingThemes)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack() {
+                    
+                    // Theme list
+                    ForEach(viewModel.themes) { theme in
+                        if let themeUrl = getThemeUrl(themeUrl: theme.demoURI) {
+                            themeImageCard(url: themeUrl)
+                        } else {
+                            themeNameCard(name: theme.name)
+                        }
                     }
+                    
+                    // Message at the end of the carousel
+                    lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
                 }
-
-                // Demo for error state
-                themeNameCard(name: themesInfo[0].name)
-
-                // Message at the end of the carousel
-                lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
             }
+            .renderedIf(viewModel.themes.isNotEmpty)
+        }
+        .task {
+            await viewModel.fetchThemes()
         }
     }
 }
 
 private extension ThemesCarouselView {
+    var loadingView: some View {
+        VStack {
+            Spacer()
+            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+            Text("Loading themes...")
+                .secondaryBodyStyle()
+            Spacer()
+        }
+        .frame(width: Layout.imageWidth, height: Layout.imageHeight)
+    }
+
     func themeImageCard(url: URL) -> some View {
         KFImage(url)
             .resizable()

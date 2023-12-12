@@ -3,7 +3,7 @@ import Codegen
 
 /// Details of a WordPress theme
 ///
-public struct WordPressTheme: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct WordPressTheme: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, Identifiable {
 
     /// ID of the theme
     public let id: String

@@ -115,4 +115,48 @@ final class WordPressThemeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - installTheme tests
+
+    func test_installTheme_returns_installed_theme_on_success() throws {
+        // Given
+        let sampleTheme = WordPressTheme.fake().copy(name: "Tsubaki")
+        remote.whenInstallingTheme(thenReturn: .success(sampleTheme))
+        let store = WordPressThemeStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(WordPressThemeAction.installTheme(sampleTheme, siteID: 123, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let theme = try result.get()
+        XCTAssertEqual(theme.name, "Tsubaki")
+    }
+
+    func test_installTheme_returns_error_on_failure() throws {
+        // Given
+        remote.whenInstallingTheme(thenReturn: .failure(NetworkError.timeout()))
+        let store = WordPressThemeStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(WordPressThemeAction.installTheme(.fake(), siteID: 123, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }

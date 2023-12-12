@@ -56,4 +56,27 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.state, .error)
     }
+
+    func test_fetchThemes_filters_out_matching_theme_id() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ThemesCarouselViewModel(stores: stores)
+        let theme1: WordPressTheme = .fake().copy(name: "tsubaki")
+        let theme2: WordPressTheme = .fake().copy(name: "tazza")
+        let expectedThemes: [WordPressTheme] = [theme1, theme2]
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case .loadSuggestedThemes(let onCompletion):
+                onCompletion(.success(expectedThemes))
+            default:
+                break
+            }
+        }
+        await viewModel.fetchThemes(currentThemeID: theme1.id)
+
+        // Then
+        XCTAssertEqual(viewModel.state, .content(themes: [theme2]))
+    }
 }

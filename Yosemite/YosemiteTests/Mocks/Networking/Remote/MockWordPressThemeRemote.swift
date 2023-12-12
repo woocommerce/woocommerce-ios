@@ -10,6 +10,9 @@ final class MockWordPressThemeRemote {
     private var stubbedCurrentTheme: WordPressTheme?
     private var stubbedCurrentThemeError: Error?
 
+    private var stubbedInstallTheme: WordPressTheme?
+    private var stubbedInstallThemeError: Error?
+
     func whenLoadingSuggestedTheme(thenReturn result: Result<[Networking.WordPressTheme], Error>) {
         switch result {
         case .success(let themes):
@@ -25,6 +28,15 @@ final class MockWordPressThemeRemote {
             stubbedCurrentTheme = theme
         case .failure(let error):
             stubbedCurrentThemeError = error
+        }
+    }
+
+    func whenInstallingTheme(thenReturn result: Result<Networking.WordPressTheme, Error>) {
+        switch result {
+        case .success(let theme):
+            stubbedInstallTheme = theme
+        case .failure(let error):
+            stubbedInstallThemeError = error
         }
     }
 }
@@ -45,5 +57,15 @@ extension MockWordPressThemeRemote: WordPressThemeRemoteProtocol {
             throw NetworkError.notFound()
         }
         return stubbedCurrentTheme
+    }
+
+    func installTheme(_ theme: Networking.WordPressTheme, siteID: Int64) async throws -> WordPressTheme {
+        if let stubbedInstallThemeError {
+            throw stubbedInstallThemeError
+        }
+        guard let stubbedInstallTheme else {
+            throw NetworkError.notFound()
+        }
+        return stubbedInstallTheme
     }
 }

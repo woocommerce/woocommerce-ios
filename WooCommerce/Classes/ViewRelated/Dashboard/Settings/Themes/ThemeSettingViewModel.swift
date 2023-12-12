@@ -25,24 +25,30 @@ final class ThemeSettingViewModel: ObservableObject {
     @MainActor
     func updateCurrentThemeName() async {
         loadingCurrentTheme = true
-        currentThemeName = await loadCurrentThemeName()
+        guard let theme = await loadCurrentThemeName() else {
+            loadingCurrentTheme = false
+            await carouselViewModel.fetchThemes()
+            return
+        }
+        currentThemeName = theme.name
         loadingCurrentTheme = false
+        await carouselViewModel.fetchThemes(currentThemeID: theme.id)
     }
 }
 
 private extension ThemeSettingViewModel {
 
     @MainActor
-    func loadCurrentThemeName() async -> String {
+    func loadCurrentThemeName() async -> WordPressTheme? {
         await withCheckedContinuation { continuation in
             stores.dispatch(WordPressThemeAction.loadCurrentTheme(siteID: siteID) { result in
                 switch result {
                 case .success(let theme):
-                    continuation.resume(returning: theme.name)
+                    continuation.resume(returning: theme)
                 case .failure(let error):
                     DDLogError("⛔️ Error loading current theme: \(error)")
                     // TODO: #11291 - analytics
-                    continuation.resume(returning: "")
+                    continuation.resume(returning: nil)
                 }
             })
         }

@@ -25,35 +25,30 @@ struct ThemesCarouselView: View {
     }
 
     var body: some View {
-        Group {
-            switch viewModel.state {
-            case .loading:
-                loadingView
-
-            case .content(let themes):
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack() {
-
-                        // Theme list
-                        ForEach(themes) { theme in
-                            if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
-                                themeImageCard(url: themeImageURL)
-                            } else {
-                                themeNameCard(name: theme.name)
-                            }
+        switch viewModel.state {
+        case .loading:
+            loadingView
+            
+        case .content(let themes):
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack() {
+                    
+                    // Theme list
+                    ForEach(themes) { theme in
+                        if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
+                            themeImageCard(url: themeImageURL)
+                        } else {
+                            themeNameCard(name: theme.name)
                         }
-
-                        // Message at the end of the carousel
-                        lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
                     }
+                    
+                    // Message at the end of the carousel
+                    lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
                 }
-
-            case .error:
-                errorView
             }
-        }
-        .task {
-            await viewModel.fetchThemes()
+            
+        case .error:
+            errorView
         }
     }
 }

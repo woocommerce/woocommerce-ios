@@ -19,10 +19,11 @@ final class ThemesCarouselViewModel: ObservableObject {
     }
 
     @MainActor
-    func fetchThemes() async {
+    func fetchThemes(currentThemeID: String? = nil) async {
         state = .loading
         do {
             let themes = try await loadSuggestedThemes()
+                .filter { $0.id != currentThemeID }
             state = .content(themes: themes)
         } catch {
             DDLogError("⛔️ Error loading suggested themes: \(error)")

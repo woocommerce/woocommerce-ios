@@ -51,7 +51,11 @@ struct ThemeSettingView: View {
 
                 Section(Localization.tryOtherLook) {
                     VStack {
-                        // TODO: add slider here
+                        Spacer()
+                        ThemesCarouselView(
+                            lastMessageHeading: Localization.lastMessageHeading,
+                            lastMessageContent: Localization.lastMessageContent
+                        )
                         Spacer()
                     }
                 }
@@ -97,6 +101,18 @@ private extension ThemeSettingView {
             "themeSettingView.cancelButton",
             value: "Cancel",
             comment: "Button to dismiss the theme settings screen"
+        )
+
+        static let lastMessageHeading = NSLocalizedString(
+            "themeSettingView.lastMessageHeading",
+            value: "Looking for more?",
+            comment: "The heading of the message shown at the end of the carousel on the theme settings screen"
+        )
+
+        static let lastMessageContent = NSLocalizedString(
+            "themeSettingView.lastMessageContent",
+            value: "Find your perfect theme in the WooCommerce Theme Store.",
+            comment: "The content of the message shown at the end of the carousel on the theme settings screen"
         )
     }
 }

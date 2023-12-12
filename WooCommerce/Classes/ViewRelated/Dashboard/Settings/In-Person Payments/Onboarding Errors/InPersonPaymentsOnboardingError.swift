@@ -18,6 +18,7 @@ struct InPersonPaymentsOnboardingError: View {
             InPersonPaymentsOnboardingErrorMainContentView(
                 title: title,
                 message: message,
+                secondaryMessage: nil,
                 image: image,
                 supportLink: supportLink
             )

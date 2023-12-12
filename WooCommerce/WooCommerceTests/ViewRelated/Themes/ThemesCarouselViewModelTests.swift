@@ -61,8 +61,8 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ThemesCarouselViewModel(stores: stores)
-        let theme1: WordPressTheme = .fake().copy(name: "tsubaki")
-        let theme2: WordPressTheme = .fake().copy(name: "tazza")
+        let theme1: WordPressTheme = .fake().copy(id: "tsubaki")
+        let theme2: WordPressTheme = .fake().copy(id: "tazza")
         let expectedThemes: [WordPressTheme] = [theme1, theme2]
 
         // When

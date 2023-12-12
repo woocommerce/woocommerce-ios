@@ -156,6 +156,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     @Published var isPrimaryButtonLoading: Bool = false
+    @Published var isManageStockButtonLoading: Bool = false
     @Published var enableQuantityButton: Bool = true
     @Published var showLoadingName: Bool = true
     @Published var viewMode: ViewMode = .stockCanBeManaged
@@ -191,9 +192,13 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
     func onTapManageStock() async throws {
         do {
+            isManageStockButtonLoading = true
             inventoryItem = try await inventoryItem.enableManageStock(stores: stores)
+            isManageStockButtonLoading = false
             refresh()
-        } catch {}
+        } catch {
+            isManageStockButtonLoading = false
+        }
     }
 
     func productDetailsView() -> some View {

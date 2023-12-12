@@ -79,7 +79,7 @@ struct UpdateProductInventoryView: View {
                                 try? await viewModel.onTapManageStock()
                             }
                         }
-                        .buttonStyle(LinkButtonStyle())
+                        .buttonStyle(LinkLoadingButtonStyle(isLoading: viewModel.isManageStockButtonLoading))
                         .padding([.top, .bottom], Layout.mediumSpacing)
                         .renderedIf(viewModel.viewMode == .stockManagementNeedsToBeEnabled)
 

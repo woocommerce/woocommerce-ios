@@ -159,23 +159,7 @@ private extension StoreOnboardingViewModel {
 
         return (tasksFromServer + localTasks)
             .sorted()
-            .map { .init(task: $0, badgeText: badgeText(task: $0.type)) }
-    }
-
-    func badgeText(task: StoreOnboardingTask.TaskType) -> String? {
-        switch task {
-        case .addFirstProduct:
-            let isEligibleForProductDescriptionAI: Bool = {
-                guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
-                    return false
-                }
-                let eligibilityChecker = ProductFormAIEligibilityChecker(site: stores.sessionManager.defaultSite, featureFlagService: featureFlagService)
-                return eligibilityChecker.isFeatureEnabled(.description)
-            }()
-            return isEligibleForProductDescriptionAI ? StoreOnboardingTaskViewModel.Localization.AddFirstProduct.badgeText: nil
-        default:
-            return nil
-        }
+            .map { .init(task: $0, badgeText: nil) }
     }
 
     @MainActor

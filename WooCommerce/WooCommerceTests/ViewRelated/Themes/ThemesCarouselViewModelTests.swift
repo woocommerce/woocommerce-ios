@@ -1,28 +1,59 @@
 import XCTest
+@testable import WooCommerce
+@testable import Yosemite
 
+@MainActor
 final class ThemesCarouselViewModelTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func test_state_is_loading_initially() {
+        // Given
+        let viewModel = ThemesCarouselViewModel()
+
+        // When
+        let state = viewModel.state
+
+        // Then
+        XCTAssertEqual(state, .loading)
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+    func test_state_is_content_after_loading_themes() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ThemesCarouselViewModel(stores: stores)
+        let expectedThemes: [WordPressTheme] = [.fake().copy(name: "Tsubaki")]
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case .loadSuggestedThemes(let onCompletion):
+                onCompletion(.success(expectedThemes))
+            default:
+                break
+            }
         }
+        await viewModel.fetchThemes()
+
+        // Then
+        XCTAssertEqual(viewModel.state, .content(themes: expectedThemes))
     }
 
+    func test_state_is_error_after_loading_themes_failed() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ThemesCarouselViewModel(stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case .loadSuggestedThemes(let onCompletion):
+                onCompletion(.failure(NSError(domain: "Test", code: 503)))
+            default:
+                break
+            }
+        }
+        await viewModel.fetchThemes()
+
+        // Then
+        XCTAssertEqual(viewModel.state, .error)
+    }
 }

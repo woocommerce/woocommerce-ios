@@ -4,7 +4,7 @@ import Yosemite
 /// View model for `ThemesCarouselView`
 ///
 final class ThemesCarouselViewModel: ObservableObject {
-    enum State {
+    enum State: Equatable {
         case loading
         case error
         case content(themes: [WordPressTheme])

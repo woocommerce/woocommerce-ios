@@ -2258,6 +2258,7 @@
 		DE7842ED26F061650030C792 /* NumberFormatter+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7842EC26F061650030C792 /* NumberFormatter+Localized.swift */; };
 		DE7842EF26F079A60030C792 /* NumberFormatter+LocalizedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7842EE26F079A60030C792 /* NumberFormatter+LocalizedTests.swift */; };
 		DE7842F726F2E9340030C792 /* UIViewController+Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7842F626F2E9340030C792 /* UIViewController+Connectivity.swift */; };
+		DE78DE422B2813E4002E58DE /* ThemeCarouselViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE412B2813E4002E58DE /* ThemeCarouselViewModel.swift */; };
 		DE792E1826EF35F40071200C /* ConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE792E1726EF35F40071200C /* ConnectivityObserver.swift */; };
 		DE792E1B26EF37ED0071200C /* DefaultConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE792E1A26EF37ED0071200C /* DefaultConnectivityObserver.swift */; };
 		DE7B479027A153C20018742E /* CouponSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */; };
@@ -4883,6 +4884,7 @@
 		DE7842EC26F061650030C792 /* NumberFormatter+Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+Localized.swift"; sourceTree = "<group>"; };
 		DE7842EE26F079A60030C792 /* NumberFormatter+LocalizedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+LocalizedTests.swift"; sourceTree = "<group>"; };
 		DE7842F626F2E9340030C792 /* UIViewController+Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Connectivity.swift"; sourceTree = "<group>"; };
+		DE78DE412B2813E4002E58DE /* ThemeCarouselViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCarouselViewModel.swift; sourceTree = "<group>"; };
 		DE792E1726EF35F40071200C /* ConnectivityObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityObserver.swift; sourceTree = "<group>"; };
 		DE792E1A26EF37ED0071200C /* DefaultConnectivityObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConnectivityObserver.swift; sourceTree = "<group>"; };
 		DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponSearchUICommand.swift; sourceTree = "<group>"; };
@@ -8515,6 +8517,7 @@
 			children = (
 				86023FA92B15CAD800A28F07 /* ThemesEligibilityUseCase.swift */,
 				86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */,
+				DE78DE412B2813E4002E58DE /* ThemeCarouselViewModel.swift */,
 				8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */,
 			);
 			path = Themes;
@@ -13629,6 +13632,7 @@
 				DEF8CF0F29A890E900800A60 /* JetpackBenefitsViewModel.swift in Sources */,
 				B946880E29B627EB000646B0 /* SearchableActivityConvertable.swift in Sources */,
 				DE621F6A29D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift in Sources */,
+				DE78DE422B2813E4002E58DE /* ThemeCarouselViewModel.swift in Sources */,
 				DEE183F1292E0ED0008818AB /* JetpackSetupInterruptedView.swift in Sources */,
 				028A465329597A91001CF6CE /* StoreCreationSellingPlatformsQuestionViewModel.swift in Sources */,
 				027CB045295D7B8B00F98F7C /* StoreCreationCountryQuestionViewModel.swift in Sources */,

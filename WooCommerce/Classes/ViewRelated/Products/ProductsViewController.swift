@@ -299,8 +299,8 @@ private extension ProductsViewController {
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
                     self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
                                                                                           siteID: self.viewModel.siteID,
-                                                                                          onUpdatedInventory: {
-                        let noticeMessage = self.prepareNotice(forStockQuantity: scannedItem.inventoryItem.stockQuantity)
+                                                                                          onUpdatedInventory: { newQuantity in
+                        let noticeMessage = String.localizedStringWithFormat(Localization.updateInventoryNotice, newQuantity)
                         self.presentNotice(title: noticeMessage)
                     })), animated: true)
                 } catch {
@@ -318,14 +318,6 @@ private extension ProductsViewController {
 
     @objc func addProduct(_ sender: UIBarButtonItem) {
         addProduct(sourceBarButtonItem: sender, isFirstProduct: false)
-    }
-
-    private func prepareNotice(forStockQuantity stockQuantity: Decimal? = nil) -> String {
-        guard let stockQuantity = stockQuantity else {
-            return Localization.updateInventoryNotice
-        }
-        let stockQuantityToString = "\(stockQuantity)"
-        return String.localizedStringWithFormat(Localization.updateInventoryNotice, stockQuantityToString)
     }
 
     func addProduct(sourceBarButtonItem: UIBarButtonItem? = nil,

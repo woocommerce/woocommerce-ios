@@ -12,9 +12,9 @@ struct UpdateProductInventoryView: View {
 
     @State private var isKeyboardVisible = false
 
-    var onUpdatedInventory: (() -> ())
+    var onUpdatedInventory: ((String) -> ())
 
-    init(inventoryItem: InventoryItem, siteID: Int64, onUpdatedInventory: @escaping (() -> ())) {
+    init(inventoryItem: InventoryItem, siteID: Int64, onUpdatedInventory: @escaping ((String) -> ())) {
         self.onUpdatedInventory = onUpdatedInventory
         viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem, siteID: siteID)
     }
@@ -86,7 +86,7 @@ struct UpdateProductInventoryView: View {
                                 Task { @MainActor in
                                     do {
                                         try await viewModel.onTapUpdateStockQuantity()
-                                        onUpdatedInventory()
+                                        onUpdatedInventory(viewModel.quantity)
                                         dismiss()
                                     } catch {
                                         let productName = viewModel.name

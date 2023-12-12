@@ -19,9 +19,12 @@ struct UpdateProductInventoryView: View {
         viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem, siteID: siteID)
     }
 
-    private func displayErrorNotice() {
-        // Assign notice
-        viewModel.displayErrorNotice()
+    private func displayErrorNotice(_ productName: String, _ error: Error? = nil) {
+        if let error = error {
+            DDLogError("Update inventory error: \(error)")
+        }
+        viewModel.displayErrorNotice(productName)
+
         // Hide keyboard
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                         to: nil, from: nil, for: nil)
@@ -86,7 +89,8 @@ struct UpdateProductInventoryView: View {
                                         onUpdatedInventory()
                                         dismiss()
                                     } catch {
-                                        displayErrorNotice()
+                                        let productName = viewModel.name
+                                        displayErrorNotice(productName, error)
                                     }
                                 }
                             }

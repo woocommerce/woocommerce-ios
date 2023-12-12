@@ -68,18 +68,21 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.imageURL?.absoluteString, url)
     }
 
-    func test_notice_when_displayErrorNotice_then_displays_notice() {
+    func test_notice_when_displayErrorNotice_in_invoked_then_displays_correct_error_notice() {
         // Given
-        let product = Product.fake()
+        let product = Product.fake().copy(name: "Some Product")
         let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID)
 
         XCTAssertNil(viewModel.notice, "Precondition: Notice should be nil on init")
 
         // When
-        viewModel.displayErrorNotice()
+        viewModel.displayErrorNotice(product.name)
 
         // Then
         XCTAssertNotNil(viewModel.notice)
+        XCTAssertEqual(viewModel.notice?.title, "Update Inventory Error")
+        XCTAssertEqual(viewModel.notice?.message, "There was an error updating Some Product. Please try again")
+        XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 
     func test_name_when_we_pass_a_product_it_shows_right_name() {

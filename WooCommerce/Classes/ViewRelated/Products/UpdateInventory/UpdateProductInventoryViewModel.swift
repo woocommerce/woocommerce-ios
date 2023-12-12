@@ -174,8 +174,10 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         }
     }
 
-    func displayErrorNotice() {
-        notice = Notice(title: "There was an error updating ", feedbackType: .error)
+    func displayErrorNotice(_ productName: String) {
+        notice =  Notice(title: "Update Inventory Error",
+                         message: "There was an error updating \(productName). Please try again",
+                         feedbackType: .error)
     }
 }
 

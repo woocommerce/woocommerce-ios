@@ -1981,6 +1981,7 @@
 		CE55F2D42B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */; };
 		CE55F2D62B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D52B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift */; };
 		CE55F2D82B23961B005D53D7 /* CollapsibleProductCardPriceSummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D72B23961B005D53D7 /* CollapsibleProductCardPriceSummaryViewModelTests.swift */; };
+		CE55F2DA2B28796E005D53D7 /* ProductDiscountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D92B28796E005D53D7 /* ProductDiscountViewModel.swift */; };
 		CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0321076C0100D73C1C /* NewNoteViewController.swift */; };
 		CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */; };
 		CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */; };
@@ -4591,6 +4592,7 @@
 		CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCardPriceSummaryViewModel.swift; sourceTree = "<group>"; };
 		CE55F2D52B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCardPriceSummary.swift; sourceTree = "<group>"; };
 		CE55F2D72B23961B005D53D7 /* CollapsibleProductCardPriceSummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCardPriceSummaryViewModelTests.swift; sourceTree = "<group>"; };
+		CE55F2D92B28796E005D53D7 /* ProductDiscountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDiscountViewModel.swift; sourceTree = "<group>"; };
 		CE583A0321076C0100D73C1C /* NewNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewController.swift; sourceTree = "<group>"; };
 		CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SwitchTableViewCell.xib; sourceTree = "<group>"; };
@@ -9636,6 +9638,7 @@
 			isa = PBXGroup;
 			children = (
 				683421632ACE9391009021D7 /* ProductDiscountView.swift */,
+				CE55F2D92B28796E005D53D7 /* ProductDiscountViewModel.swift */,
 				CCC284102768C18500F6CC8B /* ProductInOrder.swift */,
 				CC440E1D2770C6AF0074C264 /* ProductInOrderViewModel.swift */,
 				68D5094D2AD39BC900B6FFD5 /* DiscountLineDetailsView.swift */,
@@ -12688,6 +12691,7 @@
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				EEBDF7DA2A2EF69B00EFEF47 /* ShareProductCoordinator.swift in Sources */,
 				DEFB3011289904E300A620B3 /* WooSetupWebViewModel.swift in Sources */,
+				CE55F2DA2B28796E005D53D7 /* ProductDiscountViewModel.swift in Sources */,
 				022F2FA8295E7A14003A0A46 /* StoreCreationCountryButton.swift in Sources */,
 				6888A2CA2A66C42C0026F5C0 /* FullFeatureListViewModel.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,

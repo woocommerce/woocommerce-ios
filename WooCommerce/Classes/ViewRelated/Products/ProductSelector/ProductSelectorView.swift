@@ -110,13 +110,16 @@ struct ProductSelectorView: View {
                             }
                         }
                     }
-                    Button(doneButtonTitle) {
-                        viewModel.completeMultipleSelection()
-                        isPresented.toggle()
+
+                    if !viewModel.syncChangesImmediately {
+                        Button(doneButtonTitle) {
+                            viewModel.completeMultipleSelection()
+                            isPresented.toggle()
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .padding(Constants.defaultPadding)
+                        .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
                     }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding(Constants.defaultPadding)
-                    .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
 
                     if let variationListViewModel = variationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelector(
@@ -255,6 +258,7 @@ extension ProductSelectorView {
         let cancelButtonTitle: String?
         let productRowAccessibilityHint: String
         let variableProductRowAccessibilityHint: String
+        let syncAfterButtonTapped: Bool = true
     }
 }
 

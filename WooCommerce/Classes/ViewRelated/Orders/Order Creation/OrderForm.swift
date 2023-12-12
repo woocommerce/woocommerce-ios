@@ -35,6 +35,8 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        rootView.rootViewController = self
+
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             // Set presentation delegate to track the user dismiss flow event
             if let navigationController = navigationController {
@@ -98,6 +100,34 @@ private extension OrderFormHostingController {
     }
 }
 
+struct AdaptiveView<FirstView: View, SecondView: View>: View {
+    @Environment(\.horizontalSizeClass) var sizeClass
+
+    let secondView: SecondView
+    let firstView: FirstView
+
+    init(@ViewBuilder firstView: () -> FirstView, @ViewBuilder secondView: () -> SecondView) {
+        self.firstView = firstView()
+        self.secondView = secondView()
+    }
+
+    var body: some View {
+        if sizeClass == .regular {
+            // Layout for iPad in horizontally regular size class
+            HStack {
+                secondView
+                    .layoutPriority(1)
+                firstView
+                    .frame(minWidth: 400)
+            }
+        } else {
+            // Layout for iPhone or iPad in compact size class
+            // Adjust this part to display either of the views or a different view
+            firstView
+        }
+    }
+}
+
 /// View to create or edit an order
 ///
 struct OrderForm: View {
@@ -106,6 +136,8 @@ struct OrderForm: View {
     var dismissHandler: (() -> Void) = {}
 
     let flow: WooAnalyticsEvent.Orders.Flow
+
+    var rootViewController: UIViewController?
 
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -121,6 +153,25 @@ struct OrderForm: View {
     @State private var shouldShowInformationalCouponTooltip = false
 
     var body: some View {
+        AdaptiveView {
+            orderFormSummary
+        } secondView: {
+            if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                ProductSelectorView(configuration: ProductSelectorView.Configuration.splitViewAddProductToOrder(),
+                                    source: .orderForm(flow: flow),
+                                    isPresented: .constant(true),
+                                    viewModel: productSelectorViewModel)
+                .onDisappear {
+                    navigationButtonID = UUID()
+                }
+                .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                    ConfigurableBundleProductView(viewModel: viewModel)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder private var orderFormSummary: some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
                 ScrollView {
@@ -170,6 +221,9 @@ struct OrderForm: View {
 
                             Spacer(minLength: Layout.sectionSpacing)
                         }
+
+                        createPaymentButton
+                        .renderedIf(viewModel.flow == .creation)
 
                         VStack(spacing: Layout.noSpacing) {
                             Group {
@@ -266,6 +320,31 @@ struct OrderForm: View {
         .notice($viewModel.fixedNotice, autoDismiss: false)
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
+        }
+    }
+
+    @ViewBuilder private var createPaymentButton: some View {
+        Group {
+            Button {
+                viewModel.collectPayment()
+            } label: {
+                Text("Collect Payment")
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding()
+
+            if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
+                LazyNavigationLink(
+                    destination: PaymentMethodsView(dismiss: {
+                        dismissHandler()
+                    },
+                                                    rootViewController: rootViewController,
+                                                    viewModel: collectPaymentViewModel),
+                    isActive: $viewModel.shouldPresentCollectPayment,
+                    label: {
+                        EmptyView()
+                    })
+            }
         }
     }
 
@@ -483,23 +562,23 @@ private struct ProductsSection: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground(modal: true)))
-            .sheet(isPresented: $viewModel.isProductSelectorPresented, onDismiss: {
-                scroll.scrollTo(addProductButton)
-            }, content: {
-                if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorNavigationView(
-                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                        source: .orderForm(flow: flow),
-                        isPresented: $viewModel.isProductSelectorPresented,
-                        viewModel: productSelectorViewModel)
-                    .onDisappear {
-                        navigationButtonID = UUID()
-                    }
-                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                        ConfigurableBundleProductView(viewModel: viewModel)
-                    }
-                }
-            })
+//            .sheet(isPresented: $viewModel.isProductSelectorPresented, onDismiss: {
+//                scroll.scrollTo(addProductButton)
+//            }, content: {
+//                if let productSelectorViewModel = viewModel.productSelectorViewModel {
+//                    ProductSelectorNavigationView(
+//                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
+//                        source: .orderForm(flow: flow),
+//                        isPresented: $viewModel.isProductSelectorPresented,
+//                        viewModel: productSelectorViewModel)
+//                    .onDisappear {
+//                        navigationButtonID = UUID()
+//                    }
+//                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+//                        ConfigurableBundleProductView(viewModel: viewModel)
+//                    }
+//                }
+//            })
             .actionSheet(isPresented: $showPermissionsSheet, content: {
                 ActionSheet(
                     title: Text(OrderForm.Localization.permissionsTitle),
@@ -655,6 +734,18 @@ private extension ProductSelectorView.Configuration {
             doneButtonTitlePluralFormat: Localization.doneButtonPlural,
             title: Localization.title,
             cancelButtonTitle: Localization.close,
+            productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+            variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+    }
+
+    static func splitViewAddProductToOrder() -> ProductSelectorView.Configuration {
+        ProductSelectorView.Configuration(
+            searchHeaderBackgroundColor: .listBackground,
+            prefersLargeTitle: false,
+            doneButtonTitleSingularFormat: "",
+            doneButtonTitlePluralFormat: "",
+            title: Localization.title,
+            cancelButtonTitle: nil,
             productRowAccessibilityHint: Localization.productRowAccessibilityHint,
             variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
     }

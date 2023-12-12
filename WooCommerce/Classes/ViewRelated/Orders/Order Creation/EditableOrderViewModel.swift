@@ -24,7 +24,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// The source of truth of whether the product selector is presented.
     /// This can be triggered by different CTAs like in the order form and close CTA in the product selector.
-    @Published var isProductSelectorPresented: Bool = false
+    @Published var isProductSelectorPresented: Bool = true
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -56,7 +56,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Current flow. For editing stores existing order state prior to applying any edits.
     ///
-    let flow: Flow
+    @Published var flow: Flow
 
     /// Indicates whether user has made any changes
     ///
@@ -182,6 +182,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Display the custom amount screen to edit it
     ///
     @Published var showEditCustomAmount: Bool = false
+
+    @Published var collectPaymentViewModel: PaymentMethodsViewModel? = nil
+
+    @Published var shouldPresentCollectPayment: Bool = false
 
     /// Defines if the toggle to store the tax rate in the selector should be enabled by default
     ///
@@ -731,6 +735,21 @@ final class EditableOrderViewModel: ObservableObject {
     /// Creates an order remotely using the provided order details.
     ///
     func createOrder() {
+        createOrder { [weak self] newOrder, usesGiftCard in
+            guard let self else { return }
+            self.onFinished(newOrder)
+            self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+        } onFailure: { [weak self] error, usesGiftCard in
+            guard let self else { return }
+            self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+            self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+        }
+
+        trackCreateButtonTapped()
+    }
+
+    func createOrder(onSuccess: @escaping (_ order: Order, _ usesGiftCard: Bool) -> Void,
+                     onFailure: @escaping (_ error: Error, _ usesGiftCard: Bool) -> Void) {
         performingNetworkRequest = true
 
         orderSynchronizer.commitAllChanges { [weak self] result, usesGiftCard in
@@ -739,15 +758,36 @@ final class EditableOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                self.onFinished(newOrder)
-                self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+                onSuccess(newOrder, usesGiftCard)
             case .failure(let error):
-                self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
-                self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+                onFailure(error, usesGiftCard)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
-        trackCreateButtonTapped()
+    }
+
+    func collectPayment() {
+        guard flow == .creation else {
+            return
+        }
+        createOrder { [weak self] order, usesGiftCard in
+            guard let self else { return }
+            let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+
+            self.collectPaymentViewModel = PaymentMethodsViewModel(
+                siteID: siteID,
+                orderID: order.orderID,
+                paymentLink: order.paymentURL,
+                formattedTotal: formattedTotal,
+                flow: .orderPayment) // make the flow specific to order creation?
+
+            self.shouldPresentCollectPayment = true
+        } onFailure: { [weak self] error, usesGiftCard in
+            guard let self else { return }
+            self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+            self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error) //Make this `trackCollectPaymentFailure`
+        }
+
     }
 
     /// Action triggered on `Done` button tap in order editing flow.
@@ -1625,6 +1665,7 @@ private extension EditableOrderViewModel {
                     stores: stores,
                     toggleAllVariationsOnSelection: false,
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
+                    syncChangesImmediately: true,
                     onProductSelectionStateChanged: { [weak self] product in
                         guard let self = self else { return }
                         self.changeSelectionStateForProduct(product)

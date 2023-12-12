@@ -190,6 +190,7 @@ final class OrdersRootViewController: UIViewController {
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+            newOrderNavigationController.modalPresentationStyle = .fullScreen
             navigationController.present(newOrderNavigationController, animated: true)
         } else {
             viewController.hidesBottomBarWhenPushed = true

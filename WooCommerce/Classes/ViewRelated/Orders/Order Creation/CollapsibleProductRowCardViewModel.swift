@@ -58,6 +58,10 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     ///
     let price: String?
 
+    /// Product discount
+    ///
+    let discount: Decimal?
+
     /// Label showing product details for an order item.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
     ///
@@ -78,6 +82,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          sku: String?,
          price: String?,
          pricedIndividually: Bool = true,
+         discount: Decimal? = nil,
          productTypeDescription: String,
          attributes: [VariationAttributeViewModel],
          stockStatus: ProductStockStatus,
@@ -95,6 +100,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.imageURL = imageURL
         self.name = name
         self.price = price
+        self.discount = discount
         skuLabel = CollapsibleProductRowCardViewModel.createSKULabel(sku: sku)
         productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
                                                                                            productTypeDescription: productTypeDescription,
@@ -132,7 +138,7 @@ extension CollapsibleProductRowCardViewModel {
             return nil
         }
         let subtotalDecimal = priceDecimal.multiplying(by: stepperViewModel.quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting((productViewModel.discount ?? Decimal.zero) as NSDecimalNumber)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
 
         return currencyFormatter.formatAmount(totalPriceAfterDiscount)
     }
@@ -140,14 +146,14 @@ extension CollapsibleProductRowCardViewModel {
     /// Formatted discount label for an individual product
     ///
     var discountLabel: String? {
-        guard let discount = productViewModel.discount else {
+        guard let discount else {
             return nil
         }
         return currencyFormatter.formatAmount(discount)
     }
 
     var hasDiscount: Bool {
-        productViewModel.discount != nil
+        discount != nil
     }
 }
 

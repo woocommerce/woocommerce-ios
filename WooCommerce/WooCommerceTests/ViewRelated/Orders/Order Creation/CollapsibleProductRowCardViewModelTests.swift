@@ -117,26 +117,17 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     // MARK: - `hasDiscount`
 
-    func test_when_product_row_discount_is_nil_then_viewModel_hasDiscount_is_false() {
+    func test_when_discount_is_nil_then_viewModel_hasDiscount_is_false() {
         // Given
-        let price = "2.50"
-        let product = Product.fake().copy(price: price)
-
-        // When
-        let viewModel = createViewModel(productViewModel: .init(product: product, discount: nil, quantity: 1))
+        let viewModel = createViewModel(discount: nil)
 
         // Then
         XCTAssertFalse(viewModel.hasDiscount)
     }
 
-    func test_when_product_row_discount_is_not_nil_then_viewModel_hasDiscount() {
+    func test_when_discount_is_not_nil_then_viewModel_hasDiscount() {
         // Given
-        let price = "2.50"
-        let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
-
-        // When
-        let viewModel = createViewModel(productViewModel: .init(product: product, discount: discount, quantity: 1))
+        let viewModel = createViewModel(discount: 0.50)
 
         // Then
         XCTAssertTrue(viewModel.hasDiscount)
@@ -148,10 +139,9 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         // Given
         let price = "2.50"
         let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = createViewModel(price: price, productViewModel: .init(product: product, discount: discount, quantity: 1))
+        let viewModel = createViewModel(price: price, discount: discount)
 
         // Then
         assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
@@ -162,11 +152,10 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let price = "2.50"
         let quantity: Decimal = 10
         let discount: Decimal = 0.50
-        let product = Product.fake().copy(price: price)
 
         // When
         let viewModel = createViewModel(price: price,
-                                        productViewModel: .init(product: product, discount: discount, quantity: quantity),
+                                        discount: discount,
                                         stepperViewModel: .init(quantity: quantity,
                                                                 name: "",
                                                                 quantityUpdatedCallback: { _ in }))
@@ -299,6 +288,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                          name: String = "",
                          sku: String? = nil,
                          price: String? = nil,
+                         discount: Decimal? = nil,
                          productTypeDescription: String = "",
                          attributes: [VariationAttributeViewModel] = [],
                          stockStatus: ProductStockStatus = .inStock,
@@ -316,6 +306,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            name: name,
                                            sku: sku,
                                            price: price,
+                                           discount: discount,
                                            productTypeDescription: productTypeDescription,
                                            attributes: attributes,
                                            stockStatus: stockStatus,

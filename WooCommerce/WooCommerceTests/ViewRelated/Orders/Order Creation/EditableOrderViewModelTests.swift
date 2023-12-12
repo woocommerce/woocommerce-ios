@@ -507,6 +507,21 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.productRow.productViewModel.quantity, expectedProductRow.quantity)
     }
 
+    func test_createProductRowViewModel_sets_expected_discount_for_discounted_order_item() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 1, price: 10, subtotal: "10", total: "9")
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
+
+        // Then
+        let expectedDiscount: Decimal = 1 // Order item subtotal - total
+        assertEqual(expectedDiscount, productRow?.productRow.discount)
+    }
+
     func test_view_model_is_updated_when_custom_amount_is_added_to_order() {
         // Given
         let customAmountName = "Test"

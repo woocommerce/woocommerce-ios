@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import Experiments
 
 /// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.
 ///
@@ -18,12 +19,15 @@ class ProductListViewModel {
     private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+    private let featureFlagService: FeatureFlagService
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
         self.siteID = siteID
         self.stores = stores
+        self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
     }
@@ -180,12 +184,13 @@ class ProductListViewModel {
     // If the plugin is active, we'll hide the inventory scanner button
     // More details: https://wp.me/pdfdoF-2Nq
     func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void)) {
-        isPluginActive(SitePlugin.SupportedPlugin.square, completion: { isPluginActive in
+        isPluginActive(SitePlugin.SupportedPlugin.square, completion: { [weak self] isPluginActive in
+            guard let self else { return }
             switch isPluginActive {
             case true:
                 completion(false)
             case false:
-                guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
+                guard self.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
                       UIImagePickerController.isSourceTypeAvailable(.camera) else {
                     return completion(false)
                 }

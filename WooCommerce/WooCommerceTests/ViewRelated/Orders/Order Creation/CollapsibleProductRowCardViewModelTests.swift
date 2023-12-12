@@ -28,6 +28,43 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.childProductRows.count, 2)
     }
 
+    func test_viewModel_is_created_with_correct_initial_values_from_order_item_and_product() throws {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue,
+                                          stockStatusKey: ProductStockStatus.inStock.description,
+                                          images: [.fake().copy(src: "https://woo.com/woo.jpg")],
+                                          bundledItems: [.fake()])
+        let orderItem = OrderItem.fake().copy(itemID: 1, name: "Order Item", quantity: 2, price: 5, sku: "sku", subtotal: "5", total: "4", parent: 2)
+
+        // When
+        let discount: Decimal = 1
+        let rowViewModel = CollapsibleProductRowCardViewModel(orderItem: orderItem,
+                                                              product: product,
+                                                              isReadOnly: false,
+                                                              pricedIndividually: true,
+                                                              discount: discount,
+                                                              quantityUpdatedCallback: { _ in },
+                                                              configure: {})
+
+        // Then
+        XCTAssertFalse(rowViewModel.isReadOnly)
+        XCTAssertTrue(rowViewModel.hasDiscount)
+        assertEqual(discount, rowViewModel.discount)
+
+        // And it has expected values from order item
+        assertEqual(orderItem.itemID, rowViewModel.id)
+        assertEqual(orderItem.name, rowViewModel.name)
+        XCTAssertTrue(rowViewModel.skuLabel.contains(try XCTUnwrap(orderItem.sku)))
+        assertEqual(orderItem.price.description, rowViewModel.price)
+        assertEqual(orderItem.quantity, rowViewModel.stepperViewModel.quantity)
+        XCTAssertTrue(rowViewModel.hasParentProduct)
+
+        // And it has expected values from product
+        assertEqual(product.imageURL, rowViewModel.imageURL)
+        XCTAssertTrue(rowViewModel.productDetailsLabel.contains(product.productStockStatus.description))
+        XCTAssertTrue(rowViewModel.isConfigurable)
+    }
+
     func test_view_model_updates_price_label_when_quantity_changes() throws {
         // Given
         let price = "2.50"

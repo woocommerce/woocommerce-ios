@@ -638,46 +638,29 @@ final class EditableOrderViewModel: ObservableObject {
                                                  isReadOnly: isReadOnly,
                                                  pricedIndividually: pricedIndividually)
             }
-            let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
-                                                           name: item.name,
-                                                           quantityUpdatedCallback: { [weak self] _ in
+            let rowViewModel = CollapsibleProductRowCardViewModel(orderItem: item,
+                                                                  product: product,
+                                                                  isReadOnly: isReadOnly,
+                                                                  pricedIndividually: pricedIndividually,
+                                                                  discount: passingDiscountValue,
+                                                                  quantityUpdatedCallback: { [weak self] _ in
                 guard let self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             }, removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)
-            })
-            let isProductConfigurable = product.productType == .bundle && product.bundledItems.isNotEmpty
-            let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
-                                                                  productOrVariationID: product.productID,
-                                                                  hasParentProduct: item.parent != nil,
-                                                                  isReadOnly: isReadOnly,
-                                                                  isConfigurable: isProductConfigurable,
-                                                                  imageURL: product.imageURL,
-                                                                  name: item.name,
-                                                                  sku: item.sku,
-                                                                  price: item.price.description,
-                                                                  pricedIndividually: pricedIndividually,
-                                                                  discount: passingDiscountValue,
-                                                                  productTypeDescription: product.productType.description,
-                                                                  attributes: [],
-                                                                  stockStatus: product.productStockStatus,
-                                                                  stockQuantity: product.stockQuantity,
-                                                                  manageStock: product.manageStock,
-                                                                  stepperViewModel: stepperViewModel,
-                                                                  analytics: analytics,
-                                                                  configure: { [weak self] in
+            }, configure: { [weak self] in
                 guard let self else { return }
                 switch product.productType {
-                    case .bundle:
-                        self.configurableProductViewModel = .init(product: product,
-                                                                  orderItem: item,
-                                                                  childItems: childItems,
-                                                                  onConfigure: { [weak self] configuration in
-                            guard let self else { return }
-                            self.addBundleConfigurationToOrderItem(item: item, bundleConfiguration: configuration)
-                        })
-                    default:
-                        break
+                case .bundle:
+                    self.configurableProductViewModel = .init(product: product,
+                                                              orderItem: item,
+                                                              childItems: childItems,
+                                                              onConfigure: { [weak self] configuration in
+                        guard let self else { return }
+                        self.addBundleConfigurationToOrderItem(item: item, bundleConfiguration: configuration)
+                    })
+                default:
+                    break
                 }
             })
             return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: childProductRows.map { $0.productRow })

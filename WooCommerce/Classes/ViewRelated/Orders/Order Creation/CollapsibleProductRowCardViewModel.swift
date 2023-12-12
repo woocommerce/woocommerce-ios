@@ -122,6 +122,48 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         observeProductQuantityFromStepperViewModel()
     }
 
+    /// Initialize `CollapsibleProductRowCardViewModel` with a `Product` and `OrderItem`
+    init(orderItem: OrderItem,
+         product: Product,
+         isReadOnly: Bool,
+         pricedIndividually: Bool,
+         discount: Decimal?,
+         quantityUpdatedCallback: @escaping (Decimal) -> Void,
+         removeProductIntent: (() -> Void)? = nil,
+         configure: (() -> Void)? = nil,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         analytics: Analytics = ServiceLocator.analytics) {
+        let productViewModel = ProductRowViewModel(id: orderItem.itemID,
+                                                   product: product,
+                                                   discount: discount,
+                                                   quantity: orderItem.quantity)
+        let stepperViewModel = ProductStepperViewModel(quantity: orderItem.quantity,
+                                                       name: orderItem.name,
+                                                       quantityUpdatedCallback: quantityUpdatedCallback,
+                                                       removeProductIntent: removeProductIntent)
+
+        self.init(id: orderItem.itemID,
+                  productOrVariationID: product.productID,
+                  hasParentProduct: orderItem.parent != nil,
+                  isReadOnly: isReadOnly,
+                  isConfigurable: product.productType == .bundle && product.bundledItems.isNotEmpty,
+                  imageURL: product.imageURL,
+                  name: orderItem.name,
+                  sku: orderItem.sku,
+                  price: orderItem.price.description,
+                  pricedIndividually: pricedIndividually,
+                  discount: discount,
+                  productTypeDescription: product.productType.description,
+                  attributes: [],
+                  stockStatus: product.productStockStatus,
+                  stockQuantity: product.stockQuantity,
+                  manageStock: product.manageStock,
+                  stepperViewModel: stepperViewModel,
+                  currencyFormatter: currencyFormatter,
+                  analytics: analytics,
+                  configure: configure)
+    }
+
     func trackAddDiscountTapped() {
         analytics.track(event: .Orders.productDiscountAddButtonTapped())
     }

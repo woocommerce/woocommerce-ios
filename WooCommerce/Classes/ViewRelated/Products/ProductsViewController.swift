@@ -1161,6 +1161,9 @@ private extension ProductsViewController {
     }
 
     func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
+        // The feature breaks if the Square plugin is active, since modifies inventory management logic
+        // If the plugin is active, we'll hide the inventory scanner button
+        // More details: https://wp.me/pdfdoF-2Nq
         isPluginActive(SitePlugin.SupportedPlugin.square) { result in
             switch result {
             case true:
@@ -1176,7 +1179,7 @@ private extension ProductsViewController {
         }
     }
 
-    private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
+    func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
         let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: siteID, systemPluginNameList: [plugin]) { plugin in
             completion(plugin?.active == true)
         }

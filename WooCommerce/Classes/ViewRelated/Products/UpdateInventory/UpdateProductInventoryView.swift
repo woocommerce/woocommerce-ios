@@ -13,7 +13,7 @@ struct UpdateProductInventoryView: View {
     @State private var isKeyboardVisible = false
 
     init(inventoryItem: InventoryItem, siteID: Int64, onUpdatedInventory: @escaping ((String) -> ())) {
-        viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem, 
+        viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem,
                                                     siteID: siteID,
                                                     onUpdatedInventory: onUpdatedInventory)
     }

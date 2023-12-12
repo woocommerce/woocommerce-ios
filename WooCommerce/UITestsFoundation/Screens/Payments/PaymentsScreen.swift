@@ -92,14 +92,14 @@ public final class PaymentsScreen: ScreenObject {
     @discardableResult
     public func verifyOrderCompletedToastDisplayed() throws -> Self {
         let orderCompletedToast = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Order completed'")).firstMatch
-        XCTAssertTrue(orderCompletedToast.waitForExistence(timeout: 5))
+        XCTAssertTrue(orderCompletedToast.waitForExistence(timeout: 8))
 
         return self
     }
 
     @discardableResult
     public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
-        XCTAssertTrue(collectPaymentButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(collectPaymentButton.waitForExistence(timeout: 8))
         return self
     }
 

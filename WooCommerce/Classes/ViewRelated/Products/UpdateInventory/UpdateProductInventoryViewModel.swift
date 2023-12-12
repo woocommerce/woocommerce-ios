@@ -132,9 +132,8 @@ final class UpdateProductInventoryViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.inventoryItem = inventoryItem
         self.stores = stores
-        self.viewMode = inventoryItem.manageStock ? .stockCanBeManaged : .stockManagementNeedsToBeEnabled
 
-        quantity = inventoryItem.stockQuantity?.formatted() ?? ""
+        refresh()
 
         Task { @MainActor in
             name = try await inventoryItem.retrieveName(with: stores, siteID: siteID)
@@ -193,7 +192,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     func onTapManageStock() async throws {
         do {
             inventoryItem = try await inventoryItem.enableManageStock(stores: stores)
-            viewMode = .stockCanBeManaged
+            refresh()
         } catch {}
     }
 
@@ -214,5 +213,10 @@ private extension UpdateProductInventoryViewModel {
             updateQuantityButtonMode = .increaseOnce
         }
         catch {}
+    }
+
+    func refresh() {
+        viewMode = inventoryItem.manageStock ? .stockCanBeManaged : .stockManagementNeedsToBeEnabled
+        quantity = inventoryItem.stockQuantity?.formatted() ?? ""
     }
 }

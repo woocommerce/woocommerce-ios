@@ -18,7 +18,6 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values_from_product_with_child_product_rows() {
         // Given
-        let product = Product.fake()
         let childProductRows = [createViewModel(), createViewModel()]
 
         // When

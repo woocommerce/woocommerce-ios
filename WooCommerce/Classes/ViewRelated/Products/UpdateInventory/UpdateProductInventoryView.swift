@@ -21,7 +21,7 @@ struct UpdateProductInventoryView: View {
 
     private func displayErrorNotice() {
         // Assign notice
-        viewModel.notice = viewModel.makeNotice()
+        viewModel.displayErrorNotice()
         // Hide keyboard
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                         to: nil, from: nil, for: nil)

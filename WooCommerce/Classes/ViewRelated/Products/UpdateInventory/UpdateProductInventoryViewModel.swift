@@ -137,6 +137,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     @Published var showLoadingName: Bool = true
     @Published var name: String = ""
     @Published var updateQuantityButtonMode: UpdateQuantityButtonMode = .increaseOnce
+    @Published var notice: Notice?
 
     var sku: String {
         inventoryItem.sku ?? ""
@@ -145,8 +146,6 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     var imageURL: URL? {
         inventoryItem.imageURL
     }
-
-    @Published var notice: Notice?
 
     func onTapIncreaseStockQuantityOnce() async {
         guard let quantityDecimal = Decimal(string: quantity) else {
@@ -175,8 +174,8 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         }
     }
 
-    func makeNotice() -> Notice {
-        Notice(title: "oopsie", feedbackType: .error)
+    func displayErrorNotice() {
+        notice = Notice(title: "There was an error updating ", feedbackType: .error)
     }
 }
 

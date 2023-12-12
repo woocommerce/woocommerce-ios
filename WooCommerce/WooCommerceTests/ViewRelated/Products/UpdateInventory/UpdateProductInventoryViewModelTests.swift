@@ -68,6 +68,20 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.imageURL?.absoluteString, url)
     }
 
+    func test_notice_when_displayErrorNotice_then_displays_notice() {
+        // Given
+        let product = Product.fake()
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID)
+
+        XCTAssertNil(viewModel.notice, "Precondition: Notice should be nil on init")
+
+        // When
+        viewModel.displayErrorNotice()
+
+        // Then
+        XCTAssertNotNil(viewModel.notice)
+    }
+
     func test_name_when_we_pass_a_product_it_shows_right_name() {
         // Given
         let name = "test-name"
@@ -183,7 +197,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
 
         // When
         viewModel.quantity = stockQuantity.formatted()
-        await viewModel.onTapUpdateStockQuantity()
+        try await viewModel.onTapUpdateStockQuantity()
 
         // Then
         XCTAssertEqual(passedStockQuantity, stockQuantity)
@@ -210,7 +224,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
 
         // When
         viewModel.quantity = stockQuantity.formatted()
-        await viewModel.onTapUpdateStockQuantity()
+        try await viewModel.onTapUpdateStockQuantity()
 
         // Then
         XCTAssertEqual(passedStockQuantity, stockQuantity)

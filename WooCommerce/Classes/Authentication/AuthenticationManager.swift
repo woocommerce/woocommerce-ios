@@ -568,9 +568,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 // MARK: - Private helpers
 private extension AuthenticationManager {
     @MainActor
-    func autoSelectStoreOrPresentStoreCreationFlow(source: SignInSource? = nil,
-                                                   in navigationController: UINavigationController,
-                                                   onCompletion: @escaping () -> Void) async {
+    func presentStoreCreationFlowInitiatedFromPrologue(source: SignInSource? = nil,
+                                                       in navigationController: UINavigationController,
+                                                       onCompletion: @escaping () -> Void) async {
         // If the user logs in from the store creation flow
         guard case .custom(let source) = source,
               let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
@@ -578,24 +578,12 @@ private extension AuthenticationManager {
             return
         }
 
-        let availableStores = await getAvailableStores()
-
-        // If there are no stores available
-        if availableStores.isEmpty {
-            // Start the store creation process because the user does
-            // not have any existing stores
-            let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
-                                                       navigationController: navigationController,
-                                                       featureFlagService: featureFlagService)
-            self.storeCreationCoordinator = coordinator
-            coordinator.start()
-            return
-        }
-
-        // Proceed into the app if there is only one valid store available
-        if availableStores.count == 1, let onlyAvailableSite = availableStores.first {
-            storePickerCoordinator?.didSelectStore(with: onlyAvailableSite.siteID, onCompletion: onCompletion)
-        }
+        // Starts the store creation process because the user came from the store creation CTA in the prologue screen.
+        let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
+                                                   navigationController: navigationController,
+                                                   featureFlagService: featureFlagService)
+        self.storeCreationCoordinator = coordinator
+        coordinator.start()
     }
 
     func getAvailableStores() async -> [Site] {
@@ -677,9 +665,9 @@ private extension AuthenticationManager {
         }
 
         Task { @MainActor in
-            await autoSelectStoreOrPresentStoreCreationFlow(source: source,
-                                                            in: navigationController,
-                                                            onCompletion: onDismiss)
+            await presentStoreCreationFlowInitiatedFromPrologue(source: source,
+                                                                in: navigationController,
+                                                                onCompletion: onDismiss)
         }
     }
 

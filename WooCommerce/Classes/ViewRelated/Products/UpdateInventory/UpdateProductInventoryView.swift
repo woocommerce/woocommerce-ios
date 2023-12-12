@@ -110,11 +110,11 @@ struct UpdateProductInventoryView: View {
                         Button(Localization.viewProductDetailsButtonTitle) {
                             isPresentingDetailsView = true
                         }
-                            .buttonStyle(SecondaryButtonStyle())
-                            .padding(.bottom)
-                            .sheet(isPresented: $isPresentingDetailsView) {
-                                viewModel.productDetailsView()
-                            }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.bottom)
+                        .sheet(isPresented: $isPresentingDetailsView) {
+                            viewModel.productDetailsView()
+                        }
                     }
                     .padding()
                     .frame(minHeight: geometry.size.height)

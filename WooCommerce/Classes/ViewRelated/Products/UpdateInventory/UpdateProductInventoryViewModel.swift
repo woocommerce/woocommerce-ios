@@ -104,11 +104,15 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     let inventoryItem: InventoryItem
     private let stores: StoresManager
 
+    var onUpdatedInventory: ((String) -> ())
+
     init(inventoryItem: InventoryItem,
          siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         onUpdatedInventory: @escaping ((String) -> ())) {
         self.inventoryItem = inventoryItem
         self.stores = stores
+        self.onUpdatedInventory = onUpdatedInventory
 
         quantity = inventoryItem.stockQuantity?.formatted() ?? ""
 
@@ -187,6 +191,7 @@ private extension UpdateProductInventoryViewModel {
 
         do {
             try await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
+            onUpdatedInventory(newQuantity.formatted())
         } catch {
             isPrimaryButtonLoading = false
             throw UpdateInventoryError.generic

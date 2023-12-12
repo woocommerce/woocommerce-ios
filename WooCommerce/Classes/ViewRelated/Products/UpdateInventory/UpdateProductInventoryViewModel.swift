@@ -11,8 +11,14 @@ protocol InventoryItem {
     var imageURL: URL? { get }
 
     func retrieveName(with stores: StoresManager, siteID: Int64) async throws -> String
+
+    /// Returns the updated inventory item
+    ///
     func updateStockQuantity(with newQuantity: Decimal, stores: StoresManager) async throws -> InventoryItem
     func detailsView() -> ProductLoaderView
+    
+    /// Returns the updated inventory item
+    ///
     func enableManageStock(stores: StoresManager) async throws -> InventoryItem
 }
 

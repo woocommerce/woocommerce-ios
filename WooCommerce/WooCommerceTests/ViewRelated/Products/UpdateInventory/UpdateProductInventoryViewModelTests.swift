@@ -81,7 +81,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.notice)
         XCTAssertEqual(viewModel.notice?.title, "Update Inventory Error")
-        XCTAssertEqual(viewModel.notice?.message, "There was an error updating Some Product. Please try again")
+        XCTAssertEqual(viewModel.notice?.message, "There was an error updating Some Product. Please try again.")
         XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 

@@ -300,14 +300,9 @@ private extension ProductsViewController {
                     self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
                                                                                           siteID: self.viewModel.siteID,
                                                                                           onUpdatedInventory: {
-                        var stockQuantity: String {
-                            guard let stock = scannedItem.inventoryItem.stockQuantity else {
-                                return ""
-                            }
-                            return "\(stock)"
-                        }
-
-                        self.presentNotice(title: "Quantity updated: \(stockQuantity)")})), animated: true)
+                        let noticeMessage = self.prepareNotice(forStockQuantity: scannedItem.inventoryItem.stockQuantity)
+                        self.presentNotice(title: noticeMessage)
+                    })), animated: true)
                 } catch {
                     DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
                 }
@@ -323,6 +318,14 @@ private extension ProductsViewController {
 
     @objc func addProduct(_ sender: UIBarButtonItem) {
         addProduct(sourceBarButtonItem: sender, isFirstProduct: false)
+    }
+
+    private func prepareNotice(forStockQuantity stockQuantity: Decimal? = nil) -> String {
+        guard let stockQuantity = stockQuantity else {
+            return Localization.updateInventoryNotice
+        }
+        let stockQuantityToString = "\(stockQuantity)"
+        return String.localizedStringWithFormat(Localization.updateInventoryNotice, stockQuantityToString)
     }
 
     func addProduct(sourceBarButtonItem: UIBarButtonItem? = nil,
@@ -1430,7 +1433,6 @@ private extension ProductsViewController {
     }
 
     enum Localization {
-
         static let bulkEditingNavBarButtonTitle = NSLocalizedString("Edit products", comment: "Action to start bulk editing of products")
         static let bulkEditingNavBarButtonHint = NSLocalizedString(
             "Edit status or price for multiple products at once",
@@ -1471,5 +1473,10 @@ private extension ProductsViewController {
                                                            comment: "Title of the notice when a user updated price for selected products")
         static let updateErrorNotice = NSLocalizedString("Cannot update products",
                                                          comment: "Title of the notice when there is an error updating selected products")
+        static let updateInventoryNotice = NSLocalizedString(
+            "Quantity updated: %@",
+            comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
+            "Reads like: 'Quantity updated: 2,345'"
+        )
     }
 }

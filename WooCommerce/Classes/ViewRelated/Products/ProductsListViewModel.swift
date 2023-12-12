@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import protocol Storage.StorageManagerType
 import Experiments
 
 /// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.

@@ -6,6 +6,12 @@ struct ProfilerThemesPickerView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    private let carouselViewModel: ThemeCarouselViewModel
+
+    init(carouselViewModel: ThemeCarouselViewModel) {
+        self.carouselViewModel = carouselViewModel
+    }
+
     var body: some View {
 
         ScrollView {
@@ -24,6 +30,7 @@ struct ProfilerThemesPickerView: View {
                 Spacer()
 
                 ThemesCarouselView(
+                    viewModel: carouselViewModel,
                     lastMessageHeading: Localization.lastMessageHeading,
                     lastMessageContent: Localization.lastMessageContent
                 )
@@ -45,7 +52,7 @@ struct ProfilerThemesPickerView: View {
 
 struct ProfilerThemesPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilerThemesPickerView()
+        ProfilerThemesPickerView(carouselViewModel: .init())
     }
 }
 

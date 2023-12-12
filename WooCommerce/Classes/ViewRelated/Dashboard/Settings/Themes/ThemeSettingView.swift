@@ -53,6 +53,7 @@ struct ThemeSettingView: View {
                     VStack {
                         Spacer()
                         ThemesCarouselView(
+                            viewModel: viewModel.carouselViewModel,
                             lastMessageHeading: Localization.lastMessageHeading,
                             lastMessageContent: Localization.lastMessageContent
                         )

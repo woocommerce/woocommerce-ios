@@ -1,7 +1,9 @@
 import SwiftUI
 import Kingfisher
+import struct Yosemite.WordPressTheme
 
-
+/// View to display a list of WordPress themes
+///
 struct ThemesCarouselView: View {
     /// Tuple array containing theme name and theme Url string pair.
     let themesInfo: [(name: String, url: String)] = [
@@ -13,15 +15,23 @@ struct ThemesCarouselView: View {
         (name: "Apple", url: "apple.com")
     ]
 
+    @ObservedObject private var viewModel: ThemeCarouselViewModel
+
     /// The title of the message at the end of the carousel.
-    let lastMessageHeading: String
+    private let lastMessageHeading: String
 
     /// The content of the message at the end of the carousel.
-    let lastMessageContent: String
+    private let lastMessageContent: String
 
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    init(viewModel: ThemeCarouselViewModel, lastMessageHeading: String, lastMessageContent: String) {
+        self.viewModel = viewModel
+        self.lastMessageHeading = lastMessageHeading
+        self.lastMessageContent = lastMessageContent
+    }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -124,6 +134,7 @@ private extension ThemesCarouselView {
 struct ThemesCarouselView_Previews: PreviewProvider {
     static var previews: some View {
         ThemesCarouselView(
+            viewModel: .init(),
             lastMessageHeading: "Heading example",
             lastMessageContent: "Message content example here which can be pretty long if needed."
         )

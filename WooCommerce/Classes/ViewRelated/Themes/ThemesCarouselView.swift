@@ -36,8 +36,8 @@ struct ThemesCarouselView: View {
 
                         // Theme list
                         ForEach(themes) { theme in
-                            if let themeUrl = getThemeUrl(themeUrl: theme.demoURI) {
-                                themeImageCard(url: themeUrl)
+                            if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
+                                themeImageCard(url: themeImageURL)
                             } else {
                                 themeNameCard(name: theme.name)
                             }
@@ -172,11 +172,9 @@ private extension ThemesCarouselView {
     }
 }
 
-// TODO: This extension is temporary for UI preview purposes and can be deleted once this View is used with `WordPressTheme` items.
-// In actual use, the screenshot URL is available from `WordPressTheme.themeThumbnailURL`
 private extension ThemesCarouselView {
-    private func getThemeUrl(themeUrl: String) -> URL? {
-        let urlStr = "https://s0.wp.com/mshots/v1/https://\(themeUrl)?demo=true/?w=1200&h=2400&vpw=400&vph=800"
+    private func getThemeImageURL(themeURL: String) -> URL? {
+        let urlStr = "https://s0.wp.com/mshots/v1/\(themeURL)?demo=true/?w=1200&h=2400&vpw=400&vph=800"
         return URL(string: urlStr)
     }
 }

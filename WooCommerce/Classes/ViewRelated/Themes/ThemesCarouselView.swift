@@ -25,27 +25,32 @@ struct ThemesCarouselView: View {
     }
 
     var body: some View {
-        VStack {
-            loadingView
-                .renderedIf(viewModel.fetchingThemes)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack() {
-                    
-                    // Theme list
-                    ForEach(viewModel.themes) { theme in
-                        if let themeUrl = getThemeUrl(themeUrl: theme.demoURI) {
-                            themeImageCard(url: themeUrl)
-                        } else {
-                            themeNameCard(name: theme.name)
+        Group {
+            switch viewModel.state {
+            case .loading:
+                loadingView
+
+            case .content(let themes):
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack() {
+
+                        // Theme list
+                        ForEach(themes) { theme in
+                            if let themeUrl = getThemeUrl(themeUrl: theme.demoURI) {
+                                themeImageCard(url: themeUrl)
+                            } else {
+                                themeNameCard(name: theme.name)
+                            }
                         }
+
+                        // Message at the end of the carousel
+                        lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
                     }
-                    
-                    // Message at the end of the carousel
-                    lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
                 }
+
+            case .error:
+                errorView
             }
-            .renderedIf(viewModel.themes.isNotEmpty)
         }
         .task {
             await viewModel.fetchThemes()
@@ -58,11 +63,26 @@ private extension ThemesCarouselView {
         VStack {
             Spacer()
             ActivityIndicator(isAnimating: .constant(true), style: .medium)
-            Text("Loading themes...")
+            Text(Localization.loadingThemes)
                 .secondaryBodyStyle()
             Spacer()
         }
-        .frame(width: Layout.imageWidth, height: Layout.imageHeight)
+    }
+
+    var errorView: some View {
+        VStack(spacing: Layout.contentPadding) {
+            Spacer()
+            Text(Localization.errorLoadingThemes)
+                .secondaryBodyStyle()
+            Button {
+                Task {
+                    await viewModel.fetchThemes()
+                }
+            } label: {
+                Label(Localization.retry, systemImage: "arrow.clockwise")
+            }
+            Spacer()
+        }
     }
 
     func themeImageCard(url: URL) -> some View {
@@ -127,6 +147,24 @@ private extension ThemesCarouselView {
         static let cornerRadius: CGFloat = 8
         static let shadowRadius: CGFloat = 2
         static let shadowYOffset: CGFloat = 3
+    }
+
+    private enum Localization {
+        static let loadingThemes = NSLocalizedString(
+            "themesCarouselView.loading",
+            value: "Loading themes...",
+            comment: "Text indicating the loading state in the themes carousel view"
+        )
+        static let errorLoadingThemes = NSLocalizedString(
+            "themesCarouselView.error",
+            value: "Failed to load themes.",
+            comment: "Text indicating the error state in the themes carousel view"
+        )
+        static let retry = NSLocalizedString(
+            "themesCarouselView.retry",
+            value: "Retry",
+            comment: "Button to reload themes in the themes carousel view"
+        )
     }
 }
 

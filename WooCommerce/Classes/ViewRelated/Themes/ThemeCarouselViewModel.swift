@@ -4,10 +4,13 @@ import Yosemite
 /// View model for `ThemeCarouselView`
 ///
 final class ThemeCarouselViewModel: ObservableObject {
+    enum State {
+        case loading
+        case error
+        case content(themes: [WordPressTheme])
+    }
 
-    @Published private(set) var themes: [WordPressTheme] = []
-    @Published private(set) var fetchingThemes: Bool = false
-    @Published private(set) var failedToFetchThemes: Bool = false
+    @Published private(set) var state: State = .loading
 
     private let stores: StoresManager
 
@@ -17,14 +20,13 @@ final class ThemeCarouselViewModel: ObservableObject {
 
     @MainActor
     func fetchThemes() async {
-        fetchingThemes = true
-        failedToFetchThemes = false
+        state = .loading
         do {
-            themes = try await loadSuggestedThemes()
+            let themes = try await loadSuggestedThemes()
+            state = .content(themes: themes)
         } catch {
-            failedToFetchThemes = true
+            state = .error
         }
-        fetchingThemes = false
     }
 }
 

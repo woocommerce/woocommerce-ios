@@ -61,4 +61,28 @@ final class ThemeSettingViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.currentThemeName, "tsubaki")
     }
+
+    func test_updateCurrentThemeName_triggers_pending_theme_installation() async {
+        // Given
+        let themeInstaller = MockThemeInstaller()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ThemeSettingViewModel(siteID: 123,
+                                              stores: stores,
+                                              themeInstaller: themeInstaller)
+
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case let .loadCurrentTheme(_, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        await viewModel.updateCurrentThemeName()
+
+        // Then
+        XCTAssertTrue(themeInstaller.installPendingThemeCalled)
+    }
 }

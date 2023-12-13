@@ -12,19 +12,28 @@ final class ThemeSettingViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
     private(set) var carouselViewModel: ThemesCarouselViewModel
+    private let themeInstaller: ThemeInstallerProtocol
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         themeInstaller: ThemeInstallerProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
+        self.themeInstaller = themeInstaller ?? DefaultThemeInstaller()
         self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
     }
 
     @MainActor
     func updateCurrentThemeName() async {
         loadingCurrentTheme = true
+
+        /// Attempt to install and activate any pending theme selection
+        /// to show correct current theme information
+        ///
+        await installPendingTheme()
+
         let theme = await loadCurrentTheme()
         currentThemeName = theme?.name ?? ""
         loadingCurrentTheme = false
@@ -37,6 +46,11 @@ final class ThemeSettingViewModel: ObservableObject {
 }
 
 private extension ThemeSettingViewModel {
+    /// Installs pending theme for the current site
+    ///
+    func installPendingTheme() async {
+       try? await themeInstaller.installPendingTheme(siteID: siteID)
+    }
 
     @MainActor
     func loadCurrentTheme() async -> WordPressTheme? {

@@ -2810,6 +2810,7 @@ extension WooAnalyticsEvent {
             case orderCreation = "order_creation"
             case orderList = "order_list"
             case productList = "product_list"
+            case scanToUpdateInventory = "scan_to_update_inventory"
         }
 
         enum BarcodeScanningFailureReason: String {

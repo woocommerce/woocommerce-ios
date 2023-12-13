@@ -8,20 +8,12 @@ struct ThemesCarouselView: View {
 
     @ObservedObject private var viewModel: ThemesCarouselViewModel
 
-    /// The title of the message at the end of the carousel.
-    private let lastMessageHeading: String
-
-    /// The content of the message at the end of the carousel.
-    private let lastMessageContent: String
-
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(viewModel: ThemesCarouselViewModel, lastMessageHeading: String, lastMessageContent: String) {
+    init(viewModel: ThemesCarouselViewModel) {
         self.viewModel = viewModel
-        self.lastMessageHeading = lastMessageHeading
-        self.lastMessageContent = lastMessageContent
     }
 
     var body: some View {
@@ -44,7 +36,7 @@ struct ThemesCarouselView: View {
                         }
 
                         // Message at the end of the carousel
-                        lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
+                        lastMessageCard
                     }
                 }
 
@@ -112,13 +104,13 @@ private extension ThemesCarouselView {
         .padding(Layout.imagePadding)
     }
 
-    func lastMessageCard(heading: String, message: String) -> some View {
+    var lastMessageCard: some View {
         ZStack {
             GeometryReader { geometry in
                 ScrollView(.vertical) {
                     VStack {
                         Spacer()
-                        Text(lastMessageHeading)
+                        Text(viewModel.mode.moreThemesTitleText)
                             .bold()
                             .secondaryBodyStyle()
                             .padding(.horizontal, Layout.contentPadding)
@@ -126,7 +118,7 @@ private extension ThemesCarouselView {
                         Spacer()
                             .frame(height: Layout.contentPadding)
 
-                        Text(lastMessageContent)
+                        Text(viewModel.mode.moreThemesSuggestionText)
                             .foregroundColor(Color(.secondaryLabel))
                             .subheadlineStyle()
                                 .multilineTextAlignment(.center)
@@ -181,10 +173,6 @@ private extension ThemesCarouselView {
 
 struct ThemesCarouselView_Previews: PreviewProvider {
     static var previews: some View {
-        ThemesCarouselView(
-            viewModel: .init(mode: .themeSettings),
-            lastMessageHeading: "Heading example",
-            lastMessageContent: "Message content example here which can be pretty long if needed."
-        )
+        ThemesCarouselView(viewModel: .init(mode: .themeSettings))
     }
 }

@@ -95,7 +95,20 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         XCTAssertEqual(data.countryCode, "AG")
     }
 
-    func test_saveCountry_triggers_onCompletion() throws {
+    func test_saveCountry_updates_currentQuestion_to_theme() {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+                                                                        onCompletion: {},
+                                                                        uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
+
+        // When
+        viewModel.saveCountry(.US)
+
+        // Then
+        XCTAssertEqual(viewModel.currentQuestion, .theme)
+    }
+
+    func test_saveTheme_triggers_onCompletion() throws {
         // Given
         var triggeredCompletion = false
         let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
@@ -103,7 +116,7 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
                                                                         uploadAnswersUseCase: MockStoreCreationProfilerUploadAnswersUseCase())
 
         // When
-        viewModel.saveCountry(.US)
+        viewModel.saveTheme(nil)
 
         // Then
         XCTAssertTrue(triggeredCompletion)

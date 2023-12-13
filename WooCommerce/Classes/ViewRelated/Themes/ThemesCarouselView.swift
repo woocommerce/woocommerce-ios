@@ -7,13 +7,14 @@ import struct Yosemite.WordPressTheme
 struct ThemesCarouselView: View {
 
     @ObservedObject private var viewModel: ThemesCarouselViewModel
-
+    private let onSelectedTheme: (WordPressTheme) -> Void
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(viewModel: ThemesCarouselViewModel) {
+    init(viewModel: ThemesCarouselViewModel, onSelectedTheme: @escaping (WordPressTheme) -> Void) {
         self.viewModel = viewModel
+        self.onSelectedTheme = onSelectedTheme
     }
 
     var body: some View {
@@ -173,6 +174,6 @@ private extension ThemesCarouselView {
 
 struct ThemesCarouselView_Previews: PreviewProvider {
     static var previews: some View {
-        ThemesCarouselView(viewModel: .init(mode: .themeSettings))
+        ThemesCarouselView(viewModel: .init(mode: .themeSettings), onSelectedTheme: { _ in })
     }
 }

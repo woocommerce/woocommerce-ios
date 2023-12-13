@@ -33,11 +33,11 @@ public enum WordPressThemeAction: Action {
                       onCompletion: (Result<WordPressTheme, Error>) -> Void)
 
     /// Activates the given theme ID for a site.
-    /// - `themeID`: ID of the theme to be installed.
+    /// - `themeID`: ID of the theme to be activated.
     /// - `siteID`: ID of the current site.
-    /// - `onCompletion`: invoked when the theme installation operation finishes.
-    ///     - `result.success(WordPressTheme)`: the installed theme's details.
-    ///     - `result.failure(Error)`: error indicates issues installing themes.
+    /// - `onCompletion`: invoked when the theme activation operation finishes.
+    ///     - `result.success(WordPressTheme)`: the activated theme's details.
+    ///     - `result.failure(Error)`: error indicates issues activating themes.
     ///
     case activateTheme(themeID: String,
                        siteID: Int64,

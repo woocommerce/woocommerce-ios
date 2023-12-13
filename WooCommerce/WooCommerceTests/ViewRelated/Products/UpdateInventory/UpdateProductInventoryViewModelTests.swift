@@ -12,7 +12,9 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         // Given
         let stockQuantity = Decimal(12)
         let product = Product.fake().copy(siteID: siteID, stockQuantity: stockQuantity)
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        onUpdatedInventory: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.quantity, stockQuantity.formatted())
@@ -22,7 +24,9 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         // Given
         let stockQuantity = Decimal(12)
         let variation = ProductVariation.fake().copy(siteID: siteID, stockQuantity: stockQuantity)
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation,
+                                                        siteID: siteID,
+                                                        onUpdatedInventory: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.quantity, stockQuantity.formatted())
@@ -32,7 +36,9 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         // Given
         let sku = "test-sku"
         let product = Product.fake().copy(siteID: siteID, sku: sku)
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        onUpdatedInventory: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.sku, sku)
@@ -42,7 +48,9 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         // Given
         let sku = "test-sku"
         let variation = ProductVariation.fake().copy(siteID: siteID, sku: sku)
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation,
+                                                        siteID: siteID,
+                                                        onUpdatedInventory: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.sku, sku)
@@ -52,7 +60,9 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         // Given
         let url = "www.picture.com"
         let product = Product.fake().copy(siteID: siteID, images: [ProductImage.fake().copy(src: url)])
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        onUpdatedInventory: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.imageURL?.absoluteString, url)
@@ -62,17 +72,40 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         // Given
         let url = "www.picture.com"
         let variation = ProductVariation.fake().copy(siteID: siteID, image: ProductImage.fake().copy(src: url))
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation,
+                                                        siteID: siteID,
+                                                        onUpdatedInventory: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.imageURL?.absoluteString, url)
+    }
+
+    func test_notice_when_displayErrorNotice_in_invoked_then_displays_correct_error_notice() {
+        // Given
+        let product = Product.fake().copy(name: "Some Product")
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        onUpdatedInventory: { _ in })
+
+        XCTAssertNil(viewModel.notice, "Precondition: Notice should be nil on init")
+
+        // When
+        viewModel.displayErrorNotice(product.name)
+
+        // Then
+        XCTAssertNotNil(viewModel.notice)
+        XCTAssertEqual(viewModel.notice?.title, "Update Inventory Error")
+        XCTAssertEqual(viewModel.notice?.message, "There was an error updating Some Product. Please try again.")
+        XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 
     func test_name_when_we_pass_a_product_it_shows_right_name() {
         // Given
         let name = "test-name"
         let product = Product.fake().copy(siteID: siteID, name: name)
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        onUpdatedInventory: { _ in })
 
         waitUntil {
             viewModel.name == name
@@ -98,8 +131,11 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
             }
         }
 
-        let product = ProductVariation.fake().copy(siteID: siteID, productID: parentProductID)
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores)
+        let variation = ProductVariation.fake().copy(siteID: siteID, productID: parentProductID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation,
+                                                        siteID: siteID,
+                                                        stores: stores,
+                                                        onUpdatedInventory: { _ in })
 
         waitUntil {
             viewModel.name == name
@@ -122,11 +158,14 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        stores: stores,
+                                                        onUpdatedInventory: { _ in })
 
         // When
         viewModel.quantity = previousStockQuantity.formatted()
-        await viewModel.onTapIncreaseStockQuantityOnce()
+        try await viewModel.onTapIncreaseStockQuantityOnce()
 
         // Then
         XCTAssertEqual(viewModel.quantity, passedStockQuantity?.formatted())
@@ -151,11 +190,14 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID, stores: stores)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation,
+                                                        siteID: siteID,
+                                                        stores: stores,
+                                                        onUpdatedInventory: { _ in })
 
         // When
         viewModel.quantity = previousStockQuantity.formatted()
-        await viewModel.onTapIncreaseStockQuantityOnce()
+        try await viewModel.onTapIncreaseStockQuantityOnce()
 
         // Then
         XCTAssertEqual(viewModel.quantity, passedStockQuantity?.formatted())
@@ -179,11 +221,14 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        stores: stores,
+                                                        onUpdatedInventory: { _ in })
 
         // When
         viewModel.quantity = stockQuantity.formatted()
-        await viewModel.onTapUpdateStockQuantity()
+        try await viewModel.onTapUpdateStockQuantity()
 
         // Then
         XCTAssertEqual(passedStockQuantity, stockQuantity)
@@ -206,11 +251,14 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID, stores: stores)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation,
+                                                        siteID: siteID,
+                                                        stores: stores,
+                                                        onUpdatedInventory: { _ in })
 
         // When
         viewModel.quantity = stockQuantity.formatted()
-        await viewModel.onTapUpdateStockQuantity()
+        try await viewModel.onTapUpdateStockQuantity()
 
         // Then
         XCTAssertEqual(passedStockQuantity, stockQuantity)

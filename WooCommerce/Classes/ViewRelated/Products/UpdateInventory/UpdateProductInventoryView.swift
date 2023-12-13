@@ -14,8 +14,21 @@ struct UpdateProductInventoryView: View {
 
     @State private var isKeyboardVisible = false
 
-    init(inventoryItem: InventoryItem, siteID: Int64) {
-        viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem, siteID: siteID)
+    init(inventoryItem: InventoryItem, siteID: Int64, onUpdatedInventory: @escaping ((String) -> ())) {
+        viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem,
+                                                    siteID: siteID,
+                                                    onUpdatedInventory: onUpdatedInventory)
+    }
+
+    private func displayErrorNotice(_ productName: String, _ error: Error? = nil) {
+        if let error = error {
+            DDLogError("Update inventory error: \(error)")
+        }
+        viewModel.displayErrorNotice(productName)
+
+        // Hide keyboard
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
     }
 
     var body: some View {
@@ -72,16 +85,26 @@ struct UpdateProductInventoryView: View {
                         Group {
                             Button(Localization.updateQuantityButtonTitle) {
                                 Task { @MainActor in
-                                    await viewModel.onTapUpdateStockQuantity()
-                                    dismiss()
+                                    do {
+                                        try await viewModel.onTapUpdateStockQuantity()
+                                        dismiss()
+                                    } catch {
+                                        let productName = viewModel.name
+                                        displayErrorNotice(productName, error)
+                                    }
                                 }
                             }
                             .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
 
                             Button(Localization.increaseStockOnceButtonTitle) {
                                 Task { @MainActor in
-                                    await viewModel.onTapIncreaseStockQuantityOnce()
-                                    dismiss()
+                                    do {
+                                        try await viewModel.onTapIncreaseStockQuantityOnce()
+                                        dismiss()
+                                    } catch {
+                                        let productName = viewModel.name
+                                        displayErrorNotice(productName, error)
+                                    }
                                 }
                             }
                             .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
@@ -109,6 +132,7 @@ struct UpdateProductInventoryView: View {
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in
                         isKeyboardVisible = keyboardHeight > 0
                     }
+                    .notice($viewModel.notice)
                 }
             }
         }

@@ -298,10 +298,13 @@ private extension ProductsViewController {
                 do {
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
                     self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
-                                                                                          siteID: self.viewModel.siteID)),
-                                 animated: true)
+                                                                                          siteID: self.viewModel.siteID,
+                                                                                          onUpdatedInventory: { newQuantity in
+                        let noticeMessage = String.localizedStringWithFormat(Localization.updateInventoryNotice, newQuantity)
+                        self.presentNotice(title: noticeMessage)
+                    })), animated: true)
                 } catch {
-                    // TODO: Show error notices
+                    DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
                 }
             }
 
@@ -1422,7 +1425,6 @@ private extension ProductsViewController {
     }
 
     enum Localization {
-
         static let bulkEditingNavBarButtonTitle = NSLocalizedString("Edit products", comment: "Action to start bulk editing of products")
         static let bulkEditingNavBarButtonHint = NSLocalizedString(
             "Edit status or price for multiple products at once",
@@ -1463,5 +1465,11 @@ private extension ProductsViewController {
                                                            comment: "Title of the notice when a user updated price for selected products")
         static let updateErrorNotice = NSLocalizedString("Cannot update products",
                                                          comment: "Title of the notice when there is an error updating selected products")
+        static let updateInventoryNotice = NSLocalizedString(
+            "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem",
+            value: "Quantity updated: %@",
+            comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
+            "Reads like: 'Quantity updated: 2,345'"
+        )
     }
 }

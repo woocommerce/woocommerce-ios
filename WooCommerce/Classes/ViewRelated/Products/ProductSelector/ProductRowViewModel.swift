@@ -27,7 +27,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let name: String
 
-    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
     /// Whether a product in an order item is configurable
     ///
     let isConfigurable: Bool
@@ -40,6 +39,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private(set) var price: String?
 
+    // TODO: 11357 - Remove this property once `ProductDiscountView` no longer relies on it
     /// Whether the product is priced individually. Defaults to `true`.
     ///
     /// Used to control how the price is displayed, e.g. when a product is part of a bundle.
@@ -109,22 +109,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
-    /// Formatted price label based on a product's price. Accounting for discounts, if any.
-    /// e.g: If price is $5 and discount is $1, outputs "$4.00"
-    ///
-    var priceAfterDiscountLabel: String? {
-        guard let price = price else {
-            return nil
-        }
-        guard let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
-        }
-        let priceAfterDiscount = priceDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
-
-        return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
-    }
-
     private(set) var discount: Decimal?
 
     /// Whether product discounts are disallowed,
@@ -159,24 +143,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: " • ")
     }
 
-    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
-    /// Label showing product details for a product in an order.
-    /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
-    ///
-    var orderProductDetailsLabel: String {
-        let attributesLabel: String? = {
-            guard case let .attributes(attributes) = variationDisplayMode else {
-                return nil
-            }
-            return createAttributesText(from: attributes)
-        }()
-        let stockLabel = createStockText()
-        return [productTypeLabel, attributesLabel, stockLabel]
-            .compactMap({ $0 })
-            .filter { $0.isNotEmpty }
-            .joined(separator: " • ")
-    }
-
     private let productTypeLabel: String?
 
     /// Label showing product SKU
@@ -200,7 +166,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     @Published var quantity: Decimal
 
-    // TODO: 11357 - move this property to `CollapsibleProductRowCardViewModel`
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
 

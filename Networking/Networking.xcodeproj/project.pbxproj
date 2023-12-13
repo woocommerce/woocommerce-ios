@@ -952,6 +952,9 @@
 		EE62EE61295ACF8D009C965B /* RequestConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */; };
 		EE62EE63295AD45E009C965B /* String+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE62295AD45E009C965B /* String+URL.swift */; };
 		EE62EE65295AD46D009C965B /* String+URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE64295AD46D009C965B /* String+URLTests.swift */; };
+		EE66BB022B2893AF00518DAF /* theme-install-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE66BB012B2893AF00518DAF /* theme-install-success.json */; };
+		EE66BB042B28975B00518DAF /* theme-install-already-installed.json in Resources */ = {isa = PBXBuildFile; fileRef = EE66BB032B28975B00518DAF /* theme-install-already-installed.json */; };
+		EE66BB062B29791500518DAF /* theme-activate-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE66BB052B29791500518DAF /* theme-activate-success.json */; };
 		EE6FDCFC2966A70400E1CECF /* product-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE6FDCFB2966A70400E1CECF /* product-without-data.json */; };
 		EE71CC3D2951A8EA0074D908 /* ApplicationPasswordStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */; };
 		EE71CC412951CE700074D908 /* generate-application-password-using-wporg-creds-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */; };
@@ -1977,6 +1980,9 @@
 		EE62EE60295ACF8D009C965B /* RequestConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConverterTests.swift; sourceTree = "<group>"; };
 		EE62EE62295AD45E009C965B /* String+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URL.swift"; sourceTree = "<group>"; };
 		EE62EE64295AD46D009C965B /* String+URLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URLTests.swift"; sourceTree = "<group>"; };
+		EE66BB012B2893AF00518DAF /* theme-install-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-install-success.json"; sourceTree = "<group>"; };
+		EE66BB032B28975B00518DAF /* theme-install-already-installed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-install-already-installed.json"; sourceTree = "<group>"; };
+		EE66BB052B29791500518DAF /* theme-activate-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-activate-success.json"; sourceTree = "<group>"; };
 		EE6FDCFB2966A70400E1CECF /* product-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-without-data.json"; sourceTree = "<group>"; };
 		EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordStorage.swift; sourceTree = "<group>"; };
 		EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-application-password-using-wporg-creds-success.json"; sourceTree = "<group>"; };
@@ -2593,6 +2599,9 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				EE66BB032B28975B00518DAF /* theme-install-already-installed.json */,
+				EE66BB052B29791500518DAF /* theme-activate-success.json */,
+				EE66BB012B2893AF00518DAF /* theme-install-success.json */,
 				DEDA8DB62B187E770076BF0F /* theme-mine-success.json */,
 				DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */,
 				DEDA8DA42B1839320076BF0F /* theme-list-success.json */,
@@ -3638,6 +3647,7 @@
 				45152825257A8B740076B03C /* product-attribute-update.json in Resources */,
 				68C87B342862D40E00A99054 /* setting-all-except-countries.json in Resources */,
 				EE28C7DB2AC17961004A69F4 /* generate-product-invalid-token.json in Resources */,
+				EE66BB062B29791500518DAF /* theme-activate-success.json in Resources */,
 				CE6B969A2A0BCD09003C4B27 /* order-with-bundled-line-items.json in Resources */,
 				3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */,
 				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,
@@ -3783,6 +3793,7 @@
 				B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */,
 				022902D622E2436400059692 /* no_stats_permission_error.json in Resources */,
 				FE28F6E826842D57004465C7 /* user-complete.json in Resources */,
+				EE66BB022B2893AF00518DAF /* theme-install-success.json in Resources */,
 				02EF1670292F0CF400D90AD6 /* create-cart-success.json in Resources */,
 				261CF2CB255C50010090D8D3 /* payment-gateway-list-half.json in Resources */,
 				02C254D72563999300A04423 /* order-shipping-labels.json in Resources */,
@@ -3903,6 +3914,7 @@
 				DE4F2A3F29750EF400B0701C /* inbox-note-list-without-data.json in Resources */,
 				7497376A2141F2BE0008C490 /* top-performers-week-alt.json in Resources */,
 				DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */,
+				EE66BB042B28975B00518DAF /* theme-install-already-installed.json in Resources */,
 				D865CE61278CA1AE002C8520 /* stripe-payment-intent-processing.json in Resources */,
 				743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */,
 				68CB801628D8A39700E169F8 /* customer.json in Resources */,

@@ -2,6 +2,11 @@ import Combine
 import Yosemite
 import SwiftUI
 
+enum UpdateInventoryError: Error {
+    case nonSupportedQuantity
+    case generic
+}
+
 /// An item whose inventory can be displayed and managed
 ///
 protocol InventoryItem {
@@ -133,11 +138,15 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     private var inventoryItem: InventoryItem
     private let stores: StoresManager
 
+    var onUpdatedInventory: ((String) -> ())
+
     init(inventoryItem: InventoryItem,
          siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         onUpdatedInventory: @escaping ((String) -> ())) {
         self.inventoryItem = inventoryItem
         self.stores = stores
+        self.onUpdatedInventory = onUpdatedInventory
 
         refresh()
 
@@ -168,6 +177,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     @Published var viewMode: ViewMode = .stockCanBeManaged
     @Published var name: String = ""
     @Published var updateQuantityButtonMode: UpdateQuantityButtonMode = .increaseOnce
+    @Published var notice: Notice?
 
     var sku: String {
         inventoryItem.sku ?? ""
@@ -177,23 +187,27 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         inventoryItem.imageURL
     }
 
-    func onTapIncreaseStockQuantityOnce() async {
+    func onTapIncreaseStockQuantityOnce() async throws {
         guard let quantityDecimal = Decimal(string: quantity) else {
             return
         }
-
         let newQuantity = quantityDecimal + 1
-        quantity = newQuantity.formatted()
+        quantity = "\(newQuantity)"
 
-        try? await updateStockQuantity(with: newQuantity)
+        try await updateStockQuantity(with: newQuantity)
     }
 
-    func onTapUpdateStockQuantity() async {
+    func onTapUpdateStockQuantity() async throws {
         guard let quantityDecimal = Decimal(string: quantity) else {
-            return
+            throw UpdateInventoryError.nonSupportedQuantity
         }
+        try await updateStockQuantity(with: quantityDecimal)
+    }
 
-        try? await updateStockQuantity(with: quantityDecimal)
+    func displayErrorNotice(_ productName: String) {
+        notice =  Notice(title: Localization.errorNoticetitle,
+                         message: String.localizedStringWithFormat(Localization.errorNoticeMessage, productName),
+                         feedbackType: .error)
     }
 
     func onTapManageStock() async throws {
@@ -216,18 +230,34 @@ private extension UpdateProductInventoryViewModel {
     func updateStockQuantity(with newQuantity: Decimal) async throws {
         isPrimaryButtonLoading = true
 
-        // TODO: Handle error
         do {
             inventoryItem = try await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
-
+            onUpdatedInventory("\(newQuantity)")
             isPrimaryButtonLoading = false
             updateQuantityButtonMode = .increaseOnce
         }
-        catch {}
+        catch {
+            isPrimaryButtonLoading = false
+            throw UpdateInventoryError.generic
+        }
     }
 
     func refresh() {
         viewMode = inventoryItem.manageStock ? .stockCanBeManaged : .stockManagementNeedsToBeEnabled
-        quantity = inventoryItem.stockQuantity?.formatted() ?? ""
+        quantity = "\(inventoryItem.stockQuantity ?? 0)"
+    }
+}
+
+private extension UpdateProductInventoryViewModel {
+    struct Localization {
+        static let errorNoticetitle = NSLocalizedString(
+            "errorNoticeTitle.displayErrorNotice.UpdateProductInventoryViewModel",
+            value: "Update Inventory Error",
+            comment: "Title of the notice when inventory fails to be updated.")
+        static let errorNoticeMessage = NSLocalizedString(
+            "errorNoticeMessage.displayErrorNotice.UpdateProductInventoryViewModel",
+            value: "There was an error updating %@. Please try again.",
+            comment: "Message of the notice when inventory fails to be updated" +
+            "Reads like: 'There was an error updating My Product Name. Please try again.'")
     }
 }

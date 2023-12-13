@@ -3098,9 +3098,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: orderItem, childItems: childItems)
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(productRow).productRow.productViewModel.pricedIndividually)
-        XCTAssertFalse(try XCTUnwrap(productRow?.childProductRows[0]).productViewModel.pricedIndividually)
-        XCTAssertTrue(try XCTUnwrap(productRow?.childProductRows[1]).productViewModel.pricedIndividually)
+        XCTAssertTrue(try XCTUnwrap(productRow).productRow.priceSummaryViewModel.pricedIndividually)
+        XCTAssertFalse(try XCTUnwrap(productRow?.childProductRows[0]).priceSummaryViewModel.pricedIndividually)
+        XCTAssertTrue(try XCTUnwrap(productRow?.childProductRows[1]).priceSummaryViewModel.pricedIndividually)
     }
 
     func test_createProductRowViewModel_sets_isReadOnly_to_false_for_bundle_parent_and_true_for_bundle_child_items() throws {

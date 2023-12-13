@@ -271,48 +271,6 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.secondaryProductDetailsLabel, ProductType.bundle.description)
     }
 
-    func test_orderProductDetailsLabel_is_stock_status_for_non_configurable_product() {
-        // Given
-        let stockStatus = ProductStockStatus.inStock
-        let product = Product.fake().copy(stockStatusKey: stockStatus.rawValue)
-
-        // When
-        let viewModel = ProductRowViewModel(product: product)
-
-        // Then
-        assertEqual(stockStatus.description, viewModel.orderProductDetailsLabel)
-    }
-
-    func test_orderProductDetailsLabel_contains_attributes_and_stock_status_for_non_configurable_product_variation() {
-        // Given
-        let stockStatus = ProductStockStatus.inStock
-        let variationAttribute = "Blue"
-        let variation = ProductVariation.fake().copy(attributes: [ProductVariationAttribute(id: 1, name: "Color", option: variationAttribute)],
-                                                     stockStatus: stockStatus)
-        let attributes = [VariationAttributeViewModel(name: "Color", value: "Blue"), VariationAttributeViewModel(name: "Size")]
-
-        // When
-        let viewModel = ProductRowViewModel(productVariation: variation, name: "", displayMode: .attributes(attributes))
-
-        // Then
-        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(variationAttribute), "Label should contain variation attribute")
-        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
-    }
-
-    func test_orderProductDetailsLabel_contains_product_type_and_stock_status_for_configurable_bundle_product() {
-        // Given
-        let stockStatus = ProductStockStatus.inStock
-        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, stockStatusKey: stockStatus.rawValue, bundledItems: [.fake()])
-        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
-
-        // When
-        let viewModel = ProductRowViewModel(product: product, featureFlagService: featureFlagService, configure: {})
-
-        // Then
-        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(ProductType.bundle.description), "Label should contain product type (Bundle)")
-        XCTAssertTrue(viewModel.orderProductDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
-    }
-
     func test_productAccessibilityLabel_is_created_with_expected_details_from_product() {
         // Given
         let product = Product.fake().copy(name: "Test Product", sku: "123456", price: "10", stockStatusKey: "instock", variations: [1, 2])

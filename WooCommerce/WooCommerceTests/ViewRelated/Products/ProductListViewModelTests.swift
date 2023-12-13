@@ -308,4 +308,36 @@ final class ProductListViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
     }
+
+    func test_scanToUpdateInventoryButton_when_isScanToUpdateInventoryEnabled_is_true_then_should_be_visible() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
+        let viewModel = MockProductListViewModel(featureFlagService: featureFlagService)
+
+        // When
+        let result = waitFor { promise in
+            viewModel.scanToUpdateInventoryButtonShouldBeVisible { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_scanToUpdateInventoryButton_when_isScanToUpdateInventoryEnabled_is_false_then_should_not_be_visible() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: false)
+        let viewModel = MockProductListViewModel(featureFlagService: featureFlagService)
+
+        // Then
+        let result = waitFor { promise in
+            viewModel.scanToUpdateInventoryButtonShouldBeVisible { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
 }

@@ -32,6 +32,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
             }
         }
         await viewModel.fetchThemes()
+        viewModel.updateCurrentTheme(id: nil)
 
         // Then
         XCTAssertEqual(viewModel.state, .content(themes: expectedThemes))
@@ -70,13 +71,16 @@ final class ThemesCarouselViewModelTests: XCTestCase {
             switch action {
             case .loadSuggestedThemes(let onCompletion):
                 onCompletion(.success(expectedThemes))
-            default:
-                break
+            case let .loadCurrentTheme(_, onCompletion):
+                onCompletion(.success(theme1))
             }
         }
-        await viewModel.fetchThemes(currentThemeID: theme1.id)
+        await viewModel.fetchThemes()
+        viewModel.updateCurrentTheme(id: theme1.id)
 
         // Then
-        XCTAssertEqual(viewModel.state, .content(themes: [theme2]))
+        waitUntil {
+            viewModel.state == .content(themes: [theme2])
+        }
     }
 }

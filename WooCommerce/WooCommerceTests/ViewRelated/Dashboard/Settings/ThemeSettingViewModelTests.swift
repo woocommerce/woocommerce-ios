@@ -19,8 +19,8 @@ final class ThemeSettingViewModelTests: XCTestCase {
             case let .loadCurrentTheme(_, onCompletion):
                 XCTAssertTrue(viewModel.loadingCurrentTheme)
                 onCompletion(.success(.fake()))
-            case let .loadSuggestedThemes(onCompletion):
-                onCompletion(.success([]))
+            default:
+                break
             }
         }
         await viewModel.updateCurrentThemeName()
@@ -40,8 +40,8 @@ final class ThemeSettingViewModelTests: XCTestCase {
             switch action {
             case let .loadCurrentTheme(_, onCompletion):
                 onCompletion(.success(.fake().copy(name: expectedName)))
-            case let .loadSuggestedThemes(onCompletion):
-                onCompletion(.success([]))
+            default:
+                break
             }
         }
         await viewModel.updateCurrentThemeName()

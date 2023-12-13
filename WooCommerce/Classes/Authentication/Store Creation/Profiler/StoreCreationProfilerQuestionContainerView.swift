@@ -62,7 +62,9 @@ struct StoreCreationProfilerQuestionContainerView: View {
                     }
                 }, onSupport: onSupport))
             case .theme:
-                ProfilerThemesPickerView(carouselViewModel: viewModel.themesCarouselViewModel, onSkip: {
+                ProfilerThemesPickerView(carouselViewModel: viewModel.themesCarouselViewModel, onSelectedTheme: { theme in
+                    viewModel.saveTheme(theme)
+                }, onSkip: {
                     viewModel.saveTheme(nil)
                 })
             }

@@ -52,7 +52,10 @@ struct ThemeSettingView: View {
                 Section(Localization.tryOtherLook) {
                     VStack {
                         Spacer()
-                        ThemesCarouselView(viewModel: viewModel.carouselViewModel)
+                        ThemesCarouselView(viewModel: viewModel.carouselViewModel,
+                                           onSelectedTheme: { theme in
+                            viewModel.updateCurrentTheme(theme)
+                        })
                         Spacer()
                     }
                 }

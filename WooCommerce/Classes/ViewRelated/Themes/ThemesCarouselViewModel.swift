@@ -12,7 +12,8 @@ final class ThemesCarouselViewModel: ObservableObject {
     let mode: Mode
     private let stores: StoresManager
 
-    init(mode: Mode, stores: StoresManager = ServiceLocator.stores) {
+    init(mode: Mode,
+         stores: StoresManager = ServiceLocator.stores) {
         self.mode = mode
         self.stores = stores
         // current theme is only required for theme settings mode.

@@ -30,6 +30,10 @@ final class ThemeSettingViewModel: ObservableObject {
         loadingCurrentTheme = false
         carouselViewModel.updateCurrentTheme(id: theme?.id)
     }
+
+    func updateCurrentTheme(_ theme: WordPressTheme) {
+        currentThemeName = theme.name
+    }
 }
 
 private extension ThemeSettingViewModel {

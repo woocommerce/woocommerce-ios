@@ -99,8 +99,8 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         currentQuestion = .theme
     }
 
-    func saveTheme(_ id: String?) {
-        if id != nil {
+    func saveTheme(_ theme: WordPressTheme?) {
+        if theme != nil {
             // TODO
         }
         handleCompletion()

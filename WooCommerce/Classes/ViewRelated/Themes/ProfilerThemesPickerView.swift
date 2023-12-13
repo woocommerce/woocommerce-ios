@@ -1,5 +1,6 @@
 import SwiftUI
 import Kingfisher
+import struct Yosemite.WordPressTheme
 
 /// View for picking themes in the store creation flow.
 struct ProfilerThemesPickerView: View {
@@ -7,10 +8,14 @@ struct ProfilerThemesPickerView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let carouselViewModel: ThemesCarouselViewModel
+    private let onSelectedTheme: (WordPressTheme) -> Void
     private let onSkip: () -> Void
 
-    init(carouselViewModel: ThemesCarouselViewModel, onSkip: @escaping () -> Void) {
+    init(carouselViewModel: ThemesCarouselViewModel,
+         onSelectedTheme: @escaping (WordPressTheme) -> Void,
+         onSkip: @escaping () -> Void) {
         self.carouselViewModel = carouselViewModel
+        self.onSelectedTheme = onSelectedTheme
         self.onSkip = onSkip
     }
 
@@ -31,7 +36,7 @@ struct ProfilerThemesPickerView: View {
 
                 Spacer()
 
-                ThemesCarouselView(viewModel: carouselViewModel)
+                ThemesCarouselView(viewModel: carouselViewModel, onSelectedTheme: onSelectedTheme)
 
                 Spacer()
             }
@@ -48,7 +53,7 @@ struct ProfilerThemesPickerView: View {
 
 struct ProfilerThemesPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilerThemesPickerView(carouselViewModel: .init(mode: .storeCreationProfiler), onSkip: {})
+        ProfilerThemesPickerView(carouselViewModel: .init(mode: .storeCreationProfiler), onSelectedTheme: { _ in }, onSkip: {})
     }
 }
 

@@ -312,7 +312,7 @@ private extension ProductsViewController {
                     if let presentedViewController = self.presentedViewController as? InProgressViewController {
                         await self.dismiss(animated: true)
                     }
-                    self.presentNotice(title: "error")
+                    self.presentNotice(title: Localization.scannerErrorNotice)
                 }
             }
 
@@ -325,8 +325,8 @@ private extension ProductsViewController {
     }
 
     private func displayInProgressView() -> InProgressViewController {
-        let title = "Loading"
-        let message = "Wait while loading..."
+        let title = Localization.progressViewTitle
+        let message = Localization.progressViewMessage
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         
@@ -1489,5 +1489,17 @@ private extension ProductsViewController {
             comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
             "Reads like: 'Quantity updated: 2,345'"
         )
+        static let progressViewTitle = NSLocalizedString(
+            "progressViewTitle.scanProducts.displayInProgressView",
+            value: "Loading...",
+            comment: "Title of the loading screen when a product is scanned for updating inventory.")
+        static let progressViewMessage = NSLocalizedString(
+            "progressViewMessage.scanProducts.displayInProgressView",
+            value: "Scanning barcode. Please wait.",
+            comment: "Message of the loading screen when a product is scanned for updating inventory.")
+        static let scannerErrorNotice = NSLocalizedString(
+            "scannerErrorNotice.scanProducts.createAddOrderByProductScanningButtonItem",
+            value: "There was an error when attempting to scan the barcode. Please try again.",
+            comment: "Error notice when an attempt to scanned to update inventory fails to find the product.")
     }
 }

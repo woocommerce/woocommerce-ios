@@ -124,7 +124,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         self.stores = stores
         self.onUpdatedInventory = onUpdatedInventory
 
-        quantity = inventoryItem.stockQuantity?.formatted() ?? ""
+        quantity = "\(inventoryItem.stockQuantity ?? 0)"
 
         Task { @MainActor in
             name = try await inventoryItem.retrieveName(with: stores, siteID: siteID)
@@ -166,7 +166,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
             return
         }
         let newQuantity = quantityDecimal + 1
-        quantity = newQuantity.formatted()
+        quantity = "\(newQuantity)"
 
         try await updateStockQuantity(with: newQuantity)
     }

@@ -11,28 +11,42 @@ final class ThemesCarouselViewModel: ObservableObject {
     }
 
     @Published private(set) var state: State = .loading
+    @Published private var themes: [WordPressTheme] = []
+    @Published private var currentThemeID: String?
 
     private let stores: StoresManager
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
+        observeThemeListAndCurrentTheme()
     }
 
     @MainActor
-    func fetchThemes(currentThemeID: String? = nil) async {
+    func fetchThemes() async {
         state = .loading
         do {
-            let themes = try await loadSuggestedThemes()
-                .filter { $0.id != currentThemeID }
-            state = .content(themes: themes)
+            themes = try await loadSuggestedThemes()
         } catch {
             DDLogError("⛔️ Error loading suggested themes: \(error)")
             state = .error
         }
     }
+
+    func updateCurrentTheme(id: String?) {
+        currentThemeID = id
+    }
 }
 
 private extension ThemesCarouselViewModel {
+    func observeThemeListAndCurrentTheme() {
+        $themes.combineLatest($currentThemeID.dropFirst())
+            .map { themes, currentThemeID in
+                let filteredThemes = themes.filter { $0.id != currentThemeID }
+                return State.content(themes: filteredThemes)
+            }
+            .assign(to: &$state)
+    }
+
     @MainActor
     func loadSuggestedThemes() async throws -> [WordPressTheme] {
         try await withCheckedThrowingContinuation { continuation in

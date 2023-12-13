@@ -451,6 +451,7 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductCard(viewModel: productRow,
                                            flow: flow,
+                                           isLoading: viewModel.paymentDataViewModel.isLoading,
                                            shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
                                            shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                            onAddDiscount: viewModel.setDiscountViewModel)

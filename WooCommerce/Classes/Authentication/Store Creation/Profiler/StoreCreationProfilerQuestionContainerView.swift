@@ -61,6 +61,10 @@ struct StoreCreationProfilerQuestionContainerView: View {
                         viewModel.saveCountry(answer)
                     }
                 }, onSupport: onSupport))
+            case .theme:
+                ProfilerThemesPickerView(carouselViewModel: viewModel.themesCarouselViewModel, onSkip: {
+                    viewModel.saveTheme(nil)
+                })
             }
         }
         .onAppear() {

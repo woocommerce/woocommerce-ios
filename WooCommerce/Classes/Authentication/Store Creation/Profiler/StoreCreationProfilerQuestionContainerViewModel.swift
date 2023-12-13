@@ -6,6 +6,7 @@ enum StoreCreationProfilerQuestion: Int, CaseIterable {
     case sellingStatus = 1
     case category
     case country
+    case theme
 
     /// Progress to display for the profiler flow
     var progress: Double {
@@ -22,6 +23,7 @@ enum StoreCreationProfilerQuestion: Int, CaseIterable {
 final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
     let storeName: String
+    let themesCarouselViewModel: ThemesCarouselViewModel
     private let analytics: Analytics
     private let completionHandler: () -> Void
 
@@ -54,6 +56,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     @Published private(set) var currentQuestion: StoreCreationProfilerQuestion = .sellingStatus
 
     init(storeName: String,
+         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void,
          uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol) {
@@ -61,6 +64,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         self.analytics = analytics
         self.completionHandler = onCompletion
         self.uploadAnswersUseCase = uploadAnswersUseCase
+        self.themesCarouselViewModel = .init(mode: .storeCreationProfiler, stores: stores)
     }
 
     func onAppear() {
@@ -92,6 +96,13 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
     func saveCountry(_ answer: CountryCode) {
         storeCountry = answer
+        currentQuestion = .theme
+    }
+
+    func saveTheme(_ id: String?) {
+        if id != nil {
+            // TODO
+        }
         handleCompletion()
     }
 

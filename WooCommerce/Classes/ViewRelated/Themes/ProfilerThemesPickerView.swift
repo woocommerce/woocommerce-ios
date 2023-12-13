@@ -7,9 +7,11 @@ struct ProfilerThemesPickerView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let carouselViewModel: ThemesCarouselViewModel
+    private let onSkip: () -> Void
 
-    init(carouselViewModel: ThemesCarouselViewModel) {
+    init(carouselViewModel: ThemesCarouselViewModel, onSkip: @escaping () -> Void) {
         self.carouselViewModel = carouselViewModel
+        self.onSkip = onSkip
     }
 
     var body: some View {
@@ -36,9 +38,7 @@ struct ProfilerThemesPickerView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(Localization.skipButtonTitle) {
-                    // TODO: Setup toolbar.
-                }
+                Button(Localization.skipButtonTitle, action: onSkip)
             }
         }
         // Disables large title to avoid a large gap below the navigation bar.
@@ -48,7 +48,7 @@ struct ProfilerThemesPickerView: View {
 
 struct ProfilerThemesPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilerThemesPickerView(carouselViewModel: .init(mode: .storeCreationProfiler))
+        ProfilerThemesPickerView(carouselViewModel: .init(mode: .storeCreationProfiler), onSkip: {})
     }
 }
 

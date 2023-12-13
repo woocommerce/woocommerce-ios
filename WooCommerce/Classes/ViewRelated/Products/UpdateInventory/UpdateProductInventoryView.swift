@@ -128,6 +128,7 @@ struct UpdateProductInventoryView: View {
                     .frame(width: geometry.size.width)
                     .navigationBarTitle(Localization.navigationBarTitle, displayMode: .inline)
                     .navigationBarItems(leading: Button(Localization.cancelButtonTitle) {
+                        ServiceLocator.analytics.track(.inventoryUpdateDismissed)
                         dismiss()
                     })
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in

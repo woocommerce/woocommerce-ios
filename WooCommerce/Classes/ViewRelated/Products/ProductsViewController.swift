@@ -1161,13 +1161,14 @@ private extension ProductsViewController {
     }
 
     func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
-              UIImagePickerController.isSourceTypeAvailable(.camera) else {
-            navigationItem.leftBarButtonItem = nil
-            return
-        }
-
-        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+        viewModel.scanToUpdateInventoryButtonShouldBeVisible(completion: { shouldBeVisible in
+            switch shouldBeVisible {
+            case true:
+                self.navigationItem.leftBarButtonItem = self.createAddOrderByProductScanningButtonItem()
+            case false:
+                self.navigationItem.leftBarButtonItem = nil
+            }
+        })
     }
 
     func createAddOrderByProductScanningButtonItem() -> UIBarButtonItem {

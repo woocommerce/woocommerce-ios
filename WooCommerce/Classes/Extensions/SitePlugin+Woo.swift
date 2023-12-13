@@ -9,5 +9,6 @@ extension SitePlugin {
         public static let WCSubscriptions = ["WooCommerce Subscriptions", "Woo Subscriptions"]
         public static let WCProductBundles = "WooCommerce Product Bundles"
         public static let WCCompositeProducts = "WooCommerce Composite Products"
+        public static let square = "WooCommerce Square"
     }
 }

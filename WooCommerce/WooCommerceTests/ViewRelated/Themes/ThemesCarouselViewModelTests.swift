@@ -72,6 +72,8 @@ final class ThemesCarouselViewModelTests: XCTestCase {
                 onCompletion(.success(expectedThemes))
             case let .loadCurrentTheme(_, onCompletion):
                 onCompletion(.success(theme1))
+            default:
+                break
             }
         }
         await viewModel.fetchThemes()

@@ -6,6 +6,12 @@ struct ProfilerThemesPickerView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    private let carouselViewModel: ThemesCarouselViewModel
+
+    init(carouselViewModel: ThemesCarouselViewModel) {
+        self.carouselViewModel = carouselViewModel
+    }
+
     var body: some View {
 
         ScrollView {
@@ -23,10 +29,7 @@ struct ProfilerThemesPickerView: View {
 
                 Spacer()
 
-                ThemesCarouselView(
-                    lastMessageHeading: Localization.lastMessageHeading,
-                    lastMessageContent: Localization.lastMessageContent
-                )
+                ThemesCarouselView(viewModel: carouselViewModel)
 
                 Spacer()
             }
@@ -45,7 +48,7 @@ struct ProfilerThemesPickerView: View {
 
 struct ProfilerThemesPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilerThemesPickerView()
+        ProfilerThemesPickerView(carouselViewModel: .init(mode: .storeCreationProfiler))
     }
 }
 
@@ -72,18 +75,6 @@ private extension ProfilerThemesPickerView {
             "themesPickerView.chooseThemeSubtitle",
             value: "You can always change it later in the settings.",
             comment: "Subtitle on the theme carousel screen."
-        )
-
-        static let lastMessageHeading = NSLocalizedString(
-            "themesPickerView.lastMessageHeading",
-            value: "Looking for more?",
-            comment: "The heading of the message shown at the end of carousel"
-        )
-
-        static let lastMessageContent = NSLocalizedString(
-            "themesPickerView.lastMessageContent",
-            value: "Once your store is set up, find your perfect theme in the WooCommerce Theme Store.",
-            comment: "The content of the message shown at the end of carousel"
         )
     }
 }

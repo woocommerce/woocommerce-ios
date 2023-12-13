@@ -114,7 +114,7 @@ struct UpdateProductInventoryView: View {
                         .padding(.bottom, Layout.mediumSpacing)
 
                         Button(Localization.viewProductDetailsButtonTitle) {
-                            ServiceLocator.analytics.track(.inventoryUpdateViewProductDetailsTapped)
+                            viewModel.onViewProductDetailsButtonTapped()
                             isPresentingDetailsView = true
                         }
                         .buttonStyle(SecondaryButtonStyle())
@@ -128,7 +128,7 @@ struct UpdateProductInventoryView: View {
                     .frame(width: geometry.size.width)
                     .navigationBarTitle(Localization.navigationBarTitle, displayMode: .inline)
                     .navigationBarItems(leading: Button(Localization.cancelButtonTitle) {
-                        ServiceLocator.analytics.track(.inventoryUpdateDismissed)
+                        viewModel.onDismiss()
                         dismiss()
                     })
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in

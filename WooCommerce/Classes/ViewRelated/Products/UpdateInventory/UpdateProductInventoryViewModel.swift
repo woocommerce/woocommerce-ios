@@ -180,6 +180,14 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         try await updateStockQuantity(with: quantityDecimal)
     }
 
+    func onViewProductDetailsButtonTapped() {
+        ServiceLocator.analytics.track(.inventoryUpdateViewProductDetailsTapped)
+    }
+
+    func onDismiss() {
+        ServiceLocator.analytics.track(.inventoryUpdateDismissed)
+    }
+
     func displayErrorNotice(_ productName: String) {
         notice =  Notice(title: Localization.errorNoticetitle,
                          message: String.localizedStringWithFormat(Localization.errorNoticeMessage, productName),

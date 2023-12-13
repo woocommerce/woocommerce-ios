@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct ProductDiscountView: View {
-    private var viewModel: ProductDiscountViewModel
+    private let viewModel: ProductDiscountViewModel
     @ObservedObject private var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel
 
     private let minusSign: String = NumberFormatter().minusSign

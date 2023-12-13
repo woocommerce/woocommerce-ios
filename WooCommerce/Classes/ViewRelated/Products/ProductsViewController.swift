@@ -285,22 +285,18 @@ private extension ProductsViewController {
             return
         }
 
+        self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
             guard let self = self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
-            self.navigationItem.configureLeftBarButtonItemAsLoader()
-
             Task {
-                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+                self.navigationItem.configureLeftBarButtonItemAsLoader()
 
                 do {
-                    let inProgressViewController = self.displayInProgressView()
-                    self.present(inProgressViewController, animated: true)
-
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
-                    await inProgressViewController.dismiss(animated: true)
                     self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
                                                                                           siteID: self.viewModel.siteID,
                                                                                           onUpdatedInventory: { newQuantity in
@@ -309,11 +305,10 @@ private extension ProductsViewController {
                     })), animated: true)
                 } catch {
                     DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
-                    if let presentedViewController = self.presentedViewController as? InProgressViewController {
-                        await self.dismiss(animated: true)
-                    }
                     self.presentNotice(title: Localization.scannerErrorNotice)
                 }
+                // Reset button state on finishing the task
+                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
             }
 
         }, onPermissionsDenied: {
@@ -322,15 +317,6 @@ private extension ProductsViewController {
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
-    }
-
-    private func displayInProgressView() -> InProgressViewController {
-        let title = Localization.progressViewTitle
-        let message = Localization.progressViewMessage
-        let viewProperties = InProgressViewProperties(title: title, message: message)
-        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-
-        return inProgressViewController
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {
@@ -1489,14 +1475,6 @@ private extension ProductsViewController {
             comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
             "Reads like: 'Quantity updated: 2,345'"
         )
-        static let progressViewTitle = NSLocalizedString(
-            "progressViewTitle.scanProducts.displayInProgressView",
-            value: "Loading...",
-            comment: "Title of the loading screen when a product is scanned for updating inventory.")
-        static let progressViewMessage = NSLocalizedString(
-            "progressViewMessage.scanProducts.displayInProgressView",
-            value: "Scanning barcode. Please wait.",
-            comment: "Message of the loading screen when a product is scanned for updating inventory.")
         static let scannerErrorNotice = NSLocalizedString(
             "scannerErrorNotice.scanProducts.createAddOrderByProductScanningButtonItem",
             value: "There was an error when attempting to scan the barcode. Please try again.",

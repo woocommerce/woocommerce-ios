@@ -3,7 +3,7 @@ import WooFoundation
 
 /// View model for `CollapsibleProductCardPriceSummary`
 ///
-struct CollapsibleProductCardPriceSummaryViewModel {
+final class CollapsibleProductCardPriceSummaryViewModel {
     /// Whether the product is priced individually. Defaults to `true`.
     ///
     /// Used to control how the price is displayed, e.g. when a product is part of a bundle.
@@ -16,7 +16,7 @@ struct CollapsibleProductCardPriceSummaryViewModel {
 
     /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
-    private let quantity: Decimal
+    @Published var quantity: Decimal
 
     private let currencyFormatter: CurrencyFormatter
 

@@ -6,7 +6,7 @@ import Yosemite
 /// View model for `CollapsibleProductCard`.
 struct CollapsibleProductCardViewModel: Identifiable {
     var id: Int64 {
-        productRow.productViewModel.id
+        productRow.id
     }
 
     /// The main/parent product row.
@@ -24,9 +24,11 @@ struct CollapsibleProductCardViewModel: Identifiable {
 
 /// View model for `CollapsibleProductRowCard`.
 struct CollapsibleProductRowCardViewModel: Identifiable {
-    var id: Int64 {
-        productViewModel.id
-    }
+    /// Unique ID for view model
+    let id: Int64
+
+    /// ID for product or variation in row
+    let productOrVariationID: Int64
 
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
@@ -58,19 +60,24 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     ///
     let price: String?
 
+    /// Product discount
+    ///
+    let discount: Decimal?
+
     /// Label showing product details for an order item.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
     ///
     let productDetailsLabel: String
 
-    let productViewModel: ProductRowViewModel
     let stepperViewModel: ProductStepperViewModel
     let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
-    init(hasParentProduct: Bool = false,
+    init(id: Int64,
+         productOrVariationID: Int64,
+         hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
          imageURL: URL?,
@@ -78,16 +85,18 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          sku: String?,
          price: String?,
          pricedIndividually: Bool = true,
+         discount: Decimal? = nil,
          productTypeDescription: String,
          attributes: [VariationAttributeViewModel],
          stockStatus: ProductStockStatus,
          stockQuantity: Decimal?,
          manageStock: Bool,
-         productViewModel: ProductRowViewModel,
          stepperViewModel: ProductStepperViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          configure: (() -> Void)? = nil) {
+        self.id = id
+        self.productOrVariationID = productOrVariationID
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false
@@ -95,6 +104,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.imageURL = imageURL
         self.name = name
         self.price = price
+        self.discount = discount
         skuLabel = CollapsibleProductRowCardViewModel.createSKULabel(sku: sku)
         productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
                                                                                            productTypeDescription: productTypeDescription,
@@ -102,7 +112,6 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                                                            stockStatus: stockStatus,
                                                                                            stockQuantity: stockQuantity,
                                                                                            manageStock: manageStock)
-        self.productViewModel = productViewModel
         self.stepperViewModel = stepperViewModel
         self.priceSummaryViewModel = .init(pricedIndividually: pricedIndividually,
                                            quantity: stepperViewModel.quantity,
@@ -132,7 +141,7 @@ extension CollapsibleProductRowCardViewModel {
             return nil
         }
         let subtotalDecimal = priceDecimal.multiplying(by: stepperViewModel.quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting((productViewModel.discount ?? Decimal.zero) as NSDecimalNumber)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
 
         return currencyFormatter.formatAmount(totalPriceAfterDiscount)
     }
@@ -140,14 +149,14 @@ extension CollapsibleProductRowCardViewModel {
     /// Formatted discount label for an individual product
     ///
     var discountLabel: String? {
-        guard let discount = productViewModel.discount else {
+        guard let discount else {
             return nil
         }
         return currencyFormatter.formatAmount(discount)
     }
 
     var hasDiscount: Bool {
-        productViewModel.discount != nil
+        discount != nil
     }
 }
 
@@ -196,7 +205,7 @@ private extension CollapsibleProductRowCardViewModel {
 private extension CollapsibleProductRowCardViewModel {
     func observeProductQuantityFromStepperViewModel() {
         stepperViewModel.$quantity
-            .assign(to: &productViewModel.$quantity)
+            .assign(to: &priceSummaryViewModel.$quantity)
     }
 }
 

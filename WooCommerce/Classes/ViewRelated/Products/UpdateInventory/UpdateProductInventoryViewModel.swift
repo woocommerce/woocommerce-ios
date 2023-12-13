@@ -162,6 +162,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     func onTapIncreaseStockQuantityOnce() async throws {
+        ServiceLocator.analytics.track(.inventoryUpdateIncrementQuantityTapped)
         guard let quantityDecimal = Decimal(string: quantity) else {
             return
         }
@@ -172,6 +173,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     func onTapUpdateStockQuantity() async throws {
+        ServiceLocator.analytics.track(.inventoryUpdateManualQuantityTapped)
         guard let quantityDecimal = Decimal(string: quantity) else {
             throw UpdateInventoryError.nonSupportedQuantity
         }
@@ -195,9 +197,11 @@ private extension UpdateProductInventoryViewModel {
 
         do {
             try await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
+            ServiceLocator.analytics.track(.inventoryUpdateQuantityUpdateSuccess)
             onUpdatedInventory(newQuantity.formatted())
         } catch {
             isPrimaryButtonLoading = false
+            ServiceLocator.analytics.track(.inventoryUpdateQuantityUpdateFailure)
             throw UpdateInventoryError.generic
         }
 

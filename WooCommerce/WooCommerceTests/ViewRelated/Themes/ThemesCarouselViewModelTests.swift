@@ -7,7 +7,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
 
     func test_state_is_loading_initially() {
         // Given
-        let viewModel = ThemesCarouselViewModel()
+        let viewModel = ThemesCarouselViewModel(mode: .themeSettings)
 
         // When
         let state = viewModel.state
@@ -16,10 +16,10 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         XCTAssertEqual(state, .loading)
     }
 
-    func test_state_is_content_after_loading_themes() async {
+    func test_state_is_content_after_loading_themes_for_profiler_mode() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ThemesCarouselViewModel(stores: stores)
+        let viewModel = ThemesCarouselViewModel(mode: .storeCreationProfiler, stores: stores)
         let expectedThemes: [WordPressTheme] = [.fake().copy(name: "Tsubaki")]
 
         // When
@@ -32,7 +32,6 @@ final class ThemesCarouselViewModelTests: XCTestCase {
             }
         }
         await viewModel.fetchThemes()
-        viewModel.updateCurrentTheme(id: nil)
 
         // Then
         XCTAssertEqual(viewModel.state, .content(themes: expectedThemes))
@@ -41,7 +40,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
     func test_state_is_error_after_loading_themes_failed() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ThemesCarouselViewModel(stores: stores)
+        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, stores: stores)
 
         // When
         stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
@@ -61,7 +60,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
     func test_fetchThemes_filters_out_matching_theme_id() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ThemesCarouselViewModel(stores: stores)
+        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, stores: stores)
         let theme1: WordPressTheme = .fake().copy(id: "tsubaki")
         let theme2: WordPressTheme = .fake().copy(id: "tazza")
         let expectedThemes: [WordPressTheme] = [theme1, theme2]

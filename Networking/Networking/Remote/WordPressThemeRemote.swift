@@ -11,9 +11,9 @@ public protocol WordPressThemeRemoteProtocol {
     ///
     func loadCurrentTheme(siteID: Int64) async throws -> WordPressTheme
 
-    /// Installs the given theme for the site with the specified ID.
+    /// Installs the theme with the given ID for the site with the specified ID.
     ///
-    func installTheme(_ theme: WordPressTheme,
+    func installTheme(themeID: String,
                       siteID: Int64) async throws -> WordPressTheme
 }
 
@@ -37,9 +37,9 @@ public final class WordPressThemeRemote: Remote, WordPressThemeRemoteProtocol {
         return try await enqueue(request, mapper: WordPressThemeMapper())
     }
 
-    public func installTheme(_ theme: WordPressTheme,
+    public func installTheme(themeID: String,
                              siteID: Int64) async throws -> WordPressTheme {
-        let path = Paths.install(theme: theme, for: siteID)
+        let path = Paths.install(themeID: themeID, for: siteID)
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
         do {
             return try await enqueue(request, mapper: WordPressThemeMapper())
@@ -80,9 +80,9 @@ private extension WordPressThemeRemote {
             "sites/\(siteID)/themes/mine"
         }
 
-        static func install(theme: WordPressTheme,
+        static func install(themeID: String,
                             for siteID: Int64) -> String {
-            "sites/\(siteID)/themes/\(theme.id)/install/"
+            "sites/\(siteID)/themes/\(themeID)/install/"
         }
     }
 

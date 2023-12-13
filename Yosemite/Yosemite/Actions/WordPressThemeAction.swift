@@ -22,13 +22,13 @@ public enum WordPressThemeAction: Action {
     case loadCurrentTheme(siteID: Int64, onCompletion: (Result<WordPressTheme, Error>) -> Void)
 
     /// Installs the given theme ID for a site.
-    /// - `theme`: ID of the theme to be installed.
+    /// - `themeID`: ID of the theme to be installed.
     /// - `siteID`: ID of the current site.
     /// - `onCompletion`: invoked when the theme installation operation finishes.
     ///     - `result.success(WordPressTheme)`: the installed theme's details.
     ///     - `result.failure(Error)`: error indicates issues installing themes.
     ///
-    case installTheme(_ theme: WordPressTheme,
+    case installTheme(themeID: String,
                       siteID: Int64,
                       onCompletion: (Result<WordPressTheme, Error>) -> Void)
 }

@@ -129,7 +129,7 @@ final class WordPressThemeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(WordPressThemeAction.installTheme(sampleTheme, siteID: 123, onCompletion: { result in
+            store.onAction(WordPressThemeAction.installTheme(themeID: sampleTheme.id, siteID: 123, onCompletion: { result in
                 promise(result)
             }))
         }
@@ -150,7 +150,7 @@ final class WordPressThemeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(WordPressThemeAction.installTheme(.fake(), siteID: 123, onCompletion: { result in
+            store.onAction(WordPressThemeAction.installTheme(themeID: "123", siteID: 123, onCompletion: { result in
                 promise(result)
             }))
         }

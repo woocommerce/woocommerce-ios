@@ -59,7 +59,7 @@ extension MockWordPressThemeRemote: WordPressThemeRemoteProtocol {
         return stubbedCurrentTheme
     }
 
-    func installTheme(_ theme: Networking.WordPressTheme, siteID: Int64) async throws -> WordPressTheme {
+    func installTheme(themeID: String, siteID: Int64) async throws -> WordPressTheme {
         if let stubbedInstallThemeError {
             throw stubbedInstallThemeError
         }

@@ -111,7 +111,7 @@ final class WordPressThemeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "theme-install-success")
 
         // When
-        let theme = try await remote.installTheme(sampleTheme, siteID: sampleSiteID)
+        let theme = try await remote.installTheme(themeID: sampleTheme.id, siteID: sampleSiteID)
 
         // Then
         XCTAssertEqual(theme.id, sampleTheme.id)
@@ -130,7 +130,7 @@ final class WordPressThemeRemoteTests: XCTestCase {
 
         do {
             // When
-            _ = try await remote.installTheme(sampleTheme, siteID: sampleSiteID)
+            _ = try await remote.installTheme(themeID: sampleTheme.id, siteID: sampleSiteID)
 
             // Then
             XCTFail("Request should fail")
@@ -151,7 +151,7 @@ final class WordPressThemeRemoteTests: XCTestCase {
 
         do {
             // When
-            _ = try await remote.installTheme(sampleTheme, siteID: sampleSiteID)
+            _ = try await remote.installTheme(themeID: sampleTheme.id, siteID: sampleSiteID)
 
             // Then
             XCTFail("Request should fail")

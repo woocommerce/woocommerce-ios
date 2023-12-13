@@ -2815,16 +2815,15 @@ extension WooAnalyticsEvent {
 
         enum BarcodeScanningFailureReason: String {
             case cameraAccessNotPermitted = "camera_access_not_permitted"
-            case other = "other"
         }
 
         static func barcodeScanningSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
         }
 
-        static func barcodeScanningFailure(from source: BarcodeScanning.Source, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
+        static func barcodeScanningFailure(from source: BarcodeScanning.Source, reason: BarcodeScanningFailureReason? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
-                                                                              Keys.reason: reason.rawValue])
+                                                                              Keys.reason: reason?.rawValue ?? ""])
         }
 
         static func productSearchViaSKUSuccess(from source: String) -> WooAnalyticsEvent {

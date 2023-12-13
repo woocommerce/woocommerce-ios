@@ -114,6 +114,7 @@ struct UpdateProductInventoryView: View {
                         .padding(.bottom, Layout.mediumSpacing)
 
                         Button(Localization.viewProductDetailsButtonTitle) {
+                            ServiceLocator.analytics.track(.inventoryUpdateViewProductDetailsTapped)
                             isPresentingDetailsView = true
                         }
                         .buttonStyle(SecondaryButtonStyle())

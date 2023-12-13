@@ -186,7 +186,7 @@ private extension CollapsibleProductRowCardViewModel {
     /// Creates the label showing the product SKU for an order item.
     ///
     static func createSKULabel(sku: String?) -> String {
-        guard let sku = sku, sku.isNotEmpty else {
+        guard let sku, sku.isNotEmpty else {
             return ""
         }
         return String.localizedStringWithFormat(Localization.skuFormat, sku)

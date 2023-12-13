@@ -2815,6 +2815,7 @@ extension WooAnalyticsEvent {
 
         enum BarcodeScanningFailureReason: String {
             case cameraAccessNotPermitted = "camera_access_not_permitted"
+            case other = "other"
         }
 
         static func barcodeScanningSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {

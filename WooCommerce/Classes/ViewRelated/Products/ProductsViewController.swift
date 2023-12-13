@@ -297,6 +297,8 @@ private extension ProductsViewController {
 
                 do {
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
+                    ServiceLocator.analytics.track(event:
+                                                    WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .scanToUpdateInventory))
                     self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
                                                                                           siteID: self.viewModel.siteID,
                                                                                           onUpdatedInventory: { newQuantity in
@@ -304,6 +306,8 @@ private extension ProductsViewController {
                         self.presentNotice(title: noticeMessage)
                     })), animated: true)
                 } catch {
+                    ServiceLocator.analytics.track(event:
+                                                    WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .scanToUpdateInventory, reason: .other))
                     DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
                 }
             }

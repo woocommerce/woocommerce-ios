@@ -292,12 +292,14 @@ private extension CollapsibleProductRowCard {
                 // This avoids showing an out-of-date discount while hasn't synched
                 .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
             }
-            Spacer()
-            Button {
-                shouldShowInfoTooltip.toggle()
-            } label: {
-                Image(systemName: "questionmark.circle")
-                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+            Group {
+                Spacer()
+                Button {
+                    shouldShowInfoTooltip.toggle()
+                } label: {
+                    Image(systemName: "questionmark.circle")
+                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                }
             }
             .renderedIf(shouldDisallowDiscounts)
         }

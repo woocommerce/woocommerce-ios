@@ -113,15 +113,18 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
     let inventoryItem: InventoryItem
     private let stores: StoresManager
+    private let analytics: Analytics
 
     var onUpdatedInventory: ((String) -> ())
 
     init(inventoryItem: InventoryItem,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onUpdatedInventory: @escaping ((String) -> ())) {
         self.inventoryItem = inventoryItem
         self.stores = stores
+        self.analytics = analytics
         self.onUpdatedInventory = onUpdatedInventory
 
         quantity = inventoryItem.stockQuantity?.formatted() ?? ""
@@ -162,7 +165,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     func onTapIncreaseStockQuantityOnce() async throws {
-        ServiceLocator.analytics.track(.inventoryUpdateIncrementQuantityTapped)
+        analytics.track(.inventoryUpdateIncrementQuantityTapped)
         guard let quantityDecimal = Decimal(string: quantity) else {
             return
         }
@@ -173,7 +176,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     func onTapUpdateStockQuantity() async throws {
-        ServiceLocator.analytics.track(.inventoryUpdateManualQuantityTapped)
+        analytics.track(.inventoryUpdateManualQuantityTapped)
         guard let quantityDecimal = Decimal(string: quantity) else {
             throw UpdateInventoryError.nonSupportedQuantity
         }
@@ -181,11 +184,11 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     func onViewProductDetailsButtonTapped() {
-        ServiceLocator.analytics.track(.inventoryUpdateViewProductDetailsTapped)
+        analytics.track(.inventoryUpdateViewProductDetailsTapped)
     }
 
     func onDismiss() {
-        ServiceLocator.analytics.track(.inventoryUpdateDismissed)
+        analytics.track(.inventoryUpdateDismissed)
     }
 
     func displayErrorNotice(_ productName: String) {
@@ -205,11 +208,11 @@ private extension UpdateProductInventoryViewModel {
 
         do {
             try await inventoryItem.updateStockQuantity(with: newQuantity, stores: stores)
-            ServiceLocator.analytics.track(.inventoryUpdateQuantityUpdateSuccess)
+            analytics.track(.inventoryUpdateQuantityUpdateSuccess)
             onUpdatedInventory(newQuantity.formatted())
         } catch {
             isPrimaryButtonLoading = false
-            ServiceLocator.analytics.track(.inventoryUpdateQuantityUpdateFailure)
+            analytics.track(.inventoryUpdateQuantityUpdateFailure)
             throw UpdateInventoryError.generic
         }
 

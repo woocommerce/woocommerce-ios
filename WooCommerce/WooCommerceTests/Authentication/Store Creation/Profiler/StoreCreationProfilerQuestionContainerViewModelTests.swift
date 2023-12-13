@@ -284,6 +284,7 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         viewModel.saveCategory(.init(name: StoreCreationCategoryQuestionViewModel.Category.clothingAccessories.name,
                                      value: StoreCreationCategoryQuestionViewModel.Category.clothingAccessories.rawValue))
         viewModel.saveCountry(.US)
+        viewModel.saveTheme(nil)
 
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_data" }))

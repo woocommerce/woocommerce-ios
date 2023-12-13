@@ -190,6 +190,10 @@ final class DashboardViewController: UIViewController {
         Task {
             await viewModel.uploadProfilerAnswers()
         }
+
+        Task {
+            await viewModel.installPendingTheme()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

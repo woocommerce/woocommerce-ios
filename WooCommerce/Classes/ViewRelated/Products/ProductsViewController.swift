@@ -296,7 +296,11 @@ private extension ProductsViewController {
                 self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
 
                 do {
+                    let inProgressViewController = self.displayInProgressView()
+                    self.present(inProgressViewController, animated: true)
+
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
+                    await inProgressViewController.dismiss(animated: true)
                     self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
                                                                                           siteID: self.viewModel.siteID,
                                                                                           onUpdatedInventory: { newQuantity in
@@ -305,6 +309,10 @@ private extension ProductsViewController {
                     })), animated: true)
                 } catch {
                     DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
+                    if let presentedViewController = self.presentedViewController as? InProgressViewController {
+                        await self.dismiss(animated: true)
+                    }
+                    self.presentNotice(title: "error")
                 }
             }
 
@@ -314,6 +322,15 @@ private extension ProductsViewController {
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
+    }
+
+    private func displayInProgressView() -> InProgressViewController {
+        let title = "Loading"
+        let message = "Wait while loading..."
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        
+        return inProgressViewController
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {

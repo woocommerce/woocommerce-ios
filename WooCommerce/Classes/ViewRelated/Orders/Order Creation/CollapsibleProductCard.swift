@@ -139,7 +139,7 @@ private struct CollapsibleProductRowCard: View {
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
-                    ProductImageThumbnail(productImageURL: viewModel.productViewModel.imageURL,
+                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
                                           productImageSize: viewModel.hasParentProduct ?
                                           Layout.childProductImageSize : Layout.parentProductImageSize,
                                           scale: scale,
@@ -147,13 +147,13 @@ private struct CollapsibleProductRowCard: View {
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     VStack(alignment: .leading) {
-                        Text(viewModel.productViewModel.name)
+                        Text(viewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)
                             .foregroundColor(Color(.text))
                         Text(viewModel.productDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
-                        Text(viewModel.productViewModel.skuLabel)
+                        Text(viewModel.skuLabel)
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
@@ -356,6 +356,10 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
         let productViewModel = ProductRowViewModel(product: product)
         let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                               isReadOnly: false,
+                                                              imageURL: product.imageURL,
+                                                              name: product.name,
+                                                              sku: product.sku,
+                                                              price: product.price,
                                                               productTypeDescription: product.productType.description,
                                                               attributes: [],
                                                               stockStatus: product.productStockStatus,
@@ -369,6 +373,10 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
 
         let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                                       isReadOnly: true,
+                                                                      imageURL: product.imageURL,
+                                                                      name: product.name,
+                                                                      sku: product.sku,
+                                                                      price: product.price,
                                                                       productTypeDescription: product.productType.description,
                                                                       attributes: [],
                                                                       stockStatus: product.productStockStatus,
@@ -385,6 +393,10 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
             .map {
                 CollapsibleProductRowCardViewModel(hasParentProduct: true,
                                                    isReadOnly: false,
+                                                   imageURL: product.imageURL,
+                                                   name: product.name,
+                                                   sku: product.sku,
+                                                   price: product.price,
                                                    productTypeDescription: product.productType.description,
                                                    attributes: [],
                                                    stockStatus: product.productStockStatus,
@@ -401,6 +413,10 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
         let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                                           isReadOnly: false,
                                                                           isConfigurable: true,
+                                                                          imageURL: product.imageURL,
+                                                                          name: product.name,
+                                                                          sku: product.sku,
+                                                                          price: product.price,
                                                                           productTypeDescription: product.productType.description,
                                                                           attributes: [],
                                                                           stockStatus: product.productStockStatus,

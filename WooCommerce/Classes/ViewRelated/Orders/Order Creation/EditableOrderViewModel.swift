@@ -605,6 +605,11 @@ final class EditableOrderViewModel: ObservableObject {
             })
             let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
+                                                                  productTypeDescription: ProductType.variable.description,
+                                                                  attributes: attributes,
+                                                                  stockStatus: variation.stockStatus,
+                                                                  stockQuantity: variation.stockQuantity,
+                                                                  manageStock: variation.manageStock,
                                                                   productViewModel: productViewModel,
                                                                   stepperViewModel: stepperViewModel,
                                                                   analytics: analytics)
@@ -626,8 +631,28 @@ final class EditableOrderViewModel: ObservableObject {
                                                    product: product,
                                                    discount: passingDiscountValue,
                                                    quantity: item.quantity,
-                                                   pricedIndividually: pricedIndividually,
-                                                   configure: { [weak self] in
+                                                   pricedIndividually: pricedIndividually)
+            let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
+                                                           name: item.name,
+                                                           quantityUpdatedCallback: { [weak self] _ in
+                guard let self else { return }
+                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
+            }, removeProductIntent: { [weak self] in
+                self?.removeItemFromOrder(item)
+            })
+            let isProductConfigurable = product.productType == .bundle && product.bundledItems.isNotEmpty
+            let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
+                                                                  isReadOnly: isReadOnly,
+                                                                  isConfigurable: isProductConfigurable,
+                                                                  productTypeDescription: product.productType.description,
+                                                                  attributes: [],
+                                                                  stockStatus: product.productStockStatus,
+                                                                  stockQuantity: product.stockQuantity,
+                                                                  manageStock: product.manageStock,
+                                                                  productViewModel: productViewModel,
+                                                                  stepperViewModel: stepperViewModel,
+                                                                  analytics: analytics,
+                                                                  configure: { [weak self] in
                 guard let self else { return }
                 switch product.productType {
                     case .bundle:
@@ -642,19 +667,6 @@ final class EditableOrderViewModel: ObservableObject {
                         break
                 }
             })
-            let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
-                                                           name: item.name,
-                                                           quantityUpdatedCallback: { [weak self] _ in
-                guard let self else { return }
-                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
-            }, removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)
-            })
-            let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
-                                                                  isReadOnly: isReadOnly,
-                                                                  productViewModel: productViewModel,
-                                                                  stepperViewModel: stepperViewModel,
-                                                                  analytics: analytics)
             return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: childProductRows.map { $0.productRow })
         } else {
             DDLogInfo("No product or variation found. Couldn't create the product row")

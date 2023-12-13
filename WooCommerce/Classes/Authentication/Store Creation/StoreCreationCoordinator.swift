@@ -82,7 +82,8 @@ private extension StoreCreationCoordinator {
 
     func showProfilerFlow(storeName: String, siteID: Int64, from navigationController: UINavigationController) {
         navigationController.isNavigationBarHidden = false
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: storeName,
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: siteID,
+                                                                        storeName: storeName,
                                                                         onCompletion: { [weak self] in
             guard let self else { return }
             if let site = self.createdStore {

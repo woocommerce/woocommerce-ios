@@ -22,6 +22,7 @@ enum StoreCreationProfilerQuestion: Int, CaseIterable {
 /// View model for `StoreCreationProfilerQuestionContainer`.
 final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
+    private let siteID: Int64
     let storeName: String
     let themesCarouselViewModel: ThemesCarouselViewModel
     private let analytics: Analytics
@@ -43,6 +44,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         }
     }
     private let uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
+    private let themeInstaller: ThemeInstallerProtocol
 
     private var answers: StoreProfilerAnswers {
         let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
@@ -55,15 +57,19 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
     @Published private(set) var currentQuestion: StoreCreationProfilerQuestion = .sellingStatus
 
-    init(storeName: String,
+    init(siteID: Int64,
+         storeName: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void,
-         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol) {
+         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol,
+         themeInstaller: ThemeInstallerProtocol? = nil) {
+        self.siteID = siteID
         self.storeName = storeName
         self.analytics = analytics
         self.completionHandler = onCompletion
         self.uploadAnswersUseCase = uploadAnswersUseCase
+        self.themeInstaller = themeInstaller ?? DefaultThemeInstaller()
         self.themesCarouselViewModel = .init(mode: .storeCreationProfiler, stores: stores)
     }
 
@@ -100,8 +106,8 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     }
 
     func saveTheme(_ theme: WordPressTheme?) {
-        if theme != nil {
-            // TODO
+        if let theme {
+            themeInstaller.scheduleThemeInstall(themeID: theme.id, siteID: siteID)
         }
         handleCompletion()
     }

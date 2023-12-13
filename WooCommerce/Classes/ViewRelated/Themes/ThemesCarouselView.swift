@@ -182,7 +182,7 @@ private extension ThemesCarouselView {
 struct ThemesCarouselView_Previews: PreviewProvider {
     static var previews: some View {
         ThemesCarouselView(
-            viewModel: .init(),
+            viewModel: .init(mode: .themeSettings),
             lastMessageHeading: "Heading example",
             lastMessageContent: "Message content example here which can be pretty long if needed."
         )

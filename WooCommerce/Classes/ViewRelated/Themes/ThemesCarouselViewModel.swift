@@ -10,13 +10,20 @@ final class ThemesCarouselViewModel: ObservableObject {
         case content(themes: [WordPressTheme])
     }
 
+    enum Mode: Equatable {
+        case themeSettings
+        case storeCreationProfiler
+    }
+
     @Published private(set) var state: State = .loading
     @Published private var themes: [WordPressTheme] = []
     @Published private var currentThemeID: String?
 
+    private let mode: Mode
     private let stores: StoresManager
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(mode: Mode, stores: StoresManager = ServiceLocator.stores) {
+        self.mode = mode
         self.stores = stores
         observeThemeListAndCurrentTheme()
     }

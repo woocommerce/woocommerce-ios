@@ -19,7 +19,7 @@ final class ThemeSettingViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
-        self.carouselViewModel = .init(stores: stores)
+        self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
     }
 
     @MainActor

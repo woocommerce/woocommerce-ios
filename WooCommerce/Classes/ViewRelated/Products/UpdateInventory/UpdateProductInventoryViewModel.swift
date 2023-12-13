@@ -155,27 +155,17 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         guard let quantityDecimal = Decimal(string: quantity) else {
             return
         }
-
         let newQuantity = quantityDecimal + 1
         quantity = newQuantity.formatted()
 
-        do {
-            try await updateStockQuantity(with: newQuantity)
-        } catch {
-            throw UpdateInventoryError.generic
-        }
+        try await updateStockQuantity(with: newQuantity)
     }
 
     func onTapUpdateStockQuantity() async throws {
         guard let quantityDecimal = Decimal(string: quantity) else {
             throw UpdateInventoryError.nonSupportedQuantity
         }
-
-        do {
-            try await updateStockQuantity(with: quantityDecimal)
-        } catch {
-            throw UpdateInventoryError.generic
-        }
+        try await updateStockQuantity(with: quantityDecimal)
     }
 
     func displayErrorNotice(_ productName: String) {

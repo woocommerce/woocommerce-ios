@@ -309,8 +309,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
 
         // Then
-        XCTAssertEqual(viewModel.productRows.map { $0.productRow.productViewModel }[safe: 0]?.quantity, 2)
-        XCTAssertEqual(viewModel.productRows.map { $0.productRow.productViewModel }[safe: 1]?.quantity, 1)
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[safe: 0]?.quantity, 2)
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[safe: 1]?.quantity, 1)
     }
 
     func test_product_is_removed_when_quantity_is_decremented_below_1() throws {
@@ -323,7 +323,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Product quantity is 1
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
-        XCTAssertEqual(viewModel.productRows.map { $0.productRow.productViewModel }[0].quantity, 1)
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[0].quantity, 1)
 
         // When
         viewModel.productRows[0].productRow.stepperViewModel.decrementQuantity()

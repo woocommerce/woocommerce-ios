@@ -28,19 +28,20 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.childProductRows.count, 2)
     }
 
-    func test_view_model_updates_price_label_when_quantity_changes() {
+    func test_view_model_updates_price_label_when_quantity_changes() throws {
         // Given
-        let product = Product.fake().copy(price: "2.50")
+        let price = "2.50"
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
 
         // When
-        let viewModel = createViewModel(productViewModel: .init(product: product, currencyFormatter: currencyFormatter))
+        let viewModel = createViewModel(price: price, currencyFormatter: currencyFormatter)
         viewModel.stepperViewModel.incrementQuantity()
 
         // Then
         let expectedPriceLabel = "$5.00"
-        XCTAssertTrue(viewModel.productViewModel.productDetailsLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productViewModel.productDetailsLabel)\"")
+        let actualPriceLabel = try XCTUnwrap(viewModel.priceSummaryViewModel.priceBeforeDiscountsLabel)
+        XCTAssertTrue(actualPriceLabel.contains(expectedPriceLabel),
+                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(actualPriceLabel)\"")
     }
 
     func test_isReadOnly_and_hasParentProduct_are_false_by_default() {
@@ -67,7 +68,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     // MARK: - Quantity
 
-    func test_ProductStepperViewModel_and_ProductRowViewModel_quantity_have_the_same_initial_value() {
+    func test_stepperViewModel_and_priceSummaryViewModel_quantity_have_the_same_initial_value() {
         // When
         let viewModel = createViewModel(stepperViewModel: .init(quantity: 2,
                                                                 name: "",
@@ -75,10 +76,10 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.stepperViewModel.quantity, 2)
-        XCTAssertEqual(viewModel.productViewModel.quantity, 2)
+        XCTAssertEqual(viewModel.priceSummaryViewModel.quantity, 2)
     }
 
-    func test_ProductStepperViewModel_quantity_change_updates_ProductRowViewModel_quantity() {
+    func test_stepperViewModel_quantity_change_updates_priceSummaryViewModel_quantity() {
         // Given
         let viewModel = createViewModel(stepperViewModel: .init(quantity: 2,
                                                                 name: "",
@@ -89,7 +90,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.stepperViewModel.quantity, 3)
-        XCTAssertEqual(viewModel.productViewModel.quantity, 3)
+        XCTAssertEqual(viewModel.priceSummaryViewModel.quantity, 3)
     }
 
     // MARK: - Analytics

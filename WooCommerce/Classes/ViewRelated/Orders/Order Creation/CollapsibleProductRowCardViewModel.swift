@@ -203,7 +203,7 @@ private extension CollapsibleProductRowCardViewModel {
 private extension CollapsibleProductRowCardViewModel {
     func observeProductQuantityFromStepperViewModel() {
         stepperViewModel.$quantity
-            .assign(to: &productViewModel.$quantity)
+            .assign(to: &priceSummaryViewModel.$quantity)
     }
 }
 

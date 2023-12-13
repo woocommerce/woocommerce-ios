@@ -133,10 +133,6 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          configure: (() -> Void)? = nil,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics) {
-        let productViewModel = ProductRowViewModel(id: orderItem.itemID,
-                                                   product: product,
-                                                   discount: discount,
-                                                   quantity: orderItem.quantity)
         let stepperViewModel = ProductStepperViewModel(quantity: orderItem.quantity,
                                                        name: orderItem.name,
                                                        quantityUpdatedCallback: quantityUpdatedCallback,
@@ -177,12 +173,6 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics) {
         let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
-        let productViewModel = ProductRowViewModel(id: orderItem.itemID,
-                                                   productVariation: variation,
-                                                   discount: discount,
-                                                   name: orderItem.name,
-                                                   quantity: orderItem.quantity,
-                                                   displayMode: .attributes(attributes))
         let stepperViewModel = ProductStepperViewModel(quantity: orderItem.quantity,
                                                        name: orderItem.name,
                                                        quantityUpdatedCallback: quantityUpdatedCallback,

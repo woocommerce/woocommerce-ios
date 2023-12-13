@@ -31,4 +31,15 @@ public enum WordPressThemeAction: Action {
     case installTheme(themeID: String,
                       siteID: Int64,
                       onCompletion: (Result<WordPressTheme, Error>) -> Void)
+
+    /// Activates the given theme ID for a site.
+    /// - `themeID`: ID of the theme to be activated.
+    /// - `siteID`: ID of the current site.
+    /// - `onCompletion`: invoked when the theme activation operation finishes.
+    ///     - `result.success(WordPressTheme)`: the activated theme's details.
+    ///     - `result.failure(Error)`: error indicates issues activating themes.
+    ///
+    case activateTheme(themeID: String,
+                       siteID: Int64,
+                       onCompletion: (Result<WordPressTheme, Error>) -> Void)
 }

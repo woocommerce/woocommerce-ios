@@ -150,7 +150,7 @@ private struct CollapsibleProductRowCard: View {
                         Text(viewModel.productViewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)
                             .foregroundColor(Color(.text))
-                        Text(viewModel.productViewModel.orderProductDetailsLabel)
+                        Text(viewModel.productDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
                         Text(viewModel.productViewModel.skuLabel)
@@ -198,12 +198,12 @@ private struct CollapsibleProductRowCard: View {
                 .renderedIf(viewModel.hasDiscount && !viewModel.isReadOnly)
 
                 Button(Localization.configureBundleProduct) {
-                    viewModel.productViewModel.configure?()
+                    viewModel.configure?()
                     ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productCard))
                 }
                 .buttonStyle(IconButtonStyle(icon: .cogImage))
                 .frame(minHeight: Layout.rowMinHeight)
-                .renderedIf(viewModel.productViewModel.isConfigurable)
+                .renderedIf(viewModel.isConfigurable)
                 .onAppear {
                     guard !hasTrackedBundleProductConfigureCTAShownEvent else {
                         return
@@ -356,6 +356,11 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
         let productViewModel = ProductRowViewModel(product: product)
         let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                               isReadOnly: false,
+                                                              productTypeDescription: product.productType.description,
+                                                              attributes: [],
+                                                              stockStatus: product.productStockStatus,
+                                                              stockQuantity: product.stockQuantity,
+                                                              manageStock: product.manageStock,
                                                               productViewModel: productViewModel,
                                                               stepperViewModel: .init(quantity: 1,
                                                                                       name: "",
@@ -364,10 +369,15 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
 
         let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                                       isReadOnly: true,
+                                                                      productTypeDescription: product.productType.description,
+                                                                      attributes: [],
+                                                                      stockStatus: product.productStockStatus,
+                                                                      stockQuantity: product.stockQuantity,
+                                                                      manageStock: product.manageStock,
                                                                       productViewModel: productViewModel,
                                                                       stepperViewModel: .init(quantity: 1,
-                                                                                              name: "",
-                                                                                              quantityUpdatedCallback: { _ in }))
+                                                                                      name: "",
+                                                                                      quantityUpdatedCallback: { _ in }))
         let readOnlyViewModel = CollapsibleProductCardViewModel(productRow: readOnlyRowViewModel, childProductRows: [])
 
         let childViewModels = [ProductRowViewModel(id: 2, product: product),
@@ -375,6 +385,11 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
             .map {
                 CollapsibleProductRowCardViewModel(hasParentProduct: true,
                                                    isReadOnly: false,
+                                                   productTypeDescription: product.productType.description,
+                                                   attributes: [],
+                                                   stockStatus: product.productStockStatus,
+                                                   stockQuantity: product.stockQuantity,
+                                                   manageStock: product.manageStock,
                                                    productViewModel: $0,
                                                    stepperViewModel: .init(quantity: 1,
                                                                            name: "",
@@ -382,14 +397,20 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
             }
         let bundleParentProductViewModel = ProductRowViewModel(id: 1,
                                                            product: product
-            .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]),
-                                                           configure: {})
+            .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]))
         let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
                                                                           isReadOnly: false,
+                                                                          isConfigurable: true,
+                                                                          productTypeDescription: product.productType.description,
+                                                                          attributes: [],
+                                                                          stockStatus: product.productStockStatus,
+                                                                          stockQuantity: product.stockQuantity,
+                                                                          manageStock: product.manageStock,
                                                                           productViewModel: bundleParentProductViewModel,
                                                                           stepperViewModel: .init(quantity: 1,
                                                                                                   name: "",
-                                                                                                  quantityUpdatedCallback: { _ in }))
+                                                                                                  quantityUpdatedCallback: { _ in }),
+                                                                          configure: {})
         let bundleParentViewModel = CollapsibleProductCardViewModel(productRow: bundleParentRowViewModel,
                                                                     childProductRows: childViewModels)
         VStack {

@@ -15,6 +15,11 @@ public protocol WordPressThemeRemoteProtocol {
     ///
     func installTheme(themeID: String,
                       siteID: Int64) async throws -> WordPressTheme
+
+    /// Activates the theme with the given ID for the site with the specified ID.
+    ///
+    func activateTheme(themeID: String,
+                       siteID: Int64) async throws -> WordPressTheme
 }
 
 /// WordPressThemes: Remote Endpoints
@@ -46,6 +51,16 @@ public final class WordPressThemeRemote: Remote, WordPressThemeRemoteProtocol {
         } catch {
             throw InstallThemeError(error) ?? error
         }
+    }
+
+    public func activateTheme(themeID: String,
+                              siteID: Int64) async throws -> WordPressTheme {
+        let path = Paths.currentThemePath(for: siteID)
+        let parameters = [
+            ParameterKey.theme: themeID,
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        return try await enqueue(request, mapper: WordPressThemeMapper())
     }
 }
 
@@ -84,6 +99,10 @@ private extension WordPressThemeRemote {
                             for siteID: Int64) -> String {
             "sites/\(siteID)/themes/\(themeID)/install/"
         }
+    }
+
+    enum ParameterKey {
+        static let theme = "theme"
     }
 
     enum Values {

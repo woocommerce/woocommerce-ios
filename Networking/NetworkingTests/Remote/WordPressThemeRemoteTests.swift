@@ -160,4 +160,44 @@ final class WordPressThemeRemoteTests: XCTestCase {
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
     }
+
+    // MARK: - activateTheme tests
+
+    func test_activateTheme_returns_activated_theme() async throws {
+        // Given
+        let remote = WordPressThemeRemote(network: network)
+
+        let sampleTheme = WordPressTheme.fake().copy(id: "maywood")
+        let suffix = "sites/\(sampleSiteID)/themes/mine"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "theme-activate-success")
+
+        // When
+        let theme = try await remote.activateTheme(themeID: sampleTheme.id, siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(theme.id, sampleTheme.id)
+        XCTAssertEqual(theme.name, "Maywood")
+        XCTAssertEqual(theme.description, "Maywood is a refined theme designed for restaurants and food-related businesses seeking a modern look.")
+    }
+
+    func test_activateTheme_properly_relays_networking_errors() async {
+        // Given
+        let remote = WordPressThemeRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let sampleTheme = WordPressTheme.fake().copy(id: "maywood")
+        let suffix = "sites/\(sampleSiteID)/themes/mine"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.activateTheme(themeID: sampleTheme.id, siteID: sampleSiteID)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
 }

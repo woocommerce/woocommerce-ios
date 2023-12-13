@@ -27,6 +27,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     /// Unique ID for view model
     let id: Int64
 
+    /// ID for product or variation in row
+    let productOrVariationID: Int64
+
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
 
@@ -66,7 +69,6 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     ///
     let productDetailsLabel: String
 
-    let productViewModel: ProductRowViewModel
     let stepperViewModel: ProductStepperViewModel
     let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
@@ -74,6 +76,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     private let analytics: Analytics
 
     init(id: Int64,
+         productOrVariationID: Int64,
          hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
@@ -88,12 +91,12 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          stockStatus: ProductStockStatus,
          stockQuantity: Decimal?,
          manageStock: Bool,
-         productViewModel: ProductRowViewModel,
          stepperViewModel: ProductStepperViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          configure: (() -> Void)? = nil) {
         self.id = id
+        self.productOrVariationID = productOrVariationID
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false
@@ -109,7 +112,6 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                                                            stockStatus: stockStatus,
                                                                                            stockQuantity: stockQuantity,
                                                                                            manageStock: manageStock)
-        self.productViewModel = productViewModel
         self.stepperViewModel = stepperViewModel
         self.priceSummaryViewModel = .init(pricedIndividually: pricedIndividually,
                                            quantity: stepperViewModel.quantity,

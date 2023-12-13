@@ -47,6 +47,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
     func test_isReadOnly_and_hasParentProduct_are_false_by_default() {
         // When
         let viewModel = CollapsibleProductRowCardViewModel(id: 1,
+                                                           productOrVariationID: 2,
                                                            imageURL: nil,
                                                            name: "",
                                                            sku: nil,
@@ -56,7 +57,6 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                                            stockStatus: .inStock,
                                                            stockQuantity: nil,
                                                            manageStock: false,
-                                                           productViewModel: .init(product: .fake()),
                                                            stepperViewModel: .init(quantity: 1,
                                                                                    name: "",
                                                                                    quantityUpdatedCallback: { _ in }))
@@ -206,8 +206,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                         attributes: [],
                                         stockStatus: product.productStockStatus,
                                         stockQuantity: product.stockQuantity,
-                                        manageStock: product.manageStock,
-                                        productViewModel: .init(product: product))
+                                        manageStock: product.manageStock)
 
         // Then
         assertEqual(stockStatus.description, viewModel.productDetailsLabel)
@@ -284,6 +283,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
 private extension CollapsibleProductRowCardViewModelTests {
     func createViewModel(id: Int64 = 1,
+                         productOrVariationID: Int64 = 1,
                          hasParentProduct: Bool = false,
                          isReadOnly: Bool = false,
                          isConfigurable: Bool = false,
@@ -297,12 +297,12 @@ private extension CollapsibleProductRowCardViewModelTests {
                          stockStatus: ProductStockStatus = .inStock,
                          stockQuantity: Decimal? = nil,
                          manageStock: Bool = false,
-                         productViewModel: ProductRowViewModel = .init(product: .fake()),
                          stepperViewModel: ProductStepperViewModel = .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }),
                          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()),
                          analytics: Analytics = ServiceLocator.analytics,
                          configure: (() -> Void)? = nil) -> CollapsibleProductRowCardViewModel {
         CollapsibleProductRowCardViewModel(id: id,
+                                           productOrVariationID: productOrVariationID,
                                            hasParentProduct: hasParentProduct,
                                            isReadOnly: isReadOnly,
                                            isConfigurable: isConfigurable,
@@ -316,7 +316,6 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            stockStatus: stockStatus,
                                            stockQuantity: stockQuantity,
                                            manageStock: manageStock,
-                                           productViewModel: productViewModel,
                                            stepperViewModel: stepperViewModel,
                                            currencyFormatter: currencyFormatter,
                                            analytics: analytics,

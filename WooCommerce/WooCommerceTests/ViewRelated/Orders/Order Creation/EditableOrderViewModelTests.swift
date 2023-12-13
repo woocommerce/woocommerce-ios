@@ -285,7 +285,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
-        XCTAssertTrue(viewModel.productRows.map { $0.productRow.productViewModel }.contains(where: { $0.productOrVariationID == sampleProductID }),
+        XCTAssertTrue(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
                       "Product rows do not contain expected product")
     }
 
@@ -329,7 +329,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.productRows[0].productRow.stepperViewModel.decrementQuantity()
 
         // Then
-        XCTAssertFalse(viewModel.productRows.map { $0.productRow.productViewModel }.contains(where: { $0.productOrVariationID == product.productID }))
+        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == product.productID }))
     }
 
     func test_bundle_order_item_with_child_items_includes_full_bundle_configuration_when_quantity_is_incremented() throws {
@@ -405,7 +405,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.completeMultipleSelection()
 
         // When
-        let expectedRow = viewModel.productRows.map { $0.productRow.productViewModel }[0]
+        let expectedRow = viewModel.productRows.map { $0.productRow }[0]
         viewModel.setDiscountViewModel(expectedRow.id)
 
         // Then
@@ -428,14 +428,13 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let expectedRemainingRow = viewModel.productRows[1]
-        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow.productViewModel }[0].id)
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow }[0].id)
         viewModel.removeItemFromOrder(itemToRemove)
 
         // Then
-        XCTAssertFalse(viewModel.productRows.map { $0.productRow.productViewModel }
-            .contains(where: { $0.productOrVariationID == product0.productID }))
-        XCTAssertEqual(viewModel.productRows.map { $0.productRow.productViewModel }.map { $0.id },
-                       [expectedRemainingRow].map { $0.productRow.productViewModel }.map { $0.id })
+        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == product0.productID }))
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow }.map { $0.id },
+                       [expectedRemainingRow].map { $0.productRow }.map { $0.id })
     }
 
     func test_view_model_is_updated_when_product_is_removed_from_order_using_product_row_ID() throws {
@@ -453,14 +452,13 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let expectedRemainingRow = viewModel.productRows[1]
-        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow.productViewModel }[0].id)
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow }[0].id)
         viewModel.removeItemFromOrder(itemToRemove.itemID)
 
         // Then
-        XCTAssertFalse(viewModel.productRows.map { $0.productRow.productViewModel }
-            .contains(where: { $0.productOrVariationID == product0.productID }))
-        XCTAssertEqual(viewModel.productRows.map { $0.productRow.productViewModel }.map { $0.id },
-                       [expectedRemainingRow].map { $0.productRow.productViewModel }.map { $0.id })
+        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == product0.productID }))
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow }.map { $0.id },
+                       [expectedRemainingRow].map { $0.productRow }.map { $0.id })
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {
@@ -475,8 +473,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         let expectedProductRow = ProductRowViewModel(product: product)
-        XCTAssertEqual(productRow?.productRow.productViewModel.name, expectedProductRow.name)
-        XCTAssertEqual(productRow?.productRow.productViewModel.quantity, expectedProductRow.quantity)
+        XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
+        XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product_variation() {
@@ -502,9 +500,9 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                      name: product.name,
                                                      quantity: 2,
                                                      displayMode: .stock)
-        XCTAssertEqual(productRow?.productRow.productViewModel.name, expectedProductRow.name)
-        XCTAssertEqual(productRow?.productRow.productViewModel.skuLabel, expectedProductRow.skuLabel)
-        XCTAssertEqual(productRow?.productRow.productViewModel.quantity, expectedProductRow.quantity)
+        XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
+        XCTAssertEqual(productRow?.productRow.skuLabel, expectedProductRow.skuLabel)
+        XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
     }
 
     func test_createProductRowViewModel_sets_expected_discount_for_discounted_order_item() {
@@ -1216,7 +1214,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.completeMultipleSelection()
 
         // When
-        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow.productViewModel }[0].id)
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow }[0].id)
         viewModel.removeItemFromOrder(itemToRemove)
 
         // Then
@@ -2832,10 +2830,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
 
         let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
-        XCTAssertEqual(parentOrderItemRow.productRow.productViewModel.quantity, 2)
+        XCTAssertEqual(parentOrderItemRow.productRow.stepperViewModel.quantity, 2)
 
         let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
-        XCTAssertEqual(childOrderItemRow.productViewModel.quantity, 1)
+        XCTAssertEqual(childOrderItemRow.stepperViewModel.quantity, 1)
     }
 
     // Existing items: bundle A with child item, non-bundle B —> select bundle A again and configure in product selector

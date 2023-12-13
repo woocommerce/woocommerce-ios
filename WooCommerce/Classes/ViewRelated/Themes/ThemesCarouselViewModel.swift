@@ -15,7 +15,10 @@ final class ThemesCarouselViewModel: ObservableObject {
     init(mode: Mode, stores: StoresManager = ServiceLocator.stores) {
         self.mode = mode
         self.stores = stores
-        observeThemeListAndCurrentTheme()
+        // current theme is only required for theme settings mode.
+        if mode == .themeSettings {
+            waitForCurrentThemeAndFinishLoading()
+        }
     }
 
     @MainActor
@@ -40,7 +43,7 @@ final class ThemesCarouselViewModel: ObservableObject {
 }
 
 private extension ThemesCarouselViewModel {
-    func observeThemeListAndCurrentTheme() {
+    func waitForCurrentThemeAndFinishLoading() {
         $themes.combineLatest($currentThemeID.dropFirst())
             .map { themes, currentThemeID in
                 let filteredThemes = themes.filter { $0.id != currentThemeID }

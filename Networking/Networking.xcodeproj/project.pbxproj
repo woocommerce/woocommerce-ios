@@ -954,6 +954,7 @@
 		EE62EE65295AD46D009C965B /* String+URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE62EE64295AD46D009C965B /* String+URLTests.swift */; };
 		EE66BB022B2893AF00518DAF /* theme-install-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE66BB012B2893AF00518DAF /* theme-install-success.json */; };
 		EE66BB042B28975B00518DAF /* theme-install-already-installed.json in Resources */ = {isa = PBXBuildFile; fileRef = EE66BB032B28975B00518DAF /* theme-install-already-installed.json */; };
+		EE66BB062B29791500518DAF /* theme-activate-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE66BB052B29791500518DAF /* theme-activate-success.json */; };
 		EE6FDCFC2966A70400E1CECF /* product-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE6FDCFB2966A70400E1CECF /* product-without-data.json */; };
 		EE71CC3D2951A8EA0074D908 /* ApplicationPasswordStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */; };
 		EE71CC412951CE700074D908 /* generate-application-password-using-wporg-creds-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */; };
@@ -1981,6 +1982,7 @@
 		EE62EE64295AD46D009C965B /* String+URLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+URLTests.swift"; sourceTree = "<group>"; };
 		EE66BB012B2893AF00518DAF /* theme-install-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-install-success.json"; sourceTree = "<group>"; };
 		EE66BB032B28975B00518DAF /* theme-install-already-installed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-install-already-installed.json"; sourceTree = "<group>"; };
+		EE66BB052B29791500518DAF /* theme-activate-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "theme-activate-success.json"; sourceTree = "<group>"; };
 		EE6FDCFB2966A70400E1CECF /* product-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-without-data.json"; sourceTree = "<group>"; };
 		EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordStorage.swift; sourceTree = "<group>"; };
 		EE71CC402951CE700074D908 /* generate-application-password-using-wporg-creds-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-application-password-using-wporg-creds-success.json"; sourceTree = "<group>"; };
@@ -2598,6 +2600,7 @@
 			isa = PBXGroup;
 			children = (
 				EE66BB032B28975B00518DAF /* theme-install-already-installed.json */,
+				EE66BB052B29791500518DAF /* theme-activate-success.json */,
 				EE66BB012B2893AF00518DAF /* theme-install-success.json */,
 				DEDA8DB62B187E770076BF0F /* theme-mine-success.json */,
 				DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */,
@@ -3644,6 +3647,7 @@
 				45152825257A8B740076B03C /* product-attribute-update.json in Resources */,
 				68C87B342862D40E00A99054 /* setting-all-except-countries.json in Resources */,
 				EE28C7DB2AC17961004A69F4 /* generate-product-invalid-token.json in Resources */,
+				EE66BB062B29791500518DAF /* theme-activate-success.json in Resources */,
 				CE6B969A2A0BCD09003C4B27 /* order-with-bundled-line-items.json in Resources */,
 				3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */,
 				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,

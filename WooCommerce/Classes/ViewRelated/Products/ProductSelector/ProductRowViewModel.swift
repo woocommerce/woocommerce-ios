@@ -39,6 +39,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private(set) var price: String?
 
+    // TODO: 11357 - Remove this property once `ProductDiscountView` no longer relies on it
     /// Whether the product is priced individually. Defaults to `true`.
     ///
     /// Used to control how the price is displayed, e.g. when a product is part of a bundle.

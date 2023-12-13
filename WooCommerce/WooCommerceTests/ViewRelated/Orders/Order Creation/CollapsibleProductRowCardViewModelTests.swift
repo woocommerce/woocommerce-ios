@@ -45,7 +45,11 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_isReadOnly_and_hasParentProduct_are_false_by_default() {
         // When
-        let viewModel = CollapsibleProductRowCardViewModel(productTypeDescription: "",
+        let viewModel = CollapsibleProductRowCardViewModel(imageURL: nil,
+                                                           name: "",
+                                                           sku: nil,
+                                                           price: nil,
+                                                           productTypeDescription: "",
                                                            attributes: [],
                                                            stockStatus: .inStock,
                                                            stockQuantity: nil,
@@ -147,7 +151,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = createViewModel(productViewModel: .init(product: product, discount: discount, quantity: 1))
+        let viewModel = createViewModel(price: price, productViewModel: .init(product: product, discount: discount, quantity: 1))
 
         // Then
         assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
@@ -161,7 +165,8 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let product = Product.fake().copy(price: price)
 
         // When
-        let viewModel = createViewModel(productViewModel: .init(product: product, discount: discount, quantity: quantity),
+        let viewModel = createViewModel(price: price,
+                                        productViewModel: .init(product: product, discount: discount, quantity: quantity),
                                         stepperViewModel: .init(quantity: quantity,
                                                                 name: "",
                                                                 quantityUpdatedCallback: { _ in }))
@@ -254,12 +259,46 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productDetailsLabel.contains(ProductType.bundle.description), "Label should contain product type (Bundle)")
         XCTAssertTrue(viewModel.productDetailsLabel.contains(stockStatus.description), "Label should contain stock status")
     }
+
+    // MARK: - `skuLabel`
+
+    func test_sku_label_is_formatted_correctly_for_product_with_sku() {
+        // Given
+        let sku = "123456"
+
+        // When
+        let viewModel = createViewModel(sku: sku)
+
+        // Then
+        let format = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
+                                       value: "SKU: %1$@",
+                                       comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
+        let expectedSKULabel = String.localizedStringWithFormat(format, sku)
+        assertEqual(expectedSKULabel, viewModel.skuLabel)
+    }
+
+    func test_sku_label_is_empty_for_product_when_sku_is_empty_or_nil() {
+        // Given
+        let emptyString = ""
+
+        // When
+        let emptySKUviewModel = createViewModel(sku: emptyString)
+        let nilSKUViewModel = createViewModel(sku: nil)
+
+        // Then
+        assertEqual(emptyString, emptySKUviewModel.skuLabel)
+        assertEqual(emptyString, nilSKUViewModel.skuLabel)
+    }
 }
 
 private extension CollapsibleProductRowCardViewModelTests {
     func createViewModel(hasParentProduct: Bool = false,
                          isReadOnly: Bool = false,
                          isConfigurable: Bool = false,
+                         imageURL: URL? = nil,
+                         name: String = "",
+                         sku: String? = nil,
+                         price: String? = nil,
                          productTypeDescription: String = "",
                          attributes: [VariationAttributeViewModel] = [],
                          stockStatus: ProductStockStatus = .inStock,
@@ -273,6 +312,10 @@ private extension CollapsibleProductRowCardViewModelTests {
         CollapsibleProductRowCardViewModel(hasParentProduct: hasParentProduct,
                                            isReadOnly: isReadOnly,
                                            isConfigurable: isConfigurable,
+                                           imageURL: imageURL,
+                                           name: name,
+                                           sku: sku,
+                                           price: price,
                                            productTypeDescription: productTypeDescription,
                                            attributes: attributes,
                                            stockStatus: stockStatus,

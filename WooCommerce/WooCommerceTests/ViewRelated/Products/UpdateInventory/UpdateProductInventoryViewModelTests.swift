@@ -270,7 +270,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: siteID, manageStock: false)
 
         // When
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, onUpdatedInventory: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.viewMode, .stockManagementNeedsToBeEnabled)
@@ -281,7 +281,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         let variation = ProductVariation.fake().copy(siteID: siteID, manageStock: false)
 
         // When
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID, onUpdatedInventory: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.viewMode, .stockManagementNeedsToBeEnabled)
@@ -302,7 +302,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores, onUpdatedInventory: { _ in })
 
         // When
         try await viewModel.onTapManageStock()
@@ -327,7 +327,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores, onUpdatedInventory: { _ in })
 
         // When
         try await viewModel.onTapManageStock()

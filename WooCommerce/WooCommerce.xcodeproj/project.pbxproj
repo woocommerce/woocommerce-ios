@@ -2448,6 +2448,9 @@
 		EE5B5BC22AB42F21009BCBD6 /* AddProductNameWithAIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5B5BC02AB42F21009BCBD6 /* AddProductNameWithAIView.swift */; };
 		EE5B5BC42AB83749009BCBD6 /* AddProductWithAIContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5B5BC32AB83749009BCBD6 /* AddProductWithAIContainerView.swift */; };
 		EE5B5BC72AB8379C009BCBD6 /* AddProductWithAIContainerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5B5BC62AB8379C009BCBD6 /* AddProductWithAIContainerViewModel.swift */; };
+		EE66BB0E2B29BF2800518DAF /* ThemeInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB0D2B29BF2800518DAF /* ThemeInstaller.swift */; };
+		EE66BB102B29D24600518DAF /* DefaultThemeInstallerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB0F2B29D24600518DAF /* DefaultThemeInstallerTests.swift */; };
+		EE66BB122B29D65400518DAF /* MockThemeInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */; };
 		EE6B2AD129DC522300048A8F /* StoreCreationProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6B2AD029DC522300048A8F /* StoreCreationProgressView.swift */; };
 		EE6B2AD329DD285A00048A8F /* StoreCreationProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6B2AD229DD285900048A8F /* StoreCreationProgressViewModel.swift */; };
 		EE6F08662A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6F08652A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift */; };
@@ -5068,6 +5071,9 @@
 		EE5B5BC02AB42F21009BCBD6 /* AddProductNameWithAIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductNameWithAIView.swift; sourceTree = "<group>"; };
 		EE5B5BC32AB83749009BCBD6 /* AddProductWithAIContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIContainerView.swift; sourceTree = "<group>"; };
 		EE5B5BC62AB8379C009BCBD6 /* AddProductWithAIContainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIContainerViewModel.swift; sourceTree = "<group>"; };
+		EE66BB0D2B29BF2800518DAF /* ThemeInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeInstaller.swift; sourceTree = "<group>"; };
+		EE66BB0F2B29D24600518DAF /* DefaultThemeInstallerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultThemeInstallerTests.swift; sourceTree = "<group>"; };
+		EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockThemeInstaller.swift; sourceTree = "<group>"; };
 		EE6B2AD029DC522300048A8F /* StoreCreationProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressView.swift; sourceTree = "<group>"; };
 		EE6B2AD229DD285900048A8F /* StoreCreationProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressViewModel.swift; sourceTree = "<group>"; };
 		EE6F08652A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialSurveyViewModelTests.swift; sourceTree = "<group>"; };
@@ -8273,6 +8279,7 @@
 				202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */,
 				20BCF6F62B0E5AEF00954840 /* MockSystemStatusService.swift */,
 				68A38DF42B293B030090C263 /* MockProductListViewModel.swift */,
+				EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -8507,6 +8514,7 @@
 				86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */,
 				DE78DE412B2813E4002E58DE /* ThemesCarouselViewModel.swift */,
 				8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */,
+				EE66BB0D2B29BF2800518DAF /* ThemeInstaller.swift */,
 			);
 			path = Themes;
 			sourceTree = "<group>";
@@ -8516,6 +8524,7 @@
 			children = (
 				86023FAC2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift */,
 				DE78DE432B2846AF002E58DE /* ThemesCarouselViewModelTests.swift */,
+				EE66BB0F2B29D24600518DAF /* DefaultThemeInstallerTests.swift */,
 			);
 			path = Themes;
 			sourceTree = "<group>";
@@ -13921,6 +13930,7 @@
 				45693189265403A1009ED69D /* ShippingLabelCarriersViewModel.swift in Sources */,
 				0211254125778BDF0075AD2A /* ShippingLabelDetailsViewController.swift in Sources */,
 				020DD49123239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift in Sources */,
+				EE66BB0E2B29BF2800518DAF /* ThemeInstaller.swift in Sources */,
 				0202B6952387AD1B00F3EBE0 /* UITabBar+Order.swift in Sources */,
 				26C98F9829C1247000F96503 /* WPComSitePlan+FreeTrial.swift in Sources */,
 				3120491726DD807900A4EC4F /* LabelAndButtonTableViewCell.swift in Sources */,
@@ -14601,6 +14611,7 @@
 				03EF250428C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift in Sources */,
 				45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */,
 				CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */,
+				EE66BB122B29D65400518DAF /* MockThemeInstaller.swift in Sources */,
 				45AF9DA5265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift in Sources */,
 				DEF8CF0D29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift in Sources */,
 				0248042D2887C92A00991319 /* MockLoggedOutAppSettings.swift in Sources */,
@@ -14647,6 +14658,7 @@
 				0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */,
 				028A4655295AD2DA001CF6CE /* StoreCreationSellingStatusQuestionViewModelTests.swift in Sources */,
 				EE81B1382865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift in Sources */,
+				EE66BB102B29D24600518DAF /* DefaultThemeInstallerTests.swift in Sources */,
 				DEF8CF2229ACDBB100800A60 /* WPComEmailLoginViewModelTests.swift in Sources */,
 				7E7C5F8B2719AEDA00315B61 /* EditProductCategoryListViewModelTests.swift in Sources */,
 				0247F510286E7D26009C177E /* ProductVariationFormViewModel+ImageUploaderTests.swift in Sources */,

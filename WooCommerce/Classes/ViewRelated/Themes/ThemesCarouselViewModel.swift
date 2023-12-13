@@ -23,6 +23,11 @@ final class ThemesCarouselViewModel: ObservableObject {
         state = .loading
         do {
             themes = try await loadSuggestedThemes()
+            /// Only update state immediately for the profiler flow.
+            /// The theme setting flow requires waiting for the current theme ID.
+            if mode == .storeCreationProfiler {
+                state = .content(themes: themes)
+            }
         } catch {
             DDLogError("⛔️ Error loading suggested themes: \(error)")
             state = .error

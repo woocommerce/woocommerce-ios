@@ -299,9 +299,9 @@ final class EditableOrderViewModel: ObservableObject {
     @Published private(set) var customAmountRows: [CustomAmountRowViewModel] = []
 
     /// Selected product view model to render.
-    /// Used to open the product details in `ProductInOrder`.
+    /// Used to open the product details in `ProductDiscountViewModel`.
     ///
-    @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
+    @Published var discountViewModel: ProductDiscountViewModel? = nil
 
     /// Configurable bundle product view model to render.
     /// Used to open the bundle product configuration screen.
@@ -527,11 +527,22 @@ final class EditableOrderViewModel: ObservableObject {
         syncInitialSelectedState()
     }
 
-    /// Selects an order item by setting the `selectedProductViewModel`.
+    /// Sets `discountViewModel` based on the provided order item id.
     ///
-    /// - Parameter id: ID of the order item to select
-    func selectOrderItem(_ id: Int64) {
-        selectedProductViewModel = createSelectedProductViewModel(itemID: id)
+    func setDiscountViewModel(_ itemID: Int64) {
+        // Find order item based on the provided id.
+        // Creates the product row view model needed for `ProductInOrderViewModel`.
+        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
+              let rowViewModel = createProductRowViewModel(for: orderItem, childItems: []) else {
+            return discountViewModel = nil
+        }
+
+        discountViewModel = .init(id: itemID,
+                                  imageURL: rowViewModel.productRow.imageURL,
+                                  name: rowViewModel.productRow.name,
+                                  price: rowViewModel.productRow.price,
+                                  priceSummary: rowViewModel.productRow.priceSummaryViewModel,
+                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem))
     }
 
     /// Removes an item from the order.
@@ -1820,27 +1831,9 @@ private extension EditableOrderViewModel {
                                      bundleConfiguration: bundleConfiguration)
     }
 
-    /// Creates a `ProductInOrderViewModel` based on the provided order item id.
-    ///
-    func createSelectedProductViewModel(itemID: Int64) -> ProductInOrderViewModel? {
-        // Find order item based on the provided id.
-        // Creates the product row view model needed for `ProductInOrderViewModel`.
-        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-              let rowViewModel = createProductRowViewModel(for: orderItem, childItems: []) else {
-            return nil
-        }
-
-        return ProductInOrderViewModel(productRowViewModel: rowViewModel.productRow.productViewModel,
-                                       productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
-                                       showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty,
-                                       onRemoveProduct: { [weak self] in
-                                            self?.removeItemFromOrder(orderItem)
-                                       })
-    }
-
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
     ///
-    func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductInOrderViewModel.DiscountConfiguration? {
+    func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductDiscountViewModel.DiscountConfiguration? {
         guard orderSynchronizer.order.coupons.isEmpty,
               case OrderSyncState.synced = orderSynchronizer.state,
               let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal) else {

@@ -395,7 +395,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         ], bundleOrderItemToUpdate.bundleConfiguration)
     }
 
-    func test_selectOrderItem_selects_expected_order_item() throws {
+    func test_setDiscountViewModel_sets_discountViewModel_for_expected_row() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -406,11 +406,11 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let expectedRow = viewModel.productRows.map { $0.productRow.productViewModel }[0]
-        viewModel.selectOrderItem(expectedRow.id)
+        viewModel.setDiscountViewModel(expectedRow.id)
 
         // Then
-        XCTAssertNotNil(viewModel.selectedProductViewModel)
-        XCTAssertEqual(viewModel.selectedProductViewModel?.productRowViewModel.id, expectedRow.id)
+        XCTAssertNotNil(viewModel.discountViewModel)
+        assertEqual(expectedRow.id, viewModel.discountViewModel?.id)
     }
 
     func test_view_model_is_updated_when_product_is_removed_from_order_using_order_item() throws {

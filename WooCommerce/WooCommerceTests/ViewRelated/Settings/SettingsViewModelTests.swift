@@ -240,6 +240,7 @@ final class SettingsViewModelTests: XCTestCase {
     func test_store_setup_list_row_is_shown_when_there_are_pending_onboarding_tasks_and_feature_flag_on() {
         // Given
         let featureFlagService = MockFeatureFlagService(isHideStoreOnboardingTaskListFeatureEnabled: true)
+        sessionManager.defaultSite = Site.fake()
         defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = false
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,

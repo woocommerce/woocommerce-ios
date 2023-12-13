@@ -264,4 +264,76 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(passedStockQuantity, stockQuantity)
         XCTAssertEqual(viewModel.updateQuantityButtonMode, .increaseOnce)
     }
+
+    func test_init_with_non_managed_stock_product_then_view_mode_is_stockManagementNeedsToBeEnabled() {
+        // Given
+        let product = Product.fake().copy(siteID: siteID, manageStock: false)
+
+        // When
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, onUpdatedInventory: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.viewMode, .stockManagementNeedsToBeEnabled)
+    }
+
+    func test_init_with_non_managed_stock_variation_then_view_mode_is_stockManagementNeedsToBeEnabled() {
+        // Given
+        let variation = ProductVariation.fake().copy(siteID: siteID, manageStock: false)
+
+        // When
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: variation, siteID: siteID, onUpdatedInventory: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.viewMode, .stockManagementNeedsToBeEnabled)
+    }
+
+    func test_onTapManageStock_with_a_product_then_sends_action() async throws {
+        // Given
+        let product = Product.fake().copy(siteID: siteID, manageStock: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var passedManagedStockValue: Bool?
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(passingProduct, onCompletion):
+                passedManagedStockValue = passingProduct.manageStock
+                onCompletion(.success((product.copy(manageStock: true))))
+            default:
+                break
+            }
+        }
+
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores, onUpdatedInventory: { _ in })
+
+        // When
+        try await viewModel.onTapManageStock()
+
+        // Then
+        XCTAssertTrue(passedManagedStockValue ?? false)
+        XCTAssertEqual(viewModel.viewMode, .stockCanBeManaged)
+    }
+
+    func test_onTapManageStock_with_a_variation_then_sends_action() async throws {
+        // Given
+        let product = ProductVariation.fake().copy(siteID: siteID, manageStock: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var passedManagedStockValue: Bool?
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .updateProductVariation(productVariation, onCompletion):
+                passedManagedStockValue = productVariation.manageStock
+                onCompletion(.success((productVariation.copy(manageStock: true))))
+            default:
+                break
+            }
+        }
+
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores, onUpdatedInventory: { _ in })
+
+        // When
+        try await viewModel.onTapManageStock()
+
+        // Then
+        XCTAssertTrue(passedManagedStockValue ?? false)
+        XCTAssertEqual(viewModel.viewMode, .stockCanBeManaged)
+    }
 }

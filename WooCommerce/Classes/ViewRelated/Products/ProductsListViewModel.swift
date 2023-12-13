@@ -2,9 +2,30 @@ import Foundation
 import Yosemite
 import Experiments
 
+final class MockProductListViewModel: ProductsListViewModelProtocol {
+    private(set) var scanToUpdateInventoryShouldBeVisible: Bool = false
+    private let featureFlagService: FeatureFlagService
+
+    init(featureFlagService: FeatureFlagService) {
+        self.featureFlagService = featureFlagService
+    }
+
+    func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void)) {
+        guard self.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory) else {
+            scanToUpdateInventoryShouldBeVisible = false
+            return completion(false)
+        }
+        scanToUpdateInventoryShouldBeVisible = true
+        completion(true)
+    }
+}
+
+protocol ProductsListViewModelProtocol {
+    func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void))
+}
 /// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.
 ///
-class ProductListViewModel {
+final class ProductListViewModel: ProductsListViewModelProtocol {
 
     enum BulkEditError: Error {
         case noProductsSelected
@@ -206,6 +227,6 @@ class ProductListViewModel {
         let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: siteID, systemPluginNameList: [plugin]) { plugin in
             completion(plugin?.active == true)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 }

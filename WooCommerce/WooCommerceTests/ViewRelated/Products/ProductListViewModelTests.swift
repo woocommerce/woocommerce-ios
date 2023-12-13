@@ -312,9 +312,7 @@ final class ProductListViewModelTests: XCTestCase {
     func test_scanToUpdateInventoryButton_when_isScanToUpdateInventoryEnabled_is_true_then_should_be_visible() {
         // Given
         let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
-        let viewModel = ProductListViewModel(siteID: sampleSiteID,
-                                             stores: storesManager,
-                                             featureFlagService: featureFlagService)
+        let viewModel = MockProductListViewModel(featureFlagService: featureFlagService)
 
         // When
         let result = waitFor { promise in
@@ -330,11 +328,9 @@ final class ProductListViewModelTests: XCTestCase {
     func test_scanToUpdateInventoryButton_when_isScanToUpdateInventoryEnabled_is_false_then_should_not_be_visible() {
         // Given
         let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: false)
-        let viewModel = ProductListViewModel(siteID: sampleSiteID,
-                                             stores: storesManager,
-                                             featureFlagService: featureFlagService)
+        let viewModel = MockProductListViewModel(featureFlagService: featureFlagService)
 
-        // When
+        // Then
         let result = waitFor { promise in
             viewModel.scanToUpdateInventoryButtonShouldBeVisible { result in
                 promise(result)

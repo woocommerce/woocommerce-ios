@@ -60,11 +60,7 @@ public final class WordPressThemeRemote: Remote, WordPressThemeRemoteProtocol {
             ParameterKey.theme: themeID,
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
-        do {
-            return try await enqueue(request, mapper: WordPressThemeMapper())
-        } catch {
-            throw InstallThemeError(error) ?? error
-        }
+        return try await enqueue(request, mapper: WordPressThemeMapper())
     }
 }
 

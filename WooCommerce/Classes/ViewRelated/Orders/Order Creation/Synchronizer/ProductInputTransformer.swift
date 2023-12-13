@@ -13,6 +13,8 @@ struct ProductInputTransformer {
         let productID: Int64
         let variationID: Int64?
         let baseSubtotal: Decimal?
+        let name: String
+        let sku: String?
 
         private var subTotalDecimal: Decimal {
             // Base subtotal has priority. Base subtotal and price can be different e.g. if the price includes tax (subtotal does not).
@@ -133,31 +135,35 @@ private extension ProductInputTransformer {
         let parameters: OrderItemParameters = {
             switch input.product {
             case .product(let product):
-                let price: Decimal = Decimal(string: product.price) ?? .zero
+                let productPrice: Decimal = Decimal(string: product.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity,
-                                           price: price,
+                                           price: input.price ?? productPrice,
                                            discount: input.discount,
                                            productID: product.productID,
                                            variationID: nil,
-                                           baseSubtotal: input.baseSubtotal)
+                                           baseSubtotal: input.baseSubtotal,
+                                           name: input.name ?? product.name,
+                                           sku: input.sku ?? product.sku)
             case .variation(let variation):
-                let price: Decimal = Decimal(string: variation.price) ?? .zero
+                let variationPrice: Decimal = Decimal(string: variation.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity,
-                                           price: price,
+                                           price: input.price ?? variationPrice,
                                            discount: input.discount,
                                            productID: variation.productID,
                                            variationID: variation.productVariationID,
-                                           baseSubtotal: input.baseSubtotal)
+                                           baseSubtotal: input.baseSubtotal,
+                                           name: input.name ?? "",
+                                           sku: input.sku ?? variation.sku)
             }
         }()
 
         return OrderItem(itemID: input.id,
-                         name: "",
+                         name: parameters.name,
                          productID: parameters.productID,
                          variationID: parameters.variationID ?? 0,
                          quantity: parameters.quantity,
                          price: parameters.price as NSDecimalNumber,
-                         sku: nil,
+                         sku: parameters.sku,
                          subtotal: parameters.subtotal,
                          subtotalTax: "",
                          taxClass: "",

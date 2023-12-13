@@ -15,16 +15,22 @@ enum OrderSyncState {
 struct OrderSyncProductInput {
     init(id: Int64 = .zero,
          product: OrderSyncProductInput.ProductType,
+         price: Decimal? = nil,
          quantity: Decimal,
          discount: Decimal = .zero,
          baseSubtotal: Decimal? = nil,
-         bundleConfiguration: [BundledProductConfiguration] = []) {
+         bundleConfiguration: [BundledProductConfiguration] = [],
+         name: String? = nil,
+         sku: String? = nil) {
         self.id = id
         self.product = product
+        self.price = price
         self.quantity = quantity
         self.discount = discount
         self.baseSubtotal = baseSubtotal
         self.bundleConfiguration = bundleConfiguration
+        self.name = name
+        self.sku = sku
     }
 
     /// Types of products the synchronizer supports
@@ -35,9 +41,12 @@ struct OrderSyncProductInput {
     }
     var id: Int64 = .zero
     let product: ProductType
+    let price: Decimal?
     let quantity: Decimal
     var discount: Decimal = .zero
     let bundleConfiguration: [BundledProductConfiguration]
+    let name: String?
+    let sku: String?
 
     /// The subtotal of one element. This might be different than the product price, if the price includes tax (subtotal does not).
     ///
@@ -46,10 +55,13 @@ struct OrderSyncProductInput {
     func updating(id: Int64) -> OrderSyncProductInput {
         .init(id: id,
               product: self.product,
+              price: self.price,
               quantity: self.quantity,
               discount: discount,
               baseSubtotal: self.baseSubtotal,
-              bundleConfiguration: bundleConfiguration)
+              bundleConfiguration: bundleConfiguration,
+              name: self.name,
+              sku: self.sku)
     }
 }
 

@@ -16,7 +16,7 @@ class ProductInputTransformerTests: XCTestCase {
     func test_sending_a_new_product_input_adds_an_item_to_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0, name: "Input", sku: "sku")
         let originalOrder = OrderFactory.emptyNewOrder
 
         // When
@@ -31,6 +31,8 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "9.99")
         XCTAssertEqual(item.total, "9.99")
+        XCTAssertEqual(item.name, input.name)
+        XCTAssertEqual(item.sku, input.sku)
     }
 
     func test_update_with_a_new_product_when_input_has_different_base_subtotal_than_price_then_it_uses_base_subtotal() throws {
@@ -90,7 +92,7 @@ class ProductInputTransformerTests: XCTestCase {
     func test_sending_a_new_product_variation_input_adds_an_item_to_order() throws {
         // Given
         let productVariation = ProductVariation.fake().copy(productID: sampleProductID, productVariationID: sampleProductVariationID, price: "9.99")
-        let input = OrderSyncProductInput(product: .variation(productVariation), quantity: 1, discount: 0)
+        let input = OrderSyncProductInput(product: .variation(productVariation), quantity: 1, discount: 0, name: "Input", sku: "sku")
         let originalOrder = OrderFactory.emptyNewOrder
 
         // When
@@ -105,6 +107,8 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "9.99")
         XCTAssertEqual(item.total, "9.99")
+        XCTAssertEqual(item.name, input.name)
+        XCTAssertEqual(item.sku, input.sku)
     }
 
     func test_update_with_a_new_product_variation_when_input_has_different_base_subtotal_than_price_then_it_uses_base_subtotal() throws {

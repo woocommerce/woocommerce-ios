@@ -10,6 +10,11 @@ public protocol WordPressThemeRemoteProtocol {
     /// Loads the current theme for the site with the specified ID.
     ///
     func loadCurrentTheme(siteID: Int64) async throws -> WordPressTheme
+
+    /// Installs the theme with the given ID for the site with the specified ID.
+    ///
+    func installTheme(themeID: String,
+                      siteID: Int64) async throws -> WordPressTheme
 }
 
 /// WordPressThemes: Remote Endpoints
@@ -31,6 +36,41 @@ public final class WordPressThemeRemote: Remote, WordPressThemeRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         return try await enqueue(request, mapper: WordPressThemeMapper())
     }
+
+    public func installTheme(themeID: String,
+                             siteID: Int64) async throws -> WordPressTheme {
+        let path = Paths.install(themeID: themeID, for: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
+        do {
+            return try await enqueue(request, mapper: WordPressThemeMapper())
+        } catch {
+            throw InstallThemeError(error) ?? error
+        }
+    }
+}
+
+/// Possible theme installation errors in the Networking layer.
+///
+public enum InstallThemeError: Error {
+    case themeAlreadyInstalled
+
+    init?(_ error: Error) {
+        guard let dotcomError = error as? DotcomError,
+              case let .unknown(code, _) = dotcomError else {
+            return nil
+        }
+
+        switch code {
+        case Constants.themeAlreadyInstalled:
+            self = .themeAlreadyInstalled
+        default:
+            return nil
+        }
+    }
+
+    private enum Constants {
+        static let themeAlreadyInstalled = "theme_already_installed"
+    }
 }
 
 private extension WordPressThemeRemote {
@@ -38,6 +78,11 @@ private extension WordPressThemeRemote {
         static let suggestedThemes = "themes?filter=subject:store&number=100"
         static func currentThemePath(for siteID: Int64) -> String {
             "sites/\(siteID)/themes/mine"
+        }
+
+        static func install(themeID: String,
+                            for siteID: Int64) -> String {
+            "sites/\(siteID)/themes/\(themeID)/install/"
         }
     }
 

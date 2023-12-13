@@ -329,7 +329,7 @@ private extension ProductsViewController {
         let message = Localization.progressViewMessage
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-        
+
         return inProgressViewController
     }
 

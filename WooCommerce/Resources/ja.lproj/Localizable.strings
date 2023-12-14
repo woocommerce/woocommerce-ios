@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-12-08 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-12-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "WordPress メディアライブラリから";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "端末から";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "購入から履行まで - アプリから注文処理全体を管理します。";
 
@@ -5052,9 +5049,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "まだファイルはありません";
-
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "画像がありません";
 
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "制限がありません";
@@ -9821,6 +9815,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "アイコン";
 
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "クリップボードにコピーしました。";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "番号をコピー";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Blaze を非表示";
 
@@ -9962,6 +9962,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.unknown.title" = "不明";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "端末上のドキュメント";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "端末上のメディア";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eコマース";
@@ -10125,6 +10131,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "カスタム金額をどのように追加しますか ?";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "完了";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "カスタム金額";
 
@@ -10170,11 +10179,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "バリエーションのある定期購入商品";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "ファイルのアップロードの際にエラーが発生しました。 もう一度お試しください。";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "選択したファイルタイプはサポートされていません。";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "毎週%1$@";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze を使って宣伝する";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "画像の順序を変更するには、すべてのアップロードが完了するまでお待ちください。";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "請求の間隔";
@@ -10327,6 +10345,21 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "Tap to Pay on iPhone による支払いの受け取りについて%1$@。";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "キャンセル";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "現在";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "テーマ";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "テーマ";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "他の新しい外観をお試しください";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "不明";
 
@@ -10371,6 +10404,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, 商品, カテゴリー, 新商品, 商品を検索";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "メディアを読み込んでいます...";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "セキュリティキーを使用";

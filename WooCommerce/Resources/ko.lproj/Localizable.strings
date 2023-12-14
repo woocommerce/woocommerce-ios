@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "워드프레스 미디어 라이브러리에서";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "기기에서";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "구매에서 처리까지 – 앱을 통해 전체 주문 프로세스를 관리하세요.";
 
@@ -5052,9 +5049,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "아직 파일 없음";
-
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "아직 이미지 없음";
 
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "제한 없음";

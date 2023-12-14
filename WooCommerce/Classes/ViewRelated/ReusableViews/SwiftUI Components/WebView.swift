@@ -48,9 +48,7 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        if let device = previewDevice {
-            uiView.evaluateJavaScript(device.viewportScript)
-        }
+
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {
@@ -70,6 +68,12 @@ struct WebView: UIViewRepresentable {
                 return
             }
             decisionHandler(.allow)
+        }
+
+        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+            if let device = parent.previewDevice {
+                webView.evaluateJavaScript(device.viewportScript)
+            }
         }
     }
 }

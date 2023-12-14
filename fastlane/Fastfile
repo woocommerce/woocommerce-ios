@@ -256,8 +256,7 @@ platform :ios do
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
-    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
-    ensure_git_branch(branch: '^release/')
+    ensure_git_branch_is_release_branch
 
     UI.important("Completing code freeze for: #{release_version_current}")
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
@@ -354,7 +353,7 @@ platform :ios do
 
     # Bump the build code
     UI.message('Bumping build code...')
-    ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
+    ensure_git_branch_is_release_branch
     VERSION_FILE.write(version_long: build_code_next)
     commit_version_bump
     UI.success("Done! New Build Code: #{build_code_current}")
@@ -447,8 +446,7 @@ platform :ios do
   #####################################################################################
   desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
   lane :finalize_hotfix_release do
-    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
-    ensure_git_branch(branch: '^release/')
+    ensure_git_branch_is_release_branch
 
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
@@ -477,8 +475,7 @@ platform :ios do
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
     UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if ios_current_branch_is_hotfix
-    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
-    ensure_git_branch(branch: '^release/')
+    ensure_git_branch_is_release_branch
 
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
@@ -1433,3 +1430,8 @@ def create_release_management_pull_request(base_branch:, title:)
     labels: 'Releases'
   )
 end
+
+def ensure_git_branch_is_release_branch
+  # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
+  ensure_git_branch(branch: '^release/')
+ end

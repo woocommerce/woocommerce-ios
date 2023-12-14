@@ -303,6 +303,8 @@ private extension ProductsViewController {
                         let noticeMessage = String.localizedStringWithFormat(Localization.updateInventoryNotice, newQuantity)
                         self.presentNotice(title: noticeMessage)
                     })), animated: true)
+                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue,
+                                                                                                                       stockManaged: scannedItem.inventoryItem.manageStock))
                 } catch {
                     ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .scanToUpdateInventory))
                     DDLogError("There was an error when attempting to update inventory via scanner: \(error)")

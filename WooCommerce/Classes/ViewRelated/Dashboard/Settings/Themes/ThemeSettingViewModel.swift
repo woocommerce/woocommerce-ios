@@ -12,12 +12,12 @@ final class ThemeSettingViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
     private(set) var carouselViewModel: ThemesCarouselViewModel
-    private let themeInstaller: ThemeInstallerProtocol
+    private let themeInstaller: ThemeInstaller
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         themeInstaller: ThemeInstallerProtocol = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics

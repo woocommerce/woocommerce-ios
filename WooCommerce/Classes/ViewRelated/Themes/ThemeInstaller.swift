@@ -1,7 +1,7 @@
 import Yosemite
 import enum Networking.InstallThemeError
 
-protocol ThemeInstallerProtocol {
+protocol ThemeInstaller {
     func install(themeID: String, siteID: Int64) async throws
 
     func scheduleThemeInstall(themeID: String, siteID: Int64)
@@ -11,7 +11,7 @@ protocol ThemeInstallerProtocol {
 
 /// Helper to install and activate theme
 ///
-struct DefaultThemeInstaller: ThemeInstallerProtocol {
+struct DefaultThemeInstaller: ThemeInstaller {
     private let userDefaults: UserDefaults
     private let stores: StoresManager
 

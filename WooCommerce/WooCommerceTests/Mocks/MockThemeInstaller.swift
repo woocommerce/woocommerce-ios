@@ -1,7 +1,7 @@
 @testable import WooCommerce
 import Foundation
 
-final class MockThemeInstaller: ThemeInstallerProtocol {
+final class MockThemeInstaller: ThemeInstaller {
     var themeIDScheduledForInstall: String?
     var scheduleThemeInstallCalled = false
     func scheduleThemeInstall(themeID: String, siteID: Int64) {

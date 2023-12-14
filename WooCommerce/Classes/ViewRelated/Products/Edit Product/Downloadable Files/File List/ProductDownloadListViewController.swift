@@ -352,6 +352,7 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
         /// This should never return false, but who knows ¯\_(ツ)_/¯
         guard url.startAccessingSecurityScopedResource() else {
             url.stopAccessingSecurityScopedResource()
+            DDLogError("⛔️ Error accessing local file for uploading: no permission granted.")
             let notice = Notice(title: Localization.permissionMissing, feedbackType: .error)
             noticePresenter.enqueue(notice: notice)
             return

@@ -192,7 +192,9 @@ platform :ios do
     MESSAGE
 
     UI.important(message)
-    UI.user_error!('Terminating as requested. Don\'t forget to run the remainder of this automation manually.') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!('Terminating as requested. Don\'t forget to run the remainder of this automation manually.')
+    end
 
     # Create the release branch
     UI.message('Creating release branch...')
@@ -220,7 +222,9 @@ platform :ios do
     )
 
     UI.important('Pushing changes to remote and configuring the release on GitHub')
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     push_to_git_remote(tags: false)
 
@@ -256,7 +260,9 @@ platform :ios do
     ensure_git_branch(branch: '^release/')
 
     UI.important("Completing code freeze for: #{release_version_current}")
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     update_app_store_strings
 
@@ -338,7 +344,9 @@ platform :ios do
     override_default_release_branch(options[:base_version]) unless options[:base_version].nil?
 
     UI.important(message)
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     # Download the latest translations from GlotPress
     download_localized_strings_and_metadata_from_glotpress
@@ -352,7 +360,9 @@ platform :ios do
     UI.success("Done! New Build Code: #{build_code_current}")
 
     UI.important('Pushing changes to remote and triggering the beta build')
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     # Create an intermediate branch
     new_beta_branch_name = "new_beta/#{build_code_current}"
@@ -403,7 +413,9 @@ platform :ios do
     MESSAGE
 
     UI.important(message)
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     # Check tags
     UI.user_error!("Version #{new_version} already exists! Abort!") if git_tag_exists(tag: new_version)
@@ -442,7 +454,9 @@ platform :ios do
     ensure_git_status_clean
 
     UI.important("Triggering hotfix build for version: #{release_version_current}")
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
     push_to_git_remote(tags: false)
     trigger_release_build(branch_to_build: "release/#{release_version_current}")
   end
@@ -470,7 +484,9 @@ platform :ios do
     ensure_git_status_clean
 
     UI.important("Finalizing release: #{release_version_current}")
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     UI.message('Checking app strings translation status...')
     check_translation_progress(
@@ -517,7 +533,9 @@ platform :ios do
 
     # Start the build
     UI.important('Pushing changes to remote and triggering the release build')
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     push_to_git_remote(tags: false)
     trigger_release_build(branch_to_build: "release/#{version}")
@@ -582,7 +600,9 @@ platform :ios do
     ensure_sentry_installed
 
     UI.important("Building version #{release_version_current} (#{build_code_current}) and uploading to TestFlight")
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     appstore_code_signing
 

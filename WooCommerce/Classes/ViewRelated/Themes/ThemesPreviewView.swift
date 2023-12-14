@@ -41,7 +41,7 @@ struct ThemesPreviewView: View {
         }
     }
 
-    @State var selectedDevice: PreviewDevice? = PreviewDevice.defaultDevice
+    @State private var selectedDevice: PreviewDevice? = PreviewDevice.defaultDevice
 
     var body: some View {
         NavigationView {
@@ -74,18 +74,15 @@ struct ThemesPreviewView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        Text(Localization.menuMobile)
-                            .onTapGesture {
-                                self.selectedDevice = .mobile
-                            }
-                        Text(Localization.menuTablet)
-                            .onTapGesture {
-                                self.selectedDevice = .tablet
-                            }
-                        Text(Localization.menuDesktop)
-                            .onTapGesture {
-                                self.selectedDevice = .desktop
-                            }
+                        Button(Localization.menuMobile) {
+                            self.selectedDevice = .mobile
+                        }
+                        Button(Localization.menuTablet) {
+                            self.selectedDevice = .tablet
+                        }
+                        Button(Localization.menuDesktop) {
+                            self.selectedDevice = .desktop
+                        }
                     } label: {
                         Image(systemName: "macbook.and.iphone")
                             .secondaryBodyStyle()

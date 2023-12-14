@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import Fakes
+import TestKit
 @testable import WooCommerce
 
 @MainActor
@@ -335,5 +336,24 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(passedManagedStockValue ?? false)
         XCTAssertEqual(viewModel.viewMode, .stockCanBeManaged)
+    }
+
+    func test_onTapManageStock_when_we_get_an_error_then_throws_error() async throws {
+        // Given
+        let product = Product.fake().copy(siteID: siteID, manageStock: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(_, onCompletion):
+                onCompletion(.failure(ProductUpdateError.notFoundInStorage))
+            default:
+                break
+            }
+        }
+
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product, siteID: siteID, stores: stores, onUpdatedInventory: { _ in })
+
+        /// When - Then
+        await assertThrowsError({ try await viewModel.onTapManageStock() }, errorAssert: { ($0 as? UpdateInventoryError) ==  UpdateInventoryError.generic })
     }
 }

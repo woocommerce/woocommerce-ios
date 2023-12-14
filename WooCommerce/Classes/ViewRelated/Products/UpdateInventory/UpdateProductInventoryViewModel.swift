@@ -218,6 +218,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
             refresh()
         } catch {
             isManageStockButtonLoading = false
+            throw UpdateInventoryError.generic
         }
     }
 

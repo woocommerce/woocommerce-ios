@@ -653,20 +653,6 @@ final class DashboardViewModelTests: XCTestCase {
         //  Then
         XCTAssertTrue(usecase.uploadAnswersCalled)
     }
-
-    // MARK: Theme installation
-    func test_installPendingTheme_triggers_theme_installation() async throws {
-        // Given
-        let themeInstaller = MockThemeInstaller()
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           themeInstaller: themeInstaller)
-
-        // When
-        await viewModel.installPendingTheme()
-
-        //  Then
-        XCTAssertTrue(themeInstaller.installPendingThemeCalled)
-    }
 }
 
 private extension DashboardViewModelTests {

@@ -831,6 +831,7 @@
 		DE74F2A027E3137F0002FE59 /* setting-analytics.json in Resources */ = {isa = PBXBuildFile; fileRef = DE74F29F27E3137F0002FE59 /* setting-analytics.json */; };
 		DE78DE462B2AE880002E58DE /* WordPressPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE452B2AE880002E58DE /* WordPressPage.swift */; };
 		DE78DE482B2AEBEC002E58DE /* WordPressPageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE472B2AEBEC002E58DE /* WordPressPageMapper.swift */; };
+		DE78DE4A2B2AEC7F002E58DE /* wp-page-list-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE78DE492B2AEC7F002E58DE /* wp-page-list-success.json */; };
 		DE97C3922861B8E20042E973 /* CouponEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */; };
 		DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */; };
 		DE9DEEF5291CF1B40070AD7C /* site-plugin-without-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */; };
@@ -1861,6 +1862,7 @@
 		DE74F29F27E3137F0002FE59 /* setting-analytics.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-analytics.json"; sourceTree = "<group>"; };
 		DE78DE452B2AE880002E58DE /* WordPressPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressPage.swift; sourceTree = "<group>"; };
 		DE78DE472B2AEBEC002E58DE /* WordPressPageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressPageMapper.swift; sourceTree = "<group>"; };
+		DE78DE492B2AEC7F002E58DE /* wp-page-list-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wp-page-list-success.json"; sourceTree = "<group>"; };
 		DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponEncoderTests.swift; sourceTree = "<group>"; };
 		DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-address-without-name-validation-success.json"; sourceTree = "<group>"; };
 		DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-plugin-without-envelope.json"; sourceTree = "<group>"; };
@@ -2604,6 +2606,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE78DE492B2AEC7F002E58DE /* wp-page-list-success.json */,
 				EE66BB032B28975B00518DAF /* theme-install-already-installed.json */,
 				EE66BB052B29791500518DAF /* theme-activate-success.json */,
 				EE66BB012B2893AF00518DAF /* theme-install-success.json */,
@@ -3734,6 +3737,7 @@
 				265BCA02243056E3004E53EE /* categories-all.json in Resources */,
 				D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */,
 				EEE846A22A54745F005239B6 /* identify-language-success.json in Resources */,
+				DE78DE4A2B2AEC7F002E58DE /* wp-page-list-success.json in Resources */,
 				CEC4BF91234E40B5008D9195 /* refund-single.json in Resources */,
 				2683D70E24456DB8002A1589 /* categories-empty.json in Resources */,
 				D865CE67278CA225002C8520 /* stripe-payment-intent-succeeded.json in Resources */,

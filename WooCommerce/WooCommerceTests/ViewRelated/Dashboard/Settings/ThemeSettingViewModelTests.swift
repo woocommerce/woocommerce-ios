@@ -70,6 +70,8 @@ final class ThemeSettingViewModelTests: XCTestCase {
                                   stores: stores,
                                   themeInstaller: themeInstaller)
         // Then
-        XCTAssertTrue(themeInstaller.installPendingThemeCalled)
+        waitUntil {
+            themeInstaller.installPendingThemeCalled == true
+        }
     }
 }

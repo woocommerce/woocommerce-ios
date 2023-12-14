@@ -73,40 +73,27 @@ struct ThemesPreviewView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        Button {
-                            self.selectedDevice = .mobile
-
-                        } label: {
-                            Text(Localization.menuMobile)
-                            if self.selectedDevice == .mobile {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                        Button {
-                            self.selectedDevice = .tablet
-
-                        } label: {
-                            Text(Localization.menuTablet)
-                            if self.selectedDevice == .tablet {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                        Button {
-                            self.selectedDevice = .desktop
-
-                        } label: {
-                            Text(Localization.menuDesktop)
-                            if self.selectedDevice == .desktop {
-                                Image(systemName: "checkmark")
-                            }
+                        ForEach(PreviewDevice.allCases, id: \.self) { device in
+                          menuItem(for: device)
                         }
                     } label: {
-                        Image(systemName: "macbook.and.iphone")
-                            .secondaryBodyStyle()
+                         Image(systemName: "macbook.and.iphone")
+                            .bodyStyle()
                     }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    private func menuItem(for device: PreviewDevice) -> some View {
+        Button {
+            self.selectedDevice = device
+        } label: {
+            Text(Localization.getMenuTitle(for: device))
+            if self.selectedDevice == device {
+                Image(systemName: "checkmark")
+            }
         }
     }
 }
@@ -145,6 +132,17 @@ private extension ThemesPreviewView {
             value: "Theme: %@",
             comment: "Name of the theme being previewed."
         )
+
+        static func getMenuTitle(for device: PreviewDevice) -> String {
+            switch device {
+            case .desktop:
+                return menuDesktop
+            case .tablet:
+                return menuTablet
+            case .mobile:
+                return menuMobile
+            }
+        }
     }
 }
 

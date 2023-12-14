@@ -41,7 +41,6 @@ final class DashboardViewModel {
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
-    private let themeInstaller: ThemeInstallerProtocol
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -57,8 +56,7 @@ final class DashboardViewModel {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil,
-         themeInstaller: ThemeInstallerProtocol? = nil) {
+         storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
@@ -69,7 +67,6 @@ final class DashboardViewModel {
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
-        self.themeInstaller = themeInstaller ?? DefaultThemeInstaller()
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
     }
@@ -78,12 +75,6 @@ final class DashboardViewModel {
     ///
     func uploadProfilerAnswers() async {
         await storeCreationProfilerUploadAnswersUseCase.uploadAnswers()
-    }
-
-    /// Installs pending theme for the current site
-    ///
-    func installPendingTheme() async {
-       try? await themeInstaller.installPendingTheme(siteID: siteID)
     }
 
     /// Reloads store onboarding tasks

@@ -23,17 +23,18 @@ final class ThemeSettingViewModel: ObservableObject {
         self.analytics = analytics
         self.themeInstaller = themeInstaller
         self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
+
+        /// Attempt to install and activate any pending theme selection
+        /// to show correct current theme information
+        ///
+        Task {
+            await installPendingTheme()
+        }
     }
 
     @MainActor
     func updateCurrentThemeName() async {
         loadingCurrentTheme = true
-
-        /// Attempt to install and activate any pending theme selection
-        /// to show correct current theme information
-        ///
-        await installPendingTheme()
-
         let theme = await loadCurrentTheme()
         currentThemeName = theme?.name ?? ""
         loadingCurrentTheme = false

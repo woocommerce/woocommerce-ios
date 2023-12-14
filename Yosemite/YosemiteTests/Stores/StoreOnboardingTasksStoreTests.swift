@@ -78,8 +78,8 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let tasks = try XCTUnwrap(result.get())
-        XCTAssertEqual(tasks, [.init(isComplete: true, type: .storeDetails),
-                               .init(isComplete: true, type: .addFirstProduct),
+        XCTAssertEqual(tasks, [.init(isComplete: true, type: .addFirstProduct),
+                               .init(isComplete: true, type: .storeDetails),
                                .init(isComplete: true, type: .woocommercePayments),
                                .init(isComplete: true, type: .launchStore),
                                .init(isComplete: true, type: .customizeDomains),
@@ -107,8 +107,8 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let tasks = try XCTUnwrap(result.get())
-        XCTAssertEqual(tasks, [.init(isComplete: true, type: .storeDetails),
-                               .init(isComplete: true, type: .addFirstProduct),
+        XCTAssertEqual(tasks, [.init(isComplete: true, type: .addFirstProduct),
+                               .init(isComplete: true, type: .storeDetails),
                                .init(isComplete: true, type: .launchStore),
                                .init(isComplete: true, type: .customizeDomains),
                                .init(isComplete: true, type: .payments),

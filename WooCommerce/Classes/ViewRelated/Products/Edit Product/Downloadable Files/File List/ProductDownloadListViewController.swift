@@ -346,6 +346,8 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
             return
         }
 
+        let accessing = url.startAccessingSecurityScopedResource()
+
         controller.dismiss(animated: true) { [weak self] in
             guard let self else { return }
             self.updateLoadingState(true)
@@ -367,6 +369,10 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
                 }()
                 let notice = Notice(title: errorMessage, feedbackType: .error)
                 noticePresenter.enqueue(notice: notice)
+            }
+
+            if accessing {
+                url.stopAccessingSecurityScopedResource()
             }
         }
     }

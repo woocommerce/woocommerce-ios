@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct ThemesPreviewView: View {
-    enum PreviewDevice: String, CaseIterable {
-        case desktop = "desktop"
-        case tablet = "tablet"
-        case mobile = "mobile"
+    enum PreviewDevice: CaseIterable {
+        case mobile
+        case tablet
+        case desktop
 
         static var defaultDevice: PreviewDevice {
             return UIDevice.current.userInterfaceIdiom == .pad ? .tablet : .mobile
@@ -12,17 +12,10 @@ struct ThemesPreviewView: View {
 
         var width: CGFloat {
             switch self {
-            case .desktop:
-                return 1200
-            case .tablet:
-                return 800
-            case .mobile:
-                return 400
+            case .mobile: return 400
+            case .tablet: return 800
+            case .desktop: return 1200
             }
-        }
-
-        static var available: [PreviewDevice] {
-            return [.mobile, .tablet, .desktop]
         }
 
         var viewportScript: String {

@@ -18,7 +18,7 @@ final class MediaPickingCoordinator {
     }()
 
     private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
-        return DeviceMediaLibraryPicker(allowsMultipleImages: allowsMultipleImages, onCompletion: onDeviceMediaLibraryPickerCompletion)
+        return DeviceMediaLibraryPicker(imagesOnly: true, allowsMultipleSelections: allowsMultipleImages, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
     private lazy var wpMediaLibraryPicker: WordPressMediaLibraryPickerCoordinator =

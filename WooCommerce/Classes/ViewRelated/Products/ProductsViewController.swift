@@ -305,7 +305,10 @@ private extension ProductsViewController {
                     })), animated: true)
                 } catch {
                     DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
-                    self.presentNotice(title: Localization.scannerErrorNotice)
+                    let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,
+                                                                            code: scannedBarcode,
+                                                                            actionHandler: { })
+                    self.presentNotice(notice: errorNotice)
                 }
                 // Reset button state on finishing the task
                 self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
@@ -525,6 +528,15 @@ private extension ProductsViewController {
             return noticePresenter
         }()
         contextNoticePresenter.enqueue(notice: .init(title: title))
+    }
+
+    func presentNotice(notice: Notice) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = tabBarController
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -1475,9 +1487,5 @@ private extension ProductsViewController {
             comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
             "Reads like: 'Quantity updated: 2,345'"
         )
-        static let scannerErrorNotice = NSLocalizedString(
-            "scannerErrorNotice.scanProducts.createAddOrderByProductScanningButtonItem",
-            value: "There was an error when attempting to scan the barcode. Please try again.",
-            comment: "Error notice when an attempt to scanned to update inventory fails to find the product.")
     }
 }

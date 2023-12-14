@@ -348,7 +348,14 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
             return
         }
 
-        let accessing = url.startAccessingSecurityScopedResource()
+        /// Double check that access to the file is granted.
+        /// This should never return false, but who knows ¯\_(ツ)_/¯
+        guard url.startAccessingSecurityScopedResource() else {
+            url.stopAccessingSecurityScopedResource()
+            let notice = Notice(title: Localization.permissionMissing, feedbackType: .error)
+            noticePresenter.enqueue(notice: notice)
+            return
+        }
 
         controller.dismiss(animated: true) { [weak self] in
             guard let self else { return }
@@ -373,9 +380,7 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
                 noticePresenter.enqueue(notice: notice)
             }
 
-            if accessing {
-                url.stopAccessingSecurityScopedResource()
-            }
+            url.stopAccessingSecurityScopedResource()
         }
     }
 
@@ -488,6 +493,11 @@ private extension ProductDownloadListViewController {
             "productDownloadListViewController.notice.errorUploadingLocalFile",
             value: "Error uploading the file. Please try again.",
             comment: "Alert message to inform the user about a failure in uploading file for a downloadable product."
+        )
+        static let permissionMissing = NSLocalizedString(
+            "productDownloadListViewController.notice.permissionMissing",
+            value: "You don't have the permission to access the file.",
+            comment: "Alert message about the missing permission to upload a local file for a downloadable product."
         )
     }
 }

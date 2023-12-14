@@ -8,14 +8,12 @@ final class DeviceMediaLibraryPicker: NSObject {
     private let onCompletion: Completion
     private let dataSource = WPPHAssetDataSource()
 
-    private let imagesOnly: Bool
-    private let allowsMultipleSelections: Bool
+    private let allowsMultipleImages: Bool
 
     private var origin: UIViewController?
 
-    init(imagesOnly: Bool, allowsMultipleSelections: Bool, onCompletion: @escaping Completion) {
-        self.imagesOnly = imagesOnly
-        self.allowsMultipleSelections = allowsMultipleSelections
+    init(allowsMultipleImages: Bool, onCompletion: @escaping Completion) {
+        self.allowsMultipleImages = allowsMultipleImages
         self.onCompletion = onCompletion
     }
 
@@ -24,12 +22,10 @@ final class DeviceMediaLibraryPicker: NSObject {
         options.showActionBar = false
         options.showSearchBar = false
         options.showMostRecentFirst = true
-        if imagesOnly {
-            options.filter = [.image]
-        }
+        options.filter = [.image]
         options.allowCaptureOfMedia = false
         options.badgedUTTypes = [UTType.gif.identifier]
-        options.allowMultipleSelection = allowsMultipleSelections
+        options.allowMultipleSelection = allowsMultipleImages
 
         let picker = WPNavigationMediaPickerViewController(options: options)
         picker.dataSource = dataSource

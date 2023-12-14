@@ -22,9 +22,7 @@ final class ProductDownloadListViewController: UIViewController {
     // Device Media Library and Completion callbacks
     //
     private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
-        return DeviceMediaLibraryPicker(imagesOnly: false,
-                                        allowsMultipleSelections: false,
-                                        onCompletion: onDeviceMediaLibraryPickerCompletion)
+        return DeviceMediaLibraryPicker(allowsMultipleImages: false, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
     private lazy var wpMediaLibraryPicker: WordPressMediaLibraryPickerCoordinator =

@@ -48,7 +48,9 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-
+        if let device = previewDevice {
+            uiView.reload()
+        }
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -829,6 +829,7 @@
 		DE74F29C27E0A1D00002FE59 /* setting-coupon.json in Resources */ = {isa = PBXBuildFile; fileRef = DE74F29B27E0A1D00002FE59 /* setting-coupon.json */; };
 		DE74F29E27E0A6800002FE59 /* SiteSettingMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29D27E0A6800002FE59 /* SiteSettingMapperTests.swift */; };
 		DE74F2A027E3137F0002FE59 /* setting-analytics.json in Resources */ = {isa = PBXBuildFile; fileRef = DE74F29F27E3137F0002FE59 /* setting-analytics.json */; };
+		DE78DE462B2AE880002E58DE /* WordPressPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE452B2AE880002E58DE /* WordPressPage.swift */; };
 		DE97C3922861B8E20042E973 /* CouponEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */; };
 		DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */; };
 		DE9DEEF5291CF1B40070AD7C /* site-plugin-without-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */; };
@@ -1857,6 +1858,7 @@
 		DE74F29B27E0A1D00002FE59 /* setting-coupon.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-coupon.json"; sourceTree = "<group>"; };
 		DE74F29D27E0A6800002FE59 /* SiteSettingMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29F27E3137F0002FE59 /* setting-analytics.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-analytics.json"; sourceTree = "<group>"; };
+		DE78DE452B2AE880002E58DE /* WordPressPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressPage.swift; sourceTree = "<group>"; };
 		DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponEncoderTests.swift; sourceTree = "<group>"; };
 		DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-address-without-name-validation-success.json"; sourceTree = "<group>"; };
 		DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-plugin-without-envelope.json"; sourceTree = "<group>"; };
@@ -2592,6 +2594,7 @@
 				EE078D8E2AD2E65400C1199E /* JWToken.swift */,
 				DED91DDC2AD62DCB00CDCC53 /* BlazeCampaign.swift */,
 				DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */,
+				DE78DE452B2AE880002E58DE /* WordPressPage.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -4205,6 +4208,7 @@
 				CCAD671329E6D83C00ADC064 /* ProductSubscription.swift in Sources */,
 				EE57C1152979371B00BC31E7 /* ApplicationPassword.swift in Sources */,
 				B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */,
+				DE78DE462B2AE880002E58DE /* WordPressPage.swift in Sources */,
 				B556FD69211CE2EC00B5DAE7 /* NetworkError.swift in Sources */,
 				EE078D912AD2EFBA00C1199E /* JWTokenMapper.swift in Sources */,
 				024124862AC93E470035A247 /* OrderItemBundleItem.swift in Sources */,

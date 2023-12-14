@@ -830,6 +830,7 @@
 		DE74F29E27E0A6800002FE59 /* SiteSettingMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F29D27E0A6800002FE59 /* SiteSettingMapperTests.swift */; };
 		DE74F2A027E3137F0002FE59 /* setting-analytics.json in Resources */ = {isa = PBXBuildFile; fileRef = DE74F29F27E3137F0002FE59 /* setting-analytics.json */; };
 		DE78DE462B2AE880002E58DE /* WordPressPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE452B2AE880002E58DE /* WordPressPage.swift */; };
+		DE78DE482B2AEBEC002E58DE /* WordPressPageMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE472B2AEBEC002E58DE /* WordPressPageMapper.swift */; };
 		DE97C3922861B8E20042E973 /* CouponEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */; };
 		DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */; };
 		DE9DEEF5291CF1B40070AD7C /* site-plugin-without-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */; };
@@ -1859,6 +1860,7 @@
 		DE74F29D27E0A6800002FE59 /* SiteSettingMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteSettingMapperTests.swift; sourceTree = "<group>"; };
 		DE74F29F27E3137F0002FE59 /* setting-analytics.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-analytics.json"; sourceTree = "<group>"; };
 		DE78DE452B2AE880002E58DE /* WordPressPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressPage.swift; sourceTree = "<group>"; };
+		DE78DE472B2AEBEC002E58DE /* WordPressPageMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressPageMapper.swift; sourceTree = "<group>"; };
 		DE97C3912861B8E20042E973 /* CouponEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponEncoderTests.swift; sourceTree = "<group>"; };
 		DE9D6BCB270D769B00BA6562 /* shipping-label-address-without-name-validation-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-address-without-name-validation-success.json"; sourceTree = "<group>"; };
 		DE9DEEF4291CF1B40070AD7C /* site-plugin-without-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-plugin-without-envelope.json"; sourceTree = "<group>"; };
@@ -3113,6 +3115,7 @@
 				68CB800D28D8901B00E169F8 /* CustomerMapper.swift */,
 				68F48B0C28E3B2E80045C15B /* WCAnalyticsCustomerMapper.swift */,
 				DE2E8E9E295310C5002E4B14 /* WordPressSiteMapper.swift */,
+				DE78DE472B2AEBEC002E58DE /* WordPressPageMapper.swift */,
 				EE2C09C129AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift */,
 				020EF5E82A8BC957009D2169 /* ProductsTotalMapper.swift */,
 				B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */,
@@ -4311,6 +4314,7 @@
 				311D412C2783BF7400052F64 /* StripeAccount.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
 				311D412E2783C07D00052F64 /* StripeAccountMapper.swift in Sources */,
+				DE78DE482B2AEBEC002E58DE /* WordPressPageMapper.swift in Sources */,
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
 				45551F122523E7F1007EF104 /* UserAgent.swift in Sources */,
 				45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */,

@@ -6,7 +6,7 @@ import Yosemite
 /// View model for `CollapsibleProductCard`.
 struct CollapsibleProductCardViewModel: Identifiable {
     var id: Int64 {
-        productRow.productViewModel.id
+        productRow.id
     }
 
     /// The main/parent product row.
@@ -24,9 +24,11 @@ struct CollapsibleProductCardViewModel: Identifiable {
 
 /// View model for `CollapsibleProductRowCard`.
 struct CollapsibleProductRowCardViewModel: Identifiable {
-    var id: Int64 {
-        productViewModel.id
-    }
+    /// Unique ID for view model
+    let id: Int64
+
+    /// ID for product or variation in row
+    let productOrVariationID: Int64
 
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
@@ -42,46 +44,78 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
 
+    /// The product image for the order item
+    ///
+    let imageURL: URL?
+
+    /// The name of the order item
+    ///
+    let name: String
+
+    /// Label showing the product SKU for an order item
+    ///
+    let skuLabel: String
+
+    /// Product price
+    ///
+    let price: String?
+
+    /// Product discount
+    ///
+    let discount: Decimal?
+
     /// Label showing product details for an order item.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
     ///
     let productDetailsLabel: String
 
-    let productViewModel: ProductRowViewModel
     let stepperViewModel: ProductStepperViewModel
     let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
-    init(hasParentProduct: Bool = false,
+    init(id: Int64,
+         productOrVariationID: Int64,
+         hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
+         imageURL: URL?,
+         name: String,
+         sku: String?,
+         price: String?,
+         pricedIndividually: Bool = true,
+         discount: Decimal? = nil,
          productTypeDescription: String,
          attributes: [VariationAttributeViewModel],
          stockStatus: ProductStockStatus,
          stockQuantity: Decimal?,
          manageStock: Bool,
-         productViewModel: ProductRowViewModel,
          stepperViewModel: ProductStepperViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          configure: (() -> Void)? = nil) {
+        self.id = id
+        self.productOrVariationID = productOrVariationID
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false
         self.configure = configure
+        self.imageURL = imageURL
+        self.name = name
+        self.price = price
+        self.discount = discount
+        skuLabel = CollapsibleProductRowCardViewModel.createSKULabel(sku: sku)
         productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
                                                                                            productTypeDescription: productTypeDescription,
                                                                                            attributes: attributes,
                                                                                            stockStatus: stockStatus,
                                                                                            stockQuantity: stockQuantity,
                                                                                            manageStock: manageStock)
-        self.productViewModel = productViewModel
         self.stepperViewModel = stepperViewModel
-        self.priceSummaryViewModel = .init(pricedIndividually: productViewModel.pricedIndividually,
+        self.priceSummaryViewModel = .init(pricedIndividually: pricedIndividually,
                                            quantity: stepperViewModel.quantity,
-                                           price: productViewModel.price)
+                                           price: price)
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
 
@@ -102,12 +136,12 @@ extension CollapsibleProductRowCardViewModel {
     /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///
     var totalPriceAfterDiscountLabel: String? {
-        guard let price = productViewModel.price,
+        guard let price,
               let priceDecimal = currencyFormatter.convertToDecimal(price) else {
             return nil
         }
         let subtotalDecimal = priceDecimal.multiplying(by: stepperViewModel.quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting((productViewModel.discount ?? Decimal.zero) as NSDecimalNumber)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
 
         return currencyFormatter.formatAmount(totalPriceAfterDiscount)
     }
@@ -115,14 +149,14 @@ extension CollapsibleProductRowCardViewModel {
     /// Formatted discount label for an individual product
     ///
     var discountLabel: String? {
-        guard let discount = productViewModel.discount else {
+        guard let discount else {
             return nil
         }
         return currencyFormatter.formatAmount(discount)
     }
 
     var hasDiscount: Bool {
-        productViewModel.discount != nil
+        discount != nil
     }
 }
 
@@ -157,12 +191,21 @@ private extension CollapsibleProductRowCardViewModel {
             return stockStatus.description
         }
     }
+
+    /// Creates the label showing the product SKU for an order item.
+    ///
+    static func createSKULabel(sku: String?) -> String {
+        guard let sku, sku.isNotEmpty else {
+            return ""
+        }
+        return String.localizedStringWithFormat(Localization.skuFormat, sku)
+    }
 }
 
 private extension CollapsibleProductRowCardViewModel {
     func observeProductQuantityFromStepperViewModel() {
         stepperViewModel.$quantity
-            .assign(to: &productViewModel.$quantity)
+            .assign(to: &priceSummaryViewModel.$quantity)
     }
 }
 
@@ -171,5 +214,8 @@ private extension CollapsibleProductRowCardViewModel {
         static let stockFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.stockFormat",
                                                    value: "%1$@ in stock",
                                                    comment: "Label about product's inventory stock status shown during order creation")
+        static let skuFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
+                                                 value: "SKU: %1$@",
+                                                 comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
     }
 }

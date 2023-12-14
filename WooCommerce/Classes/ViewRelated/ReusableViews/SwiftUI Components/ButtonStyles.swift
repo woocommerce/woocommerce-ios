@@ -86,6 +86,21 @@ struct LinkButtonStyle: ButtonStyle {
     }
 }
 
+/// Depending on whether isLoading is true, shows a progress view or a link button
+/// 
+struct LinkLoadingButtonStyle: ButtonStyle {
+    let isLoading: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        if isLoading {
+            ProgressView()
+        } else {
+            LinkButton(configuration: configuration)
+        }
+
+    }
+}
+
 /// Button that looks like text without the default padding and size assumption.
 struct TextButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {

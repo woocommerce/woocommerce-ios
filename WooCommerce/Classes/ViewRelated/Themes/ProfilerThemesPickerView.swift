@@ -1,10 +1,23 @@
 import SwiftUI
 import Kingfisher
+import struct Yosemite.WordPressTheme
 
 /// View for picking themes in the store creation flow.
 struct ProfilerThemesPickerView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    private let carouselViewModel: ThemesCarouselViewModel
+    private let onSelectedTheme: (WordPressTheme) -> Void
+    private let onSkip: () -> Void
+
+    init(carouselViewModel: ThemesCarouselViewModel,
+         onSelectedTheme: @escaping (WordPressTheme) -> Void,
+         onSkip: @escaping () -> Void) {
+        self.carouselViewModel = carouselViewModel
+        self.onSelectedTheme = onSelectedTheme
+        self.onSkip = onSkip
+    }
 
     var body: some View {
 
@@ -23,19 +36,14 @@ struct ProfilerThemesPickerView: View {
 
                 Spacer()
 
-                ThemesCarouselView(
-                    lastMessageHeading: Localization.lastMessageHeading,
-                    lastMessageContent: Localization.lastMessageContent
-                )
+                ThemesCarouselView(viewModel: carouselViewModel, onSelectedTheme: onSelectedTheme)
 
                 Spacer()
             }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(Localization.skipButtonTitle) {
-                    // TODO: Setup toolbar.
-                }
+                Button(Localization.skipButtonTitle, action: onSkip)
             }
         }
         // Disables large title to avoid a large gap below the navigation bar.
@@ -45,7 +53,7 @@ struct ProfilerThemesPickerView: View {
 
 struct ProfilerThemesPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilerThemesPickerView()
+        ProfilerThemesPickerView(carouselViewModel: .init(mode: .storeCreationProfiler), onSelectedTheme: { _ in }, onSkip: {})
     }
 }
 
@@ -72,18 +80,6 @@ private extension ProfilerThemesPickerView {
             "themesPickerView.chooseThemeSubtitle",
             value: "You can always change it later in the settings.",
             comment: "Subtitle on the theme carousel screen."
-        )
-
-        static let lastMessageHeading = NSLocalizedString(
-            "themesPickerView.lastMessageHeading",
-            value: "Looking for more?",
-            comment: "The heading of the message shown at the end of carousel"
-        )
-
-        static let lastMessageContent = NSLocalizedString(
-            "themesPickerView.lastMessageContent",
-            value: "Once your store is set up, find your perfect theme in the WooCommerce Theme Store.",
-            comment: "The content of the message shown at the end of carousel"
         )
     }
 }

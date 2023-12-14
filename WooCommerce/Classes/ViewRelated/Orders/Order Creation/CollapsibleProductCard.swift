@@ -139,7 +139,7 @@ private struct CollapsibleProductRowCard: View {
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
-                    ProductImageThumbnail(productImageURL: viewModel.productViewModel.imageURL,
+                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
                                           productImageSize: viewModel.hasParentProduct ?
                                           Layout.childProductImageSize : Layout.parentProductImageSize,
                                           scale: scale,
@@ -147,13 +147,13 @@ private struct CollapsibleProductRowCard: View {
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     VStack(alignment: .leading) {
-                        Text(viewModel.productViewModel.name)
+                        Text(viewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)
                             .foregroundColor(Color(.text))
                         Text(viewModel.productDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
-                        Text(viewModel.productViewModel.skuLabel)
+                        Text(viewModel.skuLabel)
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
@@ -353,28 +353,37 @@ private extension CollapsibleProductRowCard {
 struct CollapsibleProductCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
-        let productViewModel = ProductRowViewModel(product: product)
-        let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
+        let rowViewModel = CollapsibleProductRowCardViewModel(id: 1,
+                                                              productOrVariationID: product.productID,
+                                                              hasParentProduct: false,
                                                               isReadOnly: false,
+                                                              imageURL: product.imageURL,
+                                                              name: product.name,
+                                                              sku: product.sku,
+                                                              price: product.price,
                                                               productTypeDescription: product.productType.description,
                                                               attributes: [],
                                                               stockStatus: product.productStockStatus,
                                                               stockQuantity: product.stockQuantity,
                                                               manageStock: product.manageStock,
-                                                              productViewModel: productViewModel,
                                                               stepperViewModel: .init(quantity: 1,
                                                                                       name: "",
                                                                                       quantityUpdatedCallback: { _ in }))
         let viewModel = CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
 
-        let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
+        let readOnlyRowViewModel = CollapsibleProductRowCardViewModel(id: 2,
+                                                                      productOrVariationID: product.productID,
+                                                                      hasParentProduct: false,
                                                                       isReadOnly: true,
+                                                                      imageURL: product.imageURL,
+                                                                      name: product.name,
+                                                                      sku: product.sku,
+                                                                      price: product.price,
                                                                       productTypeDescription: product.productType.description,
                                                                       attributes: [],
                                                                       stockStatus: product.productStockStatus,
                                                                       stockQuantity: product.stockQuantity,
                                                                       manageStock: product.manageStock,
-                                                                      productViewModel: productViewModel,
                                                                       stepperViewModel: .init(quantity: 1,
                                                                                       name: "",
                                                                                       quantityUpdatedCallback: { _ in }))
@@ -383,30 +392,37 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
         let childViewModels = [ProductRowViewModel(id: 2, product: product),
                                ProductRowViewModel(id: 3, product: product)]
             .map {
-                CollapsibleProductRowCardViewModel(hasParentProduct: true,
+                CollapsibleProductRowCardViewModel(id: $0.id,
+                                                   productOrVariationID: product.productID,
+                                                   hasParentProduct: true,
                                                    isReadOnly: false,
+                                                   imageURL: product.imageURL,
+                                                   name: product.name,
+                                                   sku: product.sku,
+                                                   price: product.price,
                                                    productTypeDescription: product.productType.description,
                                                    attributes: [],
                                                    stockStatus: product.productStockStatus,
                                                    stockQuantity: product.stockQuantity,
                                                    manageStock: product.manageStock,
-                                                   productViewModel: $0,
                                                    stepperViewModel: .init(quantity: 1,
                                                                            name: "",
                                                                            quantityUpdatedCallback: { _ in }))
             }
-        let bundleParentProductViewModel = ProductRowViewModel(id: 1,
-                                                           product: product
-            .copy(productTypeKey: ProductType.bundle.rawValue, bundledItems: [.swiftUIPreviewSample()]))
-        let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: false,
+        let bundleParentRowViewModel = CollapsibleProductRowCardViewModel(id: 4,
+                                                                          productOrVariationID: product.productID,
+                                                                          hasParentProduct: false,
                                                                           isReadOnly: false,
                                                                           isConfigurable: true,
+                                                                          imageURL: product.imageURL,
+                                                                          name: product.name,
+                                                                          sku: product.sku,
+                                                                          price: product.price,
                                                                           productTypeDescription: product.productType.description,
                                                                           attributes: [],
                                                                           stockStatus: product.productStockStatus,
                                                                           stockQuantity: product.stockQuantity,
                                                                           manageStock: product.manageStock,
-                                                                          productViewModel: bundleParentProductViewModel,
                                                                           stepperViewModel: .init(quantity: 1,
                                                                                                   name: "",
                                                                                                   quantityUpdatedCallback: { _ in }),

@@ -227,10 +227,14 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         do {
             isManageStockButtonLoading = true
             inventoryItem = try await inventoryItem.enableManageStock(stores: stores)
+            analytics.track(.inventoryUpdateEnableManageStockSuccess)
             isManageStockButtonLoading = false
             refresh()
         } catch {
             isManageStockButtonLoading = false
+            analytics.track(event: WooAnalyticsEvent(statName: .inventoryUpdateEnableManageStockFailure,
+                                                     properties: [:],
+                                                     error: error))
         }
     }
 

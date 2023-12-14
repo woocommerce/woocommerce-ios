@@ -243,9 +243,9 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .storeName),
-                                                              .init(isComplete: false, type: .addFirstProduct),
-                                                              .init(isComplete: false, type: .launchStore),
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .addFirstProduct),
+                                                              .init(isComplete: false, type: .storeName),
+                                                                                                                        .init(isComplete: false, type: .launchStore),
                                                               .init(isComplete: false, type: .customizeDomains)])
     }
 
@@ -293,8 +293,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Given
         sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
         mockLoadOnboardingTasks(result: .success([
-            .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments),
             .init(isComplete: false, type: .woocommercePayments),
@@ -601,8 +601,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     func test_it_sends_network_request_when_completedAllStoreOnboardingTasks_is_nil() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .launchStore),
             .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
@@ -633,8 +633,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            defaults: defaults,
                                            featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: false))
         let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .launchStore),
             .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)

@@ -599,12 +599,6 @@ final class EditableOrderViewModel: ObservableObject {
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let variableProduct = allProducts.first(where: { $0.productID == item.productID })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: variableProduct?.attributes ?? [])
-            let productViewModel = ProductRowViewModel(id: item.itemID,
-                                                   productVariation: variation,
-                                                   discount: passingDiscountValue,
-                                                   name: item.name,
-                                                   quantity: item.quantity,
-                                                   displayMode: .attributes(attributes))
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
                                                            name: item.name,
                                                            quantityUpdatedCallback: { [weak self] _ in
@@ -613,19 +607,21 @@ final class EditableOrderViewModel: ObservableObject {
             }, removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)
             })
-            let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
+            let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
+                                                                  productOrVariationID: variation.productVariationID,
+                                                                  hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   imageURL: variation.imageURL,
                                                                   name: item.name,
                                                                   sku: variation.sku,
                                                                   price: variation.price,
                                                                   pricedIndividually: pricedIndividually,
+                                                                  discount: passingDiscountValue,
                                                                   productTypeDescription: ProductType.variable.description,
                                                                   attributes: attributes,
                                                                   stockStatus: variation.stockStatus,
                                                                   stockQuantity: variation.stockQuantity,
                                                                   manageStock: variation.manageStock,
-                                                                  productViewModel: productViewModel,
                                                                   stepperViewModel: stepperViewModel,
                                                                   analytics: analytics)
             return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
@@ -642,10 +638,6 @@ final class EditableOrderViewModel: ObservableObject {
                                                  isReadOnly: isReadOnly,
                                                  pricedIndividually: pricedIndividually)
             }
-            let productViewModel = ProductRowViewModel(id: item.itemID,
-                                                   product: product,
-                                                   discount: passingDiscountValue,
-                                                   quantity: item.quantity)
             let stepperViewModel = ProductStepperViewModel(quantity: item.quantity,
                                                            name: item.name,
                                                            quantityUpdatedCallback: { [weak self] _ in
@@ -655,7 +647,9 @@ final class EditableOrderViewModel: ObservableObject {
                 self?.removeItemFromOrder(item)
             })
             let isProductConfigurable = product.productType == .bundle && product.bundledItems.isNotEmpty
-            let rowViewModel = CollapsibleProductRowCardViewModel(hasParentProduct: item.parent != nil,
+            let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
+                                                                  productOrVariationID: product.productID,
+                                                                  hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
                                                                   imageURL: product.imageURL,
@@ -663,12 +657,12 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   sku: product.sku,
                                                                   price: product.price,
                                                                   pricedIndividually: pricedIndividually,
+                                                                  discount: passingDiscountValue,
                                                                   productTypeDescription: product.productType.description,
                                                                   attributes: [],
                                                                   stockStatus: product.productStockStatus,
                                                                   stockQuantity: product.stockQuantity,
                                                                   manageStock: product.manageStock,
-                                                                  productViewModel: productViewModel,
                                                                   stepperViewModel: stepperViewModel,
                                                                   analytics: analytics,
                                                                   configure: { [weak self] in
@@ -1387,7 +1381,7 @@ private extension EditableOrderViewModel {
             return
         }
         // Increase quantity if exists
-        let match = productRows.first(where: { $0.productRow.productViewModel.productOrVariationID == item.itemID })
+        let match = productRows.first(where: { $0.productRow.productOrVariationID == item.itemID })
         match?.productRow.stepperViewModel.incrementQuantity()
     }
 

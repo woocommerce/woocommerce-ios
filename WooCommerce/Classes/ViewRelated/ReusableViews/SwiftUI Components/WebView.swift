@@ -28,6 +28,12 @@ struct WebView: UIViewRepresentable {
 
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
+    init(isPresented: Binding<Bool>, url: URL, previewDevice: Binding<ThemesPreviewView.PreviewDevice?> = .constant(nil)) {
+        self._isPresented = isPresented
+        self.url = url
+        self._previewDevice = previewDevice
+    }
+
     func makeCoordinator() -> WebViewCoordinator {
         WebViewCoordinator(self)
     }

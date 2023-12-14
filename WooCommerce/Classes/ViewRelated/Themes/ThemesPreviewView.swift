@@ -48,8 +48,8 @@ struct ThemesPreviewView: View {
             VStack(spacing: 0) {
                 WebView(
                     isPresented: .constant(true),
-                    previewDevice: $selectedDevice,
-                    url: URL(string: "https://woo.com")!
+                    url: URL(string: "https://woo.com")!,
+                    previewDevice: $selectedDevice
                 )
 
                 Divider()

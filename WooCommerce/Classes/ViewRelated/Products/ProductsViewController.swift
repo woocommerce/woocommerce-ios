@@ -317,18 +317,6 @@ private extension ProductsViewController {
         productSKUBarcodeScannerCoordinator.start()
     }
 
-    private func trackScannedItemSearchSuccess(_ scannedItem: SKUSearchResult) {
-        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source, 
-                                                                                                           stockManaged: scannedItem.inventoryItem.manageStock))
-    }
-
-    private func trackScannedItemSearchFailure(_ error: Error) {
-        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source, 
-                                                                                                           reason: error.localizedDescription))
-    }
-
     @objc func addProduct(_ sender: UIBarButtonItem) {
         addProduct(sourceBarButtonItem: sender, isFirstProduct: false)
     }
@@ -360,6 +348,24 @@ private extension ProductsViewController {
 
         coordinatingController.start()
         self.addProductCoordinator = coordinatingController
+    }
+}
+
+// MARK: - Analytics helpers
+//
+private extension ProductsViewController {
+    func trackScannedItemSearchSuccess(_ scannedItem: SKUSearchResult) {
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
+        let isStockManaged = scannedItem.inventoryItem.manageStock
+        let event = WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source, stockManaged: isStockManaged)
+        ServiceLocator.analytics.track(event: event)
+    }
+
+    func trackScannedItemSearchFailure(_ error: Error) {
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
+        let errorDescription = error.localizedDescription
+        let event = WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source, reason: errorDescription)
+        ServiceLocator.analytics.track(event: event)
     }
 }
 

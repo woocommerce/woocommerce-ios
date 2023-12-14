@@ -381,6 +381,64 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         }
     }
 
+    func test_when_onTapManageStock_succeeds_then_product_quick_inventory_enable_manage_stock_success_is_tracked() async throws {
+        // Given
+        let product = Product.fake().copy(siteID: siteID, manageStock: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        stores: stores,
+                                                        analytics: analytics,
+                                                        onUpdatedInventory: { _ in })
+        let expectedEvent = "product_quick_inventory_enable_manage_stock_success"
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(_, onCompletion):
+                onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        // When
+        try await viewModel.onTapManageStock()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
+    }
+
+    func test_when_onTapManageStock_fails_then_product_quick_inventory_enable_manage_stock_failure_is_tracked() async throws {
+        // Given
+        let product = Product.fake().copy(siteID: siteID, manageStock: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
+                                                        siteID: siteID,
+                                                        stores: stores,
+                                                        analytics: analytics,
+                                                        onUpdatedInventory: { _ in })
+        let expectedEvent = "product_quick_inventory_enable_manage_stock_failure"
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(_, onCompletion):
+                onCompletion(.failure(ProductUpdateError.notFoundInStorage))
+            default:
+                break
+            }
+        }
+
+        // When
+        try await viewModel.onTapManageStock()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
+    }
+
     func test_when_onViewProductDetailsButtonTapped_then_product_quick_inventory_view_product_details_tapped_is_tracked() {
         // Given
         let product = ProductVariation.fake().copy(siteID: siteID, manageStock: false)

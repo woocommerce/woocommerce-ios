@@ -15,8 +15,8 @@ struct CollapsibleProductCardPriceSummary: View {
                     .foregroundColor(.secondary)
                 Spacer()
             }
-            if let price = viewModel.priceBeforeDiscountsLabel {
-                Text(price)
+            if let subtotal = viewModel.subtotalLabel {
+                Text(subtotal)
                     .if(!viewModel.pricedIndividually) {
                         $0.foregroundColor(.secondary)
                     }
@@ -27,8 +27,8 @@ struct CollapsibleProductCardPriceSummary: View {
 
 struct CollapsibleProductCardPriceSummary_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: 2, price: "5")
-        let bundleViewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, quantity: 2, price: "0")
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: 2, priceBeforeDiscount: "5", subtotal: "10")
+        let bundleViewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, quantity: 2, priceBeforeDiscount: "0", subtotal: "0")
         CollapsibleProductCardPriceSummary(viewModel: viewModel)
             .previewDisplayName("Priced individually")
         CollapsibleProductCardPriceSummary(viewModel: bundleViewModel)

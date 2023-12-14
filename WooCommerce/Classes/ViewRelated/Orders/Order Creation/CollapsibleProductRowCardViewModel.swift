@@ -56,9 +56,17 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     ///
     let skuLabel: String
 
-    /// Product price
+    /// Product price (including discounts)
     ///
     let price: String?
+
+    /// Product subtotal (price x quantity, not including discounts)
+    ///
+    let subtotal: String
+
+    /// Product total (price x quantity, including discounts)
+    ///
+    let total: String
 
     /// Product discount
     ///
@@ -84,6 +92,8 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          name: String,
          sku: String?,
          price: String?,
+         subtotal: String,
+         total: String,
          pricedIndividually: Bool = true,
          discount: Decimal? = nil,
          productTypeDescription: String,
@@ -104,6 +114,8 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.imageURL = imageURL
         self.name = name
         self.price = price
+        self.subtotal = subtotal
+        self.total = total
         self.discount = discount
         skuLabel = CollapsibleProductRowCardViewModel.createSKULabel(sku: sku)
         productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
@@ -113,9 +125,13 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                                                            stockQuantity: stockQuantity,
                                                                                            manageStock: manageStock)
         self.stepperViewModel = stepperViewModel
+        let priceBeforeDiscount = CollapsibleProductRowCardViewModel.calculatePriceBeforeDiscount(subtotal: subtotal,
+                                                                                                  quantity: stepperViewModel.quantity,
+                                                                                                  currencyFormatter: currencyFormatter) ?? price
         self.priceSummaryViewModel = .init(pricedIndividually: pricedIndividually,
                                            quantity: stepperViewModel.quantity,
-                                           price: price)
+                                           priceBeforeDiscount: priceBeforeDiscount,
+                                           subtotal: subtotal)
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
 
@@ -147,6 +163,8 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                   name: orderItem.name,
                   sku: orderItem.sku,
                   price: orderItem.price.description,
+                  subtotal: orderItem.subtotal,
+                  total: orderItem.total,
                   pricedIndividually: pricedIndividually,
                   discount: discount,
                   productTypeDescription: product.productType.description,
@@ -187,6 +205,8 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                   name: orderItem.name,
                   sku: orderItem.sku,
                   price: orderItem.price.description,
+                  subtotal: orderItem.subtotal,
+                  total: orderItem.total,
                   pricedIndividually: pricedIndividually,
                   discount: discount,
                   productTypeDescription: ProductType.variable.description,
@@ -210,18 +230,11 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 }
 
 extension CollapsibleProductRowCardViewModel {
-    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
-    /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
+    /// Formatted total price label including discounts, if any.
+    /// e.g: If price before discounts is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///
     var totalPriceAfterDiscountLabel: String? {
-        guard let price,
-              let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
-        }
-        let subtotalDecimal = priceDecimal.multiplying(by: stepperViewModel.quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
-
-        return currencyFormatter.formatAmount(totalPriceAfterDiscount)
+        currencyFormatter.formatAmount(total)
     }
 
     /// Formatted discount label for an individual product
@@ -277,6 +290,20 @@ private extension CollapsibleProductRowCardViewModel {
             return ""
         }
         return String.localizedStringWithFormat(Localization.skuFormat, sku)
+    }
+
+    /// Calculates the price before discount.
+    ///
+    /// - Parameters:
+    ///   - subtotal: Total price for the item x quantity, without discount
+    ///   - quantity: Item quantity
+    ///   - discount: Total discount (all items)
+    ///   - currencyFormatter: Currency formatter
+    static func calculatePriceBeforeDiscount(subtotal: String, quantity: Decimal, currencyFormatter: CurrencyFormatter) -> String? {
+        guard let decimalSubtotal = currencyFormatter.convertToDecimal(subtotal) else {
+            return nil
+        }
+        return decimalSubtotal.dividing(by: quantity as NSDecimalNumber).description
     }
 }
 

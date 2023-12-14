@@ -10,9 +10,13 @@ final class CollapsibleProductCardPriceSummaryViewModel {
     ///
     let pricedIndividually: Bool
 
-    /// Unformatted product price
+    /// Unformatted product price (not including discounts)
     ///
-    private let price: String?
+    private let priceBeforeDiscount: String?
+
+    /// Unformatted product subtotal (price x quantity, not including discounts)
+    ///
+    private let subtotal: String
 
     /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
@@ -22,11 +26,13 @@ final class CollapsibleProductCardPriceSummaryViewModel {
 
     init(pricedIndividually: Bool,
          quantity: Decimal,
-         price: String?,
+         priceBeforeDiscount: String?,
+         subtotal: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.pricedIndividually = pricedIndividually
         self.quantity = quantity
-        self.price = pricedIndividually ? price : "0"
+        self.priceBeforeDiscount = pricedIndividually ? priceBeforeDiscount : "0"
+        self.subtotal = pricedIndividually ? subtotal : "0"
         self.currencyFormatter = currencyFormatter
     }
 }
@@ -38,8 +44,7 @@ extension CollapsibleProductCardPriceSummaryViewModel {
     var priceQuantityLine: String {
         let formattedQuantity = quantity.formatted()
         let formattedPrice = {
-            guard let price = pricedIndividually ? price : "0",
-                    let formattedPrice = currencyFormatter.formatAmount(price) else {
+            guard let priceBeforeDiscount, let formattedPrice = currencyFormatter.formatAmount(priceBeforeDiscount) else {
                 return "-"
             }
             return formattedPrice
@@ -49,12 +54,8 @@ extension CollapsibleProductCardPriceSummaryViewModel {
 
     /// Formatted price label from multiplying product's price and quantity.
     ///
-    var priceBeforeDiscountsLabel: String? {
-        guard let price = pricedIndividually ? price : "0" else {
-            return nil
-        }
-        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
-        return currencyFormatter.formatAmount(productSubtotal)
+    var subtotalLabel: String? {
+        currencyFormatter.formatAmount(subtotal)
     }
 }
 

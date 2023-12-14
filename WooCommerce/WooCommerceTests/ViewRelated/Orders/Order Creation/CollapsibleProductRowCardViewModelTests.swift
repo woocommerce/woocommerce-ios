@@ -34,7 +34,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                           stockStatusKey: ProductStockStatus.inStock.description,
                                           images: [.fake().copy(src: "https://woo.com/woo.jpg")],
                                           bundledItems: [.fake()])
-        let orderItem = OrderItem.fake().copy(itemID: 1, name: "Order Item", quantity: 2, price: 5, sku: "sku", subtotal: "5", total: "4", parent: 2)
+        let orderItem = OrderItem.fake().copy(itemID: 1, name: "Order Item", quantity: 2, price: 4, sku: "sku", subtotal: "10", total: "8", parent: 2)
 
         // When
         let discount: Decimal = 1
@@ -44,7 +44,8 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                                               pricedIndividually: true,
                                                               discount: discount,
                                                               quantityUpdatedCallback: { _ in },
-                                                              configure: {})
+                                                              configure: {},
+                                                              currencyFormatter: CurrencyFormatter(currencySettings: CurrencySettings()))
 
         // Then
         XCTAssertFalse(rowViewModel.isReadOnly)
@@ -56,6 +57,8 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         assertEqual(orderItem.name, rowViewModel.name)
         XCTAssertTrue(rowViewModel.skuLabel.contains(try XCTUnwrap(orderItem.sku)))
         assertEqual(orderItem.price.description, rowViewModel.price)
+        assertEqual(orderItem.subtotal, rowViewModel.subtotal)
+        assertEqual(orderItem.total, rowViewModel.total)
         assertEqual(orderItem.quantity, rowViewModel.stepperViewModel.quantity)
         XCTAssertTrue(rowViewModel.hasParentProduct)
 
@@ -108,20 +111,30 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertFalse(rowViewModel.isConfigurable)
     }
 
-    func test_view_model_updates_price_label_when_quantity_changes() throws {
+    func test_viewModel_creates_expected_priceSummaryViewModel() {
         // Given
-        let price = "2.50"
-        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
+        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue,
+                                          stockStatusKey: ProductStockStatus.inStock.description,
+                                          images: [.fake().copy(src: "https://woo.com/woo.jpg")],
+                                          bundledItems: [.fake()])
+        let orderItem = OrderItem.fake().copy(itemID: 1, name: "Order Item", quantity: 2, price: 4, sku: "sku", subtotal: "10", total: "8", parent: 2)
 
         // When
-        let viewModel = createViewModel(price: price, currencyFormatter: currencyFormatter)
-        viewModel.stepperViewModel.incrementQuantity()
+        let discount: Decimal = 1
+        let rowViewModel = CollapsibleProductRowCardViewModel(orderItem: orderItem,
+                                                              product: product,
+                                                              isReadOnly: false,
+                                                              pricedIndividually: true,
+                                                              discount: discount,
+                                                              quantityUpdatedCallback: { _ in },
+                                                              configure: {},
+                                                              currencyFormatter: CurrencyFormatter(currencySettings: CurrencySettings()))
 
         // Then
-        let expectedPriceLabel = "$5.00"
-        let actualPriceLabel = try XCTUnwrap(viewModel.priceSummaryViewModel.priceBeforeDiscountsLabel)
-        XCTAssertTrue(actualPriceLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(actualPriceLabel)\"")
+        let expectedPriceBeforeDiscount = "5" // Subtotal divided by the quantity
+        XCTAssertTrue(rowViewModel.priceSummaryViewModel.priceQuantityLine.contains(expectedPriceBeforeDiscount))
+        assertEqual(orderItem.quantity, rowViewModel.priceSummaryViewModel.quantity)
+        XCTAssertTrue(try XCTUnwrap(rowViewModel.priceSummaryViewModel.subtotalLabel).contains(orderItem.subtotal))
     }
 
     func test_isReadOnly_and_hasParentProduct_are_false_by_default() {
@@ -132,6 +145,8 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                                            name: "",
                                                            sku: nil,
                                                            price: nil,
+                                                           subtotal: "",
+                                                           total: "",
                                                            productTypeDescription: "",
                                                            attributes: [],
                                                            stockStatus: .inStock,
@@ -217,33 +232,15 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     // MARK: - `totalPriceAfterDiscountLabel`
 
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+    func test_totalPriceAfterDiscountLabel_returns_properly_formatted_price() {
         // Given
-        let price = "2.50"
-        let discount: Decimal = 0.50
+        let total = "2.50"
 
         // When
-        let viewModel = createViewModel(price: price, discount: discount)
+        let viewModel = createViewModel(total: total)
 
         // Then
-        assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
-    }
-
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
-        // Given
-        let price = "2.50"
-        let quantity: Decimal = 10
-        let discount: Decimal = 0.50
-
-        // When
-        let viewModel = createViewModel(price: price,
-                                        discount: discount,
-                                        stepperViewModel: .init(quantity: quantity,
-                                                                name: "",
-                                                                quantityUpdatedCallback: { _ in }))
-
-        // Then
-        assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
+        assertEqual("$2.50", viewModel.totalPriceAfterDiscountLabel)
     }
 
     // MARK: - `isConfigurable`
@@ -371,6 +368,8 @@ private extension CollapsibleProductRowCardViewModelTests {
                          name: String = "",
                          sku: String? = nil,
                          price: String? = nil,
+                         subtotal: String = "",
+                         total: String = "",
                          discount: Decimal? = nil,
                          productTypeDescription: String = "",
                          attributes: [VariationAttributeViewModel] = [],
@@ -390,6 +389,8 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            name: name,
                                            sku: sku,
                                            price: price,
+                                           subtotal: subtotal,
+                                           total: total,
                                            discount: discount,
                                            productTypeDescription: productTypeDescription,
                                            attributes: attributes,

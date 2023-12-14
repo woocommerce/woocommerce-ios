@@ -5,11 +5,15 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
 
     func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine() {
         // Given
+        let subtotal = "85.68"
         let price = "10.71"
         let quantity: Decimal = 8
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: quantity, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true,
+                                                                    quantity: quantity,
+                                                                    priceBeforeDiscount: price,
+                                                                    subtotal: subtotal)
 
         // Then
         assertEqual("8 × $10.71", viewModel.priceQuantityLine)
@@ -17,11 +21,15 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
 
     func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine_for_product_not_pricedIndividually() {
         // Given
+        let subtotal = "85.68"
         let price = "10.71"
         let quantity: Decimal = 8
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, quantity: quantity, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false,
+                                                                    quantity: quantity,
+                                                                    priceBeforeDiscount: price,
+                                                                    subtotal: subtotal)
 
         // Then
         assertEqual("8 × $0.00", viewModel.priceQuantityLine)
@@ -32,44 +40,48 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         let quantity: Decimal = 8
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: quantity, price: nil)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: quantity, priceBeforeDiscount: nil, subtotal: "")
 
         // Then
         assertEqual("8 × -", viewModel.priceQuantityLine)
     }
 
-    func test_priceBeforeDiscountsLabel_multiplies_price_by_quantity() {
+    func test_subtotalLabel_shows_expected_subtotal() {
         // Given
-        let price = "10.71"
+        let subtotal = "85.68"
+        let price = "11"
         let quantity: Decimal = 8
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: quantity, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true,
+                                                                    quantity: quantity,
+                                                                    priceBeforeDiscount: price,
+                                                                    subtotal: subtotal)
 
         // Then
-        assertEqual("$85.68", viewModel.priceBeforeDiscountsLabel)
+        assertEqual("$85.68", viewModel.subtotalLabel)
     }
 
-    func test_priceBeforeDiscountsLabel_returns_expected_price_when_pricedIndividually_is_true() {
+    func test_subtotalLabel_returns_expected_subtotal_when_pricedIndividually_is_true() {
         // Given
-        let price = "10.71"
+        let subtotal = "10.71"
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: 1, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: 1, priceBeforeDiscount: nil, subtotal: subtotal)
 
         // Then
-        assertEqual("$10.71", viewModel.priceBeforeDiscountsLabel)
+        assertEqual("$10.71", viewModel.subtotalLabel)
     }
 
-    func test_priceBeforeDiscountsLabel_returns_expected_price_when_pricedIndividually_is_false() {
+    func test_subtotalLabel_returns_expected_subtotal_when_pricedIndividually_is_false() {
         // Given
-        let price = "10.71"
+        let subtotal = "10.71"
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, quantity: 1, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, quantity: 1, priceBeforeDiscount: nil, subtotal: subtotal)
 
         // Then
-        assertEqual("$0.00", viewModel.priceBeforeDiscountsLabel)
+        assertEqual("$0.00", viewModel.subtotalLabel)
     }
 
 }

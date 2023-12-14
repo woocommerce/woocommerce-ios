@@ -319,12 +319,14 @@ private extension ProductsViewController {
 
     private func trackScannedItemSearchSuccess(_ scannedItem: SKUSearchResult) {
         let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source, stockManaged: scannedItem.inventoryItem.manageStock))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source, 
+                                                                                                           stockManaged: scannedItem.inventoryItem.manageStock))
     }
 
     private func trackScannedItemSearchFailure(_ error: Error) {
         let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source, reason: error.localizedDescription))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source, 
+                                                                                                           reason: error.localizedDescription))
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {

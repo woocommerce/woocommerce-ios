@@ -1470,6 +1470,7 @@
 		86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */; };
 		8602BC9F2B19AE48001EDF20 /* ProfilerThemesPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */; };
 		860B85F12ADE3A0E00E85884 /* BulletPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860B85F02ADE3A0E00E85884 /* BulletPointView.swift */; };
+		863012A72B288F60004EC9DC /* ThemesPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863012A62B288F60004EC9DC /* ThemesPreviewView.swift */; };
 		864213022AE77C730036E5A6 /* UIImage+Resizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864213012AE77C730036E5A6 /* UIImage+Resizing.swift */; };
 		86558EA82AD91B7800E10EDF /* BlazeCampaignIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86558EA72AD91B7800E10EDF /* BlazeCampaignIntroView.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
@@ -4048,6 +4049,7 @@
 		86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesCarouselView.swift; sourceTree = "<group>"; };
 		8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilerThemesPickerView.swift; sourceTree = "<group>"; };
 		860B85F02ADE3A0E00E85884 /* BulletPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletPointView.swift; sourceTree = "<group>"; };
+		863012A62B288F60004EC9DC /* ThemesPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewView.swift; sourceTree = "<group>"; };
 		864213012AE77C730036E5A6 /* UIImage+Resizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resizing.swift"; sourceTree = "<group>"; };
 		86558EA72AD91B7800E10EDF /* BlazeCampaignIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignIntroView.swift; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -8496,6 +8498,7 @@
 				86023FA92B15CAD800A28F07 /* ThemesEligibilityUseCase.swift */,
 				86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */,
 				8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */,
+				863012A62B288F60004EC9DC /* ThemesPreviewView.swift */,
 			);
 			path = Themes;
 			sourceTree = "<group>";
@@ -12818,6 +12821,7 @@
 				45DB6D972632CF9300E83C1A /* ActivityIndicator.swift in Sources */,
 				5778E00624DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift in Sources */,
 				2647F7B529280A7F00D59FDF /* AnalyticsHubView.swift in Sources */,
+				863012A72B288F60004EC9DC /* ThemesPreviewView.swift in Sources */,
 				453A908325EFC9B2006EE892 /* ShippingLabelSuggestedAddressTopBannerFactory.swift in Sources */,
 				45BBE5C7268CBB090017D8F8 /* ShippingLabelStateOfACountryListSelectorCommand.swift in Sources */,
 				456396A725C81C9A001F1A26 /* ShippingLabelFormViewController.swift in Sources */,

@@ -69,7 +69,7 @@ private extension DefaultThemeInstaller {
                         DDLogInfo("Theme already installed.")
                         continuation.resume()
                     } else {
-                        DDLogError("Theme installation failed: \(error)")
+                        DDLogError("⛔️ Theme installation failed: \(error)")
                         continuation.resume(throwing: error)
                     }
                 }
@@ -86,7 +86,7 @@ private extension DefaultThemeInstaller {
                 case .success:
                     continuation.resume()
                 case .failure(let error):
-                    DDLogError("Theme activation failed: \(error)")
+                    DDLogError("⛔️ Theme activation failed: \(error)")
                     continuation.resume(throwing: error)
                 }
             })

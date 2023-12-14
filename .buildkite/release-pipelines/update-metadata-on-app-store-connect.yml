@@ -15,7 +15,7 @@ common_params:
     IMAGE_ID: xcode-14.3.1
 
 steps:
-  - label: "Start Code Freeze"
+  - label: "Update Metadata on App Store Connect"
     plugins: *common_plugins
     env: *common_env
     command: |

@@ -34,19 +34,19 @@ struct DefaultThemeInstaller: ThemeInstallerProtocol {
     ///   - themeID: ID of the theme to be installed and activated
     ///   - siteID: site ID to install and activate the theme
     func scheduleThemeInstall(themeID: String, siteID: Int64) {
-        userDefaults.setThemeID(themeID: themeID, for: siteID)
+        userDefaults.setPendingThemeID(themeID: themeID, for: siteID)
     }
 
     /// Installs any pending theme for the given site ID
     /// - Parameter siteID: site ID to install and activate the theme
     func installPendingTheme(siteID: Int64) async throws {
-        guard let themeID = userDefaults.themeID(for: siteID) else {
+        guard let themeID = userDefaults.pendingThemeID(for: siteID) else {
             return DDLogInfo("No pending theme installation.")
         }
 
         DDLogInfo("Attempt to perform pending theme installation. Theme ID: \(themeID), Site ID : \(siteID)")
         try await installAndActivateTheme(themeID: themeID, siteID: siteID)
-        userDefaults.removeThemeID(for: siteID)
+        userDefaults.removePendingThemeID(for: siteID)
     }
 }
 
@@ -96,10 +96,10 @@ private extension DefaultThemeInstaller {
 
 // MARK: - DefaultThemeInstaller helpers
 //
-extension UserDefaults {
+private extension UserDefaults {
     /// Returns theme ID to be installed for the store
     ///
-    func themeID(for siteID: Int64) -> String? {
+    func pendingThemeID(for siteID: Int64) -> String? {
         let themesPendingInstall = self[.themesPendingInstall] as? [String: String]
         let idAsString = "\(siteID)"
         return themesPendingInstall?[idAsString]
@@ -107,8 +107,8 @@ extension UserDefaults {
 
     /// Saves theme ID for installation
     ///
-    func setThemeID(themeID: String,
-                    for siteID: Int64) {
+    func setPendingThemeID(themeID: String,
+                           for siteID: Int64) {
         let idAsString = "\(siteID)"
         if var themesPendingInstallDictionary = self[.themesPendingInstall] as? [String: String] {
             themesPendingInstallDictionary[idAsString] = themeID
@@ -118,7 +118,7 @@ extension UserDefaults {
         }
     }
 
-    func removeThemeID(for siteID: Int64) {
+    func removePendingThemeID(for siteID: Int64) {
         let idAsString = "\(siteID)"
         if var themesPendingInstallDictionary = self[.themesPendingInstall] as? [String: String] {
             themesPendingInstallDictionary[idAsString] = nil

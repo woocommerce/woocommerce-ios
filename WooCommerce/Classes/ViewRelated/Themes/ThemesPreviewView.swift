@@ -41,13 +41,14 @@ struct ThemesPreviewView: View {
         }
     }
 
-    @State var selectedOption: PreviewDevice = PreviewDevice.default
+    @State var selectedDevice: PreviewDevice? = PreviewDevice.default
 
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
                 WebView(
                     isPresented: .constant(true),
+                    previewDevice: $selectedDevice,
                     url: URL(string: "https://woo.com")!
                 )
 
@@ -74,8 +75,17 @@ struct ThemesPreviewView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         Text(Localization.menuMobile)
+                            .onTapGesture {
+                                self.selectedDevice = .mobile
+                            }
                         Text(Localization.menuTablet)
+                            .onTapGesture {
+                                self.selectedDevice = .tablet
+                            }
                         Text(Localization.menuDesktop)
+                            .onTapGesture {
+                                self.selectedDevice = .desktop
+                            }
                     } label: {
                         Image(systemName: "macbook.and.iphone")
                             .secondaryBodyStyle()

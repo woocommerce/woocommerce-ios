@@ -14,6 +14,8 @@ struct WebView: UIViewRepresentable {
         }
     }
 
+    @Binding var previewDevice: ThemesPreviewView.PreviewDevice?
+
     let url: URL
 
     /// Optional URL or part of URL to trigger exit
@@ -40,7 +42,9 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-
+        if let device = previewDevice {
+            uiView.evaluateJavaScript(device.viewportScript)
+        }
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {

@@ -258,6 +258,8 @@ platform :ios do
     UI.important("Completing code freeze for: #{release_version_current}")
     UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
 
+    update_app_store_strings
+
     generate_strings_file_for_glotpress
 
     push_to_git_remote(tags: false)

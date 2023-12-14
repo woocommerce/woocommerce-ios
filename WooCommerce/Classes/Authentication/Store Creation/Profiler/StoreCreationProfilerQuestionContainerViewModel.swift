@@ -63,13 +63,13 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void,
          uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol,
-         themeInstaller: ThemeInstallerProtocol? = nil) {
+         themeInstaller: ThemeInstallerProtocol = DefaultThemeInstaller()) {
         self.siteID = siteID
         self.storeName = storeName
         self.analytics = analytics
         self.completionHandler = onCompletion
         self.uploadAnswersUseCase = uploadAnswersUseCase
-        self.themeInstaller = themeInstaller ?? DefaultThemeInstaller()
+        self.themeInstaller = themeInstaller
         self.themesCarouselViewModel = .init(mode: .storeCreationProfiler, stores: stores)
     }
 

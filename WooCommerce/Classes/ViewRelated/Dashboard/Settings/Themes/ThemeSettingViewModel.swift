@@ -17,11 +17,11 @@ final class ThemeSettingViewModel: ObservableObject {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         themeInstaller: ThemeInstallerProtocol? = nil) {
+         themeInstaller: ThemeInstallerProtocol = DefaultThemeInstaller()) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
-        self.themeInstaller = themeInstaller ?? DefaultThemeInstaller()
+        self.themeInstaller = themeInstaller
         self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
     }
 

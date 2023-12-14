@@ -1,8 +1,49 @@
 import SwiftUI
 
 struct ThemesPreviewView: View {
-    var body: some View {
+    enum PreviewDevice: String, CaseIterable {
+        case desktop = "desktop"
+        case tablet = "tablet"
+        case mobile = "mobile"
 
+        static var `default`: PreviewDevice {
+            return UIDevice.current.userInterfaceIdiom == .pad ? .tablet : .mobile
+        }
+
+        var width: CGFloat {
+            switch self {
+            case .desktop:
+                return 1200
+            case .tablet:
+                return 800
+            case .mobile:
+                return 400
+            }
+        }
+
+        static var available: [PreviewDevice] {
+            return [.mobile, .tablet, .desktop]
+        }
+
+        var viewportScript: String {
+            let js = """
+            // remove all existing viewport meta tags - some themes included multiple, which is invalid
+            document.querySelectorAll("meta[name=viewport]").forEach( e => e.remove() );
+            // create our new meta element
+            const viewportMeta = document.createElement("meta");
+            viewportMeta.name = "viewport";
+            viewportMeta.content = "width=%1$d";
+            // insert the correct viewport meta tag
+            document.getElementsByTagName("head")[0].append(viewportMeta);
+            """
+
+            return String(format: js, NSInteger(width))
+        }
+    }
+
+    @State var selectedOption: PreviewDevice = PreviewDevice.default
+
+    var body: some View {
         NavigationView {
             VStack(spacing: 0) {
                 WebView(

@@ -243,10 +243,12 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .addFirstProduct),
-                                                              .init(isComplete: false, type: .storeName),
-                                                                                                                        .init(isComplete: false, type: .launchStore),
-                                                              .init(isComplete: false, type: .customizeDomains)])
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .storeName),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains)
+        ])
     }
 
     func test_launch_store_task_is_marked_as_complete_for_already_public_store() async throws {

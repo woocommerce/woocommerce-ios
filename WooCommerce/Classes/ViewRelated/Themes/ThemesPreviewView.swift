@@ -74,14 +74,32 @@ struct ThemesPreviewView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        Button(Localization.menuMobile) {
+                        Button {
                             self.selectedDevice = .mobile
+
+                        } label: {
+                            Text(Localization.menuMobile)
+                            if self.selectedDevice == .mobile {
+                                Image(systemName: "checkmark")
+                            }
                         }
-                        Button(Localization.menuTablet) {
+                        Button {
                             self.selectedDevice = .tablet
+
+                        } label: {
+                            Text(Localization.menuTablet)
+                            if self.selectedDevice == .tablet {
+                                Image(systemName: "checkmark")
+                            }
                         }
-                        Button(Localization.menuDesktop) {
+                        Button {
                             self.selectedDevice = .desktop
+
+                        } label: {
+                            Text(Localization.menuDesktop)
+                            if self.selectedDevice == .desktop {
+                                Image(systemName: "checkmark")
+                            }
                         }
                     } label: {
                         Image(systemName: "macbook.and.iphone")

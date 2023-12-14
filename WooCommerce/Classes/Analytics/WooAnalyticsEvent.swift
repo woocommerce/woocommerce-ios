@@ -2821,9 +2821,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
         }
 
-        static func barcodeScanningFailure(from source: BarcodeScanning.Source, reason: BarcodeScanningFailureReason? = nil) -> WooAnalyticsEvent {
+        static func barcodeScanningFailure(from source: BarcodeScanning.Source, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
-                                                                              Keys.reason: reason?.rawValue ?? ""])
+                                                                              Keys.reason: reason.rawValue])
         }
 
         static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {

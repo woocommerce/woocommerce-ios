@@ -303,11 +303,9 @@ private extension ProductsViewController {
                         let noticeMessage = String.localizedStringWithFormat(Localization.updateInventoryNotice, newQuantity)
                         self.presentNotice(title: noticeMessage)
                     })), animated: true)
-                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue,
-                                                                                                                       stockManaged: scannedItem.inventoryItem.manageStock))
+                    self.trackScannedItemSearchSuccess(scannedItem)
                 } catch {
-                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .scanToUpdateInventory))
-                    DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
+                    self.trackScannedItemSearchFailure(error)
                 }
             }
 
@@ -317,6 +315,16 @@ private extension ProductsViewController {
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
+    }
+
+    private func trackScannedItemSearchSuccess(_ scannedItem: SKUSearchResult) {
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source, stockManaged: scannedItem.inventoryItem.manageStock))
+    }
+
+    private func trackScannedItemSearchFailure(_ error: Error) {
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source, reason: error.localizedDescription))
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {

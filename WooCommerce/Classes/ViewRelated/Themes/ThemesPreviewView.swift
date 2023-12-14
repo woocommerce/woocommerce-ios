@@ -48,7 +48,7 @@ struct ThemesPreviewView: View {
             VStack(spacing: 0) {
                 WebView(
                     isPresented: .constant(true),
-                    url: URL(string: "https://woo.com")!,
+                    url: URL(string: "https://tsubakidemo.wpcomstaging.com/")!,
                     previewDevice: $selectedDevice
                 )
 

@@ -61,11 +61,10 @@ struct ThemesPreviewView: View {
                         /* todo */
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .padding(Layout.startButtonPadding)
 
                     Text(String(format: Localization.themeName, "Tsubaki"))
                         .secondaryBodyStyle()
-                }
+                }.padding(Layout.footerPadding)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -116,8 +115,7 @@ private extension ThemesPreviewView {
     private enum Layout {
         static let toolbarPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
-        static let startButtonPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 0, trailing: 16)
-        static let themeLabelSpacing: CGFloat = 16
+        static let footerPadding: CGFloat = 16
     }
 
     private enum Localization {

@@ -339,46 +339,60 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
 
     func test_when_onTapIncreaseStockQuantityOnce_then_product_quick_inventory_update_increment_quantity_tapped_is_tracked() async throws {
         // Given
-        let product = ProductVariation.fake().copy(siteID: siteID, manageStock: false)
+        let product = Product.fake().copy(siteID: siteID, manageStock: false)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let expectedEvent = "product_quick_inventory_update_increment_quantity_tapped"
 
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(_, onCompletion):
+                onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
         let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
                                                         siteID: siteID,
                                                         stores: stores,
                                                         analytics: analytics,
                                                         onUpdatedInventory: { _ in })
         // When
-        Task {
-            try await viewModel.onTapIncreaseStockQuantityOnce()
+        try await viewModel.onTapIncreaseStockQuantityOnce()
 
-            // Then
-            XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
-        }
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
     }
 
     func test_when_onTapUpdateStockQuantity_then_product_quick_inventory_update_manual_quantity_update_tapped_is_tracked() async throws {
         // Given
-        let product = ProductVariation.fake().copy(siteID: siteID, manageStock: false)
+        let product = Product.fake().copy(siteID: siteID, manageStock: false)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let expectedEvent = "product_quick_inventory_update_manual_quantity_update_tapped"
 
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(_, onCompletion):
+                onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
         let viewModel = UpdateProductInventoryViewModel(inventoryItem: product,
                                                         siteID: siteID,
                                                         stores: stores,
                                                         analytics: analytics,
                                                         onUpdatedInventory: { _ in })
         // When
-        Task {
-            try await viewModel.onTapUpdateStockQuantity()
+        try await viewModel.onTapUpdateStockQuantity()
 
-            // Then
-            XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
-        }
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
     }
 
     func test_when_onTapManageStock_succeeds_then_product_quick_inventory_enable_manage_stock_success_is_tracked() async throws {

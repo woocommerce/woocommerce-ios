@@ -6,7 +6,7 @@ struct ThemesPreviewView: View {
         case tablet = "tablet"
         case mobile = "mobile"
 
-        static var `default`: PreviewDevice {
+        static var defaultDevice: PreviewDevice {
             return UIDevice.current.userInterfaceIdiom == .pad ? .tablet : .mobile
         }
 
@@ -41,7 +41,7 @@ struct ThemesPreviewView: View {
         }
     }
 
-    @State var selectedDevice: PreviewDevice? = PreviewDevice.default
+    @State var selectedDevice: PreviewDevice? = PreviewDevice.defaultDevice
 
     var body: some View {
         NavigationView {

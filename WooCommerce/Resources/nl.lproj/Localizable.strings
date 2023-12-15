@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-12-08 20:51:11+0000 */
+/* Translation-Revision-Date: 2023-12-13 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "Vanuit WordPress-mediabibliotheek";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "Vanuit apparaat";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Van aankoop tot afhandeling: beheer het hele bestelproces via de app.";
 
@@ -5052,9 +5049,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "Nog geen bestanden";
-
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "Nog geen afbeeldingen";
 
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "Geen limiet";
@@ -9818,6 +9812,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Pictogram";
 
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "Gekopieerd naar klembord.";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "Nummer kopiëren";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Blaze verbergen";
 
@@ -9959,6 +9959,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.unknown.title" = "Onbekend";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "Document op apparaat";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "Media op apparaat";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
@@ -10116,6 +10122,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for the percentage option in the custom amounts option sheet. */
 "orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "Of voer het percentage van het ordertotaal in";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "Gereed";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Aangepaste bedragen";
 
@@ -10161,11 +10170,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Variabel productabonnement";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "Fout bij uploaden van bestand. Probeer het nog eens.";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "Het geselecteerde bestandstype wordt niet ondersteund.";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "elke %1$@";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promoten met Blaze";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "Wacht tot alles is geüpload voordat je de volgorde van de afbeeldingen wijzigt.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Factuurinterval";
@@ -10312,6 +10330,21 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "%1$@ over betalingen accepteren met Tap to Pay op iPhone.";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "Annuleren";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "Huidig";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "Thema";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "Thema’s";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "Probeer een andere nieuwe look";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "Onbekend";
 
@@ -10356,6 +10389,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, producten, categorieën, nieuw product, producten zoeken.";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Media laden …";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Gebruik een beveiligingssleutel";

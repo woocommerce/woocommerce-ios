@@ -60,7 +60,7 @@ struct ThemesCarouselView: View {
         }
         .sheet(isPresented: $isShowingThemesPreview) {
             if let theme = selectedTheme {
-                ThemesPreviewView(theme: theme)
+                ThemesPreviewView(theme: theme, onStart: { /* todo install theme */ } )
             }
         }
     }

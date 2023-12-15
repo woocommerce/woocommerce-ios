@@ -361,13 +361,6 @@ private extension ProductsViewController {
 // MARK: - Analytics helpers
 //
 private extension ProductsViewController {
-    func trackScannedItemSearchSuccess(_ scannedItem: SKUSearchResult) {
-        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
-        let isStockManaged = scannedItem.inventoryItem.manageStock
-        let event = WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: source, stockManaged: isStockManaged)
-        ServiceLocator.analytics.track(event: event)
-    }
-
     func trackScannedItemSearchFailure(_ error: Error) {
         let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
         let errorDescription = error.localizedDescription

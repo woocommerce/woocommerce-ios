@@ -668,6 +668,24 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    func test_loadProductIDs_removes_status_parameter_when_empty() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-ids-only")
+
+        // When
+        waitForExpectation { expectation in
+            remote.loadProductIDs(for: sampleSiteID) { result in
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        let emptyParam = "status="
+        XCTAssertFalse(queryParameters.contains(emptyParam), "Unexpected empty query param: \(emptyParam)")
+    }
+
     func test_create_template_product_returns_product_id() throws {
         // Given
         let remote = ProductsRemote(network: network)

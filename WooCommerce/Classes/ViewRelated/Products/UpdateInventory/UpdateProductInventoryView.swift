@@ -89,7 +89,11 @@ struct UpdateProductInventoryView: View {
 
                         Button(Localization.manageStockButtonTitle) {
                             Task { @MainActor in
-                                try? await viewModel.onTapManageStock()
+                                do {
+                                    try await viewModel.onTapManageStock()
+                                } catch {
+                                    displayErrorNotice(viewModel.name, error)
+                                }
                             }
                         }
                         .buttonStyle(LinkLoadingButtonStyle(isLoading: viewModel.isManageStockButtonLoading))

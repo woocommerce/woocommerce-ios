@@ -235,6 +235,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
             analytics.track(event: WooAnalyticsEvent(statName: .inventoryUpdateEnableManageStockFailure,
                                                      properties: [:],
                                                      error: error))
+            throw UpdateInventoryError.generic
         }
     }
 

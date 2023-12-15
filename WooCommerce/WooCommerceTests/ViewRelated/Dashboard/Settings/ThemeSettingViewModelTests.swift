@@ -61,4 +61,17 @@ final class ThemeSettingViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.currentThemeName, "tsubaki")
     }
+
+    func test_it_triggers_pending_theme_installation_upon_initialization() async {
+        // Given
+        let themeInstaller = MockThemeInstaller()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        _ = ThemeSettingViewModel(siteID: 123,
+                                  stores: stores,
+                                  themeInstaller: themeInstaller)
+        // Then
+        waitUntil {
+            themeInstaller.installPendingThemeCalled == true
+        }
+    }
 }

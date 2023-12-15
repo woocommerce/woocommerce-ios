@@ -52,6 +52,9 @@ extension UserDefaults {
         // Product Creation AI
         case numberOfTimesAIProductCreated
         case didSuggestProductCreationAISurvey
+
+        // Theme installation
+        case themesPendingInstall
     }
 }
 

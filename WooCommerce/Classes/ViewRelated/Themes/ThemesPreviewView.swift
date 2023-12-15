@@ -14,6 +14,18 @@ struct ThemesPreviewView: View {
         case tablet
         case desktop
 
+
+        var menuTitle: String {
+            switch self {
+            case .desktop:
+                return ThemesPreviewView.Localization.menuDesktop
+            case .tablet:
+                return ThemesPreviewView.Localization.menuTablet
+            case .mobile:
+                return ThemesPreviewView.Localization.menuMobile
+            }
+        }
+
         /// The initial layout used as preview.
         static var defaultDevice: PreviewDevice {
             return UIDevice.current.userInterfaceIdiom == .pad ? .tablet : .mobile
@@ -113,7 +125,7 @@ struct ThemesPreviewView: View {
         Button {
             self.selectedDevice = device
         } label: {
-            Text(Localization.getMenuTitle(for: device))
+            Text(device.menuTitle)
             if self.selectedDevice == device {
                 Image(systemName: "checkmark")
             }
@@ -155,17 +167,6 @@ private extension ThemesPreviewView {
             value: "Theme: %@",
             comment: "Name of the theme being previewed."
         )
-
-        static func getMenuTitle(for device: PreviewDevice) -> String {
-            switch device {
-            case .desktop:
-                return menuDesktop
-            case .tablet:
-                return menuTablet
-            case .mobile:
-                return menuMobile
-            }
-        }
     }
 }
 

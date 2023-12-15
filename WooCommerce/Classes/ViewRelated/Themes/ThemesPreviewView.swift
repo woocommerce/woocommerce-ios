@@ -76,9 +76,7 @@ struct ThemesPreviewView: View {
                     .foregroundColor(Color(.divider))
 
                 VStack {
-                    Button(Localization.startWithThemeButton) {
-                        /* todo */
-                    }
+                    Button(Localization.startWithThemeButton, action: onStart)
                     .buttonStyle(PrimaryButtonStyle())
 
                     Text(String(format: Localization.themeName, theme.name))

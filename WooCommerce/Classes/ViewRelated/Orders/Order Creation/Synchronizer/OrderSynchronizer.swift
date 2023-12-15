@@ -78,6 +78,8 @@ protocol OrderSynchronizer {
     ///
     var order: Order { get }
 
+    var inFlightRequest: Order? { get }
+
     /// Publisher for the order toe be synced or that is synced.
     ///
     var orderPublisher: Published<Order>.Publisher { get }

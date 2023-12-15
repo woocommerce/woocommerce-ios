@@ -485,7 +485,8 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private func syncExistingSelectedProductsInOrder() -> [OrderItem] {
         var itemsInOrder: [OrderItem] = []
-        let _ = orderSynchronizer.order.items.map { item in
+        let latestOrder = orderSynchronizer.inFlightRequest ?? orderSynchronizer.order
+        let _ = latestOrder.items.map { item in
             if item.variationID != 0 {
                 if let _ = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
                     itemsInOrder.append(item)

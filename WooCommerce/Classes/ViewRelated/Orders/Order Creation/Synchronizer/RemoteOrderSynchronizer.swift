@@ -17,6 +17,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     @Published private(set) var order: Order = OrderFactory.emptyNewOrder
 
+    @Published private(set) var inFlightRequest: Order? = nil
+
     var orderPublisher: Published<Order>.Publisher {
         $order
     }
@@ -335,10 +337,11 @@ private extension RemoteOrderSynchronizer {
             .flatMap(maxPublishers: .max(1)) { [weak self] order -> AnyPublisher<Order, Never> in // Only allow one request at a time.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing(blocking: true) // Creating an order is always a blocking operation
-
+                self.inFlightRequest = order
                 return self.createOrderRemotely(order, type: .sync, includesGiftCard: false)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
                         self?.state = .error(error, usesGiftCard: false)
+                        self?.inFlightRequest = nil
                         return Empty().eraseToAnyPublisher()
                     }
                     .eraseToAnyPublisher()
@@ -346,6 +349,7 @@ private extension RemoteOrderSynchronizer {
             .sink { [weak self] order in
                 self?.state = .synced
                 self?.order = order
+                self?.inFlightRequest = nil
             }
             .store(in: &subscriptions)
     }
@@ -362,7 +366,7 @@ private extension RemoteOrderSynchronizer {
                 // Set a `blocking` state if the order contains new lines or bundle configurations.
                 self.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
             })
-            .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
+//            .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
 

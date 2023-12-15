@@ -7,7 +7,9 @@ import struct Yosemite.WordPressTheme
 /// - Activate the previewed theme on the current site.
 ///
 struct ThemesPreviewView: View {
-    enum PreviewDevice: CaseIterable {
+    enum PreviewDevice: CaseIterable, Identifiable {
+        var id: PreviewDevice { self }
+
         case mobile
         case tablet
         case desktop
@@ -94,7 +96,7 @@ struct ThemesPreviewView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        ForEach(PreviewDevice.allCases, id: \.self) { device in
+                        ForEach(PreviewDevice.allCases) { device in
                           menuItem(for: device)
                         }
                     } label: {

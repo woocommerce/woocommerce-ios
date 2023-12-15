@@ -303,7 +303,6 @@ private extension ProductsViewController {
                         let noticeMessage = String.localizedStringWithFormat(Localization.updateInventoryNotice, newQuantity)
                         self.presentNotice(title: noticeMessage)
                     })), animated: true)
-                    self.trackScannedItemSearchSuccess(scannedItem)
                 } catch {
                     self.trackScannedItemSearchFailure(error)
                     let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,

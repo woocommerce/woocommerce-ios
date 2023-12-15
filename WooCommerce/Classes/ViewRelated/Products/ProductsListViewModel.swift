@@ -175,7 +175,9 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
 
     func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> SKUSearchResult {
         do {
-            return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .productList)
+            return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, 
+                                                                     siteID: siteID,
+                                                                     source: .scanToUpdateInventory)
         } catch {
             DDLogInfo("SKU search failed with error: \(error)")
             throw error

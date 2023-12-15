@@ -16,4 +16,5 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
+      echo '--- :shipit: Update release notes and other App Store metadata'
       bundle exec fastlane update_metadata_on_app_store_connect skip_confirm:true

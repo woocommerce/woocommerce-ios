@@ -16,4 +16,5 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
+      echo '--- :snowflake: Start code freeze'
       bundle exec fastlane start_code_freeze skip_confirm:true

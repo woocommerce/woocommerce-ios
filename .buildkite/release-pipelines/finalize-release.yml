@@ -16,4 +16,5 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
+      echo '--- :shipit: Finalize release'
       bundle exec fastlane finalize_release skip_confirm:true

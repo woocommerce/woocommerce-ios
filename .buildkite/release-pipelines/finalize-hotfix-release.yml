@@ -16,4 +16,5 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
+      echo '--- :fire: Finalize hotfix release'
       bundle exec fastlane finalize_hotfix_release skip_confirm:true

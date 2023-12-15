@@ -16,4 +16,5 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
+      echo '--- :shipit: Deploy new beta'
       bundle exec fastlane new_beta_release skip_confirm:true

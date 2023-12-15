@@ -1,5 +1,10 @@
 import SwiftUI
 
+/// View to preview the demo page of a WordPress theme.
+/// It lets merchants to:
+/// - Preview the layouts responsively between mobile, tablet, and desktop view.
+/// - Activate the previewed theme on the current site.
+///
 struct ThemesPreviewView: View {
     enum PreviewDevice: CaseIterable {
         case mobile

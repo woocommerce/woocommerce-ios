@@ -766,7 +766,6 @@ final class EditableOrderViewModel: ObservableObject {
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
-        trackCreateButtonTapped()
     }
 
     /// Action triggered on `Done` button tap in order editing flow.
@@ -839,6 +838,11 @@ final class EditableOrderViewModel: ObservableObject {
     func onAddCustomAmountButtonTapped() {
         editingFee = nil
         analytics.track(.orderCreationAddCustomAmountTapped)
+    }
+
+    func onCreateOrderTapped() {
+        createOrder()
+        trackCreateButtonTapped()
     }
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {

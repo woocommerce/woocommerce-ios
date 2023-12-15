@@ -245,7 +245,7 @@ struct OrderForm: View {
                 switch viewModel.navigationTrailingItem {
                 case .create:
                     Button(Localization.createButton) {
-                        viewModel.createOrder()
+                        viewModel.onCreateOrderTapped()
                     }
                     .id(navigationButtonID)
                     .accessibilityIdentifier(Accessibility.createButtonIdentifier)

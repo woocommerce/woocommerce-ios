@@ -86,7 +86,7 @@ struct ThemesPreviewView: View {
                         }
                     )
                 } else {
-                    /* todo error view */
+                    errorView
                 }
 
                 Divider()
@@ -134,10 +134,23 @@ struct ThemesPreviewView: View {
 }
 
 private extension ThemesPreviewView {
+    var errorView: some View {
+        VStack(spacing: Layout.contentPadding) {
+            Spacer()
+            Text(Localization.errorLoadingThemeDemo)
+                .secondaryBodyStyle()
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private extension ThemesPreviewView {
     private enum Layout {
         static let toolbarPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let footerPadding: CGFloat = 16
+        static let contentPadding: CGFloat = 16
     }
 
     private enum Localization {
@@ -166,6 +179,12 @@ private extension ThemesPreviewView {
             "themesPreviewView.themeName",
             value: "Theme: %@",
             comment: "Name of the theme being previewed."
+        )
+
+        static let errorLoadingThemeDemo = NSLocalizedString(
+            "ThemesPreviewView.errorLoadingThemeDemo",
+            value: "This theme has no theme demo. Please try another theme.",
+            comment: "The error message shown if no theme demo URL is available."
         )
     }
 }

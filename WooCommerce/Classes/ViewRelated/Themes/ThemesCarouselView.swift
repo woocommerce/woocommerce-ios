@@ -7,6 +7,9 @@ import struct Yosemite.WordPressTheme
 struct ThemesCarouselView: View {
 
     @ObservedObject private var viewModel: ThemesCarouselViewModel
+
+    @State private var isShowingThemesPreview = false
+
     private let onSelectedTheme: (WordPressTheme) -> Void
 
     /// Scale of the view based on accessibility changes
@@ -29,10 +32,15 @@ struct ThemesCarouselView: View {
 
                         // Theme list
                         ForEach(themes) { theme in
-                            if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
-                                themeImageCard(url: themeImageURL)
-                            } else {
-                                themeNameCard(name: theme.name)
+                            Button(action: {
+                                onSelectedTheme(theme)
+                                isShowingThemesPreview = true
+                            }) {
+                                if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
+                                    themeImageCard(url: themeImageURL)
+                                } else {
+                                    themeNameCard(name: theme.name)
+                                }
                             }
                         }
 
@@ -47,6 +55,9 @@ struct ThemesCarouselView: View {
         }
         .task {
             await viewModel.fetchThemes()
+        }
+        .sheet(isPresented: $isShowingThemesPreview) {
+            ThemesPreviewView()
         }
     }
 }

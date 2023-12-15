@@ -12,11 +12,16 @@ struct ThemesPreviewView: View {
         case tablet
         case desktop
 
+        /// The initial layout used as preview.
         static var defaultDevice: PreviewDevice {
             return UIDevice.current.userInterfaceIdiom == .pad ? .tablet : .mobile
         }
 
-        var width: CGFloat {
+        /// The width is used in the `viewportScript` JS to change the WebView's viewport.
+        /// A theme's CSS will take into account this number to decide whether to responsively display its layout to be
+        /// the mobile, tablet, or desktop layout.
+        ///
+        var browserWidth: CGFloat {
             switch self {
             case .mobile: return 400
             case .tablet: return 800
@@ -24,6 +29,9 @@ struct ThemesPreviewView: View {
             }
         }
 
+        /// This JavaScript forces the WebView's viewport to match the supplied width above. This allows the preview
+        /// functionality to switch between a theme's mobile, tablet, or desktop layout.
+        ///
         var viewportScript: String {
             let js = """
             // remove all existing viewport meta tags - some themes included multiple, which is invalid
@@ -36,7 +44,7 @@ struct ThemesPreviewView: View {
             document.getElementsByTagName("head")[0].append(viewportMeta);
             """
 
-            return String(format: js, NSInteger(width))
+            return String(format: js, NSInteger(browserWidth))
         }
     }
 

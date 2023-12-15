@@ -135,6 +135,7 @@ struct UpdateProductInventoryView: View {
                         .renderedIf(viewModel.viewMode == .stockCanBeManaged)
 
                         Button(Localization.viewProductDetailsButtonTitle) {
+                            viewModel.onViewProductDetailsButtonTapped()
                             isPresentingDetailsView = true
                         }
                         .buttonStyle(SecondaryButtonStyle())
@@ -148,6 +149,7 @@ struct UpdateProductInventoryView: View {
                     .frame(width: geometry.size.width)
                     .navigationBarTitle(Localization.navigationBarTitle, displayMode: .inline)
                     .navigationBarItems(leading: Button(Localization.cancelButtonTitle) {
+                        viewModel.onDismiss()
                         dismiss()
                     })
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in

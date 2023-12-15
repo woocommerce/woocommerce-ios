@@ -477,13 +477,13 @@ public enum WooAnalyticsStat: String {
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
 
     // MARK: Barcode Scanning events
-        //
-        case orderCreationProductBarcodeScanningTapped = "order_creation_product_barcode_scanning_tapped"
-        case orderListProductBarcodeScanningTapped = "order_list_product_barcode_scanning_tapped"
-        case barcodeScanningSuccess = "barcode_scanning_success"
-        case barcodeScanningFailure = "barcode_scanning_failure"
-        case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
-        case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
+    //
+    case orderCreationProductBarcodeScanningTapped = "order_creation_product_barcode_scanning_tapped"
+    case orderListProductBarcodeScanningTapped = "order_list_product_barcode_scanning_tapped"
+    case barcodeScanningSuccess = "barcode_scanning_success"
+    case barcodeScanningFailure = "barcode_scanning_failure"
+    case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
+    case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
     // MARK: Tax Rate selector
     //
@@ -622,7 +622,18 @@ public enum WooAnalyticsStat: String {
     case productListAddProductTapped = "product_list_add_product_button_tapped"
     case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
     case productListShareButtonTapped = "product_list_share_button_tapped"
+
+    // MARK: Product List - Scan to Update Inventory
+    //
     case productListProductBarcodeScanningTapped = "product_list_product_barcode_scanning_tapped"
+    case inventoryUpdateIncrementQuantityTapped = "product_quick_inventory_update_increment_quantity_tapped"
+    case inventoryUpdateManualQuantityTapped = "product_quick_inventory_update_manual_quantity_update_tapped"
+    case inventoryUpdateDismissed = "product_quick_inventory_update_dismissed"
+    case inventoryUpdateQuantityUpdateSuccess = "product_quick_inventory_quantity_update_success"
+    case inventoryUpdateQuantityUpdateFailure = "product_quick_inventory_quantity_update_failure"
+    case inventoryUpdateViewProductDetailsTapped = "product_quick_inventory_view_product_details_tapped"
+    case inventoryUpdateEnableManageStockSuccess = "product_quick_inventory_enable_manage_stock_success"
+    case inventoryUpdateEnableManageStockFailure = "product_quick_inventory_enable_manage_stock_failure"
 
     // MARK: Product List Bulk Editing Events
     //

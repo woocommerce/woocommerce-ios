@@ -64,7 +64,7 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
 
         length = try container.decodeIfPresent(String.self, forKey: .length) ?? "0"
         period = try container.decodeIfPresent(SubscriptionPeriod.self, forKey: .period) ?? .month
-        periodInterval = try container.decodeIfPresent(String.self, forKey: .periodInterval) ?? "0"
+        periodInterval = try container.decodeIfPresent(String.self, forKey: .periodInterval) ?? "1"
         price = try container.decodeIfPresent(String.self, forKey: .price) ?? "0"
         signUpFee = try container.decodeIfPresent(String.self, forKey: .signUpFee) ?? "0"
         trialLength = try container.decodeIfPresent(String.self, forKey: .trialLength) ?? "0"

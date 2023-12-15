@@ -28,12 +28,18 @@ struct WebView: UIViewRepresentable {
     ///
     var onCommit: ((WKWebView) -> Void)?
 
+    /// Check to see if WebView should reload on caller View update.
+    /// For the moment this is used to allow ThemesPreviewView to re-apply JS code on layout change request.
+    ///
+    var shouldReloadOnUpdate: Bool
+
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
-    init(isPresented: Binding<Bool>, url: URL, onCommit: ((WKWebView)->Void)? = nil) {
+    init(isPresented: Binding<Bool>, url: URL, shouldReloadOnUpdate: Bool = false, onCommit: ((WKWebView)->Void)? = nil) {
         self._isPresented = isPresented
         self.url = url
         self.onCommit = onCommit
+        self.shouldReloadOnUpdate = shouldReloadOnUpdate
     }
 
     func makeCoordinator() -> WebViewCoordinator {
@@ -50,7 +56,9 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        /* todo */
+        if shouldReloadOnUpdate {
+            uiView.reload()
+        }
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {

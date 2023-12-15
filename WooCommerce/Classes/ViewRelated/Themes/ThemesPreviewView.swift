@@ -42,6 +42,7 @@ struct ThemesPreviewView: View {
                 WebView(
                     isPresented: .constant(true),
                     url: URL(string: "https://tsubakidemo.wpcomstaging.com/")!,
+                    shouldReloadOnUpdate: true,
                     onCommit: { webView in
                         webView.evaluateJavaScript(self.selectedDevice.viewportScript)
                     }

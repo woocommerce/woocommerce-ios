@@ -38,6 +38,7 @@ public final class StatsStoreV4: Store {
             resetStoredStats(onCompletion: onCompletion)
         case .retrieveStats(let siteID,
                             let timeRange,
+                            let timeZone,
                             let earliestDateToInclude,
                             let latestDateToInclude,
                             let quantity,
@@ -45,6 +46,7 @@ public final class StatsStoreV4: Store {
                             let onCompletion):
             retrieveStats(siteID: siteID,
                           timeRange: timeRange,
+                          timeZone: timeZone,
                           earliestDateToInclude: earliestDateToInclude,
                           latestDateToInclude: latestDateToInclude,
                           quantity: quantity,
@@ -52,6 +54,7 @@ public final class StatsStoreV4: Store {
                           onCompletion: onCompletion)
         case .retrieveCustomStats(let siteID,
                                   let unit,
+                                  let timeZone,
                                   let earliestDateToInclude,
                                   let latestDateToInclude,
                                   let quantity,
@@ -59,6 +62,7 @@ public final class StatsStoreV4: Store {
                                   let onCompletion):
             retrieveCustomStats(siteID: siteID,
                                 unit: unit,
+                                timeZone: timeZone,
                                 earliestDateToInclude: earliestDateToInclude,
                                 latestDateToInclude: latestDateToInclude,
                                 quantity: quantity,
@@ -129,6 +133,7 @@ private extension StatsStoreV4 {
     ///
     func retrieveStats(siteID: Int64,
                        timeRange: StatsTimeRangeV4,
+                       timeZone: TimeZone,
                        earliestDateToInclude: Date,
                        latestDateToInclude: Date,
                        quantity: Int,
@@ -136,6 +141,7 @@ private extension StatsStoreV4 {
                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         orderStatsRemote.loadOrderStats(for: siteID,
                                         unit: timeRange.intervalGranularity,
+                                        timeZone: timeZone,
                                         earliestDateToInclude: earliestDateToInclude,
                                         latestDateToInclude: latestDateToInclude,
                                         quantity: quantity,
@@ -154,6 +160,7 @@ private extension StatsStoreV4 {
     ///
     func retrieveCustomStats(siteID: Int64,
                              unit: StatsGranularityV4,
+                             timeZone: TimeZone,
                              earliestDateToInclude: Date,
                              latestDateToInclude: Date,
                              quantity: Int,
@@ -161,6 +168,7 @@ private extension StatsStoreV4 {
                              onCompletion: @escaping (Result<OrderStatsV4, Error>) -> Void) {
         orderStatsRemote.loadOrderStats(for: siteID,
                                         unit: unit,
+                                        timeZone: timeZone,
                                         earliestDateToInclude: earliestDateToInclude,
                                         latestDateToInclude: latestDateToInclude,
                                         quantity: quantity,

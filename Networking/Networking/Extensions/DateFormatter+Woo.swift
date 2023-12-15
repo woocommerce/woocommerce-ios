@@ -48,6 +48,16 @@ public extension DateFormatter {
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
             return formatter
         }()
+
+        /// ISO8601 DateFormatter with a given time zone
+        ///
+        public static func iso8601(timeZone: TimeZone) -> DateFormatter {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = timeZone
+            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            return formatter
+        }
     }
 
 

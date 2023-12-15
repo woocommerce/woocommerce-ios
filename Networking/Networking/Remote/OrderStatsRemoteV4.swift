@@ -18,12 +18,13 @@ public final class OrderStatsRemoteV4: Remote {
     ///
     public func loadOrderStats(for siteID: Int64,
                                unit: StatsGranularityV4,
+                               timeZone: TimeZone,
                                earliestDateToInclude: Date,
                                latestDateToInclude: Date,
                                quantity: Int,
                                forceRefresh: Bool,
                                completion: @escaping (Result<OrderStatsV4, Error>) -> Void) {
-        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        let dateFormatter = DateFormatter.Defaults.iso8601(timeZone: timeZone)
 
         let parameters: [String: Any] = [
             ParameterKeys.interval: unit.rawValue,

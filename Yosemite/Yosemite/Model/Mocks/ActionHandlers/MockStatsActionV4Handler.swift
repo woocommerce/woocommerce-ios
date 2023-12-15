@@ -10,7 +10,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .retrieveStats(let siteID, let timeRange, _, _, _, _, let onCompletion):
+            case .retrieveStats(let siteID, let timeRange, _, _, _, _, _, let onCompletion):
                 retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
             case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
                 retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)

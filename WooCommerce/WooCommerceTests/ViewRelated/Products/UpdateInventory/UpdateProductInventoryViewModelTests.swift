@@ -447,11 +447,12 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
             }
         }
 
-        // When
-        try await viewModel.onTapManageStock()
-
-        // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
+        /// When - Then
+        await assertThrowsError({
+            try await viewModel.onTapManageStock()
+        }, errorAssert: { _ in
+            analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent })
+        })
     }
 
     func test_when_onViewProductDetailsButtonTapped_then_product_quick_inventory_view_product_details_tapped_is_tracked() {

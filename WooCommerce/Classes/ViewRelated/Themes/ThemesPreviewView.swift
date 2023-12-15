@@ -34,7 +34,7 @@ struct ThemesPreviewView: View {
         }
     }
 
-    @State private var selectedDevice: PreviewDevice? = PreviewDevice.defaultDevice
+    @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
 
     var body: some View {
         NavigationView {
@@ -42,7 +42,9 @@ struct ThemesPreviewView: View {
                 WebView(
                     isPresented: .constant(true),
                     url: URL(string: "https://tsubakidemo.wpcomstaging.com/")!,
-                    previewDevice: $selectedDevice
+                    onCommit: { webView in
+                        webView.evaluateJavaScript(self.selectedDevice.viewportScript)
+                    }
                 )
 
                 Divider()

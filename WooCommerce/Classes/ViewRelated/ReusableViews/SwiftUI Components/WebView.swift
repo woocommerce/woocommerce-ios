@@ -14,8 +14,6 @@ struct WebView: UIViewRepresentable {
         }
     }
 
-    @Binding var previewDevice: ThemesPreviewView.PreviewDevice?
-
     let url: URL
 
     /// Optional URL or part of URL to trigger exit
@@ -26,12 +24,16 @@ struct WebView: UIViewRepresentable {
     ///
     var exitTrigger: (() -> Void)?
 
+    /// Callback that will be triggered in onCommit
+    ///
+    var onCommit: ((WKWebView) -> Void)?
+
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
-    init(isPresented: Binding<Bool>, url: URL, onCommit: (() -> Void)? = nil) {
+    init(isPresented: Binding<Bool>, url: URL, onCommit: ((WKWebView)->Void)? = nil) {
         self._isPresented = isPresented
         self.url = url
-        self._previewDevice = previewDevice
+        self.onCommit = onCommit
     }
 
     func makeCoordinator() -> WebViewCoordinator {
@@ -48,9 +50,7 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        if let device = previewDevice {
-            uiView.reload()
-        }
+        /* todo */
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {
@@ -73,9 +73,7 @@ struct WebView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-            if let device = parent.previewDevice {
-                webView.evaluateJavaScript(device.viewportScript)
-            }
+            parent.onCommit?(webView)
         }
     }
 }

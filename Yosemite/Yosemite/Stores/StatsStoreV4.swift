@@ -80,6 +80,7 @@ public final class StatsStoreV4: Store {
                                    onCompletion: onCompletion)
         case .retrieveTopEarnerStats(let siteID,
                                      let timeRange,
+                                     let timeZone,
                                      let earliestDateToInclude,
                                      let latestDateToInclude,
                                      let quantity,
@@ -88,6 +89,7 @@ public final class StatsStoreV4: Store {
                                      let onCompletion):
             retrieveTopEarnerStats(siteID: siteID,
                                    timeRange: timeRange,
+                                   timeZone: timeZone,
                                    earliestDateToInclude: earliestDateToInclude,
                                    latestDateToInclude: latestDateToInclude,
                                    quantity: quantity,
@@ -258,6 +260,7 @@ private extension StatsStoreV4 {
     ///
     func retrieveTopEarnerStats(siteID: Int64,
                                 timeRange: StatsTimeRangeV4,
+                                timeZone: TimeZone,
                                 earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
                                 quantity: Int,
@@ -268,6 +271,7 @@ private extension StatsStoreV4 {
             do {
                 let topEarnersStats = try await loadTopEarnerStats(siteID: siteID,
                                                                    timeRange: timeRange,
+                                                                   timeZone: timeZone,
                                                                    earliestDateToInclude: earliestDateToInclude,
                                                                    latestDateToInclude: latestDateToInclude,
                                                                    quantity: quantity,
@@ -285,11 +289,13 @@ private extension StatsStoreV4 {
     @MainActor
     func loadTopEarnerStats(siteID: Int64,
                             timeRange: StatsTimeRangeV4,
+                            timeZone: TimeZone,
                             earliestDateToInclude: Date,
                             latestDateToInclude: Date,
                             quantity: Int,
                             forceRefresh: Bool) async throws -> TopEarnerStats {
         let productsReport = try await productsReportsRemote.loadTopProductsReport(for: siteID,
+                                                                                   timeZone: timeZone,
                                                                                    earliestDateToInclude: earliestDateToInclude,
                                                                                    latestDateToInclude: latestDateToInclude,
                                                                                    quantity: quantity)

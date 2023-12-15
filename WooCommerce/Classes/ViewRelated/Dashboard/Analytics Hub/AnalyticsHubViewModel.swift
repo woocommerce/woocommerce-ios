@@ -214,6 +214,7 @@ private extension AnalyticsHubViewModel {
         try await withCheckedThrowingContinuation { continuation in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                               timeRange: .thisYear, // Only needed for storing purposes, we can ignore it.
+                                                              timeZone: timeZone,
                                                               earliestDateToInclude: earliestDateToInclude,
                                                               latestDateToInclude: latestDateToInclude,
                                                               quantity: Constants.maxNumberOfTopItemsSold,

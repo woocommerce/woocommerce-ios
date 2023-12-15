@@ -44,6 +44,7 @@ public enum StatsActionV4: Action {
     ///
     case retrieveTopEarnerStats(siteID: Int64,
                                 timeRange: StatsTimeRangeV4,
+                                timeZone: TimeZone,
                                 earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
                                 quantity: Int,

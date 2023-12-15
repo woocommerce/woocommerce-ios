@@ -306,8 +306,10 @@ private extension ProductsViewController {
                 } catch {
                     DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
                     let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,
-                                                                            code: scannedBarcode,
-                                                                            actionHandler: { })
+                                                                                 code: scannedBarcode,
+                                                                                 actionHandler: {
+                        self.scanProducts()
+                    })
                     self.presentNotice(notice: errorNotice)
                 }
                 // Reset button state on finishing the task

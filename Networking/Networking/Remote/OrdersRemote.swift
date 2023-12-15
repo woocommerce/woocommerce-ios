@@ -280,7 +280,10 @@ public class OrdersRemote: Remote {
                                          path: path,
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
-            enqueue(request, mapper: mapper, completion: completion)
+            Task {
+                await network.cancelRequests(like: request)
+                enqueue(request, mapper: mapper, completion: completion)
+            }
         } catch {
             completion(.failure(error))
         }

@@ -115,6 +115,12 @@ public final class WordPressOrgNetwork: Network {
             }
     }
 
+    public func cancelRequests(like request: URLRequestConvertible) async {
+        let (dataTasks, _, _) = await sessionManager.session.tasks
+        let matchingRequests = dataTasks.filter({ $0.originalRequest?.url?.path == request.urlRequest?.url?.path })
+        matchingRequests.forEach { $0.cancel() }
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     /// Only one value will be emitted and the request cannot be retried.
     ///

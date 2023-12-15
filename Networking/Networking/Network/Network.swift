@@ -39,6 +39,8 @@ public protocol Network {
     func responseData(for request: URLRequestConvertible,
                       completion: @escaping (Swift.Result<Data, Error>) -> Void)
 
+    func cancelRequests(like request: URLRequestConvertible) async
+
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     ///
     /// - Parameters:

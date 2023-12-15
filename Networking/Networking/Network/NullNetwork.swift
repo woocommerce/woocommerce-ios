@@ -19,6 +19,8 @@ public final class NullNetwork: Network {
 
     }
 
+    public func cancelRequests(like request: URLRequestConvertible) async { }
+
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         Empty<Swift.Result<Data, Error>, Never>().eraseToAnyPublisher()
     }

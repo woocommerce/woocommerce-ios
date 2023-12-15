@@ -66,6 +66,13 @@ public class AlamofireNetwork: Network {
             }
     }
 
+    public func cancelRequests(like request: URLRequestConvertible) async {
+        let request = requestConverter.convert(request)
+        let (dataTasks, _, _) = await sessionManager.session.tasks
+//        let matchingRequests = dataTasks.filter({ $0.originalRequest?.httpBody.path == request.path })
+        dataTasks.forEach { $0.cancel() }
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Important:

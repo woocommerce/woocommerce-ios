@@ -74,6 +74,8 @@ class MockNetwork: Network {
         completion(.success(data))
     }
 
+    public func cancelRequests(like request: URLRequestConvertible) async { }
+
     func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         requestsForResponseData.append(request)
 

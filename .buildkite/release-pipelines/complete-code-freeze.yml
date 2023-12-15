@@ -1,7 +1,5 @@
 steps:
   - label: "Complete Code Freeze"
-    agents:
-      queue: mac
     plugins:
       - automattic/a8c-ci-toolkit#3.0.1
       - automattic/git-s3-cache#1.1.4:

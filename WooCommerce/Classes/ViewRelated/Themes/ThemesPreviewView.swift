@@ -85,23 +85,26 @@ struct ThemesPreviewView: View {
                             webView.evaluateJavaScript(self.selectedDevice.viewportScript)
                         }
                     )
+
+                    Divider()
+                        .frame(height: Layout.dividerHeight)
+                        .foregroundColor(Color(.divider))
+
+                    VStack {
+                        Button(Localization.startWithThemeButton, action: onStart)
+                        .buttonStyle(PrimaryButtonStyle())
+
+                        Text(String(format: Localization.themeName, theme.name))
+                            .secondaryBodyStyle()
+                    }.padding(Layout.footerPadding)
+
                 } else {
                     errorView
                 }
-
-                Divider()
-                    .frame(height: Layout.dividerHeight)
-                    .foregroundColor(Color(.divider))
-
-                VStack {
-                    Button(Localization.startWithThemeButton, action: onStart)
-                    .buttonStyle(PrimaryButtonStyle())
-
-                    Text(String(format: Localization.themeName, theme.name))
-                        .secondaryBodyStyle()
-                }.padding(Layout.footerPadding)
             }
             .toolbar {
+                if let url = theme.themeThumbnailURL {
+                }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Image(uiImage: .closeButton)
                 }

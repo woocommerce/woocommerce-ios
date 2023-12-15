@@ -49,4 +49,29 @@ final class ThemeSettingViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.currentThemeName, expectedName)
     }
+
+    func test_updateCurrentTheme_updates_currentThemeName() {
+        // Given
+        let viewModel = ThemeSettingViewModel(siteID: 123)
+        XCTAssertEqual(viewModel.currentThemeName, "")
+
+        // When
+        viewModel.updateCurrentTheme(.fake().copy(name: "tsubaki"))
+
+        // Then
+        XCTAssertEqual(viewModel.currentThemeName, "tsubaki")
+    }
+
+    func test_it_triggers_pending_theme_installation_upon_initialization() async {
+        // Given
+        let themeInstaller = MockThemeInstaller()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        _ = ThemeSettingViewModel(siteID: 123,
+                                  stores: stores,
+                                  themeInstaller: themeInstaller)
+        // Then
+        waitUntil {
+            themeInstaller.installPendingThemeCalled == true
+        }
+    }
 }

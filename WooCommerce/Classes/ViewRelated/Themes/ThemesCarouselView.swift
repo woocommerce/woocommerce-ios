@@ -1,52 +1,87 @@
 import SwiftUI
 import Kingfisher
+import struct Yosemite.WordPressTheme
 
-
+/// View to display a list of WordPress themes
+///
 struct ThemesCarouselView: View {
-    /// Tuple array containing theme name and theme Url string pair.
-    let themesInfo: [(name: String, url: String)] = [
-        (name: "Google", url: "google.com"),
-        (name: "Facebook", url: "facebook.com"),
-        (name: "WordPress", url: "wordpress.com"),
-        (name: "Microsoft", url: "microsoft.com"),
-        (name: "Amazon", url: "amazon.com"),
-        (name: "Apple", url: "apple.com")
-    ]
 
-    /// The title of the message at the end of the carousel.
-    let lastMessageHeading: String
-
-    /// The content of the message at the end of the carousel.
-    let lastMessageContent: String
-
+    @ObservedObject private var viewModel: ThemesCarouselViewModel
+    private let onSelectedTheme: (WordPressTheme) -> Void
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack() {
+    init(viewModel: ThemesCarouselViewModel, onSelectedTheme: @escaping (WordPressTheme) -> Void) {
+        self.viewModel = viewModel
+        self.onSelectedTheme = onSelectedTheme
+    }
 
-                // Demo for correct state
-                ForEach(themesInfo, id: \.name) { theme in
-                    if let themeUrl = getThemeUrl(themeUrl: theme.url) {
-                        themeImageCard(url: themeUrl)
-                    } else {
-                        themeNameCard(name: theme.name)
+    var body: some View {
+        Group {
+            switch viewModel.state {
+            case .loading:
+                loadingView
+
+            case .content(let themes):
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack() {
+
+                        // Theme list
+                        ForEach(themes) { theme in
+                            if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
+                                themeImageCard(url: themeImageURL)
+                            } else {
+                                themeNameCard(name: theme.name)
+                            }
+                        }
+
+                        // Message at the end of the carousel
+                        lastMessageCard
                     }
                 }
 
-                // Demo for error state
-                themeNameCard(name: themesInfo[0].name)
-
-                // Message at the end of the carousel
-                lastMessageCard(heading: lastMessageHeading, message: lastMessageContent)
+            case .error:
+                errorView
             }
+        }
+        .task {
+            await viewModel.fetchThemes()
         }
     }
 }
 
 private extension ThemesCarouselView {
+    var loadingView: some View {
+        VStack {
+            Spacer()
+            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+            Text(Localization.loadingThemes)
+                .secondaryBodyStyle()
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: Layout.imageHeight)
+    }
+
+    var errorView: some View {
+        VStack(spacing: Layout.contentPadding) {
+            Spacer()
+            Text(Localization.errorLoadingThemes)
+                .secondaryBodyStyle()
+            Button {
+                Task {
+                    await viewModel.fetchThemes()
+                }
+            } label: {
+                Label(Localization.retry, systemImage: "arrow.clockwise")
+            }
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: Layout.imageHeight)
+    }
+
     func themeImageCard(url: URL) -> some View {
         KFImage(url)
             .resizable()
@@ -70,13 +105,13 @@ private extension ThemesCarouselView {
         .padding(Layout.imagePadding)
     }
 
-    func lastMessageCard(heading: String, message: String) -> some View {
+    var lastMessageCard: some View {
         ZStack {
             GeometryReader { geometry in
                 ScrollView(.vertical) {
                     VStack {
                         Spacer()
-                        Text(lastMessageHeading)
+                        Text(viewModel.mode.moreThemesTitleText)
                             .bold()
                             .secondaryBodyStyle()
                             .padding(.horizontal, Layout.contentPadding)
@@ -84,7 +119,7 @@ private extension ThemesCarouselView {
                         Spacer()
                             .frame(height: Layout.contentPadding)
 
-                        Text(lastMessageContent)
+                        Text(viewModel.mode.moreThemesSuggestionText)
                             .foregroundColor(Color(.secondaryLabel))
                             .subheadlineStyle()
                                 .multilineTextAlignment(.center)
@@ -110,22 +145,35 @@ private extension ThemesCarouselView {
         static let shadowRadius: CGFloat = 2
         static let shadowYOffset: CGFloat = 3
     }
+
+    private enum Localization {
+        static let loadingThemes = NSLocalizedString(
+            "themesCarouselView.loading",
+            value: "Loading themes...",
+            comment: "Text indicating the loading state in the themes carousel view"
+        )
+        static let errorLoadingThemes = NSLocalizedString(
+            "themesCarouselView.error",
+            value: "Failed to load themes.",
+            comment: "Text indicating the error state in the themes carousel view"
+        )
+        static let retry = NSLocalizedString(
+            "themesCarouselView.retry",
+            value: "Retry",
+            comment: "Button to reload themes in the themes carousel view"
+        )
+    }
 }
 
-// TODO: This extension is temporary for UI preview purposes and can be deleted once this View is used with `WordPressTheme` items.
-// In actual use, the screenshot URL is available from `WordPressTheme.themeThumbnailURL`
 private extension ThemesCarouselView {
-    private func getThemeUrl(themeUrl: String) -> URL? {
-        let urlStr = "https://s0.wp.com/mshots/v1/https://\(themeUrl)?demo=true/?w=1200&h=2400&vpw=400&vph=800"
+    private func getThemeImageURL(themeURL: String) -> URL? {
+        let urlStr = "https://s0.wp.com/mshots/v1/\(themeURL)?demo=true/?w=1200&h=2400&vpw=400&vph=800"
         return URL(string: urlStr)
     }
 }
 
 struct ThemesCarouselView_Previews: PreviewProvider {
     static var previews: some View {
-        ThemesCarouselView(
-            lastMessageHeading: "Heading example",
-            lastMessageContent: "Message content example here which can be pretty long if needed."
-        )
+        ThemesCarouselView(viewModel: .init(mode: .themeSettings), onSelectedTheme: { _ in })
     }
 }

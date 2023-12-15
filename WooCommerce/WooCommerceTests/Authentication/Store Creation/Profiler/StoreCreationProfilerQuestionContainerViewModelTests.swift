@@ -23,7 +23,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveSellingStatus_updates_currentQuestion_to_category() {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
         XCTAssertEqual(viewModel.currentQuestion, .sellingStatus)
@@ -38,7 +39,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
     func test_saveSellingStatus_saves_answer() throws {
         // Given
         let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: usecase)
         // When
@@ -53,7 +55,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveCategory_updates_currentQuestion_to_country() {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
         // When
@@ -66,7 +69,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
     func test_saveCategory_saves_answer() throws {
         // Given
         let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: usecase)
 
@@ -83,7 +87,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
     func test_saveCountry_saves_answer() throws {
         // Given
         let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: usecase)
         // When
@@ -95,15 +100,47 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         XCTAssertEqual(data.countryCode, "AG")
     }
 
-    func test_saveCountry_triggers_onCompletion() throws {
+    func test_saveCountry_updates_currentQuestion_to_theme() {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
+                                                                        onCompletion: {},
+                                                                        uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
+
+        // When
+        viewModel.saveCountry(.US)
+
+        // Then
+        XCTAssertEqual(viewModel.currentQuestion, .theme)
+    }
+
+    func test_saveTheme_schedules_theme_for_installation() throws {
+        // Given
+        let sampleTheme = WordPressTheme.fake().copy(id: "123")
+        let themeInstaller = MockThemeInstaller()
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
+                                                                        onCompletion: {},
+                                                                        uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123),
+                                                                        themeInstaller: themeInstaller)
+
+        // When
+        viewModel.saveTheme(sampleTheme)
+
+        // Then
+        XCTAssertEqual(themeInstaller.themeIDScheduledForInstall, sampleTheme.id)
+    }
+
+    func test_saveTheme_triggers_onCompletion() throws {
         // Given
         var triggeredCompletion = false
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: { triggeredCompletion = true },
                                                                         uploadAnswersUseCase: MockStoreCreationProfilerUploadAnswersUseCase())
 
         // When
-        viewModel.saveCountry(.US)
+        viewModel.saveTheme(nil)
 
         // Then
         XCTAssertTrue(triggeredCompletion)
@@ -114,7 +151,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
     func test_backtrackOrDismissProfiler_triggers_completionHandler_if_current_question_is_selling_status() {
         // Given
         var triggeredCompletion = false
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: {
             triggeredCompletion = true
         },
@@ -131,7 +169,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
     func test_backtrackOrDismissProfiler_sets_current_question_to_selling_status_if_current_question_is_category() {
         // Given
         var triggeredCompletion = false
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: { triggeredCompletion = true },
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
         viewModel.saveSellingStatus(nil)
@@ -147,7 +186,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
     func test_backtrackOrDismissProfiler_sets_current_question_to_category_if_current_question_is_country() {
         // Given
         var triggeredCompletion = false
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         onCompletion: { triggeredCompletion = true },
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
         viewModel.saveCategory(nil)
@@ -164,7 +204,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_onAppear_tracks_site_creation_event_for_selling_status_question() throws {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         analytics: analytics,
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
@@ -180,7 +221,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveSellingStatus_tracks_skip_event_for_selling_status_question() throws {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         analytics: analytics,
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
@@ -196,7 +238,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveSellingStatus_tracks_skip_event_for_selling_platform_question() throws {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         analytics: analytics,
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
@@ -212,7 +255,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveSellingStatus_tracks_site_creation_event_for_category_question() throws {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         analytics: analytics,
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
@@ -228,7 +272,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveCategory_tracks_skip_event_for_category_question() throws {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         analytics: analytics,
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
@@ -244,7 +289,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveCategory_tracks_site_creation_event_for_country_question() throws {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         analytics: analytics,
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
@@ -260,7 +306,8 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_profiler_data_is_tracked_onCompletion() throws {
         // Given
-        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
+                                                                        storeName: "Test",
                                                                         analytics: analytics,
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
@@ -271,6 +318,7 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         viewModel.saveCategory(.init(name: StoreCreationCategoryQuestionViewModel.Category.clothingAccessories.name,
                                      value: StoreCreationCategoryQuestionViewModel.Category.clothingAccessories.rawValue))
         viewModel.saveCountry(.US)
+        viewModel.saveTheme(nil)
 
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_data" }))

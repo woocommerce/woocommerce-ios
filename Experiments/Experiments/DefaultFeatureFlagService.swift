@@ -85,7 +85,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .lightweightStorefront:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .scanToUpdateInventory:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

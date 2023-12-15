@@ -10,10 +10,25 @@ struct UpdateProductInventoryView: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    @State private var isPresentingDetailsView = false
+
     @State private var isKeyboardVisible = false
 
-    init(inventoryItem: InventoryItem, siteID: Int64) {
-        viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem, siteID: siteID)
+    init(inventoryItem: InventoryItem, siteID: Int64, onUpdatedInventory: @escaping ((String) -> ())) {
+        viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem,
+                                                    siteID: siteID,
+                                                    onUpdatedInventory: onUpdatedInventory)
+    }
+
+    private func displayErrorNotice(_ productName: String, _ error: Error? = nil) {
+        if let error = error {
+            DDLogError("Update inventory error: \(error)")
+        }
+        viewModel.displayErrorNotice(productName)
+
+        // Hide keyboard
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
     }
 
     var body: some View {
@@ -50,36 +65,66 @@ struct UpdateProductInventoryView: View {
                         Divider()
                             .padding(.trailing, -Layout.mediumSpacing)
 
-                        HStack {
-                            Text(Localization.productQuantityTitle)
-                            Spacer()
-                            TextField("", text: $viewModel.quantity)
-                                .textFieldStyle(.roundedBorder)
-                                .keyboardType(.numberPad)
-                                .multilineTextAlignment(.trailing)
-                                .frame(maxWidth: 200, alignment: .trailing)
-                                .fixedSize()
+                        Group {
+                            Text(Localization.stockNotManagedLabel)
+                                .subheadlineStyle()
+                                .renderedIf(viewModel.viewMode == .stockManagementNeedsToBeEnabled)
+
+                            HStack {
+                                Text(Localization.productQuantityTitle)
+                                Spacer()
+                                TextField("", text: $viewModel.quantity)
+                                    .textFieldStyle(.roundedBorder)
+                                    .keyboardType(.numberPad)
+                                    .multilineTextAlignment(.trailing)
+                                    .frame(maxWidth: 200, alignment: .trailing)
+                                    .fixedSize()
+                            }
+                            .renderedIf(viewModel.viewMode == .stockCanBeManaged)
                         }
                         .padding([.top, .bottom], Layout.mediumSpacing)
 
                         Divider()
                             .padding(.trailing, -Layout.mediumSpacing)
 
+                        Button(Localization.manageStockButtonTitle) {
+                            Task { @MainActor in
+                                do {
+                                    try await viewModel.onTapManageStock()
+                                } catch {
+                                    displayErrorNotice(viewModel.name, error)
+                                }
+                            }
+                        }
+                        .buttonStyle(LinkLoadingButtonStyle(isLoading: viewModel.isManageStockButtonLoading))
+                        .padding([.top, .bottom], Layout.mediumSpacing)
+                        .renderedIf(viewModel.viewMode == .stockManagementNeedsToBeEnabled)
+
                         Spacer()
 
                         Group {
                             Button(Localization.updateQuantityButtonTitle) {
                                 Task { @MainActor in
-                                    await viewModel.onTapUpdateStockQuantity()
-                                    dismiss()
+                                    do {
+                                        try await viewModel.onTapUpdateStockQuantity()
+                                        dismiss()
+                                    } catch {
+                                        let productName = viewModel.name
+                                        displayErrorNotice(productName, error)
+                                    }
                                 }
                             }
                             .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
 
                             Button(Localization.increaseStockOnceButtonTitle) {
                                 Task { @MainActor in
-                                    await viewModel.onTapIncreaseStockQuantityOnce()
-                                    dismiss()
+                                    do {
+                                        try await viewModel.onTapIncreaseStockQuantityOnce()
+                                        dismiss()
+                                    } catch {
+                                        let productName = viewModel.name
+                                        displayErrorNotice(productName, error)
+                                    }
                                 }
                             }
                             .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
@@ -87,10 +132,16 @@ struct UpdateProductInventoryView: View {
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPrimaryButtonLoading))
                         .disabled(!viewModel.enableQuantityButton)
                         .padding(.bottom, Layout.mediumSpacing)
+                        .renderedIf(viewModel.viewMode == .stockCanBeManaged)
 
-                        Button(Localization.viewProductDetailsButtonTitle) {}
-                            .buttonStyle(SecondaryButtonStyle())
-                            .padding(.bottom)
+                        Button(Localization.viewProductDetailsButtonTitle) {
+                            isPresentingDetailsView = true
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.bottom)
+                        .sheet(isPresented: $isPresentingDetailsView) {
+                            viewModel.productDetailsView()
+                        }
                     }
                     .padding()
                     .frame(minHeight: geometry.size.height)
@@ -102,6 +153,7 @@ struct UpdateProductInventoryView: View {
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in
                         isKeyboardVisible = keyboardHeight > 0
                     }
+                    .notice($viewModel.notice)
                 }
             }
         }
@@ -121,6 +173,12 @@ extension UpdateProductInventoryView {
         static let productNameTitle = NSLocalizedString("updateProductInventoryView.productNameTitle",
                                                         value: "Product Name",
                                                         comment: "Product name label in the update product inventory view.")
+        static let stockNotManagedLabel = NSLocalizedString("updateProductInventoryView.stockNotManagedLabel",
+                                                        value: "Stock not managed",
+                                                        comment: "Label to show when the stock is not managed")
+        static let manageStockButtonTitle = NSLocalizedString("updateProductInventoryView.manageStockButton.title",
+                                                        value: "Manage stock",
+                                                        comment: "Title of the button that enables managing stock")
         static let productQuantityTitle = NSLocalizedString("updateProductInventoryView.productQuantityTitle",
                                                             value: "Quantity",
                                                             comment: "Product quantity label in the update product inventory view.")

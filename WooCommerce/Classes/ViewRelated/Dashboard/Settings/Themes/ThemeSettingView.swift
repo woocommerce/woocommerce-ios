@@ -51,7 +51,11 @@ struct ThemeSettingView: View {
 
                 Section(Localization.tryOtherLook) {
                     VStack {
-                        // TODO: add slider here
+                        Spacer()
+                        ThemesCarouselView(viewModel: viewModel.carouselViewModel,
+                                           onSelectedTheme: { theme in
+                            viewModel.updateCurrentTheme(theme)
+                        })
                         Spacer()
                     }
                 }

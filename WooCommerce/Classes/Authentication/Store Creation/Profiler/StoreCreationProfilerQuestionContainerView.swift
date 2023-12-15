@@ -61,6 +61,12 @@ struct StoreCreationProfilerQuestionContainerView: View {
                         viewModel.saveCountry(answer)
                     }
                 }, onSupport: onSupport))
+            case .theme:
+                ProfilerThemesPickerView(carouselViewModel: viewModel.themesCarouselViewModel, onSelectedTheme: { theme in
+                    viewModel.saveTheme(theme)
+                }, onSkip: {
+                    viewModel.saveTheme(nil)
+                })
             }
         }
         .onAppear() {
@@ -93,7 +99,8 @@ private extension StoreCreationProfilerQuestionContainerView {
 
 struct StoreCreationProfilerQuestionContainerView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationProfilerQuestionContainerView(viewModel: .init(storeName: "Test",
+        StoreCreationProfilerQuestionContainerView(viewModel: .init(siteID: 123,
+                                                                    storeName: "Test",
                                                                     onCompletion: { },
                                                                     uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123)),
                                                    onSupport: {})

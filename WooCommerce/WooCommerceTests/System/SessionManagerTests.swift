@@ -361,6 +361,27 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.didSuggestProductCreationAISurvey])
     }
 
+    /// Verifies that `themesPendingInstall` is set to `nil` upon reset
+    ///
+    func test_themesPendingInstall_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.themesPendingInstall] = ["123": "321"]
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.themesPendingInstall] as? [String: String]), ["123": "321"])
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.themesPendingInstall])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

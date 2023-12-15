@@ -9,6 +9,7 @@ struct ThemesCarouselView: View {
     @ObservedObject private var viewModel: ThemesCarouselViewModel
 
     @State private var isShowingThemesPreview = false
+    @State private var selectedTheme: WordPressTheme? = nil
 
     private let onSelectedTheme: (WordPressTheme) -> Void
 
@@ -35,8 +36,9 @@ struct ThemesCarouselView: View {
                             Button(action: {
                                 onSelectedTheme(theme)
                                 isShowingThemesPreview = true
+                                selectedTheme = theme
                             }) {
-                                if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
+                                if let themeImageURL = theme.themeThumbnailURL {
                                     themeImageCard(url: themeImageURL)
                                 } else {
                                     themeNameCard(name: theme.name)
@@ -57,7 +59,9 @@ struct ThemesCarouselView: View {
             await viewModel.fetchThemes()
         }
         .sheet(isPresented: $isShowingThemesPreview) {
-            ThemesPreviewView()
+            if let theme = selectedTheme {
+                ThemesPreviewView(theme: theme)
+            }
         }
     }
 }
@@ -173,13 +177,6 @@ private extension ThemesCarouselView {
             value: "Retry",
             comment: "Button to reload themes in the themes carousel view"
         )
-    }
-}
-
-private extension ThemesCarouselView {
-    private func getThemeImageURL(themeURL: String) -> URL? {
-        let urlStr = "https://s0.wp.com/mshots/v1/\(themeURL)?demo=true/?w=1200&h=2400&vpw=400&vph=800"
-        return URL(string: urlStr)
     }
 }
 

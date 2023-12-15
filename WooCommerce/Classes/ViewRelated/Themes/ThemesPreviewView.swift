@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.WordPressTheme
 
 /// View to preview the demo page of a WordPress theme.
 /// It lets merchants to:
@@ -40,18 +41,27 @@ struct ThemesPreviewView: View {
     }
 
     @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
+    private let theme: WordPressTheme
+
+    init(theme: WordPressTheme) {
+        self.theme = theme
+    }
 
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                WebView(
-                    isPresented: .constant(true),
-                    url: URL(string: "https://tsubakidemo.wpcomstaging.com/")!,
-                    shouldReloadOnUpdate: true,
-                    onCommit: { webView in
-                        webView.evaluateJavaScript(self.selectedDevice.viewportScript)
-                    }
-                )
+                if let url = theme.themeThumbnailURL {
+                    WebView(
+                        isPresented: .constant(true),
+                        url: url,
+                        shouldReloadOnUpdate: true,
+                        onCommit: { webView in
+                            webView.evaluateJavaScript(self.selectedDevice.viewportScript)
+                        }
+                    )
+                } else {
+                    /* todo error view */
+                }
 
                 Divider()
                     .frame(height: Layout.dividerHeight)
@@ -63,7 +73,7 @@ struct ThemesPreviewView: View {
                     }
                     .buttonStyle(PrimaryButtonStyle())
 
-                    Text(String(format: Localization.themeName, "Tsubaki"))
+                    Text(String(format: Localization.themeName, theme.name))
                         .secondaryBodyStyle()
                 }.padding(Layout.footerPadding)
             }
@@ -149,6 +159,13 @@ private extension ThemesPreviewView {
 
 struct ThemesPreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        ThemesPreviewView()
+        ThemesPreviewView(
+            theme: WordPressTheme(
+                id: "123",
+                description: "Woo Theme",
+                name: "Woo",
+                demoURI: "https://woo.com"
+            )
+        )
     }
 }

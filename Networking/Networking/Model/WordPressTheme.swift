@@ -47,7 +47,7 @@ private extension WordPressTheme {
     }
 }
 
-extension WordPressTheme {
+public extension WordPressTheme {
     var themeThumbnailURL: URL? {
         if self.demoURI.isEmpty {
             return nil

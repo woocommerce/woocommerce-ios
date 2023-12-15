@@ -387,6 +387,26 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.paymentSyncDate, "3")
     }
 
+    /// Test that subscription products with alternative numeric types are properly parsed.
+    ///
+    func test_subscription_products_with_alternative_numeric_types_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadSubscriptionProductResponseWithAlternativeTypes())
+        let subscriptionSettings = try XCTUnwrap(product.subscription)
+
+        // Then
+        XCTAssertEqual(product.productType, .subscription)
+        XCTAssertEqual(subscriptionSettings.length, "2")
+        XCTAssertEqual(subscriptionSettings.period, .month)
+        XCTAssertEqual(subscriptionSettings.periodInterval, "1")
+        XCTAssertEqual(subscriptionSettings.price, "5")
+        XCTAssertEqual(subscriptionSettings.signUpFee, "")
+        XCTAssertEqual(subscriptionSettings.trialLength, "1")
+        XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
+        XCTAssertTrue(subscriptionSettings.oneTimeShipping)
+        XCTAssertEqual(subscriptionSettings.paymentSyncDate, "3")
+    }
+
     /// Test that products with the `subscription` product type are properly parsed when sync renewal value is in dict format.
     ///
     func test_subscription_products_with_sync_renewals_in_dict_format_are_properly_parsed() throws {
@@ -518,6 +538,12 @@ private extension ProductMapperTests {
     ///
     func mapLoadSubscriptionProductResponse() -> Product? {
         return mapProduct(from: "product-subscription")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product-subscription-alternative-types`
+    ///
+    func mapLoadSubscriptionProductResponseWithAlternativeTypes() -> Product? {
+        return mapProduct(from: "product-subscription-alternative-types")
     }
 
     /// Returns the ProductMapper output upon receiving `product-min-max-quantities`

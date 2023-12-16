@@ -1294,15 +1294,6 @@ def trigger_buildkite_release_build(branch:, beta:)
   )
 end
 
-lane :trigger_buildkite do
-  buildkite_trigger_build(
-    buildkite_organization: 'automattic',
-    buildkite_pipeline: 'woocommerce-ios',
-    branch: 'update/CI-release-pipelines',
-    pipeline_file: 'release-pipelines/start-code-freeze.yml'
-  )
-end
-
 def inject_buildkite_analytics_environment(xctestrun_path:)
   require 'plist'
 

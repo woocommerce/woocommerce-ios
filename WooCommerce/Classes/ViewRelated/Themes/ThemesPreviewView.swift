@@ -103,8 +103,6 @@ struct ThemesPreviewView: View {
                 }
             }
             .toolbar {
-                if let url = theme.themeThumbnailURL {
-                }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Image(uiImage: .closeButton)
                 }

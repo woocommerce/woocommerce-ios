@@ -1,1 +1,11 @@
-Good news everyone! We've introduced some game-changing updates to enhance your experience. Say goodbye to delays during order creation—now you can type in the quantity and speed up your process effortlessly. Downloadable products have also received an upgrade; they now accept a variety of file types beyond just images. Additionally, we've made crucial stability improvements, ensuring a smoother and more reliable overall usage. Dive in now and explore these fantastic enhancements!
+- [*] Order editing: fixed bug preventing retry for errors when editing or creating an order [https://github.com/woocommerce/woocommerce-ios/pull/11391]
+- [*] Payments: Tap to Pay trial payments are now automatically refunded [https://github.com/woocommerce/woocommerce-ios/pull/11395]
+- [*] Product Creation AI: Show survey to collect user feedback. [https://github.com/woocommerce/woocommerce-ios/pull/11390]
+- [*] Edit Products: category list is now searchable. [https://github.com/woocommerce/woocommerce-ios/pull/11380]
+- [*] Show one time shipping setting status in product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/11403]
+- [*] Remove features and challenges questions from the store creation profiler flow. [https://github.com/woocommerce/woocommerce-ios/pull/11410]
+- [*] Edit Products: make downloadable files more discoverable [https://github.com/woocommerce/woocommerce-ios/pull/11388]
+- [**] [internal] A minor refactor in authentication flow, including but not limited to social sign-in and two factor authentication. [https://github.com/woocommerce/woocommerce-ios/pull/11402]
+- [*] Login: after logging in from the `Create a New Store` CTA in the prologue screen, it should start the store creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/11385]
+- [**] Products: Merchants now can scan product barcodes directly from the Product list in order to update inventory [https://github.com/woocommerce/woocommerce-ios/pull/11457]
+

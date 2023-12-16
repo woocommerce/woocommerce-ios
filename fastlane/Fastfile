@@ -258,8 +258,7 @@ platform :ios do
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
-    # Check out the up-to-date release branch
-    Fastlane::Helper::GitHelper.checkout_and_pull("release/#{release_version_current}")
+    ensure_git_branch_is_release_branch
 
     UI.important("Completing code freeze for: #{release_version_current}")
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
@@ -1292,15 +1291,6 @@ def trigger_buildkite_release_build(branch:, beta:)
     branch: branch,
     environment: { BETA_RELEASE: beta },
     pipeline_file: 'release-builds.yml'
-  )
-end
-
-lane :trigger_buildkite do
-  buildkite_trigger_build(
-    buildkite_organization: 'automattic',
-    buildkite_pipeline: 'woocommerce-ios',
-    branch: 'release/16.7',
-    pipeline_file: 'release-pipelines/complete-code-freeze.yml'
   )
 end
 

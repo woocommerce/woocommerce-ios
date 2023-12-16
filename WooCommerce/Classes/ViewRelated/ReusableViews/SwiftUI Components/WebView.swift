@@ -34,13 +34,25 @@ struct WebView: UIViewRepresentable {
     ///
     var shouldReloadOnUpdate: Bool
 
+    /// Check whether to prevent any link clicking to open the link.
+    /// This is used in ThemesPreviewView, as it is intended to only display a single demo URL without allowing navigation to
+    /// other webpages.
+    var disableLinkClicking: Bool
+
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
-    init(isPresented: Binding<Bool>, url: URL, shouldReloadOnUpdate: Bool = false, onCommit: ((WKWebView)->Void)? = nil) {
+    init(
+        isPresented: Binding<Bool>,
+        url: URL,
+        shouldReloadOnUpdate: Bool = false,
+        disableLinkClicking: Bool = false,
+        onCommit: ((WKWebView)->Void)? = nil
+    ) {
         self._isPresented = isPresented
         self.url = url
-        self.onCommit = onCommit
         self.shouldReloadOnUpdate = shouldReloadOnUpdate
+        self.disableLinkClicking = disableLinkClicking
+        self.onCommit = onCommit
     }
 
     func makeCoordinator() -> WebViewCoordinator {
@@ -78,6 +90,12 @@ struct WebView: UIViewRepresentable {
                 webView.navigationDelegate = nil
                 return
             }
+
+            if navigationAction.navigationType == .linkActivated && parent.disableLinkClicking {
+                decisionHandler(.cancel)
+                return
+            }
+
             decisionHandler(.allow)
         }
 

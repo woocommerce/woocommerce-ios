@@ -82,6 +82,7 @@ struct ThemesPreviewView: View {
                         isPresented: .constant(true),
                         url: url,
                         shouldReloadOnUpdate: true,
+                        disableLinkClicking: true,
                         onCommit: { webView in
                             webView.evaluateJavaScript(self.selectedDevice.viewportScript)
                         }

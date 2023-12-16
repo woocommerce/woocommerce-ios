@@ -14,8 +14,8 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
-      echo '--- :closed_lock_with_key: Access secrets'
+      echo '--- :closed_lock_with_key: Access Secrets'
       bundle exec fastlane run configure_apply
 
-      echo '--- :fire: Start new hotfix release'
+      echo '--- :fire: Start New Hotfix Release'
       bundle exec fastlane new_hotfix_release version:${VERSION} skip_confirm:true

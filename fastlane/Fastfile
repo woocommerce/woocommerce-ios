@@ -258,7 +258,8 @@ platform :ios do
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
-    ensure_git_branch_is_release_branch
+    # Check out the up-to-date release branch
+    Fastlane::Helper::GitHelper.checkout_and_pull("release/#{release_version_current}")
 
     UI.important("Completing code freeze for: #{release_version_current}")
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')

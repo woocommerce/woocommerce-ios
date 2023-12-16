@@ -8,7 +8,6 @@ struct ThemesCarouselView: View {
 
     @ObservedObject private var viewModel: ThemesCarouselViewModel
 
-    @State private var isShowingThemesPreview = false
     @State private var selectedTheme: WordPressTheme? = nil
 
     private let onSelectedTheme: (WordPressTheme) -> Void
@@ -35,7 +34,6 @@ struct ThemesCarouselView: View {
                         ForEach(themes) { theme in
                             Button(action: {
                                 onSelectedTheme(theme)
-                                isShowingThemesPreview = true
                                 selectedTheme = theme
                             }) {
                                 if let themeImageURL = theme.themeThumbnailURL {

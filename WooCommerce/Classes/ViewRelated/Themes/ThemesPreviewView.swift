@@ -189,8 +189,8 @@ private extension ThemesPreviewView {
 
         static let errorLoadingThemeDemo = NSLocalizedString(
             "ThemesPreviewView.errorLoadingThemeDemo",
-            value: "This theme has no theme demo. Please try another theme.",
-            comment: "The error message shown if no theme demo URL is available."
+            value: "Unable to render the demo for this theme. Please try another theme.",
+            comment: "The error message shown if the app can't show a theme demo."
         )
     }
 }

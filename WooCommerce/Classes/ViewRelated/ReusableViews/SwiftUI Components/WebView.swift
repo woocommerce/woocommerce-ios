@@ -24,7 +24,8 @@ struct WebView: UIViewRepresentable {
     ///
     var exitTrigger: (() -> Void)?
 
-    /// Callback that will be triggered in onCommit
+    /// Callback that will be triggered in when the underlying `WKWebView` delegate method `didCommit` is triggered.
+    /// This happens when the web view has received data and is starting to render the content.
     ///
     var onCommit: ((WKWebView) -> Void)?
 

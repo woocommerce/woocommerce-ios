@@ -17,5 +17,8 @@ steps:
       echo '--- :closed_lock_with_key: Access secrets'
       bundle exec fastlane run configure_apply
 
+      echo "--- :cocoapods: Setting up Pods"
+      install_cocoapods
+
       echo '--- :snowflake: Complete code freeze'
       bundle exec fastlane complete_code_freeze skip_confirm:true

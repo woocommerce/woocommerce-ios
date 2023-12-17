@@ -54,11 +54,11 @@ public extension StoreOnboardingTask {
 private extension StoreOnboardingTask.TaskType {
     var sortOrder: Int {
         switch self {
-        case .storeName:
-            return 0
-        case .storeDetails:
-            return 1
         case .addFirstProduct:
+            return 0
+        case .storeName:
+            return 1
+        case .storeDetails:
             return 2
         case .woocommercePayments:
             return 3

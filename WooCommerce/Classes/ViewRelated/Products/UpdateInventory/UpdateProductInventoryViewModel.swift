@@ -137,15 +137,18 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
     private var inventoryItem: InventoryItem
     private let stores: StoresManager
+    private let analytics: Analytics
 
     var onUpdatedInventory: ((String) -> ())
 
     init(inventoryItem: InventoryItem,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onUpdatedInventory: @escaping ((String) -> ())) {
         self.inventoryItem = inventoryItem
         self.stores = stores
+        self.analytics = analytics
         self.onUpdatedInventory = onUpdatedInventory
 
         refresh()
@@ -188,6 +191,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     func onTapIncreaseStockQuantityOnce() async throws {
+        analytics.track(.inventoryUpdateIncrementQuantityTapped)
         guard let quantityDecimal = Decimal(string: quantity) else {
             return
         }
@@ -198,10 +202,19 @@ final class UpdateProductInventoryViewModel: ObservableObject {
     }
 
     func onTapUpdateStockQuantity() async throws {
+        analytics.track(.inventoryUpdateManualQuantityTapped)
         guard let quantityDecimal = Decimal(string: quantity) else {
             throw UpdateInventoryError.nonSupportedQuantity
         }
         try await updateStockQuantity(with: quantityDecimal)
+    }
+
+    func onViewProductDetailsButtonTapped() {
+        analytics.track(.inventoryUpdateViewProductDetailsTapped)
+    }
+
+    func onDismiss() {
+        analytics.track(.inventoryUpdateDismissed)
     }
 
     func displayErrorNotice(_ productName: String) {
@@ -214,10 +227,15 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         do {
             isManageStockButtonLoading = true
             inventoryItem = try await inventoryItem.enableManageStock(stores: stores)
+            analytics.track(.inventoryUpdateEnableManageStockSuccess)
             isManageStockButtonLoading = false
             refresh()
         } catch {
             isManageStockButtonLoading = false
+            analytics.track(event: WooAnalyticsEvent(statName: .inventoryUpdateEnableManageStockFailure,
+                                                     properties: [:],
+                                                     error: error))
+            throw UpdateInventoryError.generic
         }
     }
 
@@ -235,9 +253,11 @@ private extension UpdateProductInventoryViewModel {
             onUpdatedInventory("\(newQuantity)")
             isPrimaryButtonLoading = false
             updateQuantityButtonMode = .increaseOnce
+            analytics.track(.inventoryUpdateQuantityUpdateSuccess)
         }
         catch {
             isPrimaryButtonLoading = false
+            analytics.track(.inventoryUpdateQuantityUpdateFailure)
             throw UpdateInventoryError.generic
         }
     }

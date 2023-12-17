@@ -11,6 +11,7 @@
 - [*] Edit Products: make downloadable files more discoverable [https://github.com/woocommerce/woocommerce-ios/pull/11388]
 - [**] [internal] A minor refactor in authentication flow, including but not limited to social sign-in and two factor authentication. [https://github.com/woocommerce/woocommerce-ios/pull/11402]
 - [*] Login: after logging in from the `Create a New Store` CTA in the prologue screen, it should start the store creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/11385]
+- [**] Products: Merchants now can scan product barcodes directly from the Product list in order to update inventory [https://github.com/woocommerce/woocommerce-ios/pull/11457]
 
 16.6
 -----

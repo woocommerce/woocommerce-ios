@@ -189,6 +189,7 @@ public typealias WooPaymentsDepositInterval = Networking.WooPaymentsDepositInter
 public typealias WooPaymentsDepositStatus = Networking.WooPaymentsDepositStatus
 public typealias StoreOnboardingTask = Networking.StoreOnboardingTask
 public typealias WCAnalyticsCustomer = Networking.WCAnalyticsCustomer
+public typealias WordPressPage = Networking.WordPressPage
 public typealias WordPressTheme = Networking.WordPressTheme
 
 // MARK: - Exported Storage Symbols

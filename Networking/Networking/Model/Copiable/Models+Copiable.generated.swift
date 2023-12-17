@@ -3103,6 +3103,24 @@ extension Networking.WordPressMedia {
     }
 }
 
+extension Networking.WordPressPage {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        title: CopiableProp<String> = .copy,
+        link: CopiableProp<String> = .copy
+    ) -> Networking.WordPressPage {
+        let id = id ?? self.id
+        let title = title ?? self.title
+        let link = link ?? self.link
+
+        return Networking.WordPressPage(
+            id: id,
+            title: title,
+            link: link
+        )
+    }
+}
+
 extension Networking.WordPressTheme {
     public func copy(
         id: CopiableProp<String> = .copy,

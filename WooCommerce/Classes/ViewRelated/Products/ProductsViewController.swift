@@ -304,7 +304,7 @@ private extension ProductsViewController {
                         self.presentNotice(title: noticeMessage)
                     })), animated: true)
                 } catch {
-                    DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
+                    self.trackScannedItemSearchFailure(error)
                     let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,
                                                                                  code: scannedBarcode,
                                                                                  actionHandler: {
@@ -355,6 +355,17 @@ private extension ProductsViewController {
 
         coordinatingController.start()
         self.addProductCoordinator = coordinatingController
+    }
+}
+
+// MARK: - Analytics helpers
+//
+private extension ProductsViewController {
+    func trackScannedItemSearchFailure(_ error: Error) {
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
+        let errorDescription = error.localizedDescription
+        let event = WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source, reason: errorDescription)
+        ServiceLocator.analytics.track(event: event)
     }
 }
 

@@ -2294,6 +2294,17 @@ extension Networking.WordPressMedia {
         )
     }
 }
+extension Networking.WordPressPage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WordPressPage {
+        .init(
+            id: .fake(),
+            title: .fake(),
+            link: .fake()
+        )
+    }
+}
 extension Networking.WordPressTheme {
     /// Returns a "ready to use" type filled with fake values.
     ///

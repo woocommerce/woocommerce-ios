@@ -121,4 +121,45 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(result.failure is NetworkError)
     }
+
+    func test_fetchPageList_returns_correct_page_list() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "/?rest_route=/wp/v2/pages&_fields=id,title,link", filename: "wp-page-list-success")
+        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+
+        // When
+        let result: Result<[WordPressPage], Error> = waitFor { promise in
+            let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let list = try result.get()
+        XCTAssertEqual(list, [
+            .init(id: 21, title: "Cart", link: "https://example.com/cart/"),
+            .init(id: 20, title: "Shop", link: "https://example.com/shop/"),
+            .init(id: 6, title: "Blog", link: "https://example.com/blog/")
+        ])
+    }
+
+    func test_fetchPageList_relays_error_properly() throws {
+        // Given
+        network.simulateError(requestUrlSuffix: "/?rest_route=/wp/v2/pages&_fields=id,title,link", error: NetworkError.notFound())
+        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+
+        // When
+        let result: Result<[WordPressPage], Error> = waitFor { promise in
+            let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue(result.failure is NetworkError)
+    }
 }

@@ -5,6 +5,7 @@ import Yosemite
 ///
 final class ThemesPreviewViewModel: ObservableObject {
     @Published private var pages: [WordPressPage] = []
+    @Published private(set) var state: State = .pagesLoading
 
     private let stores: StoresManager
     private let themeDemoURL: String
@@ -18,8 +19,10 @@ final class ThemesPreviewViewModel: ObservableObject {
     func fetchPages() async {
         do {
             pages = try await loadPages()
+            state = .pagesContent(pages: pages)
         } catch {
             DDLogError("⛔️ Error loading pages: \(error)")
+            state = .pagesLoadingError
         }
     }
 }
@@ -36,5 +39,13 @@ private extension ThemesPreviewViewModel {
                 }
             })
         }
+    }
+}
+
+extension ThemesPreviewViewModel {
+    enum State: Equatable {
+        case pagesLoading
+        case pagesLoadingError
+        case pagesContent(pages: [WordPressPage])
     }
 }

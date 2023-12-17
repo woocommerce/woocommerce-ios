@@ -134,6 +134,19 @@ struct ThemesPreviewView: View {
         }
     }
 
+    private func pageSelector(state: ThemesPreviewViewModel.State) -> some View {
+        switch state {
+        case .pagesLoading:
+            return Text(Localization.preview)
+
+        case .pagesContent(let pages):
+            return Text(Localization.preview) // todo: build selector
+
+        case .pagesLoadingError:
+            return Text(Localization.preview)
+        }
+    }
+
     private func menuItem(for device: PreviewDevice) -> some View {
         Button {
             self.selectedDevice = device
@@ -167,6 +180,12 @@ private extension ThemesPreviewView {
     }
 
     private enum Localization {
+        static let preview = NSLocalizedString(
+            "themesPreviewView.preview",
+            value: "Preview",
+            comment: "Title of the preview screen"
+        )
+
         static let menuMobile = NSLocalizedString(
             "themesPreviewView.menuMobile",
             value: "Mobile",

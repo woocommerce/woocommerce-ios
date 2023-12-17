@@ -57,7 +57,11 @@ struct ThemesCarouselView: View {
             await viewModel.fetchThemes()
         }
         .sheet(item: $selectedTheme, content: { theme in
-            ThemesPreviewView(theme: theme, onStart: { /* todo install theme */ } )
+            ThemesPreviewView(
+                viewModel: .init(themeDemoURL: theme.demoURI),
+                theme: theme,
+                onStart: { /* todo install theme */ }
+            )
         })
     }
 }

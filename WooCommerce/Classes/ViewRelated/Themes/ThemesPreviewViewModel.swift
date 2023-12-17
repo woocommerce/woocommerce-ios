@@ -7,12 +7,11 @@ final class ThemesPreviewViewModel: ObservableObject {
     @Published private var pages: [WordPressPage] = []
 
     private let stores: StoresManager
-    private let siteURL: String
+    private let themeDemoURL: String
 
-    init(stores: StoresManager = ServiceLocator.stores,
-         siteURL: String) {
+    init(themeDemoURL: String, stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        self.siteURL = siteURL
+        self.themeDemoURL = themeDemoURL
     }
 
     @MainActor
@@ -28,7 +27,7 @@ final class ThemesPreviewViewModel: ObservableObject {
 private extension ThemesPreviewViewModel {
     func loadPages() async throws -> [WordPressPage] {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(WordPressSiteAction.fetchPageList(siteURL: siteURL) { result in
+            stores.dispatch(WordPressSiteAction.fetchPageList(siteURL: themeDemoURL) { result in
                 switch result {
                 case .success(let pages):
                     continuation.resume(returning: pages)

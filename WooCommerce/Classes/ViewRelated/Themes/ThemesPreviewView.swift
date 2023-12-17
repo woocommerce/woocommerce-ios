@@ -63,13 +63,19 @@ struct ThemesPreviewView: View {
     }
 
     @Environment(\.presentationMode) var presentationMode
+
+    @ObservedObject private var viewModel: ThemesPreviewViewModel
+
     @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
     private let theme: WordPressTheme
 
     /// Triggered when "Start with this theme" button is tapped.
     var onStart: () -> Void
 
-    init(theme: WordPressTheme, onStart: @escaping () -> Void) {
+    init(viewModel: ThemesPreviewViewModel,
+         theme: WordPressTheme,
+         onStart: @escaping () -> Void) {
+        self.viewModel = viewModel
         self.theme = theme
         self.onStart = onStart
     }
@@ -199,6 +205,7 @@ private extension ThemesPreviewView {
 struct ThemesPreviewView_Previews: PreviewProvider {
     static var previews: some View {
         ThemesPreviewView(
+            viewModel: .init(themeDemoURL: "https://woo.com"),
             theme: WordPressTheme(
                 id: "123",
                 description: "Woo Theme",

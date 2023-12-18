@@ -11,7 +11,9 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     let mode: Mode
     private let stores: StoresManager
-    private var onReload: (() -> Void)?
+
+    /// Closure to be triggered when the theme list is reloaded.
+    var onReload: (() -> Void)?
 
     init(mode: Mode,
          stores: StoresManager = ServiceLocator.stores) {
@@ -44,10 +46,6 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     func updateCurrentTheme(id: String?) {
         currentThemeID = id
-    }
-
-    func updateReloadBehavior(action: @escaping () -> Void) {
-        onReload = action
     }
 }
 

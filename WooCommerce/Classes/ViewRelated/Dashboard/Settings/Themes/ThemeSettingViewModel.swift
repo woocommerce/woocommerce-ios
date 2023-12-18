@@ -49,7 +49,7 @@ final class ThemeSettingViewModel: ObservableObject {
 
 private extension ThemeSettingViewModel {
     func configureCarouselViewModel() {
-        carouselViewModel.updateReloadBehavior { [weak self] in
+        carouselViewModel.onReload = { [weak self] in
             guard let self else { return }
             Task {
                 await self.updateCurrentThemeName()

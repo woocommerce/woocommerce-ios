@@ -54,9 +54,9 @@ final class ThemesCarouselViewModel: ObservableObject {
 private extension ThemesCarouselViewModel {
     func waitForCurrentThemeAndFinishLoading() {
         $themes.combineLatest($currentThemeID.dropFirst())
-            .map { themes, currentThemeID in
+            .map { themes, currentThemeID -> State in
                 let filteredThemes = themes.filter { $0.id != currentThemeID }
-                return State.content(themes: filteredThemes)
+                return filteredThemes.isEmpty ? .error : .content(themes: filteredThemes)
             }
             .assign(to: &$state)
     }

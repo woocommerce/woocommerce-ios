@@ -62,7 +62,7 @@ struct ThemesPreviewView: View {
         }
     }
 
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
     private let theme: WordPressTheme
 
@@ -107,7 +107,7 @@ struct ThemesPreviewView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        self.presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }, label: {
                         Image(uiImage: .closeButton)
                     })

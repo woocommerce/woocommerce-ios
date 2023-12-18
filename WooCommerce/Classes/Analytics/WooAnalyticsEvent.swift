@@ -1203,6 +1203,7 @@ extension WooAnalyticsEvent {
         enum Flow: String {
             case simplePayment = "simple_payment"
             case orderPayment = "order_payment"
+            case orderCreation = "order_creation"
             case tapToPayTryAPayment = "tap_to_pay_try_a_payment"
         }
 

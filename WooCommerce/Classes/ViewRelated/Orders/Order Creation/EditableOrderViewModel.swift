@@ -782,7 +782,7 @@ final class EditableOrderViewModel: ObservableObject {
             orderID: order.orderID,
             paymentLink: order.paymentURL,
             formattedTotal: formattedTotal,
-            flow: .orderPayment)
+            flow: .orderCreation)
 
         self.shouldPresentCollectPayment = true
     }

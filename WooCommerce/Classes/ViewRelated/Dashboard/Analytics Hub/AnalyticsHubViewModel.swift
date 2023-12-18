@@ -25,7 +25,7 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
-        let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
+        let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
         self.siteID = siteID
         self.timeZone = timeZone
@@ -299,7 +299,7 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
+                self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType, timezone: timeZone)
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter,
                                                                          analytics: self.analytics)

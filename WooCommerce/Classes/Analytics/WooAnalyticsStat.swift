@@ -234,8 +234,6 @@ public enum WooAnalyticsStat: String {
     case signupSubmitted = "signup_submitted"
     case signupSuccess = "signup_success"
     case signupFailed = "signup_failed"
-    case storeReadyAlertDisplayed = "site_creation_store_ready_alert_displayed"
-    case storeReadyAlertSwitchStoreTapped = "site_creation_store_ready_alert_switch_store_tapped"
 
     // MARK: Help & Support Events
     //

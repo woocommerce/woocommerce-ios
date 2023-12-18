@@ -176,8 +176,6 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.numberOfTimesAIProductCreated] = nil
         defaults[.didSuggestProductCreationAISurvey] = nil
         defaults[.themesPendingInstall] = nil
-        defaults[.siteIDPendingStoreSwitch] = nil
-        defaults[.expectedStoreNamePendingStoreSwitch] = nil
     }
 
     /// Deletes application password

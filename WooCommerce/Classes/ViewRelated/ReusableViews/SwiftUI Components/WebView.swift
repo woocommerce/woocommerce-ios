@@ -24,36 +24,7 @@ struct WebView: UIViewRepresentable {
     ///
     var exitTrigger: (() -> Void)?
 
-    /// Callback that will be triggered in when the underlying `WKWebView` delegate method `didCommit` is triggered.
-    /// This happens when the web view has received data and is starting to render the content.
-    ///
-    var onCommit: ((WKWebView) -> Void)?
-
-    /// Check to see if WebView should reload on caller View update.
-    /// For the moment this is used to allow ThemesPreviewView to re-apply JS code on layout change request.
-    ///
-    var shouldReloadOnUpdate: Bool
-
-    /// Check whether to prevent any link clicking to open the link.
-    /// This is used in ThemesPreviewView, as it is intended to only display a single demo URL without allowing navigation to
-    /// other webpages.
-    var disableLinkClicking: Bool
-
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-
-    init(
-        isPresented: Binding<Bool>,
-        url: URL,
-        shouldReloadOnUpdate: Bool = false,
-        disableLinkClicking: Bool = false,
-        onCommit: ((WKWebView)->Void)? = nil
-    ) {
-        self._isPresented = isPresented
-        self.url = url
-        self.shouldReloadOnUpdate = shouldReloadOnUpdate
-        self.disableLinkClicking = disableLinkClicking
-        self.onCommit = onCommit
-    }
 
     func makeCoordinator() -> WebViewCoordinator {
         WebViewCoordinator(self)
@@ -69,9 +40,7 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        if shouldReloadOnUpdate {
-            uiView.reload()
-        }
+
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {
@@ -90,17 +59,7 @@ struct WebView: UIViewRepresentable {
                 webView.navigationDelegate = nil
                 return
             }
-
-            if navigationAction.navigationType == .linkActivated && parent.disableLinkClicking {
-                decisionHandler(.cancel)
-                return
-            }
-
             decisionHandler(.allow)
-        }
-
-        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-            parent.onCommit?(webView)
         }
     }
 }

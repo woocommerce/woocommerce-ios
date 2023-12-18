@@ -1,17 +1,17 @@
 import Yosemite
 import enum Networking.InstallThemeError
 
-protocol ThemeInstaller {
+protocol ThemeInstallerProtocol {
     func install(themeID: String, siteID: Int64) async throws
 
     func scheduleThemeInstall(themeID: String, siteID: Int64)
 
-    func installPendingThemeIfNeeded(siteID: Int64) async throws
+    func installPendingTheme(siteID: Int64) async throws
 }
 
 /// Helper to install and activate theme
 ///
-struct DefaultThemeInstaller: ThemeInstaller {
+struct DefaultThemeInstaller: ThemeInstallerProtocol {
     private let userDefaults: UserDefaults
     private let stores: StoresManager
 
@@ -39,7 +39,7 @@ struct DefaultThemeInstaller: ThemeInstaller {
 
     /// Installs any pending theme for the given site ID
     /// - Parameter siteID: site ID to install and activate the theme
-    func installPendingThemeIfNeeded(siteID: Int64) async throws {
+    func installPendingTheme(siteID: Int64) async throws {
         guard let themeID = userDefaults.pendingThemeID(for: siteID) else {
             return DDLogInfo("No pending theme installation.")
         }

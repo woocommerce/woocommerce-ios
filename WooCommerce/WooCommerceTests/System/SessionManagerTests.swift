@@ -382,50 +382,6 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.themesPendingInstall])
     }
 
-    /// Verifies that `siteIDPendingStoreSwitch` is set to `nil` upon reset
-    ///
-    func test_siteIDPendingStoreSwitch_is_set_to_nil_upon_reset() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-        let siteID: Int64 = 123
-
-        // When
-        defaults[.siteIDPendingStoreSwitch] = siteID
-
-        // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[.siteIDPendingStoreSwitch] as? Int64), siteID)
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[.siteIDPendingStoreSwitch])
-    }
-
-    /// Verifies that `expectedStoreNamePendingStoreSwitch` is set to `nil` upon reset
-    ///
-    func test_expectedStoreNamePendingStoreSwitch_is_set_to_nil_upon_reset() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-        let storeName = "My Woo Store"
-
-        // When
-        defaults[.expectedStoreNamePendingStoreSwitch] = storeName
-
-        // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[.expectedStoreNamePendingStoreSwitch] as? String), storeName)
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[.expectedStoreNamePendingStoreSwitch])
-    }
-
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

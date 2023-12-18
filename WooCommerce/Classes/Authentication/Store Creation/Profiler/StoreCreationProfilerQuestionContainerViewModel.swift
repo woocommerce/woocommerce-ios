@@ -44,7 +44,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         }
     }
     private let uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
-    private let themeInstaller: ThemeInstaller
+    private let themeInstaller: ThemeInstallerProtocol
 
     private var answers: StoreProfilerAnswers {
         let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
@@ -63,7 +63,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void,
          uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstallerProtocol = DefaultThemeInstaller()) {
         self.siteID = siteID
         self.storeName = storeName
         self.analytics = analytics

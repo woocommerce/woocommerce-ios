@@ -54,7 +54,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
             }
         }
 
-        try await sut.installPendingThemeIfNeeded(siteID: siteID)
+        try await sut.installPendingTheme(siteID: siteID)
 
         // Then
         XCTAssertEqual(installedThemeID, themeID)
@@ -87,7 +87,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
             }
         }
 
-        try await sut.installPendingThemeIfNeeded(siteID: siteID)
+        try await sut.installPendingTheme(siteID: siteID)
 
         // Then
         let themes = try XCTUnwrap(userDefaults[.themesPendingInstall] as? [String: String])
@@ -121,7 +121,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
             }
         }
 
-        try await sut.installPendingThemeIfNeeded(siteID: 132) // Different site ID
+        try await sut.installPendingTheme(siteID: 132) // Different site ID
 
         // Then
         XCTAssertNil(installedThemeID)

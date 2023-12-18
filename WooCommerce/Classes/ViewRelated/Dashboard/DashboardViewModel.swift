@@ -41,7 +41,6 @@ final class DashboardViewModel {
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
-    private let themeInstaller: ThemeInstaller
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -57,8 +56,7 @@ final class DashboardViewModel {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
+         storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
@@ -69,10 +67,8 @@ final class DashboardViewModel {
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
-        self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
-        installPendingThemeIfNeeded()
     }
 
     /// Uploads the answers from the store creation profiler flow
@@ -313,22 +309,6 @@ final class DashboardViewModel {
     private func setupObserverForBlazeCampaignView() {
         blazeCampaignDashboardViewModel.$shouldShowInDashboard
             .assign(to: &$showBlazeCampaignView)
-    }
-}
-
-// MARK: Theme install
-//
-private extension DashboardViewModel {
-    /// Installs themes for newly created store.
-    ///
-    func installPendingThemeIfNeeded() {
-        Task { @MainActor in
-            do {
-                try await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
-            } catch {
-                DDLogError("⛔️ Dashboard - Error installing pending theme: \(error)")
-            }
-        }
     }
 }
 

@@ -72,7 +72,7 @@ final class DashboardViewModel {
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
-        installPendingTheme()
+        installPendingThemeIfNeeded()
     }
 
     /// Uploads the answers from the store creation profiler flow
@@ -321,9 +321,9 @@ final class DashboardViewModel {
 private extension DashboardViewModel {
     /// Installs themes for newly created store.
     ///
-    func installPendingTheme() {
+    func installPendingThemeIfNeeded() {
         Task { @MainActor in
-            try? await themeInstaller.installPendingTheme(siteID: siteID)
+            try? await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
         }
     }
 }

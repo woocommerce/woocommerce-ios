@@ -10,7 +10,7 @@ final class MockThemeInstaller: ThemeInstaller {
 
     var installPendingThemeCalledForSiteID: Int64?
     var installPendingThemeCalled = false
-    func installPendingTheme(siteID: Int64) async throws {
+    func installPendingThemeIfNeeded(siteID: Int64) async throws {
         installPendingThemeCalled = true
         installPendingThemeCalledForSiteID = siteID
     }

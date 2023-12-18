@@ -28,7 +28,7 @@ final class ThemeSettingViewModel: ObservableObject {
         /// to show correct current theme information
         ///
         Task {
-            await installPendingTheme()
+            await installPendingThemeIfNeeded()
         }
     }
 
@@ -49,8 +49,8 @@ final class ThemeSettingViewModel: ObservableObject {
 private extension ThemeSettingViewModel {
     /// Installs pending theme for the current site
     ///
-    func installPendingTheme() async {
-       try? await themeInstaller.installPendingTheme(siteID: siteID)
+    func installPendingThemeIfNeeded() async {
+       try? await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
     }
 
     @MainActor

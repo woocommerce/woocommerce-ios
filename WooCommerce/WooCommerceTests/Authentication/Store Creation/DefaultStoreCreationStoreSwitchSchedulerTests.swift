@@ -4,7 +4,7 @@ import Yosemite
 
 @MainActor
 final class DefaultStoreCreationStoreSwitchSchedulerTests: XCTestCase {
-    func test_isPendingStoreSwitch_is_true_when_pending_store_switch() throws {
+    func test_isPendingStoreSwitch_is_true_when_there_is_a_pending_store_switch() throws {
         // Given
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
@@ -18,7 +18,7 @@ final class DefaultStoreCreationStoreSwitchSchedulerTests: XCTestCase {
         XCTAssertTrue(sut.isPendingStoreSwitch)
     }
 
-    func test_isPendingStoreSwitch_is_false_when_no_pending_store_switch() throws {
+    func test_isPendingStoreSwitch_is_false_when_there_is_no_pending_store_switch() throws {
         // Given
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
@@ -61,7 +61,7 @@ final class DefaultStoreCreationStoreSwitchSchedulerTests: XCTestCase {
         XCTAssertFalse(sut.isPendingStoreSwitch)
     }
 
-    func test_waitUntilStoreIsReady_returns_nil_if_no_pending_store_switch() async throws {
+    func test_waitUntilStoreIsReady_returns_nil_when_there_is_no_pending_store_switch() async throws {
         // Given
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))

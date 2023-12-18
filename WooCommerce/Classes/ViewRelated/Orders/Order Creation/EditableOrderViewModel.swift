@@ -364,6 +364,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
+    @Published var collectPaymentViewModel: PaymentMethodsViewModel? = nil
+
+    @Published var shouldPresentCollectPayment: Bool = false
+
     /// Saves a shipping line.
     ///
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
@@ -749,7 +753,8 @@ final class EditableOrderViewModel: ObservableObject {
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.
     ///
-    func createOrder() {
+    private func createOrder(onSuccess: @escaping (_ order: Order, _ usesGiftCard: Bool) -> Void,
+                             onFailure: @escaping (_ error: Error, _ usesGiftCard: Bool) -> Void) {
         performingNetworkRequest = true
 
         orderSynchronizer.commitAllChanges { [weak self] result, usesGiftCard in
@@ -758,14 +763,25 @@ final class EditableOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                self.onFinished(newOrder)
-                self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+                onSuccess(newOrder, usesGiftCard)
             case .failure(let error):
-                self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
-                self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+                onFailure(error, usesGiftCard)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
+    }
+
+    func collectPayment(for order: Order) {
+        let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+
+        self.collectPaymentViewModel = PaymentMethodsViewModel(
+            siteID: siteID,
+            orderID: order.orderID,
+            paymentLink: order.paymentURL,
+            formattedTotal: formattedTotal,
+            flow: .orderPayment) // make the flow specific to order creation?
+
+        self.shouldPresentCollectPayment = true
     }
 
     /// Action triggered on `Done` button tap in order editing flow.
@@ -841,8 +857,29 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onCreateOrderTapped() {
-        createOrder()
+        createOrder { [weak self] order, usesGiftCard in
+            guard let self else { return }
+            self.onFinished(order)
+            self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+        } onFailure: { [weak self] error, usesGiftCard in
+            guard let self else { return }
+            self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+            self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+        }
         trackCreateButtonTapped()
+    }
+
+    func onCollectPaymentTapped() {
+        createOrder { [weak self] order, usesGiftCard in
+            guard let self else { return }
+            self.collectPayment(for: order)
+            self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+        } onFailure: { [weak self] error, usesGiftCard in
+            guard let self else { return }
+            self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+            self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+        }
+        trackCollectPaymentTapped()
     }
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
@@ -1718,6 +1755,18 @@ private extension EditableOrderViewModel {
                                                                                 hasFees: orderSynchronizer.order.fees.isNotEmpty,
                                                                                 hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
                                                                                 products: Array(allProducts)))
+    }
+
+    func trackCollectPaymentTapped() {
+        let hasCustomerDetails = customerDataViewModel.isDataAvailable
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationCollectPaymentTapped(order: orderSynchronizer.order,
+                                                                                          status: orderSynchronizer.order.status,
+                                                                                          productCount: orderSynchronizer.order.items.count,
+                                                                                          customAmountsCount: orderSynchronizer.order.fees.count,
+                                                                                          hasCustomerDetails: hasCustomerDetails,
+                                                                                          hasFees: orderSynchronizer.order.fees.isNotEmpty,
+                                                                                          hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+                                                                                          products: Array(allProducts)))
     }
 
     /// Tracks an order creation success

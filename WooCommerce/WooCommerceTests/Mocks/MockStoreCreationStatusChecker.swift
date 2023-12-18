@@ -3,15 +3,13 @@ import Combine
 import Yosemite
 
 struct MockStoreCreationStatusChecker: StoreCreationStatusChecker {
-    private let siteSubject = PassthroughSubject<Site, Error>()
+    private let siteSubject: CurrentValueSubject<Site, Error>
+
+    init(site: Site) {
+        siteSubject = CurrentValueSubject<Site, Error>(site)
+    }
 
     func waitForSiteToBeReady(siteID: Int64) -> AnyPublisher<Yosemite.Site, Error> {
         siteSubject.eraseToAnyPublisher()
-    }
-}
-
-extension MockStoreCreationStatusChecker {
-    func markSiteAsReady(site: Site) {
-        siteSubject.send(site)
     }
 }

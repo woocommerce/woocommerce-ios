@@ -779,7 +779,7 @@ final class EditableOrderViewModel: ObservableObject {
             orderID: order.orderID,
             paymentLink: order.paymentURL,
             formattedTotal: formattedTotal,
-            flow: .orderPayment) // make the flow specific to order creation?
+            flow: .orderPayment)
 
         self.shouldPresentCollectPayment = true
     }
@@ -874,6 +874,7 @@ final class EditableOrderViewModel: ObservableObject {
             guard let self else { return }
             self.collectPayment(for: order)
             self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+            self.onFinished(order)
         } onFailure: { [weak self] error, usesGiftCard in
             guard let self else { return }
             self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)

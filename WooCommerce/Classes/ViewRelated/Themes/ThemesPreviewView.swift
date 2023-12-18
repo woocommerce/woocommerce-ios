@@ -167,14 +167,25 @@ struct ThemesPreviewView: View {
     }
 
     private func pagesListSheet(pages: [WordPressPage]) -> some View {
-        List {
+        return VStack {
+            Text(Localization.pagesSheetHeading)
+                .subheadlineStyle()
+                .padding(Layout.pagesSheetPadding)
+
             ForEach(pages) { page in
                 Button(action: {
                     viewModel.setSelectedPage(page: page)
+                    showPagesMenu = false
                 }, label: {
                     Text(page.title)
+                        .foregroundColor(Color(uiColor: .label))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
                 })
+                .padding(Layout.contentPadding)
             }
+
+            Spacer()
         }
     }
 
@@ -208,6 +219,7 @@ private extension ThemesPreviewView {
         static let dividerHeight: CGFloat = 1
         static let footerPadding: CGFloat = 16
         static let contentPadding: CGFloat = 16
+        static let pagesSheetPadding: EdgeInsets = .init(top: 20, leading: 16, bottom: 12, trailing: 16)
     }
 
     private enum Localization {
@@ -248,6 +260,12 @@ private extension ThemesPreviewView {
             "ThemesPreviewView.errorLoadingThemeDemo",
             value: "Unable to render the demo for this theme. Please try another theme.",
             comment: "The error message shown if the app can't show a theme demo."
+        )
+
+        static let pagesSheetHeading = NSLocalizedString(
+        "ThemesPreviewView.pagesSheetHeading",
+        value: "View other store pages on this theme",
+        comment: "Heading for sheet displaying list of pages"
         )
     }
 }

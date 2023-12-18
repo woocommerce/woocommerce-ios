@@ -2,7 +2,7 @@
 
 16.8
 -----
-
+- [*] Store creation: Inform user once store ready if app killed while waiting for store to be ready. [https://github.com/woocommerce/woocommerce-ios/pull/11478]
 
 16.7
 -----

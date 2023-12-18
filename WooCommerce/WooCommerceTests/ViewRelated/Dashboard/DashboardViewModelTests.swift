@@ -658,8 +658,8 @@ final class DashboardViewModelTests: XCTestCase {
     func test_it_triggers_pending_theme_install_upon_initialization() async throws {
         // Given
         let themeInstaller = MockThemeInstaller()
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           themeInstaller: themeInstaller)
+        _ = DashboardViewModel(siteID: sampleSiteID,
+                               themeInstaller: themeInstaller)
 
         waitUntil {
             themeInstaller.installPendingThemeCalled == true

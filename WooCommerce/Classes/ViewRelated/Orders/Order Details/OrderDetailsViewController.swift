@@ -624,8 +624,7 @@ private extension OrderDetailsViewController {
     private func collectPayment() {
         let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
         paymentMethodsViewController.parentController = self
-        let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
-        present(paymentMethodsNavigationController, animated: true)
+        present(paymentMethodsViewController, animated: true)
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemProductAddOn]) {

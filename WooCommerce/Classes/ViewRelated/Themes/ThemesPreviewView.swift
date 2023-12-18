@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.WordPressPage
 import struct Yosemite.WordPressTheme
 
 /// View to preview the demo page of a WordPress theme.
@@ -122,7 +123,7 @@ struct ThemesPreviewView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    pageSelector(state: viewModel.state)
+                    pageSelector(state: viewModel.state, pageTitle: viewModel.selectedPage.title)
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -142,7 +143,7 @@ struct ThemesPreviewView: View {
         .sheet(isPresented: $showPagesMenu) { /* todo show sheet */ }
     }
 
-    private func pageSelector(state: ThemesPreviewViewModel.State) -> some View {
+    private func pageSelector(state: ThemesPreviewViewModel.State, pageTitle: String) -> some View {
         switch state {
         case .pagesLoading:
             return AnyView(Text(Localization.preview))
@@ -152,7 +153,7 @@ struct ThemesPreviewView: View {
                 Button(action: { showPagesMenu = true },
                        label: {
                            HStack {
-                               Text("Home").secondaryBodyStyle()
+                               Text(pageTitle).secondaryBodyStyle()
                                Image(uiImage: .chevronDownImage).fixedSize()
                            }
                        })

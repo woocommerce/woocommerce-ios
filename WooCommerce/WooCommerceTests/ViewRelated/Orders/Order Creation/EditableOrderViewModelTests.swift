@@ -101,7 +101,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                     XCTFail("Received unsupported action: \(action)")
                 }
             }
-            viewModel.createOrder()
+            viewModel.onCreateOrderTapped()
         }
 
         // Then
@@ -122,7 +122,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                     XCTFail("Received unsupported action: \(action)")
                 }
             }
-            viewModel.createOrder()
+            viewModel.onCreateOrderTapped()
         }
 
         // Then
@@ -143,7 +143,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        viewModel.createOrder()
+        viewModel.onCreateOrderTapped()
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
@@ -163,7 +163,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        viewModel.createOrder()
+        viewModel.onCreateOrderTapped()
 
         // Then
         XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
@@ -1997,7 +1997,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        viewModel.createOrder()
+        viewModel.onCreateOrderTapped()
 
         // Then
         XCTAssertTrue(isCallbackCalled)

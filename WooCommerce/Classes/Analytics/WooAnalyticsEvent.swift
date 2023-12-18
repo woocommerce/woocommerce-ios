@@ -740,6 +740,25 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        static func orderCreationCollectPaymentTapped(order: Order,
+                                                      status: OrderStatusEnum,
+                                                      productCount: Int,
+                                                      customAmountsCount: Int,
+                                                      hasCustomerDetails: Bool,
+                                                      hasFees: Bool,
+                                                      hasShippingMethod: Bool,
+                                                      products: [Product]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCollectPaymentButtonTapped, properties: [
+                Keys.orderStatus: status.rawValue,
+                Keys.productCount: Int64(productCount),
+                Keys.customAmountsCount: Int64(customAmountsCount),
+                Keys.hasCustomerDetails: hasCustomerDetails,
+                Keys.hasFees: hasFees,
+                Keys.hasShippingMethod: hasShippingMethod,
+                Keys.productTypes: productTypes(order: order, products: products)
+            ])
+        }
+
         static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64, usesGiftCard: Bool) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount, Keys.usesGiftCard: usesGiftCard]
 

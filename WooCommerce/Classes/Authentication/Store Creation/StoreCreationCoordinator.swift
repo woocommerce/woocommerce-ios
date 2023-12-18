@@ -133,6 +133,7 @@ private extension StoreCreationCoordinator {
         switchStoreUseCase.switchStore(with: site.siteID) { [weak self] siteChanged in
             guard let self else { return }
 
+            self.storeSwitcher.removePendingStoreSwitch()
             // Shows `My store` tab by default.
             MainTabBarController.switchToMyStoreTab(animated: true)
 

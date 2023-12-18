@@ -52,7 +52,7 @@ public struct ProductsReportItem: Decodable, Equatable {
         let extendedInfo = try container.nestedContainer(keyedBy: ExtendedInfoCodingKeys.self, forKey: .extendedInfo)
 
         let productName = try extendedInfo.decode(String.self, forKey: .productName)
-        let price = try extendedInfo.decode(Double.self, forKey: .price)
+        let price = (try? extendedInfo.decode(Double.self, forKey: .price)) ?? 0
 
         // Parse and extract the `src` string out of the image html using `Aztec parser`
         let imageUrl: String? = {

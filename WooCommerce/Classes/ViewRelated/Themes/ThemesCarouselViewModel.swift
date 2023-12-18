@@ -11,11 +11,14 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     let mode: Mode
     private let stores: StoresManager
+    private let analytics: Analytics
 
     init(mode: Mode,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.mode = mode
         self.stores = stores
+        self.analytics = analytics
         // current theme is only required for theme settings mode.
         if mode == .themeSettings {
             waitForCurrentThemeAndFinishLoading()
@@ -40,6 +43,10 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     func updateCurrentTheme(id: String?) {
         currentThemeID = id
+    }
+
+    func trackViewAppear(source: WooAnalyticsEvent.Themes.Source) {
+        analytics.track(event: .Themes.pickerScreenDisplayed(source: source))
     }
 }
 

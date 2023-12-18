@@ -168,6 +168,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
 
+    @Published private(set) var collectPaymentDisabled: Bool = false
+
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
@@ -463,6 +465,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
         configureDisabledState()
+        configureCollectPaymentDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
         configureStatusBadgeViewModel()
@@ -1171,6 +1174,18 @@ private extension EditableOrderViewModel {
                 }
             }
             .assign(to: &$disabled)
+    }
+
+    func configureCollectPaymentDisabledState() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $disabled)
+            .map { [weak self] order, viewDisabled -> Bool in
+                guard !viewDisabled else {
+                    return true
+                }
+                let orderTotal = self?.currencyFormatter.convertToDecimal(order.total) as? Decimal ?? .zero
+                return orderTotal <= .zero
+            }
+            .assign(to: &$collectPaymentDisabled)
     }
 
     /// Calculates what navigation trailing item should be shown depending on our internal state.

@@ -361,7 +361,7 @@ struct OrderForm: View {
                 Text(Localization.collectPaymentButton)
             }
             .buttonStyle(PrimaryButtonStyle())
-            .disabled(viewModel.disabled)
+            .disabled(viewModel.collectPaymentDisabled)
         } else {
             Button {
                 viewModel.finishEditing()

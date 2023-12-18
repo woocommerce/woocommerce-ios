@@ -85,38 +85,5 @@ extension ThemesCarouselViewModel {
     enum Mode: Equatable {
         case themeSettings
         case storeCreationProfiler
-
-        var moreThemesSuggestionText: String {
-            switch self {
-            case .themeSettings:
-                return Localization.moreOnSettingsScreen
-            case .storeCreationProfiler:
-                return Localization.moreOnProfiler
-            }
-        }
-
-        var moreThemesTitleText: String {
-            Localization.lookingForMore
-        }
-
-        private enum Localization {
-            static let lookingForMore = NSLocalizedString(
-                "themesCarouselViewModel.lastMessageHeading",
-                value: "Looking for more?",
-                comment: "The heading of the message shown at the end of the carousel on the WordPress theme list"
-            )
-
-            static let moreOnSettingsScreen = NSLocalizedString(
-                "themesCarouselViewModel.themeSetting.lastMessageContent",
-                value: "Find your perfect theme in the WooCommerce Theme Store.",
-                comment: "The content of the message shown at the end of the carousel on the theme settings screen"
-            )
-
-            static let moreOnProfiler = NSLocalizedString(
-                "themesCarouselViewModel.profiler.lastMessageContent",
-                value: "Once your store is set up, find your perfect theme in the WooCommerce Theme Store.",
-                comment: "The content of the message shown at the end of carousel in the store creation profiler flow"
-            )
-        }
     }
 }

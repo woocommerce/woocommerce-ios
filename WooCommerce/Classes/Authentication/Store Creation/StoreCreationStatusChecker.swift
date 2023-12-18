@@ -2,12 +2,8 @@ import Combine
 import Foundation
 import Yosemite
 
-protocol StoreCreationStatusChecker {
-    func waitForSiteToBeReady(siteID: Int64) -> AnyPublisher<Site, Error>
-}
-
 /// Checks the ready status of store creation once the store has been created.
-final class DefaultStoreCreationStatusChecker: StoreCreationStatusChecker {
+final class StoreCreationStatusChecker {
     private let stores: StoresManager
     private let jetpackCheckRetryInterval: TimeInterval
     private let storeName: String
@@ -44,7 +40,7 @@ final class DefaultStoreCreationStatusChecker: StoreCreationStatusChecker {
     }
 }
 
-private extension DefaultStoreCreationStatusChecker {
+private extension StoreCreationStatusChecker {
     @MainActor
     func syncSite(siteID: Int64) async throws -> Site {
         let site = try await loadSite(siteID: siteID)
@@ -63,7 +59,7 @@ private extension DefaultStoreCreationStatusChecker {
     }
 }
 
-private extension DefaultStoreCreationStatusChecker {
+private extension StoreCreationStatusChecker {
     @MainActor
     func loadSite(siteID: Int64) async throws -> Site {
         try await withCheckedThrowingContinuation { continuation in

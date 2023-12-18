@@ -81,17 +81,25 @@ final class DefaultStoreCreationStoreSwitchSchedulerTests: XCTestCase {
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let statusChecker = MockStoreCreationStatusChecker(site: .fake().copy(siteID: 123,
-                                                                              name: "My Woo store",
-                                                                              isJetpackThePluginInstalled: true,
-                                                                              isJetpackConnected: true,
-                                                                              isWooCommerceActive: true,
-                                                                              isWordPressComStore: true))
 
         let sut = DefaultStoreCreationStoreSwitchScheduler(stores: stores,
                                                            userDefaults: userDefaults,
-                                                           storeStatusChecker: statusChecker)
+                                                           jetpackCheckRetryInterval: 0.1)
         sut.savePendingStoreSwitch(siteID: 123, expectedStoreName: "My Woo store")
+
+        stores.whenReceivingAction(ofType: SiteAction.self) { action in
+            let site: Site = .fake().copy(siteID: 123,
+                                          name: "My Woo store",
+                                          isJetpackThePluginInstalled: true,
+                                          isJetpackConnected: true,
+                                          isWooCommerceActive: true,
+                                          isWordPressComStore: true)
+
+            guard case let .syncSite(_, completion) = action else {
+                return
+            }
+            completion(.success(site))
+        }
 
         // When
         let siteID = try await sut.listenToPendingStoreAndReturnSiteIDOnceReady()

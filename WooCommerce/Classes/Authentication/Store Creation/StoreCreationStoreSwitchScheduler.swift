@@ -17,6 +17,7 @@ protocol StoreCreationStoreSwitchScheduler {
 final class DefaultStoreCreationStoreSwitchScheduler: StoreCreationStoreSwitchScheduler {
     private let stores: StoresManager
     private let userDefaults: UserDefaults
+    private let jetpackCheckRetryInterval: TimeInterval
     private var storeStatusChecker: StoreCreationStatusChecker?
     private var jetpackSiteSubscription: AnyCancellable?
 
@@ -40,10 +41,10 @@ final class DefaultStoreCreationStoreSwitchScheduler: StoreCreationStoreSwitchSc
 
     init(stores: StoresManager = ServiceLocator.stores,
          userDefaults: UserDefaults = .standard,
-         storeStatusChecker: StoreCreationStatusChecker? = nil) {
+         jetpackCheckRetryInterval: TimeInterval = 15) {
         self.stores = stores
         self.userDefaults = userDefaults
-        self.storeStatusChecker = storeStatusChecker
+        self.jetpackCheckRetryInterval = jetpackCheckRetryInterval
     }
 
     func savePendingStoreSwitch(siteID: Int64, expectedStoreName: String) {
@@ -73,7 +74,9 @@ final class DefaultStoreCreationStoreSwitchScheduler: StoreCreationStoreSwitchSc
             return nil
         }
 
-        let statusChecker = storeStatusChecker ?? DefaultStoreCreationStatusChecker(isFreeTrialCreation: true, storeName: expectedStoreName, stores: stores)
+        let statusChecker = StoreCreationStatusChecker(jetpackCheckRetryInterval: jetpackCheckRetryInterval,
+                                                       storeName: expectedStoreName,
+                                                       stores: stores)
         self.storeStatusChecker = statusChecker
         let site: Site = try await withCheckedThrowingContinuation { continuation in
             jetpackSiteSubscription = statusChecker.waitForSiteToBeReady(siteID: siteID)

@@ -122,11 +122,7 @@ struct ThemesPreviewView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    Button(action: {
-                        showPagesMenu = true
-                    }, label: {
-                        pageSelector(state: viewModel.state)
-                    })
+                    pageSelector(state: viewModel.state)
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -150,13 +146,18 @@ struct ThemesPreviewView: View {
         switch state {
         case .pagesLoading:
             return AnyView(Text(Localization.preview))
+
         case .pagesContent:
-            return AnyView(HStack {
-                Text("Home")
-                    .secondaryBodyStyle()
-                Image(uiImage: .chevronDownImage)
-                    .fixedSize()
-            })
+            return AnyView(
+                Button(action: { showPagesMenu = true },
+                       label: {
+                           HStack {
+                               Text("Home").secondaryBodyStyle()
+                               Image(uiImage: .chevronDownImage).fixedSize()
+                           }
+                       })
+            )
+
         case .pagesLoadingError:
             return AnyView(Text(Localization.preview))
         }

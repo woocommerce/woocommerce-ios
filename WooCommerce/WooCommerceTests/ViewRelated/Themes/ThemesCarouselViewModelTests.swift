@@ -31,7 +31,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
                 break
             }
         }
-        await viewModel.fetchThemes()
+        await viewModel.fetchThemes(isReload: false)
 
         // Then
         XCTAssertEqual(viewModel.state, .content(themes: expectedThemes))
@@ -51,7 +51,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
                 break
             }
         }
-        await viewModel.fetchThemes()
+        await viewModel.fetchThemes(isReload: false)
 
         // Then
         XCTAssertEqual(viewModel.state, .error)
@@ -76,7 +76,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
                 break
             }
         }
-        await viewModel.fetchThemes()
+        await viewModel.fetchThemes(isReload: false)
         viewModel.updateCurrentTheme(id: theme1.id)
 
         // Then

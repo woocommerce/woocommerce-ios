@@ -10,17 +10,14 @@ final class ThemeSettingViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
-    private let analytics: Analytics
     private(set) var carouselViewModel: ThemesCarouselViewModel
     private let themeInstaller: ThemeInstallerProtocol
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics,
          themeInstaller: ThemeInstallerProtocol = DefaultThemeInstaller()) {
         self.siteID = siteID
         self.stores = stores
-        self.analytics = analytics
         self.themeInstaller = themeInstaller
         self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
 
@@ -43,6 +40,10 @@ final class ThemeSettingViewModel: ObservableObject {
 
     func updateCurrentTheme(_ theme: WordPressTheme) {
         currentThemeName = theme.name
+    }
+
+    func trackViewAppear() {
+        carouselViewModel.trackViewAppear(source: .settings)
     }
 }
 

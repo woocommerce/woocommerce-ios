@@ -29,6 +29,7 @@ final class StoreCreationCoordinator: Coordinator {
     private let source: Source
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
+    private let storeSwitcher: StoreCreationStoreSwitchScheduler
     private let featureFlagService: FeatureFlagService
     private let localNotificationScheduler: LocalNotificationScheduler
 
@@ -53,6 +54,7 @@ final class StoreCreationCoordinator: Coordinator {
                                           storageManager: storageManager,
                                           analytics: analytics)
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
+        self.storeSwitcher = DefaultStoreCreationStoreSwitchScheduler()
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -213,6 +215,7 @@ private extension StoreCreationCoordinator {
     func handleFreeTrialStoreCreation(from navigationController: UINavigationController, result: Result<SiteCreationResult, SiteCreationError>) {
         switch result {
         case .success(let siteResult):
+            storeSwitcher.savePendingStoreSwitch(siteID: siteResult.siteID, expectedStoreName: siteResult.name)
             showProfilerFlow(storeName: siteResult.name, siteID: siteResult.siteID, from: navigationController)
 
             // Wait for jetpack to be installed

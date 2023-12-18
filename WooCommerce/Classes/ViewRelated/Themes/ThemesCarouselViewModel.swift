@@ -11,6 +11,7 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     let mode: Mode
     private let stores: StoresManager
+    private var onReload: (() -> Void)?
 
     init(mode: Mode,
          stores: StoresManager = ServiceLocator.stores) {
@@ -23,7 +24,10 @@ final class ThemesCarouselViewModel: ObservableObject {
     }
 
     @MainActor
-    func fetchThemes() async {
+    func fetchThemes(isReload: Bool) async {
+        if isReload {
+            onReload?()
+        }
         state = .loading
         do {
             themes = try await loadSuggestedThemes()
@@ -40,6 +44,10 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     func updateCurrentTheme(id: String?) {
         currentThemeID = id
+    }
+
+    func updateReloadBehavior(action: @escaping () -> Void) {
+        onReload = action
     }
 }
 

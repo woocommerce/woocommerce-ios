@@ -24,6 +24,7 @@ final class ThemeSettingViewModel: ObservableObject {
         self.themeInstaller = themeInstaller
         self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
 
+        configureCarouselViewModel()
         /// Attempt to install and activate any pending theme selection
         /// to show correct current theme information
         ///
@@ -47,6 +48,15 @@ final class ThemeSettingViewModel: ObservableObject {
 }
 
 private extension ThemeSettingViewModel {
+    func configureCarouselViewModel() {
+        carouselViewModel.updateReloadBehavior { [weak self] in
+            guard let self else { return }
+            Task {
+                await self.updateCurrentThemeName()
+            }
+        }
+    }
+
     /// Installs pending theme for the current site
     ///
     func installPendingTheme() async {

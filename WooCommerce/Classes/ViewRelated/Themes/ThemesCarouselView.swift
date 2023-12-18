@@ -64,7 +64,7 @@ struct ThemesCarouselView: View {
             }
         }
         .task {
-            await viewModel.fetchThemes()
+            await viewModel.fetchThemes(isReload: false)
         }
     }
 }
@@ -89,7 +89,7 @@ private extension ThemesCarouselView {
                 .secondaryBodyStyle()
             Button {
                 Task {
-                    await viewModel.fetchThemes()
+                    await viewModel.fetchThemes(isReload: true)
                 }
             } label: {
                 Label(Localization.retry, systemImage: "arrow.clockwise")

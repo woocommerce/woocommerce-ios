@@ -19,7 +19,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     init(siteID: Int64,
-         timeZone: TimeZone,
+         timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,

@@ -8,6 +8,7 @@ public final class OrderStatsRemoteV4: Remote {
     /// - Parameters:
     ///   - siteID: The site ID.
     ///   - unit: Defines the granularity of the stats we are fetching (one of 'hourly', 'daily', 'weekly', 'monthly', or 'yearly').
+    ///   - timeZone: The time zone to set the earliest/latest date strings in the API request.
     ///   - earliestDateToInclude: The earliest date to include in the results.
     ///   - latestDateToInclude: The latest date to include in the results.
     ///   - quantity: The number of intervals to fetch the order stats.

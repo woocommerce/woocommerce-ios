@@ -600,7 +600,9 @@ private extension AppCoordinatorTests {
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
                          upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
-                         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil
+                         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
+                         storeSwitcher: StoreCreationStoreSwitchScheduler = DefaultStoreCreationStoreSwitchScheduler(),
+                         themeInstaller: ThemeInstaller = DefaultThemeInstaller()
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
@@ -612,6 +614,8 @@ private extension AppCoordinatorTests {
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
                               upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator,
-                              switchStoreUseCase: switchStoreUseCase)
+                              switchStoreUseCase: switchStoreUseCase,
+                              storeSwitcher: storeSwitcher,
+                              themeInstaller: themeInstaller)
     }
 }

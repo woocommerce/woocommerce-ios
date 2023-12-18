@@ -33,6 +33,7 @@ final class AppCoordinator {
     private var storeCreationCoordinator: StoreCreationCoordinator?
     private var freeTrialSurveyCoorindator: FreeTrialSurveyCoordinator?
     private let storeSwitcher: StoreCreationStoreSwitchScheduler
+    private let themeInstaller: ThemeInstaller
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -49,7 +50,8 @@ final class AppCoordinator {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
-         storeSwitcher: StoreCreationStoreSwitchScheduler = DefaultStoreCreationStoreSwitchScheduler()) {
+         storeSwitcher: StoreCreationStoreSwitchScheduler = DefaultStoreCreationStoreSwitchScheduler(),
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -70,6 +72,7 @@ final class AppCoordinator {
         self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.storeSwitcher = storeSwitcher
+        self.themeInstaller = themeInstaller
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
@@ -141,6 +144,7 @@ private extension AppCoordinator {
         Task { @MainActor in
             if let siteID = try? await storeSwitcher.listenToPendingStoreAndReturnSiteIDOnceReady() {
                 askConfirmationToSwitchStore(siteID: siteID)
+                installPendingThemeIfNeeded(siteID: siteID)
             }
         }
     }
@@ -166,6 +170,22 @@ private extension AppCoordinator {
 
         window.rootViewController?.topmostPresentedViewController.present(alert, animated: true)
         analytics.track(event: .StoreCreation.storeReadyAlertDisplayed())
+    }
+}
+
+// MARK: Theme install
+//
+private extension AppCoordinator {
+    /// Installs themes for newly created store.
+    ///
+    func installPendingThemeIfNeeded(siteID: Int64) {
+        Task {
+            do {
+                try await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
+            } catch {
+                DDLogError("⛔️ AppCoordinator - Error installing pending theme: \(error)")
+            }
+        }
     }
 }
 

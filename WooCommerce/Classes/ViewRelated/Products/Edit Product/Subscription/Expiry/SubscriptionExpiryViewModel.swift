@@ -44,7 +44,7 @@ final class SubscriptionExpiryViewModel: ObservableObject {
         self.subscription = subscription
         self.onCompletion = completion
 
-        guard let periodInterval = Int(subscription.periodInterval) else {
+        guard let periodInterval = Int(subscription.periodInterval), periodInterval > 0 else {
             self.lengthOptions = [neverExpireOption]
             self.selectedLength = neverExpireOption
             return

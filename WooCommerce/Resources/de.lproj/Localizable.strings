@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-12-06 10:54:04+0000 */
+/* Translation-Revision-Date: 2023-12-13 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "Von der WordPress-Mediathek";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "Vom Gerät";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Vom Kauf bis zur Lieferung – verwalte den gesamten Bestellprozess über die App.";
 
@@ -5052,9 +5049,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "Noch keine Dateien";
-
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "Noch keine Bilder";
 
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "Unbegrenzt";
@@ -9821,6 +9815,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Icon";
 
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "In Zwischenablage kopiert.";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "Telefonnummer kopieren";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Blaze ausblenden";
 
@@ -9962,6 +9962,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.unknown.title" = "Unbekannt";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "Dokument auf Gerät";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "Medien auf Gerät";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "E-Commerce";
@@ -10125,6 +10131,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "Wie möchtest du deinen individuellen Betrag hinzufügen?";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "Fertig";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Individuelle Beträge";
 
@@ -10170,11 +10179,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Variables Abonnementprodukt";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "Fehler beim Hochladen der Datei. Bitte versuche es erneut.";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "Der ausgewählte Dateityp wird nicht unterstützt.";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "alle %1$@";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Mit Blaze bewerben";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "Warte, bis alle Uploads abgeschlossen sind, bevor du die Bilder neu anordnest.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Zahlungsintervall";
@@ -10327,6 +10345,21 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "%1$@ zum Empfangen von Zahlungen mit „Tap to Pay“ auf dem iPhone.";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "Abbrechen";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "Aktuell";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "Theme";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "Themes";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "Probiere einen anderen neuen Look";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "Unbekannt";
 
@@ -10371,6 +10404,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, produkte, kategorien, neues produkt, produkte suchen";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Medien werden geladen …";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Sicherheitsschlüssel verwenden";

@@ -2810,6 +2810,7 @@ extension WooAnalyticsEvent {
             case orderCreation = "order_creation"
             case orderList = "order_list"
             case productList = "product_list"
+            case scanToUpdateInventory = "scan_to_update_inventory"
         }
 
         enum BarcodeScanningFailureReason: String {
@@ -2825,8 +2826,13 @@ extension WooAnalyticsEvent {
                                                                               Keys.reason: reason.rawValue])
         }
 
-        static func productSearchViaSKUSuccess(from source: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source])
+        static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {
+            var properties = [Keys.source: source]
+
+            if let stockManaged = stockManaged {
+                properties["stock_managed"] = "\(stockManaged)"
+            }
+            return WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: properties)
         }
 
         static func productSearchViaSKUFailure(from source: String,

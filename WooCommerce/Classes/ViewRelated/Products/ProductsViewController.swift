@@ -285,15 +285,15 @@ private extension ProductsViewController {
             return
         }
 
+        self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
             guard let self = self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
-            self.navigationItem.configureLeftBarButtonItemAsLoader()
-
             Task {
-                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+                self.navigationItem.configureLeftBarButtonItemAsLoader()
 
                 do {
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
@@ -304,8 +304,16 @@ private extension ProductsViewController {
                         self.presentNotice(title: noticeMessage)
                     })), animated: true)
                 } catch {
-                    DDLogError("There was an error when attempting to update inventory via scanner: \(error)")
+                    self.trackScannedItemSearchFailure(error)
+                    let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,
+                                                                                 code: scannedBarcode,
+                                                                                 actionHandler: {
+                        self.scanProducts()
+                    })
+                    self.presentNotice(notice: errorNotice)
                 }
+                // Reset button state on finishing the task
+                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
             }
 
         }, onPermissionsDenied: {
@@ -347,6 +355,17 @@ private extension ProductsViewController {
 
         coordinatingController.start()
         self.addProductCoordinator = coordinatingController
+    }
+}
+
+// MARK: - Analytics helpers
+//
+private extension ProductsViewController {
+    func trackScannedItemSearchFailure(_ error: Error) {
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
+        let errorDescription = error.localizedDescription
+        let event = WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source, reason: errorDescription)
+        ServiceLocator.analytics.track(event: event)
     }
 }
 
@@ -522,6 +541,15 @@ private extension ProductsViewController {
             return noticePresenter
         }()
         contextNoticePresenter.enqueue(notice: .init(title: title))
+    }
+
+    func presentNotice(notice: Notice) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = tabBarController
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: notice)
     }
 }
 

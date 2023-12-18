@@ -140,7 +140,9 @@ struct ThemesPreviewView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .task { await viewModel.fetchPages() }
-        .sheet(isPresented: $showPagesMenu) { /* todo show sheet */ }
+        .sheet(isPresented: $showPagesMenu) {
+            pagesListSheet(pages: viewModel.pages)
+        }
     }
 
     private func pageSelector(state: ThemesPreviewViewModel.State, pageTitle: String) -> some View {
@@ -161,6 +163,18 @@ struct ThemesPreviewView: View {
 
         case .pagesLoadingError:
             return AnyView(Text(Localization.preview))
+        }
+    }
+
+    private func pagesListSheet(pages: [WordPressPage]) -> some View {
+        List {
+            ForEach(pages) { page in
+                Button(action: {
+                    viewModel.setSelectedPage(page: page)
+                }, label: {
+                    Text(page.title)
+                })
+            }
         }
     }
 

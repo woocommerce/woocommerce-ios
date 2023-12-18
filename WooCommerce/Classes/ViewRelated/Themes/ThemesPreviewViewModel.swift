@@ -4,7 +4,7 @@ import Yosemite
 /// ViewModel for ThemesPreviewView
 ///
 final class ThemesPreviewViewModel: ObservableObject {
-    @Published private var pages: [WordPressPage] = []
+    @Published private(set) var pages: [WordPressPage] = []
     @Published private(set) var selectedPage: WordPressPage
     @Published private(set) var state: State = .pagesLoading
 
@@ -27,16 +27,21 @@ final class ThemesPreviewViewModel: ObservableObject {
         // This also indicates that the theme does not have Woo-specific pages. In this case,
         // We decide to only show the home page.
         if themeDemoURL.contains("wordpress.com") {
-            state = .pagesContent(pages: [selectedPage])
+            pages = [selectedPage]
+            state = .pagesContent
         } else {
             do {
                 pages = try await loadPages()
-                state = .pagesContent(pages: pages)
+                state = .pagesContent
             } catch {
                 DDLogError("⛔️ Error loading pages: \(error)")
                 state = .pagesLoadingError
             }
         }
+    }
+
+    func setSelectedPage(page: WordPressPage) {
+        selectedPage = page
     }
 }
 
@@ -60,7 +65,7 @@ extension ThemesPreviewViewModel {
     enum State: Equatable {
         case pagesLoading
         case pagesLoadingError
-        case pagesContent(pages: [WordPressPage])
+        case pagesContent
     }
 
     private enum Localization {

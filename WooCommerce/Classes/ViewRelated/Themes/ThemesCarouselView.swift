@@ -12,7 +12,7 @@ struct ThemesCarouselView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    let thumbnailErrorAttributedString: NSAttributedString = {
+    let imageErrorAttributedString: NSAttributedString = {
         let font: UIFont = .subheadline
 
         let paragraph = NSMutableParagraphStyle()
@@ -24,7 +24,7 @@ struct ThemesCarouselView: View {
             .paragraphStyle: paragraph,
             .foregroundColor: UIColor.secondaryLabel.cgColor
         ]
-        let message = NSMutableAttributedString(string: Localization.errorLoadingThumbnail, attributes: attributes)
+        let message = NSMutableAttributedString(string: Localization.errorLoadingImage, attributes: attributes)
         message.replaceFirstOccurrence(of: "%@", with: tapHereText)
 
         return message
@@ -116,7 +116,7 @@ private extension ThemesCarouselView {
                 .fontWeight(.semibold)
                 .foregroundColor(.init(uiColor: .text))
                 .subheadlineStyle()
-            AttributedText(thumbnailErrorAttributedString)
+            AttributedText(imageErrorAttributedString)
         }
         .padding(Layout.contentPadding)
         .frame(width: Layout.imageWidth, height: Layout.imageHeight)
@@ -195,11 +195,11 @@ private extension ThemesCarouselView {
             comment: "The content of the message shown at the end of the themes carousel view"
         )
 
-        static let errorLoadingThumbnail = NSLocalizedString(
+        static let errorLoadingImage = NSLocalizedString(
             "themesCarouselView.thumbnailError",
             value: "Sorry, it seems there is an issue with the template loading. " +
             "Please %@ for a live demo",
-            comment: "Error message for when theme thumbnail cannot be loaded on the themes carousel view. " +
+            comment: "Error message for when theme image cannot be loaded on the themes carousel view. " +
             "%@ is the place holder for 'tap here'. " +
             "Reads like: Sorry, it seems there is an issue with the template loading. " +
             "Please tap here for a live demo"

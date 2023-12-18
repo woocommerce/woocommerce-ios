@@ -111,7 +111,7 @@ private extension ThemesCarouselView {
                 ScrollView(.vertical) {
                     VStack {
                         Spacer()
-                        Text(viewModel.mode.moreThemesTitleText)
+                        Text(Localization.lookingForMore)
                             .bold()
                             .secondaryBodyStyle()
                             .padding(.horizontal, Layout.contentPadding)
@@ -119,7 +119,7 @@ private extension ThemesCarouselView {
                         Spacer()
                             .frame(height: Layout.contentPadding)
 
-                        Text(viewModel.mode.moreThemesSuggestionText)
+                        Text(Localization.findInWooThemeStore)
                             .foregroundColor(Color(.secondaryLabel))
                             .subheadlineStyle()
                                 .multilineTextAlignment(.center)
@@ -161,6 +161,17 @@ private extension ThemesCarouselView {
             "themesCarouselView.retry",
             value: "Retry",
             comment: "Button to reload themes in the themes carousel view"
+        )
+        static let lookingForMore = NSLocalizedString(
+            "themesCarouselView.lastMessageHeading",
+            value: "Looking for more?",
+            comment: "The heading of the message shown at the end of the themes carousel view"
+        )
+
+        static let findInWooThemeStore = NSLocalizedString(
+            "themesCarouselView.lastMessageContent",
+            value: "You can find your perfect theme in the WooCommerce Theme Store.",
+            comment: "The content of the message shown at the end of the themes carousel view"
         )
     }
 }

@@ -12,6 +12,24 @@ struct ThemesCarouselView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    let thumbnailErrorAttributedString: NSAttributedString = {
+        let font: UIFont = .subheadline
+
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .center
+
+        let tapHereText = NSAttributedString(string: Localization.tapHere, attributes: [.foregroundColor: UIColor.accent.cgColor, .font: font])
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .paragraphStyle: paragraph,
+            .foregroundColor: UIColor.secondaryLabel.cgColor
+        ]
+        let message = NSMutableAttributedString(string: Localization.errorLoadingThumbnail, attributes: attributes)
+        message.replaceFirstOccurrence(of: "%@", with: tapHereText)
+
+        return message
+    }()
+
     init(viewModel: ThemesCarouselViewModel, onSelectedTheme: @escaping (WordPressTheme) -> Void) {
         self.viewModel = viewModel
         self.onSelectedTheme = onSelectedTheme
@@ -93,13 +111,16 @@ private extension ThemesCarouselView {
     }
 
     func themeNameCard(name: String) -> some View {
-        VStack {
+        VStack(spacing: Layout.contentPadding) {
             Text(name)
+                .fontWeight(.semibold)
+                .foregroundColor(.init(uiColor: .text))
+                .subheadlineStyle()
+            AttributedText(thumbnailErrorAttributedString)
         }
+        .padding(Layout.contentPadding)
         .frame(width: Layout.imageWidth, height: Layout.imageHeight)
-        .background(Color.withColorStudio(
-            name: .wooCommercePurple,
-            shade: .shade0))
+        .background(Color(uiColor: .systemBackground))
         .cornerRadius(Layout.cornerRadius)
         .shadow(radius: Layout.shadowRadius, x: 0, y: Layout.shadowYOffset)
         .padding(Layout.imagePadding)
@@ -172,6 +193,22 @@ private extension ThemesCarouselView {
             "themesCarouselView.lastMessageContent",
             value: "You can find your perfect theme in the WooCommerce Theme Store.",
             comment: "The content of the message shown at the end of the themes carousel view"
+        )
+
+        static let errorLoadingThumbnail = NSLocalizedString(
+            "themesCarouselView.thumbnailError",
+            value: "Sorry, it seems there is an issue with the template loading. " +
+            "Please %@ for a live demo",
+            comment: "Error message for when theme thumbnail cannot be loaded on the themes carousel view. " +
+            "%@ is the place holder for 'tap here'. " +
+            "Reads like: Sorry, it seems there is an issue with the template loading. " +
+            "Please tap here for a live demo"
+        )
+
+        static let tapHere = NSLocalizedString(
+            "themesCarouselView.thumbnailError.tapHere",
+            value: "tap here",
+            comment: "Action to show live demo on the themes carousel view"
         )
     }
 }

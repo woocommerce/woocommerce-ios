@@ -17,17 +17,25 @@ final class ThemesPreviewViewModel: ObservableObject {
 
     @MainActor
     func fetchPages() async {
-        do {
-            pages = try await loadPages()
-            state = .pagesContent(pages: pages)
-        } catch {
-            DDLogError("⛔️ Error loading pages: \(error)")
-            state = .pagesLoadingError
+        // If the theme demo is using "*.wordpress.com", then the fetching will not work.
+        // This also indicates that the theme does not have Woo-specific pages. In this case,
+        // We decide to only show the home page.
+        if themeDemoURL.contains("wordpress.com") {
+            state = .pagesContent(pages: [WordPressPage(id: 0, title: Localization.homePage, link: themeDemoURL)])
+        } else {
+            do {
+                pages = try await loadPages()
+                state = .pagesContent(pages: pages)
+            } catch {
+                DDLogError("⛔️ Error loading pages: \(error)")
+                state = .pagesLoadingError
+            }
         }
     }
 }
 
 private extension ThemesPreviewViewModel {
+    @MainActor
     func loadPages() async throws -> [WordPressPage] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(WordPressSiteAction.fetchPageList(siteURL: themeDemoURL) { result in
@@ -47,5 +55,13 @@ extension ThemesPreviewViewModel {
         case pagesLoading
         case pagesLoadingError
         case pagesContent(pages: [WordPressPage])
+    }
+
+    private enum Localization {
+        static let homePage = NSLocalizedString(
+            "themesPreviewViewModel.homepageLabel",
+            value: "Home",
+            comment: "The label for the home page of a theme."
+        )
     }
 }

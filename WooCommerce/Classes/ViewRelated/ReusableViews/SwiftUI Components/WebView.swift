@@ -72,6 +72,10 @@ struct WebView: UIViewRepresentable {
         if shouldReloadOnUpdate {
             uiView.reload()
         }
+
+        if uiView.url != url {
+            uiView.load(URLRequest(url: url))
+        }
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {

@@ -86,7 +86,7 @@ struct ThemesPreviewView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                if let url = URL(string: theme.demoURI) {
+                if let url = URL(string: viewModel.selectedPage.link) {
                     WebView(
                         isPresented: .constant(true),
                         url: url,

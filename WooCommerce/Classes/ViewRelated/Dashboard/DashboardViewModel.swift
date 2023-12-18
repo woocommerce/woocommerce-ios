@@ -323,7 +323,11 @@ private extension DashboardViewModel {
     ///
     func installPendingThemeIfNeeded() {
         Task { @MainActor in
-            try? await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
+            do {
+                try await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
+            } catch {
+                DDLogError("⛔️ Dashboard - Error installing pending theme: \(error)")
+            }
         }
     }
 }

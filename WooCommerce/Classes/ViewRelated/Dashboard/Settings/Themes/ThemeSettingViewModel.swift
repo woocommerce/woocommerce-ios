@@ -50,7 +50,11 @@ private extension ThemeSettingViewModel {
     /// Installs pending theme for the current site
     ///
     func installPendingThemeIfNeeded() async {
-       try? await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
+        do {
+            try await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
+        } catch {
+            DDLogError("⛔️ Theme settings - Error installing pending theme: \(error)")
+        }
     }
 
     @MainActor

@@ -76,19 +76,4 @@ final class DateFormatterWooTests: XCTestCase {
         XCTAssertFalse(yearDateString.isEmpty)
         XCTAssertEqual(yearDateString, "2018")
     }
-
-    func test_iso8601_string_when_time_zone_is_specified() throws {
-        // Given
-        // GMT: Friday, December 15, 2023 5:28:19 AM
-        let date = Date(timeIntervalSince1970: 1702618099)
-        // A time zone that is still on December 14
-        let timeZone = try XCTUnwrap(TimeZone(identifier: "GMT-0800"))
-        let dateFormatter = DateFormatter.Defaults.iso8601(timeZone: timeZone)
-
-        // When
-        let dateString = dateFormatter.string(from: date)
-
-        // Then
-        XCTAssertEqual(dateString, "2023-12-14T21:28:19")
-    }
 }

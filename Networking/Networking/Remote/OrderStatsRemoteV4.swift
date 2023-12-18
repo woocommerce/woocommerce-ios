@@ -25,7 +25,8 @@ public final class OrderStatsRemoteV4: Remote {
                                quantity: Int,
                                forceRefresh: Bool,
                                completion: @escaping (Result<OrderStatsV4, Error>) -> Void) {
-        let dateFormatter = DateFormatter.Defaults.iso8601(timeZone: timeZone)
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        dateFormatter.timeZone = timeZone
 
         let parameters: [String: Any] = [
             ParameterKeys.interval: unit.rawValue,

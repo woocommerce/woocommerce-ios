@@ -19,7 +19,8 @@ public class ProductsReportsRemote: Remote {
                                       earliestDateToInclude: Date,
                                       latestDateToInclude: Date,
                                       quantity: Int) async throws -> [ProductsReportItem] {
-        let dateFormatter = DateFormatter.Defaults.iso8601(timeZone: timeZone)
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        dateFormatter.timeZone = timeZone
 
         let parameters: [String: Any] = [
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),

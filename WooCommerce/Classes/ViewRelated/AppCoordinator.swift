@@ -467,4 +467,21 @@ private extension AppCoordinator {
     enum Constants {
         static let animationDuration = TimeInterval(0.3)
     }
+
+    enum Localization {
+        enum StoreReadyAlert {
+            static let title = NSLocalizedString("appCoordinator.storeReadyAlert.title",
+                                                 value: "Your new store is ready.",
+                                                 comment: "Title of the alert to ask confirmation to switch to the newly created store.")
+            static let message = NSLocalizedString("appCoordinator.storeReadyAlert.message",
+                                                   value: "Do you want to start managing it now?",
+                                                   comment: "Message of the alert to ask confirmation to switch to the newly created store.")
+            static let switchStoreButton = NSLocalizedString("appCoordinator.storeReadyAlert.switchStoreButton",
+                                                             value: "Switch Store",
+                                                             comment: "Button to switch to the new store.")
+            static let cancelButton = NSLocalizedString("appCoordinator.storeReadyAlert.cancelButton",
+                                                        value: "Cancel",
+                                                        comment: "Button to dismiss the alert asking for confirmation to switch store.")
+        }
+    }
 }

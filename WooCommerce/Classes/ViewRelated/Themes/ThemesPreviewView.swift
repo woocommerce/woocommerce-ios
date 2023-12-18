@@ -67,6 +67,8 @@ struct ThemesPreviewView: View {
     @ObservedObject private var viewModel: ThemesPreviewViewModel
 
     @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
+    @State private var showPagesMenu: Bool = false
+
     private let theme: WordPressTheme
 
     /// Triggered when "Start with this theme" button is tapped.
@@ -119,6 +121,14 @@ struct ThemesPreviewView: View {
                     })
                 }
 
+                ToolbarItem(placement: .principal) {
+                    Button(action: {
+                        showPagesMenu = true
+                    }, label: {
+                        pageSelector(state: viewModel.state)
+                    })
+                }
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         ForEach(PreviewDevice.allCases) { device in
@@ -132,18 +142,23 @@ struct ThemesPreviewView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
         }
+        .task { await viewModel.fetchPages() }
+        .sheet(isPresented: $showPagesMenu) { /* todo show sheet */ }
     }
 
     private func pageSelector(state: ThemesPreviewViewModel.State) -> some View {
         switch state {
         case .pagesLoading:
-            return Text(Localization.preview)
-
-        case .pagesContent(let pages):
-            return Text(Localization.preview) // todo: build selector
-
+            return AnyView(Text(Localization.preview))
+        case .pagesContent:
+            return AnyView(HStack {
+                Text("Home")
+                    .secondaryBodyStyle()
+                Image(uiImage: .chevronDownImage)
+                    .fixedSize()
+            })
         case .pagesLoadingError:
-            return Text(Localization.preview)
+            return AnyView(Text(Localization.preview))
         }
     }
 

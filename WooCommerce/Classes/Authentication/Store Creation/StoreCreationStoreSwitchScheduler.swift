@@ -59,8 +59,7 @@ final class DefaultStoreCreationStoreSwitchScheduler: StoreCreationStoreSwitchSc
 
     var isPendingStoreSwitch: Bool {
         guard siteIDPendingStoreSwitch != stores.sessionManager.defaultStoreID else {
-            siteIDPendingStoreSwitch = nil
-            expectedStoreNamePendingStoreSwitch = nil
+            removePendingStoreSwitch()
             return false
         }
 

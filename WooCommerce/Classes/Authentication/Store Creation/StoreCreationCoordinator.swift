@@ -269,7 +269,7 @@ private extension StoreCreationCoordinator {
         ///
         let waitingTimeStart = Date()
 
-        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: true, storeName: expectedStoreName, stores: stores)
+        let statusChecker = DefaultStoreCreationStatusChecker(isFreeTrialCreation: true, storeName: expectedStoreName, stores: stores)
         self.statusChecker = statusChecker
         let site: Site? = await withCheckedContinuation { continuation in
             jetpackSiteSubscription = statusChecker.waitForSiteToBeReady(siteID: siteID)

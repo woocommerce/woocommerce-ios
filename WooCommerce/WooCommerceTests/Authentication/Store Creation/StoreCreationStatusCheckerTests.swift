@@ -4,15 +4,15 @@ import Yosemite
 @testable import WooCommerce
 
 @MainActor
-final class StoreCreationStatusCheckerTests: XCTestCase {
-    private var sut: StoreCreationStatusChecker!
+final class DefaultStoreCreationStatusCheckerTests: XCTestCase {
+    private var sut: DefaultStoreCreationStatusChecker!
     private var stores: MockStoresManager!
     private var siteReadySubscription: AnyCancellable?
 
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
-        sut = StoreCreationStatusChecker(jetpackCheckRetryInterval: 0, storeName: "Wind", stores: stores)
+        sut = DefaultStoreCreationStatusChecker(jetpackCheckRetryInterval: 0, storeName: "Wind", stores: stores)
     }
 
     override func tearDown() {
@@ -147,7 +147,7 @@ final class StoreCreationStatusCheckerTests: XCTestCase {
     }
 }
 
-private extension StoreCreationStatusCheckerTests {
+private extension DefaultStoreCreationStatusCheckerTests {
     func mockSyncSite(result: Result<Site, Error>) {
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
             guard case let .syncSite(_, completion) = action else {

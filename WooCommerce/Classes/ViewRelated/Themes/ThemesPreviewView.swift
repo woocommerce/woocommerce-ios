@@ -63,7 +63,7 @@ struct ThemesPreviewView: View {
         }
     }
 
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
 
     @ObservedObject private var viewModel: ThemesPreviewViewModel
 
@@ -116,7 +116,7 @@ struct ThemesPreviewView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        self.presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }, label: {
                         Image(uiImage: .closeButton)
                     })

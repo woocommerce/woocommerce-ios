@@ -5,6 +5,7 @@ import Yosemite
 ///
 final class ThemesPreviewViewModel: ObservableObject {
     @Published private var pages: [WordPressPage] = []
+    @Published private var selectedPage: WordPressPage
     @Published private(set) var state: State = .pagesLoading
 
     private let stores: StoresManager
@@ -13,6 +14,11 @@ final class ThemesPreviewViewModel: ObservableObject {
     init(themeDemoURL: String, stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         self.themeDemoURL = themeDemoURL
+
+        // Pre-fill the selected Page with the home page.
+        // The id is set as zero so to not clash with other pages' ids.
+        let startingPage = WordPressPage(id: 0, title: Localization.homePage, link: themeDemoURL)
+        self.selectedPage = startingPage
     }
 
     @MainActor
@@ -21,7 +27,7 @@ final class ThemesPreviewViewModel: ObservableObject {
         // This also indicates that the theme does not have Woo-specific pages. In this case,
         // We decide to only show the home page.
         if themeDemoURL.contains("wordpress.com") {
-            state = .pagesContent(pages: [WordPressPage(id: 0, title: Localization.homePage, link: themeDemoURL)])
+            state = .pagesContent(pages: [selectedPage])
         } else {
             do {
                 pages = try await loadPages()

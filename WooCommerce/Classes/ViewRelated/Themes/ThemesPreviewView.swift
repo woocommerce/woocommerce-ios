@@ -8,7 +8,7 @@ import struct Yosemite.WordPressTheme
 /// - Activate the previewed theme on the current site.
 ///
 struct ThemesPreviewView: View {
-    enum PreviewDevice: CaseIterable, Identifiable {
+    enum PreviewDevice: String, CaseIterable, Identifiable {
         var id: PreviewDevice { self }
 
         case mobile
@@ -194,10 +194,10 @@ struct ThemesPreviewView: View {
 
     private func menuItem(for device: PreviewDevice) -> some View {
         Button {
-            self.selectedDevice = device
+            selectedDevice = device
         } label: {
             Text(device.menuTitle)
-            if self.selectedDevice == device {
+            if selectedDevice == device {
                 Image(systemName: "checkmark")
             }
         }

@@ -42,9 +42,6 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     expandableContent()
                         .background(GeometryReader { geometryProxy in
                             Color.clear
-                                .onAppear(perform: {
-                                    expandingContentHeight = geometryProxy.size.height
-                                })
                                 .onChange(of: geometryProxy.size.height,
                                           perform: { newValue in
                                     expandingContentHeight = newValue
@@ -69,8 +66,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         })
                         .onChange(of: geometryProxy.size.height,
                                   perform: { newValue in
-                            fixedContentHeight = newValue
                             if !isDragging {
+                                fixedContentHeight = newValue
                                 withAnimation {
                                     panelHeight = calculateHeight()
                                 }
@@ -80,6 +77,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         }
         .background(Color(.listForeground(modal: true)))
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
+        .animation(.interactiveSpring, value: panelHeight)
         .cornerRadius(Layout.sheetCornerRadius)
         .shadow(radius: Layout.sheetCornerRadius)
         .mask(Rectangle().padding(.top, Layout.sheetCornerRadius * -2))
@@ -89,9 +87,9 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     state = value.translation.height < 0
                 }
                 .onChanged { value in
-                    let dragAmount = value.translation.height
-                    revealContentDuringDrag = dragAmount < 0
                     withAnimation {
+                        let dragAmount = value.translation.height
+                        revealContentDuringDrag = dragAmount < 0
                         panelHeight = calculateHeight(offsetBy: dragAmount)
                     }
                 }

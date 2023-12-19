@@ -19,6 +19,7 @@ final class ThemesPreviewViewModel: ObservableObject {
         // The id is set as zero so to not clash with other pages' ids.
         let startingPage = WordPressPage(id: 0, title: Localization.homePage, link: themeDemoURL)
         self.selectedPage = startingPage
+        pages = [startingPage]
     }
 
     @MainActor

@@ -44,7 +44,7 @@ final class ThemeSettingViewModel: ObservableObject {
     }
 
     func trackViewAppear() {
-        carouselViewModel.trackViewAppear(source: .settings)
+        carouselViewModel.trackViewAppear()
     }
 }
 

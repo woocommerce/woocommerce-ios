@@ -49,7 +49,7 @@ struct ProfilerThemesPickerView: View {
         // Disables large title to avoid a large gap below the navigation bar.
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            carouselViewModel.trackViewAppear(source: .profiler)
+            carouselViewModel.trackViewAppear()
         }
     }
 }

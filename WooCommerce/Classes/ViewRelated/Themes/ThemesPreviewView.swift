@@ -131,7 +131,6 @@ struct ThemesPreviewView: View {
     private func menuItem(for device: PreviewDevice) -> some View {
         Button {
             selectedDevice = device
-            ServiceLocator.analytics.track(event: .Themes.previewLayoutSelected(layout: device))
         } label: {
             Text(device.menuTitle)
             if selectedDevice == device {

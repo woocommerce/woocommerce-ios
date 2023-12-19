@@ -51,15 +51,16 @@ final class ThemesCarouselViewModel: ObservableObject {
         currentThemeID = id
     }
 
-    func trackViewAppear(source: WooAnalyticsEvent.Themes.Source) {
+    func trackViewAppear() {
+        let source = mode.analyticSource
         analytics.track(event: .Themes.pickerScreenDisplayed(source: source))
     }
 
-    func trackThemePreviewed() {
-        analytics.track(event: .Themes.previewScreenDisplayed())
+    func trackThemeSelected(_ theme: WordPressTheme) {
+        analytics.track(event: .Themes.themeSelected(id: theme.id))
     }
 
-    func trackThemeSelected(_ theme: WordPressTheme) {
+    func trackStartThemeButtonTapped(_ theme: WordPressTheme) {
         analytics.track(event: .Themes.startWithThemeButtonTapped(themeID: theme.id))
     }
 }
@@ -99,5 +100,14 @@ extension ThemesCarouselViewModel {
     enum Mode: Equatable {
         case themeSettings
         case storeCreationProfiler
+
+        var analyticSource: WooAnalyticsEvent.Themes.Source {
+            switch self {
+            case .themeSettings:
+                return .settings
+            case .storeCreationProfiler:
+                return .profiler
+            }
+        }
     }
 }

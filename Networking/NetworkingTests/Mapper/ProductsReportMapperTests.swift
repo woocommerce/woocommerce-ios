@@ -32,7 +32,6 @@ final class ProductsReportMapperTests: XCTestCase {
         let expectedProduct = ProductsReportItem(productID: 233,
                                                  productName: "Colorful Sunglasses Subscription",
                                                  quantity: 5,
-                                                 price: 5,
                                                  total: 177,
                                                  imageUrl: "https://example.com/wp-content/uploads/2023/01/sunglasses-2-600x600.jpg")
 

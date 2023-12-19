@@ -106,7 +106,7 @@ extension ThemesCarouselViewModel {
             case .themeSettings:
                 return .settings
             case .storeCreationProfiler:
-                return .profiler
+                return .storeCreation
             }
         }
     }

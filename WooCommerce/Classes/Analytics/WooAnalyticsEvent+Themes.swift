@@ -12,7 +12,7 @@ extension WooAnalyticsEvent {
         }
 
         enum Source: String {
-            case profiler
+            case storeCreation = "store_creation"
             case settings
         }
 

@@ -151,7 +151,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_picker_screen_displayed"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["source"] as? String, "profiler")
+        XCTAssertEqual(eventProperties["source"] as? String, "store_creation")
     }
 
     func test_trackThemeSelected_tracks_theme_picker_theme_selected() throws {
@@ -167,7 +167,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["theme"] as? String, "tsubaki")
     }
 
-    func test_trackStartThemeButtonTapped_tracks_theme_preview_start_with_theme_button_tapped() throws  {
+    func test_trackStartThemeButtonTapped_tracks_theme_preview_start_with_theme_button_tapped() throws {
         // Given
         let viewModel = ThemesCarouselViewModel(mode: .themeSettings, analytics: analytics)
 

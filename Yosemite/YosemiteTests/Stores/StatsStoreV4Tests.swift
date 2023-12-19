@@ -736,7 +736,6 @@ private extension StatsStoreV4Tests {
         return TopEarnerStatsItem(productID: 233,
                                   productName: "Colorful Sunglasses Subscription",
                                   quantity: 5,
-                                  price: 5,
                                   total: 177,
                                   currency: "",
                                   imageUrl: "https://example.com/wp-content/uploads/2023/01/sunglasses-2-600x600.jpg")
@@ -746,7 +745,6 @@ private extension StatsStoreV4Tests {
         return TopEarnerStatsItem(productID: 27,
                                   productName: "Album",
                                   quantity: 1,
-                                  price: 15,
                                   total: 0,
                                   currency: "",
                                   imageUrl: "https://example.com/wp-content/uploads/2023/01/album-1-600x600.jpg")
@@ -764,7 +762,6 @@ private extension StatsStoreV4Tests {
         return TopEarnerStatsItem(productID: 233,
                                   productName: "Colorful Sunglasses Subscription",
                                   quantity: 8,
-                                  price: 5,
                                   total: 215,
                                   currency: "",
                                   imageUrl: "https://example.com/wp-content/uploads/2023/01/sunglasses-2-600x600.jpg")
@@ -774,7 +771,6 @@ private extension StatsStoreV4Tests {
         return TopEarnerStatsItem(productID: 27,
                                   productName: "Album",
                                   quantity: 4,
-                                  price: 15,
                                   total: 45,
                                   currency: "",
                                   imageUrl: "https://example.com/wp-content/uploads/2023/01/album-1-600x600.jpg")

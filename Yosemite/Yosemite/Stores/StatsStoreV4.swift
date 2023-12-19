@@ -457,7 +457,6 @@ private extension StatsStoreV4 {
             TopEarnerStatsItem(productID: product.productID,
                                productName: product.productName,
                                quantity: product.quantity,
-                               price: product.price,
                                total: product.total,
                                currency: "", // TODO: Remove currency https://github.com/woocommerce/woocommerce-ios/issues/2549
                                imageUrl: product.imageUrl)

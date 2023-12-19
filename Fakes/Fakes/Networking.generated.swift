@@ -2008,7 +2008,6 @@ extension Networking.TopEarnerStatsItem {
             productID: .fake(),
             productName: .fake(),
             quantity: .fake(),
-            price: .fake(),
             total: .fake(),
             currency: .fake(),
             imageUrl: .fake()

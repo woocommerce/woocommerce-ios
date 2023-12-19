@@ -119,6 +119,7 @@ struct ThemesPreviewView: View {
                         dismiss()
                     }, label: {
                         Image(uiImage: .closeButton)
+                            .secondaryBodyStyle()
                     })
                 }
 
@@ -155,8 +156,11 @@ struct ThemesPreviewView: View {
                 Button(action: { showPagesMenu = true },
                        label: {
                            HStack {
-                               Text(pageTitle).secondaryBodyStyle()
-                               Image(uiImage: .chevronDownImage).fixedSize()
+                               Text(pageTitle).bodyStyle()
+                               Image(uiImage: .chevronDownImage)
+                                   .fixedSize()
+                                   .secondaryBodyStyle()
+
                            }
                        })
             )
@@ -171,14 +175,13 @@ struct ThemesPreviewView: View {
             Text(Localization.pagesSheetHeading)
                 .subheadlineStyle()
                 .padding(Layout.pagesSheetPadding)
-
             ForEach(pages) { page in
                 Button(action: {
                     viewModel.setSelectedPage(page: page)
                     showPagesMenu = false
                 }, label: {
                     Text(page.title)
-                        .foregroundColor(Color(uiColor: .label))
+                        .bodyStyle()
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                 })

@@ -178,11 +178,9 @@ private extension StoreStatsAndTopPerformersViewController {
             }
         }
 
-        // Since the stats charts are based on site time zone, we set the time zone for the stats UI to be the site time zone.
-        // On the other hand, when syncing the stats data with the API, we want to use the device time zone to find the time range since the API date parameters
-        // have no time zone information and are relative to the site time zone (e.g. 12:00am-11:59pm for "Today" tab).
+        // Since all stats charts are based on site time zone, we set the time zone for the stats UI and API requests using the site time zone.
         let timezoneForStatsDates = TimeZone.siteTimezone
-        let timezoneForSync = TimeZone.current
+        let timezoneForSync = TimeZone.siteTimezone
 
         [viewControllerToSync].forEach { [weak self] vc in
             guard let self = self else {

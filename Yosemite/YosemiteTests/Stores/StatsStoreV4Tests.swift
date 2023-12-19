@@ -51,6 +51,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
+                                                     timeZone: .current,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      quantity: 2,
@@ -79,6 +80,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
+                                                     timeZone: .current,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      quantity: 2,
@@ -102,6 +104,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisYear,
+                                                     timeZone: .current,
                                                      earliestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      latestDateToInclude: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
                                                      quantity: 2,
@@ -266,6 +269,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
+                                                              timeZone: .current,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: 2,
@@ -296,6 +300,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let _: Void = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
+                                                              timeZone: .current,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: quantity,
@@ -321,6 +326,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let _: Void = waitFor { promise in
             let action = StatsActionV4.retrieveStats(siteID: self.sampleSiteID,
                                                      timeRange: .thisMonth,
+                                                     timeZone: .current,
                                                      earliestDateToInclude: .init(),
                                                      latestDateToInclude: .init(),
                                                      quantity: 1,
@@ -346,6 +352,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisYear,
+                                                              timeZone: .current,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: 2,
@@ -376,6 +383,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisMonth,
+                                                              timeZone: .current,
                                                               earliestDateToInclude: Date(),
                                                               latestDateToInclude: Date(),
                                                               quantity: 3,
@@ -400,6 +408,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
                                                               timeRange: .thisMonth,
+                                                              timeZone: .current,
                                                               earliestDateToInclude: Date(),
                                                               latestDateToInclude: Date(),
                                                               quantity: 3,

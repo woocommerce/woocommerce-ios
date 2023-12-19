@@ -7,7 +7,7 @@ import struct Yosemite.WordPressTheme
 /// - Activate the previewed theme on the current site.
 ///
 struct ThemesPreviewView: View {
-    enum PreviewDevice: CaseIterable, Identifiable {
+    enum PreviewDevice: String, CaseIterable, Identifiable {
         var id: PreviewDevice { self }
 
         case mobile

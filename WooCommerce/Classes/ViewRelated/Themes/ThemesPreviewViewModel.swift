@@ -23,20 +23,12 @@ final class ThemesPreviewViewModel: ObservableObject {
 
     @MainActor
     func fetchPages() async {
-        // If the theme demo is using "*.wordpress.com", then the fetching will not work.
-        // This also indicates that the theme does not have Woo-specific pages. In this case,
-        // We decide to only show the home page.
-        if themeDemoURL.contains("wordpress.com") {
-            pages = [selectedPage]
+        do {
+            pages = try await loadPages()
             state = .pagesContent
-        } else {
-            do {
-                pages = try await loadPages()
-                state = .pagesContent
-            } catch {
-                DDLogError("⛔️ Error loading pages: \(error)")
-                state = .pagesLoadingError
-            }
+        } catch {
+            DDLogError("⛔️ Error loading pages: \(error)")
+            state = .pagesLoadingError
         }
     }
 

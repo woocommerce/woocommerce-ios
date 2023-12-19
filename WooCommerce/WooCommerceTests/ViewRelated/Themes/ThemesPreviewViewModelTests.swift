@@ -24,19 +24,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .pagesLoading)
     }
 
-    func test_fetchPages_with_wordpress_com_url_only_gives_one_url() async {
-        // Given
-        let viewModel = ThemesPreviewViewModel(themeDemoURL: "attardemo.wordpress.com")
-
-        // When
-        await viewModel.fetchPages()
-
-        // Then
-        XCTAssertEqual(viewModel.pages.count, 1)
-        XCTAssertEqual(viewModel.state, .pagesContent)
-    }
-
-    func test_fetchPages_with_non_wordpress_com_url() async {
+    func test_fetchPages_sets_the_right_pages_and_state() async {
         // Given
         let viewModel = ThemesPreviewViewModel(themeDemoURL: "https://tsubakidemo.wpcomstaging.com/", stores: stores)
 

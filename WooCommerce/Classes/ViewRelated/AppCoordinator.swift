@@ -32,6 +32,8 @@ final class AppCoordinator {
     private var isLoggedIn: Bool = false
     private var storeCreationCoordinator: StoreCreationCoordinator?
     private var freeTrialSurveyCoorindator: FreeTrialSurveyCoordinator?
+    private let storeSwitcher: StoreCreationStoreSwitchScheduler
+    private let themeInstaller: ThemeInstaller
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -47,7 +49,9 @@ final class AppCoordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
-         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
+         storeSwitcher: StoreCreationStoreSwitchScheduler = DefaultStoreCreationStoreSwitchScheduler(),
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -67,6 +71,8 @@ final class AppCoordinator {
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
+        self.storeSwitcher = storeSwitcher
+        self.themeInstaller = themeInstaller
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
@@ -95,6 +101,7 @@ final class AppCoordinator {
                         self.configureAuthenticator()
                         self.displayLoggedInUI()
                         self.synchronizeAndShowWhatsNew()
+                        self.checkPendingStoreCreation()
                     }
                 }
                 self.isLoggedIn = isLoggedIn
@@ -122,6 +129,62 @@ private extension AppCoordinator {
                 }
             })
             stores.dispatch(action)
+        }
+    }
+}
+
+// MARK: Store switching after store creation
+//
+private extension AppCoordinator {
+    func checkPendingStoreCreation() {
+        guard storeSwitcher.isPendingStoreSwitch else {
+            return
+        }
+
+        Task { @MainActor in
+            if let siteID = try? await storeSwitcher.listenToPendingStoreAndReturnSiteIDOnceReady() {
+                askConfirmationToSwitchStore(siteID: siteID)
+                installPendingThemeIfNeeded(siteID: siteID)
+            }
+        }
+    }
+
+    func askConfirmationToSwitchStore(siteID: Int64) {
+        let alert = UIAlertController(title: Localization.StoreReadyAlert.title,
+                                      message: Localization.StoreReadyAlert.message,
+                                      preferredStyle: .alert)
+        let switchStoreAction = UIAlertAction(title: Localization.StoreReadyAlert.switchStoreButton, style: .default) { [weak self] _ in
+            guard let self else { return }
+            self.analytics.track(event: .StoreCreation.storeReadyAlertSwitchStoreTapped())
+            self.switchStoreUseCase.switchStore(with: siteID) { [weak self] siteChanged in
+                guard let self else { return }
+                self.storeSwitcher.removePendingStoreSwitch()
+            }
+        }
+        alert.addAction(switchStoreAction)
+
+        let cancelAction = UIAlertAction(title: Localization.StoreReadyAlert.cancelButton, style: .cancel) { [weak self] _ in
+            self?.storeSwitcher.removePendingStoreSwitch()
+        }
+        alert.addAction(cancelAction)
+
+        window.rootViewController?.topmostPresentedViewController.present(alert, animated: true)
+        analytics.track(event: .StoreCreation.storeReadyAlertDisplayed())
+    }
+}
+
+// MARK: Theme install
+//
+private extension AppCoordinator {
+    /// Installs themes for newly created store.
+    ///
+    func installPendingThemeIfNeeded(siteID: Int64) {
+        Task {
+            do {
+                try await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
+            } catch {
+                DDLogError("⛔️ AppCoordinator - Error installing pending theme: \(error)")
+            }
         }
     }
 }
@@ -466,5 +529,22 @@ private extension AppCoordinator {
 private extension AppCoordinator {
     enum Constants {
         static let animationDuration = TimeInterval(0.3)
+    }
+
+    enum Localization {
+        enum StoreReadyAlert {
+            static let title = NSLocalizedString("appCoordinator.storeReadyAlert.title",
+                                                 value: "Your new store is ready.",
+                                                 comment: "Title of the alert to ask confirmation to switch to the newly created store.")
+            static let message = NSLocalizedString("appCoordinator.storeReadyAlert.message",
+                                                   value: "Do you want to start managing it now?",
+                                                   comment: "Message of the alert to ask confirmation to switch to the newly created store.")
+            static let switchStoreButton = NSLocalizedString("appCoordinator.storeReadyAlert.switchStoreButton",
+                                                             value: "Switch Store",
+                                                             comment: "Button to switch to the new store.")
+            static let cancelButton = NSLocalizedString("appCoordinator.storeReadyAlert.cancelButton",
+                                                        value: "Cancel",
+                                                        comment: "Button to dismiss the alert asking for confirmation to switch store.")
+        }
     }
 }

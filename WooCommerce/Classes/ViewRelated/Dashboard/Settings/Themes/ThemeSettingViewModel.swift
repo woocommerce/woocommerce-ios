@@ -11,21 +11,22 @@ final class ThemeSettingViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
     private(set) var carouselViewModel: ThemesCarouselViewModel
-    private let themeInstaller: ThemeInstallerProtocol
+    private let themeInstaller: ThemeInstaller
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         themeInstaller: ThemeInstallerProtocol = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.siteID = siteID
         self.stores = stores
         self.themeInstaller = themeInstaller
         self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
 
+        configureCarouselViewModel()
         /// Attempt to install and activate any pending theme selection
         /// to show correct current theme information
         ///
         Task {
-            await installPendingTheme()
+            await installPendingThemeIfNeeded()
         }
     }
 
@@ -48,10 +49,23 @@ final class ThemeSettingViewModel: ObservableObject {
 }
 
 private extension ThemeSettingViewModel {
+    func configureCarouselViewModel() {
+        carouselViewModel.onReload = { [weak self] in
+            guard let self else { return }
+            Task {
+                await self.updateCurrentThemeName()
+            }
+        }
+    }
+
     /// Installs pending theme for the current site
     ///
-    func installPendingTheme() async {
-       try? await themeInstaller.installPendingTheme(siteID: siteID)
+    func installPendingThemeIfNeeded() async {
+        do {
+            try await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
+        } catch {
+            DDLogError("⛔️ Theme settings - Error installing pending theme: \(error)")
+        }
     }
 
     @MainActor

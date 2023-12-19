@@ -31,7 +31,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
                 break
             }
         }
-        await viewModel.fetchThemes()
+        await viewModel.fetchThemes(isReload: false)
 
         // Then
         XCTAssertEqual(viewModel.state, .content(themes: expectedThemes))
@@ -51,7 +51,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
                 break
             }
         }
-        await viewModel.fetchThemes()
+        await viewModel.fetchThemes(isReload: false)
 
         // Then
         XCTAssertEqual(viewModel.state, .error)
@@ -76,12 +76,39 @@ final class ThemesCarouselViewModelTests: XCTestCase {
                 break
             }
         }
-        await viewModel.fetchThemes()
+        await viewModel.fetchThemes(isReload: false)
         viewModel.updateCurrentTheme(id: theme1.id)
 
         // Then
         waitUntil {
             viewModel.state == .content(themes: [theme2])
+        }
+    }
+
+    func test_state_is_error_if_filtered_theme_list_is_empty() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, stores: stores)
+        let theme1: WordPressTheme = .fake().copy(id: "tsubaki")
+        let expectedThemes: [WordPressTheme] = [theme1]
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case .loadSuggestedThemes(let onCompletion):
+                onCompletion(.success(expectedThemes))
+            case let .loadCurrentTheme(_, onCompletion):
+                onCompletion(.success(theme1))
+            default:
+                break
+            }
+        }
+        await viewModel.fetchThemes(isReload: false)
+        viewModel.updateCurrentTheme(id: theme1.id)
+
+        // Then
+        waitUntil {
+            viewModel.state == .error
         }
     }
 }

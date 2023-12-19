@@ -147,6 +147,18 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .signupFailed,
                               properties: [Key.errorType: error.analyticsValue])
         }
+
+        /// Tracked when we show an alert that store is ready after checking status in background
+        static func storeReadyAlertDisplayed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .storeReadyAlertDisplayed,
+                              properties: [:])
+        }
+
+        /// Tracked when user taps button to switch to the new store
+        static func storeReadyAlertSwitchStoreTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .storeReadyAlertSwitchStoreTapped,
+                              properties: [:])
+        }
     }
 }
 

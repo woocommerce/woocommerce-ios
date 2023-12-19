@@ -13,6 +13,9 @@ final class ThemesCarouselViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
 
+    /// Closure to be triggered when the theme list is reloaded.
+    var onReload: (() -> Void)?
+
     init(mode: Mode,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -26,7 +29,10 @@ final class ThemesCarouselViewModel: ObservableObject {
     }
 
     @MainActor
-    func fetchThemes() async {
+    func fetchThemes(isReload: Bool) async {
+        if isReload {
+            onReload?()
+        }
         state = .loading
         do {
             themes = try await loadSuggestedThemes()
@@ -53,9 +59,9 @@ final class ThemesCarouselViewModel: ObservableObject {
 private extension ThemesCarouselViewModel {
     func waitForCurrentThemeAndFinishLoading() {
         $themes.combineLatest($currentThemeID.dropFirst())
-            .map { themes, currentThemeID in
+            .map { themes, currentThemeID -> State in
                 let filteredThemes = themes.filter { $0.id != currentThemeID }
-                return State.content(themes: filteredThemes)
+                return filteredThemes.isEmpty ? .error : .content(themes: filteredThemes)
             }
             .assign(to: &$state)
     }

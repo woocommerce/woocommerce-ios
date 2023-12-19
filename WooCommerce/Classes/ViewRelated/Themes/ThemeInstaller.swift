@@ -14,11 +14,14 @@ protocol ThemeInstaller {
 struct DefaultThemeInstaller: ThemeInstaller {
     private let userDefaults: UserDefaults
     private let stores: StoresManager
+    private let analytics: Analytics
 
     init(stores: StoresManager = ServiceLocator.stores,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.userDefaults = userDefaults
+        self.analytics = analytics
     }
 
     /// Installs and activates the theme
@@ -52,8 +55,15 @@ struct DefaultThemeInstaller: ThemeInstaller {
 
 private extension DefaultThemeInstaller {
     func installAndActivateTheme(themeID: String, siteID: Int64) async throws {
-        try await installTheme(themeID: themeID, siteID: siteID)
-        try await activateTheme(themeID: themeID, siteID: siteID)
+        do {
+            try await installTheme(themeID: themeID, siteID: siteID)
+            try await activateTheme(themeID: themeID, siteID: siteID)
+            analytics.track(event: .Themes.themeInstallationCompleted(themeID: themeID))
+        } catch {
+            DDLogError("⛔️ Error installing theme: \(error)")
+            analytics.track(event: .Themes.themeInstallationFailed(themeID: themeID, error: error))
+            throw error
+        }
     }
 
     @MainActor

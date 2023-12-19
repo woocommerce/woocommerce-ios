@@ -24,9 +24,9 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when a theme screenshot is tapped on the theme picker screen
-        static func themeSelected(name: String) -> WooAnalyticsEvent {
+        static func themeSelected(id: String) -> WooAnalyticsEvent {
             .init(statName: .themePickerThemeSelected, properties: [
-                Key.theme.rawValue: name
+                Key.theme.rawValue: id
             ])
         }
 
@@ -51,24 +51,24 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the “Start with the theme” button on preview screen is tapped
-        static func startWithThemeButtonTapped(themeName: String) -> WooAnalyticsEvent {
+        static func startWithThemeButtonTapped(themeID: String) -> WooAnalyticsEvent {
             .init(statName: .themePreviewStartWithThemeButtonTapped, properties: [
-                Key.theme.rawValue: themeName
+                Key.theme.rawValue: themeID
             ])
         }
 
         /// Tracked when app finishes installing a theme on the site
-        static func themeInstallationCompleted(themeName: String) -> WooAnalyticsEvent {
+        static func themeInstallationCompleted(themeID: String) -> WooAnalyticsEvent {
             .init(statName: .themeInstallationCompleted, properties: [
-                Key.theme.rawValue: themeName
+                Key.theme.rawValue: themeID
             ])
         }
 
         /// Tracked when app failed to install a theme on the site
-        static func themeInstallationFailed(themeName: String) -> WooAnalyticsEvent {
+        static func themeInstallationFailed(themeID: String, error: Error) -> WooAnalyticsEvent {
             .init(statName: .themeInstallationFailed, properties: [
-                Key.theme.rawValue: themeName
-            ])
+                Key.theme.rawValue: themeID
+            ], error: error)
         }
      }
 }

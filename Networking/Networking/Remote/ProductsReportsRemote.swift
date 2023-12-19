@@ -8,16 +8,19 @@ public class ProductsReportsRemote: Remote {
     ///
     /// - Parameters:
     ///   - siteID: The site ID.
+    ///   - timeZone: The time zone to set the earliest/latest date strings in the API request.
     ///   - earliestDateToInclude: The earliest date to include in the results.
     ///   - latestDateToInclude: The latest date to include in the results.
     ///   - quantity: The number of intervals to fetch the order stats.
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadTopProductsReport(for siteID: Int64,
+                                      timeZone: TimeZone,
                                       earliestDateToInclude: Date,
                                       latestDateToInclude: Date,
                                       quantity: Int) async throws -> [ProductsReportItem] {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        dateFormatter.timeZone = timeZone
 
         let parameters: [String: Any] = [
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),

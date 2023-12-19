@@ -31,7 +31,7 @@ public class AnalyticsHubTimeRangeSelection {
 
     init(selectionType: SelectionType,
          currentDate: Date = Date(),
-         timezone: TimeZone = TimeZone.current,
+         timezone: TimeZone,
          calendar: Calendar = Locale.current.calendar) {
 
         // Exit early if we can't generate a selection Data.

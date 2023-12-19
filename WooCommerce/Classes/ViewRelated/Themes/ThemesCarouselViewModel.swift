@@ -12,6 +12,9 @@ final class ThemesCarouselViewModel: ObservableObject {
     let mode: Mode
     private let stores: StoresManager
 
+    /// Closure to be triggered when the theme list is reloaded.
+    var onReload: (() -> Void)?
+
     init(mode: Mode,
          stores: StoresManager = ServiceLocator.stores) {
         self.mode = mode
@@ -23,7 +26,10 @@ final class ThemesCarouselViewModel: ObservableObject {
     }
 
     @MainActor
-    func fetchThemes() async {
+    func fetchThemes(isReload: Bool) async {
+        if isReload {
+            onReload?()
+        }
         state = .loading
         do {
             themes = try await loadSuggestedThemes()
@@ -46,9 +52,9 @@ final class ThemesCarouselViewModel: ObservableObject {
 private extension ThemesCarouselViewModel {
     func waitForCurrentThemeAndFinishLoading() {
         $themes.combineLatest($currentThemeID.dropFirst())
-            .map { themes, currentThemeID in
+            .map { themes, currentThemeID -> State in
                 let filteredThemes = themes.filter { $0.id != currentThemeID }
-                return State.content(themes: filteredThemes)
+                return filteredThemes.isEmpty ? .error : .content(themes: filteredThemes)
             }
             .assign(to: &$state)
     }
@@ -78,38 +84,5 @@ extension ThemesCarouselViewModel {
     enum Mode: Equatable {
         case themeSettings
         case storeCreationProfiler
-
-        var moreThemesSuggestionText: String {
-            switch self {
-            case .themeSettings:
-                return Localization.moreOnSettingsScreen
-            case .storeCreationProfiler:
-                return Localization.moreOnProfiler
-            }
-        }
-
-        var moreThemesTitleText: String {
-            Localization.lookingForMore
-        }
-
-        private enum Localization {
-            static let lookingForMore = NSLocalizedString(
-                "themesCarouselViewModel.lastMessageHeading",
-                value: "Looking for more?",
-                comment: "The heading of the message shown at the end of the carousel on the WordPress theme list"
-            )
-
-            static let moreOnSettingsScreen = NSLocalizedString(
-                "themesCarouselViewModel.themeSetting.lastMessageContent",
-                value: "Find your perfect theme in the WooCommerce Theme Store.",
-                comment: "The content of the message shown at the end of the carousel on the theme settings screen"
-            )
-
-            static let moreOnProfiler = NSLocalizedString(
-                "themesCarouselViewModel.profiler.lastMessageContent",
-                value: "Once your store is set up, find your perfect theme in the WooCommerce Theme Store.",
-                comment: "The content of the message shown at the end of carousel in the store creation profiler flow"
-            )
-        }
     }
 }

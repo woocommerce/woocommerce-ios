@@ -54,6 +54,10 @@ final class ThemesCarouselViewModel: ObservableObject {
     func trackViewAppear(source: WooAnalyticsEvent.Themes.Source) {
         analytics.track(event: .Themes.pickerScreenDisplayed(source: source))
     }
+
+    func trackThemePreviewed() {
+        analytics.track(event: .Themes.previewScreenDisplayed())
+    }
 }
 
 private extension ThemesCarouselViewModel {

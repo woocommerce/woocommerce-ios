@@ -51,7 +51,7 @@ struct ThemesCarouselView: View {
                         // Theme list
                         ForEach(themes) { theme in
                             Button(action: {
-                                onSelectedTheme(theme)
+                                viewModel.trackThemePreviewed()
                                 selectedTheme = theme
                             }) {
                                 if let themeImageURL = theme.themeThumbnailURL {

@@ -22,6 +22,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.state, .pagesLoading)
+        XCTAssertEqual(viewModel.pages.count, 1) // The default "Home" page.
     }
 
     func test_fetchPages_sets_the_right_pages_and_state() async {
@@ -46,7 +47,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         await viewModel.fetchPages()
 
         // Then
-        XCTAssertEqual(viewModel.pages.count, 3)
+        XCTAssertEqual(viewModel.pages.count, 4) // 3 pages + 1 default "Home" page.
         XCTAssertEqual(viewModel.state, .pagesContent)
     }
 

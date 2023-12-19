@@ -24,7 +24,9 @@ final class ThemesPreviewViewModel: ObservableObject {
     @MainActor
     func fetchPages() async {
         do {
-            pages = try await loadPages()
+            // Append the list of pages to the existing home page value, since the API call result
+            // do not include the home page.
+            pages += try await loadPages()
             state = .pagesContent
         } catch {
             DDLogError("⛔️ Error loading pages: \(error)")

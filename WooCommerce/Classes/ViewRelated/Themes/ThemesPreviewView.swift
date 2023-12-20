@@ -142,7 +142,14 @@ struct ThemesPreviewView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .task { await viewModel.fetchPages() }
-        .sheet(isPresented: $showPagesMenu) { pagesListSheet }
+        .sheet(isPresented: $showPagesMenu) {
+            if #available(iOS 16, *) {
+                pagesListSheet
+                    .presentationDetents([.medium, .large])
+            } else {
+                pagesListSheet
+            }
+        }
     }
 
     @ViewBuilder

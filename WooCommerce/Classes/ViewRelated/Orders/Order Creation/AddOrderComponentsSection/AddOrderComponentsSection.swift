@@ -44,9 +44,6 @@ struct AddOrderComponentsSection: View {
         VStack(alignment: .leading, spacing: .zero) {
             // "Add order components" rows
             Group {
-                Divider()
-                    .padding(.leading, Constants.dividerLeadingPadding)
-
                 addShippingRow
 
                 addCouponRow
@@ -55,6 +52,7 @@ struct AddOrderComponentsSection: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
+        .background(Color(.listForeground(modal: true)))
     }
 }
 
@@ -225,7 +223,6 @@ private extension AddOrderComponentsSection {
         static let sectionPadding: CGFloat = 16
         static let rowMinHeight: CGFloat = 44
         static let infoTooltipCornerRadius: CGFloat = 4
-        static let dividerLeadingPadding: CGFloat = 16
         static let orderTotalBottomPadding: CGFloat = 8
     }
 }

@@ -180,7 +180,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
 
     // MARK: notice
 
-    func test_notice_is_initially_false() {
+    func test_notice_is_initially_nil() {
         // Given
         let viewModel = ThemesPreviewViewModel(siteID: 123,
                                                mode: .storeCreationProfiler,

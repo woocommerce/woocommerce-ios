@@ -73,6 +73,8 @@ struct WebView: UIViewRepresentable {
             uiView.reload()
         }
 
+        // Occasionally, a parent View might want to pass a new `url` parameter to this View. Here we have to manually ask
+        // the webview for the new URL to be loaded properly.
         if uiView.url != url {
             uiView.load(URLRequest(url: url))
         }

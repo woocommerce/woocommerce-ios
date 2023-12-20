@@ -70,13 +70,14 @@ struct ThemesPreviewView: View {
     @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
     @State private var showPagesMenu: Bool = false
 
-    /// Triggered once theme is selected
-    var onCompletion: () -> Void
+    /// Triggered when the primary CTA button for selecting the theme is tapped.
+    /// On Store creation, this is "Start with This Theme", while on Settings, this is "Use This Theme".
+    var onSelectedTheme: () -> Void
 
     init(viewModel: ThemesPreviewViewModel,
-         onCompletion: @escaping () -> Void) {
+         onSelectedTheme: @escaping () -> Void) {
         self.viewModel = viewModel
-        self.onCompletion = onCompletion
+        self.onSelectedTheme = onSelectedTheme
     }
 
     var body: some View {
@@ -103,7 +104,7 @@ struct ThemesPreviewView: View {
                             Task { @MainActor in
                                 do {
                                     try await viewModel.confirmThemeSelection()
-                                    onCompletion()
+                                    onSelectedTheme()
                                     dismiss()
                                 } catch {
                                     DDLogError("⛔️ ThemesPreviewView - Theme installation failed.")
@@ -131,7 +132,7 @@ struct ThemesPreviewView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    pageSelector(state: viewModel.state, pageTitle: viewModel.selectedPage.title)
+                    pageSelector
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -154,27 +155,24 @@ struct ThemesPreviewView: View {
         .notice($viewModel.notice)
     }
 
-    private func pageSelector(state: ThemesPreviewViewModel.State, pageTitle: String) -> some View {
-        switch state {
-        case .pagesLoading:
-            return AnyView(Text(Localization.preview))
+    @ViewBuilder
+    private var pageSelector: some View {
+
+        // Here we show only a "Preview" label with no selector, both for loading and error cases.
+        // In the case of page loading error, the home page is still usable, so showing "Preview" is better than nothing.
+        switch viewModel.state {
+        case .pagesLoading, .pagesLoadingError:
+            Text(Localization.preview)
 
         case .pagesContent:
-            return AnyView(
-                Button(action: { showPagesMenu = true },
-                       label: {
-                           HStack {
-                               Text(pageTitle).bodyStyle()
-                               Image(uiImage: .chevronDownImage)
-                                   .fixedSize()
-                                   .secondaryBodyStyle()
-
-                           }
-                       })
-            )
-
-        case .pagesLoadingError:
-            return AnyView(Text(Localization.preview))
+            Button(action: { showPagesMenu = true }) {
+                HStack {
+                    Text(viewModel.selectedPage.title).bodyStyle()
+                    Image(uiImage: .chevronDownImage)
+                        .fixedSize()
+                        .bodyStyle()
+                }
+            }
         }
     }
 
@@ -279,9 +277,9 @@ private extension ThemesPreviewView {
         )
 
         static let pagesSheetHeading = NSLocalizedString(
-        "ThemesPreviewView.pagesSheetHeading",
-        value: "View other store pages on this theme",
-        comment: "Heading for sheet displaying list of pages"
+            "themesPreviewView.pagesSheetHeading",
+            value: "View other store pages on this theme",
+            comment: "Heading for sheet displaying list of pages"
         )
     }
 }
@@ -296,6 +294,6 @@ struct ThemesPreviewView_Previews: PreviewProvider {
                                 description: "Woo Theme",
                                 name: "Woo",
                                 demoURI: "https://woo.com")),
-            onCompletion: { })
+            onSelectedTheme: { })
     }
 }

@@ -4,7 +4,7 @@ import Yosemite
 /// ViewModel for ThemesPreviewView
 ///
 final class ThemesPreviewViewModel: ObservableObject {
-    @Published private(set) var pages: [WordPressPage] = []
+    @Published private(set) var pages: [WordPressPage]
     @Published private(set) var selectedPage: WordPressPage
     @Published private(set) var state: State = .pagesLoading
 

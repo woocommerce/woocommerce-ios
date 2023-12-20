@@ -29,11 +29,6 @@ struct WebView: UIViewRepresentable {
     ///
     var onCommit: ((WKWebView) -> Void)?
 
-    /// Check to see if WebView should reload on caller View update.
-    /// For the moment this is used to allow ThemesPreviewView to re-apply JS code on layout change request.
-    ///
-    var shouldReloadOnUpdate: Bool
-
     /// Check whether to prevent any link clicking to open the link.
     /// This is used in ThemesPreviewView, as it is intended to only display a single demo URL without allowing navigation to
     /// other webpages.
@@ -44,13 +39,11 @@ struct WebView: UIViewRepresentable {
     init(
         isPresented: Binding<Bool>,
         url: URL,
-        shouldReloadOnUpdate: Bool = false,
         disableLinkClicking: Bool = false,
         onCommit: ((WKWebView)->Void)? = nil
     ) {
         self._isPresented = isPresented
         self.url = url
-        self.shouldReloadOnUpdate = shouldReloadOnUpdate
         self.disableLinkClicking = disableLinkClicking
         self.onCommit = onCommit
     }
@@ -69,15 +62,7 @@ struct WebView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        if shouldReloadOnUpdate {
-            uiView.reload()
-        }
-
-        // Occasionally, a parent View might want to pass a new `url` parameter to this View. Here we have to manually ask
-        // the webview for the new URL to be loaded properly.
-        if uiView.url != url {
-            uiView.load(URLRequest(url: url))
-        }
+        uiView.load(URLRequest(url: url))
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {

@@ -54,7 +54,7 @@ final class ThemesPreviewViewModel: ObservableObject {
     }
 
     @MainActor
-    func installTheme() async throws {
+    func confirmThemeSelection() async throws {
         guard mode == .themeSettings else {
             return
         }

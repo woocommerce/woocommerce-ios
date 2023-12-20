@@ -102,7 +102,7 @@ struct ThemesPreviewView: View {
                                action: {
                             Task { @MainActor in
                                 do {
-                                    try await viewModel.installTheme()
+                                    try await viewModel.confirmThemeSelection()
                                     onStart()
                                     dismiss()
                                 } catch {

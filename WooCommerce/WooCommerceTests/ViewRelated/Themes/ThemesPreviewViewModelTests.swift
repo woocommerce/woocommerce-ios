@@ -116,13 +116,13 @@ final class ThemesPreviewViewModelTests: XCTestCase {
             .store(in: &self.subscriptions)
 
         // When
-        try await viewModel.installTheme()
+        try await viewModel.confirmThemeSelection()
 
         // Then
         assertEqual([false, true, false], loadingStates)
     }
 
-    func test_installingTheme_does_not_change_when_installing_theme_in_storeCreationProfiler_mode() async throws {
+    func test_installingTheme_does_not_change_when_theme_selection_confirmed_in_storeCreationProfiler_mode() async throws {
         // Given
         let themeInstaller = MockThemeInstaller()
         let viewModel = ThemesPreviewViewModel(siteID: 123,
@@ -142,7 +142,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
             .store(in: &self.subscriptions)
 
         // When
-        try await viewModel.installTheme()
+        try await viewModel.confirmThemeSelection()
 
         // Then
         assertEqual([], loadingStates)
@@ -170,7 +170,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
 
         // When
         do {
-            try await viewModel.installTheme()
+            try await viewModel.confirmThemeSelection()
             XCTFail("Installing theme should fail")
         } catch {
             // Then
@@ -209,7 +209,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
 
         // When
         do {
-            try await viewModel.installTheme()
+            try await viewModel.confirmThemeSelection()
             XCTFail("Installing theme should fail")
         } catch {
             // Then
@@ -232,7 +232,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                themeInstaller: themeInstaller)
 
         // When
-        try await viewModel.installTheme()
+        try await viewModel.confirmThemeSelection()
 
         // Then
         XCTAssertTrue(themeInstaller.installThemeCalled)
@@ -253,7 +253,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                themeInstaller: themeInstaller)
 
         // When
-        try await viewModel.installTheme()
+        try await viewModel.confirmThemeSelection()
 
         // Then
         XCTAssertFalse(themeInstaller.installThemeCalled)

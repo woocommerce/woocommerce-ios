@@ -72,7 +72,7 @@ struct SiteAddressViewModel {
         loading: @escaping ((Bool) -> ()),
         completion: @escaping (GuessXMLRPCURLResult) -> ()
     ) {
-        var completion: (NSError, String?) -> Void = { error, errorMessage in
+        let completion: (NSError, String?) -> Void = { error, errorMessage in
             if self.authenticationDelegate.shouldHandleError(error) {
                 self.authenticationDelegate.handleError(error) { customUI in
                     completion(.customUI(customUI))

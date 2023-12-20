@@ -161,7 +161,7 @@ struct ThemesPreviewView: View {
                     Text(viewModel.selectedPage.title).bodyStyle()
                     Image(uiImage: .chevronDownImage)
                         .fixedSize()
-                        .secondaryBodyStyle()
+                        .bodyStyle()
                 }
             }
         }

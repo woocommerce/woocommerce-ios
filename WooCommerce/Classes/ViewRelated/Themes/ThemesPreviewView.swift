@@ -168,12 +168,12 @@ struct ThemesPreviewView: View {
         }
     }
 
-    private func pagesListSheet(pages: [WordPressPage]) -> some View {
-        return VStack {
+    private var pagesListSheet: some View {
+        VStack {
             Text(Localization.pagesSheetHeading)
                 .subheadlineStyle()
                 .padding(Layout.pagesSheetPadding)
-            ForEach(pages) { page in
+            ForEach(viewModel.pages) { page in
                 Button(action: {
                     viewModel.setSelectedPage(page: page)
                     showPagesMenu = false
@@ -181,7 +181,6 @@ struct ThemesPreviewView: View {
                     Text(page.title)
                         .bodyStyle()
                         .frame(maxWidth: .infinity, alignment: .leading)
-
                 })
                 .padding(Layout.contentPadding)
             }

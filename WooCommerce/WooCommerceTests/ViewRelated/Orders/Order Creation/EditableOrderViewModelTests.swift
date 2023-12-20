@@ -55,12 +55,12 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Navigation
 
-    func test_edition_view_model_has_a_navigation_done_button() {
+    func test_edition_view_model_has_no_navigation_done_button() {
         // When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: .fake()), stores: stores)
 
         // Then
-        XCTAssertEqual(viewModel.navigationTrailingItem, .done)
+        XCTAssertNil(viewModel.navigationTrailingItem)
     }
 
     func test_edition_view_model_has_a_navigation_loading_item_when_synching() {
@@ -69,7 +69,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
 
         // When
-        let navigationItemDuringSync: EditableOrderViewModel.NavigationItem = waitFor { promise in
+        let navigationItemDuringSync: EditableOrderViewModel.NavigationItem? = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .updateOrder:
@@ -92,7 +92,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
-        let navigationItem: EditableOrderViewModel.NavigationItem = waitFor { promise in
+        let navigationItem: EditableOrderViewModel.NavigationItem? = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .createOrder:

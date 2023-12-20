@@ -296,14 +296,10 @@ struct OrderForm: View {
                     .id(navigationButtonID)
                     .accessibilityIdentifier(Accessibility.createButtonIdentifier)
                     .disabled(viewModel.disabled)
-                case .done:
-                    Button(Localization.doneButton) {
-                        viewModel.finishEditing()
-                        dismissHandler()
-                    }
-                    .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
                 case .loading:
                     ProgressView()
+                case .none:
+                    EmptyView()
                 }
             }
         }
@@ -388,6 +384,7 @@ struct OrderForm: View {
                 Text(Localization.doneButton)
             }
             .buttonStyle(PrimaryButtonStyle())
+            .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
         }
     }
 }

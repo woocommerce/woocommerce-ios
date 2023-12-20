@@ -123,7 +123,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
-    @Published private(set) var navigationTrailingItem: NavigationItem = .create
+    @Published private(set) var navigationTrailingItem: NavigationItem?
 
     /// Tracks if a network request is being performed.
     ///
@@ -924,7 +924,6 @@ extension EditableOrderViewModel {
     ///
     enum NavigationItem: Equatable {
         case create
-        case done
         case loading
     }
 
@@ -1200,7 +1199,7 @@ private extension EditableOrderViewModel {
     ///
     func configureNavigationTrailingItem() {
         Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
-            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem in
+            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem? in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
@@ -1211,7 +1210,7 @@ private extension EditableOrderViewModel {
                 case (.editing, .syncing):
                     return .loading
                 case (.editing, _):
-                    return .done
+                    return .none
                 }
             }
             .assign(to: &$navigationTrailingItem)

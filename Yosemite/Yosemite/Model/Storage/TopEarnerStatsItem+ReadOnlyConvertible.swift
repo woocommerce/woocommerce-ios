@@ -12,7 +12,6 @@ extension Storage.TopEarnerStatsItem: ReadOnlyConvertible {
         productID = statsItem.productID
         productName = statsItem.productName
         quantity = Int64(statsItem.quantity)
-        price = statsItem.price
         total = statsItem.total
         currency = statsItem.currency
         imageUrl = statsItem.imageUrl
@@ -24,7 +23,6 @@ extension Storage.TopEarnerStatsItem: ReadOnlyConvertible {
         return TopEarnerStatsItem(productID: productID,
                                   productName: productName ?? "",
                                   quantity: Int(quantity),
-                                  price: price,
                                   total: total,
                                   currency: currency ?? "",
                                   imageUrl: imageUrl ?? "")

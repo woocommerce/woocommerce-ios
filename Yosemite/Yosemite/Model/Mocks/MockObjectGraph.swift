@@ -490,7 +490,6 @@ extension MockObjectGraph {
             productID: product.productID,
             productName: product.name,
             quantity: quantity,
-            price: averagePrice,
             total: Double(quantity) * averagePrice,
             currency: "USD",
             imageUrl: product.images.first?.src

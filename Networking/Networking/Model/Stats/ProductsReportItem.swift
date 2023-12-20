@@ -18,10 +18,6 @@ public struct ProductsReportItem: Decodable, Equatable {
     ///
     public let quantity: Int
 
-    /// Price of item
-    ///
-    public let price: Double
-
     /// Net revenue from product
     ///
     public let total: Double
@@ -33,11 +29,10 @@ public struct ProductsReportItem: Decodable, Equatable {
 
     /// Designated Initializer.
     ///
-    public init(productID: Int64, productName: String, quantity: Int, price: Double, total: Double, imageUrl: String?) {
+    public init(productID: Int64, productName: String, quantity: Int, total: Double, imageUrl: String?) {
         self.productID = productID
         self.productName = productName
         self.quantity = quantity
-        self.price = price
         self.total = total
         self.imageUrl = imageUrl
     }
@@ -52,7 +47,6 @@ public struct ProductsReportItem: Decodable, Equatable {
         let extendedInfo = try container.nestedContainer(keyedBy: ExtendedInfoCodingKeys.self, forKey: .extendedInfo)
 
         let productName = try extendedInfo.decode(String.self, forKey: .productName)
-        let price = try extendedInfo.decode(Double.self, forKey: .price)
 
         // Parse and extract the `src` string out of the image html using `Aztec parser`
         let imageUrl: String? = {
@@ -64,7 +58,7 @@ public struct ProductsReportItem: Decodable, Equatable {
             return src
         }()
 
-        self.init(productID: productID, productName: productName, quantity: quantity, price: price, total: total, imageUrl: imageUrl)
+        self.init(productID: productID, productName: productName, quantity: quantity, total: total, imageUrl: imageUrl)
     }
 }
 
@@ -81,7 +75,6 @@ private extension ProductsReportItem {
 
     enum ExtendedInfoCodingKeys: String, CodingKey {
         case productName    = "name"
-        case price          = "price"
         case imageHTML      = "image"
     }
 }

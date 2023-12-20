@@ -145,7 +145,6 @@ private extension ProductLoaderViewControllerModelTests {
         TopEarnerStatsItem(productID: productID,
                            productName: "Album",
                            quantity: 1,
-                           price: 15.0,
                            total: 15.99,
                            currency: "",
                            imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/album-1.jpg")

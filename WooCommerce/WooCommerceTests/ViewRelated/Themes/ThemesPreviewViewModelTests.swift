@@ -117,6 +117,25 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         }
     }
 
+    func test_fetchPages_failure_sets_right_state() async {
+        // Given
+        let viewModel = ThemesPreviewViewModel(themeDemoURL: "https://tsubakidemo.wpcomstaging.com/", stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            switch action {
+            case let .fetchPageList(_, completion):
+                completion(.failure(NSError(domain: "Test", code: 503)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        await viewModel.fetchPages()
+
+        // Then
+        XCTAssertEqual(viewModel.state, .pagesLoadingError)
+    }
+
     func test_setSelectedPage_updates_selectedPage() {
         // Given
         let viewModel = ThemesPreviewViewModel(themeDemoURL: "testURL")

@@ -32,6 +32,15 @@ final class SiteAddressViewController: LoginViewController {
     ///
     private let isSiteDiscovery: Bool
     private let configuration = WordPressAuthenticator.shared.configuration
+    private lazy var viewModel: SiteAddressViewModel = {
+        return SiteAddressViewModel(
+            isSiteDiscovery: isSiteDiscovery,
+            xmlrpcFacade: WordPressXMLRPCAPIFacade(),
+            authenticationDelegate: authenticationDelegate,
+            blogService: WordPressComBlogService(),
+            loginFields: loginFields
+        )
+    }()
 
     init?(isSiteDiscovery: Bool, coder: NSCoder) {
         self.isSiteDiscovery = isSiteDiscovery
@@ -482,75 +491,29 @@ private extension SiteAddressViewController {
     }
 
     func guessXMLRPCURL(for siteAddress: String) {
-        let facade = WordPressXMLRPCAPIFacade()
-        facade.guessXMLRPCURL(forSite: siteAddress, success: { [weak self] (url) in
-            // Success! We now know that we have a valid XML-RPC endpoint.
-            // At this point, we do NOT know if this is a WP.com site or a self-hosted site.
-            if let url = url {
-                self?.loginFields.meta.xmlrpcURL = url as NSURL
-            }
-            // Let's try to grab site info in preparation for the next screen.
-            self?.fetchSiteInfo()
-
-            }, failure: { [weak self] (error) in
-                guard let error = error, let self = self else {
-                    return
-                }
-                // Intentionally log the attempted address on failures.
-                // It's not guaranteed to be included in the error object depending on the error.
-                WPAuthenticatorLogInfo("Error attempting to connect to site address: \(self.loginFields.siteAddress)")
-                WPAuthenticatorLogError(error.localizedDescription)
-
-                self.tracker.track(failure: .loginFailedToGuessXMLRPC)
-
-                self.configureViewLoading(false)
-
-                guard self.isSiteDiscovery == false else {
-                    WordPressAuthenticator.shared.delegate?.troubleshootSite(nil, in: self.navigationController)
-                    return
-                }
-
-                let err = self.originalErrorOrError(error: error as NSError)
-
-                let errorMessage: String? = {
-                    if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
-                        return xmlrpcValidatorError.localizedDescription
-                    } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
-                                (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
-                        // NSURLErrorNetworkConnectionLost can be returned when an invalid URL is entered.
-                        let msg = NSLocalizedString(
-                            "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.",
-                            comment: "Error message shown a URL does not point to an existing site.")
-                        return msg
-                    } else {
-                        return nil
-                    }
-                }()
-
-                /// Check if the host app wants to provide custom UI to handle the error.
-                /// If it does, insert the custom UI provided by the host app and exit early
-                if self.authenticationDelegate.shouldHandleError(err) {
-
-                    // Send the error to the host app
-                    self.authenticationDelegate.handleError(err) { customUI in
-                        self.pushCustomUI(customUI)
-                    }
-
-                    // Track error message as failure
+        viewModel.guessXMLRPCURL(
+            for: siteAddress,
+            loading: { [weak self] isLoading in
+                self?.configureViewLoading(isLoading)
+            },
+            completion: { [weak self] result -> Void in
+                guard let self else { return }
+                switch result {
+                case .success:
+                    // Let's try to grab site info in preparation for the next screen.
+                    self.fetchSiteInfo()
+                case .error(let error, let errorMessage):
                     if let message = errorMessage {
-                        self.tracker.track(failure: message)
+                        self.displayError(message: message, moveVoiceOverFocus: true)
+                    } else {
+                        self.displayError(error, sourceTag: self.sourceTag)
                     }
-
-                    // Return as the error has been handled by the host app.
-                    return
+                case .troubleshootSite:
+                    WordPressAuthenticator.shared.delegate?.troubleshootSite(nil, in: self.navigationController)
+                case .customUI(let viewController):
+                    self.pushCustomUI(viewController)
                 }
-
-                if let message = errorMessage {
-                    self.displayError(message: message, moveVoiceOverFocus: true)
-                } else {
-                    self.displayError(error, sourceTag: self.sourceTag)
-                }
-        })
+            })
     }
 
     func fetchSiteInfo() {

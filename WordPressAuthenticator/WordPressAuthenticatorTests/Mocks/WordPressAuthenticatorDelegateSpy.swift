@@ -8,6 +8,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var showSupportNotificationIndicator: Bool = true
     var supportEnabled: Bool = true
     var allowWPComLogin: Bool = true
+    var shouldHandleError: Bool = false
 
     private(set) var presentSignupEpilogueCalled = false
     private(set) var socialUser: SocialUser?
@@ -50,11 +51,13 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     }
 
     func shouldHandleError(_ error: Error) -> Bool {
-        true
+        shouldHandleError
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
-        // no-op
+        if shouldHandleError {
+            onCompletion(UIViewController())
+        }
     }
 
     func shouldPresentSignupEpilogue() -> Bool {

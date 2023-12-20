@@ -142,9 +142,7 @@ struct ThemesPreviewView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .task { await viewModel.fetchPages() }
-        .sheet(isPresented: $showPagesMenu) {
-            pagesListSheet
-        }
+        .sheet(isPresented: $showPagesMenu) { pagesListSheet }
     }
 
     @ViewBuilder

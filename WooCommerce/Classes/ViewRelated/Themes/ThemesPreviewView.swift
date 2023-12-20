@@ -72,15 +72,16 @@ struct ThemesPreviewView: View {
 
     private let theme: WordPressTheme
 
-    /// Triggered when "Start with this theme" button is tapped.
-    var onStart: () -> Void
+    /// Triggered when the primary CTA button for selecting the theme is tapped.
+    /// On Store creation, this is "Start with This Theme", while on Settings, this is "Use This Theme".
+    var onSelectedTheme: () -> Void
 
     init(viewModel: ThemesPreviewViewModel,
          theme: WordPressTheme,
-         onStart: @escaping () -> Void) {
+         onSelectedTheme: @escaping () -> Void) {
         self.viewModel = viewModel
         self.theme = theme
-        self.onStart = onStart
+        self.onSelectedTheme = onSelectedTheme
     }
 
     var body: some View {
@@ -102,7 +103,7 @@ struct ThemesPreviewView: View {
                         .foregroundColor(Color(.divider))
 
                     VStack {
-                        Button(Localization.startWithThemeButton, action: onStart)
+                        Button(Localization.startWithThemeButton, action: onSelectedTheme)
                         .buttonStyle(PrimaryButtonStyle())
 
                         Text(String(format: Localization.themeName, theme.name))
@@ -280,7 +281,7 @@ struct ThemesPreviewView_Previews: PreviewProvider {
                 name: "Woo",
                 demoURI: "https://woo.com"
             ),
-            onStart: { }
+            onSelectedTheme: { }
         )
     }
 }

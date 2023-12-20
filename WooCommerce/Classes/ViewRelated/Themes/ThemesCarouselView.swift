@@ -78,7 +78,7 @@ struct ThemesCarouselView: View {
             ThemesPreviewView(
                 viewModel: .init(themeDemoURL: theme.demoURI),
                 theme: theme,
-                onStart: {
+                onSelectedTheme: {
                     viewModel.trackStartThemeButtonTapped(theme)
                     onSelectedTheme(theme)
                 })

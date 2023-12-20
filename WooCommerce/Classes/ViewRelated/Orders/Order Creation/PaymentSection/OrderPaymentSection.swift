@@ -71,10 +71,6 @@ struct OrderPaymentSection: View {
 
         taxRateAddedAutomaticallyRow
             .renderedIf(viewModel.shouldShowStoredTaxRateAddedAutomatically)
-
-        Divider()
-            .padding([.leading], Constants.dividerLeadingPadding)
-            .renderedIf(!viewModel.orderIsEmpty)
     }
 }
 
@@ -306,7 +302,6 @@ private extension OrderPaymentSection {
         static let sectionPadding: CGFloat = 16
         static let rowMinHeight: CGFloat = 44
         static let infoTooltipCornerRadius: CGFloat = 4
-        static let dividerLeadingPadding: CGFloat = 16
     }
 }
 

@@ -46,14 +46,25 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             Spacer()
 
             // Content that will expand/collapse
-            VStack {
-                if isExpanded || revealContentDuringDrag {
-                    expandableContent()
-                        .transition(.move(edge: .bottom))
+            Group {
+                VStack {
+                    VStack {
+                        if isExpanded || revealContentDuringDrag {
+                            expandableContent()
+                                .transition(.move(edge: .bottom))
+                        }
+                    }
+                    .trackSize(size: $expandingContentSize)
                 }
+                .scrollVerticallyIfNeeded()
+
+                // This isn't ideal... it should be something we can specify as content, 
+                // but it's here as it wants to be outside the scrollview.
+                Divider()
+                    .renderedIf(isExpanded || revealContentDuringDrag)
+                    .padding([.leading], Layout.dividerLeadingPadding)
             }
             .frame(maxWidth: .infinity)
-            .trackSize(size: $expandingContentSize)
             .clipped()
 
             // Always visible content
@@ -106,15 +117,17 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 }
                 .onEnded { gesture in
                     withAnimation {
-                        let dragAmount = gesture.predictedEndTranslation.height as CGFloat
-                        let threshold: CGFloat = expandingContentSize.height / 4
+                        DispatchQueue.main.async {
+                            let dragAmount = gesture.predictedEndTranslation.height as CGFloat
+                            let threshold: CGFloat = expandingContentSize.height / 4
 
-                        if dragAmount > threshold && isExpanded {
-                            isExpanded = false
-                        } else if dragAmount < -threshold && !isExpanded {
-                            isExpanded = true
+                            if dragAmount > threshold && isExpanded {
+                                isExpanded = false
+                            } else if dragAmount < -threshold && !isExpanded {
+                                isExpanded = true
+                            }
+                            revealContentDuringDrag = false
                         }
-                        revealContentDuringDrag = false
                     }
                 }
         )
@@ -124,7 +137,9 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
         let collapsedHeight = fixedContentSize.height + chevronSize.height + Layout.chevronPadding
-        let fullHeight = collapsedHeight + expandingContentSize.height
+        let screenHeight = UIScreen.main.bounds.height
+        let maxExpandedHeight = screenHeight * 0.8
+        let fullHeight = min(collapsedHeight + expandingContentSize.height, maxExpandedHeight)
         let currentHeight = isExpanded ? fullHeight : collapsedHeight
         let dragAdjustedHeight = currentHeight - dragAmount
 
@@ -138,6 +153,7 @@ fileprivate enum Layout {
     static let chevronPadding: CGFloat = 8
     static let sheetCornerRadius: CGFloat = 10
     static let shadowRadius: CGFloat = 5
+    static let dividerLeadingPadding: CGFloat = 16
 }
 
 fileprivate enum Localization {

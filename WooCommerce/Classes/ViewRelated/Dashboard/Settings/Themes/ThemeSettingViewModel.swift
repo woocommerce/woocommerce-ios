@@ -41,6 +41,7 @@ final class ThemeSettingViewModel: ObservableObject {
 
     func updateCurrentTheme(_ theme: WordPressTheme) {
         currentThemeName = theme.name
+        carouselViewModel.updateCurrentTheme(id: theme.id)
     }
 
     func trackViewAppear() {

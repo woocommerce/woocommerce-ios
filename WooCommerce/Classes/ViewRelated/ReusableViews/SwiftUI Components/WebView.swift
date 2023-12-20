@@ -16,7 +16,6 @@ struct WebView: UIViewRepresentable {
 
     let webView: WKWebView = WKWebView()
     let progressView: WebProgressView = WebProgressView()
-    @State var estimatedProgress: Float = 0.0
 
     let url: URL
 

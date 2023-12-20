@@ -25,7 +25,7 @@ public struct OrderNote: Decodable, Equatable, GeneratedFakeable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let noteID = try container.decode(Int64.self, forKey: .noteID)
-        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
+        let dateCreated = (try? container.decodeIfPresent(Date.self, forKey: .dateCreated)) ?? Date()
         let note = try container.decode(String.self, forKey: .note)
         let isCustomerNote = try container.decode(Bool.self, forKey: .isCustomerNote)
         let author = try container.decode(String.self, forKey: .author)

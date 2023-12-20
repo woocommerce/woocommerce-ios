@@ -62,7 +62,7 @@ public struct ProductReview: Decodable, Equatable, GeneratedFakeable, GeneratedC
 
         let reviewID = try container.decode(Int64.self, forKey: .reviewID)
         let productID = try container.decode(Int64.self, forKey: .productID)
-        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
+        let dateCreated = (try? container.decodeIfPresent(Date.self, forKey: .dateCreated)) ?? Date()
         let statusKey = try container.decode(String.self, forKey: .status)
         let reviewer = try container.decode(String.self, forKey: .reviewer)
         let reviewerEmail = try container.decode(String.self, forKey: .reviewerEmail)

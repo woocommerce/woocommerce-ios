@@ -49,7 +49,7 @@ extension Media: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let mediaID = try container.decode(Int64.self, forKey: .mediaID)
-        let date = try container.decodeIfPresent(Date.self, forKey: .date) ?? Date()
+        let date = (try? container.decodeIfPresent(Date.self, forKey: .date)) ?? Date()
         let fileExtension = try container.decodeIfPresent(String.self, forKey: .fileExtension) ?? ""
         let filename = try container.decodeIfPresent(String.self, forKey: .filename) ?? ""
         let mimeType = try container.decodeIfPresent(String.self, forKey: .mimeType) ?? ""

@@ -22,11 +22,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         VStack(spacing: 0) {
             // Chevron button to control view expansion
             Button(action: {
-                self.isExpanded.toggle()
+                isExpanded.toggle()
             }) {
                 Image(systemName: "chevron.up")
                     .font(.system(size: Layout.chevronHeight))
-                    .rotationEffect(.degrees(self.isExpanded ? 180 : 0))
+                    .rotationEffect(.degrees(isExpanded ? 180 : 0))
                     .padding(Layout.chevronPadding)
                     .foregroundColor(Color(uiColor: .primary))
             }
@@ -91,9 +91,9 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         let threshold: CGFloat = expandingContentSize.height / 4
 
                         if dragAmount > threshold && isExpanded {
-                            self.isExpanded = false
+                            isExpanded = false
                         } else if dragAmount < -threshold && !isExpanded {
-                            self.isExpanded = true
+                            isExpanded = true
                         }
                         revealContentDuringDrag = false
                     }

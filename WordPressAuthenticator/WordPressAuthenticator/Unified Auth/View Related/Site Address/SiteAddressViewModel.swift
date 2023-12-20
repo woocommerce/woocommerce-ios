@@ -44,26 +44,26 @@ struct SiteAddressViewModel {
 
             completion(.success)
 
-            }, failure: { error in
-                guard let error = error else {
-                    return
-                }
-                // Intentionally log the attempted address on failures.
-                // It's not guaranteed to be included in the error object depending on the error.
-                WPAuthenticatorLogInfo("Error attempting to connect to site address: \(self.loginFields.siteAddress)")
-                WPAuthenticatorLogError(error.localizedDescription)
+        }, failure: { error in
+            guard let error = error else {
+                return
+            }
+            // Intentionally log the attempted address on failures.
+            // It's not guaranteed to be included in the error object depending on the error.
+            WPAuthenticatorLogInfo("Error attempting to connect to site address: \(self.loginFields.siteAddress)")
+            WPAuthenticatorLogError(error.localizedDescription)
 
-                self.tracker.track(failure: .loginFailedToGuessXMLRPC)
+            self.tracker.track(failure: .loginFailedToGuessXMLRPC)
 
-                loading(false)
+            loading(false)
 
-                guard self.isSiteDiscovery == false else {
-                    completion(.troubleshootSite)
-                    return
-                }
+            guard self.isSiteDiscovery == false else {
+                completion(.troubleshootSite)
+                return
+            }
 
-                let err = self.originalErrorOrError(error: error as NSError)
-                self.handleGuessXMLRPCURLError(error: err, loading: loading, completion: completion)
+            let err = self.originalErrorOrError(error: error as NSError)
+            self.handleGuessXMLRPCURLError(error: err, loading: loading, completion: completion)
         })
     }
 
@@ -88,7 +88,7 @@ struct SiteAddressViewModel {
 
         /// Confirm the site is not a WordPress site before describing it as an invalid WP site
         if let xmlrpcValidatorError = error as? WordPressOrgXMLRPCValidatorError, xmlrpcValidatorError == .invalid {
-                loading(true)
+            loading(true)
             isWPSite { isWP in
                 loading(false)
                 if isWP {
@@ -125,7 +125,7 @@ extension SiteAddressViewModel {
             },
             failure: { _ in
                 completion(false)
-        })
+            })
     }
 }
 

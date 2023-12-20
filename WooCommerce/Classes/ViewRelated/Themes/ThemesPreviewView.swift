@@ -124,7 +124,7 @@ struct ThemesPreviewView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    pageSelector(state: viewModel.state, pageTitle: viewModel.selectedPage.title)
+                    pageSelector
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -146,27 +146,24 @@ struct ThemesPreviewView: View {
         }
     }
 
-    private func pageSelector(state: ThemesPreviewViewModel.State, pageTitle: String) -> some View {
-        switch state {
-        case .pagesLoading:
-            return AnyView(Text(Localization.preview))
+    @ViewBuilder
+    private var pageSelector: some View {
+
+        // Here we show only a "Preview" label with no selector, both for loading and error cases.
+        // In the case of page loading error, the home page is still usable, so showing "Preview" is better than nothing.
+        switch viewModel.state {
+        case .pagesLoading, .pagesLoadingError:
+            Text(Localization.preview)
 
         case .pagesContent:
-            return AnyView(
-                Button(action: { showPagesMenu = true },
-                       label: {
-                           HStack {
-                               Text(pageTitle).bodyStyle()
-                               Image(uiImage: .chevronDownImage)
-                                   .fixedSize()
-                                   .secondaryBodyStyle()
-
-                           }
-                       })
-            )
-
-        case .pagesLoadingError:
-            return AnyView(Text(Localization.preview))
+            Button(action: { showPagesMenu = true }) {
+                HStack {
+                    Text(viewModel.selectedPage.title).bodyStyle()
+                    Image(uiImage: .chevronDownImage)
+                        .fixedSize()
+                        .secondaryBodyStyle()
+                }
+            }
         }
     }
 

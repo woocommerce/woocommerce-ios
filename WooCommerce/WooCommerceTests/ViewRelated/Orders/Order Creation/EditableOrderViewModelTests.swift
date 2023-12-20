@@ -696,7 +696,6 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                                           shippingTotal: "3.00",
                                                                                customAmountsTotal: "2.00",
                                                                           taxesTotal: "5.00",
-                                                                          orderTotal: "30.00",
                                                                           currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
 
         // Then
@@ -704,7 +703,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(paymentDataViewModel.shippingTotal, "£3.00")
         XCTAssertEqual(paymentDataViewModel.customAmountsTotal, "£2.00")
         XCTAssertEqual(paymentDataViewModel.taxesTotal, "£5.00")
-        XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
     func test_payment_data_view_model_is_initialized_with_expected_default_values_for_new_order() {
@@ -719,7 +717,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£0.00")
     }
 
     func test_payment_data_view_model_when_calling_onGoToCouponsClosure_then_calls_to_track_event() {
@@ -853,7 +850,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.orderTotal, "£8.50")
 
         // When & Then
         viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
@@ -863,7 +860,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             viewModel.paymentDataViewModel.itemsTotal != "£8.50"
         }
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£17.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")
+        XCTAssertEqual(viewModel.orderTotal, "£17.00")
     }
 
     func test_payment_section_is_updated_when_shipping_line_updated() throws {
@@ -893,7 +890,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£10.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+        XCTAssertEqual(viewModel.orderTotal, "£18.50")
 
         // When
         viewModel.saveShippingLine(nil)
@@ -902,7 +899,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.orderTotal, "£8.50")
     }
 
     func test_payment_when_custom_amount_is_added_then_section_is_updated() throws {
@@ -927,7 +924,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£10.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+        XCTAssertEqual(viewModel.orderTotal, "£18.50")
     }
 
     func test_payment_section_is_updated_when_coupon_line_updated() throws {
@@ -986,7 +983,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
+        XCTAssertEqual(viewModel.orderTotal, "£3.50")
 
         // When
         viewModel.saveShippingLine(nil)
@@ -995,7 +992,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.orderTotal, "£8.50")
     }
 
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {

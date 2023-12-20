@@ -251,8 +251,18 @@ struct OrderForm: View {
                 }
             }
             ExpandableBottomSheet {
-                completedButton
+                VStack {
+                    HStack {
+                        Text(Localization.orderTotal)
+                        Spacer()
+                        Text(viewModel.orderTotal)
+                    }
+                    .font(.headline)
                     .padding()
+
+                    completedButton
+                        .padding()
+                }
             } expandableContent: {
                 OrderPaymentSection(
                     viewModel: viewModel.paymentDataViewModel,
@@ -658,6 +668,9 @@ private extension OrderForm {
             "orderForm.products.add.button.accessibilityLabel",
             value: "Add product",
             comment: "Accessibility label for the + button to add product using a form")
+
+
+        static let orderTotal = NSLocalizedString("Order total", comment: "Label for the the row showing the total cost of the order")
     }
 
     enum Accessibility {

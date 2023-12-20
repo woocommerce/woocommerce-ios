@@ -48,9 +48,8 @@ struct OrderPaymentSection: View {
         Divider()
 
         VStack(alignment: .leading, spacing: .zero) {
-            // Titles (not coincident)
+            // Title
             orderWithItemsTitle
-            emptyOrderTitle
 
             // Order components
             Group {
@@ -67,12 +66,8 @@ struct OrderPaymentSection: View {
                 taxesSection
             }
 
-            // Totals
-            Group {
-                discountsTotalRow
-
-                orderTotalRow
-            }
+            // Subtotals
+            discountsTotalRow
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: false)))
@@ -86,21 +81,6 @@ struct OrderPaymentSection: View {
 }
 
 private extension OrderPaymentSection {
-    @ViewBuilder var emptyOrderTitle: some View {
-        HStack {
-            TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
-                .padding(.vertical, Constants.emptyOrderTitleVerticalPadding)
-
-            Image(uiImage: .lockImage)
-                .foregroundColor(Color(.brand))
-                .padding(.trailing, Constants.emptyOrderTitleLockImageTrailingPadding)
-                .renderedIf(viewModel.showNonEditableIndicators)
-
-        }
-        .padding(.horizontal, insets: safeAreaInsets)
-        .renderedIf(viewModel.orderIsEmpty)
-    }
-
     @ViewBuilder var orderWithItemsTitle: some View {
         HStack {
             Text(Localization.paymentTotals)
@@ -289,13 +269,6 @@ private extension OrderPaymentSection {
             .renderedIf(viewModel.shouldShowDiscountTotal)
     }
 
-    @ViewBuilder var orderTotalRow: some View {
-        TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
-            .padding(.bottom, Constants.orderTotalBottomPadding)
-            .renderedIf(!viewModel.orderIsEmpty)
-
-    }
-
     var rowsEditImage: Image? {
         viewModel.showNonEditableIndicators ? nil : Image(systemName: "pencil")
     }
@@ -314,7 +287,6 @@ private extension OrderPaymentSection {
         static let productsTotal = NSLocalizedString("orderPaymentSection.products",
                                                      value: "Products",
                                                      comment: "Label for the row showing the total cost of products in the order")
-        static let orderTotal = NSLocalizedString("Order total", comment: "Label for the the row showing the total cost of the order")
         static let discountTotal = NSLocalizedString("Discount total", comment: "Label for the the row showing the total discount of the order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let customAmountsTotal = NSLocalizedString("orderPaymentSection.customAmounts",
@@ -331,8 +303,6 @@ private extension OrderPaymentSection {
     }
 
     enum Constants {
-        static let emptyOrderTitleVerticalPadding: CGFloat = 8
-        static let emptyOrderTitleLockImageTrailingPadding: CGFloat = 16
         static let giftCardsSectionVerticalSpacing: CGFloat = 8
         static let taxesSectionVerticalSpacing: CGFloat = 8
         static let taxRateAddedAutomaticallyRowHorizontalSpacing: CGFloat = 8
@@ -341,13 +311,12 @@ private extension OrderPaymentSection {
         static let rowMinHeight: CGFloat = 44
         static let infoTooltipCornerRadius: CGFloat = 4
         static let dividerLeadingPadding: CGFloat = 16
-        static let orderTotalBottomPadding: CGFloat = 8
     }
 }
 
 struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
+        let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
 
         OrderPaymentSection(viewModel: viewModel,
                             shouldShowShippingLineDetails: .constant(false),

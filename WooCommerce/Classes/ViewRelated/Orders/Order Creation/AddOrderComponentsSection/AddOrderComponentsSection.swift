@@ -232,7 +232,7 @@ private extension AddOrderComponentsSection {
 
 struct AddOrderComponentsSection_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
+        let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
 
         AddOrderComponentsSection(viewModel: viewModel,
                                   shouldShowCouponsInfoTooltip: .constant(true),

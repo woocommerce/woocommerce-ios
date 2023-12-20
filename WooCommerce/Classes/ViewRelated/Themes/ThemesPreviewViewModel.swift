@@ -55,6 +55,11 @@ final class ThemesPreviewViewModel: ObservableObject {
 
     @MainActor
     func confirmThemeSelection() async throws {
+        /// We are skipping theme installation when in store creation flow because
+        /// the theme can be installed only after the store is full ready. (Atomic transfer complete)
+        ///
+        /// The store creation profiler flow takes care of scheduling the selected theme for later installation.
+        ///
         guard mode == .themeSettings else {
             return
         }

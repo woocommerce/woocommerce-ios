@@ -27,6 +27,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 Image(systemName: "chevron.up")
                     .font(.system(size: Layout.chevronHeight))
                     .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                    .animation(.easeIn(duration: 0.1), value: isExpanded)
                     .padding(Layout.chevronPadding)
                     .foregroundColor(Color(uiColor: .primary))
             }

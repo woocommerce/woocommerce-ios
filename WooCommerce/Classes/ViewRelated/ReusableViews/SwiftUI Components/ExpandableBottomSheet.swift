@@ -2,9 +2,10 @@ import SwiftUI
 
 struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View where AlwaysVisibleContent: View, ExpandableContent: View {
     @State private var isExpanded: Bool = false
-    @State private var expandingContentSize: CGSize = CGSize(width: 0, height: 300) // Will be updated after first shown
-    @State private var fixedContentSize: CGSize = CGSize(width: 0, height: 100) // Will be updated after first shown, excludes chevron
-    @State private var panelHeight: CGFloat = 120 // Actual height of the content at any given time, includes chevron
+    @State private var expandingContentSize: CGSize = .zero
+    @State private var fixedContentSize: CGSize = .zero
+    @State private var chevronSize: CGSize = .zero
+    @State private var panelHeight: CGFloat = 120 // needs to be non-zero so views are initially drawn
     @State private var revealContentDuringDrag: Bool = false
     @GestureState private var isDragging: Bool = false
 
@@ -26,8 +27,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     isExpanded.toggle()
                 }
             }) {
-                Image(systemName: "chevron.up")
-                    .font(.system(size: Layout.chevronHeight))
+                Image(systemName: "chevron.compact.up")
+                    .font(.system(size: Layout.chevronSize))
                     .accessibilityLabel(isExpanded ? Localization.collapseChevronAccessibilityLabel :
                                             Localization.expandChevronAccessibilityLabel)
                     // The following flips the chevron
@@ -35,9 +36,10 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                                     CGSize(width: 1.0, height: 1.0),
                                  anchor: .center)
                     .animation(.easeIn(duration: 0.15), value: isExpanded)
-                    .padding(Layout.chevronPadding)
                     .foregroundColor(Color(uiColor: .primary))
             }
+            .padding(Layout.chevronPadding)
+            .trackSize(size: $chevronSize)
 
             Spacer()
 
@@ -112,7 +114,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
-        let collapsedHeight = fixedContentSize.height + Layout.chevronHeight + (Layout.chevronPadding * 2)
+        let collapsedHeight = fixedContentSize.height + chevronSize.height + Layout.chevronPadding
         let fullHeight = collapsedHeight + expandingContentSize.height
         let currentHeight = isExpanded ? fullHeight : collapsedHeight
         let dragAdjustedHeight = currentHeight - dragAmount
@@ -123,7 +125,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 }
 
 fileprivate enum Layout {
-    static let chevronHeight: CGFloat = 20
+    static let chevronSize: CGFloat = 30
     static let chevronPadding: CGFloat = 8
     static let sheetCornerRadius: CGFloat = 10
     static let shadowRadius: CGFloat = 5

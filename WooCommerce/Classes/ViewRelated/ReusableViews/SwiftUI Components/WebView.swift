@@ -52,17 +52,23 @@ struct WebView: UIViewRepresentable {
         WebViewCoordinator(self)
     }
 
-    func makeUIView(context: Context) -> WKWebView {
-        let webview = WKWebView()
-        webview.customUserAgent = UserAgent.defaultUserAgent
-        webview.navigationDelegate = context.coordinator
+    func makeUIView(context: Context) -> UIStackView {
+        let webView = WKWebView()
+        webView.customUserAgent = UserAgent.defaultUserAgent
+        webView.navigationDelegate = context.coordinator
 
-        webview.load(URLRequest(url: url))
-        return webview
+        webView.load(URLRequest(url: url))
+
+        let stackView = UIStackView(arrangedSubviews: [webView])
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        return stackView
     }
 
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-        uiView.load(URLRequest(url: url))
+    func updateUIView(_ uiView: UIStackView, context: Context) {
+        if let webView = uiView.arrangedSubviews.first as? WKWebView {
+            webView.load(URLRequest(url: url))
+        }
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {

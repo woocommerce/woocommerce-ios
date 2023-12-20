@@ -120,6 +120,10 @@ struct OrderForm: View {
 
     @State private var shouldShowInformationalCouponTooltip = false
 
+    @State private var shouldShowGiftCardForm = false
+
+    @State private var shouldShowShippingLineDetails = false
+
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
@@ -164,8 +168,16 @@ struct OrderForm: View {
 
                                 OrderPaymentSection(
                                     viewModel: viewModel.paymentDataViewModel,
-                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
+                                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
+
+                                AddOrderComponentsSection(
+                                    viewModel: viewModel.paymentDataViewModel,
+                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
+                                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
+                                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
                             }
 
                             Spacer(minLength: Layout.sectionSpacing)
@@ -245,7 +257,7 @@ struct OrderForm: View {
                 switch viewModel.navigationTrailingItem {
                 case .create:
                     Button(Localization.createButton) {
-                        viewModel.createOrder()
+                        viewModel.onCreateOrderTapped()
                     }
                     .id(navigationButtonID)
                     .accessibilityIdentifier(Accessibility.createButtonIdentifier)

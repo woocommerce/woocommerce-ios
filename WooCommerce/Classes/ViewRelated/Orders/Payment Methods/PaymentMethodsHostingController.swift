@@ -20,7 +20,7 @@ final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMe
         super.viewDidLoad()
 
         // Needed to present IPP collect amount alerts, which are displayed in UIKit view controllers.
-        rootView.rootViewController = navigationController
+        rootView.rootViewController = self
 
         // Set presentation delegate to track the user dismiss flow event
         if let navigationController = navigationController {
@@ -49,6 +49,19 @@ struct HostedPaymentMethodsView: View {
     var viewModel: PaymentMethodsViewModel
 
     var body: some View {
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                paymentMethodsView
+            }
+        } else {
+            NavigationView {
+                paymentMethodsView
+            }
+            .navigationViewStyle(.stack)
+        }
+    }
+
+    private var paymentMethodsView: some View {
         PaymentMethodsView(dismiss: dismiss, rootViewController: rootViewController, viewModel: viewModel)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -60,8 +73,8 @@ struct HostedPaymentMethodsView: View {
                 }
             }
             .wooNavigationBarStyle()
+            .navigationBarTitleDisplayMode(.inline)
     }
-
 }
 
 private extension HostedPaymentMethodsView {
@@ -118,4 +131,17 @@ private extension PaymentMethodsHostingController {
 
         static let dismissOrder = NSLocalizedString("Dismiss Order", comment: "Title for dismiss the action when dragging the screen down.")
     }
+}
+
+struct PaymentMethodsHostingView: UIViewControllerRepresentable {
+    weak var parentController: UIViewController?
+    let viewModel: PaymentMethodsViewModel
+
+    func makeUIViewController(context: Context) -> PaymentMethodsHostingController {
+        let viewController = PaymentMethodsHostingController(viewModel: viewModel)
+        viewController.parentController = parentController
+        return viewController
+    }
+
+    func updateUIViewController(_ uiViewController: PaymentMethodsHostingController, context: Context) {}
 }

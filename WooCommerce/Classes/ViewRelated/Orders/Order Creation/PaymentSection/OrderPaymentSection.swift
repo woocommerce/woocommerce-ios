@@ -67,7 +67,6 @@ struct OrderPaymentSection: View {
             // Subtotals
             discountsTotalRow
         }
-        .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: false)))
 
         taxRateAddedAutomaticallyRow

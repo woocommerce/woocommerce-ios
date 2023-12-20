@@ -276,6 +276,7 @@ struct OrderForm: View {
                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                 .disabled(viewModel.shouldShowNonEditableIndicators)
             }
+            .ignoresSafeArea(edges: .horizontal)
         }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)

@@ -13,6 +13,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     @ViewBuilder private var expandableContent: () -> ExpandableContent
 
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     public init(@ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
                 @ViewBuilder expandableContent: @escaping () -> ExpandableContent) {
         self.alwaysVisibleContent = alwaysVisibleContent
@@ -58,6 +60,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             alwaysVisibleContent()
                 .trackSize(size: $fixedContentSize)
         }
+        .padding(.horizontal, insets: safeAreaInsets)
         .background(GeometryReader { geometryProxy in
             Color.clear
                 .onAppear(perform: {
@@ -84,7 +87,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             }
         })
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
-        .background(Color(.listForeground(modal: false)))
+        .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: .vertical)
         .cornerRadius(Layout.sheetCornerRadius)
         .shadow(radius: Layout.shadowRadius)
         .mask(Rectangle().padding(.top, Layout.shadowRadius * -2)) // hide bottom shadow

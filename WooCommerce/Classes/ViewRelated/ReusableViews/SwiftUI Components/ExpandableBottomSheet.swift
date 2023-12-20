@@ -22,7 +22,9 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         VStack(spacing: 0) {
             // Chevron button to control view expansion
             Button(action: {
-                isExpanded.toggle()
+                withAnimation {
+                    isExpanded.toggle()
+                }
             }) {
                 Image(systemName: "chevron.up")
                     .font(.system(size: Layout.chevronHeight))

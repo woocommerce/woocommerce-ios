@@ -53,8 +53,10 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 .onChange(of: geometryProxy.size.height,
                           perform: { newValue in
                     if !isDragging {
-                        withAnimation {
-                            panelHeight = calculateHeight()
+                        DispatchQueue.main.async {
+                            withAnimation {
+                                panelHeight = calculateHeight()
+                            }
                         }
                     }
                 })

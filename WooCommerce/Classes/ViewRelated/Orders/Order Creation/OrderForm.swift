@@ -35,6 +35,8 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        rootView.rootViewController = self
+
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             // Set presentation delegate to track the user dismiss flow event
             if let navigationController = navigationController {
@@ -107,6 +109,8 @@ struct OrderForm: View {
 
     let flow: WooAnalyticsEvent.Orders.Flow
 
+    var rootViewController: UIViewController?
+
     @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Scale of the view based on accessibility changes
@@ -172,12 +176,24 @@ struct OrderForm: View {
                                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
+                                completedButton
+                                    .padding()
+                                    .background(Color(.listForeground(modal: true)))
+
                                 AddOrderComponentsSection(
                                     viewModel: viewModel.paymentDataViewModel,
                                     shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                                     shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
+                            }
+                            .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
+                                if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
+                                    PaymentMethodsHostingView(parentController: rootViewController,
+                                                              viewModel: collectPaymentViewModel)
+                                } else {
+                                    EmptyView()
+                                }
                             }
 
                             Spacer(minLength: Layout.sectionSpacing)
@@ -334,6 +350,26 @@ struct OrderForm: View {
             .padding()
 
             Spacer()
+        }
+    }
+
+    @ViewBuilder private var completedButton: some View {
+        if flow == .creation {
+            Button {
+                viewModel.onCollectPaymentTapped()
+            } label: {
+                Text(Localization.collectPaymentButton)
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(viewModel.collectPaymentDisabled)
+        } else {
+            Button {
+                viewModel.finishEditing()
+                dismissHandler()
+            } label: {
+                Text(Localization.doneButton)
+            }
+            .buttonStyle(PrimaryButtonStyle())
         }
     }
 }
@@ -588,6 +624,11 @@ private extension OrderForm {
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the Order screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the Order Editing screen")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
+        static let collectPaymentButton = NSLocalizedString(
+            "orderForm.payment.collect.button.title",
+            value: "Collect Payment",
+            comment: "Title of the primary button on the new order screen to collect payment, likely in-person. " +
+            "This button first creates the order, then presents a view for the merchant to choose a payment method.")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")

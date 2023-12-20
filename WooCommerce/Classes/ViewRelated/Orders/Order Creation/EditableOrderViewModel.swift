@@ -168,6 +168,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
 
+    @Published private(set) var collectPaymentDisabled: Bool = false
+
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
@@ -364,6 +366,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
+    @Published var collectPaymentViewModel: PaymentMethodsViewModel? = nil
+
+    @Published var shouldPresentCollectPayment: Bool = false
+
     /// Saves a shipping line.
     ///
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
@@ -459,6 +465,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
         configureDisabledState()
+        configureCollectPaymentDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
         configureStatusBadgeViewModel()
@@ -749,7 +756,8 @@ final class EditableOrderViewModel: ObservableObject {
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.
     ///
-    func createOrder() {
+    private func createOrder(onSuccess: @escaping (_ order: Order, _ usesGiftCard: Bool) -> Void,
+                             onFailure: @escaping (_ error: Error, _ usesGiftCard: Bool) -> Void) {
         performingNetworkRequest = true
 
         orderSynchronizer.commitAllChanges { [weak self] result, usesGiftCard in
@@ -758,14 +766,25 @@ final class EditableOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                self.onFinished(newOrder)
-                self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+                onSuccess(newOrder, usesGiftCard)
             case .failure(let error):
-                self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
-                self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+                onFailure(error, usesGiftCard)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
+    }
+
+    func collectPayment(for order: Order) {
+        let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+
+        self.collectPaymentViewModel = PaymentMethodsViewModel(
+            siteID: siteID,
+            orderID: order.orderID,
+            paymentLink: order.paymentURL,
+            formattedTotal: formattedTotal,
+            flow: .orderCreation)
+
+        self.shouldPresentCollectPayment = true
     }
 
     /// Action triggered on `Done` button tap in order editing flow.
@@ -841,8 +860,30 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onCreateOrderTapped() {
-        createOrder()
+        createOrder { [weak self] order, usesGiftCard in
+            guard let self else { return }
+            self.onFinished(order)
+            self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+        } onFailure: { [weak self] error, usesGiftCard in
+            guard let self else { return }
+            self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+            self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+        }
         trackCreateButtonTapped()
+    }
+
+    func onCollectPaymentTapped() {
+        createOrder { [weak self] order, usesGiftCard in
+            guard let self else { return }
+            self.collectPayment(for: order)
+            self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+            self.onFinished(order)
+        } onFailure: { [weak self] error, usesGiftCard in
+            guard let self else { return }
+            self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+            self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+        }
+        trackCollectPaymentTapped()
     }
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
@@ -1133,6 +1174,18 @@ private extension EditableOrderViewModel {
                 }
             }
             .assign(to: &$disabled)
+    }
+
+    func configureCollectPaymentDisabledState() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $disabled)
+            .map { [weak self] order, viewDisabled -> Bool in
+                guard !viewDisabled else {
+                    return true
+                }
+                let orderTotal = self?.currencyFormatter.convertToDecimal(order.total) as? Decimal ?? .zero
+                return orderTotal <= .zero
+            }
+            .assign(to: &$collectPaymentDisabled)
     }
 
     /// Calculates what navigation trailing item should be shown depending on our internal state.
@@ -1718,6 +1771,18 @@ private extension EditableOrderViewModel {
                                                                                 hasFees: orderSynchronizer.order.fees.isNotEmpty,
                                                                                 hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
                                                                                 products: Array(allProducts)))
+    }
+
+    func trackCollectPaymentTapped() {
+        let hasCustomerDetails = customerDataViewModel.isDataAvailable
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationCollectPaymentTapped(order: orderSynchronizer.order,
+                                                                                          status: orderSynchronizer.order.status,
+                                                                                          productCount: orderSynchronizer.order.items.count,
+                                                                                          customAmountsCount: orderSynchronizer.order.fees.count,
+                                                                                          hasCustomerDetails: hasCustomerDetails,
+                                                                                          hasFees: orderSynchronizer.order.fees.isNotEmpty,
+                                                                                          hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+                                                                                          products: Array(allProducts)))
     }
 
     /// Tracks an order creation success

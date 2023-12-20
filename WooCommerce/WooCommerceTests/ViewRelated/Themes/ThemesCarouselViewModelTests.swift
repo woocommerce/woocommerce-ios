@@ -5,6 +5,22 @@ import XCTest
 @MainActor
 final class ThemesCarouselViewModelTests: XCTestCase {
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
+
     func test_state_is_loading_initially() {
         // Given
         let viewModel = ThemesCarouselViewModel(mode: .themeSettings)
@@ -110,5 +126,57 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         waitUntil {
             viewModel.state == .error
         }
+    }
+
+    func test_trackViewAppear_tracks_theme_picker_screen_displayed_correctly_for_themeSettings_mode() throws {
+        // Given
+        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, analytics: analytics)
+
+        // When
+        viewModel.trackViewAppear()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_picker_screen_displayed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["source"] as? String, "settings")
+    }
+
+    func test_trackViewAppear_tracks_theme_picker_screen_displayed_correctly_for_profiler_mode() throws {
+        // Given
+        let viewModel = ThemesCarouselViewModel(mode: .storeCreationProfiler, analytics: analytics)
+
+        // When
+        viewModel.trackViewAppear()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_picker_screen_displayed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["source"] as? String, "store_creation")
+    }
+
+    func test_trackThemeSelected_tracks_theme_picker_theme_selected() throws {
+        // Given
+        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, analytics: analytics)
+
+        // When
+        viewModel.trackThemeSelected(.fake().copy(id: "tsubaki"))
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_picker_theme_selected"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["theme"] as? String, "tsubaki")
+    }
+
+    func test_trackStartThemeButtonTapped_tracks_theme_preview_start_with_theme_button_tapped() throws {
+        // Given
+        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, analytics: analytics)
+
+        // Then
+        viewModel.trackStartThemeButtonTapped(.fake().copy(id: "tsubaki"))
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_preview_start_with_theme_button_tapped"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["theme"] as? String, "tsubaki")
     }
 }

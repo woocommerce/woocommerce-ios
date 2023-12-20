@@ -2360,6 +2360,7 @@
 		DEF99D852A5FE9BE004B5938 /* StoreCreationTimeoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF99D842A5FE9BE004B5938 /* StoreCreationTimeoutView.swift */; };
 		DEFA3D932897D8930076FAE1 /* NoWooErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFA3D922897D8930076FAE1 /* NoWooErrorViewModel.swift */; };
 		DEFB3011289904E300A620B3 /* WooSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */; };
+		DEFC9BE22B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */; };
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
 		E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */; };
@@ -4984,6 +4985,7 @@
 		DEF99D842A5FE9BE004B5938 /* StoreCreationTimeoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationTimeoutView.swift; sourceTree = "<group>"; };
 		DEFA3D922897D8930076FAE1 /* NoWooErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoWooErrorViewModel.swift; sourceTree = "<group>"; };
 		DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSetupWebViewModel.swift; sourceTree = "<group>"; };
+		DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Themes.swift"; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
 		E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoader.swift; sourceTree = "<group>"; };
@@ -8324,6 +8326,7 @@
 				0210D8682A7BEEF700846F8C /* WooAnalyticsEvent+ProductListFilter.swift */,
 				DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */,
 				EEA1E20D2AC55F2200A37ADD /* WooAnalyticsEvent+ProductCreationAI.swift */,
+				DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -13831,6 +13834,7 @@
 				DEC6C51E27479280006832D3 /* JetpackInstallSteps.swift in Sources */,
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */,
+				DEFC9BE22B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift in Sources */,
 				EE35AFA32B0491960074E7AC /* SubscriptionTrialViewModel.swift in Sources */,
 				26E0AE1926335AA900A5EB3B /* Survey.swift in Sources */,
 				0371C3682875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift in Sources */,

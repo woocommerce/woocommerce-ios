@@ -11,14 +11,17 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     let mode: Mode
     private let stores: StoresManager
+    private let analytics: Analytics
 
     /// Closure to be triggered when the theme list is reloaded.
     var onReload: (() -> Void)?
 
     init(mode: Mode,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.mode = mode
         self.stores = stores
+        self.analytics = analytics
         // current theme is only required for theme settings mode.
         if mode == .themeSettings {
             waitForCurrentThemeAndFinishLoading()
@@ -46,6 +49,19 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     func updateCurrentTheme(id: String?) {
         currentThemeID = id
+    }
+
+    func trackViewAppear() {
+        let source = mode.analyticSource
+        analytics.track(event: .Themes.pickerScreenDisplayed(source: source))
+    }
+
+    func trackThemeSelected(_ theme: WordPressTheme) {
+        analytics.track(event: .Themes.themeSelected(id: theme.id))
+    }
+
+    func trackStartThemeButtonTapped(_ theme: WordPressTheme) {
+        analytics.track(event: .Themes.startWithThemeButtonTapped(themeID: theme.id))
     }
 }
 
@@ -84,5 +100,14 @@ extension ThemesCarouselViewModel {
     enum Mode: Equatable {
         case themeSettings
         case storeCreationProfiler
+
+        var analyticSource: WooAnalyticsEvent.Themes.Source {
+            switch self {
+            case .themeSettings:
+                return .settings
+            case .storeCreationProfiler:
+                return .storeCreation
+            }
+        }
     }
 }

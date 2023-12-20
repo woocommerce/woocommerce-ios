@@ -51,7 +51,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .pagesContent)
     }
 
-    func test_setSelectedPage() {
+    func test_setSelectedPage_updates_selectedPage() {
         // Given
         let viewModel = ThemesPreviewViewModel(themeDemoURL: "testURL")
         let page = WordPressPage(id: 1, title: "Page1", link: "testURL")

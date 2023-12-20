@@ -75,10 +75,13 @@ struct ThemesCarouselView: View {
             await viewModel.fetchThemes(isReload: false)
         }
         .sheet(item: $selectedTheme, content: { theme in
-            ThemesPreviewView(theme: theme, onStart: {
-                viewModel.trackStartThemeButtonTapped(theme)
-                onSelectedTheme(theme)
-            })
+            ThemesPreviewView(
+                viewModel: .init(themeDemoURL: theme.demoURI),
+                theme: theme,
+                onSelectedTheme: {
+                    viewModel.trackStartThemeButtonTapped(theme)
+                    onSelectedTheme(theme)
+                })
         })
         .onAppear {
             viewModel.trackViewAppear()

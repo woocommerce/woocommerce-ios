@@ -2,8 +2,8 @@ import SwiftUI
 
 struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View where AlwaysVisibleContent: View, ExpandableContent: View {
     @State private var isExpanded: Bool = false
-    @State private var expandingContentHeight: CGFloat = 300 // Will be updated after first shown
-    @State private var fixedContentHeight: CGFloat = 100 // Will be updated after first shown, excludes chevron
+    @State private var expandingContentSize: CGSize = CGSize(width: 0, height: 300) // Will be updated after first shown
+    @State private var fixedContentSize: CGSize = CGSize(width: 0, height: 100) // Will be updated after first shown, excludes chevron
     @State private var panelHeight: CGFloat = 120 // Actual height of the content at any given time, includes chevron
     @State private var revealContentDuringDrag: Bool = false
     @GestureState private var isDragging: Bool = false
@@ -22,10 +22,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         VStack(spacing: 0) {
             // Chevron button to control view expansion
             Button(action: {
-                withAnimation {
-                    self.isExpanded.toggle()
-                    panelHeight = calculateHeight()
-                }
+                self.isExpanded.toggle()
             }) {
                 Image(systemName: "chevron.up")
                     .font(.system(size: Layout.chevronHeight))
@@ -37,47 +34,40 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             Spacer()
 
             // Content that will expand/collapse
-            Group {
+            VStack {
                 if isExpanded || revealContentDuringDrag {
                     expandableContent()
-                        .background(GeometryReader { geometryProxy in
-                            Color.clear
-                                .onChange(of: geometryProxy.size.height,
-                                          perform: { newValue in
-                                    expandingContentHeight = newValue
-                                    if !isDragging {
-                                        withAnimation {
-                                            panelHeight = calculateHeight()
-                                        }
-                                    }
-                                })
-                        })
+                        .transition(.move(edge: .bottom))
                 }
             }
+            .frame(maxWidth: .infinity)
+            .trackSize(size: $expandingContentSize)
             .clipped()
 
             // Always visible content
             alwaysVisibleContent()
-                .background(GeometryReader { geometryProxy in
-                    Color.clear
-                        .onAppear(perform: {
-                            fixedContentHeight = geometryProxy.size.height
-                            panelHeight = calculateHeight()
-                        })
-                        .onChange(of: geometryProxy.size.height,
-                                  perform: { newValue in
-                            if !isDragging {
-                                fixedContentHeight = newValue
-                                withAnimation {
-                                    panelHeight = calculateHeight()
-                                }
-                            }
-                        })
-                })
+                .trackSize(size: $fixedContentSize)
         }
+        .background(GeometryReader { geometryProxy in
+            Color.clear
+                .onChange(of: geometryProxy.size.height,
+                          perform: { newValue in
+                    if !isDragging {
+                        withAnimation {
+                            panelHeight = calculateHeight()
+                        }
+                    }
+                })
+        })
+        .onChange(of: isExpanded, perform: { _ in
+            DispatchQueue.main.async {
+                withAnimation {
+                    panelHeight = calculateHeight()
+                }
+            }
+        })
         .background(Color(.listForeground(modal: true)))
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
-        .animation(.interactiveSpring, value: panelHeight)
         .cornerRadius(Layout.sheetCornerRadius)
         .shadow(radius: Layout.sheetCornerRadius)
         .mask(Rectangle().padding(.top, Layout.sheetCornerRadius * -2))
@@ -96,14 +86,13 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 .onEnded { gesture in
                     withAnimation {
                         let dragAmount = gesture.predictedEndTranslation.height as CGFloat
-                        let threshold: CGFloat = expandingContentHeight / 4
+                        let threshold: CGFloat = expandingContentSize.height / 4
 
                         if dragAmount > threshold && isExpanded {
                             self.isExpanded = false
                         } else if dragAmount < -threshold && !isExpanded {
                             self.isExpanded = true
                         }
-                        panelHeight = calculateHeight()
                         revealContentDuringDrag = false
                     }
                 }
@@ -112,8 +101,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
-        let collapsedHeight = fixedContentHeight + Layout.chevronHeight + (Layout.chevronPadding * 2)
-        let fullHeight = collapsedHeight + expandingContentHeight
+        let collapsedHeight = fixedContentSize.height + Layout.chevronHeight + (Layout.chevronPadding * 2)
+        let fullHeight = collapsedHeight + expandingContentSize.height
         let currentHeight = isExpanded ? fullHeight : collapsedHeight
         let dragAdjustedHeight = currentHeight - dragAmount
 
@@ -136,5 +125,28 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
             Text("Can be hidden")
         }
 
+    }
+}
+
+struct SizeTracker: ViewModifier {
+    @Binding var size: CGSize
+
+    func body(content: Content) -> some View {
+        content
+            .background(GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        self.size = proxy.size
+                    }
+                    .onChange(of: proxy.size) { newSize in
+                        self.size = newSize
+                    }
+            })
+    }
+}
+
+extension View {
+    func trackSize(size: Binding<CGSize>) -> some View {
+        modifier(SizeTracker(size: size))
     }
 }

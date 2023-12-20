@@ -24,7 +24,6 @@ class TopEarnerStatsMapperTests: XCTestCase {
         let sampleItem1 = dayStats.items![0]
         XCTAssertEqual(sampleItem1.imageUrl, "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/05/hoodie-with-logo.jpg?w=801")
         XCTAssertEqual(sampleItem1.currency, "USD")
-        XCTAssertEqual(sampleItem1.price, 40.0)
         XCTAssertEqual(sampleItem1.productID, 296)
         XCTAssertEqual(sampleItem1.productName, "Funky Hoodie")
         XCTAssertEqual(sampleItem1.quantity, 1)
@@ -48,7 +47,6 @@ class TopEarnerStatsMapperTests: XCTestCase {
         let sampleItem1 = weekStats.items![0]
         XCTAssertEqual(sampleItem1.imageUrl, "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/05/hoodie-with-logo.jpg?w=801")
         XCTAssertEqual(sampleItem1.currency, "USD")
-        XCTAssertEqual(sampleItem1.price, 40.0)
         XCTAssertEqual(sampleItem1.productID, 296)
         XCTAssertEqual(sampleItem1.productName, "Funky Hoodie")
         XCTAssertEqual(sampleItem1.quantity, 1)
@@ -57,7 +55,6 @@ class TopEarnerStatsMapperTests: XCTestCase {
         let sampleItem2 = weekStats.items![2]
         XCTAssertEqual(sampleItem2.imageUrl, "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2018/04/smile.gif?w=480")
         XCTAssertEqual(sampleItem2.currency, "USD")
-        XCTAssertEqual(sampleItem2.price, 80.0)
         XCTAssertEqual(sampleItem2.productID, 1033)
         XCTAssertEqual(sampleItem2.productName, "Smile T-Shirt")
         XCTAssertEqual(sampleItem2.quantity, 2)
@@ -81,7 +78,6 @@ class TopEarnerStatsMapperTests: XCTestCase {
         let sampleItem1 = monthStats.items![0]
         XCTAssertEqual(sampleItem1.imageUrl, "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/08/freediving.jpg?w=768")
         XCTAssertEqual(sampleItem1.currency, "USD")
-        XCTAssertEqual(sampleItem1.price, 249.34)
         XCTAssertEqual(sampleItem1.productID, 601)
         XCTAssertEqual(sampleItem1.productName, "Ultimate Freediving Experience")
         XCTAssertEqual(sampleItem1.quantity, 5)
@@ -90,7 +86,6 @@ class TopEarnerStatsMapperTests: XCTestCase {
         let sampleItem2 = monthStats.items![3]
         XCTAssertEqual(sampleItem2.imageUrl, "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2018/08/00030000053201_CL___JPEG_3.jpg?w=500")
         XCTAssertEqual(sampleItem2.currency, "USD")
-        XCTAssertEqual(sampleItem2.price, 4.49)
         XCTAssertEqual(sampleItem2.productID, 1293)
         XCTAssertEqual(sampleItem2.productName, "Pancake Mix - 2lb")
         XCTAssertEqual(sampleItem2.quantity, 26)
@@ -114,7 +109,6 @@ class TopEarnerStatsMapperTests: XCTestCase {
         let sampleItem1 = yearStats.items![0]
         XCTAssertEqual(sampleItem1.imageUrl, "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/08/freediving.jpg?w=768")
         XCTAssertEqual(sampleItem1.currency, "USD")
-        XCTAssertEqual(sampleItem1.price, 249)
         XCTAssertEqual(sampleItem1.productID, 601)
         XCTAssertEqual(sampleItem1.productName, "Ultimate Freediving Experience")
         XCTAssertEqual(sampleItem1.quantity, 5)
@@ -123,7 +117,6 @@ class TopEarnerStatsMapperTests: XCTestCase {
         let sampleItem2 = yearStats.items![1]
         XCTAssertEqual(sampleItem2.imageUrl, "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/07/hm-black.jpg?w=640")
         XCTAssertEqual(sampleItem2.currency, "USD")
-        XCTAssertEqual(sampleItem2.price, -1234.23424)
         XCTAssertEqual(sampleItem2.productID, 373)
         XCTAssertEqual(sampleItem2.productName, "Black Dress (H&M)")
         XCTAssertEqual(sampleItem2.quantity, 1231323)

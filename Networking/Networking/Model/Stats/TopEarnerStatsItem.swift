@@ -17,10 +17,6 @@ public struct TopEarnerStatsItem: Decodable, Equatable, GeneratedCopiable, Gener
     ///
     public let quantity: Int
 
-    /// Average price of item
-    ///
-    public let price: Double
-
     /// Total revenue from product
     ///
     public let total: Double
@@ -36,11 +32,10 @@ public struct TopEarnerStatsItem: Decodable, Equatable, GeneratedCopiable, Gener
 
     /// Designated Initializer.
     ///
-    public init(productID: Int64, productName: String?, quantity: Int, price: Double, total: Double, currency: String, imageUrl: String?) {
+    public init(productID: Int64, productName: String?, quantity: Int, total: Double, currency: String, imageUrl: String?) {
         self.productID = productID
         self.productName = productName ?? ""
         self.quantity = quantity
-        self.price = price
         self.total = total
         self.currency = currency
         self.imageUrl = imageUrl
@@ -56,7 +51,6 @@ private extension TopEarnerStatsItem {
         case productName = "name"
         case total = "total"
         case quantity = "quantity"
-        case price = "price"
         case imageUrl = "image"
         case currency = "currency"
     }

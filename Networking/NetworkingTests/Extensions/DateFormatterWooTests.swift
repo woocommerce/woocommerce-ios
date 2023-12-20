@@ -4,11 +4,11 @@ import XCTest
 
 /// DateFormatter+Woo Unit Tests
 ///
-class DateFormatterWooTests: XCTestCase {
+final class DateFormatterWooTests: XCTestCase {
 
     /// Sample Date
     ///
-    let datetimeAsString = "2018-01-24T12:00:00"
+    private let datetimeAsString = "2018-01-24T12:00:00"
 
 
     /// Verifies that a Woo Datetime is properly parsed by `DateFormatter.Defaults.dateTimeFormatter`.

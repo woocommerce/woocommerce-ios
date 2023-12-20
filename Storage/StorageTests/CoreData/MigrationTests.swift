@@ -2477,6 +2477,35 @@ final class MigrationTests: XCTestCase {
         let pricedIndividually = try XCTUnwrap(migratedProductBundleItemEntity.value(forKey: "pricedIndividually") as? Bool)
         XCTAssertFalse(pricedIndividually, "Confirm expected property exists, and is false by default.")
     }
+
+    func test_migrating_from_104_to_105_removes_price_attribute_from_TopEarnerStatsItem_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 104")
+        let sourceContext = sourceContainer.viewContext
+
+        let topEarnerStatsItem = sourceContext.insert(entityName: "TopEarnerStatsItem", properties: [
+            "productID": 1,
+            "productName": "Product",
+            "quantity": 1,
+            "price": 4.99,
+            "total": 4.99,
+            "currency": "USD",
+            "imageUrl": "https://example.com/woo.jpg"
+        ])
+        try sourceContext.save()
+
+        XCTAssertNotNil(topEarnerStatsItem.entity.attributesByName["price"], "Precondition. Attribute exists.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 105")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedtopEarnerStatsItem = try XCTUnwrap(targetContext.first(entityName: "TopEarnerStatsItem"))
+
+        // The price attribute is removed from the migrated entity.
+        XCTAssertNil(migratedtopEarnerStatsItem.entity.attributesByName["price"], "Confirm attribute no longer exists.")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

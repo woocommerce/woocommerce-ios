@@ -11,11 +11,17 @@ final class ThemesCarouselViewModel: ObservableObject {
 
     let mode: Mode
     private let stores: StoresManager
+    private let analytics: Analytics
+
+    /// Closure to be triggered when the theme list is reloaded.
+    var onReload: (() -> Void)?
 
     init(mode: Mode,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.mode = mode
         self.stores = stores
+        self.analytics = analytics
         // current theme is only required for theme settings mode.
         if mode == .themeSettings {
             waitForCurrentThemeAndFinishLoading()
@@ -23,7 +29,10 @@ final class ThemesCarouselViewModel: ObservableObject {
     }
 
     @MainActor
-    func fetchThemes() async {
+    func fetchThemes(isReload: Bool) async {
+        if isReload {
+            onReload?()
+        }
         state = .loading
         do {
             themes = try await loadSuggestedThemes()
@@ -41,14 +50,27 @@ final class ThemesCarouselViewModel: ObservableObject {
     func updateCurrentTheme(id: String?) {
         currentThemeID = id
     }
+
+    func trackViewAppear() {
+        let source = mode.analyticSource
+        analytics.track(event: .Themes.pickerScreenDisplayed(source: source))
+    }
+
+    func trackThemeSelected(_ theme: WordPressTheme) {
+        analytics.track(event: .Themes.themeSelected(id: theme.id))
+    }
+
+    func trackStartThemeButtonTapped(_ theme: WordPressTheme) {
+        analytics.track(event: .Themes.startWithThemeButtonTapped(themeID: theme.id))
+    }
 }
 
 private extension ThemesCarouselViewModel {
     func waitForCurrentThemeAndFinishLoading() {
         $themes.combineLatest($currentThemeID.dropFirst())
-            .map { themes, currentThemeID in
+            .map { themes, currentThemeID -> State in
                 let filteredThemes = themes.filter { $0.id != currentThemeID }
-                return State.content(themes: filteredThemes)
+                return filteredThemes.isEmpty ? .error : .content(themes: filteredThemes)
             }
             .assign(to: &$state)
     }
@@ -79,37 +101,13 @@ extension ThemesCarouselViewModel {
         case themeSettings
         case storeCreationProfiler
 
-        var moreThemesSuggestionText: String {
+        var analyticSource: WooAnalyticsEvent.Themes.Source {
             switch self {
             case .themeSettings:
-                return Localization.moreOnSettingsScreen
+                return .settings
             case .storeCreationProfiler:
-                return Localization.moreOnProfiler
+                return .storeCreation
             }
-        }
-
-        var moreThemesTitleText: String {
-            Localization.lookingForMore
-        }
-
-        private enum Localization {
-            static let lookingForMore = NSLocalizedString(
-                "themesCarouselViewModel.lastMessageHeading",
-                value: "Looking for more?",
-                comment: "The heading of the message shown at the end of the carousel on the WordPress theme list"
-            )
-
-            static let moreOnSettingsScreen = NSLocalizedString(
-                "themesCarouselViewModel.themeSetting.lastMessageContent",
-                value: "Find your perfect theme in the WooCommerce Theme Store.",
-                comment: "The content of the message shown at the end of the carousel on the theme settings screen"
-            )
-
-            static let moreOnProfiler = NSLocalizedString(
-                "themesCarouselViewModel.profiler.lastMessageContent",
-                value: "Once your store is set up, find your perfect theme in the WooCommerce Theme Store.",
-                comment: "The content of the message shown at the end of carousel in the store creation profiler flow"
-            )
         }
     }
 }

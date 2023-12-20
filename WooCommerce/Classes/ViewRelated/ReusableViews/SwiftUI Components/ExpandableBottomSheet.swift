@@ -60,6 +60,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         }
         .background(GeometryReader { geometryProxy in
             Color.clear
+                .onAppear(perform: {
+                    DispatchQueue.main.async {
+                        panelHeight = calculateHeight()
+                    }
+                })
                 .onChange(of: geometryProxy.size.height,
                           perform: { newValue in
                     if !isDragging {

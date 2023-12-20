@@ -79,8 +79,9 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         .background(Color(.listForeground(modal: true)))
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
         .cornerRadius(Layout.sheetCornerRadius)
-        .shadow(radius: Layout.sheetCornerRadius)
-        .mask(Rectangle().padding(.top, Layout.sheetCornerRadius * -2))
+        .shadow(radius: Layout.shadowRadius)
+        .mask(Rectangle().padding(.top, Layout.shadowRadius * -2)) // hide bottom shadow
+        .padding([.top], -Layout.shadowRadius) // ensure shadow overlays views "underneath" it
         .gesture(
             DragGesture()
                 .updating($isDragging) { value, state, _ in
@@ -125,6 +126,7 @@ fileprivate enum Layout {
     static let chevronHeight: CGFloat = 20
     static let chevronPadding: CGFloat = 8
     static let sheetCornerRadius: CGFloat = 10
+    static let shadowRadius: CGFloat = 5
 }
 
 fileprivate enum Localization {

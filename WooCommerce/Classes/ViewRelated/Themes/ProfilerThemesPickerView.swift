@@ -56,7 +56,7 @@ struct ProfilerThemesPickerView: View {
 
 struct ProfilerThemesPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilerThemesPickerView(carouselViewModel: .init(mode: .storeCreationProfiler), onSelectedTheme: { _ in }, onSkip: {})
+        ProfilerThemesPickerView(carouselViewModel: .init(siteID: 123, mode: .storeCreationProfiler), onSelectedTheme: { _ in }, onSkip: {})
     }
 }
 

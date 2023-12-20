@@ -9,6 +9,7 @@ final class ThemesCarouselViewModel: ObservableObject {
     @Published private var themes: [WordPressTheme] = []
     @Published private var currentThemeID: String?
 
+    let siteID: Int64
     let mode: Mode
     private let stores: StoresManager
     private let analytics: Analytics
@@ -16,9 +17,11 @@ final class ThemesCarouselViewModel: ObservableObject {
     /// Closure to be triggered when the theme list is reloaded.
     var onReload: (() -> Void)?
 
-    init(mode: Mode,
+    init(siteID: Int64,
+         mode: Mode,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
+        self.siteID = siteID
         self.mode = mode
         self.stores = stores
         self.analytics = analytics

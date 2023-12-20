@@ -23,7 +23,8 @@ final class ThemesCarouselViewModelTests: XCTestCase {
 
     func test_state_is_loading_initially() {
         // Given
-        let viewModel = ThemesCarouselViewModel(mode: .themeSettings)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .themeSettings)
 
         // When
         let state = viewModel.state
@@ -35,7 +36,9 @@ final class ThemesCarouselViewModelTests: XCTestCase {
     func test_state_is_content_after_loading_themes_for_profiler_mode() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ThemesCarouselViewModel(mode: .storeCreationProfiler, stores: stores)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .storeCreationProfiler,
+                                                stores: stores)
         let expectedThemes: [WordPressTheme] = [.fake().copy(name: "Tsubaki")]
 
         // When
@@ -56,7 +59,9 @@ final class ThemesCarouselViewModelTests: XCTestCase {
     func test_state_is_error_after_loading_themes_failed() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, stores: stores)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .themeSettings,
+                                                stores: stores)
 
         // When
         stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
@@ -76,7 +81,9 @@ final class ThemesCarouselViewModelTests: XCTestCase {
     func test_fetchThemes_filters_out_matching_theme_id() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, stores: stores)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .themeSettings,
+                                                stores: stores)
         let theme1: WordPressTheme = .fake().copy(id: "tsubaki")
         let theme2: WordPressTheme = .fake().copy(id: "tazza")
         let expectedThemes: [WordPressTheme] = [theme1, theme2]
@@ -104,7 +111,9 @@ final class ThemesCarouselViewModelTests: XCTestCase {
     func test_state_is_error_if_filtered_theme_list_is_empty() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, stores: stores)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .themeSettings,
+                                                stores: stores)
         let theme1: WordPressTheme = .fake().copy(id: "tsubaki")
         let expectedThemes: [WordPressTheme] = [theme1]
 
@@ -130,7 +139,9 @@ final class ThemesCarouselViewModelTests: XCTestCase {
 
     func test_trackViewAppear_tracks_theme_picker_screen_displayed_correctly_for_themeSettings_mode() throws {
         // Given
-        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, analytics: analytics)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .themeSettings,
+                                                analytics: analytics)
 
         // When
         viewModel.trackViewAppear()
@@ -143,7 +154,9 @@ final class ThemesCarouselViewModelTests: XCTestCase {
 
     func test_trackViewAppear_tracks_theme_picker_screen_displayed_correctly_for_profiler_mode() throws {
         // Given
-        let viewModel = ThemesCarouselViewModel(mode: .storeCreationProfiler, analytics: analytics)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .storeCreationProfiler,
+                                                analytics: analytics)
 
         // When
         viewModel.trackViewAppear()
@@ -156,7 +169,9 @@ final class ThemesCarouselViewModelTests: XCTestCase {
 
     func test_trackThemeSelected_tracks_theme_picker_theme_selected() throws {
         // Given
-        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, analytics: analytics)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .themeSettings,
+                                                analytics: analytics)
 
         // When
         viewModel.trackThemeSelected(.fake().copy(id: "tsubaki"))
@@ -169,7 +184,9 @@ final class ThemesCarouselViewModelTests: XCTestCase {
 
     func test_trackStartThemeButtonTapped_tracks_theme_preview_start_with_theme_button_tapped() throws {
         // Given
-        let viewModel = ThemesCarouselViewModel(mode: .themeSettings, analytics: analytics)
+        let viewModel = ThemesCarouselViewModel(siteID: 123,
+                                                mode: .themeSettings,
+                                                analytics: analytics)
 
         // Then
         viewModel.trackStartThemeButtonTapped(.fake().copy(id: "tsubaki"))

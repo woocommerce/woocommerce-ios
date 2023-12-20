@@ -70,13 +70,13 @@ struct ThemesPreviewView: View {
     @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
     @State private var showPagesMenu: Bool = false
 
-    /// Triggered when "Start with this theme" button is tapped.
-    var onStart: () -> Void
+    /// Triggered once theme is selected
+    var onCompletion: () -> Void
 
     init(viewModel: ThemesPreviewViewModel,
-         onStart: @escaping () -> Void) {
+         onCompletion: @escaping () -> Void) {
         self.viewModel = viewModel
-        self.onStart = onStart
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -103,7 +103,7 @@ struct ThemesPreviewView: View {
                             Task { @MainActor in
                                 do {
                                     try await viewModel.confirmThemeSelection()
-                                    onStart()
+                                    onCompletion()
                                     dismiss()
                                 } catch {
                                     DDLogError("⛔️ ThemesPreviewView - Theme installation failed.")
@@ -296,6 +296,6 @@ struct ThemesPreviewView_Previews: PreviewProvider {
                                 description: "Woo Theme",
                                 name: "Woo",
                                 demoURI: "https://woo.com")),
-            onStart: { })
+            onCompletion: { })
     }
 }

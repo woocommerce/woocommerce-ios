@@ -62,10 +62,6 @@ final class ThemesCarouselViewModel: ObservableObject {
     func trackThemeSelected(_ theme: WordPressTheme) {
         analytics.track(event: .Themes.themeSelected(id: theme.id))
     }
-
-    func trackStartThemeButtonTapped(_ theme: WordPressTheme) {
-        analytics.track(event: .Themes.startWithThemeButtonTapped(themeID: theme.id))
-    }
 }
 
 private extension ThemesCarouselViewModel {

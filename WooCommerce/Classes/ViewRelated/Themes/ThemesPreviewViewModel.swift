@@ -17,16 +17,19 @@ final class ThemesPreviewViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
     private let themeInstaller: ThemeInstaller
+    private let analytics: Analytics
 
     init(siteID: Int64,
          mode: ThemesCarouselViewModel.Mode,
          theme: WordPressTheme,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.siteID = siteID
         self.mode = mode
         self.theme = theme
         self.stores = stores
+        self.analytics = analytics
         self.themeInstaller = themeInstaller
 
         // Pre-fill the selected Page with the home page.
@@ -55,6 +58,8 @@ final class ThemesPreviewViewModel: ObservableObject {
 
     @MainActor
     func confirmThemeSelection() async throws {
+        analytics.track(event: .Themes.startWithThemeButtonTapped(themeID: theme.id))
+
         /// We are skipping theme installation when in store creation flow because
         /// the theme can be installed only after the store is full ready. (Atomic transfer complete)
         ///

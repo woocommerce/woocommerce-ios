@@ -79,8 +79,7 @@ struct ThemesCarouselView: View {
                 viewModel: .init(siteID: viewModel.siteID,
                                  mode: viewModel.mode,
                                  theme: theme),
-                onStart: {
-                    viewModel.trackStartThemeButtonTapped(theme)
+                onCompletion: {
                     onSelectedTheme(theme)
                 }
             )

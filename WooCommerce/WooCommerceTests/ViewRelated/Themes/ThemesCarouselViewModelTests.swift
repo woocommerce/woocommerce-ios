@@ -181,19 +181,4 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["theme"] as? String, "tsubaki")
     }
-
-    func test_trackStartThemeButtonTapped_tracks_theme_preview_start_with_theme_button_tapped() throws {
-        // Given
-        let viewModel = ThemesCarouselViewModel(siteID: 123,
-                                                mode: .themeSettings,
-                                                analytics: analytics)
-
-        // Then
-        viewModel.trackStartThemeButtonTapped(.fake().copy(id: "tsubaki"))
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_preview_start_with_theme_button_tapped"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["theme"] as? String, "tsubaki")
-    }
 }

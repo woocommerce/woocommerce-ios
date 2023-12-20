@@ -7,14 +7,21 @@ import Combine
 final class ThemesPreviewViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var subscriptions = Set<AnyCancellable>()
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
+
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
     }
 
     override func tearDown() {
         stores = nil
+        analytics = nil
+        analyticsProvider = nil
         super.tearDown()
     }
 
@@ -257,6 +264,25 @@ final class ThemesPreviewViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(themeInstaller.installThemeCalled)
+    }
+
+    func test_it_tracks_button_tap_when_confirming_theme_selection() async throws {
+        // Given
+        let themeInstaller = MockThemeInstaller()
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .fake().copy(id: "tsubaki"),
+                                               stores: stores,
+                                               analytics: analytics,
+                                               themeInstaller: themeInstaller)
+
+        // When
+        try await viewModel.confirmThemeSelection()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_preview_start_with_theme_button_tapped"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["theme"] as? String, "tsubaki")
     }
 }
 

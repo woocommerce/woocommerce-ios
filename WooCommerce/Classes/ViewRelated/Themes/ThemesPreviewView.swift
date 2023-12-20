@@ -87,7 +87,6 @@ struct ThemesPreviewView: View {
                     WebView(
                         isPresented: .constant(true),
                         url: url,
-                        shouldReloadOnUpdate: true,
                         disableLinkClicking: true,
                         onCommit: { webView in
                             webView.evaluateJavaScript(self.selectedDevice.viewportScript)
@@ -150,7 +149,12 @@ struct ThemesPreviewView: View {
         }
         .task { await viewModel.fetchPages() }
         .sheet(isPresented: $showPagesMenu) {
-            pagesListSheet(pages: viewModel.pages)
+            if #available(iOS 16, *) {
+                pagesListSheet
+                    .presentationDetents([.medium, .large])
+            } else {
+                pagesListSheet
+            }
         }
         .notice($viewModel.notice)
     }
@@ -176,25 +180,25 @@ struct ThemesPreviewView: View {
         }
     }
 
-    private func pagesListSheet(pages: [WordPressPage]) -> some View {
-        return VStack {
-            Text(Localization.pagesSheetHeading)
-                .subheadlineStyle()
-                .padding(Layout.pagesSheetPadding)
-            ForEach(pages) { page in
-                Button(action: {
-                    viewModel.setSelectedPage(page: page)
-                    showPagesMenu = false
-                }, label: {
-                    Text(page.title)
-                        .bodyStyle()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                })
-                .padding(Layout.contentPadding)
+    private var pagesListSheet: some View {
+        ScrollView {
+            VStack {
+                Text(Localization.pagesSheetHeading)
+                    .subheadlineStyle()
+                    .padding(Layout.pagesSheetPadding)
+                ForEach(viewModel.pages) { page in
+                    Button(action: {
+                        viewModel.setSelectedPage(page: page)
+                        showPagesMenu = false
+                    }, label: {
+                        Text(page.title)
+                            .bodyStyle()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    })
+                    .padding(Layout.contentPadding)
+                }
+                Spacer()
             }
-
-            Spacer()
         }
     }
 

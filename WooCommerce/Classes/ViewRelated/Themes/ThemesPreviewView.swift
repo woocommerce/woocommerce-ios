@@ -143,7 +143,7 @@ struct ThemesPreviewView: View {
         }
         .task { await viewModel.fetchPages() }
         .sheet(isPresented: $showPagesMenu) {
-            pagesListSheet(pages: viewModel.pages)
+            pagesListSheet
         }
     }
 

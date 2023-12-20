@@ -174,23 +174,27 @@ struct ThemesPreviewView: View {
     }
 
     private var pagesListSheet: some View {
-        VStack {
-            Text(Localization.pagesSheetHeading)
-                .subheadlineStyle()
-                .padding(Layout.pagesSheetPadding)
-            ForEach(viewModel.pages) { page in
-                Button(action: {
-                    viewModel.setSelectedPage(page: page)
-                    showPagesMenu = false
-                }, label: {
-                    Text(page.title)
-                        .bodyStyle()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                })
-                .padding(Layout.contentPadding)
+        GeometryReader { geometry in
+            ScrollView {
+                VStack {
+                    Text(Localization.pagesSheetHeading)
+                        .subheadlineStyle()
+                        .padding(Layout.pagesSheetPadding)
+                    ForEach(viewModel.pages) { page in
+                        Button(action: {
+                            viewModel.setSelectedPage(page: page)
+                            showPagesMenu = false
+                        }, label: {
+                            Text(page.title)
+                                .bodyStyle()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        })
+                        .padding(Layout.contentPadding)
+                    }
+                    Spacer()
+                }
+                .frame(minHeight: geometry.size.height)
             }
-
-            Spacer()
         }
     }
 

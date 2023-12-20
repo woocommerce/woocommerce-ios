@@ -70,16 +70,12 @@ struct ThemesPreviewView: View {
     @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
     @State private var showPagesMenu: Bool = false
 
-    private let theme: WordPressTheme
-
     /// Triggered when "Start with this theme" button is tapped.
     var onStart: () -> Void
 
     init(viewModel: ThemesPreviewViewModel,
-         theme: WordPressTheme,
          onStart: @escaping () -> Void) {
         self.viewModel = viewModel
-        self.theme = theme
         self.onStart = onStart
     }
 
@@ -102,10 +98,21 @@ struct ThemesPreviewView: View {
                         .foregroundColor(Color(.divider))
 
                     VStack {
-                        Button(Localization.startWithThemeButton, action: onStart)
-                        .buttonStyle(PrimaryButtonStyle())
+                        Button(viewModel.mode == .storeCreationProfiler ? Localization.startWithThemeButton : Localization.useThisThemeButton,
+                               action: {
+                            Task { @MainActor in
+                                do {
+                                    try await viewModel.installTheme()
+                                    onStart()
+                                    dismiss()
+                                } catch {
+                                    DDLogError("⛔️ ThemesPreviewView - Theme installation failed.")
+                                }
+                            }
+                        })
+                        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.installingTheme))
 
-                        Text(String(format: Localization.themeName, theme.name))
+                        Text(String(format: Localization.themeName, viewModel.theme.name))
                             .secondaryBodyStyle()
                     }.padding(Layout.footerPadding)
 
@@ -144,6 +151,7 @@ struct ThemesPreviewView: View {
         .sheet(isPresented: $showPagesMenu) {
             pagesListSheet(pages: viewModel.pages)
         }
+        .notice($viewModel.notice)
     }
 
     private func pageSelector(state: ThemesPreviewViewModel.State, pageTitle: String) -> some View {
@@ -253,6 +261,11 @@ private extension ThemesPreviewView {
             value: "Start with This Theme",
             comment: "Button in theme preview screen to pick a theme."
         )
+        static let useThisThemeButton = NSLocalizedString(
+            "themesPreviewView.useThisThemeButton",
+            value: "Use this theme",
+            comment: "Button in theme preview screen to pick a theme."
+        )
         static let themeName = NSLocalizedString(
             "themesPreviewView.themeName",
             value: "Theme: %@",
@@ -276,14 +289,13 @@ private extension ThemesPreviewView {
 struct ThemesPreviewView_Previews: PreviewProvider {
     static var previews: some View {
         ThemesPreviewView(
-            viewModel: .init(themeDemoURL: "https://woo.com"),
-            theme: WordPressTheme(
-                id: "123",
-                description: "Woo Theme",
-                name: "Woo",
-                demoURI: "https://woo.com"
-            ),
-            onStart: { }
-        )
+            viewModel: .init(siteID: 123,
+                             mode: .storeCreationProfiler,
+                             theme: WordPressTheme(
+                                id: "123",
+                                description: "Woo Theme",
+                                name: "Woo",
+                                demoURI: "https://woo.com")),
+            onStart: { })
     }
 }

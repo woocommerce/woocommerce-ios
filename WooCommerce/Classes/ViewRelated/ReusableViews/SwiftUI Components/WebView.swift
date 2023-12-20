@@ -117,8 +117,8 @@ struct WebView: UIViewRepresentable {
             }
             switch keyPath {
                 case #keyPath(WKWebView.estimatedProgress):
-                parent.progressView.progress = Float(parent.webView.estimatedProgress)
-                parent.progressView.isHidden = parent.webView.estimatedProgress == 1
+                    parent.progressView.progress = Float(parent.webView.estimatedProgress)
+                    parent.progressView.isHidden = parent.webView.estimatedProgress == 1
                 default:
                     assertionFailure("Observed change to web view that we are not handling")
                 }

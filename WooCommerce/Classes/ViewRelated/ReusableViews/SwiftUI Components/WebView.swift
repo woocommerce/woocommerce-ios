@@ -105,23 +105,5 @@ struct WebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
             parent.onCommit?(webView)
         }
-
-        override func observeValue(forKeyPath keyPath: String?,
-                                   of object: Any?,
-                                   change: [NSKeyValueChangeKey: Any]?,
-                                   context: UnsafeMutableRawPointer?) {
-            guard let object = object as? WKWebView,
-                  object == parent.webView,
-                let keyPath = keyPath else {
-                    return
-            }
-            switch keyPath {
-                case #keyPath(WKWebView.estimatedProgress):
-                    parent.progressView.progress = Float(parent.webView.estimatedProgress)
-                    parent.progressView.isHidden = parent.webView.estimatedProgress == 1
-                default:
-                    assertionFailure("Observed change to web view that we are not handling")
-                }
-        }
     }
 }

@@ -17,7 +17,7 @@ struct WebView: UIViewRepresentable {
     private let webView = WKWebView()
     private let progressView = WebProgressView()
 
-    let url: URL
+    private let url: URL
 
     /// Optional URL or part of URL to trigger exit
     ///
@@ -30,12 +30,12 @@ struct WebView: UIViewRepresentable {
     /// Callback that will be triggered in when the underlying `WKWebView` delegate method `didCommit` is triggered.
     /// This happens when the web view has received data and is starting to render the content.
     ///
-    var onCommit: ((WKWebView) -> Void)?
+    private var onCommit: ((WKWebView) -> Void)?
 
     /// Check whether to prevent any link clicking to open the link.
     /// This is used in ThemesPreviewView, as it is intended to only display a single demo URL without allowing navigation to
     /// other webpages.
-    var disableLinkClicking: Bool
+    private var disableLinkClicking: Bool
 
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 

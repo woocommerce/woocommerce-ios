@@ -14,6 +14,10 @@ struct WebView: UIViewRepresentable {
         }
     }
 
+    let webView: WKWebView = WKWebView()
+    let progressView: WebProgressView = WebProgressView()
+    @State var estimatedProgress: Float = 0.0
+
     let url: URL
 
     /// Optional URL or part of URL to trigger exit
@@ -53,20 +57,23 @@ struct WebView: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UIStackView {
-        let webView = WKWebView()
+        // Webview
         webView.customUserAgent = UserAgent.defaultUserAgent
         webView.navigationDelegate = context.coordinator
 
         webView.load(URLRequest(url: url))
 
-        let stackView = UIStackView(arrangedSubviews: [webView])
+        // Progress view
+        progressView.observeProgress(webView: webView)
+
+        let stackView = UIStackView(arrangedSubviews: [progressView, webView])
         stackView.axis = .vertical
         stackView.alignment = .fill
         return stackView
     }
 
     func updateUIView(_ uiView: UIStackView, context: Context) {
-        if let webView = uiView.arrangedSubviews.first as? WKWebView {
+        if let webView = uiView.arrangedSubviews.first(where: { $0 is WKWebView }) as? WKWebView {
             webView.load(URLRequest(url: url))
         }
     }
@@ -98,6 +105,24 @@ struct WebView: UIViewRepresentable {
 
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
             parent.onCommit?(webView)
+        }
+
+        override func observeValue(forKeyPath keyPath: String?,
+                                   of object: Any?,
+                                   change: [NSKeyValueChangeKey: Any]?,
+                                   context: UnsafeMutableRawPointer?) {
+            guard let object = object as? WKWebView,
+                  object == parent.webView,
+                let keyPath = keyPath else {
+                    return
+            }
+            switch keyPath {
+                case #keyPath(WKWebView.estimatedProgress):
+                parent.progressView.progress = Float(parent.webView.estimatedProgress)
+                parent.progressView.isHidden = parent.webView.estimatedProgress == 1
+                default:
+                    assertionFailure("Observed change to web view that we are not handling")
+                }
         }
     }
 }

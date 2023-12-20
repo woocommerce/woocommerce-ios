@@ -96,7 +96,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.installingTheme)
     }
 
-    func test_installingTheme_is_updated_properly__when_installing_theme_is_successful() async throws {
+    func test_installingTheme_is_updated_properly_when_installing_theme_is_successful_in_themeSettings_mode() async throws {
         // Given
         let themeInstaller = MockThemeInstaller()
         let viewModel = ThemesPreviewViewModel(siteID: 123,
@@ -119,10 +119,36 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         try await viewModel.installTheme()
 
         // Then
-        assertEqual(loadingStates, [false, true, false])
+        assertEqual([false, true, false], loadingStates)
     }
 
-    func test_installingTheme_is_updated_properly_when_installing_theme_fails() async {
+    func test_installingTheme_does_not_change_when_installing_theme_in_storeCreationProfiler_mode() async throws {
+        // Given
+        let themeInstaller = MockThemeInstaller()
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .init(id: "123",
+                                                            description: "Woo Theme",
+                                                            name: "Woo",
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores,
+                                               themeInstaller: themeInstaller)
+        var loadingStates = [Bool]()
+        viewModel.$installingTheme
+            .collect()
+            .sink { states in
+                loadingStates = states
+            }
+            .store(in: &self.subscriptions)
+
+        // When
+        try await viewModel.installTheme()
+
+        // Then
+        assertEqual([], loadingStates)
+    }
+
+    func test_installingTheme_is_updated_properly_when_installing_theme_fails_in_themeSettings_mode() async {
         // Given
         let themeInstaller = MockThemeInstaller()
         themeInstaller.installThemeError = MockError()
@@ -148,7 +174,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
             XCTFail("Installing theme should fail")
         } catch {
             // Then
-            assertEqual(loadingStates, [false, true, false])
+            assertEqual([false, true, false], loadingStates)
         }
     }
 

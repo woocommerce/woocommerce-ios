@@ -266,7 +266,7 @@ private extension ThemesPreviewView {
         )
 
         static let pagesSheetHeading = NSLocalizedString(
-        "ThemesPreviewView.pagesSheetHeading",
+        "themesPreviewView.pagesSheetHeading",
         value: "View other store pages on this theme",
         comment: "Heading for sheet displaying list of pages"
         )

@@ -76,12 +76,13 @@ struct ThemesCarouselView: View {
         }
         .sheet(item: $selectedTheme, content: { theme in
             ThemesPreviewView(
-                viewModel: .init(themeDemoURL: theme.demoURI),
-                theme: theme,
+                viewModel: .init(siteID: viewModel.siteID,
+                                 mode: viewModel.mode,
+                                 theme: theme),
                 onSelectedTheme: {
-                    viewModel.trackStartThemeButtonTapped(theme)
                     onSelectedTheme(theme)
-                })
+                }
+            )
         })
         .onAppear {
             viewModel.trackViewAppear()
@@ -235,6 +236,6 @@ private extension ThemesCarouselView {
 
 struct ThemesCarouselView_Previews: PreviewProvider {
     static var previews: some View {
-        ThemesCarouselView(viewModel: .init(mode: .themeSettings), onSelectedTheme: { _ in })
+        ThemesCarouselView(viewModel: .init(siteID: 123, mode: .themeSettings), onSelectedTheme: { _ in })
     }
 }

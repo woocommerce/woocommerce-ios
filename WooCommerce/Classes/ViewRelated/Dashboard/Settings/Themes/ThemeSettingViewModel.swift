@@ -19,7 +19,9 @@ final class ThemeSettingViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.themeInstaller = themeInstaller
-        self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
+        self.carouselViewModel = .init(siteID: siteID,
+                                       mode: .themeSettings,
+                                       stores: stores)
 
         configureCarouselViewModel()
         /// Attempt to install and activate any pending theme selection
@@ -41,6 +43,7 @@ final class ThemeSettingViewModel: ObservableObject {
 
     func updateCurrentTheme(_ theme: WordPressTheme) {
         currentThemeName = theme.name
+        carouselViewModel.updateCurrentTheme(id: theme.id)
     }
 
     func trackViewAppear() {

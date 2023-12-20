@@ -78,8 +78,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 }
             }
         })
-        .background(Color(.listForeground(modal: true)))
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
+        .background(Color(.listForeground(modal: false)))
         .cornerRadius(Layout.sheetCornerRadius)
         .shadow(radius: Layout.shadowRadius)
         .mask(Rectangle().padding(.top, Layout.shadowRadius * -2)) // hide bottom shadow
@@ -110,7 +110,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
-        .edgesIgnoringSafeArea(.all)
+        .ignoresSafeArea(edges: .bottom)
+        .background(Color(.listForeground(modal: false)))
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {

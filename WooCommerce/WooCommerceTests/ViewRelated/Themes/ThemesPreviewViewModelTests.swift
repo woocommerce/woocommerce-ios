@@ -389,6 +389,54 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["theme"] as? String, "tsubaki")
     }
+
+    func test_trackViewAppear_tracks_preview_screen_displayed() throws {
+        // Given
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .fake().copy(id: "tsubaki"),
+                                               stores: stores,
+                                               analytics: analytics)
+
+        // When
+        viewModel.trackViewAppear()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["theme_preview_screen_displayed"])
+    }
+
+    func test_trackLayoutSwitch_tracks_theme_preview_layout_selected() throws {
+        // Given
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .fake().copy(id: "tsubaki"),
+                                               analytics: analytics)
+
+        // When
+        viewModel.trackLayoutSwitch(layout: .tablet)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_preview_layout_selected"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["layout"] as? String, "tablet")
+    }
+
+    func test_setSelectedPage_tracks_theme_preview_page_selected() throws {
+        // Given
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .fake().copy(id: "tsubaki"),
+                                               analytics: analytics)
+
+        // When
+        viewModel.setSelectedPage(page: .fake().copy(title: "Test", link: "https://example.com"))
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_preview_page_selected"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["page"] as? String, "Test")
+        XCTAssertEqual(eventProperties["page_url"] as? String, "https://example.com")
+    }
 }
 
 private extension ThemesPreviewViewModelTests {

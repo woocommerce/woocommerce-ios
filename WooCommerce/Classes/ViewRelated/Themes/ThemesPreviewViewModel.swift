@@ -81,6 +81,10 @@ final class ThemesPreviewViewModel: ObservableObject {
             throw error
         }
     }
+
+    func trackViewAppear() {
+        analytics.track(event: .Themes.previewScreenDisplayed())
+    }
 }
 
 private extension ThemesPreviewViewModel {

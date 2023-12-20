@@ -153,6 +153,9 @@ struct ThemesPreviewView: View {
             pagesListSheet(pages: viewModel.pages)
         }
         .notice($viewModel.notice)
+        .onAppear {
+            viewModel.trackViewAppear()
+        }
     }
 
     @ViewBuilder

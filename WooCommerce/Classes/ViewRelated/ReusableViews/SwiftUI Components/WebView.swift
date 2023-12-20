@@ -67,7 +67,6 @@ struct WebView: UIViewRepresentable {
 
         let stackView = UIStackView(arrangedSubviews: [progressView, webView])
         stackView.axis = .vertical
-        stackView.alignment = .fill
         return stackView
     }
 

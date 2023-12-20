@@ -37,7 +37,7 @@ extension WordPressMedia: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let mediaID = try container.decode(Int64.self, forKey: .mediaID)
-        let date = try container.decodeIfPresent(Date.self, forKey: .date) ?? Date()
+        let date = (try? container.decodeIfPresent(Date.self, forKey: .date)) ?? Date()
         let slug = try container.decodeIfPresent(String.self, forKey: .slug) ?? ""
         let mimeType = try container.decodeIfPresent(String.self, forKey: .mimeType) ?? ""
         let src = try container.decodeIfPresent(String.self, forKey: .src) ?? ""

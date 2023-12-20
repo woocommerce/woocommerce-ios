@@ -106,6 +106,6 @@ private extension WordPressThemeRemote {
     }
 
     enum Values {
-        static let filteredThemeIDs = ["tsubaki", "tazza", "amulet", "zaino", "thriving-artist", "attar"]
+        static let filteredThemeIDs = ["tsubaki", "tazza", "amulet", "zaino", "thriving-artist"]
     }
 }

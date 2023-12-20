@@ -46,7 +46,6 @@ struct DashboardTopPerformersView_Previews: PreviewProvider {
         DashboardTopPerformersView(viewModel: .init(state: .loaded(rows: [.init(productID: 12,
                                                                                 productName: "Fun product",
                                                                                 quantity: 6,
-                                                                                price: 12.8,
                                                                                 total: 16.8,
                                                                                 currency: "USD",
                                                                                 imageUrl: nil)]), onTap: { _ in }))

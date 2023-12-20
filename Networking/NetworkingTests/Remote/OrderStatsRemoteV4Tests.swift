@@ -31,6 +31,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
         let result: Result<OrderStatsV4, Error> = waitFor { promise in
             remote.loadOrderStats(for: self.sampleSiteID,
                                   unit: .hourly,
+                                  timeZone: .current,
                                   earliestDateToInclude: Date(),
                                   latestDateToInclude: Date(),
                                   quantity: 24,
@@ -57,6 +58,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
         let result: Result<OrderStatsV4, Error> = waitFor { promise in
             remote.loadOrderStats(for: self.sampleSiteID,
                                   unit: .weekly,
+                                  timeZone: .current,
                                   earliestDateToInclude: Date(),
                                   latestDateToInclude: Date(),
                                   quantity: 2,
@@ -81,6 +83,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
         let result: Result<OrderStatsV4, Error> = waitFor { promise in
             remote.loadOrderStats(for: self.sampleSiteID,
                                   unit: .daily,
+                                  timeZone: .current,
                                   earliestDateToInclude: Date(),
                                   latestDateToInclude: Date(),
                                   quantity: 31,

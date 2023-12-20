@@ -357,8 +357,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 return ""
             }
         }()
-        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
-        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
+        let dateCreated = (try? container.decodeIfPresent(Date.self, forKey: .dateCreated)) ?? Date()
+        let dateModified = (try? container.decodeIfPresent(Date.self, forKey: .dateModified)) ?? Date()
         let dateOnSaleStart = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleStart)
         let dateOnSaleEnd = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleEnd)
 

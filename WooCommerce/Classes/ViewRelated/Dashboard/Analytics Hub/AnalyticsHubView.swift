@@ -16,10 +16,11 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
     var notice: Notice?
 
     init(siteID: Int64,
+         timeZone: TimeZone,
          timeRange: StatsTimeRangeV4,
          systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
-        let viewModel = AnalyticsHubViewModel(siteID: siteID, statsTimeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
+        let viewModel = AnalyticsHubViewModel(siteID: siteID, timeZone: timeZone, statsTimeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
         self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: AnalyticsHubView(viewModel: viewModel))
 
@@ -157,6 +158,7 @@ struct AnalyticsHubPreview: PreviewProvider {
     static var previews: some View {
         NavigationView {
             AnalyticsHubView(viewModel: AnalyticsHubViewModel(siteID: 123,
+                                                              timeZone: .current,
                                                               statsTimeRange: .thisYear,
                                                               usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
         }

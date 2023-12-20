@@ -14,8 +14,8 @@ struct WebView: UIViewRepresentable {
         }
     }
 
-    let webView: WKWebView = WKWebView()
-    let progressView: WebProgressView = WebProgressView()
+    private let webView = WKWebView()
+    private let progressView = WebProgressView()
 
     let url: URL
 

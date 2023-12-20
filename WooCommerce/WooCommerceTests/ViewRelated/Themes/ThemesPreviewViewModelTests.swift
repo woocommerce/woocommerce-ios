@@ -32,7 +32,8 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                theme: .init(id: "123",
                                                             description: "Woo Theme",
                                                             name: "Woo",
-                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"))
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores)
 
         // Then
         XCTAssertEqual(viewModel.state, .pagesLoading)
@@ -45,7 +46,8 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                theme: .init(id: "123",
                                                             description: "Woo Theme",
                                                             name: "Woo",
-                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"))
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores)
         // Then
         XCTAssertEqual(viewModel.pages.count, 1)
         XCTAssertEqual(viewModel.pages.first?.title, "Home")
@@ -91,7 +93,9 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                theme: .init(id: "123",
                                                             description: "Woo Theme",
                                                             name: "Woo",
-                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"))
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores)
+
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
@@ -183,7 +187,8 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                theme: .init(id: "123",
                                                             description: "Woo Theme",
                                                             name: "Woo",
-                                                            demoURI: "testURL"))
+                                                            demoURI: "testURL"),
+                                               stores: stores)
         let page = WordPressPage(id: 1, title: "Page1", link: "testURL")
 
         // When
@@ -202,7 +207,8 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                theme: .init(id: "123",
                                                             description: "Woo Theme",
                                                             name: "Woo",
-                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"))
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores)
 
         // Then
         XCTAssertFalse(viewModel.installingTheme)

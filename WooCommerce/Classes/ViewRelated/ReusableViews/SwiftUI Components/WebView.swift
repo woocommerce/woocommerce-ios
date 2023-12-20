@@ -63,6 +63,7 @@ struct WebView: UIViewRepresentable {
         webView.load(URLRequest(url: url))
 
         // Progress view
+        progressView.startedLoading()
         progressView.observeProgress(webView: webView)
 
         let stackView = UIStackView(arrangedSubviews: [progressView, webView])

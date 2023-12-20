@@ -109,9 +109,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                themeInstaller: themeInstaller)
         var loadingStates = [Bool]()
         viewModel.$installingTheme
-            .dropFirst() // Initial value
-            .collect(2)  // Collect toggle
-            .first()
+            .collect(3)
             .sink { states in
                 loadingStates = states
             }
@@ -121,7 +119,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         try await viewModel.installTheme()
 
         // Then
-        assertEqual(loadingStates, [true, false])
+        assertEqual(loadingStates, [false, true, false])
     }
 
     func test_installingTheme_is_updated_properly_when_installing_theme_fails() async {
@@ -138,9 +136,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                themeInstaller: themeInstaller)
         var loadingStates = [Bool]()
         viewModel.$installingTheme
-            .dropFirst() // Initial value
-            .collect(2)  // Collect toggle
-            .first()
+            .collect(3)
             .sink { states in
                 loadingStates = states
             }
@@ -152,7 +148,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
             XCTFail("Installing theme should fail")
         } catch {
             // Then
-            assertEqual(loadingStates, [true, false])
+            assertEqual(loadingStates, [false, true, false])
         }
     }
 

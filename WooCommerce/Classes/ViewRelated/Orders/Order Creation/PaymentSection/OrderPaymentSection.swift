@@ -69,9 +69,6 @@ struct OrderPaymentSection: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: false)))
-        .sheet(isPresented: $shouldShowShippingLineDetails) {
-            ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
-        }
 
         taxRateAddedAutomaticallyRow
             .renderedIf(viewModel.shouldShowStoredTaxRateAddedAutomatically)

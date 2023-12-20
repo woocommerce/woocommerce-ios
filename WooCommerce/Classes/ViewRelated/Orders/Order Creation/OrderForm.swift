@@ -177,13 +177,8 @@ struct OrderForm: View {
                                         shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                                         shouldShowGiftCardForm: $shouldShowGiftCardForm)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
-                                }
-                                .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
-                                    if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
-                                        PaymentMethodsHostingView(parentController: rootViewController,
-                                                                  viewModel: collectPaymentViewModel)
-                                    } else {
-                                        EmptyView()
+                                    .sheet(isPresented: $shouldShowShippingLineDetails) {
+                                        ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
                                     }
                                 }
 
@@ -265,6 +260,14 @@ struct OrderForm: View {
 
                     completedButton
                         .padding()
+                }
+                .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
+                    if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
+                        PaymentMethodsHostingView(parentController: rootViewController,
+                                                  viewModel: collectPaymentViewModel)
+                    } else {
+                        EmptyView()
+                    }
                 }
             } expandableContent: {
                 OrderPaymentSection(

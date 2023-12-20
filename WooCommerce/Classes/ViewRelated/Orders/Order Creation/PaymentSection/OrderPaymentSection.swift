@@ -45,8 +45,6 @@ struct OrderPaymentSection: View {
     }
 
     var body: some View {
-        Divider()
-
         VStack(alignment: .leading, spacing: .zero) {
             // Title
             orderWithItemsTitle
@@ -77,6 +75,10 @@ struct OrderPaymentSection: View {
 
         taxRateAddedAutomaticallyRow
             .renderedIf(viewModel.shouldShowStoredTaxRateAddedAutomatically)
+
+        Divider()
+            .padding([.leading], Constants.dividerLeadingPadding)
+            .renderedIf(!viewModel.orderIsEmpty)
     }
 }
 
@@ -258,8 +260,6 @@ private extension OrderPaymentSection {
             .frame(maxWidth: .infinity)
             .padding()
             .frame(minHeight: Constants.rowMinHeight)
-
-            Divider()
         }
         .background(Color(.listForeground(modal: false)))
     }

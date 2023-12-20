@@ -260,6 +260,9 @@ struct OrderForm: View {
                     .font(.headline)
                     .padding()
 
+                    Divider()
+                        .padding([.leading], Layout.dividerLeadingPadding)
+
                     completedButton
                         .padding()
                 }
@@ -630,6 +633,7 @@ private extension OrderForm {
         static let storedTaxRateBottomSheetStoredTaxRateCornerRadius: CGFloat = 8.0
         static let storedTaxRateBottomSheetButtonIconSize: CGFloat = 24.0
         static let productsHeaderButtonsSpacing: CGFloat = 20
+        static let dividerLeadingPadding: CGFloat = 16
     }
 
     enum Localization {

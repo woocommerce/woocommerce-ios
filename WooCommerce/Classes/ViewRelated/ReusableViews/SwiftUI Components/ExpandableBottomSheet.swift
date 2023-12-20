@@ -28,6 +28,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             }) {
                 Image(systemName: "chevron.up")
                     .font(.system(size: Layout.chevronHeight))
+                    .accessibilityLabel(isExpanded ? Localization.collapseChevronAccessibilityLabel :
+                                            Localization.expandChevronAccessibilityLabel)
                     // The following flips the chevron
                     .scaleEffect(isExpanded ? CGSize(width: 1.0, height: -1.0) :
                                     CGSize(width: 1.0, height: 1.0),
@@ -123,6 +125,18 @@ fileprivate enum Layout {
     static let chevronHeight: CGFloat = 20
     static let chevronPadding: CGFloat = 8
     static let sheetCornerRadius: CGFloat = 10
+}
+
+fileprivate enum Localization {
+    static let expandChevronAccessibilityLabel = NSLocalizedString(
+        "expandableBottomSheet.chevron.expand",
+        value: "Show details",
+        comment: "Accessibility label to expand an expandable bottom sheet")
+
+    static let collapseChevronAccessibilityLabel = NSLocalizedString(
+        "expandableBottomSheet.chevron.collapse",
+        value: "Hide details",
+        comment: "Accessibility label to collapse an expandable bottom sheet")
 }
 
 struct ExpandableBottomSheet_Previews: PreviewProvider {

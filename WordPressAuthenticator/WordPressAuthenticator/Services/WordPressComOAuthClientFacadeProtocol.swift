@@ -11,7 +11,7 @@ import WordPressKit
         password: String,
         multifactorCode: String?,
         success: @escaping (_ authToken: String?) -> Void,
-        needsMultifactor: ((_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo?) -> Void)?,
+        needsMultifactor: @escaping ((_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo?) -> Void),
         failure: ((_ error: Error) -> Void)?
     )
 

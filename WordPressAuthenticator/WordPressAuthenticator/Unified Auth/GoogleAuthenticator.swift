@@ -340,7 +340,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         var errorTitle = LocalizedText.googleUnableToConnect
         var errorDescription = error.localizedDescription
-        let unknownUser = (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue
+        let unknownUser = (error as? WordPressComOAuthError)?.authenticationFailureKind == .unknownUser
 
         if unknownUser {
             errorTitle = LocalizedText.googleConnected

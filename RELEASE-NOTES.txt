@@ -3,6 +3,7 @@
 16.8
 -----
 - [**] Payments: merchants can collect payment directly from the order creation form [https://github.com/woocommerce/woocommerce-ios/pull/11490]
+- [*] Payments: order totals are now shown in an expandable drawer, so they're accessible without scrolling [https://github.com/woocommerce/woocommerce-ios/pull/11503]
 
 16.7
 -----

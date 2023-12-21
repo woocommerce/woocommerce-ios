@@ -416,6 +416,7 @@ public enum WooAnalyticsStat: String {
     case orderCreationEditCustomAmountTapped = "order_creation_edit_custom_amount_tapped"
     case orderCreationRemoveCustomAmountTapped = "order_creation_remove_custom_amount_tapped"
     case orderCreationClearAddressFromBottomSheetTapped = "tax_rate_auto_tax_rate_clear_address_tapped"
+    case orderFormTotalsPanelToggled = "order_form_totals_panel_toggled"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"

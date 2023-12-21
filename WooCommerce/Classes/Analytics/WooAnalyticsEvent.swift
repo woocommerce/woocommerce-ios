@@ -557,6 +557,7 @@ extension WooAnalyticsEvent {
             static let type = "type"
             static let usesGiftCard = "use_gift_card"
             static let taxStatus = "tax_status"
+            static let expanded = "expanded"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -720,6 +721,14 @@ extension WooAnalyticsEvent {
                 Keys.to: newStatus.rawValue
             ]
             return WooAnalyticsEvent(statName: .orderStatusChange, properties: properties.compactMapValues { $0 })
+        }
+
+        static func orderTotalsExpansionChanged(flow: Flow,
+                                                expanded: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormTotalsPanelToggled, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.expanded: expanded
+            ])
         }
 
         static func orderCreateButtonTapped(order: Order,

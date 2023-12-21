@@ -15,8 +15,12 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
-    public init(@ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
+    private var onChangeOfExpansion: ((Bool) -> Void)?
+
+    public init(onChangeOfExpansion: ((Bool) -> Void)? = nil,
+                @ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
                 @ViewBuilder expandableContent: @escaping () -> ExpandableContent) {
+        self.onChangeOfExpansion = onChangeOfExpansion
         self.alwaysVisibleContent = alwaysVisibleContent
         self.expandableContent = expandableContent
     }
@@ -90,7 +94,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 })
         })
-        .onChange(of: isExpanded, perform: { _ in
+        .onChange(of: isExpanded, perform: { newValue in
+            onChangeOfExpansion?(newValue)
             DispatchQueue.main.async {
                 withAnimation {
                     panelHeight = calculateHeight()

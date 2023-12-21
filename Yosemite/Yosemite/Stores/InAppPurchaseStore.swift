@@ -285,6 +285,15 @@ private extension InAppPurchaseStore {
         for await transaction in Transaction.currentEntitlements {
             switch transaction {
             case .verified(let transaction):
+                if let subscriptionStatus = await transaction.subscriptionStatus {
+                    switch subscriptionStatus.state {
+                    case .inGracePeriod:
+                        DDLogInfo("Subscription in Grace Period")
+                    default:
+                        continue
+                    }
+                }
+
                 // If we have current entitlements, we check for its transaction token, and extract the associated siteID.
                 // If this siteID matches the current siteID, then the site has current In-App Purchases.
                 guard let token = transaction.appAccountToken,

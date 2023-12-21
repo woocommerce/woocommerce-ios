@@ -14,6 +14,11 @@ final class ThemesPreviewViewModel: ObservableObject {
     let mode: ThemesCarouselViewModel.Mode
     let theme: WordPressTheme
 
+    var primaryButtonTitle: String {
+        let format = mode == .storeCreationProfiler ? Localization.startWithThemeButton : Localization.useThisThemeButton
+        return String.localizedStringWithFormat(format, theme.name)
+    }
+
     private let siteID: Int64
     private let stores: StoresManager
     private let themeInstaller: ThemeInstaller
@@ -125,6 +130,18 @@ extension ThemesPreviewViewModel {
             "themesPreviewViewModel.themeInstallError",
             value: "Theme installation failed. Please try again.",
             comment: "Message to convey that theme installation failed."
+        )
+        static let startWithThemeButton = NSLocalizedString(
+            "themesPreviewViewModel.startWithThemeButton",
+            value: "Start with %1$@",
+            comment: "Button in theme preview screen to pick a theme. The placeholder is the theme name. " +
+            "Reads like: Start with Tsubaki"
+        )
+        static let useThisThemeButton = NSLocalizedString(
+            "themesPreviewViewModel.useThisThemeButton",
+            value: "Use %1$@",
+            comment: "Button in theme preview screen to pick a theme. The placeholder is the theme name. " +
+            "Reads like: Use Tsubaki"
         )
     }
 }

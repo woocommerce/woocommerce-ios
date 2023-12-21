@@ -21,6 +21,7 @@ final class LoginTests: XCTestCase {
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .enterValidPassword()
+            .enterValidTwoFACode()
 
         try TabNavComponent()
             .goToMenuScreen()

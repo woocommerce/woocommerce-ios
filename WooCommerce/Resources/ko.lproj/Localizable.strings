@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-12-06 10:54:03+0000 */
+/* Translation-Revision-Date: 2023-12-15 09:54:22+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "워드프레스 미디어 라이브러리에서";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "기기에서";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "구매에서 처리까지 – 앱을 통해 전체 주문 프로세스를 관리하세요.";
 
@@ -5052,9 +5049,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "아직 파일 없음";
-
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "아직 이미지 없음";
 
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "제한 없음";
@@ -9821,6 +9815,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "아이콘";
 
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "클립보드에 복사했습니다.";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "번호 복사";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Blaze 숨기기";
 
@@ -9962,6 +9962,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.unknown.title" = "알 수 없음";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "기기의 문서";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "기기의 미디어";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "전자상거래";
@@ -10125,6 +10131,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "사용자 정의 금액을 어떻게 추가하시겠어요?";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "완료";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "사용자 정의 금액";
 
@@ -10170,11 +10179,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "가변 구독 상품";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "파일 업로드 중 오류가 발생했습니다. 다시 시도하세요.";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "선택된 파일 유형은 지원되지 않습니다.";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "%1$@마다";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze로 홍보";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "모든 업로드가 완료된 후에 이미지를 재정렬하세요.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "청구 주기";
@@ -10327,6 +10345,21 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "Tap to Pay on iPhone을 통한 결제 수락에 대해 %1$@";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "취소";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "현재";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "테마";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "테마";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "새 디자인 시도해 보기";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "알 수 없음";
 
@@ -10371,6 +10404,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "우커머스, 우, 제품, 카테고리, 신규 제품, 제품 검색";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "미디어 로드 중...";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "보안 키 사용";

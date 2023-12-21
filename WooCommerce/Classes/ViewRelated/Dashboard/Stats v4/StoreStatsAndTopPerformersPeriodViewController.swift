@@ -6,7 +6,6 @@ import WooFoundation
 
 /// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
 /// - Store stats data view (managed by child view controller `StoreStatsV4PeriodViewController`)
-/// - Top performers header view (`TopPerformersSectionHeaderView`)
 /// - Top performers data view (managed by child view controller `TopPerformerDataViewController`)
 ///
 final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
@@ -33,6 +32,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     var siteTimezone: TimeZone = .current {
         didSet {
             storeStatsPeriodViewController.siteTimezone = siteTimezone
+            topPerformersPeriodViewController.siteTimeZone = siteTimezone
         }
     }
 
@@ -287,7 +287,10 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 
     @objc func seeMoreButtonTapped() {
         viewModel.trackSeeMoreButtonTapped()
-        let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID, timeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
+        let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID,
+                                                               timeZone: siteTimezone,
+                                                               timeRange: timeRange,
+                                                               usageTracksEventEmitter: usageTracksEventEmitter)
         show(analyticsHubVC, sender: self)
     }
 }

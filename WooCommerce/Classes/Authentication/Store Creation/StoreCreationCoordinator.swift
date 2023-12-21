@@ -29,6 +29,7 @@ final class StoreCreationCoordinator: Coordinator {
     private let source: Source
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
+    private let storeSwitcher: StoreCreationStoreSwitchScheduler
     private let featureFlagService: FeatureFlagService
     private let localNotificationScheduler: LocalNotificationScheduler
 
@@ -53,6 +54,7 @@ final class StoreCreationCoordinator: Coordinator {
                                           storageManager: storageManager,
                                           analytics: analytics)
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
+        self.storeSwitcher = DefaultStoreCreationStoreSwitchScheduler()
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -61,11 +63,9 @@ final class StoreCreationCoordinator: Coordinator {
 
     func start() {
         analytics.track(event: .StoreCreation.siteCreationFlowStarted(source: source.analyticsValue))
-        Task { @MainActor in
-            let storeCreationNavigationController = WooNavigationController()
-            startStoreCreation(from: storeCreationNavigationController)
-            await presentStoreCreation(viewController: storeCreationNavigationController)
-        }
+        let storeCreationNavigationController = WooNavigationController()
+        startStoreCreation(from: storeCreationNavigationController)
+        presentStoreCreation(viewController: storeCreationNavigationController)
     }
 }
 
@@ -101,25 +101,16 @@ private extension StoreCreationCoordinator {
         navigationController.setViewControllers([controller], animated: true)
     }
 
-    @MainActor
-    func presentStoreCreation(viewController: UIViewController) async {
-        await withCheckedContinuation { continuation in
-            // If the navigation controller is already presenting another view, the view needs to be dismissed before store
-            // creation view can be presented.
-            if navigationController.presentedViewController != nil {
-                navigationController.dismiss(animated: true) { [weak self] in
-                    guard let self else {
-                        return continuation.resume()
-                    }
-                    self.navigationController.present(viewController, animated: true) {
-                        continuation.resume()
-                    }
-                }
-            } else {
-                navigationController.present(viewController, animated: true) {
-                    continuation.resume()
-                }
+    func presentStoreCreation(viewController: UIViewController) {
+        // If the navigation controller is already presenting another view, the view needs to be dismissed before store
+        // creation view can be presented.
+        if navigationController.presentedViewController != nil {
+            navigationController.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+                self.navigationController.present(viewController, animated: true)
             }
+        } else {
+            navigationController.present(viewController, animated: true)
         }
     }
 }
@@ -131,6 +122,7 @@ private extension StoreCreationCoordinator {
         switchStoreUseCase.switchStore(with: site.siteID) { [weak self] siteChanged in
             guard let self else { return }
 
+            self.storeSwitcher.removePendingStoreSwitch()
             // Shows `My store` tab by default.
             MainTabBarController.switchToMyStoreTab(animated: true)
 
@@ -213,6 +205,7 @@ private extension StoreCreationCoordinator {
     func handleFreeTrialStoreCreation(from navigationController: UINavigationController, result: Result<SiteCreationResult, SiteCreationError>) {
         switch result {
         case .success(let siteResult):
+            storeSwitcher.savePendingStoreSwitch(siteID: siteResult.siteID, expectedStoreName: siteResult.name)
             showProfilerFlow(storeName: siteResult.name, siteID: siteResult.siteID, from: navigationController)
 
             // Wait for jetpack to be installed

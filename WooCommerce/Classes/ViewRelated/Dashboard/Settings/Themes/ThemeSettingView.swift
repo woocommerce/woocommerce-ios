@@ -27,9 +27,6 @@ struct ThemeSettingView: View {
 
     init(viewModel: ThemeSettingViewModel) {
         self.viewModel = viewModel
-        Task {
-            await viewModel.updateCurrentThemeName()
-        }
     }
 
     var body: some View {
@@ -67,6 +64,12 @@ struct ThemeSettingView: View {
             }
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
+            .task {
+                await viewModel.updateCurrentThemeName()
+            }
+            .onAppear {
+                viewModel.trackViewAppear()
+            }
         }
     }
 }

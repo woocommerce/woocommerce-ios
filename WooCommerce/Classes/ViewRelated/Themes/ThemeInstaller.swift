@@ -1,24 +1,27 @@
 import Yosemite
 import enum Networking.InstallThemeError
 
-protocol ThemeInstallerProtocol {
+protocol ThemeInstaller {
     func install(themeID: String, siteID: Int64) async throws
 
     func scheduleThemeInstall(themeID: String, siteID: Int64)
 
-    func installPendingTheme(siteID: Int64) async throws
+    func installPendingThemeIfNeeded(siteID: Int64) async throws
 }
 
 /// Helper to install and activate theme
 ///
-struct DefaultThemeInstaller: ThemeInstallerProtocol {
+struct DefaultThemeInstaller: ThemeInstaller {
     private let userDefaults: UserDefaults
     private let stores: StoresManager
+    private let analytics: Analytics
 
     init(stores: StoresManager = ServiceLocator.stores,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.userDefaults = userDefaults
+        self.analytics = analytics
     }
 
     /// Installs and activates the theme
@@ -39,7 +42,7 @@ struct DefaultThemeInstaller: ThemeInstallerProtocol {
 
     /// Installs any pending theme for the given site ID
     /// - Parameter siteID: site ID to install and activate the theme
-    func installPendingTheme(siteID: Int64) async throws {
+    func installPendingThemeIfNeeded(siteID: Int64) async throws {
         guard let themeID = userDefaults.pendingThemeID(for: siteID) else {
             return DDLogInfo("No pending theme installation.")
         }
@@ -52,8 +55,15 @@ struct DefaultThemeInstaller: ThemeInstallerProtocol {
 
 private extension DefaultThemeInstaller {
     func installAndActivateTheme(themeID: String, siteID: Int64) async throws {
-        try await installTheme(themeID: themeID, siteID: siteID)
-        try await activateTheme(themeID: themeID, siteID: siteID)
+        do {
+            try await installTheme(themeID: themeID, siteID: siteID)
+            try await activateTheme(themeID: themeID, siteID: siteID)
+            analytics.track(event: .Themes.themeInstallationCompleted(themeID: themeID))
+        } catch {
+            DDLogError("⛔️ Error installing theme: \(error)")
+            analytics.track(event: .Themes.themeInstallationFailed(themeID: themeID, error: error))
+            throw error
+        }
     }
 
     @MainActor

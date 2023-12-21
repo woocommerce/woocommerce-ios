@@ -15,6 +15,16 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedLength.stringValue, "0")
     }
 
+    func test_selectedLength_and_lengthOptions_are_correct_if_periodInterval_is_0() {
+        // Given
+        let subscription = ProductSubscription.fake().copy(periodInterval: "0")
+        let viewModel = SubscriptionExpiryViewModel(subscription: subscription) { _, _ in }
+
+        // Then
+        XCTAssertEqual(viewModel.selectedLength.value, 0)
+        XCTAssertEqual(viewModel.lengthOptions.count, 1)
+    }
+
     func test_lengthOptions_has_values_based_on_period_and_periodInterval_for_day() throws {
         // Given
         let subscription = ProductSubscription.fake().copy(length: "1",

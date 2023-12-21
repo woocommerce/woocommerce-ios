@@ -33,8 +33,8 @@ public struct ProductImage: Codable, Equatable, GeneratedCopiable, GeneratedFake
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let imageID = try container.decode(Int64.self, forKey: .imageID)
-        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
-        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified)
+        let dateCreated = (try? container.decodeIfPresent(Date.self, forKey: .dateCreated)) ?? Date()
+        let dateModified = try? container.decodeIfPresent(Date.self, forKey: .dateModified)
         let src = try container.decode(String.self, forKey: .src)
         let name = try container.decodeIfPresent(String.self, forKey: .name)
         let alt: String? = {

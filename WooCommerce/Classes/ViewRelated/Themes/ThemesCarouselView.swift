@@ -7,10 +7,31 @@ import struct Yosemite.WordPressTheme
 struct ThemesCarouselView: View {
 
     @ObservedObject private var viewModel: ThemesCarouselViewModel
+
+    @State private var selectedTheme: WordPressTheme? = nil
+
     private let onSelectedTheme: (WordPressTheme) -> Void
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    let imageErrorAttributedString: NSAttributedString = {
+        let font: UIFont = .subheadline
+
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .center
+
+        let tapHereText = NSAttributedString(string: Localization.tapHere, attributes: [.foregroundColor: UIColor.accent.cgColor, .font: font])
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .paragraphStyle: paragraph,
+            .foregroundColor: UIColor.secondaryLabel.cgColor
+        ]
+        let message = NSMutableAttributedString(string: Localization.errorLoadingImage, attributes: attributes)
+        message.replaceFirstOccurrence(of: "%@", with: tapHereText)
+
+        return message
+    }()
 
     init(viewModel: ThemesCarouselViewModel, onSelectedTheme: @escaping (WordPressTheme) -> Void) {
         self.viewModel = viewModel
@@ -29,10 +50,15 @@ struct ThemesCarouselView: View {
 
                         // Theme list
                         ForEach(themes) { theme in
-                            if let themeImageURL = getThemeImageURL(themeURL: theme.demoURI) {
-                                themeImageCard(url: themeImageURL)
-                            } else {
-                                themeNameCard(name: theme.name)
+                            Button(action: {
+                                viewModel.trackThemeSelected(theme)
+                                selectedTheme = theme
+                            }) {
+                                if let themeImageURL = theme.themeThumbnailURL {
+                                    themeImageCard(url: themeImageURL)
+                                } else {
+                                    themeNameCard(name: theme.name)
+                                }
                             }
                         }
 
@@ -46,7 +72,20 @@ struct ThemesCarouselView: View {
             }
         }
         .task {
-            await viewModel.fetchThemes()
+            await viewModel.fetchThemes(isReload: false)
+        }
+        .sheet(item: $selectedTheme, content: { theme in
+            ThemesPreviewView(
+                viewModel: .init(siteID: viewModel.siteID,
+                                 mode: viewModel.mode,
+                                 theme: theme),
+                onSelectedTheme: {
+                    onSelectedTheme(theme)
+                }
+            )
+        })
+        .onAppear {
+            viewModel.trackViewAppear()
         }
     }
 }
@@ -71,7 +110,7 @@ private extension ThemesCarouselView {
                 .secondaryBodyStyle()
             Button {
                 Task {
-                    await viewModel.fetchThemes()
+                    await viewModel.fetchThemes(isReload: true)
                 }
             } label: {
                 Label(Localization.retry, systemImage: "arrow.clockwise")
@@ -93,13 +132,16 @@ private extension ThemesCarouselView {
     }
 
     func themeNameCard(name: String) -> some View {
-        VStack {
+        VStack(spacing: Layout.contentPadding) {
             Text(name)
+                .fontWeight(.semibold)
+                .foregroundColor(.init(uiColor: .text))
+                .subheadlineStyle()
+            AttributedText(imageErrorAttributedString)
         }
+        .padding(Layout.contentPadding)
         .frame(width: Layout.imageWidth, height: Layout.imageHeight)
-        .background(Color.withColorStudio(
-            name: .wooCommercePurple,
-            shade: .shade0))
+        .background(Color(uiColor: .systemBackground))
         .cornerRadius(Layout.cornerRadius)
         .shadow(radius: Layout.shadowRadius, x: 0, y: Layout.shadowYOffset)
         .padding(Layout.imagePadding)
@@ -111,7 +153,7 @@ private extension ThemesCarouselView {
                 ScrollView(.vertical) {
                     VStack {
                         Spacer()
-                        Text(viewModel.mode.moreThemesTitleText)
+                        Text(Localization.lookingForMore)
                             .bold()
                             .secondaryBodyStyle()
                             .padding(.horizontal, Layout.contentPadding)
@@ -119,7 +161,7 @@ private extension ThemesCarouselView {
                         Spacer()
                             .frame(height: Layout.contentPadding)
 
-                        Text(viewModel.mode.moreThemesSuggestionText)
+                        Text(Localization.findInWooThemeStore)
                             .foregroundColor(Color(.secondaryLabel))
                             .subheadlineStyle()
                                 .multilineTextAlignment(.center)
@@ -162,18 +204,38 @@ private extension ThemesCarouselView {
             value: "Retry",
             comment: "Button to reload themes in the themes carousel view"
         )
-    }
-}
+        static let lookingForMore = NSLocalizedString(
+            "themesCarouselView.lastMessageHeading",
+            value: "Looking for more?",
+            comment: "The heading of the message shown at the end of the themes carousel view"
+        )
 
-private extension ThemesCarouselView {
-    private func getThemeImageURL(themeURL: String) -> URL? {
-        let urlStr = "https://s0.wp.com/mshots/v1/\(themeURL)?demo=true/?w=1200&h=2400&vpw=400&vph=800"
-        return URL(string: urlStr)
+        static let findInWooThemeStore = NSLocalizedString(
+            "themesCarouselView.lastMessageContent",
+            value: "You can find your perfect theme in the WooCommerce Theme Store.",
+            comment: "The content of the message shown at the end of the themes carousel view"
+        )
+
+        static let errorLoadingImage = NSLocalizedString(
+            "themesCarouselView.thumbnailError",
+            value: "Sorry, it seems there is an issue with the template loading. " +
+            "Please %@ for a live demo",
+            comment: "Error message for when theme image cannot be loaded on the themes carousel view. " +
+            "%@ is the place holder for 'tap here'. " +
+            "Reads like: Sorry, it seems there is an issue with the template loading. " +
+            "Please tap here for a live demo"
+        )
+
+        static let tapHere = NSLocalizedString(
+            "themesCarouselView.thumbnailError.tapHere",
+            value: "tap here",
+            comment: "Action to show live demo on the themes carousel view"
+        )
     }
 }
 
 struct ThemesCarouselView_Previews: PreviewProvider {
     static var previews: some View {
-        ThemesCarouselView(viewModel: .init(mode: .themeSettings), onSelectedTheme: { _ in })
+        ThemesCarouselView(viewModel: .init(siteID: 123, mode: .themeSettings), onSelectedTheme: { _ in })
     }
 }

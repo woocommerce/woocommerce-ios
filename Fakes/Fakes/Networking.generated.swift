@@ -2008,7 +2008,6 @@ extension Networking.TopEarnerStatsItem {
             productID: .fake(),
             productName: .fake(),
             quantity: .fake(),
-            price: .fake(),
             total: .fake(),
             currency: .fake(),
             imageUrl: .fake()
@@ -2291,6 +2290,17 @@ extension Networking.WordPressMedia {
             alt: .fake(),
             details: .fake(),
             title: .fake()
+        )
+    }
+}
+extension Networking.WordPressPage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WordPressPage {
+        .init(
+            id: .fake(),
+            title: .fake(),
+            link: .fake()
         )
     }
 }

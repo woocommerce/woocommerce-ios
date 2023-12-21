@@ -234,6 +234,8 @@ public enum WooAnalyticsStat: String {
     case signupSubmitted = "signup_submitted"
     case signupSuccess = "signup_success"
     case signupFailed = "signup_failed"
+    case storeReadyAlertDisplayed = "site_creation_store_ready_alert_displayed"
+    case storeReadyAlertSwitchStoreTapped = "site_creation_store_ready_alert_switch_store_tapped"
 
     // MARK: Help & Support Events
     //
@@ -1119,6 +1121,16 @@ public enum WooAnalyticsStat: String {
     case localAnnouncementDisplayed = "local_announcement_displayed"
     case localAnnouncementCallToActionTapped = "local_announcement_cta_tapped"
     case localAnnouncementDismissTapped = "local_announcement_dismissed"
+
+    // MARK: Themes
+    case themePickerScreenDisplayed = "theme_picker_screen_displayed"
+    case themePickerThemeSelected = "theme_picker_theme_selected"
+    case themePreviewScreenDisplayed = "theme_preview_screen_displayed"
+    case themePreviewLayoutSelected = "theme_preview_layout_selected"
+    case themePreviewPageSelected = "theme_preview_page_selected"
+    case themePreviewStartWithThemeButtonTapped = "theme_preview_start_with_theme_button_tapped"
+    case themeInstallationCompleted = "theme_installation_completed"
+    case themeInstallationFailed = "theme_installation_failed"
 }
 
 public extension WooAnalyticsStat {

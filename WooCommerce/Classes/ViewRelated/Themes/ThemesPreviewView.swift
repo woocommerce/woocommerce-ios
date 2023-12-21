@@ -233,7 +233,7 @@ private extension ThemesPreviewView {
 
 private extension ThemesPreviewView {
     private enum Constants {
-        static let demoModeUrl = "?demo=true"
+        static let demoModeUrl = "?demo"
     }
 
     private enum Layout {

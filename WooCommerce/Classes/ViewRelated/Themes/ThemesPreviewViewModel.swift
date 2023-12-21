@@ -34,7 +34,7 @@ final class ThemesPreviewViewModel: ObservableObject {
 
         // Pre-fill the selected Page with the home page.
         // The id is set as zero so to not clash with other pages' ids.
-        let startingPage = WordPressPage(id: 0, title: Localization.homePage, link: theme.demoURI)
+        let startingPage = WordPressPage(id: 0, title: Localization.homePage, link: theme.demoURI + Constants.demoModeUrl)
         self.selectedPage = startingPage
         pages = [startingPage]
     }
@@ -43,8 +43,13 @@ final class ThemesPreviewViewModel: ObservableObject {
     func fetchPages() async {
         do {
             // Append the list of pages to the existing home page value, since the API call result
-            // do not include the home page.
-            pages += try await loadPages()
+            // does not include the home page.
+            pages += try await loadPages().map { page in
+                // We have to append `demoModeUrl` to prevent any activation / purchase header to appear on the theme demo.
+                let pageDemoLink = page.link + Constants.demoModeUrl
+                return WordPressPage(id: page.id, title: page.title, link: pageDemoLink)
+            }
+
             state = .pagesContent
         } catch {
             DDLogError("⛔️ Error loading pages: \(error)")
@@ -109,6 +114,10 @@ private extension ThemesPreviewViewModel {
 }
 
 extension ThemesPreviewViewModel {
+    private enum Constants {
+        static let demoModeUrl = "?demo"
+    }
+
     enum State: Equatable {
         case pagesLoading
         case pagesLoadingError

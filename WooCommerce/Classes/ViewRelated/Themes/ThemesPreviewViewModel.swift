@@ -54,6 +54,7 @@ final class ThemesPreviewViewModel: ObservableObject {
 
     func setSelectedPage(page: WordPressPage) {
         selectedPage = page
+        analytics.track(event: .Themes.previewPageSelected(page: page.title, url: page.link))
     }
 
     @MainActor
@@ -80,6 +81,14 @@ final class ThemesPreviewViewModel: ObservableObject {
             installingTheme = false
             throw error
         }
+    }
+
+    func trackViewAppear() {
+        analytics.track(event: .Themes.previewScreenDisplayed())
+    }
+
+    func trackLayoutSwitch(layout: ThemesPreviewView.PreviewDevice) {
+        analytics.track(event: .Themes.previewLayoutSelected(layout: layout))
     }
 }
 

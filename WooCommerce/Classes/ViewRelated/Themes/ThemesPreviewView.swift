@@ -203,6 +203,7 @@ struct ThemesPreviewView: View {
                 Spacer()
             }
         }
+        .padding(.top, Layout.contentPadding)
     }
 
     private func menuItem(for device: PreviewDevice) -> some View {
@@ -232,7 +233,6 @@ private extension ThemesPreviewView {
 
 private extension ThemesPreviewView {
     private enum Layout {
-        static let toolbarPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let footerPadding: CGFloat = 16
         static let contentPadding: CGFloat = 16

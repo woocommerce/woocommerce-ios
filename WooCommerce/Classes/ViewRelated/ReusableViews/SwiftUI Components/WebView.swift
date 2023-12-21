@@ -19,14 +19,6 @@ struct WebView: UIViewRepresentable {
 
     private let url: URL
 
-    /// Optional URL or part of URL to trigger exit
-    ///
-    var urlToTriggerExit: String?
-
-    /// Callback that will be triggered if the destination url containts the `urlToTriggerExit`
-    ///
-    var exitTrigger: (() -> Void)?
-
     /// Callback that will be triggered in when the underlying `WKWebView` delegate method `didCommit` is triggered.
     /// This happens when the web view has received data and is starting to render the content.
     ///
@@ -87,13 +79,6 @@ struct WebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, decidePolicyFor
                         navigationAction: WKNavigationAction,
                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            if let url = webView.url?.absoluteString, let urlTrigger = parent.urlToTriggerExit, url.contains(urlTrigger) {
-                parent.exitTrigger?()
-                decisionHandler(.cancel)
-                webView.navigationDelegate = nil
-                return
-            }
-
             if navigationAction.navigationType == .linkActivated && parent.disableLinkClicking {
                 decisionHandler(.cancel)
                 return

@@ -2803,13 +2803,17 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case path
             case entityName = "entity"
+            case debugDecodingPath = "debug_decoding_path"
+            case debugDecodingDescription = "debug_decoding_description"
         }
 
         static func jsonParsingError(_ error: Error, path: String?, entityName: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .apiJSONParsingError,
                               properties: [
                                 Keys.path.rawValue: path,
-                                Keys.entityName.rawValue: entityName
+                                Keys.entityName.rawValue: entityName,
+                                Keys.debugDecodingPath.rawValue: (error as? DecodingError)?.debugPath,
+                                Keys.debugDecodingDescription.rawValue: (error as? DecodingError)?.debugDescription
                               ].compactMapValues { $0 },
                               error: error)
         }

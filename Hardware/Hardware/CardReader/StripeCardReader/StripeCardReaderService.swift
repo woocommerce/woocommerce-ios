@@ -170,16 +170,16 @@ extension StripeCardReaderService: CardReaderService {
          * https://stripe.com/docs/terminal/references/sdk-migration-guide#update-your-discoverreaders-and-connectreader-usage
          */
         discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { [weak self] receivedError in
-            switch receivedError {
-            case .none:
-                let error = NSError(domain: "DiscoveryCancellable received nil error on completion", code: 0)
-                DDLogError(error.localizedDescription)
-                self?.switchStatusToFault(error: error)
+            guard let receivedError else {
+                // Discovery completed successfully
                 return
+            }
+
+            switch receivedError {
             case let error as ErrorCode where error.code == .canceled:
                 self?.switchStatusToIdle()
                 return
-            case let .some(error):
+            case let error:
                 self?.switchStatusToFault(error: error)
                 return
             }

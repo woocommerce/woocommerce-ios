@@ -27,7 +27,11 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         styleBorder()
     }
 
-    public func configureButton(text: String?, icon: UIImage? = nil, accessibilityTrait: UIAccessibilityTraits = .button, showBorder: Bool = false) {
+    public func configureButton(text: String?,
+                                icon: UIImage? = nil,
+                                accessibilityTrait: UIAccessibilityTraits = .button, 
+                                showBorder: Bool = false,
+                                accessibilityIdentifier: String? = nil) {
         button.setTitle(text, for: .normal)
 
         let buttonTitleColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
@@ -35,6 +39,7 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         button.setTitleColor(buttonTitleColor, for: .normal)
         button.setTitleColor(buttonHighlightColor, for: .highlighted)
         button.accessibilityTraits = accessibilityTrait
+        button.accessibilityIdentifier = accessibilityIdentifier
 
         borderView.isHidden = !showBorder
 
@@ -60,5 +65,12 @@ private extension TextLinkButtonTableViewCell {
         let borderColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         borderView.backgroundColor = borderColor
         borderWidth.constant = WPStyleGuide.hairlineBorderWidth
+    }
+}
+
+// MARK: - Constants
+extension TextLinkButtonTableViewCell {
+    struct Constants {
+        static let passkeysID = "Passkeys"
     }
 }

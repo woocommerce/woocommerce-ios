@@ -618,7 +618,7 @@ private extension OrderDetailsViewController {
         collectPayment()
 
         // Track tapped event
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.collectPaymentTapped())
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.collectPaymentTapped(flow: .orderDetails))
     }
 
     private func collectPayment() {

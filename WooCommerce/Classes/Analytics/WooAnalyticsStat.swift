@@ -399,7 +399,6 @@ public enum WooAnalyticsStat: String {
     case orderNoteAddSuccess = "order_note_add_success"
     case orderNoteAddFailed = "order_note_add_failed"
     case orderCreateButtonTapped = "order_create_button_tapped"
-    case orderCollectPaymentButtonTapped = "order_collect_payment_button_tapped"
     case orderCreationSuccess = "order_creation_success"
     case orderCreationFailed = "order_creation_failed"
     case orderCreationCustomerAdded = "order_creation_customer_added"

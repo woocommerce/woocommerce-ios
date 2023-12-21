@@ -496,6 +496,7 @@ extension WooAnalyticsEvent {
             case creation
             case editing
             case list
+            case orderDetails = "order_details"
         }
 
         /// Possible item types to add to an Order
@@ -748,7 +749,8 @@ extension WooAnalyticsEvent {
                                                       hasFees: Bool,
                                                       hasShippingMethod: Bool,
                                                       products: [Product]) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderCollectPaymentButtonTapped, properties: [
+            WooAnalyticsEvent(statName: .collectPaymentTapped, properties: [
+                Keys.flow: Flow.creation.rawValue,
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
                 Keys.customAmountsCount: Int64(customAmountsCount),
@@ -832,9 +834,9 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the user taps to collect a payment
         ///
-        static func collectPaymentTapped() -> WooAnalyticsEvent {
+        static func collectPaymentTapped(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
-                              properties: [:])
+                              properties: [Keys.flow: flow.rawValue])
         }
 
         /// Tracked when accessing the system plugin list without it being in sync.
@@ -1203,7 +1205,7 @@ extension WooAnalyticsEvent {
         enum Flow: String {
             case simplePayment = "simple_payment"
             case orderPayment = "order_payment"
-            case orderCreation = "order_creation"
+            case orderCreation = "creation"
             case tapToPayTryAPayment = "tap_to_pay_try_a_payment"
         }
 

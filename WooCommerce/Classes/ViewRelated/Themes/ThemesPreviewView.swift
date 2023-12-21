@@ -83,7 +83,8 @@ struct ThemesPreviewView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                if let url = URL(string: viewModel.selectedPage.link) {
+                // We append `demoModeUrl` to prevent any activation / purchase header to appear on the theme demo.
+                if let url = URL(string: viewModel.selectedPage.link + Constants.demoModeUrl) {
                     WebView(
                         isPresented: .constant(true),
                         url: url,
@@ -231,6 +232,10 @@ private extension ThemesPreviewView {
 }
 
 private extension ThemesPreviewView {
+    private enum Constants {
+        static let demoModeUrl = "?demo=true"
+    }
+
     private enum Layout {
         static let toolbarPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1

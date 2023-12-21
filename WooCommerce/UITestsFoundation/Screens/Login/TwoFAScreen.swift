@@ -3,7 +3,7 @@ import XCTest
 
 public final class TwoFAScreen: ScreenObject {
 
-    private let two2FAFieldGetter: (XCUIApplication) -> XCUIElement = {
+    private let twoFAFieldGetter: (XCUIApplication) -> XCUIElement = {
         $0.textFields["Authentication code"]
     }
 
@@ -11,13 +11,13 @@ public final class TwoFAScreen: ScreenObject {
         $0.buttons["Continue Button"]
     }
 
-    private var twoFAField: XCUIElement { two2FAFieldGetter(app) }
+    private var twoFAField: XCUIElement { twoFAFieldGetter(app) }
     private var continueButton: XCUIElement { continueButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
-                two2FAFieldGetter,
+                twoFAFieldGetter,
                 continueButtonGetter
             ],
             app: app

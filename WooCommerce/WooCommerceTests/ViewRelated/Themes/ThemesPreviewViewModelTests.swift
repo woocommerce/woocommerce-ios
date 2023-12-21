@@ -51,7 +51,15 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.pages.count, 1)
         XCTAssertEqual(viewModel.pages.first?.title, "Home")
-        XCTAssertEqual(viewModel.pages.first?.link, "https://tsubakidemo.wpcomstaging.com/")
+
+        guard let link = viewModel.pages.first?.link else {
+            XCTFail("Link is nil")
+            return
+        }
+
+        // Check that the URL is correct and has the required "?demo" suffix
+        XCTAssertTrue(link.hasPrefix("https://tsubakidemo.wpcomstaging.com/"))
+        XCTAssertTrue(link.hasSuffix(Expectations.demoSuffix))
     }
 
     func test_fetchPages_sets_the_right_pages_and_state() async {
@@ -64,17 +72,11 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                             demoURI: "https://tsubakidemo.wpcomstaging.com/"),
                                                stores: stores)
 
-        let expectedPages = [
-            WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1"),
-            WordPressPage(id: 2, title: "Page2", link: "https://tsubakidemo.wpcomstaging.com/page2"),
-            WordPressPage(id: 3, title: "Page3", link: "https://tsubakidemo.wpcomstaging.com/page3")
-        ]
-
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
             case let .fetchPageList(_, completion):
-                completion(.success(expectedPages))
+                completion(.success(Expectations.expectedPages))
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -121,17 +123,11 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                             demoURI: "https://tsubakidemo.wpcomstaging.com/"),
                                                stores: stores)
 
-        let expectedPages = [
-            WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1"),
-            WordPressPage(id: 2, title: "Page2", link: "https://tsubakidemo.wpcomstaging.com/page2"),
-            WordPressPage(id: 3, title: "Page3", link: "https://tsubakidemo.wpcomstaging.com/page3")
-        ]
-
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
             case let .fetchPageList(_, completion):
-                completion(.success(expectedPages))
+                completion(.success(Expectations.expectedPages))
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -144,15 +140,22 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         // Check home page still exists
         let homePage = viewModel.pages[0]
         XCTAssertEqual(homePage.title, "Home")
-        XCTAssertEqual(homePage.link, "https://tsubakidemo.wpcomstaging.com/")
+        XCTAssertTrue(homePage.link.hasPrefix("https://tsubakidemo.wpcomstaging.com/"))
+        XCTAssertTrue(homePage.link.hasSuffix(Expectations.demoSuffix))
 
+        // Check remaining pages
         for (index, page) in viewModel.pages.enumerated() {
             if index == 0 { continue }
-            let expectedPage = expectedPages[index-1]
+
+            let expectedPage = Expectations.expectedPages[index-1]
             XCTAssertEqual(page.id, expectedPage.id)
             XCTAssertEqual(page.title, expectedPage.title)
-            XCTAssertEqual(page.link, expectedPage.link)
+
+            // Check that the URL is correct and has the required suffix
+            XCTAssertTrue(page.link.hasPrefix(expectedPage.link))
+            XCTAssertTrue(page.link.hasSuffix(Expectations.demoSuffix))
         }
+
     }
 
     func test_fetchPages_failure_sets_right_state() async {
@@ -442,6 +445,17 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["page"] as? String, "Test")
         XCTAssertEqual(eventProperties["page_url"] as? String, "https://example.com")
+    }
+}
+
+private extension ThemesPreviewViewModelTests {
+    enum Expectations {
+        static let expectedPages = [
+            WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1"),
+            WordPressPage(id: 2, title: "Page2", link: "https://tsubakidemo.wpcomstaging.com/page2"),
+            WordPressPage(id: 3, title: "Page3", link: "https://tsubakidemo.wpcomstaging.com/page3")
+        ]
+        static let demoSuffix = "?demo"
     }
 }
 

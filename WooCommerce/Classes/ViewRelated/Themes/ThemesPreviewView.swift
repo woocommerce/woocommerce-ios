@@ -165,17 +165,19 @@ struct ThemesPreviewView: View {
 
         // Here we show only a "Preview" label with no selector, both for loading and error cases.
         // In the case of page loading error, the home page is still usable, so showing "Preview" is better than nothing.
-        switch viewModel.state {
-        case .pagesLoading, .pagesLoadingError:
-            Text(Localization.preview)
-
-        case .pagesContent:
-            Button(action: { showPagesMenu = true }) {
-                HStack {
-                    Text(viewModel.selectedPage.title).bodyStyle()
-                    Image(uiImage: .chevronDownImage)
-                        .fixedSize()
-                        .bodyStyle()
+        Button(action: { showPagesMenu = true }) {
+            VStack(spacing: 0) {
+                Text(Localization.preview)
+                    .fontWeight(.semibold)
+                    .headlineStyle()
+                if case .pagesContent = viewModel.state {
+                    HStack {
+                        Text(viewModel.selectedPage.title)
+                            .foregroundColor(Color(.text))
+                            .footnoteStyle()
+                        Image(uiImage: .chevronDownImage)
+                            .captionStyle()
+                    }
                 }
             }
         }
@@ -183,7 +185,7 @@ struct ThemesPreviewView: View {
 
     private var pagesListSheet: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
                 Text(Localization.pagesSheetHeading)
                     .subheadlineStyle()
                     .padding(Layout.pagesSheetPadding)
@@ -194,7 +196,7 @@ struct ThemesPreviewView: View {
                     }, label: {
                         Text(page.title)
                             .bodyStyle()
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .multilineTextAlignment(.leading)
                     })
                     .padding(Layout.contentPadding)
                 }

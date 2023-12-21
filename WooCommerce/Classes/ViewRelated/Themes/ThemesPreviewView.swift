@@ -203,7 +203,6 @@ struct ThemesPreviewView: View {
                 Spacer()
             }
         }
-        .padding(.top, Layout.contentPadding)
     }
 
     private func menuItem(for device: PreviewDevice) -> some View {
@@ -236,7 +235,7 @@ private extension ThemesPreviewView {
         static let dividerHeight: CGFloat = 1
         static let footerPadding: CGFloat = 16
         static let contentPadding: CGFloat = 16
-        static let pagesSheetPadding: EdgeInsets = .init(top: 20, leading: 16, bottom: 12, trailing: 16)
+        static let pagesSheetPadding: EdgeInsets = .init(top: 40, leading: 16, bottom: 12, trailing: 16)
     }
 
     private enum Localization {

@@ -98,8 +98,7 @@ struct ThemesPreviewView: View {
                         .foregroundColor(Color(.divider))
 
                     VStack {
-                        Button(String.localizedStringWithFormat(viewModel.primaryButtonFormat, viewModel.theme.name),
-                               action: {
+                        Button(viewModel.primaryButtonTitle) {
                             Task { @MainActor in
                                 do {
                                     try await viewModel.confirmThemeSelection()
@@ -109,7 +108,7 @@ struct ThemesPreviewView: View {
                                     DDLogError("⛔️ ThemesPreviewView - Theme installation failed.")
                                 }
                             }
-                        })
+                        }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.installingTheme))
 
                     }.padding(Layout.footerPadding)

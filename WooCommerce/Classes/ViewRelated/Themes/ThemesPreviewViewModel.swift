@@ -14,8 +14,9 @@ final class ThemesPreviewViewModel: ObservableObject {
     let mode: ThemesCarouselViewModel.Mode
     let theme: WordPressTheme
 
-    var primaryButtonFormat: String {
-        mode == .storeCreationProfiler ? Localization.startWithThemeButton : Localization.useThisThemeButton
+    var primaryButtonTitle: String {
+        let format = mode == .storeCreationProfiler ? Localization.startWithThemeButton : Localization.useThisThemeButton
+        return String.localizedStringWithFormat(format, theme.name)
     }
 
     private let siteID: Int64

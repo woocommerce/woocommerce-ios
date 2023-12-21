@@ -98,7 +98,7 @@ struct ThemesPreviewView: View {
                         .foregroundColor(Color(.divider))
 
                     VStack {
-                        Button(viewModel.mode == .storeCreationProfiler ? Localization.startWithThemeButton : Localization.useThisThemeButton,
+                        Button(String.localizedStringWithFormat(viewModel.primaryButtonFormat, viewModel.theme.name),
                                action: {
                             Task { @MainActor in
                                 do {
@@ -112,8 +112,6 @@ struct ThemesPreviewView: View {
                         })
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.installingTheme))
 
-                        Text(String(format: Localization.themeName, viewModel.theme.name))
-                            .secondaryBodyStyle()
                     }.padding(Layout.footerPadding)
 
                 } else {
@@ -261,21 +259,6 @@ private extension ThemesPreviewView {
             "themesPreviewView.menuMobile",
             value: "Desktop",
             comment: "Menu item: desktop"
-        )
-        static let startWithThemeButton = NSLocalizedString(
-            "themesPreviewView.startWithThemeButton",
-            value: "Start with This Theme",
-            comment: "Button in theme preview screen to pick a theme."
-        )
-        static let useThisThemeButton = NSLocalizedString(
-            "themesPreviewView.useThisThemeButton",
-            value: "Use this theme",
-            comment: "Button in theme preview screen to pick a theme."
-        )
-        static let themeName = NSLocalizedString(
-            "themesPreviewView.themeName",
-            value: "Theme: %@",
-            comment: "Name of the theme being previewed."
         )
 
         static let errorLoadingThemeDemo = NSLocalizedString(

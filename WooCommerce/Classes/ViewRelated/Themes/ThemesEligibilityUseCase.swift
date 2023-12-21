@@ -11,10 +11,6 @@ final class ThemeEligibilityUseCase {
     }
 
     func isEligible(site: Site) -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.lightweightStorefront) else {
-            return false
-        }
-
         return site.isWordPressComStore
     }
 }

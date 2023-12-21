@@ -5,6 +5,7 @@
 - [**] Payments: merchants can collect payment directly from the order creation form [https://github.com/woocommerce/woocommerce-ios/pull/11490]
 - [*] Store creation: Inform user once store ready if app killed while waiting for store to be ready. [https://github.com/woocommerce/woocommerce-ios/pull/11478]
 - [*] Dashboard: Resolves a decoding error with certain payment gateway plugins that previously caused an error loading data in the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/11489]
+- [**] Lightweight Storefront: Added option to select themes for WPCom store in both Settings and Store Creation flows. [https://github.com/woocommerce/woocommerce-ios/issues/11291]
 
 16.7
 -----

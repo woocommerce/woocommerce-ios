@@ -75,7 +75,7 @@ struct OrderPaymentSection: View {
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: false)))
         .sheet(isPresented: $shouldShowShippingLineDetails) {
             ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
         }
@@ -281,7 +281,7 @@ private extension OrderPaymentSection {
 
             Divider()
         }
-        .background(Color(.listForeground(modal: true)))
+        .background(Color(.listForeground(modal: false)))
     }
 
     @ViewBuilder var discountsTotalRow: some View {

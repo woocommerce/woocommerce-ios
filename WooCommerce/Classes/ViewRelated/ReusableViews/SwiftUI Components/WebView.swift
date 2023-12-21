@@ -14,25 +14,20 @@ struct WebView: UIViewRepresentable {
         }
     }
 
-    let url: URL
+    private let webView = WKWebView()
+    private let progressView = WebProgressView()
 
-    /// Optional URL or part of URL to trigger exit
-    ///
-    var urlToTriggerExit: String?
-
-    /// Callback that will be triggered if the destination url containts the `urlToTriggerExit`
-    ///
-    var exitTrigger: (() -> Void)?
+    private let url: URL
 
     /// Callback that will be triggered in when the underlying `WKWebView` delegate method `didCommit` is triggered.
     /// This happens when the web view has received data and is starting to render the content.
     ///
-    var onCommit: ((WKWebView) -> Void)?
+    private var onCommit: ((WKWebView) -> Void)?
 
     /// Check whether to prevent any link clicking to open the link.
     /// This is used in ThemesPreviewView, as it is intended to only display a single demo URL without allowing navigation to
     /// other webpages.
-    var disableLinkClicking: Bool
+    private var disableLinkClicking: Bool
 
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
@@ -52,17 +47,26 @@ struct WebView: UIViewRepresentable {
         WebViewCoordinator(self)
     }
 
-    func makeUIView(context: Context) -> WKWebView {
-        let webview = WKWebView()
-        webview.customUserAgent = UserAgent.defaultUserAgent
-        webview.navigationDelegate = context.coordinator
+    func makeUIView(context: Context) -> UIStackView {
+        // Webview
+        webView.customUserAgent = UserAgent.defaultUserAgent
+        webView.navigationDelegate = context.coordinator
 
-        webview.load(URLRequest(url: url))
-        return webview
+        webView.load(URLRequest(url: url))
+
+        // Progress view
+        progressView.startedLoading()
+        progressView.observeProgress(webView: webView)
+
+        let stackView = UIStackView(arrangedSubviews: [progressView, webView])
+        stackView.axis = .vertical
+        return stackView
     }
 
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-        uiView.load(URLRequest(url: url))
+    func updateUIView(_ uiView: UIStackView, context: Context) {
+        if let webView = uiView.arrangedSubviews.first(where: { $0 is WKWebView }) as? WKWebView {
+            webView.load(URLRequest(url: url))
+        }
     }
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {
@@ -75,13 +79,6 @@ struct WebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, decidePolicyFor
                         navigationAction: WKNavigationAction,
                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            if let url = webView.url?.absoluteString, let urlTrigger = parent.urlToTriggerExit, url.contains(urlTrigger) {
-                parent.exitTrigger?()
-                decisionHandler(.cancel)
-                webView.navigationDelegate = nil
-                return
-            }
-
             if navigationAction.navigationType == .linkActivated && parent.disableLinkClicking {
                 decisionHandler(.cancel)
                 return

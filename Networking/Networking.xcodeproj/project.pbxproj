@@ -709,6 +709,7 @@
 		CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = CECC759D23D6231900486676 /* order-560-all-refunds.json */; };
 		CEDA78622B30A4460076AA09 /* payment-gateway-cod-malformed.json in Resources */ = {isa = PBXBuildFile; fileRef = CEDA78612B30A4460076AA09 /* payment-gateway-cod-malformed.json */; };
 		CEE02EE92B34579E00162F63 /* DecodingError+CodingPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE02EE82B34579E00162F63 /* DecodingError+CodingPath.swift */; };
+		CEE02EEB2B34811400162F63 /* DecodingError+CodingPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE02EEA2B34811400162F63 /* DecodingError+CodingPathTests.swift */; };
 		CEE9187D29F7D636004B23FF /* OrderGiftCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */; };
 		CEE9188129F7DC23004B23FF /* order-with-gift-cards.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE9188029F7DC23004B23FF /* order-with-gift-cards.json */; };
 		CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAA233E911A00BED485 /* order-fully-refunded.json */; };
@@ -1744,6 +1745,7 @@
 		CECC759D23D6231900486676 /* order-560-all-refunds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-560-all-refunds.json"; sourceTree = "<group>"; };
 		CEDA78612B30A4460076AA09 /* payment-gateway-cod-malformed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-cod-malformed.json"; sourceTree = "<group>"; };
 		CEE02EE82B34579E00162F63 /* DecodingError+CodingPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DecodingError+CodingPath.swift"; sourceTree = "<group>"; };
+		CEE02EEA2B34811400162F63 /* DecodingError+CodingPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DecodingError+CodingPathTests.swift"; sourceTree = "<group>"; };
 		CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderGiftCard.swift; sourceTree = "<group>"; };
 		CEE9188029F7DC23004B23FF /* order-with-gift-cards.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-gift-cards.json"; sourceTree = "<group>"; };
 		CEF88DAA233E911A00BED485 /* order-fully-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-fully-refunded.json"; sourceTree = "<group>"; };
@@ -3205,6 +3207,7 @@
 				EE62EE64295AD46D009C965B /* String+URLTests.swift */,
 				02AD47712A6EB93A00E652D6 /* URLRequestConvertible+PathTests.swift */,
 				02AED9DB2AA04716006DC460 /* KeyedDecodingContainer+WooTests.swift */,
+				CEE02EEA2B34811400162F63 /* DecodingError+CodingPathTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4484,6 +4487,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEE02EEB2B34811400162F63 /* DecodingError+CodingPathTests.swift in Sources */,
 				45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */,
 				03EB998A2906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift in Sources */,
 				CCE5F39129F000AC00087332 /* SubscriptionListMapperTests.swift in Sources */,

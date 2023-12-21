@@ -129,130 +129,146 @@ struct OrderForm: View {
     @State private var shouldShowShippingLineDetails = false
 
     var body: some View {
-        VStack {
-            GeometryReader { geometry in
-                ScrollViewReader { scroll in
-                    ScrollView {
-                        Group {
-                            VStack(spacing: Layout.noSpacing) {
+        GeometryReader { geometry in
+            ScrollViewReader { scroll in
+                ScrollView {
+                    Group {
+                        VStack(spacing: Layout.noSpacing) {
 
-                                Group {
-                                    Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
-                                    NonEditableOrderBanner(width: geometry.size.width)
-                                }
-                                .renderedIf(viewModel.shouldShowNonEditableIndicators)
+                            Group {
+                                Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
+                                NonEditableOrderBanner(width: geometry.size.width)
+                            }
+                            .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
-                                OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
+                            OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
 
+                            Spacer(minLength: Layout.sectionSpacing)
+
+                            ProductsSection(scroll: scroll,
+                                            flow: flow,
+                                            viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
+
+                            Group {
+                                Divider()
                                 Spacer(minLength: Layout.sectionSpacing)
+                                Divider()
+                            }
+                            .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
-                                ProductsSection(scroll: scroll,
-                                                flow: flow,
-                                                viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                            OrderCustomAmountsSection(viewModel: viewModel)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
-                                Group {
-                                    Divider()
+                            Divider()
+
+                            Spacer(minLength: Layout.sectionSpacing)
+
+                            Group {
+                                if let title = viewModel.multipleLinesMessage {
+                                    MultipleLinesMessage(title: title)
                                     Spacer(minLength: Layout.sectionSpacing)
-                                    Divider()
-                                }
-                                .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
-
-                                OrderCustomAmountsSection(viewModel: viewModel)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
-
-                                Divider()
-
-                                Spacer(minLength: Layout.sectionSpacing)
-
-                                Group {
-                                    if let title = viewModel.multipleLinesMessage {
-                                        MultipleLinesMessage(title: title)
-                                        Spacer(minLength: Layout.sectionSpacing)
-                                    }
-
-                                    AddOrderComponentsSection(
-                                        viewModel: viewModel.paymentDataViewModel,
-                                        shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
-                                        shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
-                                        shouldShowGiftCardForm: $shouldShowGiftCardForm)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
-                                }
-                                .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
-                                    if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
-                                        PaymentMethodsHostingView(parentController: rootViewController,
-                                                                  viewModel: collectPaymentViewModel)
-                                    } else {
-                                        EmptyView()
-                                    }
                                 }
 
-                                Spacer(minLength: Layout.sectionSpacing)
+                                AddOrderComponentsSection(
+                                    viewModel: viewModel.paymentDataViewModel,
+                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
+                                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
+                                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
+                                .sheet(isPresented: $shouldShowShippingLineDetails) {
+                                    ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
+                                }
                             }
 
-                            VStack(spacing: Layout.noSpacing) {
-                                Group {
-                                    NewTaxRateSection(text: viewModel.taxRateRowText) {
-                                        viewModel.onSetNewTaxRateTapped()
-                                        switch viewModel.taxRateRowAction {
-                                        case .storedTaxRateSheet:
-                                            shouldShowStoredTaxRateSheet = true
-                                            viewModel.onStoredTaxRateBottomSheetAppear()
-                                        case .taxSelector:
-                                            shouldShowNewTaxRateSelector = true
-                                        }
-
-                                    }
-                                    .sheet(isPresented: $shouldShowNewTaxRateSelector) {
-                                        NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
-                                                                                                      onTaxRateSelected: { taxRate in
-                                            viewModel.onTaxRateSelected(taxRate)
-                                        }),
-                                                               taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
-                                                               onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure,
-                                                               storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
-                                    }
-                                    .sheet(isPresented: $shouldShowStoredTaxRateSheet) {
-                                        if #available(iOS 16.0, *) {
-                                            storedTaxRateBottomSheetContent
-                                                .presentationDetents([.medium])
-                                                .presentationDragIndicator(.visible)
-                                        } else {
-                                            storedTaxRateBottomSheetContent
-                                        }
-                                    }
-
-                                    Spacer(minLength: Layout.sectionSpacing)
-                                }
-                                .renderedIf(viewModel.shouldShowNewTaxRateSection)
-
-                                Divider()
-
-                                OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
-
-                                Group {
-                                    Divider()
-
-                                    Spacer(minLength: Layout.sectionSpacing)
-
-                                    Divider()
-                                }
-                                .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
-
-                                CustomerNoteSection(viewModel: viewModel)
-
-                                Divider()
-                            }
+                            Spacer(minLength: Layout.sectionSpacing)
                         }
-                        .disabled(viewModel.disabled)
+
+                        VStack(spacing: Layout.noSpacing) {
+                            Group {
+                                NewTaxRateSection(text: viewModel.taxRateRowText) {
+                                    viewModel.onSetNewTaxRateTapped()
+                                    switch viewModel.taxRateRowAction {
+                                    case .storedTaxRateSheet:
+                                        shouldShowStoredTaxRateSheet = true
+                                        viewModel.onStoredTaxRateBottomSheetAppear()
+                                    case .taxSelector:
+                                        shouldShowNewTaxRateSelector = true
+                                    }
+
+                                }
+                                .sheet(isPresented: $shouldShowNewTaxRateSelector) {
+                                    NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
+                                                                                                  onTaxRateSelected: { taxRate in
+                                        viewModel.onTaxRateSelected(taxRate)
+                                    }),
+                                                           taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
+                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure,
+                                                           storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
+                                }
+                                .sheet(isPresented: $shouldShowStoredTaxRateSheet) {
+                                    if #available(iOS 16.0, *) {
+                                        storedTaxRateBottomSheetContent
+                                            .presentationDetents([.medium])
+                                            .presentationDragIndicator(.visible)
+                                    } else {
+                                        storedTaxRateBottomSheetContent
+                                    }
+                                }
+
+                                Spacer(minLength: Layout.sectionSpacing)
+                            }
+                            .renderedIf(viewModel.shouldShowNewTaxRateSection)
+
+                            Divider()
+
+                            OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+
+                            Group {
+                                Divider()
+
+                                Spacer(minLength: Layout.sectionSpacing)
+
+                                Divider()
+                            }
+                            .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
+
+                            CustomerNoteSection(viewModel: viewModel)
+
+                            Divider()
+                        }
                     }
-                    .background(Color(.listBackground).ignoresSafeArea())
-                    .ignoresSafeArea(.container, edges: [.horizontal])
+                    .disabled(viewModel.disabled)
                 }
+                .background(Color(.listBackground).ignoresSafeArea())
+                .ignoresSafeArea(.container, edges: [.horizontal])
             }
+        }
+        .safeAreaInset(edge: .bottom) {
             ExpandableBottomSheet {
-                completedButton
+                VStack {
+                    HStack {
+                        Text(Localization.orderTotal)
+                        Spacer()
+                        Text(viewModel.orderTotal)
+                    }
+                    .font(.headline)
                     .padding()
+
+                    Divider()
+                        .padding([.leading], Layout.dividerLeadingPadding)
+
+                    completedButton
+                        .padding()
+                }
+                .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
+                    if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
+                        PaymentMethodsHostingView(parentController: rootViewController,
+                                                  viewModel: collectPaymentViewModel)
+                    } else {
+                        EmptyView()
+                    }
+                }
             } expandableContent: {
                 OrderPaymentSection(
                     viewModel: viewModel.paymentDataViewModel,
@@ -260,6 +276,7 @@ struct OrderForm: View {
                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                 .disabled(viewModel.shouldShowNonEditableIndicators)
             }
+            .ignoresSafeArea(edges: .horizontal)
         }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -280,14 +297,10 @@ struct OrderForm: View {
                     .id(navigationButtonID)
                     .accessibilityIdentifier(Accessibility.createButtonIdentifier)
                     .disabled(viewModel.disabled)
-                case .done:
-                    Button(Localization.doneButton) {
-                        viewModel.finishEditing()
-                        dismissHandler()
-                    }
-                    .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
                 case .loading:
                     ProgressView()
+                case .none:
+                    EmptyView()
                 }
             }
         }
@@ -372,6 +385,7 @@ struct OrderForm: View {
                 Text(Localization.doneButton)
             }
             .buttonStyle(PrimaryButtonStyle())
+            .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
         }
     }
 }
@@ -620,6 +634,7 @@ private extension OrderForm {
         static let storedTaxRateBottomSheetStoredTaxRateCornerRadius: CGFloat = 8.0
         static let storedTaxRateBottomSheetButtonIconSize: CGFloat = 24.0
         static let productsHeaderButtonsSpacing: CGFloat = 20
+        static let dividerLeadingPadding: CGFloat = 16
     }
 
     enum Localization {
@@ -658,6 +673,9 @@ private extension OrderForm {
             "orderForm.products.add.button.accessibilityLabel",
             value: "Add product",
             comment: "Accessibility label for the + button to add product using a form")
+
+
+        static let orderTotal = NSLocalizedString("Order total", comment: "Label for the the row showing the total cost of the order")
     }
 
     enum Accessibility {

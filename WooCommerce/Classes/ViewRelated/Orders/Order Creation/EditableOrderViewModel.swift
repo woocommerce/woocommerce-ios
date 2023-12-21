@@ -123,7 +123,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
-    @Published private(set) var navigationTrailingItem: NavigationItem = .create
+    @Published private(set) var navigationTrailingItem: NavigationItem?
 
     /// Tracks if a network request is being performed.
     ///
@@ -366,6 +366,8 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
+    @Published private(set) var orderTotal: String = ""
+
     @Published var collectPaymentViewModel: PaymentMethodsViewModel? = nil
 
     @Published var shouldPresentCollectPayment: Bool = false
@@ -466,6 +468,7 @@ final class EditableOrderViewModel: ObservableObject {
 
         configureDisabledState()
         configureCollectPaymentDisabledState()
+        configureOrderTotal()
         configureNavigationTrailingItem()
         configureSyncErrors()
         configureStatusBadgeViewModel()
@@ -921,7 +924,6 @@ extension EditableOrderViewModel {
     ///
     enum NavigationItem: Equatable {
         case create
-        case done
         case loading
     }
 
@@ -1001,7 +1003,6 @@ extension EditableOrderViewModel {
         let siteID: Int64
         let shouldShowProductsTotal: Bool
         let itemsTotal: String
-        let orderTotal: String
         let orderIsEmpty: Bool
 
         let shouldShowShippingTotal: Bool
@@ -1061,7 +1062,6 @@ extension EditableOrderViewModel {
              shouldShowTotalCustomAmounts: Bool = false,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
-             orderTotal: String = "0",
              orderIsEmpty: Bool = false,
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
@@ -1098,7 +1098,6 @@ extension EditableOrderViewModel {
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
-            self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.orderIsEmpty = orderIsEmpty
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
@@ -1188,11 +1187,19 @@ private extension EditableOrderViewModel {
             .assign(to: &$collectPaymentDisabled)
     }
 
+    func configureOrderTotal() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just("0.00"))
+            .map { [weak self] order, defaultTotal -> String in
+                return self?.currencyFormatter.formatAmount(order.total) ?? self?.currencyFormatter.formatAmount(defaultTotal) ?? ""
+            }
+            .assign(to: &$orderTotal)
+    }
+
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
         Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
-            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem in
+            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem? in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
@@ -1203,7 +1210,7 @@ private extension EditableOrderViewModel {
                 case (.editing, .syncing):
                     return .loading
                 case (.editing, _):
-                    return .done
+                    return .none
                 }
             }
             .assign(to: &$navigationTrailingItem)
@@ -1537,7 +1544,6 @@ private extension EditableOrderViewModel {
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
-                                            orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             orderIsEmpty: order.isEmpty,
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: disableCoupons,

@@ -196,6 +196,7 @@ struct ThemesPreviewView: View {
                         Text(page.title)
                             .bodyStyle()
                             .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     })
                     .padding(Layout.contentPadding)
                 }

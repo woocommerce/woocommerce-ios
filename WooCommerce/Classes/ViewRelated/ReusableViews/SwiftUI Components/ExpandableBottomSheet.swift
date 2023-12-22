@@ -59,6 +59,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         }
                     }
                     .trackSize(size: $expandingContentSize)
+                    .onChange(of: expandingContentSize, perform: { _ in
+                        withAnimation {
+                            panelHeight = calculateHeight()
+                        }
+                    })
                 }
                 .scrollVerticallyIfNeeded()
 
@@ -74,6 +79,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             // Always visible content
             alwaysVisibleContent()
                 .trackSize(size: $fixedContentSize)
+                .onChange(of: fixedContentSize, perform: { _ in
+                    withAnimation {
+                        panelHeight = calculateHeight()
+                    }
+                })
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(GeometryReader { geometryProxy in

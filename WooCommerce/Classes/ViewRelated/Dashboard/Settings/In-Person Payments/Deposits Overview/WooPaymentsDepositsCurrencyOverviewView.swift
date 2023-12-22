@@ -39,15 +39,10 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 
                 if isExpanded {
                     Divider()
-
-                    HStack(alignment: .top) {
-                        Image(systemName: "calendar")
-                            .accessibilityHidden(true)
-                        Text(viewModel.balanceTypeHint)
-                            .font(.footnote)
-                    }
-                    .foregroundColor(.secondary)
-                    .padding(.vertical, 8)
+                    Text(viewModel.balanceTypeHint)
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .padding(.vertical, 8)
                 }
             }
 

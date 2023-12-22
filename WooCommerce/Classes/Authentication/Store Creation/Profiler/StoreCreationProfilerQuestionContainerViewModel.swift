@@ -135,6 +135,8 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     func saveTheme(_ theme: WordPressTheme?) {
         if let theme {
             themeInstaller.scheduleThemeInstall(themeID: theme.id, siteID: siteID)
+        } else {
+            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .themePicker))
         }
         moveToNextQuestionIfAvailable()
     }

@@ -170,7 +170,7 @@ extension Networking.BlazeCampaign {
             contentClickURL: .fake(),
             totalImpressions: .fake(),
             totalClicks: .fake(),
-            totalBudget: .fake()
+            budgetCents: .fake()
         )
     }
 }

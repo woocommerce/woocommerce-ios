@@ -33,8 +33,8 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
     /// Total clicks on the campaign
     public let totalClicks: Int64
 
-    /// Total budget for the campaign
-    public let totalBudget: Double
+    /// Budget in cents for the campaign
+    public let budgetCents: Double
 
     public init(siteID: Int64,
                 campaignID: Int64,
@@ -45,7 +45,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
                 contentClickURL: String?,
                 totalImpressions: Int64,
                 totalClicks: Int64,
-                totalBudget: Double) {
+                budgetCents: Double) {
         self.siteID = siteID
         self.campaignID = campaignID
         self.productID = productID
@@ -55,7 +55,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
         self.contentClickURL = contentClickURL
         self.totalImpressions = totalImpressions
         self.totalClicks = totalClicks
-        self.totalBudget = totalBudget
+        self.budgetCents = budgetCents
     }
 
     public init(from decoder: Decoder) throws {
@@ -69,6 +69,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
         campaignID = try container.decode(Int64.self, forKey: .campaignId)
         name = try container.decode(String.self, forKey: .name)
         uiStatus = try container.decode(String.self, forKey: .uiStatus)
+        budgetCents = try container.decode(Double.self, forKey: .budgetCents)
 
         let targetUrn = try container.decode(String.self, forKey: .targetUrn)
         productID = BlazeCampaign.extractProductIdFromUrn(targetUrn)
@@ -80,7 +81,6 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
         let stats = try container.decode(Stats.self, forKey: .campaignStats)
         totalImpressions = stats.impressionsTotal
         totalClicks = stats.clicksTotal
-        totalBudget = stats.totalBudget
     }
 }
 
@@ -115,13 +115,13 @@ private extension BlazeCampaign {
         case uiStatus
         case contentConfig
         case campaignStats
+        case budgetCents
     }
 
     /// Private subtype for parsing stat details.
     struct Stats: Decodable {
         public let impressionsTotal: Int64
         public let clicksTotal: Int64
-        public let totalBudget: Double
     }
 
     /// Private subtype for parsing content details.

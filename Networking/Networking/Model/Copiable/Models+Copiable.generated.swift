@@ -171,7 +171,7 @@ extension Networking.BlazeCampaign {
         contentClickURL: NullableCopiableProp<String> = .copy,
         totalImpressions: CopiableProp<Int64> = .copy,
         totalClicks: CopiableProp<Int64> = .copy,
-        totalBudget: CopiableProp<Double> = .copy
+        budgetCents: CopiableProp<Int64> = .copy
     ) -> Networking.BlazeCampaign {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
@@ -182,7 +182,7 @@ extension Networking.BlazeCampaign {
         let contentClickURL = contentClickURL ?? self.contentClickURL
         let totalImpressions = totalImpressions ?? self.totalImpressions
         let totalClicks = totalClicks ?? self.totalClicks
-        let totalBudget = totalBudget ?? self.totalBudget
+        let budgetCents = budgetCents ?? self.budgetCents
 
         return Networking.BlazeCampaign(
             siteID: siteID,
@@ -194,7 +194,7 @@ extension Networking.BlazeCampaign {
             contentClickURL: contentClickURL,
             totalImpressions: totalImpressions,
             totalClicks: totalClicks,
-            totalBudget: totalBudget
+            budgetCents: budgetCents
         )
     }
 }

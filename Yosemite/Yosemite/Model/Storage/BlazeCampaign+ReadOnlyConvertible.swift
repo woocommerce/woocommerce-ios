@@ -14,7 +14,7 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
         rawStatus = campaign.uiStatus
         contentClickURL = campaign.contentClickURL
         contentImageURL = campaign.contentImageURL
-        totalBudget = campaign.totalBudget
+        totalBudget = campaign.budgetCents // TODO: update the storage model property name
         totalClicks = campaign.totalClicks
         totalImpressions = campaign.totalImpressions
     }
@@ -31,6 +31,6 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
                       contentClickURL: contentClickURL,
                       totalImpressions: totalImpressions,
                       totalClicks: totalClicks,
-                      totalBudget: totalBudget)
+                      budgetCents: totalBudget)
     }
 }

@@ -12,8 +12,8 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
     /// ID of the campaign
     public let campaignID: Int64
 
-    /// ID of the product in the campaign
-    public let productID: Int64?
+    /// URL of the product in the campaign
+    public let productURL: String
 
     /// Name of the campaign
     public let name: String
@@ -33,29 +33,29 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
     /// Total clicks on the campaign
     public let totalClicks: Int64
 
-    /// Total budget for the campaign
-    public let totalBudget: Double
+    /// Budget in cents for the campaign
+    public let budgetCents: Double
 
     public init(siteID: Int64,
                 campaignID: Int64,
-                productID: Int64?,
+                productURL: String,
                 name: String,
                 uiStatus: String,
                 contentImageURL: String?,
                 contentClickURL: String?,
                 totalImpressions: Int64,
                 totalClicks: Int64,
-                totalBudget: Double) {
+                budgetCents: Double) {
         self.siteID = siteID
         self.campaignID = campaignID
-        self.productID = productID
+        self.productURL = productURL
         self.name = name
         self.uiStatus = uiStatus
         self.contentImageURL = contentImageURL
         self.contentClickURL = contentClickURL
         self.totalImpressions = totalImpressions
         self.totalClicks = totalClicks
-        self.totalBudget = totalBudget
+        self.budgetCents = budgetCents
     }
 
     public init(from decoder: Decoder) throws {
@@ -69,9 +69,8 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
         campaignID = try container.decode(Int64.self, forKey: .campaignId)
         name = try container.decode(String.self, forKey: .name)
         uiStatus = try container.decode(String.self, forKey: .uiStatus)
-
-        let targetUrn = try container.decode(String.self, forKey: .targetUrn)
-        productID = BlazeCampaign.extractProductIdFromUrn(targetUrn)
+        budgetCents = try container.decode(Double.self, forKey: .budgetCents)
+        productURL = try container.decode(String.self, forKey: .targetUrl)
 
         let content = try container.decode(ContentConfig.self, forKey: .contentConfig)
         contentImageURL = content.imageURL
@@ -80,7 +79,6 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
         let stats = try container.decode(Stats.self, forKey: .campaignStats)
         totalImpressions = stats.impressionsTotal
         totalClicks = stats.clicksTotal
-        totalBudget = stats.totalBudget
     }
 }
 
@@ -111,17 +109,17 @@ private extension BlazeCampaign {
     enum CodingKeys: String, CodingKey {
         case campaignId
         case name
-        case targetUrn
+        case targetUrl
         case uiStatus
         case contentConfig
         case campaignStats
+        case budgetCents
     }
 
     /// Private subtype for parsing stat details.
     struct Stats: Decodable {
         public let impressionsTotal: Int64
         public let clicksTotal: Int64
-        public let totalBudget: Double
     }
 
     /// Private subtype for parsing content details.
@@ -138,13 +136,5 @@ private extension BlazeCampaign {
     /// Decoding Errors
     enum DecodingError: Error {
         case missingSiteID
-    }
-
-    /// Extracts the product ID from the `target_urn` response.
-    /// The response looks like the following: `urn:wpcom:post:1:134`
-    /// The product ID is the last number following the colon in the response (`134`).
-    /// If the product ID cannot be extracted, it returns null instead.
-    static func extractProductIdFromUrn(_ urn: String) -> Int64? {
-        return Int64(String(urn.split(separator: ":").last ?? ""))
     }
 }

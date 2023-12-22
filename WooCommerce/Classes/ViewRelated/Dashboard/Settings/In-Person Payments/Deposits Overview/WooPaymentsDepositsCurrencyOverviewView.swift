@@ -70,7 +70,6 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     Text(viewModel.lastDepositAmount)
                         .foregroundColor(.secondary)
                 }
-                Divider()
 
                 HStack(alignment: .top) {
                     Image(systemName: "building.columns")
@@ -81,6 +80,8 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 .foregroundColor(.secondary)
                 .padding(.vertical, 8)
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+                Divider()
 
                 Button {
                     viewModel.learnMoreTapped()

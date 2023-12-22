@@ -14,7 +14,7 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
         rawStatus = campaign.uiStatus
         contentClickURL = campaign.contentClickURL
         contentImageURL = campaign.contentImageURL
-        totalBudget = campaign.budgetCents // TODO: update the storage model property name
+        totalBudget = campaign.budgetCents // TODO-11532: update the storage model property name
         totalClicks = campaign.totalClicks
         totalImpressions = campaign.totalImpressions
     }
@@ -24,7 +24,7 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
     public func toReadOnly() -> BlazeCampaign {
         BlazeCampaign(siteID: siteID,
                       campaignID: campaignID,
-                      productURL: "", // TODO: map the new attribute `productURL` here
+                      productURL: "", // TODO-11532: map the new attribute `productURL` here
                       name: name,
                       uiStatus: rawStatus,
                       contentImageURL: contentImageURL,

@@ -95,7 +95,10 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                             .multilineTextAlignment(.leading)
                     }
                 }
+                .padding(.top)
                 .padding(.bottom)
+
+                Divider()
             }
         }
         .safariSheet(url: $viewModel.showWebviewURL)

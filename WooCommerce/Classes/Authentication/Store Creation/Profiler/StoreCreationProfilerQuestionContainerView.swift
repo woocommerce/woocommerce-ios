@@ -31,7 +31,7 @@ struct StoreCreationProfilerQuestionContainerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ProgressView(value: viewModel.currentQuestion.progress)
+            ProgressView(value: viewModel.progress)
                 .progressViewStyle(.linear)
 
             switch viewModel.currentQuestion {
@@ -79,7 +79,7 @@ struct StoreCreationProfilerQuestionContainerView: View {
                         viewModel.backtrackOrDismissProfiler()
                     }
                 }, label: {
-                    if viewModel.currentQuestion.previousQuestion == nil {
+                    if viewModel.previousQuestion == nil {
                         Text(Localization.cancel)
                     } else {
                         Image(systemName: "chevron.backward")

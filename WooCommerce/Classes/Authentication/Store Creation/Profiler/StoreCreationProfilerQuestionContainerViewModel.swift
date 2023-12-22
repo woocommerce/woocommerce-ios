@@ -1,4 +1,5 @@
 import Foundation
+import Experiments
 import Yosemite
 import WooFoundation
 
@@ -7,16 +8,6 @@ enum StoreCreationProfilerQuestion: Int, CaseIterable {
     case category
     case country
     case theme
-
-    /// Progress to display for the profiler flow
-    var progress: Double {
-        let incrementBy = 1.0 / Double(Self.allCases.count)
-        return Double(self.rawValue) * incrementBy
-    }
-
-    var previousQuestion: StoreCreationProfilerQuestion? {
-        .init(rawValue: self.rawValue - 1)
-    }
 }
 
 /// View model for `StoreCreationProfilerQuestionContainer`.
@@ -25,6 +16,27 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     private let siteID: Int64
     let storeName: String
     let themesCarouselViewModel: ThemesCarouselViewModel
+
+    /// profiler question list
+    var questions: [StoreCreationProfilerQuestion] {
+        let defaultQuestions: [StoreCreationProfilerQuestion] = [.sellingStatus, .category, .country]
+        guard featureFlagService.isFeatureFlagEnabled(.lightweightStorefront) else {
+            return defaultQuestions
+        }
+        return defaultQuestions + [.theme]
+    }
+
+    /// Progress to display for the profiler flow
+    var progress: Double {
+        let incrementBy = 1.0 / Double(questions.count)
+        return Double(currentQuestion.rawValue) * incrementBy
+    }
+
+    var previousQuestion: StoreCreationProfilerQuestion? {
+        .init(rawValue: currentQuestion.rawValue - 1)
+    }
+
+    private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
     private let completionHandler: () -> Void
 
@@ -61,6 +73,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
          storeName: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onCompletion: @escaping () -> Void,
          uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol,
          themeInstaller: ThemeInstallerProtocol = DefaultThemeInstaller()) {
@@ -71,6 +84,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         self.uploadAnswersUseCase = uploadAnswersUseCase
         self.themeInstaller = themeInstaller
         self.themesCarouselViewModel = .init(mode: .storeCreationProfiler, stores: stores)
+        self.featureFlagService = featureFlagService
     }
 
     func onAppear() {
@@ -113,7 +127,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     }
 
     func backtrackOrDismissProfiler() {
-        if let previousQuestion = currentQuestion.previousQuestion {
+        if let previousQuestion {
             currentQuestion = previousQuestion
         } else {
             completionHandler()

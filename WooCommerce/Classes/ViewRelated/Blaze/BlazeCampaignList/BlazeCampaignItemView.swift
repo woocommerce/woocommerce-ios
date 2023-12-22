@@ -87,7 +87,7 @@ struct BlazeCampaignItemView: View {
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(Localization.budget)
                         .subheadlineStyle()
-                    Text(String(format: "%.0f", campaign.budgetCents/Constants.centsToUnit))
+                    Text(String(format: "%.0f", campaign.budgetCents / Constants.centsToUnit))
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))

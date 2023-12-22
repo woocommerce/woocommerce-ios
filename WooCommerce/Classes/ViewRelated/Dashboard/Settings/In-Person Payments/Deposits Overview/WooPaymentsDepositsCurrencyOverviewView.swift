@@ -47,7 +47,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
             }
 
             if isExpanded {
-                Text(Localization.depositsHeader.localizedUppercase)
+                Text(Localization.lastDepositHeader.localizedUppercase)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -154,9 +154,9 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
             "Pending funds",
             comment: "Title for pending funds overview in WooPayments Deposits view. " +
             "This shows the balance which will be made available for pay out later.")
-        static let depositsHeader = NSLocalizedString(
-            "Deposits",
-            comment: "Section header for the deposits list in the WooPayments Deposits overview")
+        static let lastDepositHeader = NSLocalizedString(
+            "Last Deposit",
+            comment: "Section header for the last deposit in the WooPayments Deposits overview")
         static let nextDepositRowTitle = NSLocalizedString(
             "Next",
             comment: "Row title for the next deposit in the WooPayments Deposits overview")

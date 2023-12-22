@@ -8,6 +8,19 @@ enum StoreCreationProfilerQuestion: Int, CaseIterable {
     case category
     case country
     case theme
+
+    var analyticStep: WooAnalyticsEvent.StoreCreation.Step {
+        switch self {
+        case .sellingStatus:
+            return .profilerSellingStatusQuestion
+        case .category:
+            return .profilerCategoryQuestion
+        case .country:
+            return .profilerCountryQuestion
+        case .theme:
+            return .themePicker
+        }
+    }
 }
 
 /// View model for `StoreCreationProfilerQuestionContainer`.
@@ -67,6 +80,8 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
                                     countryCode: storeCountry?.rawValue)
     }
 
+    private var currentQuestionIndex: Int = 0
+
     @Published private(set) var currentQuestion: StoreCreationProfilerQuestion = .sellingStatus
 
     init(siteID: Int64,
@@ -101,8 +116,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         }
 
         sellingStatus = answer
-        currentQuestion = .category
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
+        moveToNextQuestionIfAvailable()
     }
 
     func saveCategory(_ answer: StoreCreationCategoryAnswer?) {
@@ -110,20 +124,19 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
             analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
         }
         storeCategory = answer
-        currentQuestion = .country
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
+        moveToNextQuestionIfAvailable()
     }
 
     func saveCountry(_ answer: CountryCode) {
         storeCountry = answer
-        currentQuestion = .theme
+        moveToNextQuestionIfAvailable()
     }
 
     func saveTheme(_ theme: WordPressTheme?) {
         if let theme {
             themeInstaller.scheduleThemeInstall(themeID: theme.id, siteID: siteID)
         }
-        handleCompletion()
+        moveToNextQuestionIfAvailable()
     }
 
     func backtrackOrDismissProfiler() {
@@ -136,6 +149,16 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 }
 
 private extension StoreCreationProfilerQuestionContainerViewModel {
+    func moveToNextQuestionIfAvailable() {
+        currentQuestionIndex += 1
+        if let question = questions[safe: currentQuestionIndex] {
+            currentQuestion = question
+            analytics.track(event: .StoreCreation.siteCreationStep(step: currentQuestion.analyticStep))
+        } else {
+            handleCompletion()
+        }
+    }
+
     func handleCompletion() {
         analytics.track(event: .StoreCreation.siteCreationProfilerData(answers))
         completionHandler()

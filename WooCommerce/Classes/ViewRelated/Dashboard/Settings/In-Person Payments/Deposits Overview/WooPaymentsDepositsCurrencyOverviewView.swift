@@ -72,8 +72,6 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 }
 
                 HStack(alignment: .top) {
-                    Image(systemName: "building.columns")
-                        .accessibilityHidden(true)
                     Text(viewModel.depositScheduleHint)
                         .font(.footnote)
                 }

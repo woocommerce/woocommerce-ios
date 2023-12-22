@@ -149,11 +149,14 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     var dateString: String {
         switch flow {
-        case .creation:
-            return DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
-        case .editing(let order):
-            let formatter = DateFormatter.dateAndTimeFormatter
-            return formatter.string(from: order.dateCreated)
+            case .creation:
+                let formatter = DateFormatter.mediumLengthLocalizedDateFormatter
+                formatter.timeZone = .siteTimezone
+                return formatter.string(from: Date())
+            case .editing(let order):
+                let formatter = DateFormatter.dateAndTimeFormatter
+                formatter.timeZone = .siteTimezone
+                return formatter.string(from: order.dateCreated)
         }
     }
 

@@ -60,6 +60,7 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
         // When
+        viewModel.saveSellingStatus(nil)
         viewModel.saveCategory(nil)
 
         // Then
@@ -102,12 +103,16 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveCountry_updates_currentQuestion_to_theme() {
         // Given
+        let featureFlagService = MockFeatureFlagService(isLightweightStorefrontEnabled: true)
         let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
                                                                         storeName: "Test",
+                                                                        featureFlagService: featureFlagService,
                                                                         onCompletion: {},
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
 
         // When
+        viewModel.saveSellingStatus(nil)
+        viewModel.saveCategory(nil)
         viewModel.saveCountry(.US)
 
         // Then
@@ -133,13 +138,18 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     func test_saveTheme_triggers_onCompletion() throws {
         // Given
+        let featureFlagService = MockFeatureFlagService(isLightweightStorefrontEnabled: true)
         var triggeredCompletion = false
         let viewModel = StoreCreationProfilerQuestionContainerViewModel(siteID: 123,
                                                                         storeName: "Test",
+                                                                        featureFlagService: featureFlagService,
                                                                         onCompletion: { triggeredCompletion = true },
                                                                         uploadAnswersUseCase: MockStoreCreationProfilerUploadAnswersUseCase())
 
         // When
+        viewModel.saveSellingStatus(nil)
+        viewModel.saveCategory(nil)
+        viewModel.saveCountry(.US)
         viewModel.saveTheme(nil)
 
         // Then
@@ -190,6 +200,7 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
                                                                         storeName: "Test",
                                                                         onCompletion: { triggeredCompletion = true },
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
+        viewModel.saveSellingStatus(nil)
         viewModel.saveCategory(nil)
 
         // When
@@ -296,10 +307,11 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
                                                                         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123))
 
         // When
+        viewModel.saveSellingStatus(nil)
         viewModel.saveCategory(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_step" }))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "site_creation_step" }))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_country")
     }

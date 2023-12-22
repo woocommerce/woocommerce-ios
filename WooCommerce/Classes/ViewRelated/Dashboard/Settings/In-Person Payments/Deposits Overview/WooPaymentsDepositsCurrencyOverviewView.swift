@@ -38,11 +38,11 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 }
 
                 if isExpanded {
-                    Divider()
                     Text(viewModel.balanceTypeHint)
                         .font(.footnote)
                         .foregroundColor(.secondary)
                         .padding(.vertical, 8)
+                    Divider()
                 }
             }
 

@@ -29,7 +29,7 @@ class TextLinkButtonTableViewCell: UITableViewCell {
 
     public func configureButton(text: String?,
                                 icon: UIImage? = nil,
-                                accessibilityTrait: UIAccessibilityTraits = .button, 
+                                accessibilityTrait: UIAccessibilityTraits = .button,
                                 showBorder: Bool = false,
                                 accessibilityIdentifier: String? = nil) {
         button.setTitle(text, for: .normal)

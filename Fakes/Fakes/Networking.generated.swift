@@ -163,7 +163,7 @@ extension Networking.BlazeCampaign {
         .init(
             siteID: .fake(),
             campaignID: .fake(),
-            productID: .fake(),
+            productURL: .fake(),
             name: .fake(),
             uiStatus: .fake(),
             contentImageURL: .fake(),

@@ -245,7 +245,7 @@ struct OrderForm: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            ExpandableBottomSheet {
+            ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                 VStack {
                     HStack {
                         Text(Localization.orderTotal)

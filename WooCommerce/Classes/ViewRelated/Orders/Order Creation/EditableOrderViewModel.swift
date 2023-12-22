@@ -756,6 +756,10 @@ final class EditableOrderViewModel: ObservableObject {
         trackCustomerNoteAdded()
     }
 
+    func orderTotalsExpansionChanged(expanded: Bool) {
+        analytics.track(event: .Orders.orderTotalsExpansionChanged(flow: flow.analyticsFlow, expanded: expanded))
+    }
+
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.
     ///

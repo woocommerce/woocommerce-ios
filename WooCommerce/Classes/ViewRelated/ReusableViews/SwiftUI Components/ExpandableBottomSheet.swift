@@ -15,8 +15,12 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
-    public init(@ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
+    private var onChangeOfExpansion: ((Bool) -> Void)?
+
+    public init(onChangeOfExpansion: ((Bool) -> Void)? = nil,
+                @ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
                 @ViewBuilder expandableContent: @escaping () -> ExpandableContent) {
+        self.onChangeOfExpansion = onChangeOfExpansion
         self.alwaysVisibleContent = alwaysVisibleContent
         self.expandableContent = expandableContent
     }
@@ -55,6 +59,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         }
                     }
                     .trackSize(size: $expandingContentSize)
+                    .onChange(of: expandingContentSize, perform: { _ in
+                        withAnimation {
+                            panelHeight = calculateHeight()
+                        }
+                    })
                 }
                 .scrollVerticallyIfNeeded()
 
@@ -70,6 +79,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             // Always visible content
             alwaysVisibleContent()
                 .trackSize(size: $fixedContentSize)
+                .onChange(of: fixedContentSize, perform: { _ in
+                    withAnimation {
+                        panelHeight = calculateHeight()
+                    }
+                })
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(GeometryReader { geometryProxy in
@@ -90,7 +104,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 })
         })
-        .onChange(of: isExpanded, perform: { _ in
+        .onChange(of: isExpanded, perform: { newValue in
+            onChangeOfExpansion?(newValue)
             DispatchQueue.main.async {
                 withAnimation {
                     panelHeight = calculateHeight()

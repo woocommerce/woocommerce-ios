@@ -90,7 +90,6 @@ extension Yosemite.WooPaymentsDepositsOverviewByCurrency {
         automaticDeposits: CopiableProp<Bool> = .copy,
         depositInterval: CopiableProp<WooPaymentsDepositInterval> = .copy,
         pendingBalanceAmount: CopiableProp<NSDecimalNumber> = .copy,
-        pendingDepositsCount: CopiableProp<Int> = .copy,
         pendingDepositDays: CopiableProp<Int> = .copy,
         nextDeposit: NullableCopiableProp<WooPaymentsDepositsOverviewByCurrency.NextDeposit> = .copy,
         lastDeposit: NullableCopiableProp<WooPaymentsDepositsOverviewByCurrency.LastDeposit> = .copy,
@@ -100,7 +99,6 @@ extension Yosemite.WooPaymentsDepositsOverviewByCurrency {
         let automaticDeposits = automaticDeposits ?? self.automaticDeposits
         let depositInterval = depositInterval ?? self.depositInterval
         let pendingBalanceAmount = pendingBalanceAmount ?? self.pendingBalanceAmount
-        let pendingDepositsCount = pendingDepositsCount ?? self.pendingDepositsCount
         let pendingDepositDays = pendingDepositDays ?? self.pendingDepositDays
         let nextDeposit = nextDeposit ?? self.nextDeposit
         let lastDeposit = lastDeposit ?? self.lastDeposit
@@ -111,7 +109,6 @@ extension Yosemite.WooPaymentsDepositsOverviewByCurrency {
             automaticDeposits: automaticDeposits,
             depositInterval: depositInterval,
             pendingBalanceAmount: pendingBalanceAmount,
-            pendingDepositsCount: pendingDepositsCount,
             pendingDepositDays: pendingDepositDays,
             nextDeposit: nextDeposit,
             lastDeposit: lastDeposit,

@@ -63,7 +63,6 @@ extension Yosemite.WooPaymentsDepositsOverviewByCurrency {
             automaticDeposits: .fake(),
             depositInterval: .fake(),
             pendingBalanceAmount: .fake(),
-            pendingDepositsCount: .fake(),
             pendingDepositDays: .fake(),
             nextDeposit: .fake(),
             lastDeposit: .fake(),

@@ -8,7 +8,6 @@ public struct WooPaymentsDepositsOverviewByCurrency: GeneratedCopiable, Generate
     public let automaticDeposits: Bool
     public let depositInterval: WooPaymentsDepositInterval
     public let pendingBalanceAmount: NSDecimalNumber
-    public let pendingDepositsCount: Int
     public let pendingDepositDays: Int
     public let nextDeposit: NextDeposit?
     public let lastDeposit: LastDeposit?
@@ -42,7 +41,6 @@ public struct WooPaymentsDepositsOverviewByCurrency: GeneratedCopiable, Generate
                 automaticDeposits: Bool,
                 depositInterval: WooPaymentsDepositInterval,
                 pendingBalanceAmount: NSDecimalNumber,
-                pendingDepositsCount: Int,
                 pendingDepositDays: Int,
                 nextDeposit: NextDeposit?,
                 lastDeposit: LastDeposit?,
@@ -51,7 +49,6 @@ public struct WooPaymentsDepositsOverviewByCurrency: GeneratedCopiable, Generate
         self.automaticDeposits = automaticDeposits
         self.depositInterval = depositInterval
         self.pendingBalanceAmount = pendingBalanceAmount
-        self.pendingDepositsCount = pendingDepositsCount
         self.pendingDepositDays = pendingDepositDays
         self.nextDeposit = nextDeposit
         self.lastDeposit = lastDeposit

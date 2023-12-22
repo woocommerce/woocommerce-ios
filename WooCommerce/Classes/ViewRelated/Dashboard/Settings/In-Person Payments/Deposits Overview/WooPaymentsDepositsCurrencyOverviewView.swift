@@ -19,12 +19,8 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
         VStack {
             Grid(alignment: .leading) {
                 GridRow {
-                    AccountSummaryItem(title: Localization.availableFunds,
-                                       amount: viewModel.availableBalance,
-                                       footer: "")
-                    AccountSummaryItem(title: Localization.pendingFunds,
-                                       amount: viewModel.pendingBalance,
-                                       footer: viewModel.pendingFundsDepositsSummary)
+                    AccountSummaryItem(title: Localization.availableFunds, amount: viewModel.availableBalance)
+                    AccountSummaryItem(title: Localization.pendingFunds, amount: viewModel.pendingBalance)
                     isExpanded ? Image(systemName: "chevron.up")
                         .accessibilityAddTraits(.isButton)
                         .accessibilityLabel(Text(Localization.hideDepositDetailAccessibilityLabel)) :
@@ -116,7 +112,6 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 struct AccountSummaryItem: View {
     let title: String
     let amount: String
-    let footer: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -127,10 +122,6 @@ struct AccountSummaryItem: View {
             Text(amount)
                 .font(.title2)
                 .fontWeight(.bold)
-
-            Text(footer ?? "")
-                .font(.footnote)
-                .foregroundColor(.gray)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical)
@@ -200,7 +191,6 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
             automaticDeposits: true,
             depositInterval: .daily,
             pendingBalanceAmount: 1000.0,
-            pendingDepositsCount: 5,
             pendingDepositDays: 2,
             nextDeposit: WooPaymentsDepositsOverviewByCurrency.NextDeposit(
                 amount: 250.0,

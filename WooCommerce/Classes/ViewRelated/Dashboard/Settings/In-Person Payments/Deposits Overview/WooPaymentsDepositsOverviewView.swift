@@ -35,7 +35,6 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             automaticDeposits: true,
             depositInterval: .daily,
             pendingBalanceAmount: 1000.0,
-            pendingDepositsCount: 5,
             pendingDepositDays: 7,
             nextDeposit: WooPaymentsDepositsOverviewByCurrency.NextDeposit(
                 amount: 250.0,
@@ -57,7 +56,6 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             automaticDeposits: true,
             depositInterval: .daily,
             pendingBalanceAmount: 200.0,
-            pendingDepositsCount: 5,
             pendingDepositDays: 7,
             nextDeposit: WooPaymentsDepositsOverviewByCurrency.NextDeposit(
                 amount: 190.0,

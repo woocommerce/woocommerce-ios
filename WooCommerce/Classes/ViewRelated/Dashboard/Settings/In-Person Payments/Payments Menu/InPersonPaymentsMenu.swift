@@ -238,7 +238,6 @@ struct InPersonPaymentsMenu: View {
             automaticDeposits: false,
             depositInterval: .daily,
             pendingBalanceAmount: .zero,
-            pendingDepositsCount: 0,
             pendingDepositDays: 0,
             nextDeposit: nil,
             lastDeposit: nil,

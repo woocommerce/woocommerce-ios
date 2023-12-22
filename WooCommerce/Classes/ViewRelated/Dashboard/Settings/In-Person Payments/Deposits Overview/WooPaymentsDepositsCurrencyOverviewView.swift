@@ -62,13 +62,13 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     WooPaymentsDepositsBadge(status: viewModel.nextDepositStatus)
                     Text(viewModel.nextDepositAmount)
 
-                    Text(Localization.lastDepositRowTitle)
-                        .foregroundColor(.secondary)
+                    Image(systemName: "calendar")
+                        .accessibilityHidden(true)
                     Text(viewModel.lastDepositDate)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                     WooPaymentsDepositsBadge(status: viewModel.lastDepositStatus)
                     Text(viewModel.lastDepositAmount)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                 }
 
                 HStack(alignment: .top) {
@@ -164,10 +164,6 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
         static let nextDepositRowTitle = NSLocalizedString(
             "Next",
             comment: "Row title for the next deposit in the WooPayments Deposits overview")
-        static let lastDepositRowTitle = NSLocalizedString(
-            "deposits.currency.overview.depositTable.last.title",
-            value: "Last",
-            comment: "Row title for the last (previous) deposit in the WooPayments Deposits overview")
         static let learnMoreButtonText = NSLocalizedString(
             "Learn more about when you'll receive your funds",
             comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")

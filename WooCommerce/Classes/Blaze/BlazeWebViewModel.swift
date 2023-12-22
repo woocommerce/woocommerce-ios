@@ -85,7 +85,7 @@ extension BlazeWebViewModel: AuthenticatedWebViewModel {
         }
 
         currentStep = extractCurrentStep(from: url) ?? currentStep
-        if currentStep == Constants.completionStep {
+        if currentStep == Constants.completionStep && !isCompleted {
             ServiceLocator.analytics.track(event: .Blaze.blazeFlowCompleted(source: source, step: currentStep))
             isCompleted = true
             userDefaults.restoreBlazeSectionOnMyStore(for: siteID)

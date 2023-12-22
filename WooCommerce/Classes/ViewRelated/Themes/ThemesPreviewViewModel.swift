@@ -11,6 +11,11 @@ final class ThemesPreviewViewModel: ObservableObject {
     @Published private(set) var installingTheme: Bool = false
     @Published var notice: Notice?
 
+    // We need to append `demoModeSuffix` to prevent any activation / purchase header to appear on the theme demo.
+    var selectedPageUrl: URL? {
+        URL(string: selectedPage.link + Constants.demoModeSuffix)
+    }
+
     let mode: ThemesCarouselViewModel.Mode
     let theme: WordPressTheme
 
@@ -34,7 +39,7 @@ final class ThemesPreviewViewModel: ObservableObject {
 
         // Pre-fill the selected Page with the home page.
         // The id is set as zero so to not clash with other pages' ids.
-        let startingPage = WordPressPage(id: 0, title: Localization.homePage, link: theme.demoURI + Constants.demoModeUrl)
+        let startingPage = WordPressPage(id: 0, title: Localization.homePage, link: theme.demoURI)
         self.selectedPage = startingPage
         pages = [startingPage]
     }
@@ -44,11 +49,7 @@ final class ThemesPreviewViewModel: ObservableObject {
         do {
             // Append the list of pages to the existing home page value, since the API call result
             // does not include the home page.
-            pages += try await loadPages().map { page in
-                // We have to append `demoModeUrl` to prevent any activation / purchase header to appear on the theme demo.
-                let pageDemoLink = page.link + Constants.demoModeUrl
-                return WordPressPage(id: page.id, title: page.title, link: pageDemoLink)
-            }
+            pages += try await loadPages()
 
             state = .pagesContent
         } catch {
@@ -115,7 +116,7 @@ private extension ThemesPreviewViewModel {
 
 extension ThemesPreviewViewModel {
     private enum Constants {
-        static let demoModeUrl = "?demo"
+        static let demoModeSuffix = "?demo"
     }
 
     enum State: Equatable {

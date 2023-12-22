@@ -51,15 +51,20 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.pages.count, 1)
         XCTAssertEqual(viewModel.pages.first?.title, "Home")
+    }
 
-        guard let link = viewModel.pages.first?.link else {
-            XCTFail("Link is nil")
-            return
-        }
+    func test_initial_selectedPageURL() {
+        // Given
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .init(id: "123",
+                                                            description: "Woo Theme",
+                                                            name: "Woo",
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores)
 
-        // Check that the URL is correct and has the required "?demo" suffix
-        XCTAssertTrue(link.hasPrefix("https://tsubakidemo.wpcomstaging.com/"))
-        XCTAssertTrue(link.hasSuffix(Expectations.demoSuffix))
+        // Then
+        XCTAssertEqual(viewModel.selectedPageUrl, URL(string: "https://tsubakidemo.wpcomstaging.com/" + Expectations.demoSuffix))
     }
 
     func test_fetchPages_sets_the_right_pages_and_state() async {
@@ -140,8 +145,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         // Check home page still exists
         let homePage = viewModel.pages[0]
         XCTAssertEqual(homePage.title, "Home")
-        XCTAssertTrue(homePage.link.hasPrefix("https://tsubakidemo.wpcomstaging.com/"))
-        XCTAssertTrue(homePage.link.hasSuffix(Expectations.demoSuffix))
+        XCTAssertEqual(homePage.link, "https://tsubakidemo.wpcomstaging.com/")
 
         // Check remaining pages
         for (index, page) in viewModel.pages.enumerated() {
@@ -151,9 +155,8 @@ final class ThemesPreviewViewModelTests: XCTestCase {
             XCTAssertEqual(page.id, expectedPage.id)
             XCTAssertEqual(page.title, expectedPage.title)
 
-            // Check that the URL is correct and has the required suffix
-            XCTAssertTrue(page.link.hasPrefix(expectedPage.link))
-            XCTAssertTrue(page.link.hasSuffix(Expectations.demoSuffix))
+            // Check that the URL is correct
+            XCTAssertEqual(page.link, expectedPage.link)
         }
 
     }
@@ -190,15 +193,33 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                theme: .init(id: "123",
                                                             description: "Woo Theme",
                                                             name: "Woo",
-                                                            demoURI: "testURL"),
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
                                                stores: stores)
-        let page = WordPressPage(id: 1, title: "Page1", link: "testURL")
+        let page = WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1")
 
         // When
         viewModel.setSelectedPage(page: page)
 
         // Then
         XCTAssertEqual(viewModel.selectedPage, page)
+    }
+
+    func test_setSelectedPage_updates_selectedPageLink() {
+        // Given
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .init(id: "123",
+                                                            description: "Woo Theme",
+                                                            name: "Woo",
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores)
+        let page = WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1")
+
+        // When
+        viewModel.setSelectedPage(page: page)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedPageUrl, URL(string: page.link + Expectations.demoSuffix))
     }
 
     // MARK: installingTheme

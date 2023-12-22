@@ -51,7 +51,20 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.pages.count, 1)
         XCTAssertEqual(viewModel.pages.first?.title, "Home")
-        XCTAssertEqual(viewModel.pages.first?.link, "https://tsubakidemo.wpcomstaging.com/")
+    }
+
+    func test_initial_selectedPageURL() {
+        // Given
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .init(id: "123",
+                                                            description: "Woo Theme",
+                                                            name: "Woo",
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedPageUrl, URL(string: "https://tsubakidemo.wpcomstaging.com/" + Expectations.demoSuffix))
     }
 
     func test_fetchPages_sets_the_right_pages_and_state() async {
@@ -64,17 +77,11 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                             demoURI: "https://tsubakidemo.wpcomstaging.com/"),
                                                stores: stores)
 
-        let expectedPages = [
-            WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1"),
-            WordPressPage(id: 2, title: "Page2", link: "https://tsubakidemo.wpcomstaging.com/page2"),
-            WordPressPage(id: 3, title: "Page3", link: "https://tsubakidemo.wpcomstaging.com/page3")
-        ]
-
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
             case let .fetchPageList(_, completion):
-                completion(.success(expectedPages))
+                completion(.success(Expectations.expectedPages))
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -121,17 +128,11 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                             demoURI: "https://tsubakidemo.wpcomstaging.com/"),
                                                stores: stores)
 
-        let expectedPages = [
-            WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1"),
-            WordPressPage(id: 2, title: "Page2", link: "https://tsubakidemo.wpcomstaging.com/page2"),
-            WordPressPage(id: 3, title: "Page3", link: "https://tsubakidemo.wpcomstaging.com/page3")
-        ]
-
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
             case let .fetchPageList(_, completion):
-                completion(.success(expectedPages))
+                completion(.success(Expectations.expectedPages))
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -146,13 +147,18 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(homePage.title, "Home")
         XCTAssertEqual(homePage.link, "https://tsubakidemo.wpcomstaging.com/")
 
+        // Check remaining pages
         for (index, page) in viewModel.pages.enumerated() {
             if index == 0 { continue }
-            let expectedPage = expectedPages[index-1]
+
+            let expectedPage = Expectations.expectedPages[index-1]
             XCTAssertEqual(page.id, expectedPage.id)
             XCTAssertEqual(page.title, expectedPage.title)
+
+            // Check that the URL is correct
             XCTAssertEqual(page.link, expectedPage.link)
         }
+
     }
 
     func test_fetchPages_failure_sets_right_state() async {
@@ -187,15 +193,33 @@ final class ThemesPreviewViewModelTests: XCTestCase {
                                                theme: .init(id: "123",
                                                             description: "Woo Theme",
                                                             name: "Woo",
-                                                            demoURI: "testURL"),
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
                                                stores: stores)
-        let page = WordPressPage(id: 1, title: "Page1", link: "testURL")
+        let page = WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1")
 
         // When
         viewModel.setSelectedPage(page: page)
 
         // Then
         XCTAssertEqual(viewModel.selectedPage, page)
+    }
+
+    func test_setSelectedPage_updates_selectedPageLink() {
+        // Given
+        let viewModel = ThemesPreviewViewModel(siteID: 123,
+                                               mode: .storeCreationProfiler,
+                                               theme: .init(id: "123",
+                                                            description: "Woo Theme",
+                                                            name: "Woo",
+                                                            demoURI: "https://tsubakidemo.wpcomstaging.com/"),
+                                               stores: stores)
+        let page = WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1")
+
+        // When
+        viewModel.setSelectedPage(page: page)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedPageUrl, URL(string: page.link + Expectations.demoSuffix))
     }
 
     // MARK: installingTheme
@@ -442,6 +466,17 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["page"] as? String, "Test")
         XCTAssertEqual(eventProperties["page_url"] as? String, "https://example.com")
+    }
+}
+
+private extension ThemesPreviewViewModelTests {
+    enum Expectations {
+        static let expectedPages = [
+            WordPressPage(id: 1, title: "Page1", link: "https://tsubakidemo.wpcomstaging.com/page1"),
+            WordPressPage(id: 2, title: "Page2", link: "https://tsubakidemo.wpcomstaging.com/page2"),
+            WordPressPage(id: 3, title: "Page3", link: "https://tsubakidemo.wpcomstaging.com/page3")
+        ]
+        static let demoSuffix = "?demo"
     }
 }
 

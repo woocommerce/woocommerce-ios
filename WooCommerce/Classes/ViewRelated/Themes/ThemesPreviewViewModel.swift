@@ -11,6 +11,11 @@ final class ThemesPreviewViewModel: ObservableObject {
     @Published private(set) var installingTheme: Bool = false
     @Published var notice: Notice?
 
+    // We need to append `demoModeSuffix` to prevent any activation / purchase header to appear on the theme demo.
+    var selectedPageUrl: URL? {
+        URL(string: selectedPage.link + Constants.demoModeSuffix)
+    }
+
     let mode: ThemesCarouselViewModel.Mode
     let theme: WordPressTheme
 
@@ -48,8 +53,9 @@ final class ThemesPreviewViewModel: ObservableObject {
     func fetchPages() async {
         do {
             // Append the list of pages to the existing home page value, since the API call result
-            // do not include the home page.
+            // does not include the home page.
             pages += try await loadPages()
+
             state = .pagesContent
         } catch {
             DDLogError("⛔️ Error loading pages: \(error)")
@@ -114,6 +120,10 @@ private extension ThemesPreviewViewModel {
 }
 
 extension ThemesPreviewViewModel {
+    private enum Constants {
+        static let demoModeSuffix = "?demo"
+    }
+
     enum State: Equatable {
         case pagesLoading
         case pagesLoadingError

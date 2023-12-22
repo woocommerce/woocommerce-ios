@@ -34,6 +34,11 @@ public final class OrderStatsRemoteV4: Remote {
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKeys.quantity: String(quantity),
             ParameterKeys.forceRefresh: forceRefresh,
+            // Product stats in `ProductsReportsRemote.loadTopProductsReport` are based on the order creation date, while the order/revenue
+            // stats are based on a store option in the analytics settings with the order paid date as the default.
+            // In WC version 8.6+, a new parameter `date_type` is available to override the date type so that we can
+            // show the order/revenue and product stats based on the same date column, order creation date.
+            ParameterKeys.dateType: ParameterValues.dateType,
             ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
@@ -62,10 +67,12 @@ private extension OrderStatsRemoteV4 {
         static let before = "before"
         static let quantity = "per_page"
         static let forceRefresh = "force_cache_refresh"
+        static let dateType = "date_type"
         static let fields = "fields"
     }
 
     enum ParameterValues {
+        static let dateType = "date_created"
         static let fieldValues = ["orders_count", "num_items_sold", "total_sales", "net_revenue", "avg_order_value"]
     }
 }

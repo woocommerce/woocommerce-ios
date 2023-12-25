@@ -71,4 +71,18 @@ public final class BlazeTargetLocation: NSObject, Decodable, GeneratedCopiable, 
 
     /// Parent of the location.
     public let parentLocation: BlazeTargetLocation?
+
+    public init(id: Int64,
+                name: String,
+                type: String,
+                code: String? = nil,
+                isoCode: String? = nil,
+                parentLocation: BlazeTargetLocation? = nil) {
+        self.id = id
+        self.name = name
+        self.type = type
+        self.code = code
+        self.isoCode = isoCode
+        self.parentLocation = parentLocation
+    }
 }

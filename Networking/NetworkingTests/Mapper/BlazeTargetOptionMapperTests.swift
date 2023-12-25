@@ -58,7 +58,8 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
         XCTAssertNil(firstItem.isoCode)
         XCTAssertEqual(firstItem.parentLocation?.id, 69)
         XCTAssertEqual(firstItem.parentLocation?.parentLocation?.id, 228)
-        XCTAssertNil(firstItem.parentLocation?.parentLocation?.parentLocation)
+        XCTAssertEqual(firstItem.parentLocation?.parentLocation?.parentLocation?.id, 5)
+        XCTAssertNil(firstItem.parentLocation?.parentLocation?.parentLocation?.parentLocation)
     }
 }
 

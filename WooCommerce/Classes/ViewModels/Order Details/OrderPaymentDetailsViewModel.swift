@@ -109,7 +109,7 @@ final class OrderPaymentDetailsViewModel {
             return nil
         }
 
-        let styleDate = datePaid.toString(dateStyle: .medium, timeStyle: .none)
+        let styleDate = datePaid.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
         let template = NSLocalizedString(
             "%1$@ via %2$@",
             comment: "Payment on <date> received via (payment method title)")

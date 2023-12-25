@@ -53,7 +53,7 @@ public struct BlazeTargetTopic: Decodable, Equatable, GeneratedCopiable, Generat
 /// This has to be a class so that it can reference a property with the type of itself.
 ///
 public final class BlazeTargetLocation: NSObject, Decodable, GeneratedCopiable, GeneratedFakeable {
-    
+
     /// ID of the location
     public let id: Int64
 

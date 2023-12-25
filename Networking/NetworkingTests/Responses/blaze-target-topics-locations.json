@@ -1,0 +1,89 @@
+[
+    {
+        "location_id": 1439,
+        "name": "Madrid",
+        "type": "state",
+        "code": null,
+        "iso_code": null,
+        "parent_location": {
+            "id": 69,
+            "code": null,
+            "name": "Comunidad De Madrid",
+            "type": "region",
+            "iso_code": null,
+            "parent_location": {
+                "id": 228,
+                "code": null,
+                "name": "Spain",
+                "type": "country",
+                "iso_code": "ESP",
+                "parent_location": {
+                    "id": 5,
+                    "code": null,
+                    "name": "Europe",
+                    "type": "continent",
+                    "iso_code": null,
+                    "parent_location": null
+                }
+            }
+        }
+    },
+    {
+        "location_id": 2035,
+        "name": "Madre De Dios",
+        "type": "state",
+        "code": null,
+        "iso_code": null,
+        "parent_location": {
+            "id": 57,
+            "code": null,
+            "name": "Peru",
+            "type": "country",
+            "iso_code": "PER",
+            "parent_location": {
+                "id": 8,
+                "code": null,
+                "name": "South America",
+                "type": "continent",
+                "iso_code": null,
+                "parent_location": null
+            }
+        }
+    },
+    {
+        "location_id": 6457,
+        "name": "Madrid",
+        "type": "city",
+        "code": null,
+        "iso_code": null,
+        "parent_location": {
+            "id": 1841,
+            "code": null,
+            "name": "Iowa",
+            "type": "state",
+            "iso_code": null,
+            "parent_location": {
+                "id": 174,
+                "code": null,
+                "name": "Midwest",
+                "type": "region",
+                "iso_code": null,
+                "parent_location": {
+                    "id": 152,
+                    "code": null,
+                    "name": "United States",
+                    "type": "country",
+                    "iso_code": "USA",
+                    "parent_location": {
+                        "id": 6,
+                        "code": null,
+                        "name": "North America",
+                        "type": "continent",
+                        "iso_code": null,
+                        "parent_location": null
+                    }
+                }
+            }
+        }
+    }
+]

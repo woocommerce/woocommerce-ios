@@ -220,7 +220,7 @@ final class DateWooTests: XCTestCase {
         let dateString = date.toString(dateStyle: .short, timeStyle: .full, timeZone: timeZone, locale: locale)
 
         // Then
-        XCTAssertEqual(dateString, "12/24/23, 3:23:31 PM GMT-12:00")
+        XCTAssertEqual(dateString, "12/24/23, 3:23:31 PM GMT-12:00")
     }
 
     // MARK: - `toStringInSiteTimeZone(dateStyle:timeStyle:locale:)`
@@ -236,6 +236,6 @@ final class DateWooTests: XCTestCase {
         let dateString = date.toStringInSiteTimeZone(dateStyle: .short, timeStyle: .full, locale: locale)
 
         // Then
-        XCTAssertEqual(dateString, "12/24/23, 3:23:31 PM GMT-12:00")
+        XCTAssertEqual(dateString, "12/24/23, 3:23:31 PM GMT-12:00")
     }
 }

@@ -14,7 +14,7 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
             .init(id: "es", name: "Spanish")
         ])
     }
-    
+
     /// Verifies that the device list is parsed.
     ///
     func test_BlazeTargetDeviceListMapper_parses_all_contents_in_response() throws {

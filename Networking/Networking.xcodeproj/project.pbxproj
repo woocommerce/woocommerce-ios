@@ -845,7 +845,7 @@
 		DEA493722B3997ED00EED015 /* blaze-target-languages.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA4936E2B3997ED00EED015 /* blaze-target-languages.json */; };
 		DEA493732B3997ED00EED015 /* blaze-target-topics.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA4936F2B3997ED00EED015 /* blaze-target-topics.json */; };
 		DEA493742B3997ED00EED015 /* blaze-target-devices.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA493702B3997ED00EED015 /* blaze-target-devices.json */; };
-		DEA493752B3997ED00EED015 /* blaze-target-topics-locations.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA493712B3997ED00EED015 /* blaze-target-topics-locations.json */; };
+		DEA493752B3997ED00EED015 /* blaze-target-locations.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA493712B3997ED00EED015 /* blaze-target-locations.json */; };
 		DEA493772B39987B00EED015 /* BlazeTargetOptionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493762B39987B00EED015 /* BlazeTargetOptionMapperTests.swift */; };
 		DEA662A22A84DD5100731D36 /* site-settings-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA662A12A84DD5100731D36 /* site-settings-success.json */; };
 		DEA6B1C4296C0F45005AA5E9 /* payment-gateway-cod-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEA6B1C3296C0F45005AA5E9 /* payment-gateway-cod-without-data.json */; };
@@ -1888,7 +1888,7 @@
 		DEA4936E2B3997ED00EED015 /* blaze-target-languages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-target-languages.json"; sourceTree = "<group>"; };
 		DEA4936F2B3997ED00EED015 /* blaze-target-topics.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-target-topics.json"; sourceTree = "<group>"; };
 		DEA493702B3997ED00EED015 /* blaze-target-devices.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-target-devices.json"; sourceTree = "<group>"; };
-		DEA493712B3997ED00EED015 /* blaze-target-topics-locations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-target-topics-locations.json"; sourceTree = "<group>"; };
+		DEA493712B3997ED00EED015 /* blaze-target-locations.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-target-locations.json"; sourceTree = "<group>"; };
 		DEA493762B39987B00EED015 /* BlazeTargetOptionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetOptionMapperTests.swift; sourceTree = "<group>"; };
 		DEA662A12A84DD5100731D36 /* site-settings-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-settings-success.json"; sourceTree = "<group>"; };
 		DEA6B1C3296C0F45005AA5E9 /* payment-gateway-cod-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "payment-gateway-cod-without-data.json"; sourceTree = "<group>"; };
@@ -2633,7 +2633,7 @@
 			children = (
 				DEA493702B3997ED00EED015 /* blaze-target-devices.json */,
 				DEA4936E2B3997ED00EED015 /* blaze-target-languages.json */,
-				DEA493712B3997ED00EED015 /* blaze-target-topics-locations.json */,
+				DEA493712B3997ED00EED015 /* blaze-target-locations.json */,
 				DEA4936F2B3997ED00EED015 /* blaze-target-topics.json */,
 				DE78DE492B2AEC7F002E58DE /* wp-page-list-success.json */,
 				EE66BB032B28975B00518DAF /* theme-install-already-installed.json */,
@@ -3694,7 +3694,7 @@
 				45152825257A8B740076B03C /* product-attribute-update.json in Resources */,
 				68C87B342862D40E00A99054 /* setting-all-except-countries.json in Resources */,
 				EE28C7DB2AC17961004A69F4 /* generate-product-invalid-token.json in Resources */,
-				DEA493752B3997ED00EED015 /* blaze-target-topics-locations.json in Resources */,
+				DEA493752B3997ED00EED015 /* blaze-target-locations.json in Resources */,
 				EE66BB062B29791500518DAF /* theme-activate-success.json in Resources */,
 				CE6B969A2A0BCD09003C4B27 /* order-with-bundled-line-items.json in Resources */,
 				3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */,

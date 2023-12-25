@@ -142,7 +142,11 @@ final class OrderPaymentDetailsViewModel {
         }
 
         // First, localize all the pieces of the sentence.
-        let dateCreated = DateFormatter.mediumLengthLocalizedDateFormatter.string(from: refund.dateCreated)
+        let dateCreated = {
+            let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
+            dateFormatter.timeZone = .siteTimezone
+            return dateFormatter.string(from: refund.dateCreated)
+        }()
 
         let hasRefundGateway = refund.isAutomated ?? false
 

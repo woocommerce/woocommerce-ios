@@ -52,9 +52,9 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityAddTraits(.isHeader)
-                LazyVGrid(columns: [GridItem(.flexible(maximum: 60), alignment: .leading),
-                                    GridItem(alignment: .leading),
+                LazyVGrid(columns: [GridItem(.flexible(maximum: 44), alignment: .leading),
                                     GridItem(.flexible(minimum: 100), alignment: .leading),
+                                    GridItem(alignment: .leading),
                                     GridItem(alignment: .trailing)],
                           spacing: 16) {
                     Image(systemName: "calendar")

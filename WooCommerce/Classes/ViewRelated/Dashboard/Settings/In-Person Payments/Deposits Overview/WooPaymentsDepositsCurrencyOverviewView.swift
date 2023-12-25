@@ -57,11 +57,6 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                                     GridItem(.flexible(minimum: 100), alignment: .leading),
                                     GridItem(alignment: .trailing)],
                           spacing: 16) {
-                    Text(Localization.nextDepositRowTitle)
-                    Text(viewModel.nextDepositDate)
-                    WooPaymentsDepositsBadge(status: viewModel.nextDepositStatus)
-                    Text(viewModel.nextDepositAmount)
-
                     Image(systemName: "calendar")
                         .accessibilityHidden(true)
                     Text(viewModel.lastDepositDate)
@@ -159,9 +154,6 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
         static let lastDepositHeader = NSLocalizedString(
             "Last Deposit",
             comment: "Section header for the last deposit in the WooPayments Deposits overview")
-        static let nextDepositRowTitle = NSLocalizedString(
-            "Next",
-            comment: "Row title for the next deposit in the WooPayments Deposits overview")
         static let learnMoreButtonText = NSLocalizedString(
             "Learn more about when you'll receive your funds",
             comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
@@ -185,11 +177,6 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
             depositInterval: .daily,
             pendingBalanceAmount: 1000.0,
             pendingDepositDays: 2,
-            nextDeposit: WooPaymentsDepositsOverviewByCurrency.NextDeposit(
-                amount: 250.0,
-                date: Date(),
-                status: .pending
-            ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 500.0,
                 date: Date(),

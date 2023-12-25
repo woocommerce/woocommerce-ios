@@ -54,7 +54,6 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
         for currency in currencies {
             let pendingBalance = depositsOverview.balance.pending.first { CurrencyCode(caseInsensitiveRawValue: $0.currency) == currency }
             let availableBalance = depositsOverview.balance.available.first { CurrencyCode(caseInsensitiveRawValue: $0.currency) == currency }
-            let nextDeposit = depositsOverview.deposit.nextScheduled.first { CurrencyCode(caseInsensitiveRawValue: $0.currency) == currency }
             let lastDeposit = depositsOverview.deposit.lastPaid.first { CurrencyCode(caseInsensitiveRawValue: $0.currency) == currency }
             let overview = WooPaymentsDepositsOverviewByCurrency(
                 currency: currency,
@@ -62,7 +61,6 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
                 depositInterval: depositsOverview.account.depositsSchedule.interval,
                 pendingBalanceAmount: balanceAmount(from: pendingBalance),
                 pendingDepositDays: depositsOverview.account.depositsSchedule.delayDays,
-                nextDeposit: nextDepositForView(from: nextDeposit),
                 lastDeposit: lastDepositForView(from: lastDeposit),
                 availableBalance: balanceAmount(from: availableBalance))
             depositsOverviews.append(overview)
@@ -91,19 +89,6 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
         }
         return depositAmountDecimal(from: balance.amount,
                                     currency: currency)
-    }
-
-    private func nextDepositForView(from nextDeposit: WooPaymentsDeposit?) -> WooPaymentsDepositsOverviewByCurrency.NextDeposit? {
-        guard let nextDeposit,
-              let currency = CurrencyCode(caseInsensitiveRawValue: nextDeposit.currency) else {
-            return nil
-        }
-        return WooPaymentsDepositsOverviewByCurrency.NextDeposit(
-            amount: depositAmountDecimal(from: nextDeposit.amount,
-                                         currency: currency,
-                                         type: nextDeposit.type),
-            date: nextDeposit.date,
-            status: nextDeposit.status)
     }
 
     private func lastDepositForView(from lastDeposit: WooPaymentsDeposit?) -> WooPaymentsDepositsOverviewByCurrency.LastDeposit? {

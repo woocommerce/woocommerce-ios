@@ -29,11 +29,8 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
 
     private func setupProperties() {
         pendingBalance = formatAmount(overview.pendingBalanceAmount)
-        nextDepositAmount = formatAmount(overview.nextDeposit?.amount ?? NSDecimalNumber(value: 0))
         lastDepositAmount = formatAmount(overview.lastDeposit?.amount ?? NSDecimalNumber(value: 0))
-        nextDepositDate = nextDepositDateText()
         lastDepositDate = formatDate(overview.lastDeposit?.date) ?? Localization.noDateString
-        nextDepositStatus = overview.nextDeposit?.status ?? .unknown
         lastDepositStatus = overview.lastDeposit?.status ?? .unknown
         availableBalance = formatAmount(overview.availableBalance)
         depositScheduleHint = depositScheduleHintText()
@@ -41,11 +38,8 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     }
 
     @Published var pendingBalance: String = ""
-    @Published var nextDepositAmount: String = ""
     @Published var lastDepositAmount: String = ""
-    @Published var nextDepositDate: String = ""
     @Published var lastDepositDate: String = ""
-    @Published var nextDepositStatus: WooPaymentsDepositStatus = .unknown
     @Published var lastDepositStatus: WooPaymentsDepositStatus = .unknown
     @Published var availableBalance: String = ""
     @Published var depositScheduleHint: String = ""
@@ -60,14 +54,6 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
         } else {
             return systemCurrencyFormatter.string(from: amount) ?? ""
         }
-    }
-
-    private func nextDepositDateText() -> String {
-        guard let dateString = formatDate(overview.nextDeposit?.date) else {
-            return Localization.noDateString
-        }
-        return String(format: Localization.estimatedDateString,
-                      dateString)
     }
 
     private func depositScheduleHintText() -> String {

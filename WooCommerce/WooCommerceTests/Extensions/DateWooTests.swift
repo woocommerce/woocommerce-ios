@@ -229,7 +229,8 @@ final class DateWooTests: XCTestCase {
         // Given
         // GMT: Monday, December 25, 2023 3:23:31 AM
         let date = Date(timeIntervalSince1970: 1703474611)
-        ServiceLocator.stores.updateDefaultStore(.fake().copy(gmtOffset: -12))
+        ServiceLocator.stores.updateDefaultStore(storeID: 1)
+        ServiceLocator.stores.updateDefaultStore(.fake().copy(siteID: 1, gmtOffset: -12))
         let locale = Locale(identifier: "en_US")
 
         // When

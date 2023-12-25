@@ -204,4 +204,38 @@ final class DateWooTests: XCTestCase {
         let expected = formatter.date(from: "2020-03-09T00:00:00Z")!
         XCTAssertEqual(actual, expected)
     }
+
+    // MARK: - `toString(dateStyle:timeStyle:timeZone:locale:)`
+
+    func test_toString_returns_date_string_in_given_time_zone() throws {
+        // Given
+        // GMT: Monday, December 25, 2023 3:23:31 AM
+        let date = Date(timeIntervalSince1970: 1703474611)
+        // For time zone GMT-12, the identifier used is "Etc/GMT+12" and not "Etc/GMT-12" which might seem more intuitive,
+        // this is due to the way that these identifiers are standardized.
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "Etc/GMT+12"))
+        let locale = Locale(identifier: "en_US")
+
+        // When
+        let dateString = date.toString(dateStyle: .short, timeStyle: .full, timeZone: timeZone, locale: locale)
+
+        // Then
+        XCTAssertEqual(dateString, "12/24/23, 3:23:31 PM GMT-12:00")
+    }
+
+    // MARK: - `toStringInSiteTimeZone(dateStyle:timeStyle:locale:)`
+
+    func test_toStringInSiteTimeZone_returns_date_string_in_site_time_zone() throws {
+        // Given
+        // GMT: Monday, December 25, 2023 3:23:31 AM
+        let date = Date(timeIntervalSince1970: 1703474611)
+        ServiceLocator.stores.updateDefaultStore(.fake().copy(gmtOffset: -12))
+        let locale = Locale(identifier: "en_US")
+
+        // When
+        let dateString = date.toStringInSiteTimeZone(dateStyle: .short, timeStyle: .full, locale: locale)
+
+        // Then
+        XCTAssertEqual(dateString, "12/24/23, 3:23:31 PM GMT-12:00")
+    }
 }

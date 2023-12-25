@@ -48,6 +48,7 @@ struct SummaryTableViewCellViewModel {
     ///
     var subtitle: String {
         let formatter = DateFormatter.dateAndTimeFormatter
+        formatter.timeZone = .siteTimezone
         return formatter.string(from: dateCreated)
     }
 }

@@ -18,6 +18,13 @@ extension Date {
         return formatter.string(from: self)
     }
 
+    /// Same as `toString(dateStyle:timeStyle:)` but in the site time zone.
+    /// The string returned will be localized in the device's current locale.
+    ///
+    func toStringInSiteTimeZone(dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
+        toString(dateStyle: dateStyle, timeStyle: timeStyle, timeZone: .siteTimezone)
+    }
+
     /// Returns a localized update string relative to the receiver if it's within one day of now *or*
     /// a medium datestyle + short timestyle string otherwise.
     ///

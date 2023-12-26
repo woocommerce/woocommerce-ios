@@ -1133,9 +1133,15 @@ private extension ProductFormViewController {
         let blazeViewModel = BlazeWebViewModel(siteID: viewModel.productModel.siteID,
                                                source: source,
                                                siteURL: siteUrl,
-                                               productID: product.productID)
+                                               productID: product.productID) {
+            self.handlePostCreation()
+        }
         let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
         navigationController?.show(webViewController, sender: self)
+    }
+
+    func handlePostCreation() {
+        navigationController?.popViewController(animated: true)
     }
 
     func trackVariationRemoveButtonTapped() {

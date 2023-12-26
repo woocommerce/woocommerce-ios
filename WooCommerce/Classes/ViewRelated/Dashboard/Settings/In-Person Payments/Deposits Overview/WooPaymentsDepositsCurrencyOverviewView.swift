@@ -41,7 +41,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     Text(viewModel.balanceTypeHint)
                         .font(.footnote)
                         .foregroundColor(.secondary)
-                        .padding(.vertical, 8)
+                        .padding(.bottom, Layout.padding)
                     Divider()
                 }
             }
@@ -51,11 +51,12 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, Layout.padding)
                     .accessibilityAddTraits(.isHeader)
                 LazyVGrid(columns: [GridItem(.flexible(minimum: 100), alignment: .leading),
                                     GridItem(alignment: .leading),
                                     GridItem(alignment: .trailing)],
-                          spacing: 16) {
+                          spacing: Layout.elementSpacing) {
                     HStack {
                         Image(systemName: "calendar")
                             .accessibilityHidden(true)
@@ -72,7 +73,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                         .font(.footnote)
                 }
                 .foregroundColor(.secondary)
-                .padding(.vertical, 8)
+                .padding(.vertical, Layout.padding)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Divider()
@@ -136,6 +137,14 @@ private extension WooPaymentsDepositsBadge {
     enum Layout {
         static let padding: CGFloat = 8.0
         static let cornerRadius: CGFloat = 8.0
+    }
+}
+
+@available(iOS 16.0, *)
+private extension WooPaymentsDepositsCurrencyOverviewView {
+    enum Layout {
+        static let padding: CGFloat = 8.0
+        static let elementSpacing: CGFloat = 16.0
     }
 }
 

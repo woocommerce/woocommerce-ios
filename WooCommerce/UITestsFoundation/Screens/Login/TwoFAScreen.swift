@@ -21,14 +21,12 @@ public final class TwoFAScreen: ScreenObject {
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
+                securityKeyButtonGetter, // Please keep this element at the beginning of this list to ensure its presence via the internal waitForScreen
                 twoFAFieldGetter,
-                securityKeyButtonGetter,
                 continueButtonGetter
             ],
             app: app
         )
-
-        try waitForScreen()
     }
 
     @discardableResult

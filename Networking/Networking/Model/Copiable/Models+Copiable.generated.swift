@@ -199,6 +199,78 @@ extension Networking.BlazeCampaign {
     }
 }
 
+extension Networking.BlazeTargetDevice {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy
+    ) -> Networking.BlazeTargetDevice {
+        let id = id ?? self.id
+        let name = name ?? self.name
+
+        return Networking.BlazeTargetDevice(
+            id: id,
+            name: name
+        )
+    }
+}
+
+extension Networking.BlazeTargetLanguage {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy
+    ) -> Networking.BlazeTargetLanguage {
+        let id = id ?? self.id
+        let name = name ?? self.name
+
+        return Networking.BlazeTargetLanguage(
+            id: id,
+            name: name
+        )
+    }
+}
+
+extension Networking.BlazeTargetLocation {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        type: CopiableProp<String> = .copy,
+        code: NullableCopiableProp<String> = .copy,
+        isoCode: NullableCopiableProp<String> = .copy,
+        parentLocation: NullableCopiableProp<BlazeTargetLocation> = .copy
+    ) -> Networking.BlazeTargetLocation {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let type = type ?? self.type
+        let code = code ?? self.code
+        let isoCode = isoCode ?? self.isoCode
+        let parentLocation = parentLocation ?? self.parentLocation
+
+        return Networking.BlazeTargetLocation(
+            id: id,
+            name: name,
+            type: type,
+            code: code,
+            isoCode: isoCode,
+            parentLocation: parentLocation
+        )
+    }
+}
+
+extension Networking.BlazeTargetTopic {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy
+    ) -> Networking.BlazeTargetTopic {
+        let id = id ?? self.id
+        let description = description ?? self.description
+
+        return Networking.BlazeTargetTopic(
+            id: id,
+            description: description
+        )
+    }
+}
+
 extension Networking.Coupon {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

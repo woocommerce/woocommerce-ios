@@ -280,19 +280,33 @@ private extension OrderPaymentSection {
             value: "Payment totals",
             comment: "Title text of the section that shows Payment details when creating a new order")
         static let productsTotal = NSLocalizedString(
-            "orderPaymentSection.products",
+            "orderPaymentSection.productsTotal",
             value: "Products",
             comment: "Label for the row showing the total cost of products in the order")
-        static let discountTotal = NSLocalizedString("Discount total", comment: "Label for the the row showing the total discount of the order")
-        static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
+        static let discountTotal = NSLocalizedString(
+            "orderPaymentSection.discountTotal",
+            value:"Discount total",
+            comment: "Label for the the row showing the total discount of the order")
+        static let shippingTotal = NSLocalizedString(
+            "orderPaymentSection.shippingTotal",
+            value:"Shipping",
+            comment: "Label for the row showing the cost of shipping in the order")
         static let customAmountsTotal = NSLocalizedString(
-            "orderPaymentSection.customAmounts",
+            "orderPaymentSection.customAmountsTotal",
             value: "Custom amounts",
             comment: "Label for the row showing the cost of fees in the order")
-        static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
-        static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
-        static let taxRateAddedAutomaticallyRowText = NSLocalizedString("Tax rate location added automatically",
-                                                                        comment: "Notice in editable order details when the tax rate was added to the order")
+        static let taxes = NSLocalizedString(
+            "orderPaymentSection.taxes",
+            value:"Taxes",
+            comment: "Label for the row showing the taxes in the order")
+        static let coupon = NSLocalizedString(
+            "orderPaymentSection.coupon",
+            value:"Coupon",
+            comment: "Label for the row showing the cost of coupon in the order")
+        static let taxRateAddedAutomaticallyRowText = NSLocalizedString(
+            "orderPaymentSection.taxRateAddedAutomaticallyRowText",
+            value:"Tax rate location added automatically",
+            comment: "Notice in editable order details when the tax rate was added to the order")
         static let taxInformationLearnMore = NSLocalizedString(
             "order.form.paymentSection.taxes.learnMore",
             value: "Learn More.",

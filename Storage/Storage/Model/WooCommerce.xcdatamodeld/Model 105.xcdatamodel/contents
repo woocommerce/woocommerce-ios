@@ -32,6 +32,10 @@
         <attribute name="totalClicks" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalImpressions" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="BlazeTargetDevice" representedClassName="BlazeTargetDevice" syncable="YES">
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+    </entity>
     <entity name="BlazeTargetLanguage" representedClassName="BlazeTargetLanguage" syncable="YES">
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>

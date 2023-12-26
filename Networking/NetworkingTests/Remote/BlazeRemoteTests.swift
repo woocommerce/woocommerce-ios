@@ -93,7 +93,6 @@ final class BlazeRemoteTests: XCTestCase {
 
     func test_fetchTargetLanguages_returns_parsed_campaigns() async throws {
         // Given
-        // Given
         let remote = BlazeRemote(network: network)
 
         let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/languages"

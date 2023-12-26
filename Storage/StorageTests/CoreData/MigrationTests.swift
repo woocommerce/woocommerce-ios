@@ -2506,6 +2506,35 @@ final class MigrationTests: XCTestCase {
         // The price attribute is removed from the migrated entity.
         XCTAssertNil(migratedtopEarnerStatsItem.entity.attributesByName["price"], "Confirm attribute no longer exists.")
     }
+
+    func test_migrating_from_104_to_105_adds_BlazeTargetLanguage_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 104")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. `BlazeTargetLanguage` should not exist in Model 104
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeTargetLanguage", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 105")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `BlazeTargetLanguage` should exist in Model 105
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeTargetLanguage", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetLanguage"), 0)
+
+        // Insert a new BlazeTargetLanguage
+        let language = insertBlazeTargetLanguage(to: targetContext, forModel: 100)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetLanguage"), 1)
+
+        // Check all attributes
+        XCTAssertEqual(language.value(forKey: "id") as? String, "en")
+        XCTAssertEqual(language.value(forKey: "name") as? String, "English")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3227,5 +3256,15 @@ private extension MigrationTests {
         }
 
         return campaign
+    }
+
+    /// Inserts a `BlazeTargetLanguage` entity, providing default values for the required properties.
+    @discardableResult
+    func insertBlazeTargetLanguage(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let language = context.insert(entityName: "BlazeTargetLanguage", properties: [
+            "id": "en",
+            "name": "English"
+        ])
+        return language
     }
 }

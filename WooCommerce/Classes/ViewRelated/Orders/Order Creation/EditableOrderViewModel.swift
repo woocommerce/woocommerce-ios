@@ -2367,13 +2367,16 @@ extension TaxBasedOnSetting {
     var displayString: String {
         switch self {
         case .customerBillingAddress:
-            return NSLocalizedString("Calculated on billing address",
+            return NSLocalizedString("editableOrderViewModel.taxBasedOnSetting.customerBillingAddress",
+                                     value: "Calculated on billing address.",
                                      comment: "The string to show on order taxes when they are calculated based on the billing address")
         case .customerShippingAddress:
-            return NSLocalizedString("Calculated on shipping address",
+            return NSLocalizedString("editableOrderViewModel.taxBasedOnSetting.customerShippingAddress",
+                                     value: "Calculated on shipping address.",
                                      comment: "The string to show on order taxes when they are calculated based on the shipping address")
         case .shopBaseAddress:
-            return NSLocalizedString("Calculated on shop base address",
+            return NSLocalizedString("editableOrderViewModel.taxBasedOnSetting.shopBaseAddress",
+                                     value: "Calculated on shop base address.",
                                      comment: "The string to show on order taxes when they are calculated based on the shop base address")
         }
     }

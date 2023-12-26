@@ -105,7 +105,7 @@ private extension BlazeRemote {
                 case .devices:
                     return "devices"
                 case .topics:
-                    return "page_topics"
+                    return "page-topics"
                 case .locations(let query):
                     return "locations?query=" + query
                 }

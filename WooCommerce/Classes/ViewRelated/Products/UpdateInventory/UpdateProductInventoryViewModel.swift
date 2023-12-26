@@ -169,7 +169,11 @@ final class UpdateProductInventoryViewModel: ObservableObject {
             }
 
             enableQuantityButton = true
-            updateQuantityButtonMode = decimalValue == inventoryItem.stockQuantity ? .increaseOnce : .customQuantity
+            guard let stockQuantity = inventoryItem.stockQuantity else {
+                updateQuantityButtonMode = .increaseOnce
+                return
+            }
+            updateQuantityButtonMode = decimalValue == stockQuantity ? .increaseOnce : .customQuantity
         }
     }
 

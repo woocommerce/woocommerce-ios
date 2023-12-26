@@ -37,7 +37,9 @@ struct UpdateProductInventoryView: View {
                 ScrollView {
                     VStack(alignment: .center, spacing: 0) {
                         AsyncImage(url: viewModel.imageURL) { image in
-                            image.resizable()
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
                         } placeholder: {
                             Rectangle()
                                 .foregroundColor(.gray)

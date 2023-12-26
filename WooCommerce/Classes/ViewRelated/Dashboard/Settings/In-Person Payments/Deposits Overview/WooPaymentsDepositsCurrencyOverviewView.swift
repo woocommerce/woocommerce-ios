@@ -52,15 +52,16 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityAddTraits(.isHeader)
-                LazyVGrid(columns: [GridItem(.flexible(maximum: 44), alignment: .leading),
-                                    GridItem(.flexible(minimum: 100), alignment: .leading),
+                LazyVGrid(columns: [GridItem(.flexible(minimum: 100), alignment: .leading),
                                     GridItem(alignment: .leading),
                                     GridItem(alignment: .trailing)],
                           spacing: 16) {
-                    Image(systemName: "calendar")
-                        .accessibilityHidden(true)
-                    Text(viewModel.lastDepositDate)
-                        .foregroundColor(.primary)
+                    HStack {
+                        Image(systemName: "calendar")
+                            .accessibilityHidden(true)
+                        Text(viewModel.lastDepositDate)
+                            .foregroundColor(.primary)
+                    }
                     WooPaymentsDepositsBadge(status: viewModel.lastDepositStatus)
                     Text(viewModel.lastDepositAmount)
                         .foregroundColor(.primary)

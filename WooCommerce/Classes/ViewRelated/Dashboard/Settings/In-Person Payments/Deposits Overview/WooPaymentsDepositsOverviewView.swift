@@ -23,6 +23,7 @@ struct WooPaymentsDepositsOverviewView: View {
             TopTabView(tabs: tabs,
                        showTabs: $isExpanded)
         }
+        Divider()
         .onAppear(perform: viewModel.onAppear)
     }
 }

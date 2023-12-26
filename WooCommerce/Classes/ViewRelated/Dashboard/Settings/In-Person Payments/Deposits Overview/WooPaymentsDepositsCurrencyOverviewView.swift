@@ -91,8 +91,6 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 }
                 .padding(.top)
                 .padding(.bottom)
-
-                Divider()
             }
         }
         .safariSheet(url: $viewModel.showWebviewURL)

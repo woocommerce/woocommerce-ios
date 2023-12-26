@@ -2528,12 +2528,41 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetLanguage"), 0)
 
         // Insert a new BlazeTargetLanguage
-        let language = insertBlazeTargetLanguage(to: targetContext, forModel: 100)
+        let language = insertBlazeTargetLanguage(to: targetContext, forModel: 105)
         XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetLanguage"), 1)
 
         // Check all attributes
         XCTAssertEqual(language.value(forKey: "id") as? String, "en")
         XCTAssertEqual(language.value(forKey: "name") as? String, "English")
+    }
+
+    func test_migrating_from_104_to_105_adds_BlazeTargetDevice_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 104")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. `BlazeTargetDevice` should not exist in Model 104
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeTargetDevice", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 105")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `BlazeTargetDevice` should exist in Model 105
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeTargetDevice", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetDevice"), 0)
+
+        // Insert a new BlazeTargetDevice
+        let device = insertBlazeTargetDevice(to: targetContext, forModel: 105)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetDevice"), 1)
+
+        // Check all attributes
+        XCTAssertEqual(device.value(forKey: "id") as? String, "mobile")
+        XCTAssertEqual(device.value(forKey: "name") as? String, "Mobile")
     }
 }
 
@@ -3266,5 +3295,15 @@ private extension MigrationTests {
             "name": "English"
         ])
         return language
+    }
+
+    /// Inserts a `BlazeTargetDevice` entity, providing default values for the required properties.
+    @discardableResult
+    func insertBlazeTargetDevice(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let device = context.insert(entityName: "BlazeTargetDevice", properties: [
+            "id": "mobile",
+            "name": "Mobile"
+        ])
+        return device
     }
 }

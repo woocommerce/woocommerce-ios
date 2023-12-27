@@ -97,11 +97,16 @@ private extension OrderPaymentSection {
     @ViewBuilder var appliedCouponsRows: some View {
         VStack {
             ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
-                TitleAndValueRow(title: viewModel.title,
-                                 titleSuffixImage: rowsEditImage,
-                                 value: .content(viewModel.discount),
-                                 selectionStyle: editableRowsSelectionStyle) {
-                    selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
+                VStack(alignment: .leading, spacing: .zero) {
+                    TitleAndValueRow(title: Localization.coupon,
+                                     titleSuffixImage: rowsEditImage,
+                                     value: .content(viewModel.discount),
+                                     selectionStyle: editableRowsSelectionStyle) {
+                        selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
+                    }
+                    Text(viewModel.detailsViewModel.code)
+                        .footnoteStyle()
+                        .padding(.horizontal, Constants.horizontalPadding)
                 }
             }
         }
@@ -300,6 +305,7 @@ private extension OrderPaymentSection {
         static let taxRateAddedAutomaticallyRowHorizontalSpacing: CGFloat = 8
         static let taxesAdaptativeStacksSpacing: CGFloat = 4
         static let sectionPadding: CGFloat = 16
+        static let horizontalPadding: CGFloat = 16
         static let rowMinHeight: CGFloat = 44
         static let infoTooltipCornerRadius: CGFloat = 4
     }

@@ -88,4 +88,168 @@ final class BlazeRemoteTests: XCTestCase {
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
     }
+
+    // MARK: - Fetch target languages
+
+    func test_fetchTargetLanguages_returns_parsed_campaigns() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/languages"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-languages")
+
+        // When
+        let results = try await remote.fetchTargetLanguages(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(results, [
+            .init(id: "en", name: "English"),
+            .init(id: "es", name: "Spanish")
+        ])
+    }
+
+    func test_fetchTargetLanguages_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/languages"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchTargetLanguages(for: sampleSiteID)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
+    // MARK: - Fetch target devices
+
+    func test_fetchTargetDevices_returns_parsed_campaigns() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/devices"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-devices")
+
+        // When
+        let results = try await remote.fetchTargetDevices(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(results, [
+            .init(id: "mobile", name: "Mobile"),
+            .init(id: "desktop", name: "Desktop")
+        ])
+    }
+
+    func test_fetchTargetDevices_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/devices"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchTargetDevices(for: sampleSiteID)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
+    // MARK: - Fetch target topics
+
+    func test_fetchTargetTopics_returns_parsed_campaigns() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/page-topics"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-topics")
+
+        // When
+        let results = try await remote.fetchTargetTopics(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(results, [
+            .init(id: "IAB1", description: "Arts & Entertainment"),
+            .init(id: "IAB2", description: "Automotive"),
+            .init(id: "IAB3", description: "Business")
+        ])
+    }
+
+    func test_fetchTargetTopics_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/page-topics"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchTargetTopics(for: sampleSiteID)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
+    // MARK: - Fetch target locations
+
+    func test_fetchTargetLocations_returns_parsed_campaigns() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let query = "test"
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/locations?query=" + query
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-locations")
+
+        // When
+        let results = try await remote.fetchTargetLocations(for: sampleSiteID, query: query)
+
+        // Then
+        XCTAssertEqual(results.count, 3)
+        let firstItem = try XCTUnwrap(results.first)
+        XCTAssertEqual(firstItem.id, 1439)
+        XCTAssertEqual(firstItem.name, "Madrid")
+        XCTAssertEqual(firstItem.type, "state")
+        XCTAssertNil(firstItem.code)
+        XCTAssertNil(firstItem.isoCode)
+        XCTAssertEqual(firstItem.parentLocation?.id, 69)
+        XCTAssertEqual(firstItem.parentLocation?.parentLocation?.id, 228)
+        XCTAssertEqual(firstItem.parentLocation?.parentLocation?.parentLocation?.id, 5)
+        XCTAssertNil(firstItem.parentLocation?.parentLocation?.parentLocation?.parentLocation)
+    }
+
+    func test_fetchTargetLocations_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let query = "test"
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/locations?query=" + query
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchTargetLocations(for: sampleSiteID, query: query)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
 }

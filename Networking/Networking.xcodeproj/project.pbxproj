@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -496,6 +496,7 @@
 		74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */; };
 		74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 74E30950216E8DCE00ABCE4C /* site-visits-alt.json */; };
 		77CE40602514CB3E003FF69D /* ProductDownloadDragAndDrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CE405F2514CB3E003FF69D /* ProductDownloadDragAndDrop.swift */; };
+		8617EDA22B3C00E800BD9D1B /* BlazeImpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8617EDA12B3C00E800BD9D1B /* BlazeImpressions.swift */; };
 		933A2732222234F800C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
 		9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */; };
 		93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */; };
@@ -1533,6 +1534,7 @@
 		74E30950216E8DCE00ABCE4C /* site-visits-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-alt.json"; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
 		77CE405F2514CB3E003FF69D /* ProductDownloadDragAndDrop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadDragAndDrop.swift; sourceTree = "<group>"; };
+		8617EDA12B3C00E800BD9D1B /* BlazeImpressions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeImpressions.swift; sourceTree = "<group>"; };
 		933A2731222234F800C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapperTests.swift; sourceTree = "<group>"; };
 		93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettings.swift; sourceTree = "<group>"; };
@@ -2624,6 +2626,7 @@
 				DEDA8DA02B182E850076BF0F /* WordPressTheme.swift */,
 				DE78DE452B2AE880002E58DE /* WordPressPage.swift */,
 				DEA4936A2B398FD700EED015 /* BlazeTargetOptions.swift */,
+				8617EDA12B3C00E800BD9D1B /* BlazeImpressions.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -4205,6 +4208,7 @@
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				31D27C812602889C002EDB1D /* SitePluginsRemote.swift in Sources */,
 				02BE0A7B274B695F001176D2 /* WordPressMediaMapper.swift in Sources */,
+				8617EDA22B3C00E800BD9D1B /* BlazeImpressions.swift in Sources */,
 				DEDA8DA92B183D5D0076BF0F /* WordPressThemeRemote.swift in Sources */,
 				45150A9A268340D2006922EA /* Country.swift in Sources */,
 				DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */,

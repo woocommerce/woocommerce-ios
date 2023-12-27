@@ -23,6 +23,7 @@ struct WooPaymentsDepositsOverviewView: View {
             TopTabView(tabs: tabs,
                        showTabs: $isExpanded)
         }
+        Divider()
         .onAppear(perform: viewModel.onAppear)
     }
 }
@@ -35,13 +36,7 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             automaticDeposits: true,
             depositInterval: .daily,
             pendingBalanceAmount: 1000.0,
-            pendingDepositsCount: 5,
             pendingDepositDays: 7,
-            nextDeposit: WooPaymentsDepositsOverviewByCurrency.NextDeposit(
-                amount: 250.0,
-                date: Date(),
-                status: .pending
-            ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 500.0,
                 date: Date(),
@@ -57,13 +52,7 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             automaticDeposits: true,
             depositInterval: .daily,
             pendingBalanceAmount: 200.0,
-            pendingDepositsCount: 5,
             pendingDepositDays: 7,
-            nextDeposit: WooPaymentsDepositsOverviewByCurrency.NextDeposit(
-                amount: 190.0,
-                date: Date(),
-                status: .pending
-            ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 600.0,
                 date: Date(),

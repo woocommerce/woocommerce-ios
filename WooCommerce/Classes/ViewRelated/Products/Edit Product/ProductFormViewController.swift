@@ -1146,7 +1146,7 @@ private extension ProductFormViewController {
         showBlazeCreationCelebrationView()
     }
 
-    func showBlazeCreationCelebrationView() {
+    func showBlazeCampaignCelebrationView() {
         productFormBottomSheetPresenter = buildBottomSheetPresenter()
         let controller = CelebrationHostingController(
             title: Localization.Blaze.celebrationTitle,

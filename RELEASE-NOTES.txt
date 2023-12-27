@@ -5,6 +5,7 @@
 - [**] Payments: merchants can collect payment directly from the order creation form [https://github.com/woocommerce/woocommerce-ios/pull/11490]
 - [*] Store creation: Inform user once store ready if app killed while waiting for store to be ready. [https://github.com/woocommerce/woocommerce-ios/pull/11478]
 - [*] Dashboard: Resolves a decoding error with certain payment gateway plugins that previously caused an error loading data in the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/11489]
+- [*] Payments: Updated UI for Deposit Summary [https://github.com/woocommerce/woocommerce-ios/pull/11533]
 
 16.7
 -----

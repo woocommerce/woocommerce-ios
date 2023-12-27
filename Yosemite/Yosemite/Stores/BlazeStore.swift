@@ -125,18 +125,17 @@ private extension BlazeStore {
 
 // MARK: - Synchronize target devices
 private extension BlazeStore {
+
     func synchronizeTargetDevices(siteID: Int64, onCompletion: @escaping (Result<[BlazeTargetDevice], Error>) -> Void) {
         Task { @MainActor in
             do {
-                let results: [BlazeTargetDevice]
-                #if DEBUG
-                results = [
-                    .init(id: "mobile", name: "Mobile"),
-                    .init(id: "desktop", name: "Desktop")
+                let stubbedResult = [
+                    BlazeTargetDevice(id: "mobile", name: "Mobile"),
+                    BlazeTargetDevice(id: "desktop", name: "Desktop")
                 ]
-                #else
-                results = try await remote.fetchTargetDevices(for: siteID)
-                #endif
+                let results: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetDevices(for: siteID)
+                })
                 upsertStoredTargetDeviceInBackground(readonlyDevices: results) {
                     onCompletion(.success(results))
                 }
@@ -176,5 +175,24 @@ private extension BlazeStore {
             }()
             storageDevice.update(with: device)
         }
+    }
+}
+
+// MARK: - Helper for mocking response
+private extension BlazeStore {
+    static var isRunningTests: Bool {
+        NSClassFromString("XCTestCase") != nil
+    }
+
+    func mockResponse<T>(stubbedResult: T, onExecution: () async throws -> T) async throws -> T {
+        // skips stubbed result for unit tests
+        guard Self.isRunningTests == false else {
+            return try await onExecution()
+        }
+        #if DEBUG
+        return stubbedResult
+        #else
+        return try await onExecution()
+        #endif
     }
 }

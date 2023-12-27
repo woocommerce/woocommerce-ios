@@ -48,6 +48,17 @@ extension UserDefaults {
 
         // Whether the Blaze section on My Store screen has been dismissed
         case hasDismissedBlazeSectionOnMyStore
+
+        // Product Creation AI
+        case numberOfTimesAIProductCreated
+        case didSuggestProductCreationAISurvey
+
+        // Theme installation
+        case themesPendingInstall
+
+        // Store Creation
+        case siteIDPendingStoreSwitch
+        case expectedStoreNamePendingStoreSwitch
     }
 }
 

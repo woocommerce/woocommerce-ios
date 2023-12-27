@@ -124,7 +124,7 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
         assertEqual("other", actualProperties["cause"] as? String)
     }
 
-    func test_json_parsing_failed_event_is_tracked_with_nil_properties_upon_decoding_error_when_properties_are_not_set() throws {
+    func test_json_parsing_failed_event_is_tracked_with_expected_nil_properties_upon_decoding_error_when_properties_are_not_set() throws {
         // When
         let error = mockDecodingError()
         mockNotificationCenter.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: nil)
@@ -138,6 +138,8 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
         let eventProperties = analyticsProvider.receivedProperties[indexOfEvent]
         XCTAssertNil(eventProperties["path"])
         XCTAssertNil(eventProperties["entity"])
+        XCTAssertNotNil(eventProperties["debug_decoding_path"])
+        XCTAssertNotNil(eventProperties["debug_decoding_description"])
     }
 
     func test_json_parsing_failed_event_is_tracked_with_properties_upon_decoding_error_when_properties_are_avaiable() throws {
@@ -157,6 +159,8 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
         let eventProperties = analyticsProvider.receivedProperties[indexOfEvent]
         XCTAssertEqual(eventProperties["path"] as? String, "wc/test")
         XCTAssertEqual(eventProperties["entity"] as? String, "Product")
+        XCTAssertEqual(eventProperties["debug_decoding_path"] as? String, "")
+        XCTAssertEqual(eventProperties["debug_decoding_description"] as? String, "The given data was not valid JSON.")
     }
 }
 

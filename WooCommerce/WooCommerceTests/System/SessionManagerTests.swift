@@ -319,6 +319,113 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.hasDisplayedTipAfterBlazeCampaignCreation])
     }
 
+    /// Verifies that `numberOfTimesAIProductCreated` is set to `nil` upon reset
+    ///
+    func test_numberOfTimesAIProductCreated_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[UserDefaults.Key.numberOfTimesAIProductCreated] = 3
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesAIProductCreated] as? Int), 3)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesAIProductCreated])
+    }
+
+    /// Verifies that `didSuggestProductCreationAISurvey` is set to `nil` upon reset
+    ///
+    func test_didSuggestProductCreationAISurvey_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.didSuggestProductCreationAISurvey] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.didSuggestProductCreationAISurvey] as? Bool))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.didSuggestProductCreationAISurvey])
+    }
+
+    /// Verifies that `themesPendingInstall` is set to `nil` upon reset
+    ///
+    func test_themesPendingInstall_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.themesPendingInstall] = ["123": "321"]
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.themesPendingInstall] as? [String: String]), ["123": "321"])
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.themesPendingInstall])
+    }
+
+    /// Verifies that `siteIDPendingStoreSwitch` is set to `nil` upon reset
+    ///
+    func test_siteIDPendingStoreSwitch_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+        let siteID: Int64 = 123
+
+        // When
+        defaults[.siteIDPendingStoreSwitch] = siteID
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.siteIDPendingStoreSwitch] as? Int64), siteID)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.siteIDPendingStoreSwitch])
+    }
+
+    /// Verifies that `expectedStoreNamePendingStoreSwitch` is set to `nil` upon reset
+    ///
+    func test_expectedStoreNamePendingStoreSwitch_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+        let storeName = "My Woo Store"
+
+        // When
+        defaults[.expectedStoreNamePendingStoreSwitch] = storeName
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.expectedStoreNamePendingStoreSwitch] as? String), storeName)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.expectedStoreNamePendingStoreSwitch])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

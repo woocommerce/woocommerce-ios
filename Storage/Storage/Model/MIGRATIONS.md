@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 105 (Release 16.8.0.0)
+- @rachelmcr 2023-12-19
+    - Removed `price` attribute from `TopEarnerStatsItem` entity.
+- @hihuongdo 2023-12-26
+    - Added new entities `BlazeTargetDevice`, `BlazeTargetLanguage`, `BlazeTargetTopic`.
+
 ## Model 104 (Release 16.5.0.0)
 - @rachelmcr 2023-11-29
     - Added `pricedIndividually` attribute to `ProductBundleItem` entitity.

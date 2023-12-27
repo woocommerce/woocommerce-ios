@@ -31,7 +31,11 @@ class ProductsReportsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "reports/products", filename: "reports-products")
 
         // When
-        let products = try await remote.loadTopProductsReport(for: self.sampleSiteID, earliestDateToInclude: Date(), latestDateToInclude: Date(), quantity: 2)
+        let products = try await remote.loadTopProductsReport(for: self.sampleSiteID,
+                                                              timeZone: .current,
+                                                              earliestDateToInclude: Date(),
+                                                              latestDateToInclude: Date(),
+                                                              quantity: 2)
 
         //Then
         XCTAssertEqual(products.count, 2)
@@ -46,7 +50,11 @@ class ProductsReportsRemoteTests: XCTestCase {
 
         // When & Then
         await assertThrowsError({
-            _ = try await remote.loadTopProductsReport(for: self.sampleSiteID, earliestDateToInclude: Date(), latestDateToInclude: Date(), quantity: 5)
+            _ = try await remote.loadTopProductsReport(for: self.sampleSiteID,
+                                                       timeZone: .current,
+                                                       earliestDateToInclude: Date(),
+                                                       latestDateToInclude: Date(),
+                                                       quantity: 5)
         }, errorAssert: { ($0 as? DotcomError) == .unauthorized })
     }
 }

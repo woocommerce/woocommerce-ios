@@ -34,7 +34,7 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-# Instanstiate versioning classes
+# Instantiate versioning classes
 VERSION_CALCULATOR = Fastlane::Wpmreleasetoolkit::Versioning::MarketingVersionCalculator.new
 VERSION_FORMATTER = Fastlane::Wpmreleasetoolkit::Versioning::FourPartVersionFormatter.new
 BUILD_CODE_FORMATTER = Fastlane::Wpmreleasetoolkit::Versioning::FourPartBuildCodeFormatter.new
@@ -163,19 +163,19 @@ platform :ios do
   # Release Lanes
   ########################################################################
   #####################################################################################
-  # code_freeze
+  # start_code_freeze
   # -----------------------------------------------------------------------------------
   # This lane executes the steps planned on code freeze
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane code_freeze [skip_confirm:<skip confirm>]
+  # bundle exec fastlane start_code_freeze [skip_confirm:<skip confirm>]
   #
   # Example:
-  # bundle exec fastlane code_freeze
-  # bundle exec fastlane code_freeze skip_confirm:true
+  # bundle exec fastlane start_code_freeze
+  # bundle exec fastlane start_code_freeze skip_confirm:true
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
-  lane :code_freeze do |options|
+  lane :start_code_freeze do |options|
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
@@ -192,7 +192,9 @@ platform :ios do
     MESSAGE
 
     UI.important(message)
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     # Create the release branch
     UI.message('Creating release branch...')
@@ -209,6 +211,7 @@ platform :ios do
     UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
 
     new_version = release_version_current
+
     extract_release_notes_for_version(
       version: new_version,
       release_notes_file_path: RELEASE_NOTES_SOURCE_PATH,
@@ -219,18 +222,17 @@ platform :ios do
       release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
     )
 
-    if prompt_for_confirmation(
-      message: 'Ready to push changes to remote and let the automation configure the release on GitHub?',
-      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
-    )
-      push_to_git_remote(tags: false)
-    else
-      UI.message('Aborting code completion. See you later 👋')
+    UI.important('Pushing changes to remote and configuring the release on GitHub')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
 
-    setbranchprotection(
+    push_to_git_remote(tags: false)
+
+    copy_branch_protection(
       repository: GITHUB_REPO,
-      branch: "release/#{new_version}"
+      from_branch: DEFAULT_BRANCH,
+      to_branch: "release/#{new_version}"
     )
     setfrozentag(
       repository: GITHUB_REPO,
@@ -256,23 +258,25 @@ platform :ios do
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
-    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
-    ensure_git_branch(branch: '^release/')
+    ensure_git_branch_is_release_branch
 
     UI.important("Completing code freeze for: #{release_version_current}")
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
+
+    update_app_store_strings
 
     generate_strings_file_for_glotpress
 
-    if prompt_for_confirmation(
-      message: 'Ready to push changes to remote and trigger the beta build?',
-      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
+    push_to_git_remote(tags: false)
+
+    trigger_beta_build(branch_to_build: "release/#{release_version_current}")
+
+    create_release_management_pull_request(
+      base_branch: DEFAULT_BRANCH,
+      title: "Merge #{release_version_current} code freeze to #{DEFAULT_BRANCH}"
     )
-      push_to_git_remote(tags: false)
-      trigger_beta_build(branch_to_build: "release/#{release_version_current}")
-    else
-      UI.message('Aborting code freeze completion. See you later 👋')
-    end
   end
 
   # Updates the `AppStoreStrings.pot` file with the latest content from the `release_notes.txt` files and the other text sources.
@@ -280,7 +284,7 @@ platform :ios do
   # @option [String] version The current `x.y[.z]` version of the app. Optional. Used to derive the `vx.y[.z]-whats-new` key to use in the `.pot` file.
   #
   desc 'Updates the AppStoreStrings.pot file with the latest data'
-  lane :update_appstore_strings do |options|
+  lane :update_app_store_strings do |options|
     source_metadata_folder = File.join(FASTLANE_DIR, 'appstoreres', 'metadata', 'source')
 
     files = {
@@ -324,9 +328,6 @@ platform :ios do
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
-    # Check out the up-to-date default branch, the designated starting point for the code freeze
-    Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
-
     # Check versions
     message = <<-MESSAGE
 
@@ -344,7 +345,9 @@ platform :ios do
     override_default_release_branch(options[:base_version]) unless options[:base_version].nil?
 
     UI.important(message)
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     # Download the latest translations from GlotPress
     download_localized_strings_and_metadata_from_glotpress
@@ -352,20 +355,28 @@ platform :ios do
 
     # Bump the build code
     UI.message('Bumping build code...')
-    ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
+    ensure_git_branch_is_release_branch
     VERSION_FILE.write(version_long: build_code_next)
     commit_version_bump
     UI.success("Done! New Build Code: #{build_code_current}")
 
-    if prompt_for_confirmation(
-      message: 'Ready to push changes to remote and trigger the beta build?',
-      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
-    )
-      push_to_git_remote(tags: false)
-      trigger_beta_build(branch_to_build: "release/#{release_version_current}")
-    else
-      UI.message('Aborting beta deployment. See you later 👋')
+    UI.important('Pushing changes to remote and triggering the beta build')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
+
+    # Create an intermediate branch
+    new_beta_branch_name = "new_beta/#{build_code_current}"
+    Fastlane::Helper::GitHelper.create_branch(new_beta_branch_name)
+
+    push_to_git_remote(tags: false)
+
+    trigger_beta_build(branch_to_build: new_beta_branch_name)
+
+    create_release_management_pull_request(
+      base_branch: "release/#{release_version_current}",
+      title: "Merge #{build_code_current} to #{release_branch}"
+    )
   end
 
   #####################################################################################
@@ -406,7 +417,9 @@ platform :ios do
     MESSAGE
 
     UI.important(message)
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     # Check tags
     UI.user_error!("Version #{new_version} already exists! Abort!") if git_tag_exists(tag: new_version)
@@ -423,9 +436,8 @@ platform :ios do
       version_short: new_version,
       version_long: build_code_hotfix
     )
-    UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
-
     commit_version_bump
+    UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
   end
 
   #####################################################################################
@@ -438,15 +450,18 @@ platform :ios do
   #####################################################################################
   desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
   lane :finalize_hotfix_release do
-    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
-    ensure_git_branch(branch: '^release/')
+    ensure_git_branch_is_release_branch
 
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
     UI.important("Triggering hotfix build for version: #{release_version_current}")
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
+
     push_to_git_remote(tags: false)
+
     trigger_release_build(branch_to_build: "release/#{release_version_current}")
   end
 
@@ -466,14 +481,15 @@ platform :ios do
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
     UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if ios_current_branch_is_hotfix
-    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
-    ensure_git_branch(branch: '^release/')
+    ensure_git_branch_is_release_branch
 
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
     UI.important("Finalizing release: #{release_version_current}")
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     UI.message('Checking app strings translation status...')
     check_translation_progress(
@@ -519,15 +535,19 @@ platform :ios do
     )
 
     # Start the build
-    if prompt_for_confirmation(
-      message: 'Ready to push changes to remote and trigger the release build?',
-      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
-    )
-      push_to_git_remote(tags: false)
-      trigger_release_build(branch_to_build: "release/#{version}")
-    else
-      UI.message('Aborting release finalization. See you later 👋')
+    UI.important('Pushing changes to remote and triggering the release build')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
+
+    push_to_git_remote(tags: false)
+
+    trigger_release_build(branch_to_build: "release/#{version}")
+
+    create_release_management_pull_request(
+      base_branch: DEFAULT_BRANCH,
+      title: "Merge #{release_version_current} final to #{DEFAULT_BRANCH}"
+    )
   end
 
   #####################################################################################
@@ -588,7 +608,9 @@ platform :ios do
     ensure_sentry_installed
 
     UI.important("Building version #{release_version_current} (#{build_code_current}) and uploading to TestFlight")
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
 
     appstore_code_signing
 
@@ -734,6 +756,7 @@ platform :ios do
   # Upload the localized metadata (from `fastlane/metadata/`) to App Store Connect
   #
   # @option [Boolean] with_screenshots (default: false) If true, will also upload the latest screenshot files to ASC
+  # @option [Boolean] skip_confirm If true, the HTML preview will be bypassed
   #
   desc 'Upload the localized metadata to App Store Connect, optionally including screenshots.'
   lane :update_metadata_on_app_store_connect do |options|
@@ -753,7 +776,8 @@ platform :ios do
       overwrite_screenshots: true, # won't have effect if `skip_screenshots` is true
       phased_release: true,
       precheck_include_in_app_purchases: false,
-      api_key_path: ASC_KEY_PATH
+      api_key_path: ASC_KEY_PATH,
+      force: options[:skip_confirm]
     )
   end
 
@@ -921,7 +945,7 @@ platform :ios do
     metadata_directory = FASTLANE_METADATA_FOLDER
 
     # FIXME: We should make the `fastlane/metadata/default/release_notes.txt` path be the source of truth for the original copies in the future.
-    # (will require changes in the `update_appstore_strings` lane, the Release Scenario, the MC tool to generate the announcement post…)
+    # (will require changes in the `update_app_store_strings` lane, the Release Scenario, the MC tool to generate the announcement post…)
     #
     # In the meantime, just copy the file to the right place for `deliver` to find, i.e. to the `default` pseudo-locale which is used as fallback
     FileUtils.cp(RELEASE_NOTES_PATH, File.join(metadata_directory, 'default', 'release_notes.txt'))
@@ -1360,13 +1384,8 @@ def build_code_next
 end
 
 def commit_version_bump
-  version_file = PUBLIC_CONFIG_FILE
-  git_add(
-    path: version_file,
-    shell_escape: false
-  )
   git_commit(
-    path: version_file,
+    path: PUBLIC_CONFIG_FILE,
     message: 'Bump version number',
     allow_nothing_to_commit: false
   )
@@ -1394,17 +1413,6 @@ def override_default_release_branch(version)
   UI.message("Checked out branch `#{git_branch}` as requested by user.\n")
 end
 
-# Wrapper around Fastlane `UI.confirm` that adds the option to bypass the
-# prompt if a given flag is true
-#
-# @param [String] message The text to pass to `UI.confirm` to show the user
-# @param [Boolean] bypass A flag that allows bypassing the `UI.confirm` prompt, i.e. acting as if the prompt returned `true`
-def prompt_for_confirmation(message:, bypass:)
-  return true if bypass
-
-  UI.confirm(message)
-end
-
 # https://buildkite.com/docs/test-analytics/ci-environments
 TEST_ANALYTICS_ENVIRONMENT = %w[
   BUILDKITE_ANALYTICS_TOKEN
@@ -1416,3 +1424,22 @@ TEST_ANALYTICS_ENVIRONMENT = %w[
   BUILDKITE_MESSAGE
   BUILDKITE_BUILD_URL
 ].freeze
+
+# -----------------------------------------------------------------------------------
+# Release Management Utils
+# -----------------------------------------------------------------------------------
+def create_release_management_pull_request(base_branch:, title:)
+  create_pull_request(
+    api_token: get_required_env('GITHUB_TOKEN'),
+    repo: GITHUB_REPO,
+    title: title,
+    head: Fastlane::Helper::GitHelper.current_git_branch,
+    base: base_branch,
+    labels: 'Releases'
+  )
+end
+
+def ensure_git_branch_is_release_branch
+  # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
+  ensure_git_branch(branch: '^release/')
+end

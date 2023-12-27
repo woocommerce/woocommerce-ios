@@ -67,7 +67,7 @@ public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
         let container = try decoder.container(keyedBy: DecodingKeys.self)
 
         let refundID = try container.decode(Int64.self, forKey: .refundID)
-        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
+        let dateCreated = (try? container.decodeIfPresent(Date.self, forKey: .dateCreated)) ?? Date()
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int64.self, forKey: .refundedByUserID)

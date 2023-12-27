@@ -62,12 +62,12 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        length = try container.decodeIfPresent(String.self, forKey: .length) ?? "0"
+        length = container.failsafeDecodeIfPresent(stringForKey: .length) ?? "0"
         period = try container.decodeIfPresent(SubscriptionPeriod.self, forKey: .period) ?? .month
-        periodInterval = try container.decodeIfPresent(String.self, forKey: .periodInterval) ?? "0"
-        price = try container.decodeIfPresent(String.self, forKey: .price) ?? "0"
-        signUpFee = try container.decodeIfPresent(String.self, forKey: .signUpFee) ?? "0"
-        trialLength = try container.decodeIfPresent(String.self, forKey: .trialLength) ?? "0"
+        periodInterval = container.failsafeDecodeIfPresent(stringForKey: .periodInterval) ?? "1"
+        price = container.failsafeDecodeIfPresent(stringForKey: .price) ?? "0"
+        signUpFee = container.failsafeDecodeIfPresent(stringForKey: .signUpFee) ?? "0"
+        trialLength = container.failsafeDecodeIfPresent(stringForKey: .trialLength) ?? "0"
         trialPeriod = try container.decodeIfPresent(SubscriptionPeriod.self, forKey: .trialPeriod) ?? .day
         oneTimeShipping = {
             guard let stringValue = try? container.decodeIfPresent(String.self, forKey: .oneTimeShipping) else {

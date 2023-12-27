@@ -174,6 +174,50 @@ extension Networking.BlazeCampaign {
         )
     }
 }
+extension Networking.BlazeTargetDevice {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetDevice {
+        .init(
+            id: .fake(),
+            name: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetLanguage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetLanguage {
+        .init(
+            id: .fake(),
+            name: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetLocation {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetLocation {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            type: .fake(),
+            code: .fake(),
+            isoCode: .fake(),
+            parentLocation: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetTopic {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetTopic {
+        .init(
+            id: .fake(),
+            description: .fake()
+        )
+    }
+}
 extension Networking.CompositeComponentOptionType {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2008,7 +2052,6 @@ extension Networking.TopEarnerStatsItem {
             productID: .fake(),
             productName: .fake(),
             quantity: .fake(),
-            price: .fake(),
             total: .fake(),
             currency: .fake(),
             imageUrl: .fake()
@@ -2291,6 +2334,17 @@ extension Networking.WordPressMedia {
             alt: .fake(),
             details: .fake(),
             title: .fake()
+        )
+    }
+}
+extension Networking.WordPressPage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WordPressPage {
+        .init(
+            id: .fake(),
+            title: .fake(),
+            link: .fake()
         )
     }
 }

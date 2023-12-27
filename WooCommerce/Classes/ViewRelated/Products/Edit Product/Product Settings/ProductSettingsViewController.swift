@@ -127,7 +127,7 @@ extension ProductSettingsViewController: UITableViewDataSource {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
 
-        row.configure(cell: cell)
+        row.configure(cell: cell, sourceViewController: self)
 
         return cell
     }

@@ -55,6 +55,15 @@ final class AddProductCoordinator: Coordinator {
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
 
+    private lazy var productCreationAISurveyPresenter: BottomSheetPresenter = {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.prefersGrabberVisible = false
+            sheet.detents = [.medium()]
+        })
+    }()
+
     private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
     init(siteID: Int64,
@@ -306,6 +315,7 @@ private extension AddProductCoordinator {
             self?.onProductCreated(product)
             self?.navigationController.dismiss(animated: true) {
                 self?.presentProduct(product, formType: .edit, isAIContent: true)
+                self?.presentProductCreationAIFeedbackIfApplicable()
             }
         }))
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
@@ -344,6 +354,31 @@ private extension AddProductCoordinator {
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)
+    }
+
+    /// Presents AI Product Creation survey
+    ///
+    func presentProductCreationAIFeedbackIfApplicable() {
+        let useCase = ProductCreationAISurveyUseCase()
+        useCase.didCreateAIProduct()
+
+        guard useCase.shouldShowProductCreationAISurvey() else {
+            return
+        }
+
+        let controller = ProductCreationAISurveyConfirmationHostingController(viewModel: .init(onStart: { [weak self] in
+            guard let self else { return }
+
+            self.productCreationAISurveyPresenter.dismiss(onDismiss: { [weak self] in
+                let survey = SurveyCoordinatingController(survey: .productCreationAI)
+                self?.navigationController.present(survey, animated: true, completion: nil)
+            })
+        }, onSkip: { [weak self] in
+            self?.productCreationAISurveyPresenter.dismiss()
+        }))
+
+        productCreationAISurveyPresenter.present(controller, from: navigationController)
+        useCase.didSuggestProductCreationAISurvey()
     }
 
     /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.

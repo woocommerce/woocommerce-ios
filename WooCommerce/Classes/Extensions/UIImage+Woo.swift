@@ -398,9 +398,12 @@ extension UIImage {
     /// Subscription Product
     ///
     static var variableSubscriptionProductImage: UIImage {
-        return UIImage(systemName: "square.3.layers.3d")!
+        if #available(iOS 16.0, *) {
+            return UIImage(systemName: "square.3.layers.3d")!
+        } else {
+            return UIImage(systemName: "square.stack.3d.up")!
+        }
     }
-
 
     /// Filter Icon
     ///
@@ -530,6 +533,12 @@ extension UIImage {
     ///
     static var aiDescriptionCelebrationImage: UIImage {
         return UIImage(named: "ai-description-celebration")!
+    }
+
+    /// Product Creation AI Survey image
+    ///
+    static var productCreationAISurveyImage: UIImage {
+        return UIImage(named: "product-creation-ai-survey")!
     }
 
     /// Launch store Image
@@ -812,6 +821,12 @@ extension UIImage {
     ///
     static var invisibleImage: UIImage {
         return UIImage.gridicon(.image)
+    }
+
+    /// Document image
+    ///
+    static var documentImage: UIImage {
+        return .init(systemName: "doc.fill")!
     }
 
     /// Link Image
@@ -1251,6 +1266,10 @@ extension UIImage {
     ///
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
+    }
+
+    static var puzzleExtensionsImage: UIImage {
+        return UIImage(named: "woo-puzzle-extensions")!
     }
 
     /// Install WCShip banner Image

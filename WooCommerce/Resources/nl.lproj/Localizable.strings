@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-25 09:08:13+0000 */
+/* Translation-Revision-Date: 2023-12-13 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "Vanuit WordPress-mediabibliotheek";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "Vanuit apparaat";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Van aankoop tot afhandeling: beheer het hele bestelproces via de app.";
 
@@ -5053,9 +5050,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "Nog geen bestanden";
 
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "Nog geen afbeeldingen";
-
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "Geen limiet";
 
@@ -5450,8 +5444,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "De pakketafmetingen moeten groter zijn dan nul. Werk de afmetingen van je artikel bij in het gedeelte Verzending op je productpagina om door te gaan.";
 
-/* Row title for the last paid deposit in the WooPayments Deposits overview
-   The title for the customer payment cell */
+/* The title for the customer payment cell */
 "Paid" = "Betaald";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -9804,6 +9797,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to confirm the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.editButton" = "Aangepast bedrag bewerken";
 
+/* Title above the amount field on the add custom amount view in orders. */
+"addCustomAmountPercentageView.amount.title" = "Bedrag";
+
+/* Title for entering an custom amount through a percentage */
+"addCustomAmountPercentageView.percentageTextField.title" = "Of voer het percentage van het ordertotaal in";
+
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Btw rekenen";
 
@@ -9812,6 +9811,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Pictogram";
+
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "Gekopieerd naar klembord.";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "Nummer kopiëren";
+
+/* Button to dismiss the Blaze campaign section on the My Store screen. */
+"blazeCampaignDashboardView.hideBlazeButton" = "Blaze verbergen";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Annuleren";
@@ -9842,31 +9850,31 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleItem.add" = "Toevoegen";
 
 /* Action to select a variation for a bundle item when it is variable. */
-"configureBundleItem.selectVariation" = "Variatie selecteren";
+"configureBundleItem.chooseVariation" = "Variatie kiezen";
 
 /* Action to update a variation for a bundle item when it is variable. */
 "configureBundleItem.updateVariation" = "Variatie bijwerken";
 
-/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
-"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "De kwantiteit moet tussen %1$@ en %2$@ liggen";
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. %1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat" = "De kwantiteit van %1$@ moet tussen %2$@ en %3$@ liggen.";
 
-/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
-"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "De kwantiteit moet ten minste %1$@ zijn";
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. %1$@ is the product name. %2$@ is the minimum quantity. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat" = "De kwantiteit van %1$@ moet ten minste %2$@ zijn.";
 
-/* Error message when a variable bundle item is missing a variation. */
-"configureBundleItemError.missingVariation" = "Selecteer een variatie";
+/* Error message format when a variable bundle item is missing a variation. %1$@ is the variable product name. */
+"configureBundleItemError.missingVariationFormat" = "Kies een variatie voor %1$@.";
 
-/* Error message when a variable bundle item is missing some attributes. */
-"configureBundleItemError.variationMissingAttributes" = "Selecteer een optie voor alle variatie-eigenschappen";
+/* Error message format when a variable bundle item is missing some attributes. %1$@ is the variable product name. */
+"configureBundleItemError.variationMissingAttributesFormat" = "Kies een optie voor alle variatie-eigenschappen voor %1$@.";
 
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "Sluiten";
 
-/* Text for the done button in the bundle product configuration screen in the order form. */
-"configureBundleProduct.done" = "Gereed";
-
 /* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
 "configureBundleProduct.retry" = "Opnieuw proberen";
+
+/* Text for the save button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.save" = "Configuratie opslaan";
 
 /* Title for the bundle product configuration screen in the order form. */
 "configureBundleProduct.title" = "Configureren";
@@ -9892,21 +9900,71 @@ which should be translated separately and considered part of this sentence. */
 /* Used in configureBundleProductValidationError strings for the singular form of item. */
 "configureBundleProductValidationError.itemSingular" = "artikel";
 
+/* Title of the error notice when the bundle configuration is currently invalid in the bundle product configuration screen. */
+"configureBundleProductValidationError.title" = "Configuratie vereist";
+
+/* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
+"configureBundleProductValidationSuccess.title" = "Configuratie voltooid";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "dag";
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "dagen";
 
-/* Display label when a subscription has no trial period.
-   Title for Subscription Free Trial row in the product form screen. */
-"defaultProductFormTableViewModel.noFreeTrial" = "Gratis proefabonnement";
+/* Title for Subscription expiry row in the product form screen. */
+"defaultProductFormTableViewModel.expireAfter" = "Verlopen na";
+
+/* Display label when a subscription has no trial period. */
+"defaultProductFormTableViewModel.freeTrialRow.noTrialPeriod" = "Geen proefperiode";
+
+/* Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.freeTrialRow.title" = "Gratis proefabonnement";
+
+/* Display label when a subscription never expires. */
+"defaultProductFormTableViewModel.neverExpire" = "Verloopt nooit";
 
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "Reguliere prijs: %1$@ elke %2$@";
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Aanmeldkosten: %1$@";
+
+/* Accessibility label for the collapse chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.hide" = "Details verbergen";
+
+/* Accessibility label for the expand chevron on the Deposit summary */
+"deposits.currency.overview.accessibility.show" = "Details tonen";
+
+/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.depositTable.last.title" = "Laatste";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.canceled.title" = "Geannuleerd";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.estimated.title" = "Geschat";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.failed.title" = "Mislukt";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.inTransit.title" = "Onderweg";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.paid.title" = "Betaald";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.pending.title" = "In behandeling";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.unknown.title" = "Onbekend";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "Document op apparaat";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "Media op apparaat";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
@@ -10058,6 +10116,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Aangepaste bedragen";
 
+/* Button title for the fixed amount option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle" = "Vast bedrag";
+
+/* Button title for the percentage option in the custom amounts option sheet. */
+"orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "Of voer het percentage van het ordertotaal in";
+
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "Gereed";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Aangepaste bedragen";
 
@@ -10103,11 +10170,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Variabel productabonnement";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "Fout bij uploaden van bestand. Probeer het nog eens.";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "Het geselecteerde bestandstype wordt niet ondersteund.";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "elke %1$@";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promoten met Blaze";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "Wacht tot alles is geüpload voordat je de volgorde van de afbeeldingen wijzigt.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Factuurinterval";
@@ -10142,6 +10218,15 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Subtitle for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.subtitle" = "Schakel dit in om voor de eerste bestelling verzendkosten in rekening te brengen.";
+
+/* Subtitle for the One time shipping product shipping setting when it is disabled. */
+"productShippingSettings.oneTimeShipping.subtitleDisabled" = "Om deze instelling in te schakelen, mag het abonnement geen proefversie bevatten en geen gesynchroniseerde verlengdatum hebben.";
+
+/* Title for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.title" = "Eenmalig verzenden";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld keer beoordeeld";
 
@@ -10150,6 +10235,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Betaling is gelukt";
+
+/* Navigates to Themes screen. */
+"settingsViewController.themesRow" = "Thema’s";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10206,6 +10294,19 @@ which should be translated separately and considered part of this sentence. */
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Kan de statistieken van vandaag niet ophalen";
 
+/* Title of the button to save subscription's expire after info. */
+"subscriptionExpiryView.done" = "Gereed";
+
+/* Title for the expire after row in add or edit subscription expire after info screen.
+   Title for the Subscription expire after screen of the subscription product. */
+"subscriptionExpiryView.expireAfter" = "Verlopen na";
+
+/* Subtitle text to explain subscription expire after value. */
+"subscriptionExpiryView.expireAfterSubtitle" = "Laat het abonnement automatisch aflopen na deze periode. Deze periode is bovenop proefabonnementen of opgegeven periode voorafgaand aan een gesynchroniseerde eerste verlengingsdatum.";
+
+/* Title for the Expire after screen of the subscription product. */
+"subscriptionExpiryView.neverExpire" = "Verloopt nooit";
+
 /* Title of the button to save subscription's free trial info. */
 "subscriptionTrialView.done" = "Gereed";
 
@@ -10229,11 +10330,47 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "%1$@ over betalingen accepteren met Tap to Pay op iPhone.";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "Annuleren";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "Huidig";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "Thema";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "Thema’s";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "Probeer een andere nieuwe look";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "Onbekend";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "onbekende url";
+
+/* Cancel button title on the update product inventory view. */
+"updateProductInventoryView.cancelButtonTitle" = "Annuleren";
+
+/* Navigation bar title of the update product inventory view. */
+"updateProductInventoryView.navigationBarTitle" = "Product";
+
+/* Product name label in the update product inventory view. */
+"updateProductInventoryView.productNameTitle" = "Productnaam";
+
+/* Product quantity label in the update product inventory view. */
+"updateProductInventoryView.productQuantityTitle" = "Aantal";
+
+/* Stock quantity button when a tap increases the stock once. */
+"updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle" = "Aantal + 1";
+
+/* Stock quantity button when the user adds a custom quantity. */
+"updateProductInventoryView.quantityButton.updateQuantityButtonTitle" = "Voorraad bijwerken";
+
+/* Product detailsl button title. */
+"updateProductInventoryView.viewProductDetailsButtonTitle" = "Productgegevens bekijken";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Negeren";
@@ -10252,6 +10389,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, producten, categorieën, nieuw product, producten zoeken.";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Media laden …";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Gebruik een beveiligingssleutel";

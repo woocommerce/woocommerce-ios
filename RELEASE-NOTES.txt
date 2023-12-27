@@ -1,8 +1,42 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.8
+-----
+- [**] Payments: merchants can collect payment directly from the order creation form [https://github.com/woocommerce/woocommerce-ios/pull/11490]
+- [*] Payments: order totals are now shown in an expandable drawer, so they're accessible without scrolling [https://github.com/woocommerce/woocommerce-ios/pull/11503]
+- [*] Store creation: Inform user once store ready if app killed while waiting for store to be ready. [https://github.com/woocommerce/woocommerce-ios/pull/11478]
+- [*] Dashboard: Resolves a decoding error with certain payment gateway plugins that previously caused an error loading data in the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/11489]
+- [*] Payments: Updated UI for Deposit Summary [https://github.com/woocommerce/woocommerce-ios/pull/11533]
+- [**] Lightweight Storefront: Added option to select themes for WPCom store in both Settings and Store Creation flows. [https://github.com/woocommerce/woocommerce-ios/issues/11291]
+- [*] Orders: order creation/paid/refund dates are now shown in the store time zone instead of the device time zone. [https://github.com/woocommerce/woocommerce-ios/pull/11539, https://github.com/woocommerce/woocommerce-ios/pull/11536]
+- [*] Similar to orders above, the latest time range in analytics is now in the store time zone instead of the device time zone. [https://github.com/woocommerce/woocommerce-ios/pull/11479]
+
+16.7
+-----
+- [*] Order editing: fixed bug preventing retry for errors when editing or creating an order [https://github.com/woocommerce/woocommerce-ios/pull/11391]
+- [*] Payments: Tap to Pay trial payments are now automatically refunded [https://github.com/woocommerce/woocommerce-ios/pull/11395]
+- [*] Product Creation AI: Show survey to collect user feedback. [https://github.com/woocommerce/woocommerce-ios/pull/11390]
+- [*] Edit Products: category list is now searchable. [https://github.com/woocommerce/woocommerce-ios/pull/11380]
+- [*] Show one time shipping setting status in product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/11403]
+- [*] Remove features and challenges questions from the store creation profiler flow. [https://github.com/woocommerce/woocommerce-ios/pull/11410]
+- [*] Edit Products: make downloadable files more discoverable [https://github.com/woocommerce/woocommerce-ios/pull/11388]
+- [**] [internal] A minor refactor in authentication flow, including but not limited to social sign-in and two factor authentication. [https://github.com/woocommerce/woocommerce-ios/pull/11402]
+- [*] Login: after logging in from the `Create a New Store` CTA in the prologue screen, it should start the store creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/11385]
+- [**] Products: Merchants now can scan product barcodes directly from the Product list in order to update inventory [https://github.com/woocommerce/woocommerce-ios/pull/11457]
+
 16.6
 -----
-
+- [**] Order form: quantity can now be typed in [https://github.com/woocommerce/woocommerce-ios/pull/11349]
+- [*] Payments: Supress displaying an error when the card reader connection is manually cancelled [https://github.com/woocommerce/woocommerce-ios/pull/11230]
+- [internal] Fix runtime warning when uploading media when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11355]
+- [*] Products: Downloadable products now accept local files of types other than images. [https://github.com/woocommerce/woocommerce-ios/pull/11353]
+- [*] Products: Downloadable products now accept file types other than images from WordPress media library. [https://github.com/woocommerce/woocommerce-ios/pull/11356]
+- [*] Payments menu: restored the ability to search for Payments in device Spotlight. [https://github.com/woocommerce/woocommerce-ios/pull/11343]
+- [*] Payments menu: show the selected payment gateway when there's more than one to choose from [https://github.com/woocommerce/woocommerce-ios/pull/11345]
+- [**] Fixed a crash that occurred when reordering product images during the image upload process. Now, users will not be able to reorder images until the upload is complete, providing a smoother and more stable experience. [https://github.com/woocommerce/woocommerce-ios/pull/11350]
+- [internal] Process network response in background thread to avoid blocking main thread. [https://github.com/woocommerce/woocommerce-ios/pull/11381]
+- [**] Attempted to fix a crash that has been occurring for some users during magic link login. [https://github.com/woocommerce/woocommerce-ios/pull/11373]
+- [*] Fixed a crash due to using unavailable system image in devices below iOS 16.0. [https://github.com/woocommerce/woocommerce-ios/pull/11394]
 
 16.5
 -----
@@ -14,6 +48,7 @@
 - [internal] Order form: Updated design for product bundles and their bundled items in order creation/editing, to more clearly show the hierarchy and bundled item prices. [https://github.com/woocommerce/woocommerce-ios/pull/11321]
 - [internal] Update Shimmer dependency to avoid high CPU and memory use crashing the app when built with Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11320]
 - [internal] Fix issue with scrolling some views when built from Xcode 15 [https://github.com/woocommerce/woocommerce-ios/pull/11335]
+- [*] Animate display of the onboarding notice in the payments menu [https://github.com/woocommerce/woocommerce-ios/pull/11339]
 
 16.4
 -----

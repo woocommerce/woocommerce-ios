@@ -92,7 +92,7 @@ final class StoreNameSetupViewModelTests: XCTestCase {
     func test_default_store_name_is_updated_upon_saving_store_name_completes() async {
         // Given
         let originalSite = Site.fake().copy(siteID: 123, name: "Test")
-        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: originalSite))
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: originalSite))
         let viewModel = StoreNameSetupViewModel(siteID: originalSite.siteID, name: originalSite.name, stores: stores, onNameSaved: {})
         mockStoreNameUpdate(result: .success(Site.fake().copy(siteID: 123, name: "Miffy")))
 

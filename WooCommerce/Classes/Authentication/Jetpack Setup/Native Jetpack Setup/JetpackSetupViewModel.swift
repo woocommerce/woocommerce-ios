@@ -63,7 +63,7 @@ final class JetpackSetupViewModel: ObservableObject {
     }
 
     var hasEncounteredPermissionError: Bool {
-        if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) = setupError as? AFError {
+        if case let .unacceptableStatusCode(statusCode, _) = setupError as? NetworkError, statusCode == 403 {
             return true
         }
         return false
@@ -345,17 +345,17 @@ private extension JetpackSetupViewModel {
 
     func updateErrorMessage() {
         switch setupError {
-        case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))):
+        case let .some(NetworkError.unacceptableStatusCode(statusCode, _)) where statusCode == 403:
             setupErrorDetail = .init(setupErrorMessage: Localization.permissionErrorMessage,
                                      setupErrorSuggestion: Localization.permissionErrorSuggestion,
                                      errorCode: 403)
-        case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(let code))) where 500...599 ~= code:
+        case let .some(NetworkError.unacceptableStatusCode(statusCode, _)) where 500...599 ~= statusCode:
             setupErrorDetail = .init(setupErrorMessage: Localization.communicationErrorMessage,
                                      setupErrorSuggestion: Localization.communicationErrorSuggestion,
-                                     errorCode: code)
+                                     errorCode: statusCode)
         default:
             let code: Int? = {
-                if let afError = setupError as? AFError, let code = afError.responseCode {
+                if let networkError = setupError as? NetworkError, let code = networkError.responseCode {
                     return code
                 }
                 return (setupError as? NSError)?.code

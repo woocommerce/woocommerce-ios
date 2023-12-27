@@ -21,7 +21,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let productCreationAI: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
-    private let isLightweightStorefrontEnabled: Bool
     private let isScanToUpdateInventoryEnabled: Bool
 
     init(isInboxOn: Bool = false,
@@ -43,7 +42,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          productCreationAI: Bool = false,
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false,
-         isLightweightStorefrontEnabled: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
@@ -64,7 +62,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.productCreationAI = productCreationAI
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
-        self.isLightweightStorefrontEnabled = isLightweightStorefrontEnabled
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
     }
 
@@ -106,8 +103,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return productBundles
         case .productBundlesInOrderForm:
             return productBundlesInOrderForm
-        case .lightweightStorefront:
-            return isLightweightStorefrontEnabled
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
         default:

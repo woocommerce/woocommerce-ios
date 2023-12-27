@@ -148,7 +148,7 @@ struct OrderForm: View {
                             ProductsSection(scroll: scroll,
                                             flow: flow,
                                             viewModel: viewModel, navigationButtonID: $navigationButtonID)
-                                .disabled(viewModel.shouldShowNonEditableIndicators)
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
                                 Divider()
@@ -170,29 +170,14 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
-                                OrderPaymentSection(
-                                    viewModel: viewModel.paymentDataViewModel,
-                                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
-                                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
-                                .disabled(viewModel.shouldShowNonEditableIndicators)
-
-                                completedButton
-                                    .padding()
-                                    .background(Color(.listForeground(modal: true)))
-
                                 AddOrderComponentsSection(
                                     viewModel: viewModel.paymentDataViewModel,
                                     shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                                     shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
-                            }
-                            .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
-                                if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
-                                    PaymentMethodsHostingView(parentController: rootViewController,
-                                                              viewModel: collectPaymentViewModel)
-                                } else {
-                                    EmptyView()
+                                .sheet(isPresented: $shouldShowShippingLineDetails) {
+                                    ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
                                 }
                             }
 
@@ -259,6 +244,40 @@ struct OrderForm: View {
                 .ignoresSafeArea(.container, edges: [.horizontal])
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
+                VStack {
+                    HStack {
+                        Text(Localization.orderTotal)
+                        Spacer()
+                        Text(viewModel.orderTotal)
+                    }
+                    .font(.headline)
+                    .padding()
+
+                    Divider()
+                        .padding([.leading], Layout.dividerLeadingPadding)
+
+                    completedButton
+                        .padding()
+                }
+                .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
+                    if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
+                        PaymentMethodsHostingView(parentController: rootViewController,
+                                                  viewModel: collectPaymentViewModel)
+                    } else {
+                        EmptyView()
+                    }
+                }
+            } expandableContent: {
+                OrderPaymentSection(
+                    viewModel: viewModel.paymentDataViewModel,
+                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
+                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                .disabled(viewModel.shouldShowNonEditableIndicators)
+            }
+            .ignoresSafeArea(edges: .horizontal)
+        }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -278,14 +297,10 @@ struct OrderForm: View {
                     .id(navigationButtonID)
                     .accessibilityIdentifier(Accessibility.createButtonIdentifier)
                     .disabled(viewModel.disabled)
-                case .done:
-                    Button(Localization.doneButton) {
-                        viewModel.finishEditing()
-                        dismissHandler()
-                    }
-                    .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
                 case .loading:
                     ProgressView()
+                case .none:
+                    EmptyView()
                 }
             }
         }
@@ -370,6 +385,7 @@ struct OrderForm: View {
                 Text(Localization.doneButton)
             }
             .buttonStyle(PrimaryButtonStyle())
+            .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
         }
     }
 }
@@ -618,6 +634,7 @@ private extension OrderForm {
         static let storedTaxRateBottomSheetStoredTaxRateCornerRadius: CGFloat = 8.0
         static let storedTaxRateBottomSheetButtonIconSize: CGFloat = 24.0
         static let productsHeaderButtonsSpacing: CGFloat = 20
+        static let dividerLeadingPadding: CGFloat = 16
     }
 
     enum Localization {
@@ -656,6 +673,9 @@ private extension OrderForm {
             "orderForm.products.add.button.accessibilityLabel",
             value: "Add product",
             comment: "Accessibility label for the + button to add product using a form")
+
+
+        static let orderTotal = NSLocalizedString("Order total", comment: "Label for the the row showing the total cost of the order")
     }
 
     enum Accessibility {

@@ -83,7 +83,7 @@ struct ThemesPreviewView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                if let url = URL(string: viewModel.selectedPage.link) {
+                if let url = viewModel.selectedPageUrl {
                     WebView(
                         isPresented: .constant(true),
                         url: url,
@@ -98,8 +98,7 @@ struct ThemesPreviewView: View {
                         .foregroundColor(Color(.divider))
 
                     VStack {
-                        Button(viewModel.mode == .storeCreationProfiler ? Localization.startWithThemeButton : Localization.useThisThemeButton,
-                               action: {
+                        Button(viewModel.primaryButtonTitle) {
                             Task { @MainActor in
                                 do {
                                     try await viewModel.confirmThemeSelection()
@@ -109,11 +108,9 @@ struct ThemesPreviewView: View {
                                     DDLogError("⛔️ ThemesPreviewView - Theme installation failed.")
                                 }
                             }
-                        })
+                        }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.installingTheme))
 
-                        Text(String(format: Localization.themeName, viewModel.theme.name))
-                            .secondaryBodyStyle()
                     }.padding(Layout.footerPadding)
 
                 } else {
@@ -157,6 +154,9 @@ struct ThemesPreviewView: View {
             }
         }
         .notice($viewModel.notice)
+        .onAppear {
+            viewModel.trackViewAppear()
+        }
     }
 
     @ViewBuilder
@@ -164,17 +164,19 @@ struct ThemesPreviewView: View {
 
         // Here we show only a "Preview" label with no selector, both for loading and error cases.
         // In the case of page loading error, the home page is still usable, so showing "Preview" is better than nothing.
-        switch viewModel.state {
-        case .pagesLoading, .pagesLoadingError:
-            Text(Localization.preview)
-
-        case .pagesContent:
-            Button(action: { showPagesMenu = true }) {
-                HStack {
-                    Text(viewModel.selectedPage.title).bodyStyle()
-                    Image(uiImage: .chevronDownImage)
-                        .fixedSize()
-                        .bodyStyle()
+        Button(action: { showPagesMenu = true }) {
+            VStack(spacing: 0) {
+                Text(Localization.preview)
+                    .fontWeight(.semibold)
+                    .headlineStyle()
+                if case .pagesContent = viewModel.state {
+                    HStack {
+                        Text(viewModel.selectedPage.title)
+                            .foregroundColor(Color(.text))
+                            .footnoteStyle()
+                        Image(uiImage: .chevronDownImage)
+                            .captionStyle()
+                    }
                 }
             }
         }
@@ -182,7 +184,7 @@ struct ThemesPreviewView: View {
 
     private var pagesListSheet: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
                 Text(Localization.pagesSheetHeading)
                     .subheadlineStyle()
                     .padding(Layout.pagesSheetPadding)
@@ -193,6 +195,7 @@ struct ThemesPreviewView: View {
                     }, label: {
                         Text(page.title)
                             .bodyStyle()
+                            .multilineTextAlignment(.leading)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     })
                     .padding(Layout.contentPadding)
@@ -205,6 +208,7 @@ struct ThemesPreviewView: View {
     private func menuItem(for device: PreviewDevice) -> some View {
         Button {
             selectedDevice = device
+            viewModel.trackLayoutSwitch(layout: device)
         } label: {
             Text(device.menuTitle)
             if selectedDevice == device {
@@ -228,11 +232,10 @@ private extension ThemesPreviewView {
 
 private extension ThemesPreviewView {
     private enum Layout {
-        static let toolbarPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let footerPadding: CGFloat = 16
         static let contentPadding: CGFloat = 16
-        static let pagesSheetPadding: EdgeInsets = .init(top: 20, leading: 16, bottom: 12, trailing: 16)
+        static let pagesSheetPadding: EdgeInsets = .init(top: 40, leading: 16, bottom: 12, trailing: 16)
     }
 
     private enum Localization {
@@ -257,21 +260,6 @@ private extension ThemesPreviewView {
             "themesPreviewView.menuMobile",
             value: "Desktop",
             comment: "Menu item: desktop"
-        )
-        static let startWithThemeButton = NSLocalizedString(
-            "themesPreviewView.startWithThemeButton",
-            value: "Start with This Theme",
-            comment: "Button in theme preview screen to pick a theme."
-        )
-        static let useThisThemeButton = NSLocalizedString(
-            "themesPreviewView.useThisThemeButton",
-            value: "Use this theme",
-            comment: "Button in theme preview screen to pick a theme."
-        )
-        static let themeName = NSLocalizedString(
-            "themesPreviewView.themeName",
-            value: "Theme: %@",
-            comment: "Name of the theme being previewed."
         )
 
         static let errorLoadingThemeDemo = NSLocalizedString(

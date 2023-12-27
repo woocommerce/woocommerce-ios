@@ -30,10 +30,10 @@ public final class PasswordScreen: ScreenObject {
     }
 
     @discardableResult
-    public func enterValidPassword() throws -> MyStoreScreen {
+    public func enterValidPassword() throws -> TwoFAScreen {
         try proceedWith(password: "pw")
 
-        return try MyStoreScreen()
+        return try TwoFAScreen()
     }
 
     public func enterInvalidPassword() throws -> PasswordScreen {

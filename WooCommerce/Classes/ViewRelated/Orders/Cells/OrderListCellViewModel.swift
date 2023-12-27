@@ -41,6 +41,7 @@ struct OrderListCellViewModel {
     var dateCreated: String {
         let isSameYear = order.dateCreated.isSameYear(as: Date())
         let formatter: DateFormatter = isSameYear ? .monthAndDayFormatter : .mediumLengthLocalizedDateFormatter
+        formatter.timeZone = .siteTimezone
         return formatter.string(from: order.dateCreated)
     }
 

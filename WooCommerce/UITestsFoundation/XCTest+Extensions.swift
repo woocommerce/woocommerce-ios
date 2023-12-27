@@ -162,4 +162,18 @@ extension XCUIElement {
         self.waitForIsHittable(timeout: timeout)
         self.tap()
     }
+
+    public func scrollIntoView(app: XCUIApplication = XCUIApplication()) {
+        var iteration = 0
+        let maxIteration = 10
+
+        while isFullyVisibleOnScreen() == false && iteration < maxIteration {
+            app.swipeUp()
+            iteration += 1
+        }
+
+        if isFullyVisibleOnScreen() == false {
+            XCTFail("Unable to scroll element into view")
+        }
+    }
 }

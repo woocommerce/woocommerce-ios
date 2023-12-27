@@ -17,6 +17,7 @@ class LoginFlow {
         try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .enterValidPassword()
+            .enterValidTwoFACode()
 
         return try LoginEpilogueScreen()
             .verifyEpilogueDisplays(email: "e2eflowtestingmobile@example.com", siteUrl: TestCredentials.siteUrl)
@@ -30,5 +31,6 @@ class LoginFlow {
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .enterValidPassword()
+            .enterValidTwoFACode()
     }
 }

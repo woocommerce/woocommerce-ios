@@ -11,8 +11,18 @@ final class ThemesPreviewViewModel: ObservableObject {
     @Published private(set) var installingTheme: Bool = false
     @Published var notice: Notice?
 
+    // We need to append `demoModeSuffix` to prevent any activation / purchase header to appear on the theme demo.
+    var selectedPageUrl: URL? {
+        URL(string: selectedPage.link + Constants.demoModeSuffix)
+    }
+
     let mode: ThemesCarouselViewModel.Mode
     let theme: WordPressTheme
+
+    var primaryButtonTitle: String {
+        let format = mode == .storeCreationProfiler ? Localization.startWithThemeButton : Localization.useThisThemeButton
+        return String.localizedStringWithFormat(format, theme.name)
+    }
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -43,8 +53,9 @@ final class ThemesPreviewViewModel: ObservableObject {
     func fetchPages() async {
         do {
             // Append the list of pages to the existing home page value, since the API call result
-            // do not include the home page.
+            // does not include the home page.
             pages += try await loadPages()
+
             state = .pagesContent
         } catch {
             DDLogError("⛔️ Error loading pages: \(error)")
@@ -54,6 +65,7 @@ final class ThemesPreviewViewModel: ObservableObject {
 
     func setSelectedPage(page: WordPressPage) {
         selectedPage = page
+        analytics.track(event: .Themes.previewPageSelected(page: page.title, url: page.link))
     }
 
     @MainActor
@@ -81,6 +93,14 @@ final class ThemesPreviewViewModel: ObservableObject {
             throw error
         }
     }
+
+    func trackViewAppear() {
+        analytics.track(event: .Themes.previewScreenDisplayed())
+    }
+
+    func trackLayoutSwitch(layout: ThemesPreviewView.PreviewDevice) {
+        analytics.track(event: .Themes.previewLayoutSelected(layout: layout))
+    }
 }
 
 private extension ThemesPreviewViewModel {
@@ -100,6 +120,10 @@ private extension ThemesPreviewViewModel {
 }
 
 extension ThemesPreviewViewModel {
+    private enum Constants {
+        static let demoModeSuffix = "?demo"
+    }
+
     enum State: Equatable {
         case pagesLoading
         case pagesLoadingError
@@ -116,6 +140,18 @@ extension ThemesPreviewViewModel {
             "themesPreviewViewModel.themeInstallError",
             value: "Theme installation failed. Please try again.",
             comment: "Message to convey that theme installation failed."
+        )
+        static let startWithThemeButton = NSLocalizedString(
+            "themesPreviewViewModel.startWithThemeButton",
+            value: "Start with %1$@",
+            comment: "Button in theme preview screen to pick a theme. The placeholder is the theme name. " +
+            "Reads like: Start with Tsubaki"
+        )
+        static let useThisThemeButton = NSLocalizedString(
+            "themesPreviewViewModel.useThisThemeButton",
+            value: "Use %1$@",
+            comment: "Button in theme preview screen to pick a theme. The placeholder is the theme name. " +
+            "Reads like: Use Tsubaki"
         )
     }
 }

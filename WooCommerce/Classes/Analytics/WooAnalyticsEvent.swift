@@ -496,6 +496,7 @@ extension WooAnalyticsEvent {
             case creation
             case editing
             case list
+            case orderDetails = "order_details"
         }
 
         /// Possible item types to add to an Order
@@ -556,6 +557,7 @@ extension WooAnalyticsEvent {
             static let type = "type"
             static let usesGiftCard = "use_gift_card"
             static let taxStatus = "tax_status"
+            static let expanded = "expanded"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -721,6 +723,14 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderStatusChange, properties: properties.compactMapValues { $0 })
         }
 
+        static func orderTotalsExpansionChanged(flow: Flow,
+                                                expanded: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormTotalsPanelToggled, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.expanded: expanded
+            ])
+        }
+
         static func orderCreateButtonTapped(order: Order,
                                             status: OrderStatusEnum,
                                             productCount: Int,
@@ -748,7 +758,8 @@ extension WooAnalyticsEvent {
                                                       hasFees: Bool,
                                                       hasShippingMethod: Bool,
                                                       products: [Product]) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderCollectPaymentButtonTapped, properties: [
+            WooAnalyticsEvent(statName: .collectPaymentTapped, properties: [
+                Keys.flow: Flow.creation.rawValue,
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
                 Keys.customAmountsCount: Int64(customAmountsCount),
@@ -832,9 +843,9 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the user taps to collect a payment
         ///
-        static func collectPaymentTapped() -> WooAnalyticsEvent {
+        static func collectPaymentTapped(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
-                              properties: [:])
+                              properties: [Keys.flow: flow.rawValue])
         }
 
         /// Tracked when accessing the system plugin list without it being in sync.
@@ -1203,7 +1214,7 @@ extension WooAnalyticsEvent {
         enum Flow: String {
             case simplePayment = "simple_payment"
             case orderPayment = "order_payment"
-            case orderCreation = "order_creation"
+            case orderCreation = "creation"
             case tapToPayTryAPayment = "tap_to_pay_try_a_payment"
         }
 
@@ -2803,13 +2814,17 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case path
             case entityName = "entity"
+            case debugDecodingPath = "debug_decoding_path"
+            case debugDecodingDescription = "debug_decoding_description"
         }
 
         static func jsonParsingError(_ error: Error, path: String?, entityName: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .apiJSONParsingError,
                               properties: [
                                 Keys.path.rawValue: path,
-                                Keys.entityName.rawValue: entityName
+                                Keys.entityName.rawValue: entityName,
+                                Keys.debugDecodingPath.rawValue: (error as? DecodingError)?.debugPath,
+                                Keys.debugDecodingDescription.rawValue: (error as? DecodingError)?.debugDescription
                               ].compactMapValues { $0 },
                               error: error)
         }

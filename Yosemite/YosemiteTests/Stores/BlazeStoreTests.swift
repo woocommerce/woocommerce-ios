@@ -59,6 +59,8 @@ final class BlazeStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - synchronizeCampaigns
+
     func test_synchronizeCampaigns_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() throws {
         // Given
         remote.whenLoadingCampaign(thenReturn: .success([]))
@@ -140,7 +142,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignCount, 1)
     }
 
-    func test_synchronizeCoupons_deletes_coupons_when_first_page_recieved_from_API() {
+    func test_synchronizeCampaign_deletes_campaigns_when_first_page_recieved_from_API() {
         // Given
         storeCampaign(.fake().copy(campaignID: 123), for: sampleSiteID)
         remote.whenLoadingCampaign(thenReturn: .success([.fake().copy(campaignID: 456)]))
@@ -162,7 +164,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignCount, 1)
     }
 
-    func test_synchronizeCoupons_does_not_delete_coupons_when_subsequent_pages_recieved_from_API() {
+    func test_synchronizeCampaign_does_not_delete_campaigns_when_subsequent_pages_recieved_from_API() {
         // Given
         storeCampaign(.fake().copy(campaignID: 123), for: sampleSiteID)
         remote.whenLoadingCampaign(thenReturn: .success([.fake().copy(campaignID: 456)]))
@@ -182,6 +184,28 @@ final class BlazeStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(storedCampaignCount, 2)
+    }
+
+    // MARK: - Synchronize target devices
+
+    func test_synchronizeTargetDevices_is_success_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingTargetDevices(thenReturn: .success([.fake().copy(id: "mobile")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let devices = try result.get()
+        XCTAssertEqual(devices.count, 1)
     }
 }
 

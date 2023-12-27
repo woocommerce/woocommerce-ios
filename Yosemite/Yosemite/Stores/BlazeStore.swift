@@ -58,6 +58,8 @@ public final class BlazeStore: Store {
             synchronizeCampaigns(siteID: siteID,
                                  pageNumber: pageNumber,
                                  onCompletion: onCompletion)
+        case let .synchronizeTargetDevices(siteID, onCompletion):
+            synchronizeTargetDevices(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -117,6 +119,62 @@ private extension BlazeStore {
             }()
 
             storageCampaign.update(with: campaign)
+        }
+    }
+}
+
+// MARK: - Synchronize target devices
+private extension BlazeStore {
+    func synchronizeTargetDevices(siteID: Int64, onCompletion: @escaping (Result<[BlazeTargetDevice], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let results: [BlazeTargetDevice]
+                #if DEBUG
+                results = [
+                    .init(id: "mobile", name: "Mobile"),
+                    .init(id: "desktop", name: "Desktop")
+                ]
+                #else
+                results = try await remote.fetchTargetDevices(for: siteID)
+                #endif
+                upsertStoredTargetDeviceInBackground(readonlyDevices: results) {
+                    onCompletion(.success(results))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Updates or Inserts specified BlazeTargetDevice Entities in a background thread
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func upsertStoredTargetDeviceInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
+                                              onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            guard let self = self else { return }
+            derivedStorage.deleteAllObjects(ofType: Storage.BlazeTargetDevice.self)
+            self.upsertStoredTargetDevices(readonlyDevices: readonlyDevices, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates or Inserts the specified BlazeTargetDevice entities
+    ///
+    func upsertStoredTargetDevices(readonlyDevices: [Networking.BlazeTargetDevice],
+                                   in storage: StorageType) {
+        for device in readonlyDevices {
+            let storageDevice: Storage.BlazeTargetDevice = {
+                if let storedDevice = storage.loadBlazeTargetDevice(id: device.id) {
+                    return storedDevice
+                }
+                return storage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
+            }()
+            storageDevice.update(with: device)
         }
     }
 }

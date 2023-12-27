@@ -1134,8 +1134,8 @@ private extension ProductFormViewController {
         let blazeViewModel = BlazeWebViewModel(siteID: viewModel.productModel.siteID,
                                                source: source,
                                                siteURL: siteUrl,
-                                               productID: product.productID) {
-            self.handlePostCreation()
+                                               productID: product.productID) { [weak self] in
+            self?.handlePostCreation()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
         navigationController?.show(webViewController, sender: self)

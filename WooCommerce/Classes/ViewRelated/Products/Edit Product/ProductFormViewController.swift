@@ -1996,7 +1996,7 @@ private extension ProductFormViewController {
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium()]
+            sheet.detents = [.medium(), .large()]
         })
     }
 }

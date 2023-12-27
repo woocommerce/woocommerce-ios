@@ -133,11 +133,11 @@ private extension BlazeStore {
                     BlazeTargetDevice(id: "mobile", name: "Mobile"),
                     BlazeTargetDevice(id: "desktop", name: "Desktop")
                 ]
-                let results: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
                     try await remote.fetchTargetDevices(for: siteID)
                 })
-                upsertStoredTargetDeviceInBackground(readonlyDevices: results) {
-                    onCompletion(.success(results))
+                upsertStoredTargetDeviceInBackground(readonlyDevices: devices) {
+                    onCompletion(.success(devices))
                 }
             } catch {
                 onCompletion(.failure(error))
@@ -154,26 +154,14 @@ private extension BlazeStore {
         derivedStorage.perform { [weak self] in
             guard let self = self else { return }
             derivedStorage.deleteAllObjects(ofType: Storage.BlazeTargetDevice.self)
-            self.upsertStoredTargetDevices(readonlyDevices: readonlyDevices, in: derivedStorage)
+            for device in readonlyDevices {
+                let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
+                storageDevice.update(with: device)
+            }
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    /// Updates or Inserts the specified BlazeTargetDevice entities
-    ///
-    func upsertStoredTargetDevices(readonlyDevices: [Networking.BlazeTargetDevice],
-                                   in storage: StorageType) {
-        for device in readonlyDevices {
-            let storageDevice: Storage.BlazeTargetDevice = {
-                if let storedDevice = storage.loadBlazeTargetDevice(id: device.id) {
-                    return storedDevice
-                }
-                return storage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
-            }()
-            storageDevice.update(with: device)
         }
     }
 }

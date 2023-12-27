@@ -7,6 +7,8 @@
 - [*] Store creation: Inform user once store ready if app killed while waiting for store to be ready. [https://github.com/woocommerce/woocommerce-ios/pull/11478]
 - [*] Dashboard: Resolves a decoding error with certain payment gateway plugins that previously caused an error loading data in the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/11489]
 - [**] Lightweight Storefront: Added option to select themes for WPCom store in both Settings and Store Creation flows. [https://github.com/woocommerce/woocommerce-ios/issues/11291]
+- [*] Orders: order creation/paid/refund dates are now shown in the store time zone instead of the device time zone. [https://github.com/woocommerce/woocommerce-ios/pull/11539, https://github.com/woocommerce/woocommerce-ios/pull/11536]
+- [*] Similar to orders above, the latest time range in analytics is now in the store time zone instead of the device time zone. [https://github.com/woocommerce/woocommerce-ios/pull/11479]
 
 16.7
 -----

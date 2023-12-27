@@ -10,7 +10,7 @@ struct OrderFormGiftCardRow: View {
                 Text(Localization.giftCard)
                     .foregroundColor(.init(uiColor: .accent))
                     .bodyStyle()
-                Image(uiImage: .pencilImage)
+                Image(systemName: "pencil")
             }
             .foregroundColor(.init(uiColor: .accent))
 
@@ -26,7 +26,7 @@ private extension OrderFormGiftCardRow {
     }
 
     enum Constants {
-        static let horizontalSpacing: CGFloat = 8
+        static let horizontalSpacing: CGFloat = 4
     }
 }
 

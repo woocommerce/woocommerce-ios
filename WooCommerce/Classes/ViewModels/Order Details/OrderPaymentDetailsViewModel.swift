@@ -109,7 +109,7 @@ final class OrderPaymentDetailsViewModel {
             return nil
         }
 
-        let styleDate = datePaid.toString(dateStyle: .medium, timeStyle: .none)
+        let styleDate = datePaid.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
         let template = NSLocalizedString(
             "%1$@ via %2$@",
             comment: "Payment on <date> received via (payment method title)")
@@ -142,7 +142,11 @@ final class OrderPaymentDetailsViewModel {
         }
 
         // First, localize all the pieces of the sentence.
-        let dateCreated = DateFormatter.mediumLengthLocalizedDateFormatter.string(from: refund.dateCreated)
+        let dateCreated = {
+            let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
+            dateFormatter.timeZone = .siteTimezone
+            return dateFormatter.string(from: refund.dateCreated)
+        }()
 
         let hasRefundGateway = refund.isAutomated ?? false
 

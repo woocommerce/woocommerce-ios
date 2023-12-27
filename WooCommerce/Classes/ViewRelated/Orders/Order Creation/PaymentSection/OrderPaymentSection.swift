@@ -75,11 +75,16 @@ private extension OrderPaymentSection {
     @ViewBuilder var appliedCouponsRows: some View {
         VStack {
             ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
-                TitleAndValueRow(title: viewModel.title,
-                                 titleSuffixImage: rowsEditImage,
-                                 value: .content(viewModel.discount),
-                                 selectionStyle: editableRowsSelectionStyle) {
-                    selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
+                VStack(alignment: .leading, spacing: .zero) {
+                    TitleAndValueRow(title: Localization.coupon,
+                                     titleSuffixImage: rowsEditImage,
+                                     value: .content(viewModel.discount),
+                                     selectionStyle: editableRowsSelectionStyle) {
+                        selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
+                    }
+                    Text(viewModel.detailsViewModel.code)
+                        .footnoteStyle()
+                        .padding(.horizontal, Constants.horizontalPadding)
                 }
             }
         }
@@ -157,6 +162,10 @@ private extension OrderPaymentSection {
             taxSectionTitle
             taxLines
             taxBasedOnLine
+                .onTapGesture {
+                    shouldShowTaxEducationalDialog = true
+                    viewModel.onTaxHelpButtonTappedClosure()
+                }
             .renderedIf(viewModel.taxBasedOnSetting != nil)
         }
         .padding(Constants.sectionPadding)
@@ -172,16 +181,6 @@ private extension OrderPaymentSection {
         AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
             Text(Localization.taxes)
                 .bodyStyle()
-
-            Button {
-                shouldShowTaxEducationalDialog = true
-                viewModel.onTaxHelpButtonTappedClosure()
-            } label: {
-                Image(systemName: "questionmark.circle")
-                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                    .accessibilityLabel(Localization.taxInformationAccessibilityLabel)
-            }
-            .renderedIf(viewModel.shouldShowTaxesInfoButton)
 
             Spacer()
 
@@ -212,9 +211,16 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var taxBasedOnLine: some View {
-        Text(viewModel.taxBasedOnSetting?.displayString ?? "")
-            .footnoteStyle()
-            .multilineTextAlignment(.leading)
+        HStack(spacing: Constants.taxBasedOnLineTextPadding) {
+            Text(viewModel.taxBasedOnSetting?.displayString ?? "")
+                .footnoteStyle()
+                .multilineTextAlignment(.leading)
+            Text(Localization.taxInformationLearnMore)
+                .font(.footnote)
+                .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                .renderedIf(viewModel.shouldShowTaxesInfoButton)
+        }
+
     }
 
     @ViewBuilder var taxRateAddedAutomaticallyRow: some View {
@@ -251,22 +257,38 @@ private extension OrderPaymentSection {
 // MARK: Constants
 private extension OrderPaymentSection {
     enum Localization {
-        static let productsTotal = NSLocalizedString("orderPaymentSection.products",
-                                                     value: "Products",
-                                                     comment: "Label for the row showing the total cost of products in the order")
-        static let discountTotal = NSLocalizedString("Discount total", comment: "Label for the the row showing the total discount of the order")
-        static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
-        static let customAmountsTotal = NSLocalizedString("orderPaymentSection.customAmounts",
-                                                          value: "Custom amounts",
-                                                          comment: "Label for the row showing the cost of fees in the order")
-        static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
-        static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
-        static let taxRateAddedAutomaticallyRowText = NSLocalizedString("Tax rate location added automatically",
-                                                                        comment: "Notice in editable order details when the tax rate was added to the order")
-        static let taxInformationAccessibilityLabel = NSLocalizedString(
-            "order.form.paymentSection.taxes.moreInfo.accessibilityLabel",
-            value: "Tax information",
-            comment: "An accessibility label for a More info button, rendered as a question mark icon, which shows tax information.")
+        static let productsTotal = NSLocalizedString(
+            "orderPaymentSection.productsTotal",
+            value: "Products",
+            comment: "Label for the row showing the total cost of products in the order")
+        static let discountTotal = NSLocalizedString(
+            "orderPaymentSection.discountTotal",
+            value: "Discount total",
+            comment: "Label for the the row showing the total discount of the order")
+        static let shippingTotal = NSLocalizedString(
+            "orderPaymentSection.shippingTotal",
+            value: "Shipping",
+            comment: "Label for the row showing the cost of shipping in the order")
+        static let customAmountsTotal = NSLocalizedString(
+            "orderPaymentSection.customAmountsTotal",
+            value: "Custom amounts",
+            comment: "Label for the row showing the cost of fees in the order")
+        static let taxes = NSLocalizedString(
+            "orderPaymentSection.taxes",
+            value: "Taxes",
+            comment: "Label for the row showing the taxes in the order")
+        static let coupon = NSLocalizedString(
+            "orderPaymentSection.coupon",
+            value: "Coupon",
+            comment: "Label for the row showing the cost of coupon in the order")
+        static let taxRateAddedAutomaticallyRowText = NSLocalizedString(
+            "orderPaymentSection.taxRateAddedAutomaticallyRowText",
+            value: "Tax rate location added automatically",
+            comment: "Notice in editable order details when the tax rate was added to the order")
+        static let taxInformationLearnMore = NSLocalizedString(
+            "order.form.paymentSection.taxes.learnMore",
+            value: "Learn More.",
+            comment: "A 'Learn More' label text, which shows tax information upon being clicked.")
     }
 
     enum Constants {
@@ -274,7 +296,9 @@ private extension OrderPaymentSection {
         static let taxesSectionVerticalSpacing: CGFloat = 8
         static let taxRateAddedAutomaticallyRowHorizontalSpacing: CGFloat = 8
         static let taxesAdaptativeStacksSpacing: CGFloat = 4
+        static let taxBasedOnLineTextPadding: CGFloat = 4
         static let sectionPadding: CGFloat = 16
+        static let horizontalPadding: CGFloat = 16
         static let rowMinHeight: CGFloat = 44
         static let infoTooltipCornerRadius: CGFloat = 4
     }

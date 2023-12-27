@@ -7,6 +7,10 @@ public final class TwoFAScreen: ScreenObject {
         $0.textFields["Authentication code"]
     }
 
+    private let securityKeyButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Passkeys"]
+    }
+
     private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Continue Button"]
     }
@@ -17,6 +21,7 @@ public final class TwoFAScreen: ScreenObject {
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
+                securityKeyButtonGetter, // Please keep this element at the beginning of this list to ensure its presence via the internal waitForScreen
                 twoFAFieldGetter,
                 continueButtonGetter
             ],

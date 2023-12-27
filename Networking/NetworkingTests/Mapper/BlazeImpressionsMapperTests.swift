@@ -13,8 +13,8 @@ class BlazeImpressionsMapperTests: XCTestCase {
     }
 }
 
-/// MARK: - Test Helpers
-///
+// MARK: - Test Helpers
+//
 private extension BlazeImpressionsMapperTests {
 
     /// Returns the BlazeImpressionsMapper output upon receiving `filename` (Data Encoded)
@@ -32,15 +32,6 @@ private extension BlazeImpressionsMapperTests {
     func mapLoadBlazeImpressionsResponse() throws -> BlazeImpressions {
         return try mapBlazeImpressions(from: "blaze-impressions")
     }
-
-    /*
-     func mapLoadBlazeTargetLocationResponse() throws -> [BlazeTargetLocation] {
-         guard let response = Loader.contentsOf("blaze-target-locations") else {
-             return []
-         }
-         return try BlazeTargetLocationListMapper().map(response: response)
-     }
-     */
 
     struct FileNotFoundError: Error {}
 }

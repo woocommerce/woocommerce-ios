@@ -3,7 +3,7 @@ import Foundation
 /// Mapper: BlazeImpressions
 ///
 struct BlazeImpressionsMapper: Mapper {
-    
+
     /// (Attempts) to convert a dictionary into a BlazeImpressions entity
     ///
     func map(response: Data) throws -> BlazeImpressions {

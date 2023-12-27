@@ -24,8 +24,8 @@ public struct BlazeImpressions: Decodable, GeneratedFakeable {
     }
 }
 
-/// MARK: - Decodable Conformance
-///
+// MARK: - Decodable Conformance
+//
 private extension BlazeImpressions {
     enum CodingKeys: String, CodingKey {
         case totalImpressionsMin = "total_impressions_min"

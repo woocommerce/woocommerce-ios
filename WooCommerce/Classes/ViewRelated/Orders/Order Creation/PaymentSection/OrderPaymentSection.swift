@@ -46,9 +46,6 @@ struct OrderPaymentSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            // Title
-            orderWithItemsTitle
-
             // Order components
             Group {
                 productsRow
@@ -75,25 +72,6 @@ struct OrderPaymentSection: View {
 }
 
 private extension OrderPaymentSection {
-    @ViewBuilder var orderWithItemsTitle: some View {
-        HStack {
-            Text(Localization.paymentTotals)
-                .accessibilityAddTraits(.isHeader)
-                .headlineStyle()
-
-            Spacer()
-
-            Image(uiImage: .lockImage)
-                .foregroundColor(Color(.brand))
-                .renderedIf(viewModel.showNonEditableIndicators)
-
-            ProgressView()
-                .renderedIf(viewModel.isLoading)
-        }
-        .padding()
-        .renderedIf(!viewModel.orderIsEmpty)
-    }
-
     @ViewBuilder var appliedCouponsRows: some View {
         VStack {
             ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
@@ -279,10 +257,6 @@ private extension OrderPaymentSection {
 // MARK: Constants
 private extension OrderPaymentSection {
     enum Localization {
-        static let paymentTotals = NSLocalizedString(
-            "orderPaymentSection.paymentTotals",
-            value: "Payment totals",
-            comment: "Title text of the section that shows Payment details when creating a new order")
         static let productsTotal = NSLocalizedString(
             "orderPaymentSection.productsTotal",
             value: "Products",

@@ -2534,6 +2534,7 @@ final class MigrationTests: XCTestCase {
         // Check all attributes
         XCTAssertEqual(language.value(forKey: "id") as? String, "en")
         XCTAssertEqual(language.value(forKey: "name") as? String, "English")
+        XCTAssertEqual(language.value(forKey: "locale") as? String, "en")
     }
 
     func test_migrating_from_104_to_105_adds_BlazeTargetDevice_entity() throws {
@@ -2563,6 +2564,7 @@ final class MigrationTests: XCTestCase {
         // Check all attributes
         XCTAssertEqual(device.value(forKey: "id") as? String, "mobile")
         XCTAssertEqual(device.value(forKey: "name") as? String, "Mobile")
+        XCTAssertEqual(device.value(forKey: "locale") as? String, "en")
     }
 
     func test_migrating_from_104_to_105_adds_BlazeTargetTopic_entity() throws {
@@ -2592,6 +2594,7 @@ final class MigrationTests: XCTestCase {
         // Check all attributes
         XCTAssertEqual(topic.value(forKey: "id") as? String, "IAB1")
         XCTAssertEqual(topic.value(forKey: "name") as? String, "Arts & Entertainment")
+        XCTAssertEqual(topic.value(forKey: "locale") as? String, "en")
     }
 }
 
@@ -3321,7 +3324,8 @@ private extension MigrationTests {
     func insertBlazeTargetLanguage(to context: NSManagedObjectContext) -> NSManagedObject {
         let language = context.insert(entityName: "BlazeTargetLanguage", properties: [
             "id": "en",
-            "name": "English"
+            "name": "English",
+            "locale": "en"
         ])
         return language
     }
@@ -3331,7 +3335,8 @@ private extension MigrationTests {
     func insertBlazeTargetDevice(to context: NSManagedObjectContext) -> NSManagedObject {
         let device = context.insert(entityName: "BlazeTargetDevice", properties: [
             "id": "mobile",
-            "name": "Mobile"
+            "name": "Mobile",
+            "locale": "en"
         ])
         return device
     }
@@ -3341,7 +3346,8 @@ private extension MigrationTests {
     func insertBlazeTargetTopic(to context: NSManagedObjectContext) -> NSManagedObject {
         let device = context.insert(entityName: "BlazeTargetTopic", properties: [
             "id": "IAB1",
-            "name": "Arts & Entertainment"
+            "name": "Arts & Entertainment",
+            "locale": "en"
         ])
         return device
     }

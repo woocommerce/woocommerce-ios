@@ -209,21 +209,17 @@ private extension JetpackSetupViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
                 self.setupError = error
-                guard let networkError = error as? NetworkError else {
-                    return self.setupFailed = true
-                }
-                switch networkError {
-                    case .notFound:
-                        if self.connectionOnly {
-                            /// If site has WCPay installed and activated but not connected,
-                            /// plugins need to be installed even though we detected a connection before
-                            self.setupSteps = JetpackInstallStep.allCases
-                            self.connectionOnly = false
-                        }
-                        /// plugin is likely to not have been installed, so proceed to install it.
-                        self.installJetpack()
-                    default:
-                        self.setupFailed = true
+                if case .notFound = error as? NetworkError {
+                    if self.connectionOnly {
+                        /// If site has WCPay installed and activated but not connected,
+                        /// plugins need to be installed even though we detected a connection before
+                        self.setupSteps = JetpackInstallStep.allCases
+                        self.connectionOnly = false
+                    }
+                    /// plugin is likely to not have been installed, so proceed to install it.
+                    self.installJetpack()
+                } else {
+                    self.setupFailed = true
                 }
             }
         }

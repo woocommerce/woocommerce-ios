@@ -497,6 +497,7 @@
 		74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 74E30950216E8DCE00ABCE4C /* site-visits-alt.json */; };
 		77CE40602514CB3E003FF69D /* ProductDownloadDragAndDrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CE405F2514CB3E003FF69D /* ProductDownloadDragAndDrop.swift */; };
 		8617EDA22B3C00E800BD9D1B /* BlazeImpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8617EDA12B3C00E800BD9D1B /* BlazeImpressions.swift */; };
+		8617EDA42B3C040700BD9D1B /* BlazeImpressionsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8617EDA32B3C040700BD9D1B /* BlazeImpressionsMapper.swift */; };
 		933A2732222234F800C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
 		9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */; };
 		93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */; };
@@ -1535,6 +1536,7 @@
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
 		77CE405F2514CB3E003FF69D /* ProductDownloadDragAndDrop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadDragAndDrop.swift; sourceTree = "<group>"; };
 		8617EDA12B3C00E800BD9D1B /* BlazeImpressions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeImpressions.swift; sourceTree = "<group>"; };
+		8617EDA32B3C040700BD9D1B /* BlazeImpressionsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeImpressionsMapper.swift; sourceTree = "<group>"; };
 		933A2731222234F800C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapperTests.swift; sourceTree = "<group>"; };
 		93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettings.swift; sourceTree = "<group>"; };
@@ -3162,6 +3164,7 @@
 				DEDA8DA22B18323E0076BF0F /* WordPressThemeListMapper.swift */,
 				DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */,
 				DEA4936C2B3995B700EED015 /* BlazeTargetOptionMappers.swift */,
+				8617EDA32B3C040700BD9D1B /* BlazeImpressionsMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -4358,6 +4361,7 @@
 				02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */,
 				03DCB786262739D200C8953D /* CouponMapper.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
+				8617EDA42B3C040700BD9D1B /* BlazeImpressionsMapper.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
 				3192F220260D33BB0067FEF9 /* WCPayAccount.swift in Sources */,
 				68CB800E28D8901B00E169F8 /* CustomerMapper.swift in Sources */,

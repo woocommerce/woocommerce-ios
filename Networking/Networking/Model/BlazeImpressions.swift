@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Impressions forecast for a Blaze campaign
 ///
-public struct BlazeImpressions: Decodable, Equatable {
+public struct BlazeImpressions: Decodable, Equatable, GeneratedFakeable {
 
     /// Minimum forecasted impressions a Blaze campaign might get
     public let totalImpressionsMin: Int64

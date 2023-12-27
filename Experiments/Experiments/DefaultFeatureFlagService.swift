@@ -84,6 +84,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .scanToUpdateInventory:
             return true
+        case .blazei3NativeCampaignCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -53,10 +53,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, Layout.padding)
                     .accessibilityAddTraits(.isHeader)
-                LazyVGrid(columns: [GridItem(.flexible(minimum: 100), alignment: .leading),
-                                    GridItem(alignment: .leading),
-                                    GridItem(alignment: .trailing)],
-                          spacing: Layout.elementSpacing) {
+                AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.elementSpacing) {
                     HStack {
                         Image(systemName: "calendar")
                             .accessibilityHidden(true)
@@ -64,6 +61,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                             .foregroundColor(.primary)
                     }
                     WooPaymentsDepositsBadge(status: viewModel.lastDepositStatus)
+                    Spacer()
                     Text(viewModel.lastDepositAmount)
                         .foregroundColor(.primary)
                 }

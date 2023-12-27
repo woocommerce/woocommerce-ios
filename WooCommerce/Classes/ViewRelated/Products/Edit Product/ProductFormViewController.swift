@@ -1143,7 +1143,7 @@ private extension ProductFormViewController {
 
     func handlePostCreation() {
         navigationController?.popViewController(animated: true)
-        showBlazeCreationCelebrationView()
+        showBlazeCampaignCelebrationView()
     }
 
     func showBlazeCampaignCelebrationView() {

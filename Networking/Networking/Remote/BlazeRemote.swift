@@ -13,27 +13,31 @@ public protocol BlazeRemoteProtocol {
     /// Fetches target languages for campaign creation.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
+    ///    - locale: The locale to receive in the response.
     ///
-    func fetchTargetLanguages(for siteID: Int64) async throws -> [BlazeTargetLanguage]
+    func fetchTargetLanguages(for siteID: Int64, locale: String) async throws -> [BlazeTargetLanguage]
 
     /// Fetches target devices for campaign creation.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
+    ///    - locale: The locale to receive in the response.
     ///
-    func fetchTargetDevices(for siteID: Int64) async throws -> [BlazeTargetDevice]
+    func fetchTargetDevices(for siteID: Int64, locale: String) async throws -> [BlazeTargetDevice]
 
     /// Fetches target topics for campaign creation.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
+    ///    - locale: The locale to receive in the response.
     ///
-    func fetchTargetTopics(for siteID: Int64) async throws -> [BlazeTargetTopic]
+    func fetchTargetTopics(for siteID: Int64, locale: String) async throws -> [BlazeTargetTopic]
 
     /// Fetches target locations for campaign creation.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
     ///    - query: Keyword to search for locations.
+    ///    - locale: The locale to receive in the response.
     ///
-    func fetchTargetLocations(for siteID: Int64, query: String) async throws -> [BlazeTargetLocation]
+    func fetchTargetLocations(for siteID: Int64, query: String, locale: String) async throws -> [BlazeTargetLocation]
 }
 
 /// Blaze: Remote Endpoints
@@ -54,8 +58,8 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
     /// Fetches target languages for campaign creation.
     ///
-    public func fetchTargetLanguages(for siteID: Int64) async throws -> [BlazeTargetLanguage] {
-        let path = BlazeTargetOption.languages.path(for: siteID)
+    public func fetchTargetLanguages(for siteID: Int64, locale: String) async throws -> [BlazeTargetLanguage] {
+        let path = BlazeTargetOption.languages.path(for: siteID, locale: locale)
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
         let mapper = BlazeTargetLanguageListMapper()
         return try await enqueue(request, mapper: mapper)
@@ -63,8 +67,8 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
     /// Fetches target devices for campaign creation.
     ///
-    public func fetchTargetDevices(for siteID: Int64) async throws -> [BlazeTargetDevice] {
-        let path = BlazeTargetOption.devices.path(for: siteID)
+    public func fetchTargetDevices(for siteID: Int64, locale: String) async throws -> [BlazeTargetDevice] {
+        let path = BlazeTargetOption.devices.path(for: siteID, locale: locale)
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
         let mapper = BlazeTargetDeviceListMapper()
         return try await enqueue(request, mapper: mapper)
@@ -72,8 +76,8 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
     /// Fetches target topics for campaign creation.
     ///
-    public func fetchTargetTopics(for siteID: Int64) async throws -> [BlazeTargetTopic] {
-        let path = BlazeTargetOption.topics.path(for: siteID)
+    public func fetchTargetTopics(for siteID: Int64, locale: String) async throws -> [BlazeTargetTopic] {
+        let path = BlazeTargetOption.topics.path(for: siteID, locale: locale)
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
         let mapper = BlazeTargetTopicListMapper()
         return try await enqueue(request, mapper: mapper)
@@ -81,8 +85,8 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
     /// Fetches target locations for campaign creation.
     ///
-    public func fetchTargetLocations(for siteID: Int64, query: String) async throws -> [BlazeTargetLocation] {
-        let path = BlazeTargetOption.locations(query: query).path(for: siteID)
+    public func fetchTargetLocations(for siteID: Int64, query: String, locale: String) async throws -> [BlazeTargetLocation] {
+        let path = BlazeTargetOption.locations(query: query).path(for: siteID, locale: locale)
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
         let mapper = BlazeTargetLocationListMapper()
         return try await enqueue(request, mapper: mapper)
@@ -97,7 +101,7 @@ private extension BlazeRemote {
         case locations(query: String)
 
         // TODO-11512: Revise the paths when the API is finalized.
-        func path(for siteID: Int64) -> String {
+        func path(for siteID: Int64, locale: String) -> String {
             let suffix: String = {
                 switch self {
                 case .languages:

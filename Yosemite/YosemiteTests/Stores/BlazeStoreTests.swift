@@ -34,6 +34,10 @@ final class BlazeStoreTests: XCTestCase {
         return viewStorage.countObjects(ofType: StorageBlazeCampaign.self)
     }
 
+    private var storedTargetDeviceCount: Int {
+        return viewStorage.countObjects(ofType: StorageBlazeTargetDevice.self)
+    }
+
     /// SiteID
     ///
     private let sampleSiteID: Int64 = 120934
@@ -188,7 +192,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize target devices
 
-    func test_synchronizeTargetDevices_is_success_when_fetching_successfully() throws {
+    func test_synchronizeTargetDevices_is_successful_when_fetching_successfully() throws {
         // Given
         remote.whenFetchingTargetDevices(thenReturn: .success([.fake().copy(id: "mobile")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -207,6 +211,73 @@ final class BlazeStoreTests: XCTestCase {
         let devices = try result.get()
         XCTAssertEqual(devices.count, 1)
     }
+
+    func test_synchronizeTargetDevices_stores_devices_upon_success() throws {
+        // Given
+        remote.whenFetchingTargetDevices(thenReturn: .success([.fake().copy(id: "mobile")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedTargetDeviceCount, 0)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedTargetDeviceCount, 1)
+    }
+
+    func test_synchronizeTargetDevices_overwrites_existing_devices() throws {
+        // Given
+        storeTargetDevice(.init(id: "test", name: "Test"))
+        storeTargetDevice(.init(id: "test-2", name: "Test 2"))
+        remote.whenFetchingTargetDevices(thenReturn: .success([.init(id: "mobile", name: "Mobile")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedTargetDeviceCount, 2)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedTargetDeviceCount, 1)
+        let device = try XCTUnwrap(viewStorage.firstObject(ofType: StorageBlazeTargetDevice.self))
+        XCTAssertEqual(device.id, "mobile")
+        XCTAssertEqual(device.name, "Mobile")
+    }
+
+    func test_synchronizeTargetDevices_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingTargetDevices(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }
 
 private extension BlazeStoreTests {
@@ -216,5 +287,12 @@ private extension BlazeStoreTests {
         storedCampaign.update(with: campaign)
         storedCampaign.siteID = siteID
         return storedCampaign
+    }
+
+    @discardableResult
+    func storeTargetDevice(_ device: Networking.BlazeTargetDevice) -> Storage.BlazeTargetDevice {
+        let storedDevice = storage.insertNewObject(ofType: BlazeTargetDevice.self)
+        storedDevice.update(with: device)
+        return storedDevice
     }
 }

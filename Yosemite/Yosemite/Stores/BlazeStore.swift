@@ -133,6 +133,7 @@ private extension BlazeStore {
                     BlazeTargetDevice(id: "mobile", name: "Mobile"),
                     BlazeTargetDevice(id: "desktop", name: "Desktop")
                 ]
+                // TODO-11540: remove stubbed result when the API is ready.
                 let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
                     try await remote.fetchTargetDevices(for: siteID)
                 })
@@ -152,7 +153,6 @@ private extension BlazeStore {
                                               onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
-            guard let self = self else { return }
             derivedStorage.deleteAllObjects(ofType: Storage.BlazeTargetDevice.self)
             for device in readonlyDevices {
                 let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
@@ -174,13 +174,9 @@ private extension BlazeStore {
 
     func mockResponse<T>(stubbedResult: T, onExecution: () async throws -> T) async throws -> T {
         // skips stubbed result for unit tests
-        guard Self.isRunningTests == false else {
-            return try await onExecution()
+        guard Self.isRunningTests else {
+            return stubbedResult
         }
-        #if DEBUG
-        return stubbedResult
-        #else
         return try await onExecution()
-        #endif
     }
 }

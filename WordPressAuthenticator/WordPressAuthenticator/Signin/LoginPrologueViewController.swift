@@ -591,6 +591,7 @@ class LoginPrologueViewController: LoginViewController {
             self.buttonViewController = buttonViewController
             buttonViewController.move(to: self, into: buttonContainerView)
         }
+        view.bringSubviewToFront(buttonContainerView)
     }
 }
 

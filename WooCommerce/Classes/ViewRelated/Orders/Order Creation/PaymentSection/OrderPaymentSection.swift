@@ -235,7 +235,6 @@ private extension OrderPaymentSection {
             Text(Localization.taxInformationLearnMore)
                 .font(.footnote)
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                .accessibilityLabel(Localization.taxInformationAccessibilityLabel)
                 .renderedIf(viewModel.shouldShowTaxesInfoButton)
         }
 
@@ -311,10 +310,6 @@ private extension OrderPaymentSection {
             "order.form.paymentSection.taxes.learnMore",
             value: "Learn More.",
             comment: "A 'Learn More' label text, which shows tax information upon being clicked.")
-        static let taxInformationAccessibilityLabel = NSLocalizedString(
-            "order.form.paymentSection.taxes.moreInfo.accessibilityLabel",
-            value: "Tax information",
-            comment: "An accessibility label for a Learn More button, which shows tax information.")
     }
 
     enum Constants {

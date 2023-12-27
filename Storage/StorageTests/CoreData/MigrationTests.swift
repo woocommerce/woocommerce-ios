@@ -2528,7 +2528,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetLanguage"), 0)
 
         // Insert a new BlazeTargetLanguage
-        let language = insertBlazeTargetLanguage(to: targetContext, forModel: 105)
+        let language = insertBlazeTargetLanguage(to: targetContext)
         XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetLanguage"), 1)
 
         // Check all attributes
@@ -2557,7 +2557,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetDevice"), 0)
 
         // Insert a new BlazeTargetDevice
-        let device = insertBlazeTargetDevice(to: targetContext, forModel: 105)
+        let device = insertBlazeTargetDevice(to: targetContext)
         XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetDevice"), 1)
 
         // Check all attributes
@@ -2586,7 +2586,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetTopic"), 0)
 
         // Insert a new BlazeTargetTopic
-        let topic = insertBlazeTargetTopic(to: targetContext, forModel: 105)
+        let topic = insertBlazeTargetTopic(to: targetContext)
         XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetTopic"), 1)
 
         // Check all attributes
@@ -3318,7 +3318,7 @@ private extension MigrationTests {
 
     /// Inserts a `BlazeTargetLanguage` entity, providing default values for the required properties.
     @discardableResult
-    func insertBlazeTargetLanguage(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+    func insertBlazeTargetLanguage(to context: NSManagedObjectContext) -> NSManagedObject {
         let language = context.insert(entityName: "BlazeTargetLanguage", properties: [
             "id": "en",
             "name": "English"
@@ -3328,7 +3328,7 @@ private extension MigrationTests {
 
     /// Inserts a `BlazeTargetDevice` entity, providing default values for the required properties.
     @discardableResult
-    func insertBlazeTargetDevice(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+    func insertBlazeTargetDevice(to context: NSManagedObjectContext) -> NSManagedObject {
         let device = context.insert(entityName: "BlazeTargetDevice", properties: [
             "id": "mobile",
             "name": "Mobile"
@@ -3338,7 +3338,7 @@ private extension MigrationTests {
 
     /// Inserts a `BlazeTargetTopic` entity, providing default values for the required properties.
     @discardableResult
-    func insertBlazeTargetTopic(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+    func insertBlazeTargetTopic(to context: NSManagedObjectContext) -> NSManagedObject {
         let device = context.insert(entityName: "BlazeTargetTopic", properties: [
             "id": "IAB1",
             "name": "Arts & Entertainment"

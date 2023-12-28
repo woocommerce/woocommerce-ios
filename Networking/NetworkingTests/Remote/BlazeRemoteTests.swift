@@ -103,8 +103,8 @@ final class BlazeRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "en", name: "English"),
-            .init(id: "es", name: "Spanish")
+            .init(id: "en", name: "English", locale: "en"),
+            .init(id: "es", name: "Spanish", locale: "en")
         ])
     }
 

@@ -62,7 +62,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         let path = BlazeTargetOption.languages.endpoint(for: siteID)
         let parameters: [String: Any] = [Keys.locale: locale]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-        let mapper = BlazeTargetLanguageListMapper()
+        let mapper = BlazeTargetLanguageListMapper(locale: locale)
         return try await enqueue(request, mapper: mapper)
     }
 

@@ -6,12 +6,12 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
     ///
     func test_BlazeTargetLanguageListMapper_parses_all_contents_in_response() throws {
         // When
-        let list = try XCTUnwrap(mapLoadBlazeTargetLanguageResponse())
+        let list = try XCTUnwrap(mapLoadBlazeTargetLanguageResponse(locale: "vi"))
 
         // Then
         XCTAssertEqual(list, [
-            .init(id: "en", name: "English"),
-            .init(id: "es", name: "Spanish")
+            .init(id: "en", name: "English", locale: "vi"),
+            .init(id: "es", name: "Spanish", locale: "vi")
         ])
     }
 
@@ -67,11 +67,11 @@ private extension BlazeTargetOptionMapperTests {
 
     /// Returns the [BlazeTargetLanguage] output from `blaze-target-languages.json`
     ///
-    func mapLoadBlazeTargetLanguageResponse() throws -> [BlazeTargetLanguage] {
+    func mapLoadBlazeTargetLanguageResponse(locale: String) throws -> [BlazeTargetLanguage] {
         guard let response = Loader.contentsOf("blaze-target-languages") else {
             return []
         }
-        return try BlazeTargetLanguageListMapper().map(response: response)
+        return try BlazeTargetLanguageListMapper(locale: locale).map(response: response)
     }
 
     /// Returns the [BlazeTargetDevice] output from `blaze-target-devices.json`

@@ -191,7 +191,8 @@ extension Networking.BlazeTargetLanguage {
     public static func fake() -> Networking.BlazeTargetLanguage {
         .init(
             id: .fake(),
-            name: .fake()
+            name: .fake(),
+            locale: .fake()
         )
     }
 }

@@ -11,9 +11,25 @@ public struct BlazeTargetLanguage: Decodable, Equatable, GeneratedCopiable, Gene
     /// Name of the language
     public let name: String
 
-    public init(id: String, name: String) {
+    /// Locale of the device name
+    public let locale: String
+
+    public init(id: String, name: String, locale: String) {
         self.id = id
         self.name = name
+        self.locale = locale
+    }
+
+    public init(from decoder: Decoder) throws {
+        self.locale = decoder.userInfo[.locale] as? String ?? "en"
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+    }
+
+    private enum CodingKeys: CodingKey {
+        case id
+        case name
     }
 }
 

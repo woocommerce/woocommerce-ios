@@ -1113,27 +1113,23 @@ private extension ProductFormViewController {
         }
 
         if viewModel.shouldShowBlazeIntroView {
+            let onCreateCampaignClosure = { [weak self] in
+                guard let self else { return }
+                self.dismiss(animated: true)
+                navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
+            }
+            let onDismissClosure = { [weak self] in
+                guard let self = self else { return }
+                self.dismiss(animated: true)
+            }
             let blazeHostingController: UIViewController = {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-                    return BlazeCreateCampaignIntroController(onCreateCampaign: { [weak self] in
-                        guard let self else { return }
-                        self.dismiss(animated: true)
-                        navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
-                        ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
-                    }, onDismiss: { [weak self] in
-                        guard let self = self else { return }
-                        self.dismiss(animated: true)
-                    })
+                    return BlazeCreateCampaignIntroController(onCreateCampaign: onCreateCampaignClosure,
+                                                              onDismiss: onDismissClosure)
                 } else {
-                    return BlazeCampaignIntroController(onStartCampaign: { [weak self] in
-                        guard let self else { return }
-                        self.dismiss(animated: true)
-                        navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
-                        ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
-                    }, onDismiss: { [weak self] in
-                        guard let self = self else { return }
-                        self.dismiss(animated: true)
-                    })
+                    return BlazeCampaignIntroController(onStartCampaign: onCreateCampaignClosure,
+                                                        onDismiss: onDismissClosure)
                 }
             }()
 

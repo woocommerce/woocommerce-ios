@@ -117,23 +117,20 @@ private extension BlazeCreateCampaignIntroView {
         let feature: Feature
 
         var body: some View {
-            HStack {
-                VStack(alignment: .leading) {
-                    Image(uiImage: .blaze)
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(Color(.brand))
-                        .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
+            VStack(alignment: .leading) {
+                Image(uiImage: .blaze)
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundColor(Color(.brand))
+                    .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
 
-                    Text(feature.title)
-                        .fontWeight(.bold)
-                        .bodyStyle()
+                Text(feature.title)
+                    .fontWeight(.bold)
+                    .bodyStyle()
 
-                    Text(feature.subtile)
-                        .bodyStyle()
-                }
-
-                Spacer()
+                Text(feature.subtile)
+                    .bodyStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
     }

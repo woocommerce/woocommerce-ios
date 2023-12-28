@@ -205,8 +205,8 @@ private extension BlazeStore {
         derivedStorage.perform {
             derivedStorage.deleteBlazeTargetLanguages(locale: locale)
             for language in readonlyLanguages {
-                let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetLanguage.self)
-                storageDevice.update(with: language)
+                let storageLanguage = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetLanguage.self)
+                storageLanguage.update(with: language)
             }
         }
 

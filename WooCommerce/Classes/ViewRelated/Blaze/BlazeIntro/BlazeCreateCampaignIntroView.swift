@@ -152,52 +152,63 @@ private extension BlazeCreateCampaignIntroView {
 private extension BlazeCreateCampaignIntroView {
     enum Localization {
         static let headline = NSLocalizedString(
-            "Blaze",
+            "blazeCreateCampaignIntroView.headline",
+            value: "Blaze",
             comment: "Headline text for the Blaze campaign intro view"
         )
         static let title = NSLocalizedString(
-            "Get your products seen by millions",
+            "blazeCreateCampaignIntroView.title",
+            value: "Get your products seen by millions",
             comment: "Title for the Blaze campaign intro view"
         )
         static let subtitle = NSLocalizedString(
-            "Our tool is designed to empower merchants with fast, simple ad campaign setups for maximum traffic boost.",
+            "blazeCreateCampaignIntroView.subtitle",
+            value: "Our tool is designed to empower merchants with fast, simple ad campaign setups for maximum traffic boost.",
             comment: "Subtitle for the Blaze campaign intro view"
         )
         static let createYourCampaign = NSLocalizedString(
-            "Create Your Campaign",
+            "blazeCreateCampaignIntroView.createYourCampaign",
+            value: "Create Your Campaign",
             comment: "Create Your Campaign button label"
         )
         static let learnHowBlazeWorks = NSLocalizedString(
-            "Learn how Blaze works",
+            "blazeCreateCampaignIntroView.learnHowBlazeWorks",
+            value: "Learn how Blaze works",
             comment: "Learn how Blaze works button label"
         )
         enum AudienceFeature {
             static let title = NSLocalizedString(
-                "Access a vast audience",
+                "blazeCreateCampaignIntroView.audienceFeature.title",
+                value: "Access a vast audience",
                 comment: "Title for the access a vast audience feature"
             )
             static let subtitle = NSLocalizedString(
-                "Your ads on millions of sites within the WordPress.com and Tumblr networks.",
+                "blazeCreateCampaignIntroView.audienceFeature.subtitle",
+                value: "Your ads on millions of sites within the WordPress.com and Tumblr networks.",
                 comment: "Subtitle for the access a vast audience feature"
             )
         }
         enum GlobalReach {
             static let title = NSLocalizedString(
-                "Global reach made simple",
+                "blazeCreateCampaignIntroView.globalReach.title",
+                value: "Global reach made simple",
                 comment: "Title for the Global reach feature"
             )
             static let subtitle = NSLocalizedString(
-                "Our tool presents your product where interested shoppers can find it.",
+                "blazeCreateCampaignIntroView.globalReach.subtitle",
+                value: "Our tool presents your product where interested shoppers can find it.",
                 comment: "Subtitle for the Global reach feature"
             )
         }
         enum QuickStart {
             static let title = NSLocalizedString(
-                "Quick start, big impact",
+                "blazeCreateCampaignIntroView.quickStart.title",
+                value: "Quick start, big impact",
                 comment: "Title for the quick start big impact feature"
             )
             static let subtitle = NSLocalizedString(
-                "Launch ads in minutes, even without marketing experience.",
+                "blazeCreateCampaignIntroView.quickStart.subtitle",
+                value: "Launch ads in minutes, even without marketing experience.",
                 comment: "Subtitle for the quick start big impact feature"
             )
         }
@@ -222,7 +233,6 @@ private enum Layout {
 struct BlazeCreateCampaignIntroView_Previews: PreviewProvider {
     static var previews: some View {
         BlazeCreateCampaignIntroView(onCreateCampaign: {},
-                                     onLearnHowBlazeWorks: {},
                                      onDismiss: {})
     }
 }

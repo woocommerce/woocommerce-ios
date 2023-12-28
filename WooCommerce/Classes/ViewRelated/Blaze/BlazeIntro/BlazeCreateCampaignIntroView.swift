@@ -66,8 +66,7 @@ struct BlazeCreateCampaignIntroView: View {
                             .multilineTextAlignment(.center)
 
                         Text(Localization.subtitle)
-                            .foregroundColor(Color(.secondaryLabel))
-                            .bodyStyle()
+                            .secondaryBodyStyle()
                             .multilineTextAlignment(.center)
 
                         Image(uiImage: UIImage.blazeIntroIllustration)

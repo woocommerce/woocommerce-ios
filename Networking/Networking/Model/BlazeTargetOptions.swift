@@ -36,17 +36,16 @@ public struct BlazeTargetDevice: Decodable, Equatable, GeneratedCopiable, Genera
         self.locale = locale
     }
 
-    public enum CodingKeys: CodingKey {
-        case id
-        case name
-        case locale
-    }
-    
     public init(from decoder: Decoder) throws {
         self.locale = decoder.userInfo[.locale] as? String ?? "en"
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
+    }
+
+    private enum CodingKeys: CodingKey {
+        case id
+        case name
     }
 }
 

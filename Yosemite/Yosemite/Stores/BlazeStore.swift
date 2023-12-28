@@ -137,7 +137,7 @@ private extension BlazeStore {
                 let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
                     try await remote.fetchTargetDevices(for: siteID)
                 })
-                upsertStoredTargetDeviceInBackground(readonlyDevices: devices) {
+                insertsStoredTargetDevicesInBackground(readonlyDevices: devices) {
                     onCompletion(.success(devices))
                 }
             } catch {
@@ -146,13 +146,13 @@ private extension BlazeStore {
         }
     }
 
-    /// Updates or Inserts specified BlazeTargetDevice Entities in a background thread
+    /// Inserts specified BlazeTargetDevice Entities in a background thread
     /// `onCompletion` will be called on the main thread.
     ///
-    func upsertStoredTargetDeviceInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
+    func insertsStoredTargetDevicesInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
                                               onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
+        derivedStorage.perform {
             derivedStorage.deleteAllObjects(ofType: Storage.BlazeTargetDevice.self)
             for device in readonlyDevices {
                 let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)

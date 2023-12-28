@@ -9,6 +9,7 @@ final class MockBlazeRemote {
     private var fetchingTargetDevicesResult: Result<[BlazeTargetDevice], Error>?
     private var fetchingTargetTopicsResult: Result<[BlazeTargetTopic], Error>?
     private var fetchingTargetLocationsResult: Result<[BlazeTargetLocation], Error>?
+    private var fetchingForecastedImpressionsResult: Result<BlazeImpressions, Error>?
 
     func whenLoadingCampaign(thenReturn result: Result<[BlazeCampaign], Error>) {
         loadingCampaignResult = result
@@ -28,6 +29,10 @@ final class MockBlazeRemote {
 
     func whenFetchingTargetLocations(thenReturn result: Result<[BlazeTargetLocation], Error>?) {
         fetchingTargetLocationsResult = result
+    }
+
+    func whenFetchingForecastedImpressions(thenReturn result: Result<BlazeImpressions, Error>?) {
+        fetchingForecastedImpressionsResult = result
     }
 }
 
@@ -79,6 +84,29 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         switch result {
         case .success(let locations):
             return locations
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func fetchForecastedImpressions(
+        for siteID: Int64,
+        from startDate: Date,
+        to endDate: Date,
+        formattedTotalBudget: String,
+        targetLocations: [Networking.BlazeTargetLocation] = [],
+        targetLanguages: [Networking.BlazeTargetLanguage] = [],
+        targetDevices: [Networking.BlazeTargetDevice] = [],
+        targetTopics: [Networking.BlazeTargetTopic]
+    ) async throws -> Networking.BlazeImpressions {
+        guard let result = fetchingForecastedImpressionsResult else {
+            XCTFail("Could not find result for fetching forecasted impressions.")
+            throw NetworkError.notFound()
+        }
+
+        switch result {
+        case .success(let impressions):
+            return impressions
         case .failure(let error):
             throw error
         }

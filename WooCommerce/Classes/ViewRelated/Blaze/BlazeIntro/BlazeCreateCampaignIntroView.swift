@@ -46,7 +46,7 @@ struct BlazeCreateCampaignIntroView: View {
 
             ScrollView {
                 VStack {
-                    HStack(spacing: 8) {
+                    HStack(spacing: Layout.titleHSpacing) {
                         Image(uiImage: .blaze)
                             .resizable()
                             .renderingMode(.template)
@@ -203,6 +203,7 @@ private enum Layout {
     static let titleElementsVerticalSpacing: CGFloat = 16
     static let featuresVerticalSpacing: CGFloat = 24
 
+    static let titleHSpacing: CGFloat = 8
     static let logoSize: CGFloat = 19
 
     enum CTAStack {

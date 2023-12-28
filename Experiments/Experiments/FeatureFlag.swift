@@ -183,4 +183,8 @@ public enum FeatureFlag: Int {
     /// Enables the Scan to Update Inventory feature.
     ///
     case scanToUpdateInventory
+
+    /// Enables Blaze native campaign creation.
+    ///
+    case blazei3NativeCampaignCreation
 }

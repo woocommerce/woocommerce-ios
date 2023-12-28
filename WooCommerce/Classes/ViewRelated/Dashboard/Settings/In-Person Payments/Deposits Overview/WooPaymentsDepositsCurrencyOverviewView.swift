@@ -19,12 +19,8 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
         VStack {
             Grid(alignment: .leading) {
                 GridRow {
-                    AccountSummaryItem(title: Localization.availableFunds,
-                                       amount: viewModel.availableBalance,
-                                       footer: "")
-                    AccountSummaryItem(title: Localization.pendingFunds,
-                                       amount: viewModel.pendingBalance,
-                                       footer: viewModel.pendingFundsDepositsSummary)
+                    AccountSummaryItem(title: Localization.availableFunds, amount: viewModel.availableBalance)
+                    AccountSummaryItem(title: Localization.pendingFunds, amount: viewModel.pendingBalance)
                     isExpanded ? Image(systemName: "chevron.up")
                         .accessibilityAddTraits(.isButton)
                         .accessibilityLabel(Text(Localization.hideDepositDetailAccessibilityLabel)) :
@@ -42,54 +38,43 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 }
 
                 if isExpanded {
+                    Text(viewModel.balanceTypeHint)
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .padding(.bottom, Layout.padding)
                     Divider()
-
-                    HStack(alignment: .top) {
-                        Image(systemName: "calendar")
-                            .accessibilityHidden(true)
-                        Text(viewModel.balanceTypeHint)
-                            .font(.footnote)
-                    }
-                    .foregroundColor(.secondary)
-                    .padding(.vertical, 8)
                 }
             }
 
             if isExpanded {
-                Text(Localization.depositsHeader.localizedUppercase)
+                Text(Localization.lastDepositHeader.localizedUppercase)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, Layout.padding)
                     .accessibilityAddTraits(.isHeader)
-                LazyVGrid(columns: [GridItem(.flexible(maximum: 60), alignment: .leading),
-                                    GridItem(alignment: .leading),
-                                    GridItem(.flexible(minimum: 100), alignment: .leading),
-                                    GridItem(alignment: .trailing)],
-                          spacing: 16) {
-                    Text(Localization.nextDepositRowTitle)
-                    Text(viewModel.nextDepositDate)
-                    WooPaymentsDepositsBadge(status: viewModel.nextDepositStatus)
-                    Text(viewModel.nextDepositAmount)
-
-                    Text(Localization.lastDepositRowTitle)
-                        .foregroundColor(.secondary)
-                    Text(viewModel.lastDepositDate)
-                        .foregroundColor(.secondary)
+                AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.elementSpacing) {
+                    HStack {
+                        Image(systemName: "calendar")
+                            .accessibilityHidden(true)
+                        Text(viewModel.lastDepositDate)
+                            .foregroundColor(.primary)
+                    }
                     WooPaymentsDepositsBadge(status: viewModel.lastDepositStatus)
+                    Spacer()
                     Text(viewModel.lastDepositAmount)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                 }
-                Divider()
 
                 HStack(alignment: .top) {
-                    Image(systemName: "building.columns")
-                        .accessibilityHidden(true)
                     Text(viewModel.depositScheduleHint)
                         .font(.footnote)
                 }
                 .foregroundColor(.secondary)
-                .padding(.vertical, 8)
+                .padding(.vertical, Layout.padding)
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+                Divider()
 
                 Button {
                     viewModel.learnMoreTapped()
@@ -103,6 +88,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                             .multilineTextAlignment(.leading)
                     }
                 }
+                .padding(.top)
                 .padding(.bottom)
             }
         }
@@ -116,7 +102,6 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 struct AccountSummaryItem: View {
     let title: String
     let amount: String
-    let footer: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -127,10 +112,6 @@ struct AccountSummaryItem: View {
             Text(amount)
                 .font(.title2)
                 .fontWeight(.bold)
-
-            Text(footer ?? "")
-                .font(.footnote)
-                .foregroundColor(.gray)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical)
@@ -159,27 +140,32 @@ private extension WooPaymentsDepositsBadge {
 
 @available(iOS 16.0, *)
 private extension WooPaymentsDepositsCurrencyOverviewView {
+    enum Layout {
+        static let padding: CGFloat = 8.0
+        static let elementSpacing: CGFloat = 16.0
+    }
+}
+
+@available(iOS 16.0, *)
+private extension WooPaymentsDepositsCurrencyOverviewView {
     enum Localization {
         static let availableFunds = NSLocalizedString(
-            "Available funds",
+            "deposits.currency.overview.availableFunds",
+            value: "Available funds",
             comment: "Title for available funds overview in WooPayments Deposits view. " +
             "This shows the balance which can be paid out.")
         static let pendingFunds = NSLocalizedString(
-            "Pending funds",
+            "deposits.currency.overview.pendingFunds",
+            value: "Pending funds",
             comment: "Title for pending funds overview in WooPayments Deposits view. " +
             "This shows the balance which will be made available for pay out later.")
-        static let depositsHeader = NSLocalizedString(
-            "Deposits",
-            comment: "Section header for the deposits list in the WooPayments Deposits overview")
-        static let nextDepositRowTitle = NSLocalizedString(
-            "Next",
-            comment: "Row title for the next deposit in the WooPayments Deposits overview")
-        static let lastDepositRowTitle = NSLocalizedString(
-            "deposits.currency.overview.depositTable.last.title",
-            value: "Last",
-            comment: "Row title for the last (previous) deposit in the WooPayments Deposits overview")
+        static let lastDepositHeader = NSLocalizedString(
+            "deposits.currency.overview.lastDeposit",
+            value: "Last Deposit",
+            comment: "Section header for the last deposit in the WooPayments Deposits overview")
         static let learnMoreButtonText = NSLocalizedString(
-            "Learn more about when you'll receive your funds",
+            "deposits.currency.overview.learnMore",
+            value: "Learn more about when you'll receive your funds",
             comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
         static let showDepositDetailAccessibilityLabel = NSLocalizedString(
             "deposits.currency.overview.accessibility.show",
@@ -200,13 +186,7 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
             automaticDeposits: true,
             depositInterval: .daily,
             pendingBalanceAmount: 1000.0,
-            pendingDepositsCount: 5,
             pendingDepositDays: 2,
-            nextDeposit: WooPaymentsDepositsOverviewByCurrency.NextDeposit(
-                amount: 250.0,
-                date: Date(),
-                status: .pending
-            ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 500.0,
                 date: Date(),

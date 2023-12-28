@@ -34,7 +34,7 @@ public protocol BlazeRemoteProtocol {
     /// Fetches target locations for campaign creation.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
-    ///    - query: Keyword to search for locations.
+    ///    - query: Keyword to search for locations. Requires a minimum of 3 characters, or else will return error.
     ///    - locale: The locale to receive in the response.
     ///
     func fetchTargetLocations(for siteID: Int64, query: String, locale: String) async throws -> [BlazeTargetLocation]

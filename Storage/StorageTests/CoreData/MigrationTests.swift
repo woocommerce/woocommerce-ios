@@ -3344,11 +3344,11 @@ private extension MigrationTests {
     /// Inserts a `BlazeTargetTopic` entity, providing default values for the required properties.
     @discardableResult
     func insertBlazeTargetTopic(to context: NSManagedObjectContext) -> NSManagedObject {
-        let device = context.insert(entityName: "BlazeTargetTopic", properties: [
+        let topic = context.insert(entityName: "BlazeTargetTopic", properties: [
             "id": "IAB1",
             "name": "Arts & Entertainment",
             "locale": "en"
         ])
-        return device
+        return topic
     }
 }

@@ -135,7 +135,7 @@ private extension BlazeStore {
                 ]
                 // TODO-11540: remove stubbed result when the API is ready.
                 let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchTargetDevices(for: siteID)
+                    try await remote.fetchTargetDevices(for: siteID, locale: "")
                 })
                 insertsStoredTargetDevicesInBackground(readonlyDevices: devices) {
                     onCompletion(.success(devices))

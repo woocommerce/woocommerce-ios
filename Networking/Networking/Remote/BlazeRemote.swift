@@ -59,8 +59,9 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     /// Fetches target languages for campaign creation.
     ///
     public func fetchTargetLanguages(for siteID: Int64, locale: String) async throws -> [BlazeTargetLanguage] {
-        let path = BlazeTargetOption.languages.path(for: siteID, locale: locale)
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
+        let path = BlazeTargetOption.languages.endpoint(for: siteID)
+        let parameters: [String: Any] = [Keys.locale: locale]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeTargetLanguageListMapper()
         return try await enqueue(request, mapper: mapper)
     }
@@ -68,8 +69,9 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     /// Fetches target devices for campaign creation.
     ///
     public func fetchTargetDevices(for siteID: Int64, locale: String) async throws -> [BlazeTargetDevice] {
-        let path = BlazeTargetOption.devices.path(for: siteID, locale: locale)
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
+        let path = BlazeTargetOption.devices.endpoint(for: siteID)
+        let parameters: [String: Any] = [Keys.locale: locale]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeTargetDeviceListMapper()
         return try await enqueue(request, mapper: mapper)
     }
@@ -77,8 +79,9 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     /// Fetches target topics for campaign creation.
     ///
     public func fetchTargetTopics(for siteID: Int64, locale: String) async throws -> [BlazeTargetTopic] {
-        let path = BlazeTargetOption.topics.path(for: siteID, locale: locale)
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
+        let path = BlazeTargetOption.topics.endpoint(for: siteID)
+        let parameters: [String: Any] = [Keys.locale: locale]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeTargetTopicListMapper()
         return try await enqueue(request, mapper: mapper)
     }
@@ -86,8 +89,12 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     /// Fetches target locations for campaign creation.
     ///
     public func fetchTargetLocations(for siteID: Int64, query: String, locale: String) async throws -> [BlazeTargetLocation] {
-        let path = BlazeTargetOption.locations(query: query).path(for: siteID, locale: locale)
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
+        let path = BlazeTargetOption.locations.endpoint(for: siteID)
+        let parameters: [String: Any] = [
+            Keys.locale: locale,
+            Keys.query: query
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeTargetLocationListMapper()
         return try await enqueue(request, mapper: mapper)
     }
@@ -98,10 +105,10 @@ private extension BlazeRemote {
         case languages
         case devices
         case topics
-        case locations(query: String)
+        case locations
 
         // TODO-11512: Revise the paths when the API is finalized.
-        func path(for siteID: Int64, locale: String) -> String {
+        func endpoint(for siteID: Int64) -> String {
             let suffix: String = {
                 switch self {
                 case .languages:
@@ -110,8 +117,8 @@ private extension BlazeRemote {
                     return "devices"
                 case .topics:
                     return "page-topics"
-                case .locations(let query):
-                    return "locations?query=" + query
+                case .locations:
+                    return "locations"
                 }
             }()
             return "sites/\(siteID)/wordads/dsp/api/v1.1/targeting/" + suffix
@@ -128,6 +135,8 @@ private extension BlazeRemote {
         static let orderBy = "order_by"
         static let order =  "order"
         static let page = "page"
+        static let query = "query"
+        static let locale = "locale"
     }
 
     enum Values {

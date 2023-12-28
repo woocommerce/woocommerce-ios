@@ -233,11 +233,12 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetDeviceCount, 1)
     }
 
-    func test_synchronizeTargetDevices_overwrites_existing_devices() throws {
+    func test_synchronizeTargetDevices_overwrites_existing_devices_with_the_given_locale() throws {
         // Given
-        storeTargetDevice(.init(id: "test", name: "Test"))
-        storeTargetDevice(.init(id: "test-2", name: "Test 2"))
-        remote.whenFetchingTargetDevices(thenReturn: .success([.init(id: "mobile", name: "Mobile")]))
+        let locale = "vi"
+        storeTargetDevice(.init(id: "test", name: "Test", locale: locale))
+        storeTargetDevice(.init(id: "test-2", name: "Test 2", locale: "en"))
+        remote.whenFetchingTargetDevices(thenReturn: .success([.init(id: "mobile", name: "Mobile", locale: locale)]))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,
                                network: network,
@@ -246,17 +247,18 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
                 promise(result)
             }))
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(storedTargetDeviceCount, 1)
+        XCTAssertEqual(storedTargetDeviceCount, 2)
         let device = try XCTUnwrap(viewStorage.firstObject(ofType: StorageBlazeTargetDevice.self))
         XCTAssertEqual(device.id, "mobile")
         XCTAssertEqual(device.name, "Mobile")
+        XCTAssertEqual(device.locale, locale)
     }
 
     func test_synchronizeTargetDevices_returns_error_on_failure() throws {

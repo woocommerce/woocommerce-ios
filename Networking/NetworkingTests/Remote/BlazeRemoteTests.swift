@@ -152,12 +152,12 @@ final class BlazeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-devices")
 
         // When
-        let results = try await remote.fetchTargetDevices(for: sampleSiteID, locale: "en")
+        let results = try await remote.fetchTargetDevices(for: sampleSiteID, locale: "vi")
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "mobile", name: "Mobile"),
-            .init(id: "desktop", name: "Desktop")
+            .init(id: "mobile", name: "Mobile", locale: "vi"),
+            .init(id: "desktop", name: "Desktop", locale: "vi")
         ])
     }
 

@@ -19,12 +19,12 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
     ///
     func test_BlazeTargetDeviceListMapper_parses_all_contents_in_response() throws {
         // When
-        let list = try XCTUnwrap(mapLoadBlazeTargetDeviceResponse())
+        let list = try XCTUnwrap(mapLoadBlazeTargetDeviceResponse(locale: "vi"))
 
         // Then
         XCTAssertEqual(list, [
-            .init(id: "mobile", name: "Mobile"),
-            .init(id: "desktop", name: "Desktop")
+            .init(id: "mobile", name: "Mobile", locale: "vi"),
+            .init(id: "desktop", name: "Desktop", locale: "vi")
         ])
     }
 
@@ -76,11 +76,11 @@ private extension BlazeTargetOptionMapperTests {
 
     /// Returns the [BlazeTargetDevice] output from `blaze-target-devices.json`
     ///
-    func mapLoadBlazeTargetDeviceResponse() throws -> [BlazeTargetDevice] {
+    func mapLoadBlazeTargetDeviceResponse(locale: String) throws -> [BlazeTargetDevice] {
         guard let response = Loader.contentsOf("blaze-target-devices") else {
             return []
         }
-        return try BlazeTargetDeviceListMapper().map(response: response)
+        return try BlazeTargetDeviceListMapper(locale: locale).map(response: response)
     }
 
     /// Returns the [BlazeTargetTopic] output from `blaze-target-topics.json`

@@ -180,6 +180,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         configureStorePlanBannerPresenter()
+
+        checkSelectedItem()
     }
 
     override func viewWillAppear(_ animated: Bool) {

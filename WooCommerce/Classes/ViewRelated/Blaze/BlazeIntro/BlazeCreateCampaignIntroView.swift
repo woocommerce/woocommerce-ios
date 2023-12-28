@@ -69,7 +69,7 @@ struct BlazeCreateCampaignIntroView: View {
                             .secondaryBodyStyle()
                             .multilineTextAlignment(.center)
 
-                        Image(uiImage: UIImage.blazeIntroIllustration)
+                        illustration
                     }
 
                     VStack(spacing: Layout.featuresVerticalSpacing) {
@@ -100,6 +100,29 @@ struct BlazeCreateCampaignIntroView: View {
                 }
                 .background(Color(UIColor.systemBackground))
             }
+        }
+    }
+
+    var illustration: some View {
+        ZStack(alignment: .bottomLeading) {
+            Image(uiImage: UIImage.blazeIntroIllustration)
+
+            VStack(alignment: .leading, spacing: 0) {
+                Text(Localization.Illustration.startingFrom)
+                    .fontWeight(.semibold)
+                    .font(.caption2)
+                    .foregroundColor(Color(.text))
+
+                Text(Localization.Illustration.price)
+                    .fontWeight(.bold)
+                    .titleStyle()
+            }
+            .padding(Layout.Illustration.backgroundPadding)
+            .background(
+                RoundedRectangle(cornerRadius: Layout.Illustration.cornerRadius)
+                    .fill(Color(.basicBackground))
+            )
+            .padding(.bottom, Layout.Illustration.imageBottomPadding)
         }
     }
 }
@@ -148,6 +171,18 @@ private extension BlazeCreateCampaignIntroView {
             value: "Our tool is designed to empower merchants with fast, simple ad campaign setups for maximum traffic boost.",
             comment: "Subtitle for the Blaze campaign intro view"
         )
+        enum Illustration {
+            static let startingFrom = NSLocalizedString(
+                "blazeCreateCampaignIntroView.illustration.startingFrom",
+                value: "Starting from",
+                comment: "Caption in Blaze image illustration."
+            )
+            static let price = NSLocalizedString(
+                "blazeCreateCampaignIntroView.illustration.price",
+                value: "$5",
+                comment: "Starting price in the Blaze image illustration."
+            )
+        }
         static let createYourCampaign = NSLocalizedString(
             "blazeCreateCampaignIntroView.createYourCampaign",
             value: "Create Your Campaign",
@@ -205,6 +240,12 @@ private enum Layout {
 
     static let titleHSpacing: CGFloat = 8
     static let logoSize: CGFloat = 19
+
+    enum Illustration {
+        static let backgroundPadding: CGFloat = 16
+        static let imageBottomPadding: CGFloat = 24
+        static let cornerRadius: CGFloat = 8
+    }
 
     enum CTAStack {
         static let dividerHeight: CGFloat = 1

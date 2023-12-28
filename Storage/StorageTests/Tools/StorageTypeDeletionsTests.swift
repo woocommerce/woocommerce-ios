@@ -144,6 +144,28 @@ final class StorageTypeDeletionsTests: XCTestCase {
         let currrentSystemPlugin = storage.loadSystemPlugins(siteID: sampleSiteID)
         XCTAssertEqual(currrentSystemPlugin, [systemPlugin3])
     }
+
+    func test_deleteBlazeTargetDevices_with_locale() throws {
+        // Given
+        let device1 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
+        device1.id = "mobile"
+        device1.name = "Mobile"
+        device1.locale = "en"
+
+        let device2 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
+        device2.id = "desktop"
+        device2.name = "Desktop"
+        device2.locale = "es"
+
+        // When
+        storage.deleteBlazeTargetDevices(locale: "en")
+
+        // Then
+        let enDevices = storage.loadAllBlazeTargetDevices(locale: "en")
+        XCTAssertTrue(enDevices.isEmpty)
+        let esDevices = storage.loadAllBlazeTargetDevices(locale: "es")
+        XCTAssertEqual(esDevices.count, 1)
+    }
 }
 
 private extension StorageTypeDeletionsTests {

@@ -40,10 +40,16 @@ struct BlazeTargetDeviceListMapper: Mapper {
 ///
 struct BlazeTargetTopicListMapper: Mapper {
 
+    /// Locale of the response.
+    let locale: String
+
     /// (Attempts) to convert a list of dictionary into `[BlazeTargetTopic]`.
     ///
     func map(response: Data) throws -> [BlazeTargetTopic] {
         let decoder = JSONDecoder()
+        decoder.userInfo = [
+            .locale: locale
+        ]
         return try decoder.decode([BlazeTargetTopic].self, from: response)
     }
 }

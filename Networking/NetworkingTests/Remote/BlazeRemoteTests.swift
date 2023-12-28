@@ -99,12 +99,12 @@ final class BlazeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-languages")
 
         // When
-        let results = try await remote.fetchTargetLanguages(for: sampleSiteID, locale: "en")
+        let results = try await remote.fetchTargetLanguages(for: sampleSiteID, locale: "vi")
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "en", name: "English", locale: "en"),
-            .init(id: "es", name: "Spanish", locale: "en")
+            .init(id: "en", name: "English", locale: "vi"),
+            .init(id: "es", name: "Spanish", locale: "vi")
         ])
     }
 
@@ -205,13 +205,13 @@ final class BlazeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-topics")
 
         // When
-        let results = try await remote.fetchTargetTopics(for: sampleSiteID, locale: "en")
+        let results = try await remote.fetchTargetTopics(for: sampleSiteID, locale: "vi")
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "IAB1", description: "Arts & Entertainment"),
-            .init(id: "IAB2", description: "Automotive"),
-            .init(id: "IAB3", description: "Business")
+            .init(id: "IAB1", description: "Arts & Entertainment", locale: "vi"),
+            .init(id: "IAB2", description: "Automotive", locale: "vi"),
+            .init(id: "IAB3", description: "Business", locale: "vi")
         ])
     }
 
@@ -222,11 +222,11 @@ final class BlazeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-topics")
 
         // When
-        _ = try await remote.fetchTargetTopics(for: sampleSiteID, locale: "en")
+        _ = try await remote.fetchTargetTopics(for: sampleSiteID, locale: "vi")
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
-        XCTAssertEqual(request.parameters?["locale"] as? String, "en")
+        XCTAssertEqual(request.parameters?["locale"] as? String, "vi")
     }
 
     func test_fetchTargetTopics_properly_relays_networking_errors() async {

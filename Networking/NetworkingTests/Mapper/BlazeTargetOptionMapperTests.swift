@@ -32,13 +32,13 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
     ///
     func test_BlazeTargetTopicListMapper_parses_all_contents_in_response() throws {
         // When
-        let list = try XCTUnwrap(mapLoadBlazeTargetTopicResponse())
+        let list = try XCTUnwrap(mapLoadBlazeTargetTopicResponse(locale: "vi"))
 
         // Then
         XCTAssertEqual(list, [
-            .init(id: "IAB1", description: "Arts & Entertainment"),
-            .init(id: "IAB2", description: "Automotive"),
-            .init(id: "IAB3", description: "Business")
+            .init(id: "IAB1", description: "Arts & Entertainment", locale: "vi"),
+            .init(id: "IAB2", description: "Automotive", locale: "vi"),
+            .init(id: "IAB3", description: "Business", locale: "vi")
         ])
     }
 
@@ -85,11 +85,11 @@ private extension BlazeTargetOptionMapperTests {
 
     /// Returns the [BlazeTargetTopic] output from `blaze-target-topics.json`
     ///
-    func mapLoadBlazeTargetTopicResponse() throws -> [BlazeTargetTopic] {
+    func mapLoadBlazeTargetTopicResponse(locale: String) throws -> [BlazeTargetTopic] {
         guard let response = Loader.contentsOf("blaze-target-topics") else {
             return []
         }
-        return try BlazeTargetTopicListMapper().map(response: response)
+        return try BlazeTargetTopicListMapper(locale: locale).map(response: response)
     }
 
     /// Returns the [BlazeTargetLocation] output from `blaze-target-locations.json`

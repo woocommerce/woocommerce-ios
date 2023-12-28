@@ -265,14 +265,17 @@ extension Networking.BlazeTargetLocation {
 extension Networking.BlazeTargetTopic {
     public func copy(
         id: CopiableProp<String> = .copy,
-        description: CopiableProp<String> = .copy
+        description: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetTopic {
         let id = id ?? self.id
         let description = description ?? self.description
+        let locale = locale ?? self.locale
 
         return Networking.BlazeTargetTopic(
             id: id,
-            description: description
+            description: description,
+            locale: locale
         )
     }
 }

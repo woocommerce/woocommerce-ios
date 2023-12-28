@@ -42,7 +42,10 @@ public protocol BlazeRemoteProtocol {
     ///    - startDate: Start date of the campaign.
     ///    - endDate: End date of the campaign.
     ///    - formattedTotalBudget: Formatted string of total budget of the campaign.
-    ///    - targetings: Targetings of the campaign.
+    ///    - targetLocations: Target locations of the campaign. Optional.
+    ///    - targetLanguages: Target languages of the campaign. Optional.
+    ///    - targetDevices: Target devices of the campaign. Optional.
+    ///    - targetTopics: Target topics of the campaign. Optional.
     ///
     func fetchForecastedImpressions(
         for siteID: Int64,
@@ -123,7 +126,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         let path = Paths.campaignImpressions(siteID: siteID)
 
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = Constants.dateFormat
 
         let parameters: [String: Any] = [
             Keys.startDate: dateFormatter.string(from: startDate),
@@ -195,5 +198,9 @@ private extension BlazeRemote {
     enum Values {
         static let postDate = "post_date"
         static let desc = "desc"
+    }
+
+    enum Constants {
+        static let dateFormat = "yyyy-MM-dd"
     }
 }

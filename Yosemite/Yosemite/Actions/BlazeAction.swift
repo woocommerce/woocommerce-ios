@@ -16,4 +16,13 @@ public enum BlazeAction: Action {
     case synchronizeCampaigns(siteID: Int64,
                               pageNumber: Int,
                               onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Retrieves and stores target devices for create Blaze campaigns for a site.
+    ///
+    /// - `siteID`: the site to create Blaze campaign.
+    /// - `onCompletion`: invoked when the sync operation finishes.
+    ///     - `result.success([BlazeTargetDevice])`: list of target devices for Blaze campaigns.
+    ///     - `result.failure(Error)`: error indicates issues syncing data.
+    ///
+    case synchronizeTargetDevices(siteID: Int64, onCompletion: (Result<[BlazeTargetDevice], Error>) -> Void)
 }

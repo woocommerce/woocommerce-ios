@@ -1284,4 +1284,21 @@ final class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(foundCharge, charge2)
     }
+
+    func test_load_BlazeTargetDevice_by_id() throws {
+        // Given
+        let device1 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
+        device1.id = "mobile"
+        device1.name = "Mobile"
+
+        let device2 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
+        device2.id = "desktop"
+        device2.name = "Desktop"
+
+        // When
+        let foundDevice = try XCTUnwrap(storage.loadBlazeTargetDevice(id: "mobile"))
+
+        // Then
+        XCTAssertEqual(foundDevice, device1)
+    }
 }

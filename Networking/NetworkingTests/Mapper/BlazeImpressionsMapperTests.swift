@@ -1,7 +1,7 @@
 import XCTest
 @testable import Networking
 
-class BlazeImpressionsMapperTests: XCTestCase {
+final class BlazeImpressionsMapperTests: XCTestCase {
 
     /// Verifies that the response is parted
     ///

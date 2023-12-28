@@ -4,10 +4,8 @@ import SwiftUI
 ///
 final class BlazeCreateCampaignIntroController: UIHostingController<BlazeCreateCampaignIntroView> {
     init(onCreateCampaign: @escaping () -> Void,
-         onLearnHowBlazeWorks: @escaping () -> Void,
          onDismiss: @escaping () -> Void) {
         super.init(rootView: BlazeCreateCampaignIntroView(onCreateCampaign: onCreateCampaign,
-                                                          onLearnHowBlazeWorks: onLearnHowBlazeWorks,
                                                           onDismiss: onDismiss))
     }
 
@@ -24,7 +22,6 @@ struct BlazeCreateCampaignIntroView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let onCreateCampaign: () -> Void
-    private let onLearnHowBlazeWorks: () -> Void
     private let onDismiss: () -> Void
 
     private let features: [Feature] = [.init(title: Localization.AudienceFeature.title, subtile: Localization.AudienceFeature.subtitle),
@@ -32,10 +29,8 @@ struct BlazeCreateCampaignIntroView: View {
                                        .init(title: Localization.QuickStart.title, subtile: Localization.QuickStart.subtitle)]
 
     init(onCreateCampaign: @escaping () -> Void,
-         onLearnHowBlazeWorks: @escaping () -> Void,
          onDismiss: @escaping () -> Void) {
         self.onCreateCampaign = onCreateCampaign
-        self.onLearnHowBlazeWorks = onLearnHowBlazeWorks
         self.onDismiss = onDismiss
     }
 
@@ -103,7 +98,7 @@ struct BlazeCreateCampaignIntroView: View {
                     .padding(.horizontal, Layout.CTAStack.buttonHPadding)
 
                     Button(Localization.learnHowBlazeWorks) {
-                        onCreateCampaign()
+                        // TODO: 11566
                     }
                     .buttonStyle(LinkButtonStyle())
                     .padding(.horizontal, Layout.CTAStack.buttonHPadding)

@@ -128,8 +128,6 @@ struct BlazeCampaignListView: View {
                     viewModel.shouldShowIntroView = false
                     onCreateCampaign()
                     viewModel.didSelectCreateCampaign(source: .introView)
-                }, onLearnHowBlazeWorks: {
-                    // TODO: 11566
                 }, onDismiss: {
                     viewModel.shouldShowIntroView = false
                 })

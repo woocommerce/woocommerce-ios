@@ -142,8 +142,6 @@ struct BlazeCampaignDashboardView: View {
                 BlazeCreateCampaignIntroView(onCreateCampaign: {
                     viewModel.shouldShowIntroView = false
                     startCampaignFromIntroTapped?(selectedProductID)
-                }, onLearnHowBlazeWorks: {
-                    // TODO: 11566
                 }, onDismiss: {
                     viewModel.shouldShowIntroView = false
                 })

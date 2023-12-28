@@ -472,6 +472,8 @@ private extension TwoFAViewController {
         for (reuseIdentifier, nib) in cells {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
+
+        tableView.register(SpacerTableViewCell.self, forCellReuseIdentifier: SpacerTableViewCell.reuseIdentifier)
     }
 
     /// Describes how the tableView rows should be rendered.
@@ -483,9 +485,14 @@ private extension TwoFAViewController {
             rows.append(.errorMessage)
         }
 
+        rows.append(.spacer(20))
         rows.append(.alternateInstructions)
+
+        rows.append(.spacer(4))
         rows.append(.sendCode)
+
         if #available(iOS 16, *), WordPressAuthenticator.shared.configuration.enablePasskeys, loginFields.nonceInfo?.nonceWebauthn != nil {
+            rows.append(.spacer(4))
             rows.append(.enterSecurityKey)
         }
     }
@@ -506,6 +513,10 @@ private extension TwoFAViewController {
             configureEnterSecurityKeyLinkButton(cell)
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
+        case let cell as SpacerTableViewCell:
+            if case let .spacer(spacing) = row {
+                configureSpacerCell(cell, spacing: spacing)
+            }
         default:
             WPAuthenticatorLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -579,6 +590,12 @@ private extension TwoFAViewController {
         }
     }
 
+    /// Configure the spacer cell.
+    ///
+    func configureSpacerCell(_ cell: SpacerTableViewCell, spacing: CGFloat) {
+        cell.spacing = spacing
+    }
+
     /// Configure the view for an editing state.
     ///
     func configureViewForEditingIfNeeded() {
@@ -604,13 +621,14 @@ private extension TwoFAViewController {
 
     /// Rows listed in the order they were created.
     ///
-    enum Row {
+    enum Row: Equatable {
         case instructions
         case code
         case alternateInstructions
         case sendCode
         case enterSecurityKey
         case errorMessage
+        case spacer(CGFloat)
 
         var reuseIdentifier: String {
             switch self {
@@ -626,6 +644,8 @@ private extension TwoFAViewController {
                 return TextLinkButtonTableViewCell.reuseIdentifier
             case .errorMessage:
                 return TextLabelTableViewCell.reuseIdentifier
+            case .spacer:
+                return SpacerTableViewCell.reuseIdentifier
             }
         }
     }
@@ -641,5 +661,53 @@ private extension TwoFAViewController {
                                                     comment: "Error when the uses takes more than 1 minute to submit a security key.")
         static let unknownError = NSLocalizedString("Whoops, something went wrong. Please try again!", comment: "Generic error on the 2FA screen")
     }
+}
 
+private extension TwoFAViewController {
+    /// Simple spacer cell for a table view.
+    ///
+    final class SpacerTableViewCell: UITableViewCell {
+
+        /// Static identifier
+        ///
+        static let reuseIdentifier = "SpacerTableViewCell"
+
+        /// Gets or sets the desired vertical spacing.
+        ///
+        var spacing: CGFloat {
+            get {
+                heightConstraint.constant
+            }
+            set {
+                heightConstraint.constant = newValue
+            }
+        }
+
+        /// Determines the view height internally
+        ///
+        private let heightConstraint: NSLayoutConstraint
+
+
+        override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+
+            let spacerView = UIView()
+            spacerView.translatesAutoresizingMaskIntoConstraints = false
+            heightConstraint = spacerView.heightAnchor.constraint(equalToConstant: 0)
+
+            super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+            addSubview(spacerView)
+            NSLayoutConstraint.activate([
+                spacerView.topAnchor.constraint(equalTo: topAnchor),
+                spacerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+                spacerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                spacerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                heightConstraint
+            ])
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("Not implemented")
+        }
+    }
 }

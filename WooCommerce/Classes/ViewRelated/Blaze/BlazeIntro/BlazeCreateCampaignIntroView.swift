@@ -113,7 +113,7 @@ struct BlazeCreateCampaignIntroView: View {
                     .font(.caption2)
                     .foregroundColor(Color(.text))
 
-                Text(Localization.Illustration.price)
+                Text("$5")
                     .fontWeight(.bold)
                     .titleStyle()
             }
@@ -176,11 +176,6 @@ private extension BlazeCreateCampaignIntroView {
                 "blazeCreateCampaignIntroView.illustration.startingFrom",
                 value: "Starting from",
                 comment: "Caption in Blaze image illustration."
-            )
-            static let price = NSLocalizedString(
-                "blazeCreateCampaignIntroView.illustration.price",
-                value: "$5",
-                comment: "Starting price in the Blaze image illustration."
             )
         }
         static let createYourCampaign = NSLocalizedString(

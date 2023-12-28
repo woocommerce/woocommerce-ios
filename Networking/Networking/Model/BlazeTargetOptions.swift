@@ -70,6 +70,8 @@ public final class BlazeTargetLocation: NSObject, Decodable, GeneratedCopiable, 
     public let isoCode: String?
 
     /// Parent of the location.
+    /// "Parent" refers to the larger geographical context of a given location.
+    /// For example the parent of a city is a state, or the parent of a country is a continent.
     public let parentLocation: BlazeTargetLocation?
 
     public init(id: Int64,

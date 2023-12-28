@@ -16,10 +16,18 @@ struct BlazeTargetLanguageListMapper: Mapper {
 ///
 struct BlazeTargetDeviceListMapper: Mapper {
 
+    /// Locale of the response.
+    /// We're injecting this field by copying it in after parsing responses, because `locale` is not returned in the response.
+    ///
+    let locale: String
+
     /// (Attempts) to convert a list of dictionary into `[BlazeTargetDevice]`.
     ///
     func map(response: Data) throws -> [BlazeTargetDevice] {
         let decoder = JSONDecoder()
+        decoder.userInfo = [
+            .locale: locale
+        ]
         return try decoder.decode([BlazeTargetDevice].self, from: response)
     }
 }

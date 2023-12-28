@@ -180,7 +180,8 @@ extension Networking.BlazeTargetDevice {
     public static func fake() -> Networking.BlazeTargetDevice {
         .init(
             id: .fake(),
-            name: .fake()
+            name: .fake(),
+            locale: .fake()
         )
     }
 }

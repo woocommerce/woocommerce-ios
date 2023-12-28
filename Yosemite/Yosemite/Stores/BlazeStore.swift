@@ -130,8 +130,8 @@ private extension BlazeStore {
         Task { @MainActor in
             do {
                 let stubbedResult = [
-                    BlazeTargetDevice(id: "mobile", name: "Mobile"),
-                    BlazeTargetDevice(id: "desktop", name: "Desktop")
+                    BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale),
+                    BlazeTargetDevice(id: "desktop", name: "Desktop", locale: locale)
                 ]
                 // TODO-11540: remove stubbed result when the API is ready.
                 let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {

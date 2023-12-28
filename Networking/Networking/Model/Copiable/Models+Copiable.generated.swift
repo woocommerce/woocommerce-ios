@@ -202,14 +202,17 @@ extension Networking.BlazeCampaign {
 extension Networking.BlazeTargetDevice {
     public func copy(
         id: CopiableProp<String> = .copy,
-        name: CopiableProp<String> = .copy
+        name: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetDevice {
         let id = id ?? self.id
         let name = name ?? self.name
+        let locale = locale ?? self.locale
 
         return Networking.BlazeTargetDevice(
             id: id,
-            name: name
+            name: name,
+            locale: locale
         )
     }
 }

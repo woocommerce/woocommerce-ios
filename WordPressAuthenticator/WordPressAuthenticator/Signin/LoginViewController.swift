@@ -216,6 +216,10 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             return
         }
 
+        // Make sure we don't provide any old nonce information when we are required to present only the multi-factor code option.
+        loginFields.nonceInfo = nil
+        loginFields.nonceUserID = 0
+
         presentUnified2FA()
     }
 

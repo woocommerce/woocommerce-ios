@@ -110,6 +110,12 @@ final class OrdersRootViewController: UIViewController {
             guard let self = self else { return }
             self.configureStatusResultsController()
         }
+
+        /// Attempts to navigate and open the first Order in the Order List when Split View is enabled
+        /// 
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            navigateToFirstOrderIfPossible()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -169,6 +175,15 @@ final class OrdersRootViewController: UIViewController {
     private func presentOrderCreationFlowWithScannedProduct(_ result: SKUSearchResult) {
         let viewModel = EditableOrderViewModel(siteID: siteID, initialItem: result)
         setupNavigation(viewModel: viewModel)
+    }
+
+    /// Attempts to navigate to the first Order in the Order List by opening its details
+    ///
+    private func navigateToFirstOrderIfPossible() {
+        guard let order = ordersViewController.firstOrderInIndexPath else {
+            return
+        }
+        self.navigateToOrderDetail(order)
     }
 
     /// Coordinates the navigation between the different views involved in Order Creation, Editing, and Details

@@ -52,10 +52,10 @@ public protocol BlazeRemoteProtocol {
         from startDate: Date,
         to endDate: Date,
         formattedTotalBudget: String,
-        targetLocations: [BlazeTargetLocation],
-        targetLanguages: [BlazeTargetLanguage],
-        targetDevices: [BlazeTargetDevice],
-        targetTopics: [BlazeTargetTopic]
+        targetLocationIds: [Int64],
+        targetLanguageIds: [String],
+        targetDeviceIds: [String],
+        targetTopicIds: [String]
     ) async throws -> BlazeImpressions
 }
 
@@ -118,10 +118,10 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         from startDate: Date,
         to endDate: Date,
         formattedTotalBudget: String,
-        targetLocations: [BlazeTargetLocation] = [],
-        targetLanguages: [BlazeTargetLanguage] = [],
-        targetDevices: [BlazeTargetDevice] = [],
-        targetTopics: [BlazeTargetTopic]  = []
+        targetLocationIds: [Int64] = [],
+        targetLanguageIds: [String] = [],
+        targetDeviceIds: [String] = [],
+        targetTopicIds: [String]  = []
     ) async throws -> BlazeImpressions {
         let path = Paths.campaignImpressions(siteID: siteID)
 
@@ -133,10 +133,10 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
             Keys.endDate: dateFormatter.string(from: endDate),
             Keys.totalBudget: formattedTotalBudget,
             Keys.targetings: [
-                Keys.targetLocations: targetLocations.map { $0.id },
-                Keys.targetLanguages: targetLanguages.map { $0.id },
-                Keys.targetDevices: targetDevices.map { $0.id },
-                Keys.targetTopics: targetTopics.map { $0.id }
+                Keys.targetLocations: targetLocationIds,
+                Keys.targetLanguages: targetLanguageIds,
+                Keys.targetDevices: targetDeviceIds,
+                Keys.targetTopics: targetTopicIds
             ] as [String : [Any]]
         ]
 

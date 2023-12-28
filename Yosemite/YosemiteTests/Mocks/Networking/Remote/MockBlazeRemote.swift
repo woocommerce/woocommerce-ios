@@ -94,10 +94,10 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         from startDate: Date,
         to endDate: Date,
         formattedTotalBudget: String,
-        targetLocations: [Networking.BlazeTargetLocation] = [],
-        targetLanguages: [Networking.BlazeTargetLanguage] = [],
-        targetDevices: [Networking.BlazeTargetDevice] = [],
-        targetTopics: [Networking.BlazeTargetTopic]
+        targetLocationIds: [Int64] = [],
+        targetLanguageIds: [String] = [],
+        targetDeviceIds: [String] = [],
+        targetTopicIds: [String]  = []
     ) async throws -> Networking.BlazeImpressions {
         guard let result = fetchingForecastedImpressionsResult else {
             XCTFail("Could not find result for fetching forecasted impressions.")

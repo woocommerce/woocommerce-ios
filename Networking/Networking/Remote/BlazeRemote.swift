@@ -137,7 +137,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
                 Keys.targetLanguages: targetLanguageIds,
                 Keys.targetDevices: targetDeviceIds,
                 Keys.targetTopics: targetTopicIds
-            ] as [String : [Any]]
+            ] as [String: [Any]]
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)

@@ -202,7 +202,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
         }
@@ -223,7 +223,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
         }
@@ -246,7 +246,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
         }
@@ -269,7 +269,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
         }

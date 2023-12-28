@@ -20,9 +20,12 @@ public enum BlazeAction: Action {
     /// Retrieves and stores target devices for create Blaze campaigns for a site.
     ///
     /// - `siteID`: the site to create Blaze campaign.
+    /// - `locale`: the locale for the response.
     /// - `onCompletion`: invoked when the sync operation finishes.
     ///     - `result.success([BlazeTargetDevice])`: list of target devices for Blaze campaigns.
     ///     - `result.failure(Error)`: error indicates issues syncing data.
     ///
-    case synchronizeTargetDevices(siteID: Int64, onCompletion: (Result<[BlazeTargetDevice], Error>) -> Void)
+    case synchronizeTargetDevices(siteID: Int64,
+                                  locale: String,
+                                  onCompletion: (Result<[BlazeTargetDevice], Error>) -> Void)
 }

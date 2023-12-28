@@ -255,7 +255,9 @@ final class BlazeStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(storedTargetDeviceCount, 2)
-        let device = try XCTUnwrap(viewStorage.firstObject(ofType: StorageBlazeTargetDevice.self))
+        let devices = viewStorage.loadAllBlazeTargetDevices(locale: locale)
+        XCTAssertEqual(devices.count, 1)
+        let device = try XCTUnwrap(devices.first)
         XCTAssertEqual(device.id, "mobile")
         XCTAssertEqual(device.name, "Mobile")
         XCTAssertEqual(device.locale, locale)

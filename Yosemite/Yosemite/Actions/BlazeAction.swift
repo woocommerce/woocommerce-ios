@@ -17,7 +17,7 @@ public enum BlazeAction: Action {
                               pageNumber: Int,
                               onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Retrieves and stores target devices for create Blaze campaigns for a site.
+    /// Retrieves and stores target devices for creating Blaze campaigns for a site.
     ///
     /// - `siteID`: the site to create Blaze campaign.
     /// - `locale`: the locale for the response.
@@ -29,7 +29,7 @@ public enum BlazeAction: Action {
                                   locale: String,
                                   onCompletion: (Result<[BlazeTargetDevice], Error>) -> Void)
 
-    /// Retrieves and stores target languages for create Blaze campaigns for a site.
+    /// Retrieves and stores target languages for creating Blaze campaigns for a site.
     ///
     /// - `siteID`: the site to create Blaze campaign.
     /// - `locale`: the locale for the response.
@@ -41,7 +41,7 @@ public enum BlazeAction: Action {
                                     locale: String,
                                     onCompletion: (Result<[BlazeTargetLanguage], Error>) -> Void)
 
-    /// Retrieves and stores target topics for create Blaze campaigns for a site.
+    /// Retrieves and stores target topics for creating Blaze campaigns for a site.
     ///
     /// - `siteID`: the site to create Blaze campaign.
     /// - `locale`: the locale for the response.
@@ -52,4 +52,18 @@ public enum BlazeAction: Action {
     case synchronizeTargetTopics(siteID: Int64,
                                  locale: String,
                                  onCompletion: (Result<[BlazeTargetTopic], Error>) -> Void)
+
+    /// Retrieves target locations for creating Blaze campaigns for a site.
+    ///
+    /// - `siteID`: the site to create Blaze campaign.
+    /// - `query`: Keyword to search for locations. Requires a minimum of 3 characters.
+    /// - `locale`: the locale for the response.
+    /// - `onCompletion`: invoked when the sync operation finishes.
+    ///     - `result.success([BlazeTargetLocation])`: list of target locations for Blaze campaigns.
+    ///     - `result.failure(Error)`: error indicates issues syncing data.
+    ///
+    case fetchTargetLocations(siteID: Int64,
+                              query: String,
+                              locale: String,
+                              onCompletion: (Result<[BlazeTargetLocation], Error>) -> Void)
 }

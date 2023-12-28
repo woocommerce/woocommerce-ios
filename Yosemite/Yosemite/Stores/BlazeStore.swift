@@ -64,6 +64,8 @@ public final class BlazeStore: Store {
             synchronizeTargetLanguages(siteID: siteID, locale: locale, onCompletion: onCompletion)
         case let .synchronizeTargetTopics(siteID, locale, onCompletion):
             synchronizeTargetTopics(siteID: siteID, locale: locale, onCompletion: onCompletion)
+        case let .fetchTargetLocations(siteID, query, locale, onCompletion):
+            fetchTargetLocations(siteID: siteID, query: query, locale: locale, onCompletion: onCompletion)
         }
     }
 }
@@ -260,6 +262,23 @@ private extension BlazeStore {
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+// MARK: - Fetch target location by keyword
+private extension BlazeStore {
+    func fetchTargetLocations(siteID: Int64,
+                              query: String,
+                              locale: String,
+                              onCompletion: @escaping (Result<[BlazeTargetLocation], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let locations = try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)
+                onCompletion(.success(locations))
+            } catch {
+                onCompletion(.failure(error))
+            }
         }
     }
 }

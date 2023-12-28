@@ -53,7 +53,7 @@ struct BlazeCreateCampaignIntroView: View {
                             .foregroundColor(Color(.brand))
                             .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
 
-                        Text(Localization.headline)
+                        Text("Blaze")
                             .foregroundColor(Color(.brand))
                             .fontWeight(.semibold)
                             .headlineStyle()
@@ -141,11 +141,6 @@ private extension BlazeCreateCampaignIntroView {
 
 private extension BlazeCreateCampaignIntroView {
     enum Localization {
-        static let headline = NSLocalizedString(
-            "blazeCreateCampaignIntroView.headline",
-            value: "Blaze",
-            comment: "Headline text for the Blaze campaign intro view"
-        )
         static let title = NSLocalizedString(
             "blazeCreateCampaignIntroView.title",
             value: "Get your products seen by millions",

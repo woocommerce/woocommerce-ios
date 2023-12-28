@@ -476,6 +476,48 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Fetching target locations
+
+    func test_fetchTargetLocations_is_successful_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingTargetLocations(thenReturn: .success([.fake().copy(id: 123)]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchTargetLocations(siteID: self.sampleSiteID, query: "test", locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let locations = try result.get()
+        XCTAssertEqual(locations.count, 1)
+    }
+
+    func test_fetchTargetLocations_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingTargetLocations(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchTargetLocations(siteID: self.sampleSiteID, query: "test", locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }
 
 private extension BlazeStoreTests {

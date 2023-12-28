@@ -711,4 +711,3 @@ private extension TwoFAViewController {
         }
     }
 }
-

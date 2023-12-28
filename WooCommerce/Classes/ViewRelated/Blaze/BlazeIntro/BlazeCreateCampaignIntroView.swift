@@ -47,8 +47,6 @@ struct BlazeCreateCampaignIntroView: View {
             ScrollView {
                 VStack {
                     HStack(spacing: 8) {
-                        Spacer()
-
                         Image(uiImage: .blaze)
                             .resizable()
                             .renderingMode(.template)
@@ -59,8 +57,6 @@ struct BlazeCreateCampaignIntroView: View {
                             .foregroundColor(Color(.brand))
                             .fontWeight(.semibold)
                             .headlineStyle()
-
-                        Spacer()
                     }
 
                     VStack(spacing: Layout.titleElementsVerticalSpacing) {

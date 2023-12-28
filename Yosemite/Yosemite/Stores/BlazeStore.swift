@@ -58,6 +58,8 @@ public final class BlazeStore: Store {
             synchronizeCampaigns(siteID: siteID,
                                  pageNumber: pageNumber,
                                  onCompletion: onCompletion)
+        case let .synchronizeTargetDevices(siteID, onCompletion):
+            synchronizeTargetDevices(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -118,5 +120,63 @@ private extension BlazeStore {
 
             storageCampaign.update(with: campaign)
         }
+    }
+}
+
+// MARK: - Synchronize target devices
+private extension BlazeStore {
+
+    func synchronizeTargetDevices(siteID: Int64, onCompletion: @escaping (Result<[BlazeTargetDevice], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stubbedResult = [
+                    BlazeTargetDevice(id: "mobile", name: "Mobile"),
+                    BlazeTargetDevice(id: "desktop", name: "Desktop")
+                ]
+                // TODO-11540: remove stubbed result when the API is ready.
+                let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetDevices(for: siteID)
+                })
+                insertsStoredTargetDevicesInBackground(readonlyDevices: devices) {
+                    onCompletion(.success(devices))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Inserts specified BlazeTargetDevice Entities in a background thread
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func insertsStoredTargetDevicesInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
+                                              onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteAllObjects(ofType: Storage.BlazeTargetDevice.self)
+            for device in readonlyDevices {
+                let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
+                storageDevice.update(with: device)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+// MARK: - Helper for mocking response
+private extension BlazeStore {
+    static var isRunningTests: Bool {
+        NSClassFromString("XCTestCase") != nil
+    }
+
+    func mockResponse<T>(stubbedResult: T, onExecution: () async throws -> T) async throws -> T {
+        // skips stubbed result for unit tests
+        guard Self.isRunningTests else {
+            return stubbedResult
+        }
+        return try await onExecution()
     }
 }

@@ -553,6 +553,15 @@ public extension StorageType {
         return allObjects(ofType: BlazeCampaign.self, matching: predicate, sortedBy: nil)
     }
 
+    // MARK: BlazeTargetDevice
+
+    /// Returns a single Blaze target device given an `id`
+    ///
+    func loadBlazeTargetDevice(id: String) -> BlazeTargetDevice? {
+        let predicate = \BlazeTargetDevice.id == id
+        return firstObject(ofType: BlazeTargetDevice.self, matching: predicate)
+    }
+
     // MARK: - Coupons
 
     /// Returns a single Coupon given a `siteID` and `CouponID`

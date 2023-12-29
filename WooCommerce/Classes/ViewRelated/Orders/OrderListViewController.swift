@@ -185,8 +185,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
-
-        viewModel.updateBannerVisibility()
     }
 
     override func viewDidLayoutSubviews() {
@@ -263,8 +261,6 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error(let error):
                     self.setErrorTopBanner(for: error)
-                case .orderCreation:
-                    self.setOrderCreationTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -376,7 +372,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
         viewModel.dataLoadingError = nil
-        viewModel.updateBannerVisibility()
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
@@ -821,20 +816,6 @@ private extension OrderListViewController {
             guard let self = self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
             supportForm.show(from: self)
-        })
-        showTopBannerView()
-    }
-
-    /// Sets the `topBannerView` property to an orders banner.
-    ///
-    func setOrderCreationTopBanner() {
-        topBannerView = OrdersTopBannerFactory.createOrdersBanner(onTopButtonPressed: { [weak self] in
-            self?.tableView.updateHeaderHeight()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.dismissOrdersBanner()
-        }, onGiveFeedbackButtonPressed: { [weak self] in
-            let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
-            self?.present(surveyNavigation, animated: true, completion: nil)
         })
         showTopBannerView()
     }

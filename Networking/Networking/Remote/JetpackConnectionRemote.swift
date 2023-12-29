@@ -59,8 +59,8 @@ public final class JetpackConnectionRemote: Remote {
 
     /// Fetches the Jetpack auth URL for the user to approve the connection in a webview given the URL.
     ///
-    public func fetchJetpackAuthURL() async throws -> String {
-        let parameters: [String: Any] = ["redirect_url": siteURL, "from": "woocommerce-core-profiler"]
+    public func fetchJetpackAuthURL(redirectURL: String) async throws -> String {
+        let parameters: [String: Any] = ["redirect_url": redirectURL, "from": "woocommerce-core-profiler"]
         let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackAuthURL, parameters: parameters)
         let result: JetpackAuthURLResponse = try await enqueue(request)
         guard result.success else {

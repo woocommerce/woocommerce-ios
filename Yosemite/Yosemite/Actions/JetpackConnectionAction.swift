@@ -17,7 +17,7 @@ public enum JetpackConnectionAction: Action {
     /// Fetches the user connection state with the given site's Jetpack.
     case fetchJetpackUser(completion: (Result<JetpackUser, Error>) -> Void)
     /// Fetches the URL used for approving/authorizing Jetpack connection.
-    case fetchJetpackAuthURL(completion: (Result<String, Error>) -> Void)
+    case fetchJetpackAuthURL(redirectURL: String, completion: (Result<String, Error>) -> Void)
     /// Fetches the WPCom account with the given network
     case loadWPComAccount(network: Network, onCompletion: (Account?) -> Void)
 }

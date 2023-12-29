@@ -121,6 +121,17 @@ public extension StorageType {
         }
     }
 
+    // MARK: - BlazeTargetDevice
+
+    /// Delete all of the stored Blaze target devices with the provided locale.
+    ///
+    func deleteBlazeTargetDevices(locale: String) {
+        let devices = loadAllBlazeTargetDevices(locale: locale)
+        for device in devices {
+            deleteObject(device)
+        }
+    }
+
     // MARK: - Coupons
 
     /// Deletes all of the stored Coupons for the provided siteID.

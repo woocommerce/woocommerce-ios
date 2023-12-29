@@ -58,8 +58,8 @@ public final class BlazeStore: Store {
             synchronizeCampaigns(siteID: siteID,
                                  pageNumber: pageNumber,
                                  onCompletion: onCompletion)
-        case let .synchronizeTargetDevices(siteID, onCompletion):
-            synchronizeTargetDevices(siteID: siteID, onCompletion: onCompletion)
+        case let .synchronizeTargetDevices(siteID, locale, onCompletion):
+            synchronizeTargetDevices(siteID: siteID, locale: locale, onCompletion: onCompletion)
         }
     }
 }
@@ -126,18 +126,18 @@ private extension BlazeStore {
 // MARK: - Synchronize target devices
 private extension BlazeStore {
 
-    func synchronizeTargetDevices(siteID: Int64, onCompletion: @escaping (Result<[BlazeTargetDevice], Error>) -> Void) {
+    func synchronizeTargetDevices(siteID: Int64, locale: String, onCompletion: @escaping (Result<[BlazeTargetDevice], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let stubbedResult = [
-                    BlazeTargetDevice(id: "mobile", name: "Mobile"),
-                    BlazeTargetDevice(id: "desktop", name: "Desktop")
+                    BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale),
+                    BlazeTargetDevice(id: "desktop", name: "Desktop", locale: locale)
                 ]
                 // TODO-11540: remove stubbed result when the API is ready.
                 let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchTargetDevices(for: siteID)
+                    try await remote.fetchTargetDevices(for: siteID, locale: locale)
                 })
-                insertsStoredTargetDevicesInBackground(readonlyDevices: devices) {
+                insertStoredTargetDevicesInBackground(readonlyDevices: devices, locale: locale) {
                     onCompletion(.success(devices))
                 }
             } catch {
@@ -146,14 +146,16 @@ private extension BlazeStore {
         }
     }
 
-    /// Inserts specified BlazeTargetDevice Entities in a background thread
+    /// Removes BlazeTargetDevice entities with the given locale
+    /// and inserts specified BlazeTargetDevice Entities in a background thread.
     /// `onCompletion` will be called on the main thread.
     ///
-    func insertsStoredTargetDevicesInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
-                                              onCompletion: @escaping () -> Void) {
+    func insertStoredTargetDevicesInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
+                                               locale: String,
+                                               onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            derivedStorage.deleteAllObjects(ofType: Storage.BlazeTargetDevice.self)
+            derivedStorage.deleteBlazeTargetDevices(locale: locale)
             for device in readonlyDevices {
                 let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
                 storageDevice.update(with: device)

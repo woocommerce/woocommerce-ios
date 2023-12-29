@@ -4,10 +4,16 @@ import Foundation
 ///
 struct BlazeTargetLanguageListMapper: Mapper {
 
+    /// Locale of the response.
+    let locale: String
+
     /// (Attempts) to convert a list of dictionary into `[BlazeTargetLanguage]`.
     ///
     func map(response: Data) throws -> [BlazeTargetLanguage] {
         let decoder = JSONDecoder()
+        decoder.userInfo = [
+            .locale: locale
+        ]
         return try decoder.decode([BlazeTargetLanguage].self, from: response)
     }
 }
@@ -16,10 +22,16 @@ struct BlazeTargetLanguageListMapper: Mapper {
 ///
 struct BlazeTargetDeviceListMapper: Mapper {
 
+    /// Locale of the response.
+    let locale: String
+
     /// (Attempts) to convert a list of dictionary into `[BlazeTargetDevice]`.
     ///
     func map(response: Data) throws -> [BlazeTargetDevice] {
         let decoder = JSONDecoder()
+        decoder.userInfo = [
+            .locale: locale
+        ]
         return try decoder.decode([BlazeTargetDevice].self, from: response)
     }
 }
@@ -28,10 +40,16 @@ struct BlazeTargetDeviceListMapper: Mapper {
 ///
 struct BlazeTargetTopicListMapper: Mapper {
 
+    /// Locale of the response.
+    let locale: String
+
     /// (Attempts) to convert a list of dictionary into `[BlazeTargetTopic]`.
     ///
     func map(response: Data) throws -> [BlazeTargetTopic] {
         let decoder = JSONDecoder()
+        decoder.userInfo = [
+            .locale: locale
+        ]
         return try decoder.decode([BlazeTargetTopic].self, from: response)
     }
 }

@@ -1285,20 +1285,23 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundCharge, charge2)
     }
 
-    func test_load_BlazeTargetDevice_by_id() throws {
+    func test_loadAllBlazeTargetDevices_with_locale() throws {
         // Given
         let device1 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
         device1.id = "mobile"
         device1.name = "Mobile"
+        device1.locale = "en"
 
         let device2 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
         device2.id = "desktop"
         device2.name = "Desktop"
+        device2.locale = "es"
 
         // When
-        let foundDevice = try XCTUnwrap(storage.loadBlazeTargetDevice(id: "mobile"))
+        let foundDevices = try XCTUnwrap(storage.loadAllBlazeTargetDevices(locale: "en"))
 
         // Then
-        XCTAssertEqual(foundDevice, device1)
+        XCTAssertEqual(foundDevices.count, 1)
+        XCTAssertEqual(foundDevices.first, device1)
     }
 }

@@ -49,6 +49,12 @@ extension UIImage {
         UIImage(named: "blaze")!
     }
 
+    /// Blaze Intro Illustration icon
+    ///
+    static var blazeIntroIllustration: UIImage {
+        UIImage(named: "blaze-intro-illustration")!
+    }
+
     /// Currency Image
     ///
     static var currencyImage: UIImage {

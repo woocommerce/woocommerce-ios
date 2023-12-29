@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import enum Alamofire.AFError
+import enum Networking.NetworkError
 
 /// View model for `JetpackSetupView`.
 ///
@@ -63,7 +63,7 @@ final class JetpackSetupViewModel: ObservableObject {
     }
 
     var hasEncounteredPermissionError: Bool {
-        if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) = setupError as? AFError {
+        if case let .unacceptableStatusCode(statusCode, _) = setupError as? NetworkError, statusCode == 403 {
             return true
         }
         return false
@@ -209,7 +209,7 @@ private extension JetpackSetupViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
                 self.setupError = error
-                if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
+                if case .notFound = error as? NetworkError {
                     if self.connectionOnly {
                         /// If site has WCPay installed and activated but not connected,
                         /// plugins need to be installed even though we detected a connection before
@@ -341,17 +341,17 @@ private extension JetpackSetupViewModel {
 
     func updateErrorMessage() {
         switch setupError {
-        case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))):
+        case let .some(NetworkError.unacceptableStatusCode(statusCode, _)) where statusCode == 403:
             setupErrorDetail = .init(setupErrorMessage: Localization.permissionErrorMessage,
                                      setupErrorSuggestion: Localization.permissionErrorSuggestion,
                                      errorCode: 403)
-        case .some(AFError.responseValidationFailed(reason: .unacceptableStatusCode(let code))) where 500...599 ~= code:
+        case let .some(NetworkError.unacceptableStatusCode(statusCode, _)) where 500...599 ~= statusCode:
             setupErrorDetail = .init(setupErrorMessage: Localization.communicationErrorMessage,
                                      setupErrorSuggestion: Localization.communicationErrorSuggestion,
-                                     errorCode: code)
+                                     errorCode: statusCode)
         default:
             let code: Int? = {
-                if let afError = setupError as? AFError, let code = afError.responseCode {
+                if let networkError = setupError as? NetworkError, let code = networkError.responseCode {
                     return code
                 }
                 return (setupError as? NSError)?.code

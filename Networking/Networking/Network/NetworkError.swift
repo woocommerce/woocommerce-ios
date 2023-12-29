@@ -22,6 +22,20 @@ public enum NetworkError: Error, Equatable {
     /// Error for REST API requests with invalid cookie nonce
     case invalidCookieNonce
 
+    /// The HTTP response code of the network error, for cases that are deducted from the status code.
+    public var responseCode: Int? {
+        switch self {
+            case .notFound:
+                return StatusCode.notFound
+            case .timeout:
+                return StatusCode.timeout
+            case let .unacceptableStatusCode(statusCode, _):
+                return statusCode
+            default:
+                return nil
+        }
+    }
+
     /// Response data accompanied the error if available
     var response: Data? {
         switch self {

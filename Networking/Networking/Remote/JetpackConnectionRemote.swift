@@ -56,6 +56,18 @@ public final class JetpackConnectionRemote: Remote {
         let mapper = JetpackUserMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Fetches the Jetpack auth URL for the user to approve the connection in a webview given the URL.
+    ///
+    public func fetchJetpackAuthURL() async throws -> String {
+        let parameters: [String: Any] = ["redirect_url": siteURL, "from": "woocommerce-core-profiler"]
+        let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackAuthURL, parameters: parameters)
+        let result: JetpackAuthURLResponse = try await enqueue(request)
+        guard result.success else {
+            throw AuthURLError.failure(errors: result.errors)
+        }
+        return result.url
+    }
 }
 
 public extension JetpackConnectionRemote {
@@ -63,12 +75,19 @@ public extension JetpackConnectionRemote {
         case malformedURL
         case accountConnectionURLNotFound
     }
+
+    /// Possible error scenarios from `fetchJetpackAuthURL`.
+    enum AuthURLError: Error {
+        case cannotRequest
+        case failure(errors: [String])
+    }
 }
 
 private extension JetpackConnectionRemote {
     enum Path {
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
         static let jetpackConnectionUser = "/jetpack/v4/connection/data"
+        static let jetpackAuthURL = "/wc-admin/onboarding/plugins/jetpack-authorization-url"
         static let plugins = "/wp/v2/plugins"
     }
 
@@ -83,4 +102,11 @@ private extension JetpackConnectionRemote {
         static let jetpackPluginSlug = "jetpack"
         static let activeStatus = "active"
     }
+}
+
+/// Response schema of `fetchJetpackAuthURL`.
+private struct JetpackAuthURLResponse: Decodable {
+    let success: Bool
+    let errors: [String]
+    let url: String
 }

@@ -1,7 +1,6 @@
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
-import enum Alamofire.AFError
 
 final class JetpackSetupCoordinatorTests: XCTestCase {
 

@@ -174,13 +174,24 @@ extension Networking.BlazeCampaign {
         )
     }
 }
+extension Networking.BlazeImpressions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeImpressions {
+        .init(
+            totalImpressionsMin: .fake(),
+            totalImpressionsMax: .fake()
+        )
+    }
+}
 extension Networking.BlazeTargetDevice {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> Networking.BlazeTargetDevice {
         .init(
             id: .fake(),
-            name: .fake()
+            name: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -190,7 +201,8 @@ extension Networking.BlazeTargetLanguage {
     public static func fake() -> Networking.BlazeTargetLanguage {
         .init(
             id: .fake(),
-            name: .fake()
+            name: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -214,7 +226,8 @@ extension Networking.BlazeTargetTopic {
     public static func fake() -> Networking.BlazeTargetTopic {
         .init(
             id: .fake(),
-            description: .fake()
+            description: .fake(),
+            locale: .fake()
         )
     }
 }

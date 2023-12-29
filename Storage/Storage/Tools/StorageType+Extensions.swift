@@ -555,11 +555,11 @@ public extension StorageType {
 
     // MARK: BlazeTargetDevice
 
-    /// Returns a single Blaze target device given an `id`
+    /// Returns all Blaze target devices with the given locale.
     ///
-    func loadBlazeTargetDevice(id: String) -> BlazeTargetDevice? {
-        let predicate = \BlazeTargetDevice.id == id
-        return firstObject(ofType: BlazeTargetDevice.self, matching: predicate)
+    func loadAllBlazeTargetDevices(locale: String) -> [BlazeTargetDevice] {
+        let predicate = \BlazeTargetDevice.locale == locale
+        return allObjects(ofType: BlazeTargetDevice.self, matching: predicate, sortedBy: nil)
     }
 
     // MARK: - Coupons

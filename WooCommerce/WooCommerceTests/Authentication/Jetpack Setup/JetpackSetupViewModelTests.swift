@@ -1,7 +1,7 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
-import enum Alamofire.AFError
+import enum Networking.NetworkError
 import WordPressAuthenticator
 
 final class JetpackSetupViewModelTests: XCTestCase {
@@ -73,7 +73,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil)))
             default:
                 break
             }
@@ -94,7 +94,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+                completion(.failure(NetworkError.notFound(response: nil)))
             case .installJetpackPlugin(let completion):
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
@@ -311,7 +311,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
                 triggeredRetrieveJetpackPluginDetails = true
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                let error = NetworkError.notFound(response: nil)
                 completion(.failure(error))
             case .installJetpackPlugin(let completion):
                 completion(.success(()))
@@ -346,7 +346,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                let error = NetworkError.notFound(response: nil)
                 completion(.failure(error))
             case .installJetpackPlugin:
                 triggeredJetpackInstallation = true
@@ -448,7 +448,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                let error = NetworkError.notFound(response: nil)
                 completion(.failure(error))
             case .installJetpackPlugin(let completion):
                 completion(.success(()))
@@ -478,7 +478,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                let error = NetworkError.notFound(response: nil)
                 completion(.failure(error))
             case .installJetpackPlugin(let completion):
                 completion(.success(()))
@@ -507,7 +507,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                let error = NetworkError.notFound(response: nil)
                 completion(.failure(error))
             case .installJetpackPlugin(let completion):
                 completion(.success(()))
@@ -537,7 +537,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+                let error = NetworkError.notFound(response: nil)
                 completion(.failure(error))
             case .installJetpackPlugin(let completion):
                 completion(.success(()))
@@ -630,7 +630,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil)))
             default:
                 break
             }
@@ -656,7 +656,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+                completion(.failure(NetworkError.notFound(response: nil)))
             case .installJetpackPlugin:
                 installJetpackTriggered = true
             default:
@@ -679,9 +679,9 @@ final class JetpackSetupViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
+                completion(.failure(NetworkError.notFound(response: nil)))
             case .installJetpackPlugin(let completion):
-                completion(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 501))))
+                completion(.failure(NetworkError.unacceptableStatusCode(statusCode: 501, response: nil)))
             default:
                 break
             }
@@ -832,7 +832,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
-        let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+        let error = NetworkError.notFound(response: nil)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -859,7 +859,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
-        let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+        let error = NetworkError.notFound(response: nil)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -886,7 +886,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
-        let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+        let error = NetworkError.notFound(response: nil)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -915,7 +915,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
-        let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+        let error = NetworkError.notFound(response: nil)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -943,7 +943,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
-        let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+        let error = NetworkError.notFound(response: nil)
         let testConnectionURL = try XCTUnwrap(URL(string: "https://test-connection.com"))
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -975,7 +975,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
-        let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+        let error = NetworkError.notFound(response: nil)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {

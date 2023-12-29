@@ -95,8 +95,8 @@ extension PaymentGateway: Codable {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let gatewayID = try container.decode(String.self, forKey: .gatewayID)
-        let title = try container.decode(String.self, forKey: .title)
-        let description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
+        let title = ( try? container.decode(String.self, forKey: .title) ) ?? ""
+        let description = ( try? container.decodeIfPresent(String.self, forKey: .description) ) ?? ""
         let enabled = try container.decode(Bool.self, forKey: .enabled)
         let features = try container.decode([Feature].self, forKey: .features)
 

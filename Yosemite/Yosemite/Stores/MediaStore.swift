@@ -51,10 +51,20 @@ public final class MediaStore: Store {
         }
 
         switch action {
-        case .retrieveMediaLibrary(let siteID, let pageNumber, let pageSize, let onCompletion):
-            retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .retrieveMediaLibrary(siteID, imagesOnly, pageNumber, pageSize, onCompletion):
+            retrieveMediaLibrary(siteID: siteID,
+                                 imagesOnly: imagesOnly,
+                                 pageNumber: pageNumber,
+                                 pageSize: pageSize,
+                                 onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let altText, let filename, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, altText: altText, filename: filename, onCompletion: onCompletion)
+        case let .uploadFile(siteID, productID, localURL, altText, onCompletion):
+            uploadFile(siteID: siteID,
+                       productID: productID,
+                       localURL: localURL,
+                       altText: altText,
+                       onCompletion: onCompletion)
         case .updateProductID(let siteID,
                             let productID,
                              let mediaID,
@@ -66,21 +76,24 @@ public final class MediaStore: Store {
 
 private extension MediaStore {
     func retrieveMediaLibrary(siteID: Int64,
+                              imagesOnly: Bool,
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (Result<[Media], Error>) -> Void) {
         if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.loadMediaLibraryFromWordPressSite(siteID: siteID,
+                                                     imagesOnly: imagesOnly,
                                                      pageNumber: pageNumber,
                                                      pageSize: pageSize) { result in
                 onCompletion(result.map { $0.map { $0.toMedia() } })
             }
         } else {
             remote.loadMediaLibrary(for: siteID,
-                                       pageNumber: pageNumber,
-                                       pageSize: pageSize,
-                                       context: nil,
-                                       completion: onCompletion)
+                                    imagesOnly: imagesOnly,
+                                    pageNumber: pageNumber,
+                                    pageSize: pageSize,
+                                    context: nil,
+                                    completion: onCompletion)
         }
     }
 
@@ -101,6 +114,7 @@ private extension MediaStore {
                             productID: productID,
                             altText: altText,
                             uploadableMedia: uploadableMedia,
+                            shouldRemoveFileUponCompletion: true,
                             onCompletion: onCompletion)
             } catch {
                 onCompletion(.failure(error))
@@ -112,17 +126,20 @@ private extension MediaStore {
                      productID: Int64,
                      altText: String?,
                      uploadableMedia media: UploadableMedia,
+                     shouldRemoveFileUponCompletion: Bool,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.uploadMediaToWordPressSite(siteID: siteID,
                                               productID: productID,
                                               mediaItem: media) { result in
                 // Removes local media after the upload API request.
-                do {
-                    try MediaFileManager().removeLocalMedia(at: media.localURL)
-                } catch {
-                    onCompletion(.failure(error))
-                    return
+                if shouldRemoveFileUponCompletion {
+                    do {
+                        try MediaFileManager().removeLocalMedia(at: media.localURL)
+                    } catch {
+                        onCompletion(.failure(error))
+                        return
+                    }
                 }
 
                 switch result {
@@ -135,14 +152,15 @@ private extension MediaStore {
         } else {
             remote.uploadMedia(for: siteID,
                                productID: productID,
-                               context: nil,
                                mediaItems: [media]) { result in
                 // Removes local media after the upload API request.
-                do {
-                    try MediaFileManager().removeLocalMedia(at: media.localURL)
-                } catch {
-                    onCompletion(.failure(error))
-                    return
+                if shouldRemoveFileUponCompletion {
+                    do {
+                        try MediaFileManager().removeLocalMedia(at: media.localURL)
+                    } catch {
+                        onCompletion(.failure(error))
+                        return
+                    }
                 }
 
                 switch result {
@@ -156,6 +174,25 @@ private extension MediaStore {
                     onCompletion(.failure(error))
                 }
             }
+        }
+    }
+
+    func uploadFile(siteID: Int64,
+                    productID: Int64,
+                    localURL: URL,
+                    altText: String?,
+                    onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        Task { @MainActor in
+            let uploadableMedia = UploadableMedia(localURL: localURL,
+                                                  filename: localURL.lastPathComponent,
+                                                  mimeType: localURL.mimeTypeForPathExtension,
+                                                  altText: altText)
+            uploadMedia(siteID: siteID,
+                        productID: productID,
+                        altText: altText,
+                        uploadableMedia: uploadableMedia,
+                        shouldRemoveFileUponCompletion: false,
+                        onCompletion: onCompletion)
         }
     }
 
@@ -200,10 +237,10 @@ extension WordPressMedia {
         .init(mediaID: mediaID,
               date: date,
               fileExtension: fileExtension,
-              filename: details?.fileName ?? "",
+              filename: details?.fileName ?? title?.rendered ?? slug,
               mimeType: mimeType,
               src: src,
-              thumbnailURL: details?.sizes["thumbnail"]?.src,
+              thumbnailURL: details?.sizes?["thumbnail"]?.src,
               name: slug,
               alt: alt,
               height: details?.height,

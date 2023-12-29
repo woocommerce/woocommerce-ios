@@ -2,41 +2,30 @@ import SwiftUI
 import Yosemite
 
 struct ProductDiscountView: View {
-    private let imageURL: URL?
-    private let name: String
-    private let stockLabel: String
-    private let productRowViewModel: ProductRowViewModel
+    private let viewModel: ProductDiscountViewModel
+    @ObservedObject private var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel
 
     private let minusSign: String = NumberFormatter().minusSign
 
     @Environment(\.presentationMode) var presentation
 
-    @ObservedObject private var discountViewModel: FeeOrDiscountLineDetailsViewModel
-
-    init(imageURL: URL?,
-         name: String,
-         stockLabel: String,
-         productRowViewModel: ProductRowViewModel,
-         discountViewModel: FeeOrDiscountLineDetailsViewModel) {
-        self.imageURL = imageURL
-        self.name = name
-        self.stockLabel = stockLabel
-        self.productRowViewModel = productRowViewModel
-        self.discountViewModel = discountViewModel
+    init(viewModel: ProductDiscountViewModel) {
+        self.viewModel = viewModel
+        self.discountDetailsViewModel = viewModel.discountDetailsViewModel
     }
 
     var body: some View {
         NavigationView {
             ScrollView {
                 HStack(alignment: .center, spacing: Layout.spacing) {
-                    ProductImageThumbnail(productImageURL: imageURL,
+                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
                                           productImageSize: Layout.productImageSize,
                                           scale: 1,
                                           productImageCornerRadius: Layout.frameCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     VStack(alignment: .leading) {
-                        Text(name)
-                        CollapsibleProductCardPriceSummary(viewModel: productRowViewModel)
+                        Text(viewModel.name)
+                        CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummary)
                     }
                 }
                 .padding()
@@ -48,41 +37,41 @@ struct ProductDiscountView: View {
                 .cornerRadius(Layout.frameCornerRadius)
                 .padding()
                 VStack(alignment: .leading) {
-                    DiscountLineDetailsView(viewModel: discountViewModel)
+                    DiscountLineDetailsView(viewModel: discountDetailsViewModel)
                     HStack {
                         Image(systemName: "arrow.turn.down.right")
                             .foregroundColor(.secondary)
                         Text(Localization.discountLabel)
                             .foregroundColor(.secondary)
                         Spacer()
-                        if let discountAmount = discountViewModel.finalAmountString {
+                        if let discountAmount = discountDetailsViewModel.finalAmountString {
                             Text(minusSign + discountAmount)
                                 .foregroundColor(Color(uiColor: .withColorStudio(.green, shade: .shade50)))
                         }
                     }
                     .padding()
-                    .renderedIf(discountViewModel.hasInputAmount)
+                    .renderedIf(discountDetailsViewModel.hasInputAmount)
                     HStack {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
-                        if let price = productRowViewModel.price {
-                            Text(discountViewModel.calculatePriceAfterDiscount(price))
+                        if let price = viewModel.price {
+                            Text(discountDetailsViewModel.calculatePriceAfterDiscount(price))
                         }
                     }
                     .padding()
                     Divider()
                     Button(Localization.removeDiscountButton) {
-                        discountViewModel.removeValue()
+                        discountDetailsViewModel.removeValue()
                         presentation.wrappedValue.dismiss()
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .foregroundColor(Color(.error))
                     .buttonStyle(RoundedBorderedStyle(borderColor: .red))
-                    .renderedIf(discountViewModel.hasInputAmount)
+                    .renderedIf(discountDetailsViewModel.hasInputAmount)
                 }
             }
-            .navigationTitle(Text(productRowViewModel.hasDiscount ? Localization.editDiscountLabel : Localization.addDiscountLabel))
+            .navigationTitle(Text(viewModel.hasDiscount ? Localization.editDiscountLabel : Localization.addDiscountLabel))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -92,7 +81,7 @@ struct ProductDiscountView: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button(Localization.addButton) {
-                        discountViewModel.saveData()
+                        discountDetailsViewModel.saveData()
                         presentation.wrappedValue.dismiss()
                     }
                 }

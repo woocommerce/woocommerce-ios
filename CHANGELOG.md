@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 16.7
+Exciting news! The latest update makes updating inventory a breeze—simply scan barcodes to effortlessly manage stock. The app now automatically refunds Tap to Pay trial payments. We've also improved user experience by making downloadable files more discoverable and adding search functionality to the list of product categories. Update now for a smoother and faster WooCommerce experience!
+
+## 16.6
+Good news everyone! We've introduced some game-changing updates to enhance your experience. Say goodbye to delays during order creation—now you can type in the quantity and speed up your process effortlessly. Downloadable products have also received an upgrade; they now accept a variety of file types beyond just images. Additionally, we've made crucial stability improvements, ensuring a smoother and more reliable overall usage. Dive in now and explore these fantastic enhancements!
+
 ## 16.5
 The latest WooCommerce app version brings exciting updates! Now, you can easily set the 'One time shipping' option for subscription products. We've also fixed bugs related to printing customs forms, managing product subscriptions, and improved CPU and memory usage. Additionally, WooPayments users can now enjoy seamlessly swiping between currencies on the Deposits Summary view. Upgrade now for a smoother WooCommerce experience!
 

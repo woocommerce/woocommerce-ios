@@ -185,26 +185,6 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
-        /// URL for the IPP feedback survey for testing purposes
-        ///
-#if DEBUG
-        case inPersonPaymentsCashOnDeliveryFeedback = "https://automattic.survey.fm/woo-app-–-cod-survey"
-        case inPersonPaymentsFirstTransactionFeedback = "https://automattic.survey.fm/woo-app-–-ipp-first-transaction-survey"
-        case inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-–-ipp-survey-for-power-users"
-#else
-        /// URL for the IPP feedback survey (COD case). Used when merchants have COD enabled, but no IPP transactions.
-        ///
-        case inPersonPaymentsCashOnDeliveryFeedback = "https://automattic.survey.fm/woo-app-–-cod-survey"
-
-        /// URL for IPP feedback survey (First Transaction case). Used when merchants have only a few IPP transactions.
-        ///
-        case inPersonPaymentsFirstTransactionFeedback = "https://automattic.survey.fm/woo-app-–-ipp-first-transaction-survey"
-
-        /// URL for IPP feedback survey (Power Users case).  Used when merchants have a significant number of IPP transactions.
-        ///
-        case inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-–-ipp-survey-for-power-users"
-#endif
-
         /// URL for the Tap to Pay first payment survey
         ///
 #if DEBUG
@@ -239,6 +219,14 @@ extension WooConstants {
         case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-testing"
 #else
         case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-production"
+#endif
+
+        /// URL for the Product Creation with AI feedback survey
+        ///
+#if DEBUG
+        case productCreationAIFeedback = "https://automattic.survey.fm/testing-debug-product-creation-with-ai-dec-2023"
+#else
+        case productCreationAIFeedback = "https://automattic.survey.fm/product-creation-with-ai-dec-2023"
 #endif
 
         /// URL for shipping label creation information

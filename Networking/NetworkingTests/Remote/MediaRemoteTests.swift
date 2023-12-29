@@ -27,6 +27,31 @@ final class MediaRemoteTests: XCTestCase {
 
     // MARK: - Load Media From Media Library `loadMediaLibrary`
 
+    func test_loadMediaLibrary_sends_mime_type_filter_if_imagesOnly_is_true() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true, completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let mimeTypeValue = try XCTUnwrap(request.parameters?["mime_type"] as? String)
+        XCTAssertEqual(mimeTypeValue, "image")
+    }
+
+    func test_loadMediaLibrary_does_not_send_mime_type_filter_if_imagesOnly_is_false() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: false, completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        XCTAssertNil(request.parameters?["mime_type"])
+    }
+
     /// Verifies that `loadMediaLibrary` properly parses the `media-library` sample response.
     ///
     func test_loadMediaLibrary_properly_returns_parsed_media() throws {
@@ -36,7 +61,7 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibrary(for: self.sampleSiteID) { result in
+            remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
@@ -54,7 +79,7 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibrary(for: self.sampleSiteID) { result in
+            remote.loadMediaLibrary(for: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
@@ -74,26 +99,33 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID) { result in
+            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
 
         // Then
         let mediaItems = try XCTUnwrap(result.get())
-        XCTAssertEqual(mediaItems.count, 2)
-        let uploadedMedia = try XCTUnwrap(mediaItems.first)
-        XCTAssertEqual(uploadedMedia.mediaID, 22)
-        XCTAssertEqual(uploadedMedia.date, Date(timeIntervalSince1970: 1637546157))
-        XCTAssertEqual(uploadedMedia.slug, "img_0111-2")
-        XCTAssertEqual(uploadedMedia.mimeType, "image/jpeg")
-        XCTAssertEqual(uploadedMedia.src, "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-scaled.jpeg")
-        XCTAssertEqual(uploadedMedia.alt, "Floral")
-        XCTAssertEqual(uploadedMedia.details?.width, 2560)
-        XCTAssertEqual(uploadedMedia.details?.height, 1920)
-        XCTAssertEqual(uploadedMedia.details?.fileName, "2021/11/img_0111-2-scaled.jpeg")
-        XCTAssertEqual(uploadedMedia.title, .init(rendered: "img_0111-2"))
-        XCTAssertEqual(uploadedMedia.details?.sizes["thumbnail"],
+        XCTAssertEqual(mediaItems.count, 3)
+        let textMedia = mediaItems[0]
+        XCTAssertEqual(textMedia.mediaID, 28)
+        XCTAssertEqual(textMedia.slug, "xanh-3")
+        XCTAssertEqual(textMedia.mimeType, "text/plain")
+        XCTAssertEqual(textMedia.title?.rendered, "Xanh-3")
+        XCTAssertEqual(textMedia.src, "https://ninja.media/wp-content/uploads/2023/12/Xanh-3.txt")
+
+        let imageMedia = mediaItems[1]
+        XCTAssertEqual(imageMedia.mediaID, 22)
+        XCTAssertEqual(imageMedia.date, Date(timeIntervalSince1970: 1637546157))
+        XCTAssertEqual(imageMedia.slug, "img_0111-2")
+        XCTAssertEqual(imageMedia.mimeType, "image/jpeg")
+        XCTAssertEqual(imageMedia.src, "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-scaled.jpeg")
+        XCTAssertEqual(imageMedia.alt, "Floral")
+        XCTAssertEqual(imageMedia.details?.width, 2560)
+        XCTAssertEqual(imageMedia.details?.height, 1920)
+        XCTAssertEqual(imageMedia.details?.fileName, "2021/11/img_0111-2-scaled.jpeg")
+        XCTAssertEqual(imageMedia.title, .init(rendered: "img_0111-2"))
+        XCTAssertEqual(imageMedia.details?.sizes?["thumbnail"],
                        .init(fileName: "img_0111-2-150x150.jpeg",
                              src: "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-150x150.jpeg",
                              width: 150,
@@ -108,7 +140,7 @@ final class MediaRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID) { result in
+            remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID, imagesOnly: true) { result in
                 promise(result)
             }
         }
@@ -118,6 +150,18 @@ final class MediaRemoteTests: XCTestCase {
     }
 
     // MARK: - uploadMedia
+
+    func test_uploadMedia_does_not_send_data_in_request_body() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.uploadMedia(for: self.sampleSiteID, productID: sampleProductID, mediaItems: [], completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        XCTAssertNil(try request.asURLRequest().httpBody)
+    }
 
     /// Verifies that `uploadMedia` properly parses the `media-upload` sample response.
     ///
@@ -160,6 +204,18 @@ final class MediaRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    func test_uploadMediaToWordPressSite_does_not_send_data_in_request_body() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.uploadMediaToWordPressSite(siteID: sampleSiteID, productID: sampleProductID, mediaItem: .fake(), completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        XCTAssertNil(try request.asURLRequest().httpBody)
+    }
+
     /// Verifies that `uploadMediaToWordPressSite` properly parses the `media-upload-to-wordpress-site` sample response.
     ///
     func test_uploadMediaToWordPressSite_properly_returns_parsed_media() throws {
@@ -189,7 +245,7 @@ final class MediaRemoteTests: XCTestCase {
         XCTAssertEqual(uploadedMedia.details?.height, 1708)
         XCTAssertEqual(uploadedMedia.details?.fileName, "2021/11/img_0005-1-scaled.jpeg")
         XCTAssertEqual(uploadedMedia.title, .init(rendered: "img_0005-1"))
-        XCTAssertEqual(uploadedMedia.details?.sizes["thumbnail"],
+        XCTAssertEqual(uploadedMedia.details?.sizes?["thumbnail"],
                        .init(fileName: "img_0005-1-150x150.jpeg",
                              src: "https://ninja.media/wp-content/uploads/2021/11/img_0005-1-150x150.jpeg",
                              width: 150,

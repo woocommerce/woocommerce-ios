@@ -1,10 +1,14 @@
 import Foundation
 import Yosemite
-import protocol Storage.StorageManagerType
+import Experiments
+
+protocol ProductsListViewModelProtocol {
+    func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void))
+}
 
 /// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.
 ///
-class ProductListViewModel {
+final class ProductListViewModel: ProductsListViewModelProtocol {
 
     enum BulkEditError: Error {
         case noProductsSelected
@@ -18,12 +22,15 @@ class ProductListViewModel {
     private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+    private let featureFlagService: FeatureFlagService
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
         self.siteID = siteID
         self.stores = stores
+        self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
     }
@@ -168,11 +175,43 @@ class ProductListViewModel {
 
     func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> SKUSearchResult {
         do {
-            return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .productList)
+            return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode,
+                                                                     siteID: siteID,
+                                                                     source: .scanToUpdateInventory)
         } catch {
             DDLogInfo("SKU search failed with error: \(error)")
             throw error
             // TODO: Show error notice
         }
+    }
+
+    // The feature breaks if the Square plugin is active, since modifies inventory management logic
+    // If the plugin is active, we'll hide the inventory scanner button
+    // More details: https://wp.me/pdfdoF-2Nq
+    func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void)) {
+        isPluginActive(SitePlugin.SupportedPlugin.square, completion: { [weak self] isPluginActive in
+            guard let self else { return }
+            switch isPluginActive {
+            case true:
+                completion(false)
+            case false:
+                guard self.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
+                      UIImagePickerController.isSourceTypeAvailable(.camera) else {
+                    return completion(false)
+                }
+                // If all conditions are met, scan to update inventory should be visible:
+                // 1. No Square plugin
+                // 2. Feature flag
+                // 3. Camera is available
+                completion(true)
+            }
+        })
+    }
+
+    private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
+        let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: siteID, systemPluginNameList: [plugin]) { plugin in
+            completion(plugin?.active == true)
+        }
+        stores.dispatch(action)
     }
 }

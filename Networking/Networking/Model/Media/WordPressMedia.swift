@@ -37,7 +37,7 @@ extension WordPressMedia: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let mediaID = try container.decode(Int64.self, forKey: .mediaID)
-        let date = try container.decodeIfPresent(Date.self, forKey: .date) ?? Date()
+        let date = (try? container.decodeIfPresent(Date.self, forKey: .date)) ?? Date()
         let slug = try container.decodeIfPresent(String.self, forKey: .slug) ?? ""
         let mimeType = try container.decodeIfPresent(String.self, forKey: .mimeType) ?? ""
         let src = try container.decodeIfPresent(String.self, forKey: .src) ?? ""
@@ -59,10 +59,11 @@ extension WordPressMedia: Decodable {
 public extension WordPressMedia {
     /// Details about a WordPress site media.
     struct MediaDetails: Decodable, Equatable {
-        public let width: Double
-        public let height: Double
-        public let fileName: String
-        public let sizes: [String: MediaSizeDetails]
+
+        public let width: Double?
+        public let height: Double?
+        public let fileName: String?
+        public let sizes: [String: MediaSizeDetails]?
 
         enum CodingKeys: String, CodingKey {
             case width
@@ -90,7 +91,7 @@ public extension WordPressMedia {
     /// Title of the WordPress site media.
     struct MediaTitle: Decodable, Equatable {
         /// `GET` media list request's `title` field only contains `rendered`, while `POST` media request includes both `raw` and `rendered`.
-        let rendered: String
+        public let rendered: String
 
         enum CodingKeys: String, CodingKey {
             case rendered

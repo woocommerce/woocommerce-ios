@@ -50,6 +50,10 @@ public final class WordPressThemeStore: Store {
             loadSuggestedThemes(onCompletion: onCompletion)
         case let .loadCurrentTheme(siteID, onCompletion):
             loadCurrentTheme(siteID: siteID, onCompletion: onCompletion)
+        case let .installTheme(themeID, siteID, onCompletion):
+            installTheme(themeID: themeID, siteID: siteID, onCompletion: onCompletion)
+        case let .activateTheme(themeID, siteID, onCompletion):
+            activateTheme(themeID: themeID, siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -71,6 +75,32 @@ private extension WordPressThemeStore {
         Task { @MainActor in
             do {
                 let theme = try await remote.loadCurrentTheme(siteID: siteID)
+                onCompletion(.success(theme))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func installTheme(themeID: String,
+                      siteID: Int64,
+                      onCompletion: @escaping (Result<WordPressTheme, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let theme = try await remote.installTheme(themeID: themeID, siteID: siteID)
+                onCompletion(.success(theme))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func activateTheme(themeID: String,
+                       siteID: Int64,
+                       onCompletion: @escaping (Result<WordPressTheme, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let theme = try await remote.activateTheme(themeID: themeID, siteID: siteID)
                 onCompletion(.success(theme))
             } catch {
                 onCompletion(.failure(error))

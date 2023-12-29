@@ -35,6 +35,7 @@ public class OrdersRemote: Remote {
                 ParameterKeys.page: String(pageNumber),
                 ParameterKeys.perPage: String(pageSize),
                 ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
+                ParameterKeys.usesGMTDates: true,
                 ParameterKeys.fields: ParameterValues.fieldValues,
             ]
 
@@ -387,6 +388,8 @@ public extension OrdersRemote {
         static let before: String           = "before"
         static let force: String            = "force"
         static let modifiedAfter: String    = "modified_after"
+        /// Whether to consider the published or modified dates in GMT. When `false`, the local date field is used for filtering orders.
+        static let usesGMTDates: String     = "dates_are_gmt"
     }
 
     enum ParameterValues {

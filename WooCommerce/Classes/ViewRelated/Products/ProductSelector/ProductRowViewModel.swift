@@ -2,21 +2,12 @@ import Experiments
 import Foundation
 import Yosemite
 import WooFoundation
+import Combine
 
 /// View model for product rows or cards, e.g. `ProductRow` or `CollapsibleProductCard`.
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
-
-    /// Whether the product quantity can be changed.
-    /// Controls whether the stepper is rendered.
-    ///
-    let canChangeQuantity: Bool
-
-    /// Whether the product row is read-only. Defaults to `false`.
-    ///
-    /// Used to remove product editing controls for read-only order items (e.g. child items of a product bundle).
-    private(set) var isReadOnly: Bool = false
 
     /// Unique ID for the view model.
     ///
@@ -36,12 +27,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let name: String
 
-    /// Whether a product in an order item has a parent order item
-    let hasParentProduct: Bool
-
-    /// Child product rows, if the product is the parent of child order items
-    @Published private(set) var childProductRows: [ProductRowViewModel]
-
     /// Whether a product in an order item is configurable
     ///
     let isConfigurable: Bool
@@ -54,6 +39,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private(set) var price: String?
 
+    // TODO: 11357 - Remove this property once `ProductDiscountView` no longer relies on it
     /// Whether the product is priced individually. Defaults to `true`.
     ///
     /// Used to control how the price is displayed, e.g. when a product is part of a bundle.
@@ -104,25 +90,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return currencyFormatter.formatAmount(price)
     }
 
-    /// Formatted discount label for an individual product
-    ///
-    var discountLabel: String? {
-        guard let discount = discount else {
-            return nil
-        }
-        return currencyFormatter.formatAmount(discount)
-    }
-
-    /// Formatted price label from multiplying product's price and quantity.
-    ///
-    var priceBeforeDiscountsLabel: String? {
-        guard let price = price else {
-            return nil
-        }
-        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
-        return currencyFormatter.formatAmount(productSubtotal)
-    }
-
     /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
     /// e.g: If price is $5 and discount is $1, outputs "$5.00 - $1.00"
     ///
@@ -142,50 +109,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    /// Formatted price label based on a product's price. Accounting for discounts, if any.
-    /// e.g: If price is $5 and discount is $1, outputs "$4.00"
-    ///
-    var priceAfterDiscountLabel: String? {
-        guard let price = price else {
-            return nil
-        }
-        guard let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
-        }
-        let priceAfterDiscount = priceDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
-
-        return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
-    }
-
-    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
-    /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
-    ///
-    var totalPriceAfterDiscountLabel: String? {
-        guard let price = price,
-              let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
-        }
-        let subtotalDecimal = priceDecimal.multiplying(by: quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
-
-        return currencyFormatter.formatAmount(totalPriceAfterDiscount)
-
-    }
-
-    /// Formatted price label based on a product's price and quantity.
-    /// Reads as '8 x $10.00'
-    ///
-    var priceQuantityLine: String {
-        let quantity = quantity.formatted()
-        let price = priceLabel ?? "-"
-        return String.localizedStringWithFormat(Localization.priceQuantityLine, quantity, price)
-    }
-
     private(set) var discount: Decimal?
-
-    var hasDiscount: Bool {
-        discount != nil
-    }
 
     /// Whether product discounts are disallowed,
     /// defaults to `false`
@@ -219,28 +143,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: " • ")
     }
 
-    /// Label showing product details for a product in an order.
-    /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
-    ///
-    var orderProductDetailsLabel: String {
-        let attributesLabel: String? = {
-            guard case let .attributes(attributes) = variationDisplayMode else {
-                return nil
-            }
-            return createAttributesText(from: attributes)
-        }()
-        let stockLabel = createStockText()
-        return [productTypeLabel, attributesLabel, stockLabel]
-            .compactMap({ $0 })
-            .filter { $0.isNotEmpty }
-            .joined(separator: " • ")
-    }
-
     private let productTypeLabel: String?
 
     /// Label showing product SKU
     ///
-    lazy var skuLabel: String = {
+    private(set) lazy var skuLabel: String = {
         guard let sku = sku, sku.isNotEmpty else {
             return ""
         }
@@ -255,44 +162,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: ". ")
     }
 
-    /// Quantity of product in the order
+    /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
-    @Published private(set) var quantity: Decimal
-
-    /// Minimum value of the product quantity
-    ///
-    private let minimumQuantity: Decimal
-
-    /// Optional maximum value of the product quantity
-    ///
-    private let maximumQuantity: Decimal?
-
-    /// Whether the quantity can be decremented.
-    ///
-    var shouldDisableQuantityDecrementer: Bool {
-        if removeProductIntent != nil { // Allow decrementing below minimum quantity to remove product
-            return quantity < minimumQuantity
-        } else {
-            return quantity <= minimumQuantity
-        }
-    }
-
-    /// Whether the quantity can be incremented.
-    ///
-    var shouldDisableQuantityIncrementer: Bool {
-        guard let maximumQuantity else {
-            return false
-        }
-        return quantity >= maximumQuantity
-    }
-
-    /// Closure to run when the quantity is changed.
-    ///
-    var quantityUpdatedCallback: (Decimal) -> Void
-
-    /// Closure to run when the quantity is decremented below the minimum quantity.
-    ///
-    var removeProductIntent: (() -> Void)?
+    @Published var quantity: Decimal
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -320,21 +192,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          quantity: Decimal = 1,
-         minimumQuantity: Decimal = 1,
-         maximumQuantity: Decimal? = nil,
-         canChangeQuantity: Bool,
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
-         hasParentProduct: Bool,
          pricedIndividually: Bool = true,
-         childProductRows: [ProductRowViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
-         quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-         removeProductIntent: (() -> Void)? = nil,
          configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.selectedState = selectedState
@@ -348,20 +213,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
-        self.minimumQuantity = minimumQuantity
-        self.maximumQuantity = maximumQuantity
-        self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
-        self.hasParentProduct = hasParentProduct
         self.pricedIndividually = pricedIndividually
-        self.childProductRows = childProductRows
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
-        self.quantityUpdatedCallback = quantityUpdatedCallback
-        self.removeProductIntent = removeProductIntent
         self.configure = configure
     }
 
@@ -371,15 +229,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      product: Product,
                      discount: Decimal? = nil,
                      quantity: Decimal = 1,
-                     canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
-                     hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
-                     childProductRows: [ProductRowViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
-                     quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-                     removeProductIntent: @escaping (() -> Void) = {},
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      configure: (() -> Void)? = nil) {
         // Don't show any price for variable products; price will be shown for each product variation.
@@ -431,12 +284,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
 
-        if product.productType == .bundle {
-            for child in childProductRows {
-                child.isReadOnly = true // Can't edit child bundle items separate from bundle configuration
-            }
-        }
-
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -448,18 +295,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   stockQuantity: stockQuantity,
                   manageStock: manageStock,
                   quantity: quantity,
-                  canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
-                  hasParentProduct: hasParentProduct,
                   pricedIndividually: pricedIndividually,
-                  childProductRows: childProductRows,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
-                  quantityUpdatedCallback: quantityUpdatedCallback,
-                  removeProductIntent: removeProductIntent,
                   configure: configure)
     }
 
@@ -470,15 +312,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      discount: Decimal? = nil,
                      name: String,
                      quantity: Decimal = 1,
-                     canChangeQuantity: Bool,
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
-                     hasParentProduct: Bool = false,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                     analytics: Analytics = ServiceLocator.analytics,
-                     quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-                     removeProductIntent: @escaping (() -> Void) = {}) {
+                     analytics: Analytics = ServiceLocator.analytics) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
             imageURL = URL(string: encodedImageURLString)
@@ -496,17 +334,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   stockQuantity: productVariation.stockQuantity,
                   manageStock: productVariation.manageStock,
                   quantity: quantity,
-                  canChangeQuantity: canChangeQuantity,
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
-                  hasParentProduct: hasParentProduct,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
-                  analytics: analytics,
-                  quantityUpdatedCallback: quantityUpdatedCallback,
-                  removeProductIntent: removeProductIntent)
+                  analytics: analytics)
     }
 
     /// Determines which product variation details to display.
@@ -556,47 +390,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     private func createAttributesText(from attributes: [VariationAttributeViewModel]) -> String {
         return attributes.map { $0.nameOrValue }.joined(separator: ", ")
     }
-
-    /// Increment the product quantity.
-    ///
-    func incrementQuantity() {
-        if let maximumQuantity, quantity >= maximumQuantity {
-            return
-        }
-
-        quantity += 1
-
-        quantityUpdatedCallback(quantity)
-    }
-
-    /// Decrement the product quantity.
-    ///
-    func decrementQuantity() {
-        guard quantity > minimumQuantity else {
-            removeProductIntent?()
-            return
-        }
-        quantity -= 1
-
-        quantityUpdatedCallback(quantity)
-    }
-
-    func trackAddDiscountTapped() {
-        analytics.track(event: .Orders.productDiscountAddButtonTapped())
-    }
-
-    func trackEditDiscountTapped() {
-        analytics.track(event: .Orders.productDiscountEditButtonTapped())
-    }
 }
 
 private extension ProductRowViewModel {
     enum Localization {
-        static let priceQuantityLine = NSLocalizedString(
-            "productRowViewModel.priceQuantityLine",
-            value: "%@ × %@",
-            comment: "Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. " +
-            "Please take care to use the multiplication symbol ×, not a letter x, where appropriate.")
         static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
         static let singleVariation = NSLocalizedString("%ld variation",

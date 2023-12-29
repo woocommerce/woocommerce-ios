@@ -18,8 +18,6 @@ extension WooAnalyticsEvent {
             static let waitingTime = "waiting_time"
             static let newSiteID = "new_site_id"
             static let initialDomain = "initial_domain"
-            static let challenges = "challenges"
-            static let features = "features"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -86,16 +84,12 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when completing the last profiler question during the store creation flow
-        static func siteCreationProfilerData(_ profilerData: StoreProfilerAnswers,
-                                             challenges: [StoreCreationChallengesAnswer],
-                                             features: [StoreCreationFeaturesAnswer]) -> WooAnalyticsEvent {
+        static func siteCreationProfilerData(_ profilerData: StoreProfilerAnswers) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.category: profilerData.category,
                 Key.sellingStatus: profilerData.sellingStatus?.analyticsValue,
                 Key.sellingPlatforms: profilerData.sellingPlatforms,
-                Key.countryCode: profilerData.countryCode,
-                Key.challenges: challenges.map { $0.value }.joined(separator: ","),
-                Key.features: features.map { $0.value }.joined(separator: ",")
+                Key.countryCode: profilerData.countryCode
             ].compactMapValues({ $0 })
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }
@@ -153,6 +147,18 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .signupFailed,
                               properties: [Key.errorType: error.analyticsValue])
         }
+
+        /// Tracked when we show an alert that store is ready after checking status in background
+        static func storeReadyAlertDisplayed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .storeReadyAlertDisplayed,
+                              properties: [:])
+        }
+
+        /// Tracked when user taps button to switch to the new store
+        static func storeReadyAlertSwitchStoreTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .storeReadyAlertSwitchStoreTapped,
+                              properties: [:])
+        }
     }
 }
 
@@ -187,8 +193,6 @@ extension WooAnalyticsEvent.StoreCreation {
         case profilerSellingStatusQuestion = "store_profiler_commerce_journey"
         case profilerSellingPlatformsQuestion = "store_profiler_ecommerce_platforms"
         case profilerCountryQuestion = "store_profiler_country"
-        case profilerChallengesQuestion = "store_profiler_challenges"
-        case profilerFeaturesQuestion = "store_profiler_features"
         case domainPicker = "domain_picker"
         case storeSummary = "store_summary"
         case planPurchase = "plan_purchase"

@@ -168,9 +168,9 @@ struct InPersonPaymentsMenu: View {
                         } label: {
                             PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
                                         title: Localization.managePaymentGateways,
-                                        subtitle: viewModel.activePaymentGatewayName,
+                                        subtitle: viewModel.selectedPaymentGatewayName,
                                         isActive: $viewModel.presentManagePaymentGateways) {
-                                InPersonPaymentsSelectPluginView(selectedPlugin: nil,
+                                InPersonPaymentsSelectPluginView(selectedPlugin: viewModel.selectedPaymentGatewayPlugin,
                                                                  onPluginSelected: viewModel.preferredPluginSelected)
                             }
                             .padding(.vertical, Layout.cellVerticalPadding)
@@ -192,6 +192,7 @@ struct InPersonPaymentsMenu: View {
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
+                    .transition(.opacity.animation(.easeInOut))
                 LazyNavigationLink(destination: HostedSupportForm(viewModel: .init()),
                                    isActive: $viewModel.presentSupport) {
                     EmptyView()
@@ -237,9 +238,7 @@ struct InPersonPaymentsMenu: View {
             automaticDeposits: false,
             depositInterval: .daily,
             pendingBalanceAmount: .zero,
-            pendingDepositsCount: 0,
             pendingDepositDays: 0,
-            nextDeposit: nil,
             lastDeposit: nil,
             availableBalance: .zero))])
     }

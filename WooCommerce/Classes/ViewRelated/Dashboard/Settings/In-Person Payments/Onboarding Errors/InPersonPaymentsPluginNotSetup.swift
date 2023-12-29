@@ -15,6 +15,7 @@ struct InPersonPaymentsPluginNotSetup: View {
             InPersonPaymentsOnboardingErrorMainContentView(
                 title: String(format: Localization.title, plugin.pluginName),
                 message: String(format: Localization.message, plugin.pluginName),
+                secondaryMessage: nil,
                 image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
                     image: plugin.image,
                     height: 108.0

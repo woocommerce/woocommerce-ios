@@ -61,26 +61,12 @@ struct StoreCreationProfilerQuestionContainerView: View {
                         viewModel.saveCountry(answer)
                     }
                 }, onSupport: onSupport))
-            case .challenges:
-                StoreCreationChallengesQuestionView(viewModel: .init(onContinue: { answer in
-                    withAnimation {
-                        viewModel.saveChallenges(answer)
-                    }
+            case .theme:
+                ProfilerThemesPickerView(carouselViewModel: viewModel.themesCarouselViewModel, onSelectedTheme: { theme in
+                    viewModel.saveTheme(theme)
                 }, onSkip: {
-                    withAnimation {
-                        viewModel.saveChallenges([])
-                    }
-                }))
-            case .features:
-                StoreCreationFeaturesQuestionView(viewModel: .init(onContinue: { answer in
-                    withAnimation {
-                        viewModel.saveFeatures(answer)
-                    }
-                }, onSkip: {
-                    withAnimation {
-                        viewModel.saveFeatures([])
-                    }
-                }))
+                    viewModel.saveTheme(nil)
+                })
             }
         }
         .onAppear() {
@@ -113,7 +99,8 @@ private extension StoreCreationProfilerQuestionContainerView {
 
 struct StoreCreationProfilerQuestionContainerView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationProfilerQuestionContainerView(viewModel: .init(storeName: "Test",
+        StoreCreationProfilerQuestionContainerView(viewModel: .init(siteID: 123,
+                                                                    storeName: "Test",
                                                                     onCompletion: { },
                                                                     uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123)),
                                                    onSupport: {})

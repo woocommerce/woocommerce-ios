@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-28 09:54:12+0000 */
+/* Translation-Revision-Date: 2023-12-13 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "从 WordPress 媒体库";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "从设备";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "从购买到履行 – 通过此应用程序管理整个订单流程。";
 
@@ -5053,9 +5050,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "暂无文件";
 
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "还没有图片";
-
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "无限制";
 
@@ -5450,8 +5444,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "包裹尺寸必须大于零。 请在产品页面的“发货”部分更新产品的尺寸以继续。";
 
-/* Row title for the last paid deposit in the WooPayments Deposits overview
-   The title for the customer payment cell */
+/* The title for the customer payment cell */
 "Paid" = "已付";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -9822,6 +9815,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "图标";
 
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "已复制到剪贴板。";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "复制编号";
+
+/* Button to dismiss the Blaze campaign section on the My Store screen. */
+"blazeCampaignDashboardView.hideBlazeButton" = "隐藏 Blaze";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "取消";
 
@@ -9851,31 +9853,31 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleItem.add" = "添加";
 
 /* Action to select a variation for a bundle item when it is variable. */
-"configureBundleItem.selectVariation" = "选择变体";
+"configureBundleItem.chooseVariation" = "选择变体";
 
 /* Action to update a variation for a bundle item when it is variable. */
 "configureBundleItem.updateVariation" = "更新变体";
 
-/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
-"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "数量应在 %1$@ 至 %2$@ 的范围内";
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. %1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat" = "%1$@ 的数量应在 %2$@ 至 %3$@ 的范围内。";
 
-/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
-"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "数量不得低于 %1$@";
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. %1$@ is the product name. %2$@ is the minimum quantity. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat" = "%1$@ 的数量不得低于 %2$@。";
 
-/* Error message when a variable bundle item is missing a variation. */
-"configureBundleItemError.missingVariation" = "请选择一个变体";
+/* Error message format when a variable bundle item is missing a variation. %1$@ is the variable product name. */
+"configureBundleItemError.missingVariationFormat" = "选择 %1$@ 的变体。";
 
-/* Error message when a variable bundle item is missing some attributes. */
-"configureBundleItemError.variationMissingAttributes" = "请为所有变体属性选择一个选项";
+/* Error message format when a variable bundle item is missing some attributes. %1$@ is the variable product name. */
+"configureBundleItemError.variationMissingAttributesFormat" = "为 %1$@ 的所有变体属性选择一个选项。";
 
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "关闭";
 
-/* Text for the done button in the bundle product configuration screen in the order form. */
-"configureBundleProduct.done" = "完成";
-
 /* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
 "configureBundleProduct.retry" = "重试";
+
+/* Text for the save button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.save" = "保存配置";
 
 /* Title for the bundle product configuration screen in the order form. */
 "configureBundleProduct.title" = "配置";
@@ -9901,6 +9903,12 @@ which should be translated separately and considered part of this sentence. */
 /* Used in configureBundleProductValidationError strings for the singular form of item. */
 "configureBundleProductValidationError.itemSingular" = "项目";
 
+/* Title of the error notice when the bundle configuration is currently invalid in the bundle product configuration screen. */
+"configureBundleProductValidationError.title" = "需要配置";
+
+/* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
+"configureBundleProductValidationSuccess.title" = "配置完成";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "日";
 
@@ -9910,12 +9918,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "过期时间";
 
+/* Display label when a subscription has no trial period. */
+"defaultProductFormTableViewModel.freeTrialRow.noTrialPeriod" = "无试用期";
+
+/* Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.freeTrialRow.title" = "免费试用期";
+
 /* Display label when a subscription never expires. */
 "defaultProductFormTableViewModel.neverExpire" = "永不过期";
-
-/* Display label when a subscription has no trial period.
-   Title for Subscription Free Trial row in the product form screen. */
-"defaultProductFormTableViewModel.noFreeTrial" = "免费试用期";
 
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "正常价格：%1$@ %2$@";
@@ -9928,6 +9938,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the expand chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.show" = "显示存款详情";
+
+/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.depositTable.last.title" = "上一个";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.canceled.title" = "已取消";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.estimated.title" = "预估价格";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.failed.title" = "失败";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.inTransit.title" = "运输中";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.paid.title" = "已支付";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.pending.title" = "待处理";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.unknown.title" = "未知";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "设备上的文档";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "设备上的媒体";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "电子商务";
@@ -10091,6 +10131,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "您想怎样添加自定义金额？";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "完成";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "自定义金额";
 
@@ -10136,11 +10179,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "可变订阅产品";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "上传文件时出错。 请重试。";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "不支持所选的文件类型。";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "每 %1$@";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "通过 Blaze 推广";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "请等待所有图片上传完成后，再对其进行重新排序。";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "计费间隔";
@@ -10175,6 +10227,15 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Subtitle for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.subtitle" = "启用此功能可对初始订单收取一次配送费用。";
+
+/* Subtitle for the One time shipping product shipping setting when it is disabled. */
+"productShippingSettings.oneTimeShipping.subtitleDisabled" = "要启用此设置，订阅不能具有免费试用期或同步的续订日期。";
+
+/* Title for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.title" = "一次性配送费用";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld 次评分";
 
@@ -10189,6 +10250,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "付款完成";
+
+/* Navigates to Themes screen. */
+"settingsViewController.themesRow" = "主题";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10281,11 +10345,47 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "关于使用 ”iPhone 点按付款”功能接受付款的 %1$@。";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "取消";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "当前";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "主题";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "主题";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "尝试其他新外观";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "未知";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "未知 URL";
+
+/* Cancel button title on the update product inventory view. */
+"updateProductInventoryView.cancelButtonTitle" = "取消";
+
+/* Navigation bar title of the update product inventory view. */
+"updateProductInventoryView.navigationBarTitle" = "产品";
+
+/* Product name label in the update product inventory view. */
+"updateProductInventoryView.productNameTitle" = "产品名称";
+
+/* Product quantity label in the update product inventory view. */
+"updateProductInventoryView.productQuantityTitle" = "数量";
+
+/* Stock quantity button when a tap increases the stock once. */
+"updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle" = "数量 + 1";
+
+/* Stock quantity button when the user adds a custom quantity. */
+"updateProductInventoryView.quantityButton.updateQuantityButtonTitle" = "更新数量";
+
+/* Product detailsl button title. */
+"updateProductInventoryView.viewProductDetailsButtonTitle" = "查看产品详情";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "忽略";
@@ -10304,6 +10404,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, 产品, 分类, 新产品, 搜索产品";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "正在加载媒体…";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "使用安全密钥";

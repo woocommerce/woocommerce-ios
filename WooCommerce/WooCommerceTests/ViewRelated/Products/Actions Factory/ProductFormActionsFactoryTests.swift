@@ -29,7 +29,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -56,7 +56,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -82,7 +82,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -107,7 +107,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editLinkedProducts]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editLinkedProducts]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -134,13 +134,66 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_viewModel_for_not_downloadable_simple_product() {
+        // Arrange
+        let product = Fixtures.virtualSimpleProduct
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .shortDescription(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_viewModel_for_downloadable_simple_product_when_downloads_empty() {
+        // Arrange
+        let product = Fixtures.downloadableSimpleProduct
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .downloadableFiles(editable: true),
+                                                                       .shortDescription(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func testViewModelForDownloadableSimpleProduct() {
+    func test_viewModel_for_downloadable_simple_product_when_downloads_not_empty() {
         // Arrange
-        let product = Fixtures.downloadableSimpleProduct
+        let product = Fixtures.downloadableSimpleProduct.copy(downloads: [.fake()])
         let model = EditableProductModel(product: product)
 
         // Action
@@ -187,7 +240,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -615,7 +668,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editDownloadableFiles, .editShortDescription]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
@@ -672,9 +725,35 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_view_model_for_subscription_product_when_product_is_downloadable() {
+    func test_view_model_for_subscription_product_when_product_is_not_downloadable() {
         // Arrange
-        let product = Fixtures.subscriptionProduct.copy(downloadable: true)
+        let product = Fixtures.subscriptionProduct.copy(downloadable: false)
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .subscriptionFreeTrial(editable: true),
+                                                                       .subscriptionExpiry(editable: true),
+                                                                       .reviews,
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editDownloadableFiles, .editShortDescription]
+        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
+    func test_view_model_for_subscription_product_when_downloads_empty() {
+        // Arrange
+        let product = Fixtures.subscriptionProduct.copy(downloadable: true, downloads: [])
         let model = EditableProductModel(product: product)
 
         // Action
@@ -698,9 +777,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_subscription_product_when_product_is_not_downloadable() {
+    func test_view_model_for_subscription_product_when_downloads_not_empty() {
         // Arrange
-        let product = Fixtures.subscriptionProduct.copy(downloadable: false)
+        let product = Fixtures.subscriptionProduct.copy(downloadable: true, downloads: [.fake()])
         let model = EditableProductModel(product: product)
 
         // Action
@@ -714,8 +793,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .subscriptionFreeTrial(editable: true),
                                                                        .subscriptionExpiry(editable: true),
                                                                        .reviews,
-                                                                       .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: true),
+                                                                       .downloadableFiles(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
@@ -745,7 +824,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editDownloadableFiles, .editShortDescription]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
@@ -829,7 +908,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 }

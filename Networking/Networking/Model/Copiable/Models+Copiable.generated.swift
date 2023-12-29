@@ -199,6 +199,78 @@ extension Networking.BlazeCampaign {
     }
 }
 
+extension Networking.BlazeTargetDevice {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy
+    ) -> Networking.BlazeTargetDevice {
+        let id = id ?? self.id
+        let name = name ?? self.name
+
+        return Networking.BlazeTargetDevice(
+            id: id,
+            name: name
+        )
+    }
+}
+
+extension Networking.BlazeTargetLanguage {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy
+    ) -> Networking.BlazeTargetLanguage {
+        let id = id ?? self.id
+        let name = name ?? self.name
+
+        return Networking.BlazeTargetLanguage(
+            id: id,
+            name: name
+        )
+    }
+}
+
+extension Networking.BlazeTargetLocation {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        type: CopiableProp<String> = .copy,
+        code: NullableCopiableProp<String> = .copy,
+        isoCode: NullableCopiableProp<String> = .copy,
+        parentLocation: NullableCopiableProp<BlazeTargetLocation> = .copy
+    ) -> Networking.BlazeTargetLocation {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let type = type ?? self.type
+        let code = code ?? self.code
+        let isoCode = isoCode ?? self.isoCode
+        let parentLocation = parentLocation ?? self.parentLocation
+
+        return Networking.BlazeTargetLocation(
+            id: id,
+            name: name,
+            type: type,
+            code: code,
+            isoCode: isoCode,
+            parentLocation: parentLocation
+        )
+    }
+}
+
+extension Networking.BlazeTargetTopic {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy
+    ) -> Networking.BlazeTargetTopic {
+        let id = id ?? self.id
+        let description = description ?? self.description
+
+        return Networking.BlazeTargetTopic(
+            id: id,
+            description: description
+        )
+    }
+}
+
 extension Networking.Coupon {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -2712,7 +2784,6 @@ extension Networking.TopEarnerStatsItem {
         productID: CopiableProp<Int64> = .copy,
         productName: NullableCopiableProp<String> = .copy,
         quantity: CopiableProp<Int> = .copy,
-        price: CopiableProp<Double> = .copy,
         total: CopiableProp<Double> = .copy,
         currency: CopiableProp<String> = .copy,
         imageUrl: NullableCopiableProp<String> = .copy
@@ -2720,7 +2791,6 @@ extension Networking.TopEarnerStatsItem {
         let productID = productID ?? self.productID
         let productName = productName ?? self.productName
         let quantity = quantity ?? self.quantity
-        let price = price ?? self.price
         let total = total ?? self.total
         let currency = currency ?? self.currency
         let imageUrl = imageUrl ?? self.imageUrl
@@ -2729,7 +2799,6 @@ extension Networking.TopEarnerStatsItem {
             productID: productID,
             productName: productName,
             quantity: quantity,
-            price: price,
             total: total,
             currency: currency,
             imageUrl: imageUrl
@@ -3099,6 +3168,24 @@ extension Networking.WordPressMedia {
             alt: alt,
             details: details,
             title: title
+        )
+    }
+}
+
+extension Networking.WordPressPage {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        title: CopiableProp<String> = .copy,
+        link: CopiableProp<String> = .copy
+    ) -> Networking.WordPressPage {
+        let id = id ?? self.id
+        let title = title ?? self.title
+        let link = link ?? self.link
+
+        return Networking.WordPressPage(
+            id: id,
+            title: title,
+            link: link
         )
     }
 }

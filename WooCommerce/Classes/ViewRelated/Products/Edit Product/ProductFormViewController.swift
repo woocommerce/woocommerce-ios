@@ -1113,15 +1113,25 @@ private extension ProductFormViewController {
         }
 
         if viewModel.shouldShowBlazeIntroView {
-            let blazeHostingController = BlazeCampaignIntroController(onStartCampaign: { [weak self] in
+            let onCreateCampaignClosure = { [weak self] in
                 guard let self else { return }
                 self.dismiss(animated: true)
                 navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
-            }, onDismiss: { [weak self] in
+            }
+            let onDismissClosure = { [weak self] in
                 guard let self = self else { return }
                 self.dismiss(animated: true)
-            })
+            }
+            let blazeHostingController: UIViewController = {
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+                    return BlazeCreateCampaignIntroController(onCreateCampaign: onCreateCampaignClosure,
+                                                              onDismiss: onDismissClosure)
+                } else {
+                    return BlazeCampaignIntroController(onStartCampaign: onCreateCampaignClosure,
+                                                        onDismiss: onDismissClosure)
+                }
+            }()
 
             present(blazeHostingController, animated: true)
             ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))

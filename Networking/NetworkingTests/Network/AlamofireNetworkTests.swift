@@ -32,6 +32,28 @@ final class AlamofireNetworkTests: XCTestCase {
         assertEqual(NetworkError.unacceptableStatusCode(statusCode: 401, response: responseData), error as? NetworkError)
     }
 
+    func test_responseData_completion_block_returns_NetworkError_notFound_when_status_code_is_404() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark1,
+                                     method: .get,
+                                     siteID: 1,
+                                     path: "test")
+        let urlRequest = try XCTUnwrap(try? request.asURLRequest())
+        MockURLProtocol.Mocks.mockResponse(["error": "not_found"], statusCode: 404, for: urlRequest)
+
+        // When
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionManagerWithMockURLProtocol())
+        let error = waitFor { promise in
+            network.responseData(for: request) { data, error in
+                promise(error)
+            }
+        }
+
+        // Then
+        let responseData = try JSONSerialization.data(withJSONObject: ["error": "not_found"])
+        assertEqual(NetworkError.notFound(response: responseData), error as? NetworkError)
+    }
+
     func test_responseData_completion_block_returns_nil_error_when_status_code_is_200() throws {
         // Given
         let request = JetpackRequest(wooApiVersion: .mark1,

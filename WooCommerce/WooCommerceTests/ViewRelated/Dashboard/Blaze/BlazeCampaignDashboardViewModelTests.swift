@@ -115,6 +115,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
             case .synchronizeCampaigns(_, _, let onCompletion):
                 self?.insertCampaigns([blazeCampaign])
                 onCompletion(.success(false))
+            default:
+                break
             }
         }
 
@@ -232,6 +234,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                     XCTFail("Wrong state")
                 }
                 onCompletion(.success(false))
+            default:
+                break
             }
         }
 
@@ -364,6 +368,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                 // Then
                 XCTAssertTrue(sut.shouldRedactView)
                 onCompletion(.success(false))
+            default:
+                break
             }
         }
 
@@ -455,6 +461,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                 // Then
                 XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
                 onCompletion(.success(false))
+            default:
+                break
             }
         }
 
@@ -878,6 +886,8 @@ private extension BlazeCampaignDashboardViewModelTests {
                     self?.insertCampaigns([blazeCampaign])
                 }
                 onCompletion(.success(false))
+            default:
+                break
             }
         }
     }

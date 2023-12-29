@@ -42,6 +42,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             fetchJetpackConnectionURL(completion: completion)
         case .fetchJetpackUser(let completion):
             fetchJetpackUser(completion: completion)
+        case .fetchJetpackAuthURL(let completion):
+            fetchJetpackAuthURL(completion: completion)
         case .loadWPComAccount(let network, let onCompletion):
             loadWPComAccount(network: network, onCompletion: onCompletion)
         }
@@ -85,6 +87,19 @@ private extension JetpackConnectionStore {
 
     func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
         jetpackConnectionRemote?.fetchJetpackUser(completion: completion)
+    }
+
+    func fetchJetpackAuthURL(completion: @escaping (Result<String, Error>) -> Void) {
+        guard let jetpackConnectionRemote else {
+            return completion(.failure(JetpackConnectionRemote.AuthURLError.cannotRequest))
+        }
+        Task { @MainActor in
+            do {
+                completion(.success(try await jetpackConnectionRemote.fetchJetpackAuthURL()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
     }
 
     func loadWPComAccount(network: Network, onCompletion: @escaping (Account?) -> Void) {

@@ -18,6 +18,8 @@ final class BlazeCreateCampaignIntroController: UIHostingController<BlazeCreateC
 /// View to display the introduction to the Blaze campaign creation
 ///
 struct BlazeCreateCampaignIntroView: View {
+    @StateObject private var viewModel = BlazeCreateCampaignIntroViewModel()
+
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -93,12 +95,21 @@ struct BlazeCreateCampaignIntroView: View {
                     .padding(.horizontal, Layout.CTAStack.buttonHPadding)
 
                     Button(Localization.learnHowBlazeWorks) {
-                        // TODO: 11566
+                        viewModel.onLearnHowBlazeWorks()
                     }
                     .buttonStyle(LinkButtonStyle())
                     .padding(.horizontal, Layout.CTAStack.buttonHPadding)
                 }
                 .background(Color(UIColor.systemBackground))
+            }
+            .sheet(isPresented: $viewModel.showLearHowSheet) {
+                if #available(iOS 16, *) {
+                    BlazeLearnHowView(isPresented: $viewModel.showLearHowSheet)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.hidden)
+                } else {
+                    BlazeLearnHowView(isPresented: $viewModel.showLearHowSheet)
+                }
             }
         }
     }

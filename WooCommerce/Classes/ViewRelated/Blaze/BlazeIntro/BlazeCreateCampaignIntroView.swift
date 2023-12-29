@@ -26,9 +26,9 @@ struct BlazeCreateCampaignIntroView: View {
     private let onCreateCampaign: () -> Void
     private let onDismiss: () -> Void
 
-    private let features: [Feature] = [.init(title: Localization.AudienceFeature.title, subtile: Localization.AudienceFeature.subtitle),
+    private let features: [Feature] = [.init(title: Localization.QuickStart.title, subtile: Localization.QuickStart.subtitle),
                                        .init(title: Localization.GlobalReach.title, subtile: Localization.GlobalReach.subtitle),
-                                       .init(title: Localization.QuickStart.title, subtile: Localization.QuickStart.subtitle)]
+                                       .init(title: Localization.AudienceFeature.title, subtile: Localization.AudienceFeature.subtitle)]
 
     init(onCreateCampaign: @escaping () -> Void,
          onDismiss: @escaping () -> Void) {
@@ -169,16 +169,16 @@ private extension BlazeCreateCampaignIntroView {
             value: "Learn how Blaze works",
             comment: "Learn how Blaze works button label"
         )
-        enum AudienceFeature {
+        enum QuickStart {
             static let title = NSLocalizedString(
-                "blazeCreateCampaignIntroView.audienceFeature.title",
-                value: "Access a vast audience",
-                comment: "Title for the access a vast audience feature"
+                "blazeCreateCampaignIntroView.quickStart.title",
+                value: "Quick start, big impact",
+                comment: "Title for the quick start big impact feature"
             )
             static let subtitle = NSLocalizedString(
-                "blazeCreateCampaignIntroView.audienceFeature.subtitle",
-                value: "Your ads on millions of sites within the WordPress.com and Tumblr networks.",
-                comment: "Subtitle for the access a vast audience feature"
+                "blazeCreateCampaignIntroView.quickStart.subtitle",
+                value: "Launch ads in minutes – no experience or big budget needed, starting at just $5 USD.",
+                comment: "Subtitle for the quick start big impact feature"
             )
         }
         enum GlobalReach {
@@ -193,16 +193,16 @@ private extension BlazeCreateCampaignIntroView {
                 comment: "Subtitle for the Global reach feature"
             )
         }
-        enum QuickStart {
+        enum AudienceFeature {
             static let title = NSLocalizedString(
-                "blazeCreateCampaignIntroView.quickStart.title",
-                value: "Quick start, big impact",
-                comment: "Title for the quick start big impact feature"
+                "blazeCreateCampaignIntroView.audienceFeature.title",
+                value: "Access a vast audience",
+                comment: "Title for the access a vast audience feature"
             )
             static let subtitle = NSLocalizedString(
-                "blazeCreateCampaignIntroView.quickStart.subtitle",
-                value: "Launch ads in minutes, even without marketing experience.",
-                comment: "Subtitle for the quick start big impact feature"
+                "blazeCreateCampaignIntroView.audienceFeature.subtitle",
+                value: "Your ads on millions of sites within the WordPress.com and Tumblr networks.",
+                comment: "Subtitle for the access a vast audience feature"
             )
         }
     }

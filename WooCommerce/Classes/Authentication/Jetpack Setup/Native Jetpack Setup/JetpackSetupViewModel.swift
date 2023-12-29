@@ -124,15 +124,12 @@ final class JetpackSetupViewModel: ObservableObject {
     }
 
     func startSetup() {
-        if connectionOnly {
-            fetchJetpackConnectionURL()
-        } else {
-            retrieveJetpackPluginDetails()
-        }
+        fetchJetpackConnectionURL()
     }
 
     func didAuthorizeJetpackConnection() {
-        checkJetpackConnection()
+        currentConnectionStep = .authorized
+        currentSetupStep = .done
     }
 
     func didEncounterErrorDuringConnection(code: Int?) {
@@ -270,26 +267,18 @@ private extension JetpackSetupViewModel {
     func fetchJetpackConnectionURL() {
         currentSetupStep = .connection
         trackSetupAfterLogin()
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
+
+        // TODO: consider moving this to a separate view model
+        // The redirect URL is from `JetpackConnectionWebViewModel.Constants.plansPage`, consider refactoring this or create
+        // a different web view model.
+        let action = JetpackConnectionAction.fetchJetpackAuthURL(redirectURL: "https://wordpress.com/jetpack/connect/plans") { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let url):
-                self.trackSetupDuringLogin(.loginJetpackSetupFetchJetpackConnectionURLSuccessful)
-                /// Checks if the fetch URL is for account connection;
-                /// if not, use the web view solution to avoid the need for cookie-nonce.
-                /// Reference: pe5sF9-1le-p2#comment-1942.
-                if url.absoluteString.hasPrefix(Constants.accountConnectionURL) {
-                    self.jetpackConnectionURL = url
-                } else {
-                    self.jetpackConnectionURL = self.siteConnectionURL
-                }
-                self.shouldPresentWebView = true
-            case .failure(let error):
-                self.trackSetupDuringLogin(.loginJetpackSetupFetchJetpackConnectionURLFailed, failure: error)
-                self.trackSetupAfterLogin(failure: error)
-                DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
-                self.setupError = error
-                self.setupFailed = true
+                case let .success(url):
+                    jetpackConnectionURL = URL(string: url)
+                    self.shouldPresentWebView = true
+                case let .failure(error):
+                    print("\(error)")
             }
         }
         stores.dispatch(action)

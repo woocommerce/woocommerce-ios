@@ -191,6 +191,13 @@ struct ProductSelectorView: View {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
+                    // In simpleSelectionMode, we immediately set the parent variable product
+                    // as selected and do not navigate to the variations list.
+                    if viewModel.simpleSelectionMode {
+                        viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
+                        return
+                    }
+
                     viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
                     // Display the variations list if toggleSelectionForAllVariations is not allowed
                     if !viewModel.toggleAllVariationsOnSelection {

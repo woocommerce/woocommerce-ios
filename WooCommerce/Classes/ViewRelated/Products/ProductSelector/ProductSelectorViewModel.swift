@@ -197,9 +197,12 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onConfigureProductRow: ((_ product: Product) -> Void)?
 
+    let simpleSelectionMode: Bool
+
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
+         simpleSelectionMode: Bool = false,
          shouldDeleteStoredProductsOnFirstPage: Bool = true,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -227,6 +230,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.selectedItemsIDs = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
+        self.simpleSelectionMode = simpleSelectionMode
         self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.onAllSelectionsCleared = onAllSelectionsCleared
@@ -689,7 +693,10 @@ private extension ProductSelectorViewModel {
     func generateProductRows(products: [Product], selectedItemsIDs: [Int64]) -> [ProductRowViewModel] {
         return products.map { product in
             var selectedState: ProductRow.SelectedState
-            if product.variations.isEmpty {
+
+            // Toggle selected state right away if not a variation product, or if it is but
+            // `simpleSelectionMode` mode is on.
+            if product.variations.isEmpty || simpleSelectionMode {
                 selectedState = selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
             } else {
                 let intersection = Set(product.variations).intersection(Set(selectedItemsIDs))

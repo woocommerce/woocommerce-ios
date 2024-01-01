@@ -39,6 +39,13 @@ enum ProductSelectorSectionType {
     }
 }
 
+enum SelectionHandling {
+    // Treat all products as a single item, and return just the product ID.
+    case simple
+    // Handle product selection depending on the product type.
+    case normal
+}
+
 /// View model for `ProductSelectorView`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
@@ -197,12 +204,12 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onConfigureProductRow: ((_ product: Product) -> Void)?
 
-    let simpleSelectionMode: Bool
+    let selectionHandlingMode: SelectionHandling
 
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
-         simpleSelectionMode: Bool = false,
+         selectionHandlingMode: SelectionHandling = .normal,
          shouldDeleteStoredProductsOnFirstPage: Bool = true,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -230,7 +237,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.selectedItemsIDs = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
-        self.simpleSelectionMode = simpleSelectionMode
+        self.selectionHandlingMode = selectionHandlingMode
         self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.onAllSelectionsCleared = onAllSelectionsCleared
@@ -694,9 +701,10 @@ private extension ProductSelectorViewModel {
         return products.map { product in
             var selectedState: ProductRow.SelectedState
 
-            // Toggle selected state right away if not a variation product, or if it is but
-            // `simpleSelectionMode` mode is on.
-            if product.variations.isEmpty || simpleSelectionMode {
+            // Toggle selected state right away if:
+            // - not a variation product, or
+            // - a veriation product in simple selection handling mode.
+            if product.variations.isEmpty || selectionHandlingMode == .simple {
                 selectedState = selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
             } else {
                 let intersection = Set(product.variations).intersection(Set(selectedItemsIDs))

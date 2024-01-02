@@ -39,6 +39,8 @@ enum ProductSelectorSectionType {
     }
 }
 
+/// How to handle a product selection depending on its type.
+///
 enum SelectionHandling {
     // Treat all products as a single item, and select it right away.
     case simple
@@ -47,6 +49,8 @@ enum SelectionHandling {
     case normal
 }
 
+/// The amount of products that can be selected in the product selector.
+///
 enum SelectionMode {
     // Allow selecting only a single product
     case single
@@ -212,8 +216,12 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onConfigureProductRow: ((_ product: Product) -> Void)?
 
+    /// How product selector should handle product selection.
+    ///
     let selectionHandlingMode: SelectionHandling
 
+    /// Whether merchants can select single or multiple product.
+    ///
     let selectionMode: SelectionMode
 
     init(siteID: Int64,

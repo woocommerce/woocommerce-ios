@@ -120,6 +120,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     private let purchasableItemsOnly: Bool
 
     /// Whether merchants can select single or multiple variations.
+    ///
     let selectionMode: SelectionMode
 
     init(siteID: Int64,

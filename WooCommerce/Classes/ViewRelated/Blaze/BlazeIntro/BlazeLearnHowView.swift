@@ -5,19 +5,19 @@ import SwiftUI
 struct BlazeLearnHowView: View {
     @Binding var isPresented: Bool
 
-    private let steps: [Step] = [.init(number: Localization.ChooseProduct.number,
+    private let steps: [Step] = [.init(number: 1,
                                        title: Localization.ChooseProduct.title,
                                        subtile: Localization.ChooseProduct.subtitle),
-                                 .init(number: Localization.CustomizeTargeting.number,
+                                 .init(number: 2,
                                        title: Localization.CustomizeTargeting.title,
                                        subtile: Localization.CustomizeTargeting.subtitle),
-                                 .init(number: Localization.SetYourBudget.number,
+                                 .init(number: 3,
                                        title: Localization.SetYourBudget.title,
                                        subtile: Localization.SetYourBudget.subtitle),
-                                 .init(number: Localization.QuickReview.number,
+                                 .init(number: 4,
                                        title: Localization.QuickReview.title,
                                        subtile: Localization.QuickReview.subtitle),
-                                 .init(number: Localization.GoLive.number,
+                                 .init(number: 5,
                                        title: Localization.GoLive.title,
                                        subtile: Localization.GoLive.subtitle)]
 
@@ -74,7 +74,7 @@ private extension BlazeLearnHowView {
 
 private extension BlazeLearnHowView {
     struct Step {
-        let number: String
+        let number: Int
         let title: String
         let subtile: String
     }
@@ -106,7 +106,7 @@ private extension BlazeLearnHowView {
                         .fill(Color(uiColor: .systemBackground))
                         .frame(width: Layout.StepBlock.numberBackgroundSize * scale, height: Layout.StepBlock.numberBackgroundSize * scale)
 
-                    Text(step.number)
+                    Text(String(step.number))
                         .fontWeight(.semibold)
                         .captionStyle()
                 }
@@ -127,11 +127,6 @@ private extension BlazeLearnHowView {
             comment: "Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works"
         )
         enum ChooseProduct {
-            static let number = NSLocalizedString(
-                "blazeLearnHowView.chooseProduct.stepNumber",
-                value: "1",
-                comment: "Step number for Choose a product step"
-            )
             static let title = NSLocalizedString(
                 "blazeLearnHowView.chooseProduct.title",
                 value: "Choose a product",
@@ -144,11 +139,6 @@ private extension BlazeLearnHowView {
             )
         }
         enum CustomizeTargeting {
-            static let number = NSLocalizedString(
-                "blazeLearnHowView.customizeTargeting.stepNumber",
-                value: "2",
-                comment: "Step number for Customize Targeting step"
-            )
             static let title = NSLocalizedString(
                 "blazeLearnHowView.customizeTargeting.title",
                 value: "Customize targeting",
@@ -161,11 +151,6 @@ private extension BlazeLearnHowView {
             )
         }
         enum SetYourBudget {
-            static let number = NSLocalizedString(
-                "blazeLearnHowView.setYourBudget.stepNumber",
-                value: "3",
-                comment: "Step number for Set Your Budget step"
-            )
             static let title = NSLocalizedString(
                 "blazeLearnHowView.setYourBudget.title",
                 value: "Set your budget",
@@ -178,11 +163,6 @@ private extension BlazeLearnHowView {
             )
         }
         enum QuickReview {
-            static let number = NSLocalizedString(
-                "blazeLearnHowView.quickReview.stepNumber",
-                value: "4",
-                comment: "Step number for Quick review step"
-            )
             static let title = NSLocalizedString(
                 "blazeLearnHowView.quickReview.title",
                 value: "Quick review",
@@ -195,11 +175,6 @@ private extension BlazeLearnHowView {
             )
         }
         enum GoLive {
-            static let number = NSLocalizedString(
-                "blazeLearnHowView.goLive.stepNumber",
-                value: "5",
-                comment: "Step number for Go live step"
-            )
             static let title = NSLocalizedString(
                 "blazeLearnHowView.goLive.title",
                 value: "Go live",

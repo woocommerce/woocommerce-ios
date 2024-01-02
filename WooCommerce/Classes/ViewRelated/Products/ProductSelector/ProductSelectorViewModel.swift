@@ -46,6 +46,13 @@ enum SelectionHandling {
     case normal
 }
 
+enum SelectionMode {
+    // Allow selecting only a single product
+    case single
+    // Support selecting multiple products
+    case multiple
+}
+
 /// View model for `ProductSelectorView`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
@@ -206,10 +213,13 @@ final class ProductSelectorViewModel: ObservableObject {
 
     let selectionHandlingMode: SelectionHandling
 
+    let selectionMode: SelectionMode
+
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          selectionHandlingMode: SelectionHandling = .normal,
+         selectionMode: SelectionMode = .single,
          shouldDeleteStoredProductsOnFirstPage: Bool = true,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -238,6 +248,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.selectedItemsIDs = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
         self.selectionHandlingMode = selectionHandlingMode
+        self.selectionMode = selectionMode
         self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.onAllSelectionsCleared = onAllSelectionsCleared

@@ -82,6 +82,8 @@ struct ProductSelectorView: View {
                 .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results)
                 .renderedIf(viewModel.selectionMode == .multiple)
 
+                Spacer()
+
                 Button(viewModel.filterButtonTitle) {
                     showingFilters.toggle()
                     ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))

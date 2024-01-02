@@ -332,6 +332,13 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Updates selected variation list based on the new selected IDs
     ///
     func updateSelectedVariations(productID: Int64, selectedVariationIDs: [Int64]) {
+        // In single SelectionMode, merchants can first select a simple product,
+        // then enter a variable product and select a variation. In this situation,
+        // we have to remove the selected simple product first.
+        if selectedVariationIDs.count > 0 && selectionMode == .single {
+            selectedItemsIDs = []
+        }
+
         guard let variableProduct = products.first(where: { $0.productID == productID }),
               variableProduct.variations.isNotEmpty else {
             return

@@ -292,6 +292,11 @@ final class ProductSelectorViewModel: ObservableObject {
     }
 
     private func toggleSelection(id: Int64) {
+        // In single selection mode, remove previously selected product first.
+        if selectionMode == .single {
+            selectedItemsIDs = []
+        }
+
         if selectedItemsIDs.contains(id) {
             selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
         } else {

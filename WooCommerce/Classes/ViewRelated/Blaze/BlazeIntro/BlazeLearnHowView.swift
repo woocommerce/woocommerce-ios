@@ -82,6 +82,9 @@ private extension BlazeLearnHowView {
     }
 
     struct StepView: View {
+        /// Scale of the view based on accessibility changes
+        @ScaledMetric private var scale: CGFloat = 1.0
+
         let step: Step
 
         var title: AttributedString {
@@ -103,7 +106,7 @@ private extension BlazeLearnHowView {
                 ZStack {
                     Circle()
                         .fill(Color(uiColor: .systemBackground))
-                        .frame(width: Layout.StepBlock.numberBackgroundSize, height: Layout.StepBlock.numberBackgroundSize)
+                        .frame(width: Layout.StepBlock.numberBackgroundSize * scale, height: Layout.StepBlock.numberBackgroundSize * scale)
 
                     Text(step.number)
                         .fontWeight(.semibold)

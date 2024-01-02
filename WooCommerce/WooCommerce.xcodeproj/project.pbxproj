@@ -1857,7 +1857,6 @@
 		CC5C278727EE19A700B25D2A /* UnifiedOrderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5C278627EE19A600B25D2A /* UnifiedOrderScreen.swift */; };
 		CC5C278B27EE314F00B25D2A /* orders_3337_create_order.json in Resources */ = {isa = PBXBuildFile; fileRef = CC5C278A27EE314E00B25D2A /* orders_3337_create_order.json */; };
 		CC666F2427F329DC0045AF1E /* View+DiscardChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC666F2327F329DC0045AF1E /* View+DiscardChanges.swift */; };
-		CC666F2627F359590045AF1E /* OrdersTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC666F2527F359590045AF1E /* OrdersTopBannerFactory.swift */; };
 		CC69236226010946002FB669 /* LoginProloguePages.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69236126010946002FB669 /* LoginProloguePages.swift */; };
 		CC6923AC26010D8D002FB669 /* LoginProloguePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6923AB26010D8D002FB669 /* LoginProloguePageViewController.swift */; };
 		CC71353B2862285300A28B42 /* AddShippingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC71353A2862285300A28B42 /* AddShippingScreen.swift */; };
@@ -4482,7 +4481,6 @@
 		CC5C278627EE19A600B25D2A /* UnifiedOrderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedOrderScreen.swift; sourceTree = "<group>"; };
 		CC5C278A27EE314E00B25D2A /* orders_3337_create_order.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orders_3337_create_order.json; sourceTree = "<group>"; };
 		CC666F2327F329DC0045AF1E /* View+DiscardChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DiscardChanges.swift"; sourceTree = "<group>"; };
-		CC666F2527F359590045AF1E /* OrdersTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersTopBannerFactory.swift; sourceTree = "<group>"; };
 		CC69236126010946002FB669 /* LoginProloguePages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProloguePages.swift; sourceTree = "<group>"; };
 		CC6923AB26010D8D002FB669 /* LoginProloguePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProloguePageViewController.swift; sourceTree = "<group>"; };
 		CC71353A2862285300A28B42 /* AddShippingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShippingScreen.swift; sourceTree = "<group>"; };
@@ -10097,7 +10095,6 @@
 				57C5FF7D250925000074EC26 /* OrderListViewModel.swift */,
 				DE6906E427D7439B00735E3B /* OrdersSplitViewWrapperController.swift */,
 				4546E095271F08CD003836F3 /* Order Filters */,
-				CC666F2527F359590045AF1E /* OrdersTopBannerFactory.swift */,
 				B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */,
 			);
 			path = Orders;
@@ -13078,7 +13075,6 @@
 				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
 				CCE73D2529EDAB5C0064E797 /* SubscriptionPeriod+UI.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,
-				CC666F2627F359590045AF1E /* OrdersTopBannerFactory.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */,
 				02B2829227C4808D004A332A /* InfiniteScrollIndicator.swift in Sources */,

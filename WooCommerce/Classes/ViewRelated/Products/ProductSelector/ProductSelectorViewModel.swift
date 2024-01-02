@@ -736,7 +736,7 @@ private extension ProductSelectorViewModel {
 
             // Toggle selected state right away if:
             // - not a variation product, or
-            // - a veriation product in simple selection handling mode.
+            // - a variation product in simple selection handling mode.
             if product.variations.isEmpty || selectionHandlingMode == .simple {
                 selectedState = selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
             } else {

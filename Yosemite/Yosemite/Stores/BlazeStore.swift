@@ -62,6 +62,10 @@ public final class BlazeStore: Store {
             synchronizeTargetDevices(siteID: siteID, locale: locale, onCompletion: onCompletion)
         case let .synchronizeTargetLanguages(siteID, locale, onCompletion):
             synchronizeTargetLanguages(siteID: siteID, locale: locale, onCompletion: onCompletion)
+        case let .synchronizeTargetTopics(siteID, locale, onCompletion):
+            synchronizeTargetTopics(siteID: siteID, locale: locale, onCompletion: onCompletion)
+        case let .fetchTargetLocations(siteID, query, locale, onCompletion):
+            fetchTargetLocations(siteID: siteID, query: query, locale: locale, onCompletion: onCompletion)
         }
     }
 }
@@ -212,6 +216,101 @@ private extension BlazeStore {
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+// MARK: - Synchronize target topics
+private extension BlazeStore {
+    func synchronizeTargetTopics(siteID: Int64,
+                                 locale: String,
+                                 onCompletion: @escaping (Result<[BlazeTargetTopic], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stubbedResult = [
+                    BlazeTargetTopic(id: "IAB1", description: "Arts & Entertainment", locale: locale),
+                    BlazeTargetTopic(id: "IAB2", description: "Automotive", locale: locale)
+                ]
+                // TODO-11540: remove stubbed result when the API is ready.
+                let topics: [BlazeTargetTopic] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetTopics(for: siteID, locale: locale)
+                })
+                insertStoredTargetTopicsInBackground(readonlyTopics: topics, locale: locale) {
+                    onCompletion(.success(topics))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Removes BlazeTargetTopic entities with the given locale
+    /// and inserts specified BlazeTargetTopic Entities in a background thread.
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func insertStoredTargetTopicsInBackground(readonlyTopics: [Networking.BlazeTargetTopic],
+                                              locale: String,
+                                              onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteBlazeTargetTopics(locale: locale)
+            for topic in readonlyTopics {
+                let storageTopic = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetTopic.self)
+                storageTopic.update(with: topic)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+// MARK: - Fetch target location by keyword
+private extension BlazeStore {
+    func fetchTargetLocations(siteID: Int64,
+                              query: String,
+                              locale: String,
+                              onCompletion: @escaping (Result<[BlazeTargetLocation], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                // TODO-11540: remove stubbed result when the API is ready.
+                let stubbedResult: [BlazeTargetLocation] = [
+                    .init(id: 1439,
+                          name: "Madrid",
+                          type: "state",
+                          parentLocation: .init(id: 69,
+                                                name: "Comunidad De Madrid",
+                                                type: "region",
+                                                parentLocation: .init(id: 228,
+                                                                      name: "Spain",
+                                                                      type: "country",
+                                                                      isoCode: "ESP"))),
+                    .init(id: 2035,
+                          name: "Madre De Dios",
+                          type: "state",
+                          parentLocation: .init(id: 57, name: "Peru", type: "country", isoCode: "PER")),
+                    .init(id: 6457,
+                          name: "Madrid",
+                          type: "city",
+                          parentLocation: .init(id: 1841,
+                                                name: "Iowa",
+                                                type: "state",
+                                                parentLocation: .init(id: 174,
+                                                                      name: "Midwest",
+                                                                      type: "region",
+                                                                      parentLocation: .init(id: 152,
+                                                                                            name: "United States",
+                                                                                            type: "country",
+                                                                                           isoCode: "USA"))))
+                ]
+                let locations: [BlazeTargetLocation] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)
+                })
+                onCompletion(.success(locations))
+            } catch {
+                onCompletion(.failure(error))
+            }
         }
     }
 }

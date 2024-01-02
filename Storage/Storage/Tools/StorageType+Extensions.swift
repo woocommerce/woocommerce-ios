@@ -571,6 +571,13 @@ public extension StorageType {
         return allObjects(ofType: BlazeTargetLanguage.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Returns all Blaze target topics with the given locale.
+    ///
+    func loadAllBlazeTargetTopics(locale: String) -> [BlazeTargetTopic] {
+        let predicate = \BlazeTargetTopic.locale == locale
+        return allObjects(ofType: BlazeTargetTopic.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: - Coupons
 
     /// Returns a single Coupon given a `siteID` and `CouponID`

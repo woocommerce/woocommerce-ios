@@ -4,14 +4,14 @@ import Foundation
 final class BlazeCreateCampaignIntroViewModel: ObservableObject {
     private let analytics: Analytics
 
-    @Published var showLearHowSheet: Bool = false
+    @Published var showLearnHowSheet: Bool = false
 
     init(analytics: Analytics = ServiceLocator.analytics) {
         self.analytics = analytics
     }
 
     func onLearnHowBlazeWorks() {
-        showLearHowSheet = true
+        showLearnHowSheet = true
         // TODO: 11512 Track Learn how button tap
     }
 }

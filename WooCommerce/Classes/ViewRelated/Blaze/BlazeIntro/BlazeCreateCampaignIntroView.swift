@@ -102,13 +102,13 @@ struct BlazeCreateCampaignIntroView: View {
                 }
                 .background(Color(UIColor.systemBackground))
             }
-            .sheet(isPresented: $viewModel.showLearHowSheet) {
+            .sheet(isPresented: $viewModel.showLearnHowSheet) {
                 if #available(iOS 16, *) {
-                    BlazeLearnHowView(isPresented: $viewModel.showLearHowSheet)
+                    BlazeLearnHowView(isPresented: $viewModel.showLearnHowSheet)
                         .presentationDetents([.medium, .large])
                         .presentationDragIndicator(.hidden)
                 } else {
-                    BlazeLearnHowView(isPresented: $viewModel.showLearHowSheet)
+                    BlazeLearnHowView(isPresented: $viewModel.showLearnHowSheet)
                 }
             }
         }

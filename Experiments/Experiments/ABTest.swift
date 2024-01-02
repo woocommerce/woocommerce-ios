@@ -6,14 +6,6 @@ public enum ABTest: String, Codable, CaseIterable {
     /// Mocks for unit testing
     case mockLoggedIn, mockLoggedOut
 
-    /// A/A test to make sure there is no bias in the logged out state.
-    /// Experiment ref: pbxNRc-1QS-p2
-    case aaTestLoggedIn = "woocommerceios_explat_aa_test_logged_in_202212_v2"
-
-    /// A/A test to make sure there is no bias in the logged out state.
-    /// Experiment ref: pbxNRc-1S0-p2
-    case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202212_v2"
-
     /// Returns a variation for the given experiment
     ///
     public var variation: Variation? {
@@ -25,10 +17,6 @@ public enum ABTest: String, Codable, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTestLoggedIn:
-            return .loggedIn
-        case .aaTestLoggedOut:
-            return .loggedOut
         // Mocks
         case .mockLoggedIn:
             return .loggedIn

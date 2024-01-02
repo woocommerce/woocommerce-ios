@@ -1391,6 +1391,23 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(nextProductRow?.selectedState, .selected)
     }
 
+    func test_given_simple_SelectionHandlingMode_when_selecting_variable_product_then_the_product_is_selected_immediately() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.variable.rawValue, purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 selectionHandlingMode: .simple,
+                                                 storageManager: storageManager,
+                                                 onProductSelectionStateChanged: { _ in })
+
+        // When
+        viewModel.changeSelectionStateForProduct(with: product.productID)
+
+        // Then
+        let variableProductRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
+        XCTAssertEqual(variableProductRow?.selectedState, .selected)
+    }
+
 
     // MARK: - Pagination
 

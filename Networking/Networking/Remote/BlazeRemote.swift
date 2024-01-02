@@ -39,23 +39,11 @@ public protocol BlazeRemoteProtocol {
     /// Fetches forecasted campaign impressions.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
-    ///    - startDate: Start date of the campaign.
-    ///    - endDate: End date of the campaign.
-    ///    - formattedTotalBudget: Formatted string of total budget of the campaign.
-    ///    - targetLocations: Target locations of the campaign. Optional.
-    ///    - targetLanguages: Target languages of the campaign. Optional.
-    ///    - targetDevices: Target devices of the campaign. Optional.
-    ///    - targetTopics: Target topics of the campaign. Optional.
+    ///    - input: BlazeForecastedImpressionsInput object containing various parameters for the request.
     ///
     func fetchForecastedImpressions(
         for siteID: Int64,
-        from startDate: Date,
-        to endDate: Date,
-        formattedTotalBudget: String,
-        targetLocationIds: [Int64],
-        targetLanguageIds: [String],
-        targetDeviceIds: [String],
-        targetTopicIds: [String]
+        with input: BlazeForecastedImpressionsInput
     ) async throws -> BlazeImpressions
 }
 
@@ -115,30 +103,14 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     ///
     public func fetchForecastedImpressions(
         for siteID: Int64,
-        from startDate: Date,
-        to endDate: Date,
-        formattedTotalBudget: String,
-        targetLocationIds: [Int64] = [],
-        targetLanguageIds: [String] = [],
-        targetDeviceIds: [String] = [],
-        targetTopicIds: [String]  = []
+        with input: BlazeForecastedImpressionsInput
     ) async throws -> BlazeImpressions {
         let path = Paths.campaignImpressions(siteID: siteID)
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = Constants.dateFormat
 
-        let parameters: [String: Any] = [
-            Keys.startDate: dateFormatter.string(from: startDate),
-            Keys.endDate: dateFormatter.string(from: endDate),
-            Keys.totalBudget: formattedTotalBudget,
-            Keys.targetings: [
-                Keys.targetLocations: targetLocationIds,
-                Keys.targetLanguages: targetLanguageIds,
-                Keys.targetDevices: targetDeviceIds,
-                Keys.targetTopics: targetTopicIds
-            ] as [String: [Any]]
-        ]
+        let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
         let mapper = BlazeImpressionsMapper()
@@ -185,14 +157,6 @@ private extension BlazeRemote {
         static let orderBy = "order_by"
         static let order =  "order"
         static let page = "page"
-        static let startDate = "start_date"
-        static let endDate = "end_date"
-        static let totalBudget = "total_budget"
-        static let targetings = "targetings"
-        static let targetLocations = "locations"
-        static let targetLanguages = "languages"
-        static let targetDevices = "devices"
-        static let targetTopics = "page _topics"
     }
 
     enum Values {
@@ -202,5 +166,62 @@ private extension BlazeRemote {
 
     enum Constants {
         static let dateFormat = "yyyy-MM-dd"
+    }
+}
+
+/// Blaze Forecasted Impressions input
+public struct BlazeForecastedImpressionsInput: Encodable {
+    // Start date of the campaign.
+    let startDate: Date
+    // End date of the campaign
+    let endDate: Date
+    // Formatted string of the total budget of the campaign
+    let formattedTotalBudget: String
+    // Target options for the campaign. Optional.
+    let targetings: BlazeTargetOptions?
+
+    public init(startDate: Date,
+                endDate: Date,
+                formattedTotalBudget: String,
+                targetings: BlazeTargetOptions?) {
+        self.startDate = startDate
+        self.endDate = endDate
+        self.formattedTotalBudget = formattedTotalBudget
+        self.targetings = targetings
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case startDate
+        case endDate
+        case formattedTotalBudget = "total_budget"
+        case targetings
+    }
+}
+/// Blaze Forecasted Impressions sub-input related to targetings.
+public struct BlazeTargetOptions: Encodable {
+    // Target location IDs for the campaign. Optional.
+    let locations: [Int64]?
+    // Target languages for the campaign. Optional.
+    let languages: [String]?
+    // Target devices for the campaign. Optional.
+    let devices: [String]?
+    // Target topics for the campaign. Optional.
+    let pageTopics: [String]?
+
+    public init(locations: [Int64]?,
+                languages: [String]?,
+                devices: [String]?,
+                pageTopics: [String]?) {
+        self.locations = locations
+        self.languages = languages
+        self.devices = devices
+        self.pageTopics = pageTopics
+    }
+
+    private enum TargetingsKeys: String, CodingKey {
+        case locations
+        case languages
+        case devices
+        case pageTopics
     }
 }

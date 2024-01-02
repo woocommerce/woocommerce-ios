@@ -3,9 +3,6 @@ import SwiftUI
 /// View to display the learn how sheet of Blaze campaign creation
 ///
 struct BlazeLearnHowView: View {
-    /// Scale of the view based on accessibility changes
-    @ScaledMetric private var scale: CGFloat = 1.0
-
     @Binding var isPresented: Bool
 
     private let steps: [Step] = [.init(number: Localization.ChooseProduct.number,
@@ -41,15 +38,7 @@ private extension BlazeLearnHowView {
                     isPresented = false
                 }, label: {
                     Image(uiImage: .closeButton)
-                        .resizable()
-                        .renderingMode(.template)
                         .secondaryBodyStyle()
-                        .frame(width: Layout.TitleBlock.closeImageSize * scale, height: Layout.TitleBlock.closeImageSize * scale)
-                        .padding(Layout.TitleBlock.closeImagePadding)
-                        .background(
-                            Circle()
-                                .fill(Layout.StepBlock.backgroundColor)
-                        )
                 })
 
                 Spacer()
@@ -228,8 +217,6 @@ private enum Layout {
     static let contentPadding: EdgeInsets = .init(top: 24, leading: 16, bottom: 24, trailing: 16)
 
     enum TitleBlock {
-        static let closeImageSize: CGFloat = 10.37
-        static let closeImagePadding: CGFloat = 10
         static let closeButtonHorizontalPadding: CGFloat = 16
         static let topPadding: CGFloat = 24
     }

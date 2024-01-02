@@ -1367,6 +1367,31 @@ final class ProductSelectorViewModelTests: XCTestCase {
         assertEqual(bundleProduct, productToConfigure)
     }
 
+    // MARK: - Selection mode and Selection Handling mode
+    func test_given_single_SelectionMode_and_existing_selected_product_when_a_new_product_is_selected_then_only_new_product_is_selected() {
+        // Given
+        let previousSelectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let nextSelectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        insert(previousSelectedProduct)
+        insert(nextSelectedProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 selectionMode: .single,
+                                                 storageManager: storageManager,
+                                                 onProductSelectionStateChanged: { _ in })
+
+        // When
+        viewModel.changeSelectionStateForProduct(with: previousSelectedProduct.productID)
+        viewModel.changeSelectionStateForProduct(with: nextSelectedProduct.productID)
+
+        // Then
+        let previousProductRow = viewModel.productRows.first(where: { $0.productOrVariationID == previousSelectedProduct.productID })
+        XCTAssertEqual(previousProductRow?.selectedState, .notSelected)
+
+        let nextProductRow = viewModel.productRows.first(where: { $0.productOrVariationID == nextSelectedProduct.productID })
+        XCTAssertEqual(nextProductRow?.selectedState, .selected)
+    }
+
+
     // MARK: - Pagination
 
     func test_it_syncs_the_second_page_after_searching_and_selecting_a_product_not_in_the_first_page() {

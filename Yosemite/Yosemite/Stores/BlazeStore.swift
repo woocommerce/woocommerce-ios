@@ -274,7 +274,39 @@ private extension BlazeStore {
                               onCompletion: @escaping (Result<[BlazeTargetLocation], Error>) -> Void) {
         Task { @MainActor in
             do {
-                let locations = try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)
+                // TODO-11540: remove stubbed result when the API is ready.
+                let stubbedResult: [BlazeTargetLocation] = [
+                    .init(id: 1439,
+                          name: "Madrid",
+                          type: "state",
+                          parentLocation: .init(id: 69,
+                                                name: "Comunidad De Madrid",
+                                                type: "region",
+                                                parentLocation: .init(id: 228,
+                                                                      name: "Spain",
+                                                                      type: "country",
+                                                                      isoCode: "ESP"))),
+                    .init(id: 2035,
+                          name: "Madre De Dios",
+                          type: "state",
+                          parentLocation: .init(id: 57, name: "Peru", type: "country", isoCode: "PER")),
+                    .init(id: 6457,
+                          name: "Madrid",
+                          type: "city",
+                          parentLocation: .init(id: 1841,
+                                                name: "Iowa",
+                                                type: "state",
+                                                parentLocation: .init(id: 174,
+                                                                      name: "Midwest",
+                                                                      type: "region",
+                                                                      parentLocation: .init(id: 152,
+                                                                                            name: "United States",
+                                                                                            type: "country",
+                                                                                           isoCode: "USA"))))
+                ]
+                let locations: [BlazeTargetLocation] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)
+                })
                 onCompletion(.success(locations))
             } catch {
                 onCompletion(.failure(error))

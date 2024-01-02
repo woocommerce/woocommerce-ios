@@ -111,9 +111,10 @@ final class OrdersRootViewController: UIViewController {
             self.configureStatusResultsController()
         }
 
-        /// Attempts to navigate and open the first Order in the Order List when Split View is enabled
-        /// 
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+        /// Attempts to navigate and open the first Order in the Order List when Split View is enabled,
+        /// only on iPad
+        ///
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab), UIDevice.current.userInterfaceIdiom == .pad {
             navigateToFirstOrderIfPossible()
         }
     }

@@ -4,10 +4,6 @@ import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
 
-private enum ProductsOnboardingSyncingError: Error {
-    case noContentToShow // there is no content to show, because the site is not eligible, it was already shown, or other reason
-}
-
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
@@ -28,10 +24,6 @@ final class DashboardViewModel {
     @Published private(set) var showOnboarding: Bool = false
 
     @Published private(set) var showBlazeCampaignView: Bool = false
-
-    /// Trigger to start the Add Product flow
-    ///
-    let addProductTrigger = PassthroughSubject<Void, Never>()
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -215,14 +207,7 @@ final class DashboardViewModel {
     /// Checks for announcements to show on the dashboard
     ///
     func syncAnnouncements(for siteID: Int64) async {
-        // For now, products onboarding takes precedence over Just In Time Messages,
-        // so we can stop if there is an onboarding announcement to display.
-        // This should be revisited when either onboarding or JITMs are expanded. See: pe5pgL-11B-p2
-        do {
-            try await syncProductsOnboarding(for: siteID)
-        } catch {
-            await syncJustInTimeMessages(for: siteID)
-        }
+        await syncJustInTimeMessages(for: siteID)
         await loadLocalAnnouncement()
     }
 
@@ -235,37 +220,6 @@ final class DashboardViewModel {
         }
 
         analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
-    }
-
-    /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.
-    ///
-    @MainActor
-    private func syncProductsOnboarding(for siteID: Int64) async throws {
-        let storeHasProduct = try await checkIfStoreHasProducts(siteID: siteID)
-        guard storeHasProduct == false else {
-            throw ProductsOnboardingSyncingError.noContentToShow
-        }
-
-        analytics.track(event: .ProductsOnboarding.storeIsEligible())
-        guard await shouldShowProductOnboarding() else {
-            throw ProductsOnboardingSyncingError.noContentToShow
-        }
-        announcementViewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
-            self?.addProductTrigger.send()
-        })
-    }
-
-    @MainActor
-    private func shouldShowProductOnboarding() async -> Bool {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { result in
-                if case let .success(isVisible) = result, isVisible {
-                    continuation.resume(returning: true)
-                } else {
-                    continuation.resume(returning: false)
-                }
-            })
-        }
     }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.
@@ -330,23 +284,6 @@ private extension DashboardViewModel {
             } catch {
                 DDLogError("⛔️ Dashboard - Error installing pending theme: \(error)")
             }
-        }
-    }
-}
-
-private extension DashboardViewModel {
-    @MainActor
-    func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus? = nil) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: { result in
-                switch result {
-                case .success(let hasProducts):
-                    continuation.resume(returning: hasProducts)
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error fetching products to check if store has products: \(error)")
-                    continuation.resume(throwing: error)
-                }
-            }))
         }
     }
 }

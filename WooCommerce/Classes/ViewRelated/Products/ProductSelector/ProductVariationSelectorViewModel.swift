@@ -119,6 +119,9 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let purchasableItemsOnly: Bool
 
+    /// Whether merchants can select single or multiple variations.
+    let selectionMode: SelectionMode
+
     init(siteID: Int64,
          productID: Int64,
          productName: String,
@@ -126,6 +129,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          allowedProductVariationIDs: [Int64] = [],
          selectedProductVariationIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
+         selectionMode: SelectionMode = .multiple,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
@@ -134,6 +138,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.productID = productID
         self.productName = productName
         self.productAttributes = productAttributes
+        self.selectionMode = selectionMode
         self.storageManager = storageManager
         self.stores = stores
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
@@ -152,6 +157,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      allowedProductVariationIDs: [Int64] = [],
                      selectedProductVariationIDs: [Int64] = [],
                      purchasableItemsOnly: Bool = false,
+                     selectionMode: SelectionMode = .multiple,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
                      onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
@@ -163,6 +169,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   allowedProductVariationIDs: allowedProductVariationIDs,
                   selectedProductVariationIDs: selectedProductVariationIDs,
                   purchasableItemsOnly: purchasableItemsOnly,
+                  selectionMode: selectionMode,
                   storageManager: storageManager,
                   stores: stores,
                   onVariationSelectionStateChanged: onVariationSelectionStateChanged,
@@ -308,6 +315,11 @@ private extension ProductVariationSelectorViewModel {
     /// Toggle the selection of the specified product variation.
     ///
     func toggleSelection(productVariationID: Int64) {
+        // In single selection mode, remove previously selected product first.
+        if selectionMode == .single {
+            selectedProductVariationIDs = []
+        }
+
         if selectedProductVariationIDs.contains(productVariationID) {
             selectedProductVariationIDs.removeAll(where: { $0 == productVariationID })
         } else {

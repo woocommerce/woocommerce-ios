@@ -34,7 +34,7 @@ struct ProductVariationSelector: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Button(Localization.clearSelection) {
                         viewModel.clearSelection()
-                    }
+                    }.renderedIf(viewModel.selectionMode == .multiple)
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize()
                     .disabled(viewModel.selectedProductVariationIDs.isEmpty || viewModel.syncStatus != .results)

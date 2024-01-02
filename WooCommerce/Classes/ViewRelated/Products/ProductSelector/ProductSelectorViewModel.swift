@@ -316,6 +316,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
+                                                 selectionMode: selectionMode,
                                                  onVariationSelectionStateChanged: onVariationSelectionStateChanged,
                                                  onSelectionsCleared: onSelectedVariationsCleared)
     }

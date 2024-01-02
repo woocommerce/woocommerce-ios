@@ -40,9 +40,10 @@ enum ProductSelectorSectionType {
 }
 
 enum SelectionHandling {
-    // Treat all products as a single item, and return just the product ID.
+    // Treat all products as a single item, and select it right away.
     case simple
-    // Handle product selection depending on the product type.
+    // Handle product selection depending on the product type. For example, selecting a variation product might open
+    // the variation product selector.
     case normal
 }
 

@@ -124,6 +124,10 @@ private extension BlazeCampaignCreationForm {
             .padding(Layout.contentPadding)
             .background(Color(uiColor: .systemBackground))
             .cornerRadius(Layout.cornerRadius)
+            .shadow(color: .black.opacity(0.05),
+                    radius: Layout.shadowRadius,
+                    x: 0,
+                    y: Layout.shadowYOffset)
 
             // Button to edit ad details
             Button(action: {
@@ -182,6 +186,8 @@ private extension BlazeCampaignCreationForm {
         static let adButtonCornerRadius: CGFloat = 4
         static let strokeWidth: CGFloat = 1
         static let detailContentSpacing: CGFloat = 4
+        static let shadowRadius: CGFloat = 2
+        static let shadowYOffset: CGFloat = 2
     }
 
     enum Localization {

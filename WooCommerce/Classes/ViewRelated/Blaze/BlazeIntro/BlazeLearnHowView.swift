@@ -32,25 +32,23 @@ struct BlazeLearnHowView: View {
 
 private extension BlazeLearnHowView {
     var titleBlock: some View {
-        ZStack(alignment: .center) {
-            HStack {
-                Button(action: {
-                    isPresented = false
-                }, label: {
-                    Image(uiImage: .closeButton)
-                        .secondaryBodyStyle()
-                })
+        HStack {
+            Button(action: {
+                isPresented = false
+            }, label: {
+                Image(uiImage: .closeButton)
+                    .secondaryBodyStyle()
+            })
 
-                Spacer()
-            }
-            .padding(.horizontal, Layout.TitleBlock.closeButtonHorizontalPadding)
+            Spacer()
 
-            HStack {
-                Text(String(format: Localization.title, "Blaze"))
-                    .fontWeight(.semibold)
-                    .headlineStyle()
-            }
+            Text(String(format: Localization.title, "Blaze"))
+                .fontWeight(.semibold)
+                .headlineStyle()
+
+            Spacer()
         }
+        .padding(.horizontal, Layout.TitleBlock.horizontalPadding)
         .padding(.top, Layout.TitleBlock.topPadding)
     }
 
@@ -193,7 +191,7 @@ private enum Layout {
     static let contentPadding: EdgeInsets = .init(top: 24, leading: 16, bottom: 24, trailing: 16)
 
     enum TitleBlock {
-        static let closeButtonHorizontalPadding: CGFloat = 16
+        static let horizontalPadding: CGFloat = 16
         static let topPadding: CGFloat = 24
     }
 

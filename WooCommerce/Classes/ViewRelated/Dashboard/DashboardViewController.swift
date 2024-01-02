@@ -163,7 +163,6 @@ final class DashboardViewController: UIViewController {
         observeModalJustInTimeMessages()
         observeLocalAnnouncement()
         observeShowWebViewSheet()
-        observeAddProductTrigger()
         observeOnboardingVisibility()
         observeBlazeCampaignViewVisibility()
         configureStorePlanBannerPresenter()
@@ -476,34 +475,6 @@ private extension DashboardViewController {
                 await self.viewModel.syncAnnouncements(for: self.siteID)
             }
         }
-    }
-
-    /// Subscribes to the trigger to start the Add Product flow for products onboarding
-    ///
-    private func observeAddProductTrigger() {
-        viewModel.addProductTrigger.sink { [weak self] _ in
-            self?.startAddProductFlow()
-        }
-        .store(in: &subscriptions)
-    }
-
-    /// Starts the Add Product flow (without switching tabs)
-    ///
-    private func startAddProductFlow() {
-        guard let announcementView, let navigationController else { return }
-        let coordinator = AddProductCoordinator(siteID: siteID,
-                                                source: .productOnboarding,
-                                                sourceView: announcementView,
-                                                sourceNavigationController: navigationController,
-                                                isFirstProduct: true)
-        coordinator.onProductCreated = { [weak self] _ in
-            guard let self else { return }
-            self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
-            Task {
-                await self.viewModel.syncAnnouncements(for: self.siteID)
-            }
-        }
-        coordinator.start()
     }
 
     /// Invoked when the local announcement CTA is tapped.

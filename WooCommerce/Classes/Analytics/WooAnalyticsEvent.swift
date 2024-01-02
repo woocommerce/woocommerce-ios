@@ -2453,18 +2453,6 @@ extension WooAnalyticsEvent {
             case template
         }
 
-        /// Tracks when a store is eligible for products onboarding
-        ///
-        static func storeIsEligible() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productsOnboardingEligible, properties: [:])
-        }
-
-        /// Tracks when the call to action is tapped on the products onboarding banner
-        ///
-        static func bannerCTATapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productsOnboardingCTATapped, properties: [:])
-        }
-
         /// Trackas when the merchants selects a product creation type.
         ///
         static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {

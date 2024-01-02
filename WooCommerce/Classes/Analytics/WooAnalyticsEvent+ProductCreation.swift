@@ -37,8 +37,6 @@ extension AddProductCoordinator.Source {
         switch self {
             case .productsTab:
                 return "products_tab"
-            case .productOnboarding:
-                return "product_onboarding"
             case .storeOnboarding:
                 return "store_onboarding"
             case .productDescriptionAIAnnouncementModal:

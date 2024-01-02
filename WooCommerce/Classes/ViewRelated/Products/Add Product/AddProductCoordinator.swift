@@ -15,8 +15,6 @@ final class AddProductCoordinator: Coordinator {
     enum Source {
         /// Initiated from the products tab.
         case productsTab
-        /// Initiated from the product onboarding card in the dashboard.
-        case productOnboarding
         /// Initiated from the store onboarding card in the dashboard.
         case storeOnboarding
         /// Initiated from the product description AI announcement modal in the dashboard.
@@ -112,7 +110,7 @@ final class AddProductCoordinator: Coordinator {
 
     func start() {
         switch source {
-        case .productsTab, .productOnboarding:
+        case .productsTab:
             analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
         default:
             break

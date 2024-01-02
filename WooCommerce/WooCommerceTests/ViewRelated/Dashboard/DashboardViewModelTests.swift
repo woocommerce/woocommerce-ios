@@ -100,73 +100,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
     }
 
-    func test_products_onboarding_announcements_take_precedence() async {
-        // Given
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkIfStoreHasProducts(_, _, completion):
-                completion(.success(false))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(_, completion):
-                completion(.success(true))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
-            switch action {
-            case let .loadMessage(_, _, _, completion):
-                completion(.success([Yosemite.JustInTimeMessage.fake()]))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-
-        // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
-
-        // Then (check announcement image because it is unique and not localized)
-        XCTAssertEqual(viewModel.announcementViewModel?.image, .emptyProductsImage)
-    }
-
-    func test_onboarding_announcement_not_displayed_when_previously_dismissed() async {
-        // Given
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkIfStoreHasProducts(_, _, completion):
-                completion(.success(false))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(_, completion):
-                completion(.success(false))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-
-        prepareStoresToShowJustInTimeMessage(.success([]))
-
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-
-        // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
-
-        // Then
-        XCTAssertNil(viewModel.announcementViewModel)
-    }
-
-    func test_view_model_syncs_just_in_time_messages_when_ineligible_for_products_onboarding() async {
+    func test_view_model_syncs_just_in_time_messages() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
         prepareStoresToShowJustInTimeMessage(.success([message]))

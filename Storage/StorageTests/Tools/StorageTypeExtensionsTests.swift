@@ -1304,4 +1304,24 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundDevices.count, 1)
         XCTAssertEqual(foundDevices.first, device1)
     }
+
+    func test_loadAllBlazeTargetLanguages_with_locale() throws {
+        // Given
+        let language1 = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
+        language1.id = "en"
+        language1.name = "English"
+        language1.locale = "en"
+
+        let language2 = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
+        language2.id = "en"
+        language2.name = "Tiếng Anh"
+        language2.locale = "vi"
+
+        // When
+        let foundLanguages = try XCTUnwrap(storage.loadAllBlazeTargetLanguages(locale: "en"))
+
+        // Then
+        XCTAssertEqual(foundLanguages.count, 1)
+        XCTAssertEqual(foundLanguages.first, language1)
+    }
 }

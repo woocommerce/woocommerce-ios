@@ -60,6 +60,8 @@ public final class BlazeStore: Store {
                                  onCompletion: onCompletion)
         case let .synchronizeTargetDevices(siteID, locale, onCompletion):
             synchronizeTargetDevices(siteID: siteID, locale: locale, onCompletion: onCompletion)
+        case let .synchronizeTargetLanguages(siteID, locale, onCompletion):
+            synchronizeTargetLanguages(siteID: siteID, locale: locale, onCompletion: onCompletion)
         }
     }
 }
@@ -159,6 +161,52 @@ private extension BlazeStore {
             for device in readonlyDevices {
                 let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
                 storageDevice.update(with: device)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+// MARK: - Synchronize target languages
+private extension BlazeStore {
+    func synchronizeTargetLanguages(siteID: Int64,
+                                    locale: String,
+                                    onCompletion: @escaping (Result<[BlazeTargetLanguage], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stubbedResult = [
+                    BlazeTargetLanguage(id: "en", name: "English", locale: locale),
+                    BlazeTargetLanguage(id: "es", name: "Spanish", locale: locale)
+                ]
+                // TODO-11540: remove stubbed result when the API is ready.
+                let languages: [BlazeTargetLanguage] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetLanguages(for: siteID, locale: locale)
+                })
+                insertStoredTargetLanguagesInBackground(readonlyLanguages: languages, locale: locale) {
+                    onCompletion(.success(languages))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Removes BlazeTargetLanguage entities with the given locale
+    /// and inserts specified BlazeTargetLanguage Entities in a background thread.
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func insertStoredTargetLanguagesInBackground(readonlyLanguages: [Networking.BlazeTargetLanguage],
+                                                 locale: String,
+                                                 onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteBlazeTargetLanguages(locale: locale)
+            for language in readonlyLanguages {
+                let storageLanguage = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetLanguage.self)
+                storageLanguage.update(with: language)
             }
         }
 

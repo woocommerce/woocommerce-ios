@@ -427,7 +427,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetTopicCount, 1)
     }
 
-    func test_synchronizeTargetTopics_overwrites_existing_devices_with_the_given_locale() throws {
+    func test_synchronizeTargetTopics_overwrites_existing_topics_with_the_given_locale() throws {
         // Given
         let locale = "en"
         storeTargetTopic(.init(id: "test", description: "Test", locale: locale))

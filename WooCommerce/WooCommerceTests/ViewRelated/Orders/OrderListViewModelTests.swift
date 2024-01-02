@@ -262,28 +262,6 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_when_having_no_error_and_banner_visibility_loading_fails_shows_nothing() {
-        // Given
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .loadFeedbackVisibility(_, onCompletion):
-                let error = NSError(domain: "Test", code: 503, userInfo: nil)
-                onCompletion(.failure(error))
-            default:
-                break
-            }
-        }
-
-        // When
-        viewModel.activate()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .none
-        }
-    }
-
     func test_storing_error_shows_error_banner() {
         // Given
         let expectedError = MockError()

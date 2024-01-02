@@ -57,17 +57,15 @@ private extension BlazeLearnHowView {
     var stepBlock: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(steps, id: \.title) { step in
-                        StepView(step: step)
+                ForEach(steps, id: \.title) { step in
+                    StepView(step: step)
 
-                        Divider()
-                            .frame(height: Layout.StepBlock.dividerHeight)
-                            .overlay(Color(uiColor: .systemBackground))
-                    }
+                    Divider()
+                        .frame(height: Layout.StepBlock.dividerHeight)
+                        .overlay(Color(uiColor: .systemBackground))
                 }
-                .background(Layout.StepBlock.backgroundColor)
             }
+            .background(Layout.StepBlock.backgroundColor)
             .cornerRadius(Layout.StepBlock.cornerRadius)
         }
         .padding(Layout.contentPadding)

@@ -109,6 +109,46 @@ private extension BlazeCampaignCreationForm {
             value: "Edit ad",
             comment: "Button to edit ad details on the Blaze campaign creation screen"
         )
+        static let details = NSLocalizedString(
+            "blazeCampaignCreationForm.details",
+            value: "Details",
+            comment: "Section title on the Blaze campaign creation screen"
+        )
+        static let budget = NSLocalizedString(
+            "blazeCampaignCreationForm.budget",
+            value: "Budget",
+            comment: "Title of the Budget field on the Blaze campaign creation screen"
+        )
+        static let language = NSLocalizedString(
+            "blazeCampaignCreationForm.language",
+            value: "Language",
+            comment: "Title of the Language field on the Blaze campaign creation screen"
+        )
+        static let devices = NSLocalizedString(
+            "blazeCampaignCreationForm.devices",
+            value: "Devices",
+            comment: "Title of the Devices field on the Blaze campaign creation screen"
+        )
+        static let location = NSLocalizedString(
+            "blazeCampaignCreationForm.location",
+            value: "Location",
+            comment: "Title of the Location field on the Blaze campaign creation screen"
+        )
+        static let interests = NSLocalizedString(
+            "blazeCampaignCreationForm.interests",
+            value: "Interests",
+            comment: "Title of the Interests field on the Blaze campaign creation screen"
+        )
+        static let adDestination = NSLocalizedString(
+            "blazeCampaignCreationForm.adDestination",
+            value: "Ad destination",
+            comment: "Title of the Ad destination field on the Blaze campaign creation screen"
+        )
+        static let confirmDetails = NSLocalizedString(
+            "blazeCampaignCreationForm.confirmDetails",
+            value: "Confirm Details",
+            comment: "Button to confirm ad details on the Blaze campaign creation screen"
+        )
     }
 }
 

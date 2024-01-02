@@ -1324,4 +1324,24 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundLanguages.count, 1)
         XCTAssertEqual(foundLanguages.first, language1)
     }
+
+    func test_loadAllBlazeTargetTopics_with_locale() throws {
+        // Given
+        let topic1 = storage.insertNewObject(ofType: BlazeTargetTopic.self)
+        topic1.id = "1"
+        topic1.name = "Cuisines"
+        topic1.locale = "en"
+
+        let topic2 = storage.insertNewObject(ofType: BlazeTargetTopic.self)
+        topic2.id = "1"
+        topic2.name = "Ẩm thực"
+        topic2.locale = "vi"
+
+        // When
+        let foundTopics = try XCTUnwrap(storage.loadAllBlazeTargetTopics(locale: "en"))
+
+        // Then
+        XCTAssertEqual(foundTopics.count, 1)
+        XCTAssertEqual(foundTopics.first, topic1)
+    }
 }

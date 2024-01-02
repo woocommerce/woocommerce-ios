@@ -309,7 +309,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(languages.count, 1)
     }
 
-    func test_synchronizeTargetLanguages_stores_devices_upon_success() throws {
+    func test_synchronizeTargetLanguages_stores_languages_upon_success() throws {
         // Given
         remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
         let store = BlazeStore(dispatcher: Dispatcher(),

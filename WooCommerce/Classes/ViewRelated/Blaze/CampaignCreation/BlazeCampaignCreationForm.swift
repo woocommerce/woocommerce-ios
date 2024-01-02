@@ -22,10 +22,69 @@ struct BlazeCampaignCreationForm: View {
 
     var body: some View {
         ScrollView {
-            adPreview
-            Spacer()
+            VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                adPreview
+
+                Text(Localization.details)
+                    .subheadlineStyle()
+                    .foregroundColor(.init(uiColor: .text))
+
+                // Budget
+                detailView(title: Localization.budget, content: "$35, 7 days from Dec 13") {
+                    // TODO: open budget screen
+                }
+                .overlay { roundedRectangleBorder }
+
+                VStack(spacing: 0) {
+                    // Language
+                    detailView(title: Localization.language, content: "English, Chinese") {
+                        // TODO: open language screen
+                    }
+
+                    divider
+
+                    // Devices
+                    detailView(title: Localization.devices, content: "All") {
+                        // TODO: open devices screen
+                    }
+
+                    divider
+
+                    // Location
+                    detailView(title: Localization.location, content: "All") {
+                        // TODO: open location screen
+                    }
+
+                    divider
+
+                    // Interests
+                    detailView(title: Localization.interests, content: "Sports, Styles & Fashion, Travel, Shopping") {
+                        // TODO: open interests screen
+                    }
+                }
+                .overlay { roundedRectangleBorder }
+
+                // Ad destination
+                detailView(title: Localization.adDestination, content: "https://example.com") {
+                    // TODO: open destination screen
+                }
+                .overlay { roundedRectangleBorder }
+            }
+            .padding(.horizontal, Layout.contentPadding)
         }
         .navigationTitle(Localization.title)
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 0) {
+                Divider()
+
+                Button(Localization.confirmDetails) {
+                    // TODO: handle campaign creation
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
+                .padding(Layout.contentPadding)
+            }
+            .background(Color(uiColor: .systemBackground))
+        }
     }
 }
 
@@ -80,7 +139,37 @@ private extension BlazeCampaignCreationForm {
         .padding(Layout.contentPadding)
         .background(Color(uiColor: .systemGray6))
         .cornerRadius(Layout.cornerRadius)
-        .padding(Layout.contentPadding)
+        .padding(.vertical, Layout.contentPadding)
+    }
+
+    func detailView(title: String, content: String, action: @escaping () -> Void) -> some View {
+        Button(action: action, label: {
+            HStack {
+                VStack(alignment: .leading, spacing: Layout.detailContentSpacing) {
+                    Text(title)
+                        .bodyStyle()
+                    Text(content)
+                        .secondaryBodyStyle()
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .secondaryBodyStyle()
+            }
+            .padding(.horizontal, Layout.contentPadding)
+            .padding(.vertical, Layout.contentMargin)
+        })
+    }
+
+    var divider: some View {
+        Divider()
+            .frame(height: Layout.strokeWidth)
+            .foregroundColor(Color(uiColor: .separator))
+    }
+
+    var roundedRectangleBorder: some View {
+        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+            .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
     }
 }
 
@@ -91,6 +180,8 @@ private extension BlazeCampaignCreationForm {
         static let imagePadding: CGFloat = 8
         static let cornerRadius: CGFloat = 8
         static let adButtonCornerRadius: CGFloat = 4
+        static let strokeWidth: CGFloat = 1
+        static let detailContentSpacing: CGFloat = 4
     }
 
     enum Localization {

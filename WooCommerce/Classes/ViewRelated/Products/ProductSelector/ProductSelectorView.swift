@@ -44,6 +44,11 @@ struct ProductSelectorView: View {
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
+        // Default to always show Done button in single selection mode.
+        if viewModel.selectionMode == .single {
+            return Localization.doneButton
+        }
+
         guard viewModel.totalSelectedItemsCount > 0 else {
             return Localization.doneButton
         }
@@ -75,7 +80,7 @@ struct ProductSelectorView: View {
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
                 .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results)
-                Spacer()
+                .renderedIf(viewModel.selectionMode == .multiple)
 
                 Button(viewModel.filterButtonTitle) {
                     showingFilters.toggle()

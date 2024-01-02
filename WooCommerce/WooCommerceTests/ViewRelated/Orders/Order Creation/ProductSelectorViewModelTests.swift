@@ -1421,13 +1421,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  storageManager: storageManager,
                                                  onProductSelectionStateChanged: { _ in })
 
-        // When
-        let variationsViewModel = viewModel.getVariationsViewModel(for: variableProduct.productID)
-        variationsViewModel!.changeSelectionStateForVariation(with: productVariationId)
+        viewModel.updateSelectedVariations(productID: 2, selectedVariationIDs: [productVariationId])
 
         // Then
-        XCTAssertEqual(variationsViewModel!.selectedProductVariationIDs, [productVariationId])
-
         let simpleProductRow = viewModel.productRows.first(where: { $0.productOrVariationID == simpleProduct.productID })
         XCTAssertEqual(simpleProductRow?.selectedState, .notSelected)
     }

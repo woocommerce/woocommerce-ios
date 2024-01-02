@@ -1,6 +1,25 @@
 import SwiftUI
 
+/// Hosting controller for `BlazeCampaignCreationForm`
+final class BlazeCampaignCreationFormHostingController: UIHostingController<BlazeCampaignCreationForm> {
+    init(viewModel: BlazeCampaignCreationFormViewModel) {
+        super.init(rootView: .init(viewModel: viewModel))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+/// Form to enter details for creating a new Blaze campaign.
 struct BlazeCampaignCreationForm: View {
+    @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
+
+    init(viewModel: BlazeCampaignCreationFormViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         ScrollView {
             adPreview
@@ -15,20 +34,22 @@ private extension BlazeCampaignCreationForm {
         VStack {
             VStack(alignment: .leading, spacing: Layout.contentMargin) {
                 // TODO: use product image here
+                // Product image
                 Image(uiImage: .blazeIntroIllustration)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .cornerRadius(Layout.cornerRadius)
 
-                // TODO: dynamic text
+                // Tagline
                 Text("From $99")
                     .captionStyle()
 
                 HStack {
-                    // TODO: dynamic text
+                    // Description
                     Text("Get the latest white shirt for a stylish look")
                         .multilineTextAlignment(.leading)
                     Spacer()
+                    // Simulate shop button
                     Text(Localization.shopNow)
                         .fontWeight(.semibold)
                         .captionStyle()
@@ -41,6 +62,7 @@ private extension BlazeCampaignCreationForm {
             .cornerRadius(Layout.cornerRadius)
             .padding(Layout.contentPadding)
 
+            // Button to edit ad details
             Button(Localization.editAd) {
                 // TODO
             }
@@ -82,6 +104,6 @@ private extension BlazeCampaignCreationForm {
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm()
+        BlazeCampaignCreationForm(viewModel: .init(siteID: 123) {})
     }
 }

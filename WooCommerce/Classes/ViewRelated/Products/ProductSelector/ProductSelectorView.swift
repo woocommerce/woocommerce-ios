@@ -218,6 +218,8 @@ struct ProductSelectorView: View {
                     self.variationListViewModel = variationListViewModel
                 }
 
+                // In simple selection handling mode, merchants can only select the parent variable product, so
+                // there is no need to display the disclosure indicator.
                 if viewModel.selectionHandlingMode != .simple {
                     DisclosureIndicator()
                 }

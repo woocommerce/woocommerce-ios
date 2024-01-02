@@ -241,7 +241,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Banner visibility
 
-    func test_when_having_no_error_and_banner_should_not_be_shown_then_shows_nothing() {
+    func test_banner_should_not_be_shown_when_there_is_no_error() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in

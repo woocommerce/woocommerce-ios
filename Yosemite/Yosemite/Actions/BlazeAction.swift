@@ -28,4 +28,16 @@ public enum BlazeAction: Action {
     case synchronizeTargetDevices(siteID: Int64,
                                   locale: String,
                                   onCompletion: (Result<[BlazeTargetDevice], Error>) -> Void)
+
+    /// Retrieves and stores target languages for create Blaze campaigns for a site.
+    ///
+    /// - `siteID`: the site to create Blaze campaign.
+    /// - `locale`: the locale for the response.
+    /// - `onCompletion`: invoked when the sync operation finishes.
+    ///     - `result.success([BlazeTargetLanguage])`: list of target languages for Blaze campaigns.
+    ///     - `result.failure(Error)`: error indicates issues syncing data.
+    ///
+    case synchronizeTargetLanguages(siteID: Int64,
+                                    locale: String,
+                                    onCompletion: (Result<[BlazeTargetLanguage], Error>) -> Void)
 }

@@ -38,6 +38,10 @@ final class BlazeStoreTests: XCTestCase {
         return viewStorage.countObjects(ofType: StorageBlazeTargetDevice.self)
     }
 
+    private var storedTargetLanguageCount: Int {
+        return viewStorage.countObjects(ofType: StorageBlazeTargetLanguage.self)
+    }
+
     /// SiteID
     ///
     private let sampleSiteID: Int64 = 120934
@@ -282,6 +286,99 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Synchronize target languages
+
+    func test_synchronizeTargetLanguages_is_successful_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let languages = try result.get()
+        XCTAssertEqual(languages.count, 1)
+    }
+
+    func test_synchronizeTargetLanguages_stores_languages_upon_success() throws {
+        // Given
+        remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedTargetLanguageCount, 0)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedTargetLanguageCount, 1)
+    }
+
+    func test_synchronizeTargetLanguages_overwrites_existing_languages_with_the_given_locale() throws {
+        // Given
+        let locale = "en"
+        storeTargetLanguage(.init(id: "test", name: "Test", locale: locale))
+        storeTargetLanguage(.init(id: "test-2", name: "Test 2", locale: "vi"))
+        remote.whenFetchingTargetLanguages(thenReturn: .success([.init(id: "en", name: "English", locale: locale)]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedTargetLanguageCount, 2)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedTargetLanguageCount, 2)
+        let languages = viewStorage.loadAllBlazeTargetLanguages(locale: locale)
+        XCTAssertEqual(languages.count, 1)
+        let language = try XCTUnwrap(languages.first)
+        XCTAssertEqual(language.id, "en")
+        XCTAssertEqual(language.name, "English")
+        XCTAssertEqual(language.locale, locale)
+    }
+
+    func test_synchronizeTargetLanguages_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingTargetLanguages(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }
 
 private extension BlazeStoreTests {
@@ -298,5 +395,12 @@ private extension BlazeStoreTests {
         let storedDevice = storage.insertNewObject(ofType: BlazeTargetDevice.self)
         storedDevice.update(with: device)
         return storedDevice
+    }
+
+    @discardableResult
+    func storeTargetLanguage(_ language: Networking.BlazeTargetLanguage) -> Storage.BlazeTargetLanguage {
+        let storedLanguage = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
+        storedLanguage.update(with: language)
+        return storedLanguage
     }
 }

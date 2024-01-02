@@ -211,7 +211,9 @@ struct ProductSelectorView: View {
                     self.variationListViewModel = variationListViewModel
                 }
 
-                DisclosureIndicator()
+                if viewModel.selectionHandlingMode != .simple {
+                    DisclosureIndicator()
+                }
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {

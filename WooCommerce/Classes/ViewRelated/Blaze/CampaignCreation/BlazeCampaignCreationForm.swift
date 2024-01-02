@@ -31,7 +31,7 @@ struct BlazeCampaignCreationForm: View {
 
 private extension BlazeCampaignCreationForm {
     var adPreview: some View {
-        VStack {
+        VStack(spacing: Layout.contentPadding) {
             VStack(alignment: .leading, spacing: Layout.contentMargin) {
                 // TODO: use product image here
                 // Product image
@@ -40,37 +40,47 @@ private extension BlazeCampaignCreationForm {
                     .aspectRatio(contentMode: .fill)
                     .cornerRadius(Layout.cornerRadius)
 
+                // TODO: dynamic content
                 // Tagline
                 Text("From $99")
                     .captionStyle()
 
-                HStack {
+                HStack(spacing: Layout.contentPadding) {
+                    // TODO: dynamic content
                     // Description
                     Text("Get the latest white shirt for a stylish look")
+                        .fontWeight(.semibold)
+                        .headlineStyle()
                         .multilineTextAlignment(.leading)
-                    Spacer()
+
                     // Simulate shop button
                     Text(Localization.shopNow)
                         .fontWeight(.semibold)
                         .captionStyle()
                         .padding(Layout.contentMargin)
-                        .background(Color(uiColor: .systemGray))
+                        .background(Color(uiColor: .systemGray6))
                         .cornerRadius(Layout.adButtonCornerRadius)
                 }
             }
-            .padding(Layout.contentMargin)
-            .cornerRadius(Layout.cornerRadius)
             .padding(Layout.contentPadding)
+            .background(Color(uiColor: .systemBackground))
+            .cornerRadius(Layout.cornerRadius)
 
             // Button to edit ad details
-            Button(Localization.editAd) {
+            Button(action: {
                 // TODO
-            }
+            }, label: {
+                Text(Localization.editAd)
+                    .fontWeight(.semibold)
+                    .font(.body)
+                    .foregroundColor(.accentColor)
+            })
             .buttonStyle(.plain)
         }
+        .padding(Layout.contentPadding)
         .background(Color(uiColor: .systemGray6))
         .cornerRadius(Layout.cornerRadius)
-        .padding(Layout.contentMargin)
+        .padding(Layout.contentPadding)
     }
 }
 

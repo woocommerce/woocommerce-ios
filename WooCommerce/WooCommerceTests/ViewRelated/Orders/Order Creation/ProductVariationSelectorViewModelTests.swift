@@ -335,6 +335,35 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         // When
         viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
     }
+
+    // MARK: - Selection mode
+    func test_given_single_SelectionMode_and_existing_selected_variation_when_a_new_variation_is_selected_then_only_new_variation_is_selected() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let previouslySelectedVariation = sampleProductVariation.copy(productVariationID: 1)
+        let nextSelectedVariation = sampleProductVariation.copy(productVariationID: 2)
+        insert(product)
+        insert(previouslySelectedVariation)
+        insert(nextSelectedVariation)
+
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          selectionMode: .single,
+                                                          storageManager: storageManager)
+
+        // When
+        viewModel.changeSelectionStateForVariation(with: previouslySelectedVariation.productVariationID)
+        viewModel.changeSelectionStateForVariation(with: nextSelectedVariation.productVariationID)
+
+        // Then
+        let previousVariationRow = viewModel.productVariationRows.first(where: { $0.productOrVariationID == previouslySelectedVariation.productVariationID })
+        XCTAssertNotNil(previousVariationRow)
+        XCTAssertEqual(previousVariationRow?.selectedState, .notSelected)
+
+        let nextVariationRow = viewModel.productVariationRows.first(where: { $0.productOrVariationID == nextSelectedVariation.productVariationID })
+        XCTAssertNotNil(nextVariationRow)
+        XCTAssertEqual(nextVariationRow?.selectedState, .selected)
+    }
 }
 
 // MARK: - Utils

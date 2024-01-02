@@ -99,13 +99,27 @@ final class BlazeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-languages")
 
         // When
-        let results = try await remote.fetchTargetLanguages(for: sampleSiteID)
+        let results = try await remote.fetchTargetLanguages(for: sampleSiteID, locale: "vi")
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "en", name: "English"),
-            .init(id: "es", name: "Spanish")
+            .init(id: "en", name: "English", locale: "vi"),
+            .init(id: "es", name: "Spanish", locale: "vi")
         ])
+    }
+
+    func test_fetchTargetLanguages_sends_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/languages"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-languages")
+
+        // When
+        _ = try await remote.fetchTargetLanguages(for: sampleSiteID, locale: "en")
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["locale"] as? String, "en")
     }
 
     func test_fetchTargetLanguages_properly_relays_networking_errors() async {
@@ -118,7 +132,7 @@ final class BlazeRemoteTests: XCTestCase {
 
         do {
             // When
-            _ = try await remote.fetchTargetLanguages(for: sampleSiteID)
+            _ = try await remote.fetchTargetLanguages(for: sampleSiteID, locale: "en")
 
             // Then
             XCTFail("Request should fail")
@@ -138,13 +152,27 @@ final class BlazeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-devices")
 
         // When
-        let results = try await remote.fetchTargetDevices(for: sampleSiteID)
+        let results = try await remote.fetchTargetDevices(for: sampleSiteID, locale: "vi")
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "mobile", name: "Mobile"),
-            .init(id: "desktop", name: "Desktop")
+            .init(id: "mobile", name: "Mobile", locale: "vi"),
+            .init(id: "desktop", name: "Desktop", locale: "vi")
         ])
+    }
+
+    func test_fetchTargetDevices_sends_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/devices"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-devices")
+
+        // When
+        _ = try await remote.fetchTargetDevices(for: sampleSiteID, locale: "en")
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["locale"] as? String, "en")
     }
 
     func test_fetchTargetDevices_properly_relays_networking_errors() async {
@@ -157,7 +185,7 @@ final class BlazeRemoteTests: XCTestCase {
 
         do {
             // When
-            _ = try await remote.fetchTargetDevices(for: sampleSiteID)
+            _ = try await remote.fetchTargetDevices(for: sampleSiteID, locale: "en")
 
             // Then
             XCTFail("Request should fail")
@@ -177,14 +205,28 @@ final class BlazeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-topics")
 
         // When
-        let results = try await remote.fetchTargetTopics(for: sampleSiteID)
+        let results = try await remote.fetchTargetTopics(for: sampleSiteID, locale: "vi")
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "IAB1", description: "Arts & Entertainment"),
-            .init(id: "IAB2", description: "Automotive"),
-            .init(id: "IAB3", description: "Business")
+            .init(id: "IAB1", description: "Arts & Entertainment", locale: "vi"),
+            .init(id: "IAB2", description: "Automotive", locale: "vi"),
+            .init(id: "IAB3", description: "Business", locale: "vi")
         ])
+    }
+
+    func test_fetchTargetTopics_sends_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/page-topics"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-topics")
+
+        // When
+        _ = try await remote.fetchTargetTopics(for: sampleSiteID, locale: "vi")
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["locale"] as? String, "vi")
     }
 
     func test_fetchTargetTopics_properly_relays_networking_errors() async {
@@ -197,7 +239,7 @@ final class BlazeRemoteTests: XCTestCase {
 
         do {
             // When
-            _ = try await remote.fetchTargetTopics(for: sampleSiteID)
+            _ = try await remote.fetchTargetTopics(for: sampleSiteID, locale: "en")
 
             // Then
             XCTFail("Request should fail")
@@ -213,11 +255,11 @@ final class BlazeRemoteTests: XCTestCase {
         // Given
         let remote = BlazeRemote(network: network)
         let query = "test"
-        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/locations?query=" + query
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/locations"
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-locations")
 
         // When
-        let results = try await remote.fetchTargetLocations(for: sampleSiteID, query: query)
+        let results = try await remote.fetchTargetLocations(for: sampleSiteID, query: query, locale: "en")
 
         // Then
         XCTAssertEqual(results.count, 3)
@@ -233,17 +275,33 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertNil(firstItem.parentLocation?.parentLocation?.parentLocation?.parentLocation)
     }
 
+    func test_fetchTargetLocations_sends_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let query = "test"
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/locations"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-target-locations")
+
+        // When
+        _ = try await remote.fetchTargetLocations(for: sampleSiteID, query: query, locale: "en")
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["locale"] as? String, "en")
+        XCTAssertEqual(request.parameters?["query"] as? String, query)
+    }
+
     func test_fetchTargetLocations_properly_relays_networking_errors() async {
         // Given
         let remote = BlazeRemote(network: network)
         let query = "test"
-        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/locations?query=" + query
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/targeting/locations"
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
         network.simulateError(requestUrlSuffix: suffix, error: expectedError)
 
         do {
             // When
-            _ = try await remote.fetchTargetLocations(for: sampleSiteID, query: query)
+            _ = try await remote.fetchTargetLocations(for: sampleSiteID, query: query, locale: "en")
 
             // Then
             XCTFail("Request should fail")

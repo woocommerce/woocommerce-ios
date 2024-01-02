@@ -37,7 +37,7 @@ final class MockBlazeRemote {
 }
 
 extension MockBlazeRemote: BlazeRemoteProtocol {
-    func fetchTargetLanguages(for siteID: Int64) async throws -> [BlazeTargetLanguage] {
+    func fetchTargetLanguages(for siteID: Int64, locale: String) async throws -> [BlazeTargetLanguage] {
         guard let result = fetchingTargetLanguagesResult else {
             XCTFail("Could not find result for fetching target languages.")
             throw NetworkError.notFound()
@@ -50,7 +50,7 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         }
     }
 
-    func fetchTargetDevices(for siteID: Int64) async throws -> [BlazeTargetDevice] {
+    func fetchTargetDevices(for siteID: Int64, locale: String) async throws -> [BlazeTargetDevice] {
         guard let result = fetchingTargetDevicesResult else {
             XCTFail("Could not find result for fetching target devices.")
             throw NetworkError.notFound()
@@ -63,7 +63,7 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         }
     }
 
-    func fetchTargetTopics(for siteID: Int64) async throws -> [BlazeTargetTopic] {
+    func fetchTargetTopics(for siteID: Int64, locale: String) async throws -> [BlazeTargetTopic] {
         guard let result = fetchingTargetTopicsResult else {
             XCTFail("Could not find result for fetching target topics.")
             throw NetworkError.notFound()
@@ -76,7 +76,7 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         }
     }
 
-    func fetchTargetLocations(for siteID: Int64, query: String) async throws -> [BlazeTargetLocation] {
+    func fetchTargetLocations(for siteID: Int64, query: String, locale: String) async throws -> [BlazeTargetLocation] {
         guard let result = fetchingTargetLocationsResult else {
             XCTFail("Could not find result for fetching target locations.")
             throw NetworkError.notFound()

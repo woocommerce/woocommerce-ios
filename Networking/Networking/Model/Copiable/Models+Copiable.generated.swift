@@ -202,14 +202,17 @@ extension Networking.BlazeCampaign {
 extension Networking.BlazeTargetDevice {
     public func copy(
         id: CopiableProp<String> = .copy,
-        name: CopiableProp<String> = .copy
+        name: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetDevice {
         let id = id ?? self.id
         let name = name ?? self.name
+        let locale = locale ?? self.locale
 
         return Networking.BlazeTargetDevice(
             id: id,
-            name: name
+            name: name,
+            locale: locale
         )
     }
 }
@@ -217,14 +220,17 @@ extension Networking.BlazeTargetDevice {
 extension Networking.BlazeTargetLanguage {
     public func copy(
         id: CopiableProp<String> = .copy,
-        name: CopiableProp<String> = .copy
+        name: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetLanguage {
         let id = id ?? self.id
         let name = name ?? self.name
+        let locale = locale ?? self.locale
 
         return Networking.BlazeTargetLanguage(
             id: id,
-            name: name
+            name: name,
+            locale: locale
         )
     }
 }
@@ -259,14 +265,17 @@ extension Networking.BlazeTargetLocation {
 extension Networking.BlazeTargetTopic {
     public func copy(
         id: CopiableProp<String> = .copy,
-        description: CopiableProp<String> = .copy
+        description: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetTopic {
         let id = id ?? self.id
         let description = description ?? self.description
+        let locale = locale ?? self.locale
 
         return Networking.BlazeTargetTopic(
             id: id,
-            description: description
+            description: description,
+            locale: locale
         )
     }
 }

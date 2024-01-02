@@ -144,6 +144,72 @@ final class StorageTypeDeletionsTests: XCTestCase {
         let currrentSystemPlugin = storage.loadSystemPlugins(siteID: sampleSiteID)
         XCTAssertEqual(currrentSystemPlugin, [systemPlugin3])
     }
+
+    func test_deleteBlazeTargetDevices_with_locale() throws {
+        // Given
+        let device1 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
+        device1.id = "mobile"
+        device1.name = "Mobile"
+        device1.locale = "en"
+
+        let device2 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
+        device2.id = "desktop"
+        device2.name = "Desktop"
+        device2.locale = "es"
+
+        // When
+        storage.deleteBlazeTargetDevices(locale: "en")
+
+        // Then
+        let enDevices = storage.loadAllBlazeTargetDevices(locale: "en")
+        XCTAssertTrue(enDevices.isEmpty)
+        let esDevices = storage.loadAllBlazeTargetDevices(locale: "es")
+        XCTAssertEqual(esDevices.count, 1)
+    }
+
+    func test_deleteBlazeTargetLanguages_with_locale() throws {
+        // Given
+        let language1 = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
+        language1.id = "en"
+        language1.name = "English"
+        language1.locale = "en"
+
+        let language2 = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
+        language2.id = "en"
+        language2.name = "Tiếng Anh"
+        language2.locale = "vi"
+
+        // When
+        storage.deleteBlazeTargetLanguages(locale: "en")
+
+        // Then
+        let enLanguages = storage.loadAllBlazeTargetLanguages(locale: "en")
+        XCTAssertTrue(enLanguages.isEmpty)
+        let viLanguages = storage.loadAllBlazeTargetLanguages(locale: "vi")
+        XCTAssertEqual(viLanguages.count, 1)
+    }
+
+    func test_deleteBlazeTargetTopics_with_locale() throws {
+        // Given
+        let topic1 = storage.insertNewObject(ofType: BlazeTargetTopic.self)
+        topic1.id = "1"
+        topic1.name = "Cuisines"
+        topic1.locale = "en"
+
+        let topic2 = storage.insertNewObject(ofType: BlazeTargetTopic.self)
+        topic2.id = "1"
+        topic2.name = "Ẩm thực"
+        topic2.locale = "vi"
+
+        // When
+        storage.deleteBlazeTargetTopics(locale: "en")
+
+        // Then
+        let enTopics = storage.loadAllBlazeTargetTopics(locale: "en")
+        XCTAssertTrue(enTopics.isEmpty)
+        let viTopics = storage.loadAllBlazeTargetTopics(locale: "vi")
+        XCTAssertEqual(viTopics.count, 1)
+    }
 }
 
 private extension StorageTypeDeletionsTests {

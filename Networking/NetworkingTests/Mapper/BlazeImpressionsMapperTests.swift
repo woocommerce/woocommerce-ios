@@ -1,9 +1,9 @@
 import XCTest
 @testable import Networking
 
-class BlazeImpressionsMapperTests: XCTestCase {
+final class BlazeImpressionsMapperTests: XCTestCase {
 
-    /// Verifies that the response is parted
+    /// Verifies that the response is parsed
     ///
     func test_BlazeImpressionsMapper_parses_all_contents_in_response() throws {
         let blazeImpressions = try mapLoadBlazeImpressionsResponse()

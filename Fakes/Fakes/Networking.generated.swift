@@ -190,7 +190,8 @@ extension Networking.BlazeTargetDevice {
     public static func fake() -> Networking.BlazeTargetDevice {
         .init(
             id: .fake(),
-            name: .fake()
+            name: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -200,7 +201,8 @@ extension Networking.BlazeTargetLanguage {
     public static func fake() -> Networking.BlazeTargetLanguage {
         .init(
             id: .fake(),
-            name: .fake()
+            name: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -224,7 +226,8 @@ extension Networking.BlazeTargetTopic {
     public static func fake() -> Networking.BlazeTargetTopic {
         .init(
             id: .fake(),
-            description: .fake()
+            description: .fake(),
+            locale: .fake()
         )
     }
 }

@@ -6,12 +6,12 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
     ///
     func test_BlazeTargetLanguageListMapper_parses_all_contents_in_response() throws {
         // When
-        let list = try XCTUnwrap(mapLoadBlazeTargetLanguageResponse())
+        let list = try XCTUnwrap(mapLoadBlazeTargetLanguageResponse(locale: "vi"))
 
         // Then
         XCTAssertEqual(list, [
-            .init(id: "en", name: "English"),
-            .init(id: "es", name: "Spanish")
+            .init(id: "en", name: "English", locale: "vi"),
+            .init(id: "es", name: "Spanish", locale: "vi")
         ])
     }
 
@@ -19,12 +19,12 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
     ///
     func test_BlazeTargetDeviceListMapper_parses_all_contents_in_response() throws {
         // When
-        let list = try XCTUnwrap(mapLoadBlazeTargetDeviceResponse())
+        let list = try XCTUnwrap(mapLoadBlazeTargetDeviceResponse(locale: "vi"))
 
         // Then
         XCTAssertEqual(list, [
-            .init(id: "mobile", name: "Mobile"),
-            .init(id: "desktop", name: "Desktop")
+            .init(id: "mobile", name: "Mobile", locale: "vi"),
+            .init(id: "desktop", name: "Desktop", locale: "vi")
         ])
     }
 
@@ -32,13 +32,13 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
     ///
     func test_BlazeTargetTopicListMapper_parses_all_contents_in_response() throws {
         // When
-        let list = try XCTUnwrap(mapLoadBlazeTargetTopicResponse())
+        let list = try XCTUnwrap(mapLoadBlazeTargetTopicResponse(locale: "vi"))
 
         // Then
         XCTAssertEqual(list, [
-            .init(id: "IAB1", description: "Arts & Entertainment"),
-            .init(id: "IAB2", description: "Automotive"),
-            .init(id: "IAB3", description: "Business")
+            .init(id: "IAB1", description: "Arts & Entertainment", locale: "vi"),
+            .init(id: "IAB2", description: "Automotive", locale: "vi"),
+            .init(id: "IAB3", description: "Business", locale: "vi")
         ])
     }
 
@@ -67,29 +67,29 @@ private extension BlazeTargetOptionMapperTests {
 
     /// Returns the [BlazeTargetLanguage] output from `blaze-target-languages.json`
     ///
-    func mapLoadBlazeTargetLanguageResponse() throws -> [BlazeTargetLanguage] {
+    func mapLoadBlazeTargetLanguageResponse(locale: String) throws -> [BlazeTargetLanguage] {
         guard let response = Loader.contentsOf("blaze-target-languages") else {
             return []
         }
-        return try BlazeTargetLanguageListMapper().map(response: response)
+        return try BlazeTargetLanguageListMapper(locale: locale).map(response: response)
     }
 
     /// Returns the [BlazeTargetDevice] output from `blaze-target-devices.json`
     ///
-    func mapLoadBlazeTargetDeviceResponse() throws -> [BlazeTargetDevice] {
+    func mapLoadBlazeTargetDeviceResponse(locale: String) throws -> [BlazeTargetDevice] {
         guard let response = Loader.contentsOf("blaze-target-devices") else {
             return []
         }
-        return try BlazeTargetDeviceListMapper().map(response: response)
+        return try BlazeTargetDeviceListMapper(locale: locale).map(response: response)
     }
 
     /// Returns the [BlazeTargetTopic] output from `blaze-target-topics.json`
     ///
-    func mapLoadBlazeTargetTopicResponse() throws -> [BlazeTargetTopic] {
+    func mapLoadBlazeTargetTopicResponse(locale: String) throws -> [BlazeTargetTopic] {
         guard let response = Loader.contentsOf("blaze-target-topics") else {
             return []
         }
-        return try BlazeTargetTopicListMapper().map(response: response)
+        return try BlazeTargetTopicListMapper(locale: locale).map(response: response)
     }
 
     /// Returns the [BlazeTargetLocation] output from `blaze-target-locations.json`

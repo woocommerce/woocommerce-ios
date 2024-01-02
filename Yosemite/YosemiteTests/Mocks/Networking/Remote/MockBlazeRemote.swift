@@ -91,13 +91,7 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
 
     func fetchForecastedImpressions(
         for siteID: Int64,
-        from startDate: Date,
-        to endDate: Date,
-        formattedTotalBudget: String,
-        targetLocationIds: [Int64] = [],
-        targetLanguageIds: [String] = [],
-        targetDeviceIds: [String] = [],
-        targetTopicIds: [String]  = []
+        with input: BlazeForecastedImpressionsInput
     ) async throws -> Networking.BlazeImpressions {
         guard let result = fetchingForecastedImpressionsResult else {
             XCTFail("Could not find result for fetching forecasted impressions.")

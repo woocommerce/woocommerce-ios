@@ -267,13 +267,14 @@ final class BlazeRemoteTests: XCTestCase {
         // When
         let result = try await remote.fetchForecastedImpressions(
             for: sampleSiteID,
-            from: dateFormatter.date(from: "2023-12-5")!,
-            to: dateFormatter.date(from: "2023-12-11")!,
-            formattedTotalBudget: "35.00",
-            targetLocationIds: [29211, 42546],
-            targetLanguageIds: ["en", "de"],
-            targetDeviceIds: ["mobile"],
-            targetTopicIds: ["IAB3", "IAB4"]
+            with: BlazeForecastedImpressionsInput(startDate: dateFormatter.date(from: "2023-12-5")!,
+                                                  endDate: dateFormatter.date(from: "2023-12-11")!,
+                                                  formattedTotalBudget: "35.00",
+                                                  targetings: BlazeTargetOptions(locations: [29211, 42546],
+                                                                                 languages: ["en", "de"],
+                                                                                 devices: ["mobile"],
+                                                                                 pageTopics: ["IAB3", "IAB4"])
+                                                 )
         )
 
         // Then
@@ -295,9 +296,10 @@ final class BlazeRemoteTests: XCTestCase {
 
             _ = try await remote.fetchForecastedImpressions(
                 for: sampleSiteID,
-                from: dateFormatter.date(from: "2023-12-5")!,
-                to: dateFormatter.date(from: "2023-12-11")!,
-                formattedTotalBudget: "35.00"
+                with: BlazeForecastedImpressionsInput(startDate: dateFormatter.date(from: "2023-12-5")!,
+                                                      endDate: dateFormatter.date(from: "2023-12-11")!,
+                                                      formattedTotalBudget: "35.00"
+                                                     )
             )
 
             // Then

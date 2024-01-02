@@ -183,7 +183,7 @@ public struct BlazeForecastedImpressionsInput: Encodable {
     public init(startDate: Date,
                 endDate: Date,
                 formattedTotalBudget: String,
-                targetings: BlazeTargetOptions?) {
+                targetings: BlazeTargetOptions? = nil) {
         self.startDate = startDate
         self.endDate = endDate
         self.formattedTotalBudget = formattedTotalBudget

@@ -228,7 +228,7 @@ final class ProductSelectorViewModel: ObservableObject {
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          selectionHandlingMode: SelectionHandling = .normal,
-         selectionMode: SelectionMode = .single,
+         selectionMode: SelectionMode = .multiple,
          shouldDeleteStoredProductsOnFirstPage: Bool = true,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,

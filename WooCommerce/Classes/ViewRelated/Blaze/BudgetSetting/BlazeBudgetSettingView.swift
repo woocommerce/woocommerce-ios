@@ -5,7 +5,12 @@ struct BlazeBudgetSettingView: View {
 
     @Binding var isPresented: Bool
 
-    @State private var amount: Double = 0
+    @ObservedObject private var viewModel: BlazeBudgetSettingViewModel
+
+    init(isPresented: Binding<Bool>, viewModel: BlazeBudgetSettingViewModel) {
+        self._isPresented = isPresented
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         VStack(spacing: Layout.sectionSpacing) {
@@ -45,7 +50,7 @@ struct BlazeBudgetSettingView: View {
                 VStack {
                     Text("$5 daily")
 
-                    Slider(value: $amount) {
+                    Slider(value: $viewModel.amount) {
                         Text("")
                     } minimumValueLabel: {
                         Text("")
@@ -146,6 +151,7 @@ private extension BlazeBudgetSettingView {
 
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeBudgetSettingView(isPresented: .constant(true))
+        BlazeBudgetSettingView(isPresented: .constant(true),
+                               viewModel: BlazeBudgetSettingViewModel())
     }
 }

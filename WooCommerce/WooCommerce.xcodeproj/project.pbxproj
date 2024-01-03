@@ -2229,6 +2229,7 @@
 		DE57462F2B43EB0B0034B10D /* BlazeCampaignCreationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE57462E2B43EB0B0034B10D /* BlazeCampaignCreationForm.swift */; };
 		DE5746312B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746302B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift */; };
 		DE5746342B4512900034B10D /* BlazeBudgetSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */; };
+		DE5746362B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746352B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift */; };
 		DE5C19C52AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C42AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift */; };
 		DE5C19C72AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C62AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift */; };
 		DE5C19C92AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */; };
@@ -4865,6 +4866,7 @@
 		DE57462E2B43EB0B0034B10D /* BlazeCampaignCreationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationForm.swift; sourceTree = "<group>"; };
 		DE5746302B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationFormViewModel.swift; sourceTree = "<group>"; };
 		DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingView.swift; sourceTree = "<group>"; };
+		DE5746352B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingViewModel.swift; sourceTree = "<group>"; };
 		DE5C19C42AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductNameWithAIViewModelTests.swift; sourceTree = "<group>"; };
 		DE5C19C62AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFeaturesViewModelTests.swift; sourceTree = "<group>"; };
 		DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductNameAI.swift"; sourceTree = "<group>"; };
@@ -11064,6 +11066,7 @@
 			isa = PBXGroup;
 			children = (
 				DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */,
+				DE5746352B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift */,
 			);
 			path = BudgetSetting;
 			sourceTree = "<group>";
@@ -13718,6 +13721,7 @@
 				DEF36DE82898D3CF00178AC2 /* JetpackSetupWebViewModel.swift in Sources */,
 				0270F47624D005B00005210A /* ProductFormViewModelProtocol.swift in Sources */,
 				268EC46126D3F67800716F5C /* EditCustomerNoteViewModel.swift in Sources */,
+				DE5746362B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift in Sources */,
 				B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */,
 				45C8B2662316AB460002FA77 /* BillingAddressTableViewCell.swift in Sources */,
 				E11228BC2707161E004E9F2D /* CardPresentModalUpdateFailed.swift in Sources */,

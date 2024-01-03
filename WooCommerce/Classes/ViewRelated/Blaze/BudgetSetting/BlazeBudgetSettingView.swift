@@ -151,7 +151,7 @@ private extension BlazeBudgetSettingView {
 
     var durationSettingView: some View {
         ScrollView {
-            Text("Set duration")
+            Text(Localization.setDuration)
                 .headlineStyle()
                 .padding(.horizontal, Layout.contentPadding)
                 .padding(.vertical, Layout.sectionSpacing)
@@ -169,7 +169,7 @@ private extension BlazeBudgetSettingView {
 
             VStack {
                 HStack {
-                    Text("Starts")
+                    Text(Localization.starts)
                         .bodyStyle()
 
                     Spacer()
@@ -186,7 +186,7 @@ private extension BlazeBudgetSettingView {
 
             Spacer()
 
-            Button("Apply") {
+            Button(Localization.apply) {
                 showingDurationSetting = false
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -255,6 +255,21 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.done",
             value: "Done",
             comment: "Button to dismiss the Blaze impression info screen"
+        )
+        static let setDuration = NSLocalizedString(
+            "blazeBudgetSettingView.setDuration",
+            value: "Set duration",
+            comment: "Title of the Blaze campaign duration setting screen"
+        )
+        static let starts = NSLocalizedString(
+            "blazeBudgetSettingView.starts",
+            value: "Starts",
+            comment: "Label of the start date picker on the Blaze campaign duration setting screen"
+        )
+        static let apply = NSLocalizedString(
+            "blazeBudgetSettingView.apply",
+            value: "Apply",
+            comment: "Button to apply the changes on the Blaze campaign duration setting screen"
         )
     }
 }

@@ -3,12 +3,11 @@ import SwiftUI
 /// View to set budget for a new Blaze campaign
 struct BlazeBudgetSettingView: View {
 
-    @Binding var isPresented: Bool
+    @Environment(\.dismiss) var dismiss
 
     @ObservedObject private var viewModel: BlazeBudgetSettingViewModel
 
-    init(isPresented: Binding<Bool>, viewModel: BlazeBudgetSettingViewModel) {
-        self._isPresented = isPresented
+    init(viewModel: BlazeBudgetSettingViewModel) {
         self.viewModel = viewModel
     }
 
@@ -17,7 +16,7 @@ struct BlazeBudgetSettingView: View {
             // Cancel button
             HStack {
                 Button(Localization.cancel) {
-                    isPresented.toggle()
+                    dismiss()
                 }
                 Spacer()
             }
@@ -151,7 +150,6 @@ private extension BlazeBudgetSettingView {
 
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeBudgetSettingView(isPresented: .constant(true),
-                               viewModel: BlazeBudgetSettingViewModel())
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel())
     }
 }

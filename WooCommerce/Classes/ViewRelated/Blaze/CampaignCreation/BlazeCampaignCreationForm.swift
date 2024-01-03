@@ -16,6 +16,8 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
+    @State private var isShowingBudgetSetting = false
+
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
     }
@@ -31,7 +33,7 @@ struct BlazeCampaignCreationForm: View {
 
                 // Budget
                 detailView(title: Localization.budget, content: "$35, 7 days from Dec 13") {
-                    // TODO: open budget screen
+                    isShowingBudgetSetting = true
                 }
                 .overlay { roundedRectangleBorder }
 
@@ -84,6 +86,9 @@ struct BlazeCampaignCreationForm: View {
                 .padding(Layout.contentPadding)
             }
             .background(Color(uiColor: .systemBackground))
+        }
+        .sheet(isPresented: $isShowingBudgetSetting) {
+            BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
         }
     }
 }

@@ -22,7 +22,7 @@ struct BlazeBudgetSettingView: View {
                 Spacer()
             }
 
-            mainContent
+            mainContentView
         }
         .padding(Layout.contentPadding)
         .safeAreaInset(edge: .bottom) {
@@ -39,7 +39,7 @@ struct BlazeBudgetSettingView: View {
 }
 
 private extension BlazeBudgetSettingView {
-    var mainContent: some View {
+    var mainContentView: some View {
         ScrollableVStack(spacing: Layout.sectionSpacing) {
             VStack(spacing: Layout.sectionContentSpacing) {
                 Text(Localization.title)

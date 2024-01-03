@@ -3,7 +3,7 @@ import Yosemite
 
 /// View model for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
-    
+
     private let siteID: Int64
     private let stores: StoresManager
     private let completionHandler: () -> Void

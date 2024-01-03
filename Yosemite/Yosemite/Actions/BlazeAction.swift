@@ -66,4 +66,13 @@ public enum BlazeAction: Action {
                               query: String,
                               locale: String,
                               onCompletion: (Result<[BlazeTargetLocation], Error>) -> Void)
+
+    /// Retrieves forecasted amount of available impressions for a Blaze campaign to be created.
+    ///
+    /// - `siteID`: the site to create Blaze campaign.
+    /// - `input`: the input for the forecasted impressions. Has various required and optional parameters.
+    /// - `onCompletion`: invoked when the fect operation finishes.
+    case fetchForecastedImpressions(siteID: Int64,
+                                    input: BlazeForecastedImpressionsInput,
+                                    onCompletion: (Result<BlazeImpressions, Error>) -> Void)
 }

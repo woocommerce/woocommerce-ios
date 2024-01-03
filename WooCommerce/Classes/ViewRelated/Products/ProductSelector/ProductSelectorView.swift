@@ -248,6 +248,12 @@ struct ProductSelectorView: View {
             }
             .onTapGesture {
                 if let configure = rowViewModel.configure, rowViewModel.isConfigurable {
+                    // For configurable product (e.g: bundle), the tap gesture here will then select the
+                    // product. If the selection mode is single, we should clear the selection first to ensure
+                    // that only the configurable product is selected.
+                    if viewModel.selectionMode == .single {
+                        viewModel.clearSelection()
+                    }
                     configure()
                     switch source {
                         case let .orderForm(flow):

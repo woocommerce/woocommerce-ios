@@ -303,7 +303,7 @@ final class ProductSelectorViewModel: ObservableObject {
     private func toggleSelection(id: Int64) {
         // In single selection mode, remove previously selected product first.
         if selectionMode == .single {
-            selectedItemsIDs = []
+            clearSelection()
         }
 
         if selectedItemsIDs.contains(id) {
@@ -344,7 +344,7 @@ final class ProductSelectorViewModel: ObservableObject {
         // then enter a variable product and select a variation. In this situation,
         // we have to remove the selected simple product first.
         if selectedVariationIDs.count > 0 && selectionMode == .single {
-            selectedItemsIDs = []
+            clearSelection()
         }
 
         guard let variableProduct = products.first(where: { $0.productID == productID }),

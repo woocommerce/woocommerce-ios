@@ -162,7 +162,9 @@ private extension BlazeBudgetSettingView {
                     .fontWeight(.semibold)
                     .bodyStyle()
 
-                Slider(value: $viewModel.dayCount, in: 1...28, step: 1)
+                Slider(value: $viewModel.dayCount,
+                       in: viewModel.dayCountSliderRange,
+                       step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
             }
             .padding(Layout.contentPadding)
 

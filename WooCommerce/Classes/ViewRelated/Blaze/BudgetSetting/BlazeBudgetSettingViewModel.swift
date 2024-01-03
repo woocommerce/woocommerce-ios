@@ -11,6 +11,9 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
+    /// Using Double because Slider doesn't work with Int
+    let dayCountSliderRange = Double(Constants.minimumDayCount)...Double(Constants.maximumDayCount)
+    
     var dailyAmountText: String {
         let formattedAmount = String(format: "$%.0f", dailyAmount)
         return String.localizedStringWithFormat(Localization.dailyAmount, formattedAmount)
@@ -41,6 +44,7 @@ extension BlazeBudgetSettingViewModel {
         static let dailyAmountSliderStep: Double = 1
         static let minimumDayCount = 1
         static let maximumDayCount = 28
+        static let dayCountSliderStep = 1
     }
 
     private enum Localization {

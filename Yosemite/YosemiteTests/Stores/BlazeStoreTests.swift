@@ -518,6 +518,30 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Fetching forecasted impressions
+
+    func test_fetchForecastedImpressions_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingForecastedImpressions(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchForecastedImpressions(siteID: self.sampleSiteID,
+                                                                  input: BlazeForecastedImpressionsInput.fake(),
+                                                                  onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }
 
 private extension BlazeStoreTests {

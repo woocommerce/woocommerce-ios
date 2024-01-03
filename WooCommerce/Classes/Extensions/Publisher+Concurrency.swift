@@ -1,6 +1,6 @@
 import Combine
 
-public extension Publisher {
+extension Publisher {
     /// Transforms the publisher with an async operator that does not throw an error.
     ///
     /// Original implementation:

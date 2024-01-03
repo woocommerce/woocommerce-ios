@@ -2228,6 +2228,7 @@
 		DE525499268C8B32007A5829 /* UIRefreshControl+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */; };
 		DE57462F2B43EB0B0034B10D /* BlazeCampaignCreationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE57462E2B43EB0B0034B10D /* BlazeCampaignCreationForm.swift */; };
 		DE5746312B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746302B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift */; };
+		DE5746342B4512900034B10D /* BlazeBudgetSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */; };
 		DE5C19C52AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C42AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift */; };
 		DE5C19C72AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C62AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift */; };
 		DE5C19C92AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */; };
@@ -4863,6 +4864,7 @@
 		DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+Woo.swift"; sourceTree = "<group>"; };
 		DE57462E2B43EB0B0034B10D /* BlazeCampaignCreationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationForm.swift; sourceTree = "<group>"; };
 		DE5746302B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationFormViewModel.swift; sourceTree = "<group>"; };
+		DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingView.swift; sourceTree = "<group>"; };
 		DE5C19C42AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductNameWithAIViewModelTests.swift; sourceTree = "<group>"; };
 		DE5C19C62AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFeaturesViewModelTests.swift; sourceTree = "<group>"; };
 		DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductNameAI.swift"; sourceTree = "<group>"; };
@@ -11058,6 +11060,14 @@
 			path = CampaignCreation;
 			sourceTree = "<group>";
 		};
+		DE5746322B4512750034B10D /* BudgetSetting */ = {
+			isa = PBXGroup;
+			children = (
+				DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */,
+			);
+			path = BudgetSetting;
+			sourceTree = "<group>";
+		};
 		DE63115D2AF1E16500587641 /* WPComLogin */ = {
 			isa = PBXGroup;
 			children = (
@@ -11208,6 +11218,7 @@
 		DED91DF72AD78A0C00CDCC53 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
+				DE5746322B4512750034B10D /* BudgetSetting */,
 				DE57462D2B43EAF20034B10D /* CampaignCreation */,
 				EE505DDB2B3C249E006E3323 /* BlazeIntro */,
 				DED91DF82AD78A1A00CDCC53 /* BlazeCampaignList */,
@@ -13230,6 +13241,7 @@
 				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
 				CCCFFC5A2934EF5E006130AF /* StatsIntervalDataParser.swift in Sources */,
 				AEA3F90F27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift in Sources */,
+				DE5746342B4512900034B10D /* BlazeBudgetSettingView.swift in Sources */,
 				02B038CC2A61843E00467F06 /* AddProductFromImageTextFieldViewModel.swift in Sources */,
 				26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */,
 				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,

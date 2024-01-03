@@ -32,7 +32,7 @@ struct BlazeCampaignCreationForm: View {
                     .foregroundColor(.init(uiColor: .text))
 
                 // Budget
-                detailView(title: Localization.budget, content: "$35, 7 days from Dec 13") {
+                detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
                     isShowingBudgetSetting = true
                 }
                 .overlay { roundedRectangleBorder }

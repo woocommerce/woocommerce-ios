@@ -19,11 +19,11 @@ struct BlazeBudgetSettingView: View {
 
             ScrollableVStack(spacing: Layout.sectionSpacing) {
                 VStack(spacing: Layout.sectionContentSpacing) {
-                    Text("Set your budget")
+                    Text(Localization.title)
                         .bold()
                         .largeTitleStyle()
 
-                    Text("How much would you like to spend on your product promotion campaign?")
+                    Text(Localization.subtitle)
                         .multilineTextAlignment(.center)
                         .subheadlineStyle()
                 }
@@ -53,7 +53,7 @@ struct BlazeBudgetSettingView: View {
                         Text("")
                     }
 
-                    Text("Estimated people reached per day")
+                    Text(Localization.estimatedImpressions)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     + Text(" ")
@@ -71,7 +71,7 @@ struct BlazeBudgetSettingView: View {
             VStack(alignment: .leading, spacing: Layout.sectionContentSpacing) {
                 Divider()
 
-                Text("Duration")
+                Text(Localization.duration)
                     .secondaryBodyStyle()
                     .padding(.horizontal, Layout.contentPadding)
                     .padding(.top, Layout.sectionContentSpacing)
@@ -81,12 +81,12 @@ struct BlazeBudgetSettingView: View {
                         .bold()
                         .bodyStyle()
                     Text("·")
-                    Text("Edit")
+                    Text(Localization.edit)
                         .bodyStyle()
                 }
                 .padding(.horizontal, Layout.contentPadding)
 
-                Button("Update") {
+                Button(Localization.update) {
                     // TODO: show duration sheet
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -110,6 +110,36 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.cancel",
             value: "Cancel",
             comment: "Button to dismiss the Blaze budget setting screen"
+        )
+        static let title = NSLocalizedString(
+            "blazeBudgetSettingView.title",
+            value: "Set your budget",
+            comment: "Title of the Blaze budget setting screen"
+        )
+        static let subtitle = NSLocalizedString(
+            "blazeBudgetSettingView.subtitle",
+            value: "How much would you like to spend on your product promotion campaign?",
+            comment: "Subtitle of the Blaze budget setting screen"
+        )
+        static let estimatedImpressions = NSLocalizedString(
+            "blazeBudgetSettingView.estimatedImpressions",
+            value: "Estimated people reached per day",
+            comment: "Label for the estimated impressions on the Blaze budget setting screen"
+        )
+        static let duration = NSLocalizedString(
+            "blazeBudgetSettingView.duration",
+            value: "Duration",
+            comment: "Label for the campaign duration on the Blaze budget setting screen"
+        )
+        static let edit = NSLocalizedString(
+            "blazeBudgetSettingView.edit",
+            value: "Edit",
+            comment: "Button to edit the campaign duration on the Blaze budget setting screen"
+        )
+        static let update = NSLocalizedString(
+            "blazeBudgetSettingView.update",
+            value: "Update",
+            comment: "Button to update the budget on the Blaze budget setting screen"
         )
     }
 }

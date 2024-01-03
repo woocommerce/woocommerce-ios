@@ -34,6 +34,7 @@ final class DashboardViewModel {
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
+    private let startupWaitingTimeTracker: AppStartupWaitingTimeTracker
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -50,7 +51,8 @@ final class DashboardViewModel {
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
          storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
+         startupWaitingTimeTracker: AppStartupWaitingTimeTracker = ServiceLocator.startupWaitingTimeTracker) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
@@ -62,6 +64,7 @@ final class DashboardViewModel {
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
+        self.startupWaitingTimeTracker = startupWaitingTimeTracker
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
         installPendingThemeIfNeeded()
@@ -83,6 +86,7 @@ final class DashboardViewModel {
     ///
     func reloadBlazeCampaignView() async {
         await blazeCampaignDashboardViewModel.reload()
+        startupWaitingTimeTracker.end(action: .syncBlazeCampaigns)
     }
 
     /// Syncs store stats for dashboard UI.

@@ -602,6 +602,20 @@ final class DashboardViewModelTests: XCTestCase {
         //  Then
         XCTAssertEqual(themeInstaller.installPendingThemeCalledForSiteID, sampleSiteID)
     }
+
+    // MARK: Blaze Campaigns
+    func test_it_tracks_end_of_blaze_campaign_sync_action_when_blaze_campaign_view_reloads() async {
+        // Given
+        let waitingTimeTracker = AppStartupWaitingTimeTracker()
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, startupWaitingTimeTracker: waitingTimeTracker)
+        XCTAssertTrue(waitingTimeTracker.startupActionsPending.contains(.syncBlazeCampaigns))
+
+        // Then
+        await viewModel.reloadBlazeCampaignView()
+
+        // Then
+        XCTAssertFalse(waitingTimeTracker.startupActionsPending.contains(.syncBlazeCampaigns))
+    }
 }
 
 private extension DashboardViewModelTests {

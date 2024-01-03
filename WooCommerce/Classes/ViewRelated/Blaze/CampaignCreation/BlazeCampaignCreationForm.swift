@@ -2,13 +2,34 @@ import SwiftUI
 
 /// Hosting controller for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormHostingController: UIHostingController<BlazeCampaignCreationForm> {
+    private let viewModel: BlazeCampaignCreationFormViewModel
+
     init(viewModel: BlazeCampaignCreationFormViewModel) {
+        self.viewModel = viewModel
         super.init(rootView: .init(viewModel: viewModel))
+        self.viewModel.onEditAd = { [weak self] in
+            self?.navigateToEditAd()
+        }
     }
 
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension BlazeCampaignCreationFormHostingController {
+    func navigateToEditAd() {
+        // TODO: Send ad data to edit screen
+        let adData = BlazeEditAdData(image: .init(image: .blazeIntroIllustration, source: .asset(asset: .init())),
+                                     tagline: "From $99",
+                                     description: "Get the latest white shirt for a stylish look")
+        let vc = BlazeEditAdHostingController(viewModel: BlazeEditAdViewModel(siteID: viewModel.siteID,
+                                                                              adData: adData,
+                                                                              onSave: { _ in
+            // TODO: Update ad with edited data
+        }))
+        present(vc, animated: true)
     }
 }
 
@@ -132,6 +153,7 @@ private extension BlazeCampaignCreationForm {
             // Button to edit ad details
             Button(action: {
                 // TODO
+                viewModel.didTapEditAd()
             }, label: {
                 Text(Localization.editAd)
                     .fontWeight(.semibold)

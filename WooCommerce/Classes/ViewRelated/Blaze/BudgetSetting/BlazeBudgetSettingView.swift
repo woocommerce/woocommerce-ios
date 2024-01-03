@@ -122,7 +122,8 @@ private extension BlazeBudgetSettingView {
             }
 
             Button(Localization.update) {
-                // TODO: show duration sheet
+                viewModel.confirmSettings()
+                dismiss()
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding([.horizontal, .bottom], Layout.contentPadding)
@@ -285,6 +286,6 @@ private extension BlazeBudgetSettingView {
 
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel())
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(dailyBudget: 5, duration: 7, startDate: .now) { _, _, _ in })
     }
 }

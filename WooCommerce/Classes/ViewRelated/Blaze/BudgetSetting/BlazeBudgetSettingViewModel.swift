@@ -2,12 +2,15 @@ import Foundation
 
 /// View model for `BlazeBudgetSettingView`
 final class BlazeBudgetSettingViewModel: ObservableObject {
-    @Published var dailyAmount = Constants.minimumDailyAmount
+    @Published var dailyAmount: Double
 
     /// Using Double because Slider doesn't work with Int
-    @Published var dayCount = Double(Constants.defaultDayCount)
+    @Published var dayCount: Double
 
-    @Published var startDate = Date.now
+    @Published var startDate: Date
+
+    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
+    private let completionHandler: BlazeBudgetSettingCompletionHandler
 
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
@@ -48,6 +51,18 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
         // Use the configured formatter to generate the string.
         return dateFormatter.string(from: startDate, to: endDate)
+    }
+
+    init(dailyBudget: Double, duration: Int, startDate: Date, onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
+        self.dailyAmount = dailyBudget
+        self.dayCount = Double(duration)
+        self.startDate = startDate
+        self.completionHandler = onCompletion
+    }
+
+    func confirmSettings() {
+        // TODO: track confirmation
+        completionHandler(dailyAmount, Int(dayCount), startDate)
     }
 }
 

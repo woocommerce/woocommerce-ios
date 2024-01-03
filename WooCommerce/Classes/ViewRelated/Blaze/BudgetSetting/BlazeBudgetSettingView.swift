@@ -3,7 +3,8 @@ import SwiftUI
 /// View to set budget for a new Blaze campaign
 struct BlazeBudgetSettingView: View {
 
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
+    @State private var showingImpressionInfo = false
 
     @ObservedObject private var viewModel: BlazeBudgetSettingViewModel
 
@@ -21,83 +22,123 @@ struct BlazeBudgetSettingView: View {
                 Spacer()
             }
 
-            ScrollableVStack(spacing: Layout.sectionSpacing) {
-                VStack(spacing: Layout.sectionContentSpacing) {
-                    Text(Localization.title)
-                        .bold()
-                        .largeTitleStyle()
-
-                    Text(Localization.subtitle)
-                        .multilineTextAlignment(.center)
-                        .subheadlineStyle()
-                }
-
-                VStack {
-                    Text("$35")
-                        .bold()
-                        .largeTitleStyle()
-
-                    Text("for 7 days")
-                        .foregroundColor(Color.secondary)
-                        .bold()
-                        .largeTitleStyle()
-
-                    Text("Total spend $1055")
-                        .subheadlineStyle()
-                }
-
-                VStack {
-                    Text("$5 daily")
-
-                    Slider(value: $viewModel.amount) {
-                        Text("")
-                    } minimumValueLabel: {
-                        Text("")
-                    } maximumValueLabel: {
-                        Text("")
-                    }
-
-                    Text(Localization.estimatedImpressions)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    + Text(" ")
-                    + Text(Image(systemName: "info.circle"))
-                        .font(.subheadline)
-
-                    Text("2,588 - 3,458")
-                        .bold()
-                        .font(.subheadline)
-                }
-            }
+            mainContent
         }
         .padding(Layout.contentPadding)
         .safeAreaInset(edge: .bottom) {
-            VStack(alignment: .leading, spacing: Layout.sectionContentSpacing) {
-                Divider()
-
-                Text(Localization.duration)
-                    .secondaryBodyStyle()
-                    .padding(.horizontal, Layout.contentPadding)
-                    .padding(.top, Layout.sectionContentSpacing)
-
-                HStack {
-                    Text("Dec 13 - Dec 19, 2023")
-                        .bold()
-                        .bodyStyle()
-                    Text("·")
-                    Text(Localization.edit)
-                        .bodyStyle()
-                }
-                .padding(.horizontal, Layout.contentPadding)
-
-                Button(Localization.update) {
-                    // TODO: show duration sheet
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding([.horizontal, .bottom], Layout.contentPadding)
-                .padding(.top, Layout.sectionContentSpacing)
+            footerView
+        }
+        .sheet(isPresented: $showingImpressionInfo) {
+            if #available(iOS 16, *) {
+                impressionInfoView.presentationDetents([.medium, .large])
+            } else {
+                impressionInfoView
             }
-            .background(Color(.systemBackground))
+        }
+    }
+}
+
+private extension BlazeBudgetSettingView {
+    var mainContent: some View {
+        ScrollableVStack(spacing: Layout.sectionSpacing) {
+            VStack(spacing: Layout.sectionContentSpacing) {
+                Text(Localization.title)
+                    .bold()
+                    .largeTitleStyle()
+
+                Text(Localization.subtitle)
+                    .multilineTextAlignment(.center)
+                    .subheadlineStyle()
+            }
+
+            VStack {
+                Text("$35")
+                    .bold()
+                    .largeTitleStyle()
+
+                Text("for 7 days")
+                    .foregroundColor(Color.secondary)
+                    .bold()
+                    .largeTitleStyle()
+
+                Text("Total spend $1055")
+                    .subheadlineStyle()
+            }
+
+            VStack {
+                Text("$5 daily")
+
+                Slider(value: $viewModel.amount) {
+                    Text("")
+                } minimumValueLabel: {
+                    Text("")
+                } maximumValueLabel: {
+                    Text("")
+                }
+
+                AdaptiveStack {
+                    Text(Localization.estimatedImpressions)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+
+                    Image(systemName: "info.circle")
+                     .font(.subheadline)
+                }
+                .onTapGesture {
+                    showingImpressionInfo = true
+                }
+
+                Text("2,588 - 3,458")
+                    .bold()
+                    .font(.subheadline)
+            }
+        }
+    }
+
+    var footerView: some View {
+        VStack(alignment: .leading, spacing: Layout.sectionContentSpacing) {
+            Divider()
+
+            Text(Localization.duration)
+                .secondaryBodyStyle()
+                .padding(.horizontal, Layout.contentPadding)
+                .padding(.top, Layout.sectionContentSpacing)
+
+            HStack {
+                Text("Dec 13 - Dec 19, 2023")
+                    .bold()
+                    .bodyStyle()
+                Text("·")
+                Text(Localization.edit)
+                    .bodyStyle()
+            }
+            .padding(.horizontal, Layout.contentPadding)
+
+            Button(Localization.update) {
+                // TODO: show duration sheet
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding([.horizontal, .bottom], Layout.contentPadding)
+            .padding(.top, Layout.sectionContentSpacing)
+        }
+        .background(Color(.systemBackground))
+    }
+
+    var impressionInfoView: some View {
+        NavigationView {
+            ScrollView {
+                Text(Localization.impressionInfo)
+                    .bodyStyle()
+            }
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(Localization.done) {
+                        showingImpressionInfo = false
+                    }
+                }
+            }
         }
     }
 }
@@ -144,6 +185,24 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.update",
             value: "Update",
             comment: "Button to update the budget on the Blaze budget setting screen"
+        )
+        static let impressions = NSLocalizedString(
+            "blazeBudgetSettingView.impressions",
+            value: "Impressions",
+            comment: "Title of the modal to explain Blaze campaign impressions"
+        )
+        static let impressionInfo = NSLocalizedString(
+            "blazeBudgetSettingView.impressionInfo",
+            value: "Impressions reflect the frequency with which your ad appears to potential customers.\n" +
+            "While exact numbers can't be assured due to fluctuating online traffic and user behavior," +
+            " we aim to match your ad's actual impressions as closely as possible to your target count.\n" +
+            "Remember, impressions are about visibility, not action taken by viewers.",
+            comment: "Explanation about Blaze campaign impression"
+        )
+        static let done = NSLocalizedString(
+            "blazeBudgetSettingView.done",
+            value: "Done",
+            comment: "Button to dismiss the Blaze impression info screen"
         )
     }
 }

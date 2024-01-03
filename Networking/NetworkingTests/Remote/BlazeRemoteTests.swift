@@ -319,21 +319,10 @@ final class BlazeRemoteTests: XCTestCase {
         let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/forecast"
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-impressions")
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-
         // When
         let result = try await remote.fetchForecastedImpressions(
             for: sampleSiteID,
-            with: BlazeForecastedImpressionsInput(startDate: dateFormatter.date(from: "2023-12-5")!,
-                                                  endDate: dateFormatter.date(from: "2023-12-11")!,
-                                                  formattedTotalBudget: "35.00",
-                                                  targetings: BlazeTargetOptions(locations: [29211, 42546],
-                                                                                 languages: ["en", "de"],
-                                                                                 devices: ["mobile"],
-                                                                                 pageTopics: ["IAB3", "IAB4"])
-                                                 )
-        )
+            with: BlazeForecastedImpressionsInput.fake())
 
         // Then
         XCTAssertEqual(result, .init(totalImpressionsMin: 17900, totalImpressionsMax: 24200))

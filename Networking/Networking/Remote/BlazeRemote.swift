@@ -1,3 +1,4 @@
+import Codegen
 import Foundation
 
 /// Protocol for `BlazeRemote` mainly used for mocking.
@@ -182,7 +183,7 @@ private extension BlazeRemote {
 }
 
 /// Blaze Forecasted Impressions input
-public struct BlazeForecastedImpressionsInput: Encodable {
+public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     // Start date of the campaign.
     let startDate: Date
     // End date of the campaign

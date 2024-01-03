@@ -174,6 +174,18 @@ extension Networking.BlazeCampaign {
         )
     }
 }
+extension Networking.BlazeForecastedImpressionsInput {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeForecastedImpressionsInput {
+        .init(
+            startDate: .fake(),
+            endDate: .fake(),
+            formattedTotalBudget: .fake(),
+            targetings: .fake()
+        )
+    }
+}
 extension Networking.BlazeImpressions {
     /// Returns a "ready to use" type filled with fake values.
     ///

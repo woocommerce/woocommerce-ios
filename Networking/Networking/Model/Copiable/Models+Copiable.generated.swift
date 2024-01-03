@@ -712,6 +712,141 @@ extension Networking.Media {
     }
 }
 
+extension Networking.Note {
+    public func copy(
+        noteID: CopiableProp<Int64> = .copy,
+        hash: CopiableProp<Int64> = .copy,
+        read: CopiableProp<Bool> = .copy,
+        icon: NullableCopiableProp<String> = .copy,
+        noticon: NullableCopiableProp<String> = .copy,
+        timestamp: CopiableProp<String> = .copy,
+        timestampAsDate: CopiableProp<Date> = .copy,
+        kind: CopiableProp<Note.Kind> = .copy,
+        subkind: NullableCopiableProp<Note.Subkind> = .copy,
+        type: NullableCopiableProp<String> = .copy,
+        subtype: NullableCopiableProp<String> = .copy,
+        url: NullableCopiableProp<String> = .copy,
+        title: NullableCopiableProp<String> = .copy,
+        subjectAsData: CopiableProp<Data> = .copy,
+        subject: CopiableProp<[NoteBlock]> = .copy,
+        headerAsData: CopiableProp<Data> = .copy,
+        header: CopiableProp<[NoteBlock]> = .copy,
+        bodyAsData: CopiableProp<Data> = .copy,
+        body: CopiableProp<[NoteBlock]> = .copy,
+        metaAsData: CopiableProp<Data> = .copy,
+        meta: CopiableProp<MetaContainer> = .copy
+    ) -> Networking.Note {
+        let noteID = noteID ?? self.noteID
+        let hash = hash ?? self.hash
+        let read = read ?? self.read
+        let icon = icon ?? self.icon
+        let noticon = noticon ?? self.noticon
+        let timestamp = timestamp ?? self.timestamp
+        let timestampAsDate = timestampAsDate ?? self.timestampAsDate
+        let kind = kind ?? self.kind
+        let subkind = subkind ?? self.subkind
+        let type = type ?? self.type
+        let subtype = subtype ?? self.subtype
+        let url = url ?? self.url
+        let title = title ?? self.title
+        let subjectAsData = subjectAsData ?? self.subjectAsData
+        let subject = subject ?? self.subject
+        let headerAsData = headerAsData ?? self.headerAsData
+        let header = header ?? self.header
+        let bodyAsData = bodyAsData ?? self.bodyAsData
+        let body = body ?? self.body
+        let metaAsData = metaAsData ?? self.metaAsData
+        let meta = meta ?? self.meta
+
+        return Networking.Note(
+            noteID: noteID,
+            hash: hash,
+            read: read,
+            icon: icon,
+            noticon: noticon,
+            timestamp: timestamp,
+            timestampAsDate: timestampAsDate,
+            kind: kind,
+            subkind: subkind,
+            type: type,
+            subtype: subtype,
+            url: url,
+            title: title,
+            subjectAsData: subjectAsData,
+            subject: subject,
+            headerAsData: headerAsData,
+            header: header,
+            bodyAsData: bodyAsData,
+            body: body,
+            metaAsData: metaAsData,
+            meta: meta
+        )
+    }
+}
+
+extension Networking.NoteBlock {
+    public func copy(
+        media: CopiableProp<[NoteMedia]> = .copy,
+        ranges: CopiableProp<[NoteRange]> = .copy,
+        text: NullableCopiableProp<String> = .copy,
+        actions: CopiableProp<[String: Bool]> = .copy,
+        meta: CopiableProp<MetaContainer> = .copy,
+        type: NullableCopiableProp<String> = .copy
+    ) -> Networking.NoteBlock {
+        let media = media ?? self.media
+        let ranges = ranges ?? self.ranges
+        let text = text ?? self.text
+        let actions = actions ?? self.actions
+        let meta = meta ?? self.meta
+        let type = type ?? self.type
+
+        return Networking.NoteBlock(
+            media: media,
+            ranges: ranges,
+            text: text,
+            actions: actions,
+            meta: meta,
+            type: type
+        )
+    }
+}
+
+extension Networking.NoteRange {
+    public func copy(
+        kind: CopiableProp<NoteRange.Kind> = .copy,
+        type: NullableCopiableProp<String> = .copy,
+        range: CopiableProp<NSRange> = .copy,
+        url: NullableCopiableProp<URL> = .copy,
+        commentID: NullableCopiableProp<Int64> = .copy,
+        postID: NullableCopiableProp<Int64> = .copy,
+        siteID: NullableCopiableProp<Int64> = .copy,
+        userID: NullableCopiableProp<Int64> = .copy,
+        value: NullableCopiableProp<String> = .copy
+    ) -> Networking.NoteRange {
+        let kind = kind ?? self.kind
+        let type = type ?? self.type
+        let range = range ?? self.range
+        let url = url ?? self.url
+        let commentID = commentID ?? self.commentID
+        let postID = postID ?? self.postID
+        let siteID = siteID ?? self.siteID
+        let userID = userID ?? self.userID
+        let value = value ?? self.value
+
+        return Networking.NoteRange(
+            kind: kind,
+            type: type,
+            range: range,
+            url: url,
+            commentID: commentID,
+            postID: postID,
+            siteID: siteID,
+            userID: userID,
+            value: value
+        )
+    }
+}
+
 extension Networking.Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

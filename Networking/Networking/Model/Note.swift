@@ -3,7 +3,7 @@ import Codegen
 
 // MARK: - Note: Represents a WordPress.com Notification
 //
-public struct Note: GeneratedFakeable {
+public struct Note: GeneratedFakeable, GeneratedCopiable {
 
 
     /// Notification's Primary Key.
@@ -93,8 +93,9 @@ public struct Note: GeneratedFakeable {
     /// Associated Metadata.
     ///
     public let meta: MetaContainer
+}
 
-
+extension Note {
     /// Designed Initializer.
     ///
     public init(noteID: Int64,

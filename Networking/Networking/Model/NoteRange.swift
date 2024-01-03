@@ -3,7 +3,7 @@ import Codegen
 
 // MARK: - NoteRange
 //
-public struct NoteRange: Equatable, GeneratedFakeable {
+public struct NoteRange: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// NoteRange.Type expressed as a Swift Native Enum.
     ///
@@ -40,9 +40,9 @@ public struct NoteRange: Equatable, GeneratedFakeable {
     /// String Payload, if any.
     ///
     private(set) public var value: String?
+}
 
-
-
+extension NoteRange {
     /// Designated Initializer.
     ///
     public init(type: String?, range: NSRange, url: URL?, identifier: Int64?, postID: Int64?, siteID: Int64?, value: String?) {

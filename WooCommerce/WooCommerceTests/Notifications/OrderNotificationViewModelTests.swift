@@ -1,36 +1,53 @@
-//
-//  OrderNotificationViewModelTests.swift
-//  WooCommerceTests
-//
-//  Created by Ernesto Carrion on 3/01/24.
-//  Copyright © 2024 Automattic. All rights reserved.
-//
-
 import XCTest
+@testable import Networking
+@testable import WooCommerce
 
 final class OrderNotificationViewModelTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func test_view_model_extract_information_correctly() {
+        // Given
+        let note = sampleNote()
+        let order = sampleOrder()
+
+        // When
+        let viewModel = OrderNotificationViewModel()
+        let notificationContent = viewModel.formatContent(note: note, order: order)
+
+        // Then
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+
+        let expectedProducts = OrderNotificationView.Content.Product(count: "3", name: "Product 1")
+        let expectedContent = OrderNotificationView.Content(storeName: "My Test Store",
+                                                            date: formatter.string(from: Date()),
+                                                            orderNumber: "#123",
+                                                            amount: "$123.23",
+                                                            paymentMethod: "visa",
+                                                            shippingMethod: "Pick Up",
+                                                            products: [expectedProducts])
+
+        XCTAssertEqual(notificationContent, expectedContent)
+    }
+}
+
+extension OrderNotificationViewModelTests {
+    func sampleNote() -> Note {
+        let storeTitle = "My Test Store"
+        let range = NoteRange.fake().copy(range: .init(location: 23, length: 13))
+        let block = NoteBlock.fake().copy(ranges: [range], text: "You have a new Order - My Test Store")
+        return Note.fake().copy(subject: [block])
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func sampleOrder() -> Order {
+        let item = OrderItem.fake().copy(name: "Product 1", quantity: 3)
+        let shipping = ShippingLine.fake().copy(methodTitle: "Pick Up")
+        return Order.fake().copy(orderID: 123,
+                                 currencySymbol: "$",
+                                 datePaid: Date(),
+                                 total: "123.23",
+                                 paymentMethodTitle: "Visa",
+                                 items: [item],
+                                 shippingLines: [shipping])
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

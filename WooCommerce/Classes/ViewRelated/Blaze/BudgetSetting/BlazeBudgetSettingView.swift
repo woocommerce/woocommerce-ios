@@ -50,6 +50,7 @@ struct BlazeBudgetSettingView: View {
 private extension BlazeBudgetSettingView {
     var mainContentView: some View {
         ScrollableVStack(spacing: Layout.sectionSpacing) {
+            // Title and subtitle
             VStack(spacing: Layout.sectionContentSpacing) {
                 Text(Localization.title)
                     .bold()
@@ -60,6 +61,7 @@ private extension BlazeBudgetSettingView {
                     .subheadlineStyle()
             }
 
+            // Total budget amount details
             VStack {
                 Text(viewModel.totalAmountText)
                     .bold()
@@ -74,6 +76,7 @@ private extension BlazeBudgetSettingView {
                     .subheadlineStyle()
             }
 
+            // Daily amount slider and estimated impression
             VStack {
                 Text(viewModel.dailyAmountText)
 
@@ -102,11 +105,13 @@ private extension BlazeBudgetSettingView {
         VStack(alignment: .leading, spacing: Layout.sectionContentSpacing) {
             Divider()
 
+            // Duration title
             Text(Localization.duration)
                 .secondaryBodyStyle()
                 .padding(.horizontal, Layout.contentPadding)
                 .padding(.top, Layout.sectionContentSpacing)
 
+            // Formatted duration
             HStack {
                 Text(viewModel.formattedDateRange)
                     .bold()
@@ -121,6 +126,7 @@ private extension BlazeBudgetSettingView {
                 showingDurationSetting = true
             }
 
+            // CTA to confirm all settings
             Button(Localization.update) {
                 viewModel.confirmSettings()
                 dismiss()
@@ -154,6 +160,7 @@ private extension BlazeBudgetSettingView {
 
     var durationSettingView: some View {
         ScrollView {
+            // Title
             Text(Localization.setDuration)
                 .headlineStyle()
                 .padding(.horizontal, Layout.contentPadding)
@@ -161,6 +168,7 @@ private extension BlazeBudgetSettingView {
 
             Spacer()
 
+            // Duration slider
             VStack(spacing: Layout.sectionContentSpacing) {
                 Text(viewModel.formattedDayCount)
                     .fontWeight(.semibold)
@@ -172,6 +180,7 @@ private extension BlazeBudgetSettingView {
             }
             .padding(Layout.contentPadding)
 
+            // Start date picker
             VStack {
                 HStack {
                     Text(Localization.starts)
@@ -191,6 +200,7 @@ private extension BlazeBudgetSettingView {
 
             Spacer()
 
+            // CTA
             Button(Localization.apply) {
                 showingDurationSetting = false
             }

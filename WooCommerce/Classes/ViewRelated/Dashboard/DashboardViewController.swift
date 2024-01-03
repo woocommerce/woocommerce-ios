@@ -922,9 +922,6 @@ private extension DashboardViewController {
             }
             self.updateUI(site: site)
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
-            Task { @MainActor [weak self] in
-                await self?.viewModel.reloadBlazeCampaignView()
-            }
         }.store(in: &subscriptions)
     }
 

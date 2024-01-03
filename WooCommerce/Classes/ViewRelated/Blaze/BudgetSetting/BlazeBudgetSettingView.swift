@@ -65,7 +65,7 @@ private extension BlazeBudgetSettingView {
                     .bold()
                     .largeTitleStyle()
 
-                Text("for 7 days")
+                Text(viewModel.formattedTotalDuration)
                     .foregroundColor(Color.secondary)
                     .bold()
                     .largeTitleStyle()
@@ -158,7 +158,7 @@ private extension BlazeBudgetSettingView {
             Spacer()
 
             VStack(spacing: Layout.sectionContentSpacing) {
-                Text("7 days")
+                Text(viewModel.formattedDayCount)
                     .fontWeight(.semibold)
                     .bodyStyle()
 

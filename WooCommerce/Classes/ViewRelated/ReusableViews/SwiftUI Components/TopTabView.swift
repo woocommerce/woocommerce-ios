@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct TopTabItem {
+struct TopTabItem<ViewType: View> {
     let name: String
-    let view: AnyView
+    let view: ViewType
     let onSelected: (() -> Void)?
 
     init(name: String,
-         view: AnyView,
+         view: ViewType,
          onSelected: (() -> Void)? = nil) {
         self.name = name
         self.view = view
@@ -14,7 +14,8 @@ struct TopTabItem {
     }
 }
 
-struct TopTabView: View {
+@available(iOS 16.0, *)
+struct TopTabView<ViewType: View>: View {
     @State private var selectedTab = 0
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
@@ -23,9 +24,9 @@ struct TopTabView: View {
 
     @Binding var showTabs: Bool
 
-    let tabs: [TopTabItem]
+    let tabs: [TopTabItem<ViewType>]
 
-    init(tabs: [TopTabItem],
+    init(tabs: [TopTabItem<ViewType>],
          showTabs: Binding<Bool> = .constant(true)) {
         self.tabs = tabs
         self._showTabs = showTabs
@@ -204,15 +205,16 @@ struct TopTabView: View {
     }
 
     private enum Layout {
-        static let tabPadding: CGFloat = 10
-        static let selectedTabIndicatorHeight: CGFloat = 2
+        static var tabPadding: CGFloat { 10 }
+        static var selectedTabIndicatorHeight: CGFloat { 2 }
     }
 
     private enum Colors {
-        static let selected: Color = .withColorStudio(name: .wooCommercePurple, shade: .shade50)
+        static var selected: Color { .withColorStudio(name: .wooCommercePurple, shade: .shade50) }
     }
 }
 
+@available(iOS 16.0, *)
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let tabs: [TopTabItem] = [

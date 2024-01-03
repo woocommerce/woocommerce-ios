@@ -7,11 +7,11 @@ struct WooPaymentsDepositsOverviewView: View {
 
     @State var isExpanded: Bool = false
 
-    var tabs: [TopTabItem] {
+    var tabs: [TopTabItem<WooPaymentsDepositsCurrencyOverviewView>] {
         viewModel.currencyViewModels.map { currencyViewModel in
             TopTabItem(name: currencyViewModel.tabTitle,
-                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: currencyViewModel,
-                                                                             isExpanded: $isExpanded)),
+                       view: WooPaymentsDepositsCurrencyOverviewView(viewModel: currencyViewModel,
+                                                                     isExpanded: $isExpanded),
                        onSelected: {
                 viewModel.currencySelected(currencyViewModel: currencyViewModel)
             })

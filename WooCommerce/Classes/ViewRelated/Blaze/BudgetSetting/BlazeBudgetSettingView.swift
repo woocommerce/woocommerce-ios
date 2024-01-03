@@ -108,7 +108,7 @@ private extension BlazeBudgetSettingView {
                 .padding(.top, Layout.sectionContentSpacing)
 
             HStack {
-                Text("Dec 13 - Dec 19, 2023")
+                Text(viewModel.formattedDateRange)
                     .bold()
                     .bodyStyle()
                 Text("·")

@@ -5,7 +5,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     @Published var dailyAmount = Constants.minimumDailyAmount
 
     /// Using Double because Slider doesn't work with Int
-    @Published var dayCount = Double(Constants.maximumDayCount)
+    @Published var dayCount = Double(Constants.defaultDayCount)
 
     @Published var startDate = Date.now
 
@@ -13,7 +13,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     /// Using Double because Slider doesn't work with Int
     let dayCountSliderRange = Double(Constants.minimumDayCount)...Double(Constants.maximumDayCount)
-    
+
     var dailyAmountText: String {
         let formattedAmount = String(format: "$%.0f", dailyAmount)
         return String.localizedStringWithFormat(Localization.dailyAmount, formattedAmount)
@@ -35,15 +35,31 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                          singular: Localization.singleDay,
                          plural: Localization.multipleDays)
     }
+
+    private let dateFormatter: DateIntervalFormatter = {
+        let formatter = DateIntervalFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }()
+
+    var formattedDateRange: String {
+        let endDate = Date(timeInterval: Constants.oneDayInSeconds * dayCount, since: startDate)
+
+        // Use the configured formatter to generate the string.
+        return dateFormatter.string(from: startDate, to: endDate)
+    }
 }
 
 extension BlazeBudgetSettingViewModel {
     enum Constants {
+        static let oneDayInSeconds: Double = 86400
         static let minimumDailyAmount: Double = 5
         static let maximumDailyAmount: Double = 50
         static let dailyAmountSliderStep: Double = 1
         static let minimumDayCount = 1
         static let maximumDayCount = 28
+        static let defaultDayCount = 7
         static let dayCountSliderStep = 1
     }
 

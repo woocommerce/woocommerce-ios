@@ -47,7 +47,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Returns the first Order in the OrderList datasource
     ///
-    var firstOrderInIndexPath: Order? {
+    var firstAvailableOrder: Order? {
         let firstIndexPath = IndexPath(row: 0, section: 0)
         guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
               let orderViewModel = viewModel.detailsViewModel(withID: objectID) else {

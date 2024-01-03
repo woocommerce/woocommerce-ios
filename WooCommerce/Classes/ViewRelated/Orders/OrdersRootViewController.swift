@@ -114,8 +114,8 @@ final class OrdersRootViewController: UIViewController {
         /// Attempts to navigate and open the first Order in the Order List when Split View is enabled,
         /// only on iPad
         ///
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab), UIDevice.current.userInterfaceIdiom == .pad {
-            navigateToFirstOrderIfPossible()
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            navigateToFirstOrderIfPad()
         }
     }
 
@@ -178,10 +178,10 @@ final class OrdersRootViewController: UIViewController {
         setupNavigation(viewModel: viewModel)
     }
 
-    /// Attempts to navigate to the first Order in the Order List by opening its details
+    /// On iPad, attempts to navigate to the first Order in the Order List by opening its details
     ///
-    private func navigateToFirstOrderIfPossible() {
-        guard let order = ordersViewController.firstOrderInIndexPath else {
+    private func navigateToFirstOrderIfPad() {
+        guard let order = ordersViewController.firstAvailableOrder, UIDevice.current.userInterfaceIdiom == .pad else {
             return
         }
         self.navigateToOrderDetail(order)

@@ -69,6 +69,9 @@ private extension BlazeBudgetSettingView {
                     .foregroundColor(Color.secondary)
                     .bold()
                     .largeTitleStyle()
+
+                Text(Localization.totalSpend)
+                    .subheadlineStyle()
             }
 
             VStack {
@@ -218,6 +221,11 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.subtitle",
             value: "How much would you like to spend on your product promotion campaign?",
             comment: "Subtitle of the Blaze budget setting screen"
+        )
+        static let totalSpend = NSLocalizedString(
+            "blazeBudgetSettingView.totalSpend",
+            value: "Total spend",
+            comment: "Label for total spend on the Blaze budget setting screen"
         )
         static let estimatedImpressions = NSLocalizedString(
             "blazeBudgetSettingView.estimatedImpressions",

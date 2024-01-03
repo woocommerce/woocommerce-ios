@@ -521,6 +521,28 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching forecasted impressions
 
+    func test_fetchForecastedImpressions_is_successful_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingForecastedImpressions(thenReturn: .success(.fake().copy(totalImpressionsMax: 12345)))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchForecastedImpressions(siteID: self.sampleSiteID,
+                                                                  input: BlazeForecastedImpressionsInput.fake(),
+                                                                  onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let impressions = try result.get()
+        XCTAssertEqual(impressions.totalImpressionsMax, 12345)
+    }
+
     func test_fetchForecastedImpressions_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingForecastedImpressions(thenReturn: .failure(NetworkError.timeout()))

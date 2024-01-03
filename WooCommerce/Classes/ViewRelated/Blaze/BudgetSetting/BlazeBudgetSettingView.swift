@@ -129,17 +129,19 @@ private extension BlazeBudgetSettingView {
             ScrollView {
                 Text(Localization.impressionInfo)
                     .bodyStyle()
+                    .padding(Layout.contentPadding)
             }
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.done) {
                         showingImpressionInfo = false
                     }
                 }
             }
         }
+        .padding(.top)
     }
 }
 
@@ -193,9 +195,9 @@ private extension BlazeBudgetSettingView {
         )
         static let impressionInfo = NSLocalizedString(
             "blazeBudgetSettingView.impressionInfo",
-            value: "Impressions reflect the frequency with which your ad appears to potential customers.\n" +
+            value: "Impressions reflect the frequency with which your ad appears to potential customers.\n\n" +
             "While exact numbers can't be assured due to fluctuating online traffic and user behavior," +
-            " we aim to match your ad's actual impressions as closely as possible to your target count.\n" +
+            " we aim to match your ad's actual impressions as closely as possible to your target count.\n\n" +
             "Remember, impressions are about visibility, not action taken by viewers.",
             comment: "Explanation about Blaze campaign impression"
         )

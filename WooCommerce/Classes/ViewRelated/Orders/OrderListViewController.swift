@@ -45,6 +45,17 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         return dataSource
     }()
 
+    /// Returns the first Order in the OrderList datasource
+    ///
+    var firstAvailableOrder: Order? {
+        let firstIndexPath = IndexPath(row: 0, section: 0)
+        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
+              let orderViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            return nil
+        }
+        return orderViewModel.order
+    }
+
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: OrderTableViewCell.self,
                                                                                                 estimatedRowHeight: Settings.estimatedRowHeight,
                                                                                                 tableViewStyle: .grouped,
@@ -169,6 +180,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         configureStorePlanBannerPresenter()
+
+        checkSelectedItem()
     }
 
     override func viewWillAppear(_ animated: Bool) {

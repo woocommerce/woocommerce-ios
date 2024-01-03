@@ -214,6 +214,12 @@ struct ProductSelectorView: View {
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
+                    // In simple selection handling mode, immediately set the parent variable product
+                    // as selected and do not navigate to the variations list.
+                    if viewModel.selectionHandlingMode == .simple {
+                        viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
+                        return
+                    }
                     isShowingVariationList.toggle()
                     self.variationListViewModel = variationListViewModel
                 }

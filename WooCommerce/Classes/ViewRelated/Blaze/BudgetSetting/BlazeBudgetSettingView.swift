@@ -5,6 +5,7 @@ struct BlazeBudgetSettingView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var showingImpressionInfo = false
+    @State private var showingDurationSetting = false
 
     @ObservedObject private var viewModel: BlazeBudgetSettingViewModel
 
@@ -35,6 +36,14 @@ struct BlazeBudgetSettingView: View {
                 impressionInfoView
             }
         }
+        .sheet(isPresented: $showingDurationSetting) {
+            if #available(iOS 16, *) {
+                durationSettingView.presentationDetents([.medium, .large])
+            } else {
+                durationSettingView
+            }
+        }
+
     }
 }
 
@@ -68,26 +77,18 @@ private extension BlazeBudgetSettingView {
             VStack {
                 Text("$5 daily")
 
-                Slider(value: $viewModel.amount) {
-                    Text("")
-                } minimumValueLabel: {
-                    Text("")
-                } maximumValueLabel: {
-                    Text("")
-                }
+                Slider(value: $viewModel.amount, in: 5...50, step: viewModel.dayCount)
 
                 AdaptiveStack {
                     Text(Localization.estimatedImpressions)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-
                     Image(systemName: "info.circle")
-                     .font(.subheadline)
                 }
+                .font(.subheadline)
                 .onTapGesture {
                     showingImpressionInfo = true
                 }
 
+                // TODO: fetch impressions and display
                 Text("2,588 - 3,458")
                     .bold()
                     .font(.subheadline)
@@ -110,9 +111,13 @@ private extension BlazeBudgetSettingView {
                     .bodyStyle()
                 Text("·")
                 Text(Localization.edit)
+                    .foregroundColor(.accentColor)
                     .bodyStyle()
             }
             .padding(.horizontal, Layout.contentPadding)
+            .onTapGesture {
+                showingDurationSetting = true
+            }
 
             Button(Localization.update) {
                 // TODO: show duration sheet
@@ -142,6 +147,51 @@ private extension BlazeBudgetSettingView {
             }
         }
         .padding(.top)
+    }
+
+    var durationSettingView: some View {
+        ScrollView {
+            Text("Set duration")
+                .headlineStyle()
+                .padding(.horizontal, Layout.contentPadding)
+                .padding(.vertical, Layout.sectionSpacing)
+
+            Spacer()
+
+            VStack(spacing: Layout.sectionContentSpacing) {
+                Text("7 days")
+                    .fontWeight(.semibold)
+                    .bodyStyle()
+
+                Slider(value: $viewModel.dayCount, in: 1...28, step: 1)
+            }
+            .padding(Layout.contentPadding)
+
+            VStack {
+                HStack {
+                    Text("Starts")
+                        .bodyStyle()
+
+                    Spacer()
+
+                    DatePicker(selection: $viewModel.startDate, displayedComponents: [.date]) {
+                        EmptyView()
+                    }
+                    .datePickerStyle(.compact)
+                }
+                .padding(Layout.contentPadding)
+
+                Divider()
+            }
+
+            Spacer()
+
+            Button("Apply") {
+                showingDurationSetting = false
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(Layout.contentPadding)
+        }
     }
 }
 

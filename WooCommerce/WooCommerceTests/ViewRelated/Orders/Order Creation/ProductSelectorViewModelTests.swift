@@ -1368,7 +1368,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
     }
 
     // MARK: - Selection mode and Selection Handling mode
-    func test_given_single_SelectionMode_and_existing_selected_product_when_a_new_product_is_selected_then_only_new_product_is_selected() {
+    func test_given_single_SelectionMode_and_selected_simple_product_when_selecting_next_simple_product_then_only_next_product_is_selected() {
         // Given
         let previousSelectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         let nextSelectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
@@ -1391,6 +1391,28 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(nextProductRow?.selectedState, .selected)
     }
 
+    func test_given_single_SelectionMode_and_selected_simple_product_when_selecting_variation_product_then_the_simple_product_is_no_longer_selected() {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.simple.rawValue, purchasable: true)
+        let productVariationId: Int64 = 99
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true, variations: [productVariationId])
+        insert(simpleProduct)
+        insert(variableProduct)
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 selectionMode: .single,
+                                                 storageManager: storageManager,
+                                                 onProductSelectionStateChanged: { _ in })
+
+        // When
+        viewModel.changeSelectionStateForProduct(with: simpleProduct.productID)
+        viewModel.updateSelectedVariations(productID: 2, selectedVariationIDs: [productVariationId])
+
+        // Then
+        let simpleProductRow = viewModel.productRows.first(where: { $0.productOrVariationID == simpleProduct.productID })
+        XCTAssertEqual(simpleProductRow?.selectedState, .notSelected)
+    }
+
     func test_given_simple_SelectionHandlingMode_when_selecting_variable_product_then_the_product_is_selected_immediately() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.variable.rawValue, purchasable: true)
@@ -1408,25 +1430,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(variableProductRow?.selectedState, .selected)
     }
 
-    func test_given_simple_SelectionHandlingMode_and_selected_simple_product_when_selecting_variation_product_then_the_simple_product_is_no_longer_selected() {
-        // Given
-        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.simple.rawValue, purchasable: true)
-        let productVariationId: Int64 = 99
-        let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true, variations: [productVariationId])
-        insert(simpleProduct)
-        insert(variableProduct)
-
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 selectionHandlingMode: .simple,
-                                                 storageManager: storageManager,
-                                                 onProductSelectionStateChanged: { _ in })
-
-        viewModel.updateSelectedVariations(productID: 2, selectedVariationIDs: [productVariationId])
-
-        // Then
-        let simpleProductRow = viewModel.productRows.first(where: { $0.productOrVariationID == simpleProduct.productID })
-        XCTAssertEqual(simpleProductRow?.selectedState, .notSelected)
-    }
 
     // MARK: - Pagination
 

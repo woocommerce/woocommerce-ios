@@ -500,6 +500,7 @@
 		8617EDA42B3C040700BD9D1B /* BlazeImpressionsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8617EDA32B3C040700BD9D1B /* BlazeImpressionsMapper.swift */; };
 		8617EDA62B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8617EDA52B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift */; };
 		8617EDA82B3C0E3800BD9D1B /* blaze-impressions.json in Resources */ = {isa = PBXBuildFile; fileRef = 8617EDA72B3C0E3800BD9D1B /* blaze-impressions.json */; };
+		8646A9B72B4522E7001F606C /* BlazeForecastedImpressionsInputEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8646A9B62B4522E7001F606C /* BlazeForecastedImpressionsInputEncoderTests.swift */; };
 		933A2732222234F800C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
 		9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */; };
 		93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */; };
@@ -1541,6 +1542,7 @@
 		8617EDA32B3C040700BD9D1B /* BlazeImpressionsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeImpressionsMapper.swift; sourceTree = "<group>"; };
 		8617EDA52B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeImpressionsMapperTests.swift; sourceTree = "<group>"; };
 		8617EDA72B3C0E3800BD9D1B /* blaze-impressions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-impressions.json"; sourceTree = "<group>"; };
+		8646A9B62B4522E7001F606C /* BlazeForecastedImpressionsInputEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeForecastedImpressionsInputEncoderTests.swift; sourceTree = "<group>"; };
 		933A2731222234F800C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapperTests.swift; sourceTree = "<group>"; };
 		93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettings.swift; sourceTree = "<group>"; };
@@ -3413,6 +3415,7 @@
 				DEDA8D9A2B05BEF80076BF0F /* CreateProductVariationTests.swift */,
 				EE1217DB2AFE04A500E6CAB1 /* ProductVariationEncoderTests.swift */,
 				028F3F932B0DF9A800F8E227 /* OrderEncoderTests.swift */,
+				8646A9B62B4522E7001F606C /* BlazeForecastedImpressionsInputEncoderTests.swift */,
 			);
 			path = Encoder;
 			sourceTree = "<group>";
@@ -4686,6 +4689,7 @@
 				CC07866526790B1100BA9AC1 /* ShippingLabelPurchaseMapperTests.swift in Sources */,
 				74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */,
 				EE57C1542980F18500BC31E7 /* ShipmentTrackingProviderListMapperTests.swift in Sources */,
+				8646A9B72B4522E7001F606C /* BlazeForecastedImpressionsInputEncoderTests.swift in Sources */,
 				743E84FA221742E300FAC9D7 /* ShipmentsRemoteTests.swift in Sources */,
 				EE57C148297FCCE000BC31E7 /* ProductShippingClassMapperTests.swift in Sources */,
 				EEC312C32AFDF79E004369F7 /* ProductSubscriptionTests.swift in Sources */,

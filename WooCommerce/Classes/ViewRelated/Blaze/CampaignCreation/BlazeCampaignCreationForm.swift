@@ -181,7 +181,6 @@ private extension BlazeCampaignCreationForm {
     enum Layout {
         static let contentMargin: CGFloat = 8
         static let contentPadding: CGFloat = 16
-        static let imagePadding: CGFloat = 8
         static let cornerRadius: CGFloat = 8
         static let adButtonCornerRadius: CGFloat = 4
         static let strokeWidth: CGFloat = 1

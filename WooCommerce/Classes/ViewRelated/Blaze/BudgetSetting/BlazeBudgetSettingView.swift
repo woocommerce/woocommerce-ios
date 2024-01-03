@@ -61,7 +61,7 @@ private extension BlazeBudgetSettingView {
             }
 
             VStack {
-                Text("$35")
+                Text(viewModel.totalAmountText)
                     .bold()
                     .largeTitleStyle()
 
@@ -69,15 +69,14 @@ private extension BlazeBudgetSettingView {
                     .foregroundColor(Color.secondary)
                     .bold()
                     .largeTitleStyle()
-
-                Text("Total spend $1055")
-                    .subheadlineStyle()
             }
 
             VStack {
-                Text("$5 daily")
+                Text(viewModel.dailyAmountText)
 
-                Slider(value: $viewModel.amount, in: 5...50, step: viewModel.dayCount)
+                Slider(value: $viewModel.dailyAmount,
+                       in: viewModel.dailyAmountSliderRange,
+                       step: BlazeBudgetSettingViewModel.Constants.dailyAmountSliderStep)
 
                 AdaptiveStack {
                     Text(Localization.estimatedImpressions)

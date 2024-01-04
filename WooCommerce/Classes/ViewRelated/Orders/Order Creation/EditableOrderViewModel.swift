@@ -313,6 +313,11 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published var configurableProductViewModel: ConfigurableBundleProductViewModel? = nil
 
+    /// Configurable bundle product view model to render from a scanned bundle product.
+    /// Used to open the bundle product configuration screen after scanning a bundle product either from the order form or order list.
+    ///
+    @Published var configurableScannedProductViewModel: ConfigurableBundleProductViewModel? = nil
+
     /// Whether the user can select a new tax rate.
     /// The User can change the tax rate by changing the customer address if:
     ///
@@ -1433,9 +1438,26 @@ private extension EditableOrderViewModel {
         updateOrderWithBaseItem(item)
     }
 
-    /// Updates the Order with the given product
+    /// Updates the Order with the given product from SKU scanning
     ///
     func updateOrderWithBaseItem(_ item: OrderBaseItem) {
+        switch item {
+            case let .product(product) where product.productType == .bundle:
+                // When a scanned product is a bundle product, the bundle configuration view is shown first.
+                configurableScannedProductViewModel = .init(product: product,
+                                                     orderItem: nil,
+                                                     childItems: [],
+                                                     onConfigure: { [weak self] configuration in
+                    guard let self else { return }
+                    self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                    self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                    self.configurableScannedProductViewModel = nil
+                })
+                return
+            default:
+                break
+        }
+
         guard currentOrderItems.contains(where: { $0.productOrVariationID == item.itemID }) else {
             // If it's not part of the current order, send the correct productType to the synchronizer
             switch item {

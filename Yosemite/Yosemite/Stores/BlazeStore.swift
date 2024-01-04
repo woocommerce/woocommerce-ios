@@ -66,6 +66,8 @@ public final class BlazeStore: Store {
             synchronizeTargetTopics(siteID: siteID, locale: locale, onCompletion: onCompletion)
         case let .fetchTargetLocations(siteID, query, locale, onCompletion):
             fetchTargetLocations(siteID: siteID, query: query, locale: locale, onCompletion: onCompletion)
+        case let .fetchForecastedImpressions(siteID, input, onCompletion):
+            fetchForecastedImpressions(siteID: siteID, input: input, onCompletion: onCompletion)
         }
     }
 }
@@ -312,6 +314,28 @@ private extension BlazeStore {
                 onCompletion(.failure(error))
             }
         }
+    }
+}
+
+// MARK: - Fetch forecasted impressions for a campaign to be created
+private extension BlazeStore {
+    func fetchForecastedImpressions(siteID: Int64,
+                                    input: BlazeForecastedImpressionsInput,
+                                    onCompletion: @escaping (Result<BlazeImpressions, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                // TODO-11540: remove stubbed result when the API is ready.
+                let stubbedResult = BlazeImpressions(totalImpressionsMin: 5000, totalImpressionsMax: 10000)
+                let impressions: BlazeImpressions = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchForecastedImpressions(for: siteID, with: input)
+                })
+                onCompletion(.success(impressions))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+
+
     }
 }
 

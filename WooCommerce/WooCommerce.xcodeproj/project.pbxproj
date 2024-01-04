@@ -2506,6 +2506,9 @@
 		EEBDF7E22A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E12A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift */; };
 		EEBDF7E52A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E42A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift */; };
 		EEBDF7E72A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E62A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift */; };
+		EEC259422B43EF33004D703C /* BlazeEditAdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259412B43EF33004D703C /* BlazeEditAdView.swift */; };
+		EEC259442B43EF3B004D703C /* BlazeEditAdViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259432B43EF3B004D703C /* BlazeEditAdViewModel.swift */; };
+		EEC259462B4556B6004D703C /* BlazeEditAdHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259452B4556B6004D703C /* BlazeEditAdHostingController.swift */; };
 		EEC2D27F292CF60E0072132E /* JetpackSetupHostingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2D27E292CF60E0072132E /* JetpackSetupHostingControllerTests.swift */; };
 		EEC2D281292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2D280292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift */; };
 		EEC5C8DA2ADE2FD80071E852 /* BlazeCampaignDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC5C8D92ADE2FD80071E852 /* BlazeCampaignDashboardViewModelTests.swift */; };
@@ -5142,6 +5145,9 @@
 		EEBDF7E12A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultShareProductAIEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		EEBDF7E42A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedViewModel.swift; sourceTree = "<group>"; };
 		EEBDF7E62A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedViewModelTests.swift; sourceTree = "<group>"; };
+		EEC259412B43EF33004D703C /* BlazeEditAdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdView.swift; sourceTree = "<group>"; };
+		EEC259432B43EF3B004D703C /* BlazeEditAdViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdViewModel.swift; sourceTree = "<group>"; };
+		EEC259452B4556B6004D703C /* BlazeEditAdHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdHostingController.swift; sourceTree = "<group>"; };
 		EEC2D27E292CF60E0072132E /* JetpackSetupHostingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupHostingControllerTests.swift; sourceTree = "<group>"; };
 		EEC2D280292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginHostingViewControllerTests.swift; sourceTree = "<group>"; };
 		EEC5C8D92ADE2FD80071E852 /* BlazeCampaignDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDashboardViewModelTests.swift; sourceTree = "<group>"; };
@@ -11219,6 +11225,7 @@
 			isa = PBXGroup;
 			children = (
 				DE57462D2B43EAF20034B10D /* CampaignCreation */,
+				EEC259402B43E4D6004D703C /* BlazeEditAd */,
 				EE505DDB2B3C249E006E3323 /* BlazeIntro */,
 				DED91DF82AD78A1A00CDCC53 /* BlazeCampaignList */,
 			);
@@ -11671,6 +11678,16 @@
 				EEBDF7E42A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift */,
 			);
 			path = FirstProductCreated;
+			sourceTree = "<group>";
+		};
+		EEC259402B43E4D6004D703C /* BlazeEditAd */ = {
+			isa = PBXGroup;
+			children = (
+				EEC259412B43EF33004D703C /* BlazeEditAdView.swift */,
+				EEC259432B43EF3B004D703C /* BlazeEditAdViewModel.swift */,
+				EEC259452B4556B6004D703C /* BlazeEditAdHostingController.swift */,
+			);
+			path = BlazeEditAd;
 			sourceTree = "<group>";
 		};
 		EEC5C8D82ADE2FB80071E852 /* Blaze */ = {
@@ -13276,6 +13293,7 @@
 				DE69C55527C5E317000BB888 /* ShippingLabelSampleData.swift in Sources */,
 				DE525499268C8B32007A5829 /* UIRefreshControl+Woo.swift in Sources */,
 				26C1633C29DA2CE700E482CE /* FreeTrialSummaryView.swift in Sources */,
+				EEC259442B43EF3B004D703C /* BlazeEditAdViewModel.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
 				26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */,
 				02A9BCD42737DE0D00159C79 /* JetpackBenefitsView.swift in Sources */,
@@ -13458,6 +13476,7 @@
 				DE2FE58A2925EAAE0018040A /* LoginJetpackSetupCoordinator.swift in Sources */,
 				021EBB362A3054BE003634CA /* BlazeEligibilityChecker.swift in Sources */,
 				02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */,
+				EEC259422B43EF33004D703C /* BlazeEditAdView.swift in Sources */,
 				DE8FCD1C2A81010000CB707D /* StoreCreationProfilerQuestionContainerViewModel.swift in Sources */,
 				03E471C0293A158D001A58AD /* CardReaderConnectionAlertsProviding.swift in Sources */,
 				D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */,
@@ -14026,6 +14045,7 @@
 				02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */,
 				B9D19A442AE7B66B00D944D8 /* CustomAmountRowView.swift in Sources */,
 				03E471C8293A3076001A58AD /* CardPresentModalBuiltInConnectingToReader.swift in Sources */,
+				EEC259462B4556B6004D703C /* BlazeEditAdHostingController.swift in Sources */,
 				EE5B5BC72AB8379C009BCBD6 /* AddProductWithAIContainerViewModel.swift in Sources */,
 				0365986529AF942700F297D3 /* PaymentSettingsFlowHint.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,

@@ -38,7 +38,7 @@ struct BlazeEditAdView: View {
 
                         regenerateByAI
                     }
-                    .padding(insets: Layout.insets)
+                    .padding(insets: Layout.textBlockInsets)
                 }
             }
             .toolbar {
@@ -250,7 +250,7 @@ private extension BlazeEditAdView {
 
 private enum Layout {
     static let imageBlockInsets: EdgeInsets = .init(top: 24, leading: 16, bottom: 0, trailing: 16)
-    static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
+    static let textBlockInsets: EdgeInsets = .init(top: 0, leading: 16, bottom: 16, trailing: 16)
 
     static let parentVerticalSpacing: CGFloat = 24
     static let childVerticalSpacing: CGFloat = 16

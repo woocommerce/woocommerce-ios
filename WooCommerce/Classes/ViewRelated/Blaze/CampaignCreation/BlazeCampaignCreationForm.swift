@@ -37,6 +37,8 @@ private extension BlazeCampaignCreationFormHostingController {
 struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
+    @State private var isShowingAdDestinationScreen = false
+
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
     }
@@ -87,7 +89,7 @@ struct BlazeCampaignCreationForm: View {
 
                 // Ad destination
                 detailView(title: Localization.adDestination, content: "https://example.com") {
-                    // TODO: open destination screen
+                    isShowingAdDestinationScreen = true
                 }
                 .overlay { roundedRectangleBorder }
             }
@@ -105,6 +107,9 @@ struct BlazeCampaignCreationForm: View {
                 .padding(Layout.contentPadding)
             }
             .background(Color(uiColor: .systemBackground))
+        }
+        .sheet(isPresented: $isShowingAdDestinationScreen) {
+            BlazeAdDestinationSettingView()
         }
     }
 }

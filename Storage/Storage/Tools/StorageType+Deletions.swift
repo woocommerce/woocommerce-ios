@@ -132,6 +132,28 @@ public extension StorageType {
         }
     }
 
+    // MARK: - BlazeTargetLanguage
+
+    /// Delete all of the stored Blaze target languages with the provided locale.
+    ///
+    func deleteBlazeTargetLanguages(locale: String) {
+        let languages = loadAllBlazeTargetLanguages(locale: locale)
+        for language in languages {
+            deleteObject(language)
+        }
+    }
+
+    // MARK: - BlazeTargetTopic
+
+    /// Delete all of the stored Blaze target topics with the provided locale.
+    ///
+    func deleteBlazeTargetTopics(locale: String) {
+        let topics = loadAllBlazeTargetTopics(locale: locale)
+        for topic in topics {
+            deleteObject(topic)
+        }
+    }
+
     // MARK: - Coupons
 
     /// Deletes all of the stored Coupons for the provided siteID.

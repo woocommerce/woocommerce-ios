@@ -1141,14 +1141,22 @@ private extension ProductFormViewController {
     }
 
     private func navigateToBlazeCampaignCreation(siteUrl: String, source: BlazeSource) {
-        let blazeViewModel = BlazeWebViewModel(siteID: viewModel.productModel.siteID,
-                                               source: source,
-                                               siteURL: siteUrl,
-                                               productID: product.productID) { [weak self] in
-            self?.handlePostCreation()
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+            let viewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.productModel.siteID) { [weak self] in
+                self?.handlePostCreation()
+            }
+            let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
+            navigationController?.show(controller, sender: self)
+        } else {
+            let blazeViewModel = BlazeWebViewModel(siteID: viewModel.productModel.siteID,
+                                                   source: source,
+                                                   siteURL: siteUrl,
+                                                   productID: product.productID) { [weak self] in
+                self?.handlePostCreation()
+            }
+            let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
+            navigationController?.show(webViewController, sender: self)
         }
-        let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
-        navigationController?.show(webViewController, sender: self)
     }
 
     func handlePostCreation() {

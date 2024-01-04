@@ -8,8 +8,8 @@ struct OrderNotificationView: View {
 
     /// Type that represents the necessary information for this view.
     ///
-    struct Content {
-        struct Product: Hashable {
+    struct Content: Equatable {
+        struct Product: Hashable, Equatable {
             let count: String
             let name: String
         }

@@ -562,6 +562,22 @@ public extension StorageType {
         return allObjects(ofType: BlazeTargetDevice.self, matching: predicate, sortedBy: nil)
     }
 
+    // MARK: BlazeTargetLanguage
+
+    /// Returns all Blaze target languages with the given locale.
+    ///
+    func loadAllBlazeTargetLanguages(locale: String) -> [BlazeTargetLanguage] {
+        let predicate = \BlazeTargetLanguage.locale == locale
+        return allObjects(ofType: BlazeTargetLanguage.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns all Blaze target topics with the given locale.
+    ///
+    func loadAllBlazeTargetTopics(locale: String) -> [BlazeTargetTopic] {
+        let predicate = \BlazeTargetTopic.locale == locale
+        return allObjects(ofType: BlazeTargetTopic.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: - Coupons
 
     /// Returns a single Coupon given a `siteID` and `CouponID`

@@ -31,6 +31,7 @@ struct CustomAmountRowView: View {
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel(Localization.editButtonAccessibilityLabel)
+                .renderedIf(editable)
         }
         .padding(Layout.contentPadding)
         .contentShape(Rectangle())

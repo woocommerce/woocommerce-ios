@@ -185,11 +185,6 @@ public enum WooAnalyticsStat: String {
     case blazeIntroDisplayed = "blaze_intro_displayed"
     case blazeViewDismissed = "blaze_view_dismissed"
 
-    // MARK: Products Onboarding Events
-    //
-    case productsOnboardingEligible = "products_onboarding_store_is_eligible"
-    case productsOnboardingCTATapped = "products_onboarding_cta_tapped"
-
     // MARK: Store Onboarding Events
     //
     case storeOnboardingShown = "store_onboarding_shown"

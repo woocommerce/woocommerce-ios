@@ -163,7 +163,6 @@ final class DashboardViewController: UIViewController {
         observeModalJustInTimeMessages()
         observeLocalAnnouncement()
         observeShowWebViewSheet()
-        observeAddProductTrigger()
         observeOnboardingVisibility()
         observeBlazeCampaignViewVisibility()
         configureStorePlanBannerPresenter()
@@ -476,34 +475,6 @@ private extension DashboardViewController {
                 await self.viewModel.syncAnnouncements(for: self.siteID)
             }
         }
-    }
-
-    /// Subscribes to the trigger to start the Add Product flow for products onboarding
-    ///
-    private func observeAddProductTrigger() {
-        viewModel.addProductTrigger.sink { [weak self] _ in
-            self?.startAddProductFlow()
-        }
-        .store(in: &subscriptions)
-    }
-
-    /// Starts the Add Product flow (without switching tabs)
-    ///
-    private func startAddProductFlow() {
-        guard let announcementView, let navigationController else { return }
-        let coordinator = AddProductCoordinator(siteID: siteID,
-                                                source: .productOnboarding,
-                                                sourceView: announcementView,
-                                                sourceNavigationController: navigationController,
-                                                isFirstProduct: true)
-        coordinator.onProductCreated = { [weak self] _ in
-            guard let self else { return }
-            self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
-            Task {
-                await self.viewModel.syncAnnouncements(for: self.siteID)
-            }
-        }
-        coordinator.start()
     }
 
     /// Invoked when the local announcement CTA is tapped.
@@ -942,18 +913,15 @@ private extension DashboardViewController {
 //
 private extension DashboardViewController {
     func observeSiteForUIUpdates() {
-        ServiceLocator.stores.site.sink { [weak self] site in
-            guard let self = self else { return }
+        ServiceLocator.stores.site.removeDuplicates().sink { [weak self] site in
+            guard let self else { return }
             // We always want to update UI based on the latest site only if it matches the view controller's site ID.
             // When switching stores, this is triggered on the view controller of the previous site ID.
-            guard let site = site, site.siteID == self.siteID else {
+            guard let site, site.siteID == self.siteID else {
                 return
             }
             self.updateUI(site: site)
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
-            Task { @MainActor [weak self] in
-                await self?.viewModel.reloadBlazeCampaignView()
-            }
         }.store(in: &subscriptions)
     }
 

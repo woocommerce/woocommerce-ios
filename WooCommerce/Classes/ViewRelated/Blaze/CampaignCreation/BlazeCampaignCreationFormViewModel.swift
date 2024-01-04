@@ -14,6 +14,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         return dateFormatter
     }()
 
+    var onEditAd: (() -> Void)?
+
     // Budget details
     private var startDate = Date.now
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
@@ -68,5 +70,9 @@ private extension BlazeCampaignCreationFormViewModel {
             comment: "Blaze campaign budget details with duration in plural form. " +
             "Reads like: $35, 15 days from Dec 31"
         )
+    }
+
+    func didTapEditAd() {
+        onEditAd?()
     }
 }

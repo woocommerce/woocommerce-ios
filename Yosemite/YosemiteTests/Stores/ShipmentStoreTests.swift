@@ -562,17 +562,13 @@ final class ShipmentStoreTests: XCTestCase {
         let mockTrackingID = "f2e7783b40837b9e1ec503a149dab4a1"
         let mockDateShipped = "2019-04-01"
 
-        let error = waitFor { promise in
-            shipmentStore.addTracking(siteID: self.sampleSiteID,
-                                      orderID: self.sampleOrderID,
-                                      providerGroupName: mockGroupName,
-                                      providerName: mockProviderName,
-                                      trackingNumber: mockTrackingNumber, dateShipped: mockDateShipped) { error in
-                promise(error)
-            }
+        shipmentStore.addTracking(siteID: sampleSiteID,
+                                  orderID: sampleOrderID,
+                                  providerGroupName: mockGroupName,
+                                  providerName: mockProviderName,
+                                  trackingNumber: mockTrackingNumber, dateShipped: mockDateShipped) { error in
+                                    XCTAssertNil(error)
         }
-
-        XCTAssertNil(error)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
 

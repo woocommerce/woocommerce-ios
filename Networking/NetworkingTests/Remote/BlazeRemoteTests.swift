@@ -310,4 +310,50 @@ final class BlazeRemoteTests: XCTestCase {
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
     }
+
+    // MARK: - Fetch forecasted impressions
+
+    func test_fetchForecastedImpressions_returns_parsed_impressions() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/forecast"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-impressions")
+
+        // When
+        let result = try await remote.fetchForecastedImpressions(
+            for: sampleSiteID,
+            with: BlazeForecastedImpressionsInput.fake())
+
+        // Then
+        XCTAssertEqual(result, .init(totalImpressionsMin: 17900, totalImpressionsMax: 24200))
+    }
+
+    func test_fetchForecastedImpressions_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/forecast"
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+
+            _ = try await remote.fetchForecastedImpressions(
+                for: sampleSiteID,
+                with: BlazeForecastedImpressionsInput(startDate: dateFormatter.date(from: "2023-12-5")!,
+                                                      endDate: dateFormatter.date(from: "2023-12-11")!,
+                                                      formattedTotalBudget: "35.00"
+                                                     )
+            )
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
 }

@@ -1,3 +1,4 @@
+import Codegen
 import Foundation
 
 /// Protocol for `BlazeRemote` mainly used for mocking.
@@ -38,6 +39,16 @@ public protocol BlazeRemoteProtocol {
     ///    - locale: The locale to receive in the response.
     ///
     func fetchTargetLocations(for siteID: Int64, query: String, locale: String) async throws -> [BlazeTargetLocation]
+
+    /// Fetches forecasted campaign impressions.
+    /// - Parameters:
+    ///    - siteID: WPCom ID for the site to create ads campaigns.
+    ///    - input: BlazeForecastedImpressionsInput object containing various parameters for the request.
+    ///
+    func fetchForecastedImpressions(
+        for siteID: Int64,
+        with input: BlazeForecastedImpressionsInput
+    ) async throws -> BlazeImpressions
 }
 
 /// Blaze: Remote Endpoints
@@ -98,6 +109,24 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         let mapper = BlazeTargetLocationListMapper()
         return try await enqueue(request, mapper: mapper)
     }
+
+    /// Fetches forecasted campaign impressions.
+    ///
+    public func fetchForecastedImpressions(
+        for siteID: Int64,
+        with input: BlazeForecastedImpressionsInput
+    ) async throws -> BlazeImpressions {
+        let path = Paths.campaignImpressions(siteID: siteID)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = Constants.dateFormat
+
+        let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        let mapper = BlazeImpressionsMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 private extension BlazeRemote {
@@ -129,6 +158,10 @@ private extension BlazeRemote {
         static func campaignSearch(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1/search/campaigns/site/\(siteID)"
         }
+
+        static func campaignImpressions(siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1.1/forecast"
+        }
     }
 
     enum Keys {
@@ -142,5 +175,66 @@ private extension BlazeRemote {
     enum Values {
         static let postDate = "post_date"
         static let desc = "desc"
+    }
+
+    enum Constants {
+        static let dateFormat = "yyyy-MM-dd"
+    }
+}
+
+/// Blaze Forecasted Impressions input
+public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
+    // Start date of the campaign.
+    let startDate: Date
+    // End date of the campaign
+    let endDate: Date
+    // Formatted string of the total budget of the campaign
+    let formattedTotalBudget: String
+    // Target options for the campaign. Optional.
+    let targetings: BlazeTargetOptions?
+
+    public init(startDate: Date,
+                endDate: Date,
+                formattedTotalBudget: String,
+                targetings: BlazeTargetOptions? = nil) {
+        self.startDate = startDate
+        self.endDate = endDate
+        self.formattedTotalBudget = formattedTotalBudget
+        self.targetings = targetings
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case startDate
+        case endDate
+        case formattedTotalBudget = "total_budget"
+        case targetings
+    }
+}
+/// Blaze Forecasted Impressions sub-input related to targetings.
+public struct BlazeTargetOptions: Encodable {
+    // Target location IDs for the campaign. Optional.
+    let locations: [Int64]?
+    // Target languages for the campaign. Optional.
+    let languages: [String]?
+    // Target devices for the campaign. Optional.
+    let devices: [String]?
+    // Target topics for the campaign. Optional.
+    let pageTopics: [String]?
+
+    public init(locations: [Int64]?,
+                languages: [String]?,
+                devices: [String]?,
+                pageTopics: [String]?) {
+        self.locations = locations
+        self.languages = languages
+        self.devices = devices
+        self.pageTopics = pageTopics
+    }
+
+    private enum TargetingsKeys: String, CodingKey {
+        case locations
+        case languages
+        case devices
+        case pageTopics
     }
 }

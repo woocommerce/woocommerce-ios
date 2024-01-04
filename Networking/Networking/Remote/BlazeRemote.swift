@@ -188,25 +188,25 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     let startDate: Date
     // End date of the campaign
     let endDate: Date
-    // Formatted string of the total budget of the campaign
-    let formattedTotalBudget: String
+    // Total budget of the campaign
+    let totalBudget: Double
     // Target options for the campaign. Optional.
     let targetings: BlazeTargetOptions?
 
     public init(startDate: Date,
                 endDate: Date,
-                formattedTotalBudget: String,
+                totalBudget: Double,
                 targetings: BlazeTargetOptions? = nil) {
         self.startDate = startDate
         self.endDate = endDate
-        self.formattedTotalBudget = formattedTotalBudget
+        self.totalBudget = totalBudget
         self.targetings = targetings
     }
 
     private enum CodingKeys: String, CodingKey {
         case startDate
         case endDate
-        case formattedTotalBudget = "total_budget"
+        case totalBudget
         case targetings
     }
 }

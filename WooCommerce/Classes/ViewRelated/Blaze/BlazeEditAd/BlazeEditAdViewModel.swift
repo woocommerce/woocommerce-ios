@@ -23,7 +23,10 @@ final class BlazeEditAdViewModel: ObservableObject {
     private let taglineMaxLength = 32
     @Published private var taglineRemainingLength: Int
     private var taglineLengthLimitLabel: String {
-        String(format: Localization.taglineLengthLimit, taglineRemainingLength)
+        let lengthText = String.pluralize(taglineRemainingLength,
+                                          singular: Localization.LengthLimit.singular,
+                                          plural: Localization.LengthLimit.plural)
+        return String(format: lengthText, taglineRemainingLength)
     }
     private var taglineEmptyError: String?
 
@@ -35,7 +38,10 @@ final class BlazeEditAdViewModel: ObservableObject {
     private let descriptionMaxLength = 140
     @Published private var descriptionRemainingLength: Int
     private var descriptionLengthLimitLabel: String {
-        String(format: Localization.descriptionLengthLimit, descriptionRemainingLength)
+        let lengthText = String.pluralize(descriptionRemainingLength,
+                                          singular: Localization.LengthLimit.singular,
+                                          plural: Localization.LengthLimit.plural)
+        return String(format: lengthText, descriptionRemainingLength)
     }
     private var descriptionEmptyError: String?
 
@@ -176,24 +182,26 @@ extension BlazeEditAdViewModel {
 
 private extension BlazeEditAdViewModel {
     enum Localization {
-        static let taglineLengthLimit = NSLocalizedString(
-            "blazeEditAdViewModel.tagline.lengthLimit",
-            value: "%1$d characters remaining",
-            comment: "Edit Blaze Ad screen: Text showing the max allowed characters length of Tagline field." +
-            " " +
-            "%1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining"
-        )
+        enum LengthLimit {
+            static let plural = NSLocalizedString(
+                "blazeEditAdViewModel.lengthLimit.plural",
+                value: "%1$d characters remaining",
+                comment: "Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field." +
+                " " +
+                "%1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining"
+            )
+            static let singular = NSLocalizedString(
+                "blazeEditAdViewModel.lengthLimit.singular",
+                value: "%1$d character remaining",
+                comment: "Edit Blaze Ad screen: Singular form text showing the max allowed characters length for Tagline or Description field." +
+                " " +
+                "%1$d is replaced with the remaining available characters count. Reads like: 1 character remaining"
+            )
+        }
         static let taglineEmpty = NSLocalizedString(
             "blazeEditAdViewModel.tagline.emptyError",
             value: "Tagline cannot be empty",
             comment: "Edit Blaze Ad screen: Error message if Tagline field is empty."
-        )
-        static let descriptionLengthLimit = NSLocalizedString(
-            "blazeEditAdViewModel.description.lengthLimit",
-            value: "%1$d characters remaining",
-            comment: "Text showing the max allowed characters length of Description field." +
-            " " +
-            "%1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining"
         )
         static let descriptionEmpty = NSLocalizedString(
             "blazeEditAdViewModel.description.emptyError",

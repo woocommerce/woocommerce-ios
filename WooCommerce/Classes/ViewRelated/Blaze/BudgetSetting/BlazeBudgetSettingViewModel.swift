@@ -83,7 +83,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     @MainActor
-    func retryFetchingImpression() async {
+    func retryFetchingImpressions() async {
         await updateImpressions(startDate: startDate, dayCount: dayCount, dailyBudget: dailyAmount)
     }
 

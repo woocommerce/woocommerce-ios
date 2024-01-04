@@ -110,7 +110,7 @@ private extension BlazeBudgetSettingView {
         case .failure:
             Button {
                 Task {
-                    await viewModel.retryFetchingImpression()
+                    await viewModel.retryFetchingImpressions()
                 }
             } label: {
                 Text(Localization.forecastingFailed)

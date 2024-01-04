@@ -182,13 +182,13 @@ private extension BlazeBudgetSettingView {
 
             // Start date picker
             VStack {
-                HStack {
+                AdaptiveStack(horizontalAlignment: .leading) {
                     Text(Localization.starts)
                         .bodyStyle()
 
                     Spacer()
 
-                    DatePicker(selection: $viewModel.startDate, displayedComponents: [.date]) {
+                    DatePicker(selection: $viewModel.startDate, in: Date()..., displayedComponents: [.date]) {
                         EmptyView()
                     }
                     .datePickerStyle(.compact)

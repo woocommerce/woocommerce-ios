@@ -345,7 +345,7 @@ final class BlazeRemoteTests: XCTestCase {
                 for: sampleSiteID,
                 with: BlazeForecastedImpressionsInput(startDate: dateFormatter.date(from: "2023-12-5")!,
                                                       endDate: dateFormatter.date(from: "2023-12-11")!,
-                                                      formattedTotalBudget: "35.00"
+                                                      totalBudget: 35
                                                      )
             )
 

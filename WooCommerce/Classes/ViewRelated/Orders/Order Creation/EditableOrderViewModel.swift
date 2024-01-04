@@ -1441,21 +1441,18 @@ private extension EditableOrderViewModel {
     /// Updates the Order with the given product from SKU scanning
     ///
     func updateOrderWithBaseItem(_ item: OrderBaseItem) {
-        switch item {
-            case let .product(product) where product.productType == .bundle:
-                // When a scanned product is a bundle product, the bundle configuration view is shown first.
-                configurableScannedProductViewModel = .init(product: product,
-                                                     orderItem: nil,
-                                                     childItems: [],
-                                                     onConfigure: { [weak self] configuration in
-                    guard let self else { return }
-                    self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
-                    self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
-                    self.configurableScannedProductViewModel = nil
-                })
-                return
-            default:
-                break
+        // When a scanned product is a bundle product, the bundle configuration view is shown first.
+        if case let .product(product) = item, product.productType == .bundle {
+            configurableScannedProductViewModel = .init(product: product,
+                                                 orderItem: nil,
+                                                 childItems: [],
+                                                 onConfigure: { [weak self] configuration in
+                guard let self else { return }
+                self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                self.configurableScannedProductViewModel = nil
+            })
+            return
         }
 
         guard currentOrderItems.contains(where: { $0.productOrVariationID == item.itemID }) else {

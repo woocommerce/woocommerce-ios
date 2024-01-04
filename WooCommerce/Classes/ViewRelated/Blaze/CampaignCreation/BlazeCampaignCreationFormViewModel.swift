@@ -27,11 +27,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private var devices: [String]?
     private var pageTopics: [String]?
 
+    var targetOptions: BlazeTargetOptions? {
+        guard locations != nil || languages != nil || devices != nil || pageTopics != nil else {
+            return nil
+        }
+        return BlazeTargetOptions(locations: locations, languages: languages, devices: devices, pageTopics: pageTopics)
+    }
+
     var budgetSettingViewModel: BlazeBudgetSettingViewModel {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     duration: duration,
-                                    startDate: startDate) { [weak self] dailyBudget, duration, startDate in
+                                    startDate: startDate,
+                                    targetOptions: targetOptions) { [weak self] dailyBudget, duration, startDate in
             guard let self else { return }
             self.startDate = startDate
             self.duration = duration

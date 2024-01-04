@@ -4,7 +4,7 @@ import SwiftUI
 struct BlazeBudgetSettingView: View {
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.sizeCategory) private var sizeCategory
     @State private var showingImpressionInfo = false
     @State private var showingDurationSetting = false
 

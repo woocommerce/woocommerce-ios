@@ -7,6 +7,7 @@ class LoginPrologueViewController: LoginViewController {
 
     @IBOutlet private weak var topContainerView: UIView!
     @IBOutlet private weak var buttonBlurEffectView: UIVisualEffectView!
+    @IBOutlet private weak var buttonBackgroundView: UIView!
     private var buttonViewController: NUXButtonViewController?
     private var stackedButtonsViewController: NUXStackedButtonsViewController?
     var showCancel = false
@@ -357,6 +358,7 @@ class LoginPrologueViewController: LoginViewController {
         // Fallback to setting the button background color to clear so the blur effect blurs the Prologue background color.
         let buttonsBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.prologueButtonsBackgroundColor ?? .clear
         buttonViewController?.backgroundColor = buttonsBackgroundColor
+        buttonBackgroundView?.backgroundColor = buttonsBackgroundColor
         stackedButtonsViewController?.backgroundColor = buttonsBackgroundColor
 
         /// If host apps provide a background color for the prologue buttons:
@@ -589,6 +591,7 @@ class LoginPrologueViewController: LoginViewController {
             self.buttonViewController = buttonViewController
             buttonViewController.move(to: self, into: buttonContainerView)
         }
+        view.bringSubviewToFront(buttonContainerView)
     }
 }
 

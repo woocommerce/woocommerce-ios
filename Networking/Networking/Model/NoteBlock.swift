@@ -3,7 +3,7 @@ import Codegen
 
 // MARK: - NotificationBlock Implementation
 //
-public struct NoteBlock: Equatable, GeneratedFakeable {
+public struct NoteBlock: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Parsed Media Entities.
     ///
@@ -19,7 +19,7 @@ public struct NoteBlock: Equatable, GeneratedFakeable {
 
     /// Available Actions collection.
     ///
-    private let actions: [String: Bool]
+    public let actions: [String: Bool]
 
     /// Meta Fields collection.
     ///
@@ -27,10 +27,10 @@ public struct NoteBlock: Equatable, GeneratedFakeable {
 
     /// Raw Type, expressed as a string.
     ///
-    private let type: String?
+    public let type: String?
+}
 
-
-
+extension NoteBlock {
     /// Designated Initializer.
     ///
     public init(media: [NoteMedia], ranges: [NoteRange], text: String?, actions: [String: Bool], meta: [String: AnyCodable], type: String?) {

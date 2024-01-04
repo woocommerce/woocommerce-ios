@@ -44,7 +44,6 @@ struct BlazeBudgetSettingView: View {
                 durationSettingView
             }
         }
-
     }
 }
 
@@ -94,10 +93,31 @@ private extension BlazeBudgetSettingView {
                     showingImpressionInfo = true
                 }
 
-                // TODO: fetch impressions and display
-                Text("2,588 - 3,458")
-                    .bold()
-                    .font(.subheadline)
+                forecastedImpressionsView
+            }
+        }
+    }
+
+    @ViewBuilder
+    var forecastedImpressionsView: some View {
+        switch viewModel.forecastedImpressionState {
+        case .loading:
+            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+        case .result(let formattedResult):
+            Text(formattedResult)
+                .bold()
+                .font(.subheadline)
+        case .failure:
+            Label {
+                Text("Failed to forecast impressions.")
+            } icon: {
+                Image(systemName: "arrow.clockwise")
+            }
+            .font(.subheadline)
+            .onTapGesture {
+                Task {
+                    await viewModel.updateImpressions()
+                }
             }
         }
     }

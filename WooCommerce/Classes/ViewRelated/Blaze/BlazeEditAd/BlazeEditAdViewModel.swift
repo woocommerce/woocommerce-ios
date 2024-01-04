@@ -180,7 +180,7 @@ extension BlazeEditAdViewModel {
     }
 }
 
-private extension BlazeEditAdViewModel {
+extension BlazeEditAdViewModel {
     enum Localization {
         enum LengthLimit {
             static let plural = NSLocalizedString(

@@ -156,7 +156,6 @@ private extension BlazeBudgetSettingView {
                 }
             }
         }
-        .padding(.top)
     }
 
     var durationSettingView: some View {

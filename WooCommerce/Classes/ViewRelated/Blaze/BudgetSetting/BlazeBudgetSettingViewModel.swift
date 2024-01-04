@@ -4,18 +4,11 @@ import Yosemite
 /// View model for `BlazeBudgetSettingView`
 final class BlazeBudgetSettingViewModel: ObservableObject {
     @Published var dailyAmount: Double
-
     /// Using Double because Slider doesn't work with Int
     @Published var dayCount: Double
-
     @Published var startDate: Date
 
-    @Published private(set) var isFetchingImpressions = false
-    @Published private(set) var fetchingImpressionsFailed = false
-    @Published private(set) var formattedImpressions = ""
-
-    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
-    private let completionHandler: BlazeBudgetSettingCompletionHandler
+    @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
@@ -67,6 +60,9 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     private let targetOptions: BlazeTargetOptions?
     private let stores: StoresManager
 
+    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
+    private let completionHandler: BlazeBudgetSettingCompletionHandler
+
     init(siteID: Int64,
          dailyBudget: Double,
          duration: Int,
@@ -87,23 +83,24 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         // TODO: track confirmation
         completionHandler(dailyAmount, Int(dayCount), startDate)
     }
-}
 
-private extension BlazeBudgetSettingViewModel {
     @MainActor
     func updateImpressions() async {
-        fetchingImpressionsFailed = false
-        isFetchingImpressions = true
+        forecastedImpressionState = .loading
         let input = BlazeForecastedImpressionsInput(startDate: startDate, endDate: endDate, totalBudget: totalBudget, targetings: targetOptions)
         do {
             let result = try await fetchForecastedImpressions(input: input)
-            formattedImpressions = String(format: "%d - %d", result.totalImpressionsMin, result.totalImpressionsMax)
+            let formattedImpressions = String(format: "%d - %d", result.totalImpressionsMin, result.totalImpressionsMax)
+            forecastedImpressionState = .result(formattedResult: formattedImpressions)
         } catch {
             DDLogError("⛔️ Error fetching forecasted impression: \(error)")
-            fetchingImpressionsFailed = true
+            forecastedImpressionState = .failure
         }
-        isFetchingImpressions = false
     }
+}
+
+// MARK: - Private helpers
+private extension BlazeBudgetSettingViewModel {
 
     @MainActor
     func fetchForecastedImpressions(input: BlazeForecastedImpressionsInput) async throws -> BlazeImpressions {
@@ -120,6 +117,7 @@ private extension BlazeBudgetSettingViewModel {
     }
 }
 
+// MARK: - subtypes
 extension BlazeBudgetSettingViewModel {
     enum Constants {
         static let oneDayInSeconds: Double = 86400
@@ -130,6 +128,12 @@ extension BlazeBudgetSettingViewModel {
         static let maximumDayCount = 28
         static let defaultDayCount = 7
         static let dayCountSliderStep = 1
+    }
+
+    enum ForecastedImpressionState {
+        case loading
+        case result(formattedResult: String)
+        case failure
     }
 
     private enum Localization {

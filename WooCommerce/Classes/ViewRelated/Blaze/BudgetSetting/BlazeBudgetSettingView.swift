@@ -300,6 +300,6 @@ private extension BlazeBudgetSettingView {
 
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(dailyBudget: 5, duration: 7, startDate: .now) { _, _, _ in })
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, duration: 7, startDate: .now) { _, _, _ in })
     }
 }

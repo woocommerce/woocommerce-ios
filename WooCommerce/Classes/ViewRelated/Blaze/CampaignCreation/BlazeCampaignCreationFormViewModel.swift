@@ -21,8 +21,17 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
     private var duration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
 
+    // Target options
+    private var locations: [Int64]?
+    private var languages: [String]?
+    private var devices: [String]?
+    private var pageTopics: [String]?
+
     var budgetSettingViewModel: BlazeBudgetSettingViewModel {
-        BlazeBudgetSettingViewModel(dailyBudget: dailyBudget, duration: duration, startDate: startDate) { [weak self] dailyBudget, duration, startDate in
+        BlazeBudgetSettingViewModel(siteID: siteID,
+                                    dailyBudget: dailyBudget,
+                                    duration: duration,
+                                    startDate: startDate) { [weak self] dailyBudget, duration, startDate in
             guard let self else { return }
             self.startDate = startDate
             self.duration = duration

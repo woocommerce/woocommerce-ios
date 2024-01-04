@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// View model for `BlazeBudgetSettingView`
 final class BlazeBudgetSettingViewModel: ObservableObject {
@@ -8,6 +9,10 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     @Published var dayCount: Double
 
     @Published var startDate: Date
+
+    @Published private(set) var isFetchingImpressions = false
+    @Published private(set) var fetchingImpressionsFailed = false
+    @Published private(set) var formattedImpressions = ""
 
     typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
     private let completionHandler: BlazeBudgetSettingCompletionHandler
@@ -23,8 +28,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     var totalAmountText: String {
-        let totalAmount = dailyAmount * dayCount
-        return String(format: "$%.0f USD", totalAmount)
+        return String(format: "$%.0f USD", totalBudget)
     }
 
     var formattedTotalDuration: String {
@@ -39,6 +43,11 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                          plural: Localization.multipleDays)
     }
 
+    var formattedDateRange: String {
+        // Use the configured formatter to generate the string.
+        dateFormatter.string(from: startDate, to: endDate)
+    }
+
     private let dateFormatter: DateIntervalFormatter = {
         let formatter = DateIntervalFormatter()
         formatter.dateStyle = .medium
@@ -46,23 +55,68 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         return formatter
     }()
 
-    var formattedDateRange: String {
-        let endDate = Date(timeInterval: Constants.oneDayInSeconds * dayCount, since: startDate)
-
-        // Use the configured formatter to generate the string.
-        return dateFormatter.string(from: startDate, to: endDate)
+    private var endDate: Date {
+        Date(timeInterval: Constants.oneDayInSeconds * dayCount, since: startDate)
     }
 
-    init(dailyBudget: Double, duration: Int, startDate: Date, onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
+    private var totalBudget: Double {
+        dailyAmount * dayCount
+    }
+
+    private let siteID: Int64
+    private let targetOptions: BlazeTargetOptions?
+    private let stores: StoresManager
+
+    init(siteID: Int64,
+         dailyBudget: Double,
+         duration: Int,
+         startDate: Date,
+         targetOptions: BlazeTargetOptions? = nil,
+         stores: StoresManager = ServiceLocator.stores,
+         onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
+        self.siteID = siteID
         self.dailyAmount = dailyBudget
         self.dayCount = Double(duration)
         self.startDate = startDate
+        self.targetOptions = targetOptions
+        self.stores = stores
         self.completionHandler = onCompletion
     }
 
     func confirmSettings() {
         // TODO: track confirmation
         completionHandler(dailyAmount, Int(dayCount), startDate)
+    }
+}
+
+private extension BlazeBudgetSettingViewModel {
+    @MainActor
+    func updateImpressions() async {
+        fetchingImpressionsFailed = false
+        isFetchingImpressions = true
+        let input = BlazeForecastedImpressionsInput(startDate: startDate, endDate: endDate, totalBudget: totalBudget, targetings: targetOptions)
+        do {
+            let result = try await fetchForecastedImpressions(input: input)
+            formattedImpressions = String(format: "%d - %d", result.totalImpressionsMin, result.totalImpressionsMax)
+        } catch {
+            DDLogError("⛔️ Error fetching forecasted impression: \(error)")
+            fetchingImpressionsFailed = true
+        }
+        isFetchingImpressions = false
+    }
+
+    @MainActor
+    func fetchForecastedImpressions(input: BlazeForecastedImpressionsInput) async throws -> BlazeImpressions {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(BlazeAction.fetchForecastedImpressions(siteID: siteID, input: input) { result in
+                switch result {
+                case .success(let impressions):
+                    continuation.resume(returning: impressions)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
     }
 }
 

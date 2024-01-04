@@ -18,6 +18,7 @@ public typealias BlazeForecastedImpressionsInput = Networking.BlazeForecastedImp
 public typealias BlazeImpressions = Networking.BlazeImpressions
 public typealias BlazeTargetDevice = Networking.BlazeTargetDevice
 public typealias BlazeTargetLanguage = Networking.BlazeTargetLanguage
+public typealias BlazeTargetOptions = Networking.BlazeTargetOptions
 public typealias BlazeTargetLocation = Networking.BlazeTargetLocation
 public typealias BlazeTargetTopic = Networking.BlazeTargetTopic
 public typealias FallibleCancelable = Hardware.FallibleCancelable

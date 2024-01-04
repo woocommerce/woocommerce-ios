@@ -263,7 +263,7 @@ private enum Layout {
 
     enum Image {
         static let imageViewSize: CGFloat = 148
-        static let cornerRadius: CGFloat = 7.4
+        static let cornerRadius: CGFloat = 8
     }
 
     enum Tagline {

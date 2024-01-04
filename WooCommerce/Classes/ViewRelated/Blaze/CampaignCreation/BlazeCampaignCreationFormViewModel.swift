@@ -4,7 +4,7 @@ import Yosemite
 /// View model for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
-    private let siteID: Int64
+    let siteID: Int64
     private let stores: StoresManager
     private let completionHandler: () -> Void
     private let dateFormatter: DateFormatter = {
@@ -42,6 +42,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
         updateBudgetDetails()
     }
+
+    func didTapEditAd() {
+        onEditAd?()
+    }
 }
 
 private extension BlazeCampaignCreationFormViewModel {
@@ -70,9 +74,5 @@ private extension BlazeCampaignCreationFormViewModel {
             comment: "Blaze campaign budget details with duration in plural form. " +
             "Reads like: $35, 15 days from Dec 31"
         )
-    }
-
-    func didTapEditAd() {
-        onEditAd?()
     }
 }

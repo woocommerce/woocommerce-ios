@@ -199,6 +199,21 @@ extension Networking.BlazeCampaign {
     }
 }
 
+extension Networking.BlazeImpressions {
+    public func copy(
+        totalImpressionsMin: CopiableProp<Int64> = .copy,
+        totalImpressionsMax: CopiableProp<Int64> = .copy
+    ) -> Networking.BlazeImpressions {
+        let totalImpressionsMin = totalImpressionsMin ?? self.totalImpressionsMin
+        let totalImpressionsMax = totalImpressionsMax ?? self.totalImpressionsMax
+
+        return Networking.BlazeImpressions(
+            totalImpressionsMin: totalImpressionsMin,
+            totalImpressionsMax: totalImpressionsMax
+        )
+    }
+}
+
 extension Networking.BlazeTargetDevice {
     public func copy(
         id: CopiableProp<String> = .copy,

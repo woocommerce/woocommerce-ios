@@ -108,16 +108,14 @@ private extension BlazeBudgetSettingView {
                 .bold()
                 .font(.subheadline)
         case .failure:
-            Label {
-                Text("Failed to forecast impressions.")
-            } icon: {
-                Image(systemName: "arrow.clockwise")
-            }
-            .font(.subheadline)
-            .onTapGesture {
+            Button {
                 Task {
                     await viewModel.retryFetchingImpression()
                 }
+            } label: {
+                Text(Localization.forecastingFailed)
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
             }
         }
     }
@@ -314,6 +312,11 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.apply",
             value: "Apply",
             comment: "Button to apply the changes on the Blaze campaign duration setting screen"
+        )
+        static let forecastingFailed = NSLocalizedString(
+            "blazeBudgetSettingView.forecastingFailed",
+            value: "Forecasting failed. Retry?",
+            comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
         )
     }
 }

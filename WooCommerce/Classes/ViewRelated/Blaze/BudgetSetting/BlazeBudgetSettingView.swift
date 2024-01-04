@@ -4,6 +4,7 @@ import SwiftUI
 struct BlazeBudgetSettingView: View {
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) var sizeCategory
     @State private var showingImpressionInfo = false
     @State private var showingDurationSetting = false
 
@@ -31,14 +32,14 @@ struct BlazeBudgetSettingView: View {
         }
         .sheet(isPresented: $showingImpressionInfo) {
             if #available(iOS 16, *) {
-                impressionInfoView.presentationDetents([.medium, .large])
+                impressionInfoView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
             } else {
                 impressionInfoView
             }
         }
         .sheet(isPresented: $showingDurationSetting) {
             if #available(iOS 16, *) {
-                durationSettingView.presentationDetents([.medium, .large])
+                durationSettingView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
             } else {
                 durationSettingView
             }

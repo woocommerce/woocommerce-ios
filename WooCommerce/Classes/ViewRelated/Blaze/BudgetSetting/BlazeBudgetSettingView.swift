@@ -160,53 +160,57 @@ private extension BlazeBudgetSettingView {
     }
 
     var durationSettingView: some View {
-        ScrollView {
-            // Title
-            Text(Localization.setDuration)
-                .headlineStyle()
-                .padding(.horizontal, Layout.contentPadding)
-                .padding(.vertical, Layout.sectionSpacing)
-
-            Spacer()
-
-            // Duration slider
-            VStack(spacing: Layout.sectionContentSpacing) {
-                Text(viewModel.formattedDayCount)
-                    .fontWeight(.semibold)
-                    .bodyStyle()
-
-                Slider(value: $viewModel.dayCount,
-                       in: viewModel.dayCountSliderRange,
-                       step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
-            }
-            .padding(Layout.contentPadding)
-
-            // Start date picker
-            VStack {
-                AdaptiveStack(horizontalAlignment: .leading) {
-                    Text(Localization.starts)
+        NavigationView {
+            ScrollView {
+                // Duration slider
+                VStack(spacing: Layout.sectionContentSpacing) {
+                    Text(viewModel.formattedDayCount)
+                        .fontWeight(.semibold)
                         .bodyStyle()
 
-                    Spacer()
-
-                    DatePicker(selection: $viewModel.startDate, in: Date()..., displayedComponents: [.date]) {
-                        EmptyView()
-                    }
-                    .datePickerStyle(.compact)
+                    Slider(value: $viewModel.dayCount,
+                           in: viewModel.dayCountSliderRange,
+                           step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
                 }
                 .padding(Layout.contentPadding)
+                .padding(.top, Layout.sectionSpacing)
 
-                Divider()
+                // Start date picker
+                VStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
+                        Text(Localization.starts)
+                            .bodyStyle()
+
+                        Spacer()
+
+                        DatePicker(selection: $viewModel.startDate, in: Date()..., displayedComponents: [.date]) {
+                            EmptyView()
+                        }
+                        .datePickerStyle(.compact)
+                    }
+                    .padding(Layout.contentPadding)
+
+                    Divider()
+                }
+
+                Spacer()
+
+                // CTA
+                Button(Localization.apply) {
+                    showingDurationSetting = false
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(Layout.contentPadding)
             }
-
-            Spacer()
-
-            // CTA
-            Button(Localization.apply) {
-                showingDurationSetting = false
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Localization.setDuration)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancel) {
+                        showingDurationSetting = false
+                    }
+                }
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(Layout.contentPadding)
         }
     }
 }

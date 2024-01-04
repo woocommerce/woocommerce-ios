@@ -24,7 +24,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     var totalAmountText: String {
         let totalAmount = dailyAmount * dayCount
-        return String(format: "$%.0f", totalAmount)
+        return String(format: "$%.0f USD", totalAmount)
     }
 
     var formattedTotalDuration: String {

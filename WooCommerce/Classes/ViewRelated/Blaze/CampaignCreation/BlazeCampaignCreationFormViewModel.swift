@@ -44,7 +44,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
 private extension BlazeCampaignCreationFormViewModel {
     func updateBudgetDetails() {
-        let amount = String(format: "$%.0f", dailyBudget * Double(duration))
+        let amount = String(format: "$%.0f USD", dailyBudget * Double(duration))
         let date = dateFormatter.string(for: startDate) ?? ""
         budgetDetailText = String.pluralize(
             duration,

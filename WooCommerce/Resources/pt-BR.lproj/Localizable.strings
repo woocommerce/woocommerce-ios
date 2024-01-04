@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-28 18:54:04+0000 */
+/* Translation-Revision-Date: 2023-12-13 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "Da biblioteca de mídia do WordPress";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "Do dispositivo";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Da compra ao processamento: gerencie todo o processo do pedido pelo app.";
 
@@ -5053,9 +5050,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "Sem arquivos ainda";
 
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "Nenhuma imagem adicionada";
-
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "Sem limite";
 
@@ -5450,8 +5444,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "As dimensões do pacote devem ser maiores que zero. Atualize as dimensões do item na seção Envio da página do produto para continuar.";
 
-/* Row title for the last paid deposit in the WooPayments Deposits overview
-   The title for the customer payment cell */
+/* The title for the customer payment cell */
 "Paid" = "Pago";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -9822,6 +9815,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Ícone";
 
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "Copiado para a área de transferência.";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "Copiar número";
+
+/* Button to dismiss the Blaze campaign section on the My Store screen. */
+"blazeCampaignDashboardView.hideBlazeButton" = "Ocultar Blaze";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Cancelar";
 
@@ -9851,31 +9853,31 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleItem.add" = "Adicionar";
 
 /* Action to select a variation for a bundle item when it is variable. */
-"configureBundleItem.selectVariation" = "Selecionar variação";
+"configureBundleItem.chooseVariation" = "Escolher variação";
 
 /* Action to update a variation for a bundle item when it is variable. */
 "configureBundleItem.updateVariation" = "Atualizar variação";
 
-/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
-"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "A quantidade precisa estar entre %1$@ e %2$@";
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. %1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat" = "A quantidade de %1$@ precisa estar entre %2$@ e %3$@.";
 
-/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
-"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "A quantidade precisa ser de pelo menos %1$@";
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. %1$@ is the product name. %2$@ is the minimum quantity. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat" = "A quantidade de %1$@ precisa ser de pelo menos %2$@.";
 
-/* Error message when a variable bundle item is missing a variation. */
-"configureBundleItemError.missingVariation" = "Selecione uma variação";
+/* Error message format when a variable bundle item is missing a variation. %1$@ is the variable product name. */
+"configureBundleItemError.missingVariationFormat" = "Escolha uma variação para %1$@.";
 
-/* Error message when a variable bundle item is missing some attributes. */
-"configureBundleItemError.variationMissingAttributes" = "Selecione uma opção para todos os atributos de variação";
+/* Error message format when a variable bundle item is missing some attributes. %1$@ is the variable product name. */
+"configureBundleItemError.variationMissingAttributesFormat" = "Escolha uma opção para todos os atributos de variação de %1$@.";
 
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "Fechar";
 
-/* Text for the done button in the bundle product configuration screen in the order form. */
-"configureBundleProduct.done" = "Concluir";
-
 /* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
 "configureBundleProduct.retry" = "Tentar novamente";
+
+/* Text for the save button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.save" = "Salvar configuração";
 
 /* Title for the bundle product configuration screen in the order form. */
 "configureBundleProduct.title" = "Configurar";
@@ -9901,6 +9903,12 @@ which should be translated separately and considered part of this sentence. */
 /* Used in configureBundleProductValidationError strings for the singular form of item. */
 "configureBundleProductValidationError.itemSingular" = "item";
 
+/* Title of the error notice when the bundle configuration is currently invalid in the bundle product configuration screen. */
+"configureBundleProductValidationError.title" = "Configuração necessária";
+
+/* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
+"configureBundleProductValidationSuccess.title" = "Configuração concluída";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "dia";
 
@@ -9910,12 +9918,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Expira após";
 
+/* Display label when a subscription has no trial period. */
+"defaultProductFormTableViewModel.freeTrialRow.noTrialPeriod" = "Sem período de teste";
+
+/* Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.freeTrialRow.title" = "Teste gratuito";
+
 /* Display label when a subscription never expires. */
 "defaultProductFormTableViewModel.neverExpire" = "Nunca expira";
-
-/* Display label when a subscription has no trial period.
-   Title for Subscription Free Trial row in the product form screen. */
-"defaultProductFormTableViewModel.noFreeTrial" = "Teste gratuito";
 
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "Preço normal: %1$@ %2$@";
@@ -9928,6 +9938,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the expand chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.show" = "Mostrar detalhes do depósito";
+
+/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.depositTable.last.title" = "Último";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.canceled.title" = "Cancelado";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.estimated.title" = "Estimado";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.failed.title" = "Com falha";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.inTransit.title" = "Em trânsito";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.paid.title" = "Pago";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.pending.title" = "Pendente";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.unknown.title" = "Desconhecido";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "Documento no dispositivo";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "Mídia no dispositivo";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "Comércio eletrônico";
@@ -10091,6 +10131,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "Como deseja adicionar seu valor personalizado?";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "Concluído";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Valores personalizados";
 
@@ -10136,11 +10179,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Produto de assinatura variável";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "Erro ao fazer upload do arquivo. Tente novamente.";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "O tipo de arquivo selecionado não é compatível.";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "a cada %1$@";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promover com o Blaze";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "Aguarde até todos os uploads serem concluídos para reorganizar as imagens.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Intervalo de cobrança";
@@ -10175,6 +10227,15 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Subtitle for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.subtitle" = "Ative essa opção para que o envio seja cobrado uma vez no pedido inicial.";
+
+/* Subtitle for the One time shipping product shipping setting when it is disabled. */
+"productShippingSettings.oneTimeShipping.subtitleDisabled" = "Para que essa configuração seja ativada, a assinatura não pode ter um teste gratuito ou uma data de renovação sincronizada.";
+
+/* Title for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.title" = "Taxa de envio única";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "classificado %ld vezes";
 
@@ -10189,6 +10250,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Pagamento concluído";
+
+/* Navigates to Themes screen. */
+"settingsViewController.themesRow" = "Temas";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10281,11 +10345,47 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "%1$@ sobre como aceitar pagamentos com o Tap to Pay on iPhone.";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "Cancelar";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "Atual";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "Tema";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "Temas";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "Experimente uma repaginada";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "desconhecida";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "URL desconhecida";
+
+/* Cancel button title on the update product inventory view. */
+"updateProductInventoryView.cancelButtonTitle" = "Cancelar";
+
+/* Navigation bar title of the update product inventory view. */
+"updateProductInventoryView.navigationBarTitle" = "Produto";
+
+/* Product name label in the update product inventory view. */
+"updateProductInventoryView.productNameTitle" = "Nome do produto";
+
+/* Product quantity label in the update product inventory view. */
+"updateProductInventoryView.productQuantityTitle" = "Quantidade";
+
+/* Stock quantity button when a tap increases the stock once. */
+"updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle" = "Quantidade + 1";
+
+/* Stock quantity button when the user adds a custom quantity. */
+"updateProductInventoryView.quantityButton.updateQuantityButtonTitle" = "Atualizar quantidade";
+
+/* Product detailsl button title. */
+"updateProductInventoryView.viewProductDetailsButtonTitle" = "Visualizar detalhes do produto";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Dispensar";
@@ -10304,6 +10404,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, produtos, categorias, novo produto, pesquisar produtos";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Carregando mídia...";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Usar uma chave de segurança";

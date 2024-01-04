@@ -14,11 +14,11 @@ extension StorageOrder {
     ///
     @objc func normalizedAgeAsString() -> String {
         // Normalize Dates: Time must not be considered. Just the raw dates
-        guard let startDate = dateCreated?.normalizedDate() else {
+        guard let startDate = dateCreated?.startOfDay(timezone: .siteTimezone) else {
             return ""
         }
 
-        let toDate = Date().normalizedDate()
+        let toDate = Date().startOfDay(timezone: .siteTimezone)
         let age = Age.from(startDate: startDate, toDate: toDate)
 
         return age.rawValue

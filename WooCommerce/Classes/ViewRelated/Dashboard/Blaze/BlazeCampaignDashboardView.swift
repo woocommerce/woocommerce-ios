@@ -138,12 +138,20 @@ struct BlazeCampaignDashboardView: View {
             campaignDetailView(url: url)
         }
         .sheet(isPresented: $viewModel.shouldShowIntroView) {
-            BlazeCampaignIntroView(onStartCampaign: {
+            let onCreateCampaignClosure = {
                 viewModel.shouldShowIntroView = false
                 startCampaignFromIntroTapped?(selectedProductID)
-            }, onDismiss: {
+            }
+            let onDismissClosure = {
                 viewModel.shouldShowIntroView = false
-            })
+            }
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+                BlazeCreateCampaignIntroView(onCreateCampaign: onCreateCampaignClosure,
+                                             onDismiss: onDismissClosure)
+            } else {
+                BlazeCampaignIntroView(onStartCampaign: onCreateCampaignClosure,
+                                       onDismiss: onDismissClosure)
+            }
         }
         .overlay {
             topRightMenu

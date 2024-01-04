@@ -618,14 +618,13 @@ private extension OrderDetailsViewController {
         collectPayment()
 
         // Track tapped event
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.collectPaymentTapped())
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.collectPaymentTapped(flow: .orderDetails))
     }
 
     private func collectPayment() {
         let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel.paymentMethodsViewModel)
         paymentMethodsViewController.parentController = self
-        let paymentMethodsNavigationController = WooNavigationController(rootViewController: paymentMethodsViewController)
-        present(paymentMethodsNavigationController, animated: true)
+        present(paymentMethodsViewController, animated: true)
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemProductAddOn]) {

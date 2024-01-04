@@ -29,8 +29,12 @@ struct CustomAmountRowView: View {
                 .frame(width: Layout.editIconImageSize * scale,
                        height: Layout.editIconImageSize * scale)
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel(Localization.editButtonAccessibilityLabel)
+                .renderedIf(editable)
         }
         .padding(Layout.contentPadding)
+        .contentShape(Rectangle())
         .onTapGesture {
             viewModel.onEditCustomAmount()
         }
@@ -53,5 +57,12 @@ extension CustomAmountRowView {
         static let cornerRadius: CGFloat = 8
         static let borderLineWidth: CGFloat = 0.5
         static let editIconImageSize: CGFloat = 16
+    }
+
+    enum Localization {
+        static let editButtonAccessibilityLabel = NSLocalizedString(
+            "customAmount.edit.button.accessibilityLabel",
+            value: "Edit amount",
+            comment: "Accessibility title for the edit button on a custom amount row.")
     }
 }

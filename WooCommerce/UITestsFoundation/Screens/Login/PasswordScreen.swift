@@ -30,10 +30,10 @@ public final class PasswordScreen: ScreenObject {
     }
 
     @discardableResult
-    public func enterValidPassword() throws -> MyStoreScreen {
+    public func enterValidPassword() throws -> TwoFAScreen {
         try proceedWith(password: "pw")
 
-        return try MyStoreScreen()
+        return try TwoFAScreen()
     }
 
     public func enterInvalidPassword() throws -> PasswordScreen {
@@ -50,7 +50,7 @@ public final class PasswordScreen: ScreenObject {
         continueButton.tap()
 
         // As of Xcode 14.3, the Simulator might ask to save the password which, of course, we don't want to do.
-        if app.buttons["Save Password"].waitForExistence(timeout: 10) {
+        if app.buttons["Save Password"].waitForExistence(timeout: 15) {
             // There should be no need to wait for this button to exist since it's part of the same
             // alert where "Save Password" is.
             app.buttons["Not Now"].tap()

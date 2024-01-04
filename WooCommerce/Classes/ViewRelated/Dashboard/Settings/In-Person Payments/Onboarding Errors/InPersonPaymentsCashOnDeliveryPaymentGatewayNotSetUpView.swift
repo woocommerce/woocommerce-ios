@@ -11,8 +11,9 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
             InPersonPaymentsOnboardingErrorMainContentView(
                 title: Localization.title,
                 message: Localization.message,
+                secondaryMessage: Localization.secondaryMessage,
                 image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
-                    image: .waitingForCustomersImage,
+                    image: .puzzleExtensionsImage,
                     height: Constants.imageHeight
                 ),
                 supportLink: true
@@ -51,13 +52,18 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "Add Pay in Person to your checkout",
+        "Do you want to add Pay in Person to your web checkout?",
         comment: "Title for the card present payments onboarding step encouraging the merchant to enable the " +
         "Pay in Person payment gateway.")
 
     static let message = NSLocalizedString(
-        "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery.",
+        "Enabling \"Pay in Person\" lets customers pay you for online orders at delivery via cash or card.",
         comment: "The message explaining what will happen when the merchant enables the Pay in Person payment " +
+        "gateway during card present payments onboarding.")
+
+    static let secondaryMessage = NSLocalizedString(
+        "Orders can still be created manually without enabling this feature.",
+        comment: "Additional message explaining what will happen when the merchant enables the Pay in Person payment " +
         "gateway during card present payments onboarding.")
 
     static let skipButton = NSLocalizedString(
@@ -71,13 +77,13 @@ private enum Localization {
         "payments onboarding.")
 
     static let cashOnDeliveryLearnMore = NSLocalizedString(
-        "%1$@ about adding Pay in Person to your checkout",
+        "%1$@ about accepting payments with your mobile device and ordering card readers.",
         comment: "A label prompting users to learn more about card readers. %1$@ is a placeholder that is " +
         "always replaced with \"Learn more\" string, which should be translated separately and considered " +
         "part of this sentence.")
 }
 
 private enum Constants {
-    static let imageHeight: CGFloat = 140.0
+    static let imageHeight: CGFloat = 88.0
     static let learnMorePadding: CGFloat = 8
 }

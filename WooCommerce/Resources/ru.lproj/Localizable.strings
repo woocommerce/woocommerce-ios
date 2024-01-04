@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-29 09:54:05+0000 */
+/* Translation-Revision-Date: 2023-12-14 13:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "Из библиотеки файлов WordPress";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "С устройства";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Управляйте в приложении всем процессом обработки заказа: от покупки до выполнения.";
 
@@ -5053,9 +5050,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "Файлов пока нет";
 
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "Нет изображений";
-
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "Никаких ограничений";
 
@@ -5450,8 +5444,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "Размеры упаковки должны быть больше нуля. Чтобы продолжить, обновите размеры позиции в разделе \"Доставка\" на странице товара.";
 
-/* Row title for the last paid deposit in the WooPayments Deposits overview
-   The title for the customer payment cell */
+/* The title for the customer payment cell */
 "Paid" = "Платно";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -9822,6 +9815,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Иконка";
 
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "Скопировано в буфер обмена.";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "Скопировать номер";
+
+/* Button to dismiss the Blaze campaign section on the My Store screen. */
+"blazeCampaignDashboardView.hideBlazeButton" = "Скрыть Blaze";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
 
@@ -9851,31 +9853,31 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleItem.add" = "Добавить";
 
 /* Action to select a variation for a bundle item when it is variable. */
-"configureBundleItem.selectVariation" = "Выбрать вариант";
+"configureBundleItem.chooseVariation" = "Выберите вариант";
 
 /* Action to update a variation for a bundle item when it is variable. */
 "configureBundleItem.updateVariation" = "Обновить вариант";
 
-/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
-"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "Необходимо указать количество в диапазоне от %1$@ до %2$@";
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. %1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat" = "Необходимо указать количество %1$@ в диапазоне от %2$@ до %3$@";
 
-/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
-"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "Необходимо указать количество не менее %1$@";
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. %1$@ is the product name. %2$@ is the minimum quantity. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat" = "Необходимо указать количество %1$@ не менее %2$@";
 
-/* Error message when a variable bundle item is missing a variation. */
-"configureBundleItemError.missingVariation" = "Выберите конкретный вариант";
+/* Error message format when a variable bundle item is missing a variation. %1$@ is the variable product name. */
+"configureBundleItemError.missingVariationFormat" = "Выберите вариант %1$@.";
 
-/* Error message when a variable bundle item is missing some attributes. */
-"configureBundleItemError.variationMissingAttributes" = "Выберите опцию для всех атрибутов вариантов";
+/* Error message format when a variable bundle item is missing some attributes. %1$@ is the variable product name. */
+"configureBundleItemError.variationMissingAttributesFormat" = "Выберите значения для всех атрибутов варианта %1$@.";
 
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "Закрыть";
 
-/* Text for the done button in the bundle product configuration screen in the order form. */
-"configureBundleProduct.done" = "Готово";
-
 /* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
 "configureBundleProduct.retry" = "Повторить";
+
+/* Text for the save button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.save" = "Сохранить конфигурацию";
 
 /* Title for the bundle product configuration screen in the order form. */
 "configureBundleProduct.title" = "Настроить";
@@ -9901,6 +9903,12 @@ which should be translated separately and considered part of this sentence. */
 /* Used in configureBundleProductValidationError strings for the singular form of item. */
 "configureBundleProductValidationError.itemSingular" = "позиция";
 
+/* Title of the error notice when the bundle configuration is currently invalid in the bundle product configuration screen. */
+"configureBundleProductValidationError.title" = "Требуется настройка";
+
+/* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
+"configureBundleProductValidationSuccess.title" = "Настройка выполнена";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "день";
 
@@ -9910,12 +9918,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Окончание срока действия";
 
+/* Display label when a subscription has no trial period. */
+"defaultProductFormTableViewModel.freeTrialRow.noTrialPeriod" = "Нет пробного периода";
+
+/* Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.freeTrialRow.title" = "Пробный период";
+
 /* Display label when a subscription never expires. */
 "defaultProductFormTableViewModel.neverExpire" = "Действует бессрочно";
-
-/* Display label when a subscription has no trial period.
-   Title for Subscription Free Trial row in the product form screen. */
-"defaultProductFormTableViewModel.noFreeTrial" = "Пробный период";
 
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "Обычная цена: %1$@ каждые %2$@";
@@ -9928,6 +9938,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the expand chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.show" = "Показать сведения о предоплате";
+
+/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.depositTable.last.title" = "Последний";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.canceled.title" = "Отменено";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.estimated.title" = "Ожидается";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.failed.title" = "Сбой";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.inTransit.title" = "В пути";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.paid.title" = "Оплачено";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.pending.title" = "На утверждении";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.unknown.title" = "Неизвестно";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "Документ на устройстве";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "Медиафайлы на устройстве";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
@@ -10091,6 +10131,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "Как вы хотите добавить индивидуальную сумму?";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "Готово";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "Индивидуальные суммы";
 
@@ -10136,11 +10179,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Продукт по подписке с вариантами";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "Ошибка загрузки файла. Повторите попытку.";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "Выбранный тип файла не поддерживается.";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "Раз в %1$@";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Рекламируйте при помощи Blaze";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "Прежде чем изменять порядок изображений, дождитесь завершения всех загрузок.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Расчётный интервал";
@@ -10175,6 +10227,15 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Subtitle for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.subtitle" = "Включите этот параметр, чтобы взимать плату за доставку один раз при первоначальном заказе.";
+
+/* Subtitle for the One time shipping product shipping setting when it is disabled. */
+"productShippingSettings.oneTimeShipping.subtitleDisabled" = "Чтобы можно было включить этот параметр, в тарифном плане не должно быть бесплатного пробного периода или синхронизированной даты продления.";
+
+/* Title for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.title" = "Единовременная доставка";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "оценен несколько раз (%ld)";
 
@@ -10189,6 +10250,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Платёж завершён";
+
+/* Navigates to Themes screen. */
+"settingsViewController.themesRow" = "Темы";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10281,11 +10345,47 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "%1$@ о том, как принимать платежи с помощью функции Tap to Pay on iPhone.";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "Отмена";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "Текущее";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "Тема";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "Темы";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "Попробуйте другой вид";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "неизвестно";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "неизвестный URL";
+
+/* Cancel button title on the update product inventory view. */
+"updateProductInventoryView.cancelButtonTitle" = "Отмена";
+
+/* Navigation bar title of the update product inventory view. */
+"updateProductInventoryView.navigationBarTitle" = "Товар";
+
+/* Product name label in the update product inventory view. */
+"updateProductInventoryView.productNameTitle" = "Название товара";
+
+/* Product quantity label in the update product inventory view. */
+"updateProductInventoryView.productQuantityTitle" = "Количество";
+
+/* Stock quantity button when a tap increases the stock once. */
+"updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle" = "Количество + 1";
+
+/* Stock quantity button when the user adds a custom quantity. */
+"updateProductInventoryView.quantityButton.updateQuantityButtonTitle" = "Обновить количество";
+
+/* Product detailsl button title. */
+"updateProductInventoryView.viewProductDetailsButtonTitle" = "Показать сведения о товаре";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Закрыть";
@@ -10304,6 +10404,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, товары, рубрики, новый товар, поиск товаров";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Загрузка медиафайлов…";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Использовать ключ безопасности";

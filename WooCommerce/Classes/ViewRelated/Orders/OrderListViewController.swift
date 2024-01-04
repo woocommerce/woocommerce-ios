@@ -45,6 +45,17 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         return dataSource
     }()
 
+    /// Returns the first Order in the OrderList datasource
+    ///
+    var firstAvailableOrder: Order? {
+        let firstIndexPath = IndexPath(row: 0, section: 0)
+        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
+              let orderViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            return nil
+        }
+        return orderViewModel.order
+    }
+
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: OrderTableViewCell.self,
                                                                                                 estimatedRowHeight: Settings.estimatedRowHeight,
                                                                                                 tableViewStyle: .grouped,
@@ -169,6 +180,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         configureStorePlanBannerPresenter()
+
+        checkSelectedItem()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -185,8 +198,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
-
-        viewModel.updateBannerVisibility()
     }
 
     override func viewDidLayoutSubviews() {
@@ -263,14 +274,6 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error(let error):
                     self.setErrorTopBanner(for: error)
-                case .orderCreation:
-                    self.setOrderCreationTopBanner()
-                case .inPersonPaymentsFeedback(let survey):
-                    if self.inPersonPaymentsSurveyVariation != survey {
-                        self.inPersonPaymentsSurveyVariation = survey
-                        self.viewModel.trackInPersonPaymentsFeedbackBannerShown(for: survey)
-                    }
-                    self.setIPPFeedbackTopBanner(survey: survey)
                 }
             }
             .store(in: &cancellables)
@@ -382,7 +385,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
         viewModel.dataLoadingError = nil
-        viewModel.updateBannerVisibility()
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
@@ -831,95 +833,6 @@ private extension OrderListViewController {
         showTopBannerView()
     }
 
-    /// Sets the `topBannerView` property to an orders banner.
-    ///
-    func setOrderCreationTopBanner() {
-        topBannerView = OrdersTopBannerFactory.createOrdersBanner(onTopButtonPressed: { [weak self] in
-            self?.tableView.updateHeaderHeight()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.dismissOrdersBanner()
-        }, onGiveFeedbackButtonPressed: { [weak self] in
-            let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
-            self?.present(surveyNavigation, animated: true, completion: nil)
-        })
-        showTopBannerView()
-    }
-
-    /// Sets the `topBannerView` property to an IPP feedback banner.
-    ///
-    func setIPPFeedbackTopBanner(survey: SurveyViewController.Source) {
-        topBannerView = createIPPFeedbackTopBanner(survey: survey)
-        showTopBannerView()
-    }
-
-    private func createIPPFeedbackTopBanner(survey: SurveyViewController.Source) -> TopBannerView {
-        var bannerTitle = ""
-        var bannerText = ""
-        var campaign: FeatureAnnouncementCampaign = .inPersonPaymentsCashOnDelivery
-
-        switch survey {
-        case .inPersonPaymentsCashOnDelivery :
-            bannerTitle = Localization.inPersonPaymentsCashOnDeliveryBannerTitle
-            bannerText = Localization.inPersonPaymentsCashOnDeliveryBannerContent
-            campaign = .inPersonPaymentsCashOnDelivery
-        case .inPersonPaymentsFirstTransaction:
-            bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerTitle
-            bannerTitle = Localization.inPersonPaymentsFirstTransactionBannerContent
-            campaign = .inPersonPaymentsFirstTransaction
-        case .inPersonPaymentsPowerUsers:
-            bannerTitle = Localization.inPersonPaymentsPowerUsersBannerTitle
-            bannerTitle = Localization.inPersonPaymentsPowerUsersBannerContent
-            campaign = .inPersonPaymentsPowerUsers
-        default:
-            break
-        }
-
-        let shareIPPFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.shareFeedbackButton, action: { [weak self] _ in
-            self?.displayIPPFeedbackBannerSurvey(survey: survey)
-            self?.viewModel.IPPFeedbackBannerCTATapped(for: campaign)
-            self?.viewModel.IPPFeedbackBannerWasSubmitted()
-        })
-
-        let viewModel = TopBannerViewModel(
-            title: bannerTitle,
-            infoText: bannerText,
-            icon: UIImage.commentContent,
-            isExpanded: true,
-            topButton: .dismiss(handler: {
-                self.showIPPFeedbackDismissAlert(survey: survey, campaign: campaign)
-            }),
-            actionButtons: [shareIPPFeedbackAction]
-        )
-        let topBannerView = TopBannerView(viewModel: viewModel)
-        topBannerView.translatesAutoresizingMaskIntoConstraints = false
-        return topBannerView
-    }
-
-    private func displayIPPFeedbackBannerSurvey(survey: SurveyViewController.Source) {
-        let surveyNavigation = SurveyCoordinatingController(survey: survey)
-        self.present(surveyNavigation, animated: true, completion: nil)
-    }
-
-    private func showIPPFeedbackDismissAlert(survey: SurveyViewController.Source, campaign: FeatureAnnouncementCampaign ) {
-        let actionSheet = UIAlertController(
-            title: Localization.dismissTitle,
-            message: Localization.dismissMessage,
-            preferredStyle: .alert
-        )
-
-        let remindMeLaterAction = UIAlertAction( title: Localization.remindMeLater, style: .default) { [weak self] _ in
-            self?.viewModel.IPPFeedbackBannerRemindMeLaterTapped(for: campaign)
-        }
-        actionSheet.addAction(remindMeLaterAction)
-
-        let dontShowAgainAction = UIAlertAction( title: Localization.dontShowAgain, style: .default) { [weak self] _ in
-            self?.viewModel.IPPFeedbackBannerDontShowAgainTapped(for: campaign)
-        }
-        actionSheet.addAction(dontShowAgainAction)
-
-        self.present(actionSheet, animated: true)
-    }
-
     func allViewModels() -> [OrderDetailsViewModel] {
         let ids = (0...tableView.numberOfSections - 1)
             .map { section in
@@ -962,40 +875,9 @@ private extension OrderListViewController {
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
 
-        static let inPersonPaymentsCashOnDeliveryBannerTitle = NSLocalizedString("Let us know how we can help",
-                                                           comment: "Title of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsFirstTransactionBannerTitle = NSLocalizedString("Enjoyed your in-person payment?",
-                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsPowerUsersBannerTitle = NSLocalizedString("Let us know what you think",
-                                                            comment: "Title of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsCashOnDeliveryBannerContent = NSLocalizedString("Share your own experience or how you collect in-person payments.",
-                                                             comment: "Content of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsFirstTransactionBannerContent = NSLocalizedString("Rate your first in-person payment experience.",
-                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
-        )
-
-        static let inPersonPaymentsPowerUsersBannerContent = NSLocalizedString("Tell us all about your experience with in-person payments.",
-                                                              comment: "Content of the In-Person Payments feedback banner in the Orders tab"
-        )
-
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"
         )
-
-        static let dismissTitle = NSLocalizedString("Give feedback",
-                                                    comment: "Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed"
-        )
-
-        static let dismissMessage = NSLocalizedString("No worries! You can always go to Settings in the Menu to send us feedback.",
-                    comment: "Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed")
 
         static let remindMeLater = NSLocalizedString("Remind me later",
                                                      comment: "Title of the button shown when the In-Person Payments feedback banner is dismissed."

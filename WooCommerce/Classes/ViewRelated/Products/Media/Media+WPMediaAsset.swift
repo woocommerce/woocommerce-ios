@@ -31,7 +31,8 @@ extension CancellableMedia: WPMediaAsset {
     }
 
     public func videoAsset(completionHandler: @escaping WPMediaAssetBlock) -> WPMediaRequestID {
-        fatalError("Video is not supported")
+        DDLogWarn("⚠️ Video is not supported for viewing")
+        return 0
     }
 
     public func assetType() -> WPMediaType {
@@ -39,7 +40,8 @@ extension CancellableMedia: WPMediaAsset {
     }
 
     public func duration() -> TimeInterval {
-        fatalError("Video is not supported")
+        DDLogWarn("⚠️ Video is not supported for viewing")
+        return 0
     }
 
     public func baseAsset() -> Any {

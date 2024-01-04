@@ -21,7 +21,8 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let productCreationAI: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
-    private let isLightweightStorefrontEnabled: Bool
+    private let isScanToUpdateInventoryEnabled: Bool
+    private let blazei3NativeCampaignCreation: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -42,7 +43,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          productCreationAI: Bool = false,
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false,
-         isLightweightStorefrontEnabled: Bool = false) {
+         isScanToUpdateInventoryEnabled: Bool = false,
+         blazei3NativeCampaignCreation: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -62,7 +64,8 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.productCreationAI = productCreationAI
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
-        self.isLightweightStorefrontEnabled = isLightweightStorefrontEnabled
+        self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
+        self.blazei3NativeCampaignCreation = blazei3NativeCampaignCreation
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -103,8 +106,10 @@ struct MockFeatureFlagService: FeatureFlagService {
             return productBundles
         case .productBundlesInOrderForm:
             return productBundlesInOrderForm
-        case .lightweightStorefront:
-            return isLightweightStorefrontEnabled
+        case .scanToUpdateInventory:
+            return isScanToUpdateInventoryEnabled
+        case .blazei3NativeCampaignCreation:
+            return blazei3NativeCampaignCreation
         default:
             return false
         }

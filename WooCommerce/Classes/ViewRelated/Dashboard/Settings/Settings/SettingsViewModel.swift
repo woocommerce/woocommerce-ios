@@ -278,24 +278,25 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section? = {
+            guard let site = stores.sessionManager.defaultSite else {
+                return nil
+            }
             var rows: [Row] = [.storeName]
 
-            if let site = stores.sessionManager.defaultSite {
-                if site.isJetpackCPConnected == true ||
-                    (site.isNonJetpackSite == true &&
-                     featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
-                    rows.append(.installJetpack)
-                }
-
-                let themesUseCase = ThemeEligibilityUseCase()
-                if themesUseCase.isEligible(site: site) {
-                    rows.append(.themes)
-                }
+            if site.isJetpackCPConnected == true ||
+                (site.isNonJetpackSite == true &&
+                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
+                rows.append(.installJetpack)
             }
 
             if !defaults.completedAllStoreOnboardingTasks,
                 featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList) {
                 rows.append(.storeSetupList)
+            }
+
+            let themesUseCase = ThemeEligibilityUseCase()
+            if themesUseCase.isEligible(site: site) {
+                rows.append(.themes)
             }
 
             guard rows.isNotEmpty else {

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -236,6 +236,12 @@
 		DE001330279FDC2200EB0350 /* CouponSearchResult+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE00132C279FDC2200EB0350 /* CouponSearchResult+CoreDataProperties.swift */; };
 		DE26B5262775C5F000A2EA0A /* Coupon+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5242775C5F000A2EA0A /* Coupon+CoreDataClass.swift */; };
 		DE26B5272775C5F000A2EA0A /* Coupon+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5252775C5F000A2EA0A /* Coupon+CoreDataProperties.swift */; };
+		DEA4938B2B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493852B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift */; };
+		DEA4938C2B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493862B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift */; };
+		DEA4938D2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */; };
+		DEA4938E2B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493882B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift */; };
+		DEA4938F2B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */; };
+		DEA493902B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */; };
 		DEC51AE0275B41BE009F3DF4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */; };
 		DED91DEA2AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */; };
 		DED91DEC2AD66FCB00CDCC53 /* BlazeCampaign+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */; };
@@ -501,6 +507,7 @@
 		CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE831FE12A14F6C800E8BEFB /* Model 87.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 87.xcdatamodel"; sourceTree = "<group>"; };
 		CEC963062B173F4700688EA3 /* Model 104.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 104.xcdatamodel"; sourceTree = "<group>"; };
+		CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 105.xcdatamodel"; sourceTree = "<group>"; };
 		CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 85.xcdatamodel"; sourceTree = "<group>"; };
 		CEE9188729F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CEE9188829F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -535,6 +542,12 @@
 		DE26B5252775C5F000A2EA0A /* Coupon+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DE26B52A2775C8DC00A2EA0A /* Model 60.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 60.xcdatamodel"; sourceTree = "<group>"; };
 		DE653EAA2A6FB7C900937C78 /* Model 92.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 92.xcdatamodel"; sourceTree = "<group>"; };
+		DEA493852B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BlazeTargetTopic+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DEA493862B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BlazeTargetLanguage+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BlazeTargetDevice+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DEA493882B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BlazeTargetTopic+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BlazeTargetLanguage+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BlazeTargetDevice+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DEC51AA5275B41BE009F3DF4 /* Model 30.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 30.xcdatamodel"; sourceTree = "<group>"; };
 		DEC51AA6275B41BE009F3DF4 /* Model 40.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 40.xcdatamodel"; sourceTree = "<group>"; };
 		DEC51AA7275B41BE009F3DF4 /* Model 25.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 25.xcdatamodel"; sourceTree = "<group>"; };
@@ -899,6 +912,12 @@
 			children = (
 				DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */,
 				DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */,
+				DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */,
+				DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */,
+				DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */,
+				DEA493862B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift */,
+				DEA493882B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift */,
+				DEA493852B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift */,
 				B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */,
 				B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */,
 				6889089728F66DED0081A07E /* Customer+CoreDataClass.swift */,
@@ -1342,9 +1361,11 @@
 				7471A515216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataProperties.swift in Sources */,
 				E1E632C02846245D00878082 /* GeneralAppSettingsStorage.swift in Sources */,
 				031C1EA627AD3AFE00298699 /* WCPayCardPaymentDetails+CoreDataProperties.swift in Sources */,
+				DEA4938B2B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift in Sources */,
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
 				455C0C9125DD6D93007B6F38 /* AccountSettings+CoreDataProperties.swift in Sources */,
 				933A27302222344D00C2143A /* Logging.swift in Sources */,
+				DEA4938F2B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift in Sources */,
 				DE001330279FDC2200EB0350 /* CouponSearchResult+CoreDataProperties.swift in Sources */,
 				747453A52242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift in Sources */,
 				5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */,
@@ -1361,6 +1382,7 @@
 				454005AA24AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel in Sources */,
 				DED91DEA2AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift in Sources */,
 				7471A517216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift in Sources */,
+				DEA4938D2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift in Sources */,
 				26EA01D124EC3AEA00176A57 /* FeedbackType.swift in Sources */,
 				452C23B427B4129300822986 /* InboxAction+CoreDataClass.swift in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,
@@ -1385,6 +1407,7 @@
 				CC2C030C262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift in Sources */,
 				261CF1C5255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift in Sources */,
 				574CFDEC25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel in Sources */,
+				DEA4938C2B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,
 				BAB373772796327000837B4A /* OrderTaxLine+CoreDataProperties.swift in Sources */,
 				02C254EB2563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift in Sources */,
@@ -1445,6 +1468,7 @@
 				02C254F02563B12E00A04423 /* ShippingLabelRefund+CoreDataProperties.swift in Sources */,
 				746A9D23214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift in Sources */,
 				02C64D772A9F8460005ED906 /* OrderItemProductAddOn+CoreDataProperties.swift in Sources */,
+				DEA4938E2B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift in Sources */,
 				4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */,
 				74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */,
 				031C1EA527AD3AFE00298699 /* WCPayCardPaymentDetails+CoreDataClass.swift in Sources */,
@@ -1464,6 +1488,7 @@
 				57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */,
 				CC379B1029C8A984009747B4 /* ProductCompositeComponent+CoreDataClass.swift in Sources */,
 				572B40E425A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift in Sources */,
+				DEA493902B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift in Sources */,
 				7492FAD7217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift in Sources */,
 				45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */,
 				B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */,
@@ -1924,6 +1949,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */,
 				CEC963062B173F4700688EA3 /* Model 104.xcdatamodel */,
 				EE319C522B14DCEE001AC211 /* Model 103.xcdatamodel */,
 				023BBD812B049277005C91BD /* Model 102.xcdatamodel */,
@@ -2029,7 +2055,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = CEC963062B173F4700688EA3 /* Model 104.xcdatamodel */;
+			currentVersion = CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

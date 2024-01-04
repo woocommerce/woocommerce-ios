@@ -138,7 +138,6 @@ private struct NoticeAlert: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: NoticeWrapper, context: Context) {
-        uiView.noticeView = NoticeView(notice: notice)
         uiView.noticeView.dismissHandler = onDismiss
         uiView.width = width
     }

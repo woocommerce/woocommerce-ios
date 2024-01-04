@@ -27,6 +27,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.blaze)
     }
 
+    func test_blazeIntroIllustration_is_not_nil() {
+        XCTAssertNotNil(UIImage.blazeIntroIllustration)
+    }
+
     func test_currency_image_is_not_nil() {
         XCTAssertNotNil(UIImage.currencyImage)
     }
@@ -146,6 +150,10 @@ final class IconsTests: XCTestCase {
     func testDeleteCellImageIconDefaultSize() {
         let deleteCellImage = UIImage.deleteCellImage
         XCTAssertEqual(deleteCellImage.size, CGSize(width: 22, height: 22))
+    }
+
+    func test_documentImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.documentImage)
     }
 
     func test_domainCreditImage_is_not_nil() {
@@ -282,6 +290,10 @@ final class IconsTests: XCTestCase {
 
     func test_aiDescriptionCelebrationImage_is_not_nil() {
         XCTAssertNotNil(UIImage.aiDescriptionCelebrationImage)
+    }
+
+    func test_productCreationAISurveyImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.productCreationAISurveyImage)
     }
 
     func test_launchStoreImage_is_not_nil() {

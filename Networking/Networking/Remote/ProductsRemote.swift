@@ -377,7 +377,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.perPage: String(pageSize),
             ParameterKey.fields: ParameterKey.id,
             ParameterKey.productStatus: productStatus?.rawValue ?? ""
-        ]
+        ].filter({ $0.value.isEmpty == false })
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)

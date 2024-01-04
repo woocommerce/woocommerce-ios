@@ -367,6 +367,11 @@ private extension DefaultProductFormTableViewModel {
             }
         }
 
+        // One time shipping
+        if product.subscription?.oneTimeShipping == true {
+            shippingDetails.append(Localization.oneTimeShippingEnabled)
+        }
+
         let details: String? = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -691,6 +696,11 @@ extension DefaultProductFormTableViewModel {
         static let neverExpire = NSLocalizedString("defaultProductFormTableViewModel.neverExpire",
                                                    value: "Never expires",
                                                    comment: "Display label when a subscription never expires.")
+
+        // Shipping
+        static let oneTimeShippingEnabled = NSLocalizedString("defaultProductFormTableViewModel.shipping.oneTimeShippingEnabled",
+                                                          value: "One time shipping: Enabled",
+                                                          comment: "Text to show that one time shipping is enabled for this product.")
 
         /// Localized string describing when the subscription expires.
         ///

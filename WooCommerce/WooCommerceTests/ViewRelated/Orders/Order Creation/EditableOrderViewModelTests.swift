@@ -55,12 +55,12 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Navigation
 
-    func test_edition_view_model_has_a_navigation_done_button() {
+    func test_edition_view_model_has_no_navigation_done_button() {
         // When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: .fake()), stores: stores)
 
         // Then
-        XCTAssertEqual(viewModel.navigationTrailingItem, .done)
+        XCTAssertNil(viewModel.navigationTrailingItem)
     }
 
     func test_edition_view_model_has_a_navigation_loading_item_when_synching() {
@@ -69,7 +69,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
 
         // When
-        let navigationItemDuringSync: EditableOrderViewModel.NavigationItem = waitFor { promise in
+        let navigationItemDuringSync: EditableOrderViewModel.NavigationItem? = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .updateOrder:
@@ -92,7 +92,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
-        let navigationItem: EditableOrderViewModel.NavigationItem = waitFor { promise in
+        let navigationItem: EditableOrderViewModel.NavigationItem? = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .createOrder:
@@ -101,7 +101,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                     XCTFail("Received unsupported action: \(action)")
                 }
             }
-            viewModel.createOrder()
+            viewModel.onCreateOrderTapped()
         }
 
         // Then
@@ -122,7 +122,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                     XCTFail("Received unsupported action: \(action)")
                 }
             }
-            viewModel.createOrder()
+            viewModel.onCreateOrderTapped()
         }
 
         // Then
@@ -143,7 +143,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        viewModel.createOrder()
+        viewModel.onCreateOrderTapped()
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
@@ -163,7 +163,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        viewModel.createOrder()
+        viewModel.onCreateOrderTapped()
 
         // Then
         XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
@@ -285,7 +285,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
-        XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
+        XCTAssertTrue(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
+                      "Product rows do not contain expected product")
     }
 
     func test_order_details_are_updated_when_product_quantity_changes() throws {
@@ -305,11 +306,11 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.changeSelectionStateForProduct(with: anotherProduct.productID)
         productSelectorViewModel.completeMultipleSelection()
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
-        viewModel.productRows[0].incrementQuantity()
+        viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
 
         // Then
-        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
-        XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[safe: 0]?.quantity, 2)
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[safe: 1]?.quantity, 1)
     }
 
     func test_product_is_removed_when_quantity_is_decremented_below_1() throws {
@@ -322,13 +323,13 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Product quantity is 1
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
-        XCTAssertEqual(viewModel.productRows[0].quantity, 1)
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[0].quantity, 1)
 
         // When
-        viewModel.productRows[0].decrementQuantity()
+        viewModel.productRows[0].productRow.stepperViewModel.decrementQuantity()
 
         // Then
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product.productID }))
+        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == product.productID }))
     }
 
     func test_bundle_order_item_with_child_items_includes_full_bundle_configuration_when_quantity_is_incremented() throws {
@@ -382,7 +383,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When
-            self.viewModel.productRows[0].incrementQuantity()
+            self.viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
         }
 
         // Then
@@ -394,7 +395,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         ], bundleOrderItemToUpdate.bundleConfiguration)
     }
 
-    func test_selectOrderItem_selects_expected_order_item() throws {
+    func test_setDiscountViewModel_sets_discountViewModel_for_expected_row() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -404,12 +405,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.completeMultipleSelection()
 
         // When
-        let expectedRow = viewModel.productRows[0]
-        viewModel.selectOrderItem(expectedRow.id)
+        let expectedRow = viewModel.productRows.map { $0.productRow }[0]
+        viewModel.setDiscountViewModel(expectedRow.id)
 
         // Then
-        XCTAssertNotNil(viewModel.selectedProductViewModel)
-        XCTAssertEqual(viewModel.selectedProductViewModel?.productRowViewModel.id, expectedRow.id)
+        XCTAssertNotNil(viewModel.discountViewModel)
+        assertEqual(expectedRow.id, viewModel.discountViewModel?.id)
     }
 
     func test_view_model_is_updated_when_product_is_removed_from_order_using_order_item() throws {
@@ -427,12 +428,13 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let expectedRemainingRow = viewModel.productRows[1]
-        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow }[0].id)
         viewModel.removeItemFromOrder(itemToRemove)
 
         // Then
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))
-        XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
+        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == product0.productID }))
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow }.map { $0.id },
+                       [expectedRemainingRow].map { $0.productRow }.map { $0.id })
     }
 
     func test_view_model_is_updated_when_product_is_removed_from_order_using_product_row_ID() throws {
@@ -450,12 +452,13 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let expectedRemainingRow = viewModel.productRows[1]
-        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow }[0].id)
         viewModel.removeItemFromOrder(itemToRemove.itemID)
 
         // Then
-        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))
-        XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
+        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == product0.productID }))
+        XCTAssertEqual(viewModel.productRows.map { $0.productRow }.map { $0.id },
+                       [expectedRemainingRow].map { $0.productRow }.map { $0.id })
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {
@@ -466,13 +469,12 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let orderItem = OrderItem.fake().copy(name: product.name, productID: product.productID, quantity: 1)
-        let productRow = viewModel.createProductRowViewModel(for: orderItem, canChangeQuantity: true)
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
-        let expectedProductRow = ProductRowViewModel(product: product, canChangeQuantity: true)
-        XCTAssertEqual(productRow?.name, expectedProductRow.name)
-        XCTAssertEqual(productRow?.quantity, expectedProductRow.quantity)
-        XCTAssertEqual(productRow?.canChangeQuantity, expectedProductRow.canChangeQuantity)
+        let expectedProductRow = ProductRowViewModel(product: product)
+        XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
+        XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product_variation() {
@@ -491,18 +493,31 @@ final class EditableOrderViewModelTests: XCTestCase {
                                               productID: product.productID,
                                               variationID: productVariation.productVariationID,
                                               quantity: 2)
-        let productRow = viewModel.createProductRowViewModel(for: orderItem, canChangeQuantity: false)
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
         let expectedProductRow = ProductRowViewModel(productVariation: productVariation,
                                                      name: product.name,
                                                      quantity: 2,
-                                                     canChangeQuantity: false,
                                                      displayMode: .stock)
-        XCTAssertEqual(productRow?.name, expectedProductRow.name)
-        XCTAssertEqual(productRow?.skuLabel, expectedProductRow.skuLabel)
-        XCTAssertEqual(productRow?.quantity, expectedProductRow.quantity)
-        XCTAssertEqual(productRow?.canChangeQuantity, expectedProductRow.canChangeQuantity)
+        XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
+        XCTAssertEqual(productRow?.productRow.skuLabel, expectedProductRow.skuLabel)
+        XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
+    }
+
+    func test_createProductRowViewModel_sets_expected_discount_for_discounted_order_item() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 1, price: 10, subtotal: "10", total: "9")
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
+
+        // Then
+        let expectedDiscount: Decimal = 1 // Order item subtotal - total
+        assertEqual(expectedDiscount, productRow?.productRow.discount)
     }
 
     func test_view_model_is_updated_when_custom_amount_is_added_to_order() {
@@ -681,7 +696,6 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                                           shippingTotal: "3.00",
                                                                                customAmountsTotal: "2.00",
                                                                           taxesTotal: "5.00",
-                                                                          orderTotal: "30.00",
                                                                           currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
 
         // Then
@@ -689,7 +703,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(paymentDataViewModel.shippingTotal, "£3.00")
         XCTAssertEqual(paymentDataViewModel.customAmountsTotal, "£2.00")
         XCTAssertEqual(paymentDataViewModel.taxesTotal, "£5.00")
-        XCTAssertEqual(paymentDataViewModel.orderTotal, "£30.00")
     }
 
     func test_payment_data_view_model_is_initialized_with_expected_default_values_for_new_order() {
@@ -704,7 +717,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£0.00")
     }
 
     func test_payment_data_view_model_when_calling_onGoToCouponsClosure_then_calls_to_track_event() {
@@ -838,17 +850,17 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.orderTotal, "£8.50")
 
         // When & Then
-        viewModel.productRows[0].incrementQuantity()
+        viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
 
         // Debounce makes the quantity update async even though the duration is 0.
         waitUntil {
             viewModel.paymentDataViewModel.itemsTotal != "£8.50"
         }
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£17.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")
+        XCTAssertEqual(viewModel.orderTotal, "£17.00")
     }
 
     func test_payment_section_is_updated_when_shipping_line_updated() throws {
@@ -878,7 +890,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£10.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+        XCTAssertEqual(viewModel.orderTotal, "£18.50")
 
         // When
         viewModel.saveShippingLine(nil)
@@ -887,7 +899,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.orderTotal, "£8.50")
     }
 
     func test_payment_when_custom_amount_is_added_then_section_is_updated() throws {
@@ -912,7 +924,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£10.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
+        XCTAssertEqual(viewModel.orderTotal, "£18.50")
     }
 
     func test_payment_section_is_updated_when_coupon_line_updated() throws {
@@ -971,7 +983,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
+        XCTAssertEqual(viewModel.orderTotal, "£3.50")
 
         // When
         viewModel.saveShippingLine(nil)
@@ -980,7 +992,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.orderTotal, "£8.50")
     }
 
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
@@ -1170,7 +1182,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
-        viewModel.productRows[0].incrementQuantity()
+        viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [
@@ -1199,7 +1211,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.completeMultipleSelection()
 
         // When
-        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows.map { $0.productRow }[0].id)
         viewModel.removeItemFromOrder(itemToRemove)
 
         // Then
@@ -1982,7 +1994,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        viewModel.createOrder()
+        viewModel.onCreateOrderTapped()
 
         // Then
         XCTAssertTrue(isCallbackCalled)
@@ -2391,7 +2403,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on billing address", comment: ""))
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on billing address.", comment: ""))
     }
 
     func test_order_created_when_tax_based_on_is_shop_base_address_then_property_is_updated() {
@@ -2407,7 +2419,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on shop base address", comment: ""))
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on shop base address.", comment: ""))
     }
 
     func test_order_created_when_tax_based_on_is_customer_shipping_address_then_property_is_updated() {
@@ -2423,7 +2435,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on shipping address", comment: ""))
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on shipping address.", comment: ""))
     }
 
     func test_payment_data_view_model_when_calling_onDismissWpAdminWebViewClosure_then_calls_to_update_elements() {
@@ -2815,67 +2827,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
 
         let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
-        XCTAssertEqual(parentOrderItemRow.quantity, 2)
+        XCTAssertEqual(parentOrderItemRow.productRow.stepperViewModel.quantity, 2)
 
         let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
-        XCTAssertEqual(childOrderItemRow.quantity, 1)
-    }
-
-    func test_bundle_child_order_item_has_canChangeQuantity_false() throws {
-        // Given
-        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
-        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
-        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
-        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
-            // Bundle product order item.
-            .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
-            // Child bundled item with `parent` equal to the bundle parent item ID.
-            .fake().copy(itemID: 2, productID: bundleItem.productID, quantity: 1, parent: 6),
-        ])
-
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               flow: .editing(initialOrder: order),
-                                               stores: stores,
-                                               storageManager: storageManager)
-
-        // Then
-        let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
-        XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
-
-        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
-        XCTAssertFalse(childOrderItemRow.canChangeQuantity)
-    }
-
-    func test_non_bundle_child_order_item_has_canChangeQuantity_true() throws {
-        // Given
-        storageManager.insertProducts([
-            .fake().copy(siteID: sampleSiteID, productID: 606, productTypeKey: ProductType.variable.rawValue),
-            .fake().copy(siteID: sampleSiteID, productID: 685, productTypeKey: ProductType.simple.rawValue)
-        ])
-        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
-            // Non-bundle product order item.
-            .fake().copy(itemID: 6, productID: 606, quantity: 2),
-            // Child item with `parent` equal to the parent item ID.
-            .fake().copy(itemID: 2, productID: 685, quantity: 1, parent: 6),
-        ])
-
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               flow: .editing(initialOrder: order),
-                                               stores: stores,
-                                               storageManager: storageManager)
-
-        // Then
-        XCTAssertEqual(viewModel.productRows.count, 1)
-
-        let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
-        XCTAssertEqual(parentOrderItemRow.quantity, 2)
-        XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
-
-        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
-        XCTAssertEqual(childOrderItemRow.quantity, 1)
-        XCTAssertTrue(childOrderItemRow.canChangeQuantity)
+        XCTAssertEqual(childOrderItemRow.stepperViewModel.quantity, 1)
     }
 
     // Existing items: bundle A with child item, non-bundle B —> select bundle A again and configure in product selector
@@ -3150,12 +3105,52 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 1)
         let childItems = [OrderItem.fake().copy(productID: 2, quantity: 1),
                           OrderItem.fake().copy(productID: 3, quantity: 1)]
-        let productRow = viewModel.createProductRowViewModel(for: orderItem, childItems: childItems, canChangeQuantity: true)
+        let productRow = viewModel.createProductRowViewModel(for: orderItem, childItems: childItems)
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(productRow).pricedIndividually)
-        XCTAssertFalse(try XCTUnwrap(productRow?.childProductRows[0]).pricedIndividually)
-        XCTAssertTrue(try XCTUnwrap(productRow?.childProductRows[1]).pricedIndividually)
+        XCTAssertTrue(try XCTUnwrap(productRow).productRow.priceSummaryViewModel.pricedIndividually)
+        XCTAssertFalse(try XCTUnwrap(productRow?.childProductRows[0]).priceSummaryViewModel.pricedIndividually)
+        XCTAssertTrue(try XCTUnwrap(productRow?.childProductRows[1]).priceSummaryViewModel.pricedIndividually)
+    }
+
+    func test_createProductRowViewModel_sets_isReadOnly_to_false_for_bundle_parent_and_true_for_bundle_child_items() throws {
+        // Given
+        let bundledItems = [ProductBundleItem.fake().copy(productID: 2, pricedIndividually: false),
+                            ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
+        let product = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
+        storageManager.insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
+                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 1)
+        let childItems = [OrderItem.fake().copy(productID: 2, quantity: 1),
+                          OrderItem.fake().copy(productID: 3, variationID: 4, quantity: 1)]
+        let productRow = try XCTUnwrap(viewModel.createProductRowViewModel(for: orderItem, childItems: childItems))
+
+        // Then
+        XCTAssertFalse(productRow.productRow.isReadOnly, "Parent product should not be read only")
+        XCTAssertTrue(try XCTUnwrap(productRow.childProductRows[0]).isReadOnly, "Child product should be read only")
+        XCTAssertTrue(try XCTUnwrap(productRow.childProductRows[1]).isReadOnly, "Child product variation should be read only")
+    }
+
+    func test_createProductRowViewModel_sets_isReadOnly_to_false_for_non_bundle_parent_and_child_items() throws {
+        // Given
+        storageManager.insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 1),
+                                       Product.fake().copy(siteID: sampleSiteID, productID: 2),
+                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        let orderItem = OrderItem.fake().copy(productID: 1, quantity: 1)
+        let childItems = [OrderItem.fake().copy(productID: 2, quantity: 1),
+                          OrderItem.fake().copy(productID: 3, variationID: 4, quantity: 1)]
+        let productRow = try XCTUnwrap(viewModel.createProductRowViewModel(for: orderItem, childItems: childItems))
+
+        // Then
+        XCTAssertFalse(productRow.productRow.isReadOnly, "Parent product should not be read only")
+        XCTAssertFalse(try XCTUnwrap(productRow.childProductRows[0]).isReadOnly, "Child product should not be read only")
+        XCTAssertFalse(try XCTUnwrap(productRow.childProductRows[1]).isReadOnly, "Child product variation should not be read only")
     }
 }
 

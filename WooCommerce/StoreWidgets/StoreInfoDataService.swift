@@ -80,6 +80,7 @@ private extension StoreInfoDataService {
             Task { @MainActor in
                 orderStatsRemoteV4.loadOrderStats(for: storeID,
                                                   unit: .hourly,
+                                                  timeZone: .current,
                                                   earliestDateToInclude: Date().startOfDay(timezone: .current),
                                                   latestDateToInclude: Date().endOfDay(timezone: .current),
                                                   quantity: 24,

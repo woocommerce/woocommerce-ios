@@ -285,24 +285,35 @@ private extension ProductsViewController {
             return
         }
 
+        self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
             guard let self = self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
-            self.navigationItem.configureLeftBarButtonItemAsLoader()
-
             Task {
-                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+                self.navigationItem.configureLeftBarButtonItemAsLoader()
 
                 do {
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
                     self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
-                                                                                          siteID: self.viewModel.siteID)),
-                                 animated: true)
+                                                                                          siteID: self.viewModel.siteID,
+                                                                                          onUpdatedInventory: { newQuantity in
+                        let noticeMessage = String.localizedStringWithFormat(Localization.updateInventoryNotice, newQuantity)
+                        self.presentNotice(title: noticeMessage)
+                    })), animated: true)
                 } catch {
-                    // TODO: Show error notices
+                    self.trackScannedItemSearchFailure(error)
+                    let errorNotice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error,
+                                                                                 code: scannedBarcode,
+                                                                                 actionHandler: {
+                        self.scanProducts()
+                    })
+                    self.presentNotice(notice: errorNotice)
                 }
+                // Reset button state on finishing the task
+                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
             }
 
         }, onPermissionsDenied: {
@@ -344,6 +355,17 @@ private extension ProductsViewController {
 
         coordinatingController.start()
         self.addProductCoordinator = coordinatingController
+    }
+}
+
+// MARK: - Analytics helpers
+//
+private extension ProductsViewController {
+    func trackScannedItemSearchFailure(_ error: Error) {
+        let source = WooAnalyticsEvent.BarcodeScanning.Source.scanToUpdateInventory.rawValue
+        let errorDescription = error.localizedDescription
+        let event = WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: source, reason: errorDescription)
+        ServiceLocator.analytics.track(event: event)
     }
 }
 
@@ -519,6 +541,15 @@ private extension ProductsViewController {
             return noticePresenter
         }()
         contextNoticePresenter.enqueue(notice: .init(title: title))
+    }
+
+    func presentNotice(notice: Notice) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = tabBarController
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -1158,13 +1189,14 @@ private extension ProductsViewController {
     }
 
     func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
-              UIImagePickerController.isSourceTypeAvailable(.camera) else {
-            navigationItem.leftBarButtonItem = nil
-            return
-        }
-
-        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+        viewModel.scanToUpdateInventoryButtonShouldBeVisible(completion: { shouldBeVisible in
+            switch shouldBeVisible {
+            case true:
+                self.navigationItem.leftBarButtonItem = self.createAddOrderByProductScanningButtonItem()
+            case false:
+                self.navigationItem.leftBarButtonItem = nil
+            }
+        })
     }
 
     func createAddOrderByProductScanningButtonItem() -> UIBarButtonItem {
@@ -1422,7 +1454,6 @@ private extension ProductsViewController {
     }
 
     enum Localization {
-
         static let bulkEditingNavBarButtonTitle = NSLocalizedString("Edit products", comment: "Action to start bulk editing of products")
         static let bulkEditingNavBarButtonHint = NSLocalizedString(
             "Edit status or price for multiple products at once",
@@ -1463,5 +1494,11 @@ private extension ProductsViewController {
                                                            comment: "Title of the notice when a user updated price for selected products")
         static let updateErrorNotice = NSLocalizedString("Cannot update products",
                                                          comment: "Title of the notice when there is an error updating selected products")
+        static let updateInventoryNotice = NSLocalizedString(
+            "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem",
+            value: "Quantity updated: %@",
+            comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
+            "Reads like: 'Quantity updated: 2,345'"
+        )
     }
 }

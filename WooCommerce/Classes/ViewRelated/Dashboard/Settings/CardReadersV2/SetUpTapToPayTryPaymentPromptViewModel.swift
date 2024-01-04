@@ -9,6 +9,12 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     var didUpdate: (() -> Void)?
     var dismiss: (() -> Void)?
 
+    @Published var paymentFlowFinished: Bool = false
+
+    @Published var refundInProgress: Bool = false
+
+    @Published var shouldShowTrialOrderDetails: Bool = false
+
     private(set) var connectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {
             didUpdate?()
@@ -19,11 +25,8 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     private let stores: StoresManager
 
     @Published var loading: Bool = false
-    var summaryViewModel: TryAPaymentSummaryViewModel? = nil {
-        didSet {
-            summaryActive = summaryViewModel != nil
-        }
-    }
+
+    var summaryViewModel: TryAPaymentSummaryViewModel? = nil
     @Published var summaryActive: Bool = false
 
     @Published var formattedPaymentAmount: String = ""
@@ -55,6 +58,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 
         beginConnectedReaderObservation()
         updateFormattedPaymentAmount()
+        observePaymentFlowFinishedToAttemptRefund()
     }
 
     /// Set up to observe readers connecting / disconnecting
@@ -97,7 +101,8 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                                                                                   presentNoticeSubject: self.presentNoticeSubject,
                                                                                   analyticsFlow: .tapToPayTryAPayment),
                     siteID: self.siteID,
-                    orderID: order.orderID)
+                    order: order)
+                self.summaryActive = true
 
 
             case .failure(let error):
@@ -108,6 +113,51 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
             }
         }
         stores.dispatch(action)
+    }
+
+    private func observePaymentFlowFinishedToAttemptRefund() {
+        $paymentFlowFinished
+            .share()
+            .filter { $0 == true }
+            .sink { [weak self] _ in
+                guard let self else { return }
+                guard let summaryViewModel else { return }
+                self.refundInProgress = true
+                let refundableOrderItems = summaryViewModel.order.items.map { RefundableOrderItem(item: $0, quantity: $0.quantity) }
+                let refundUseCase = RefundCreationUseCase(amount: summaryViewModel.order.total,
+                                                          reason: Localization.paymentRefundReason,
+                                                          automaticallyRefundsPayment: true,
+                                                          items: refundableOrderItems,
+                                                          shippingLine: summaryViewModel.order.shippingLines.first,
+                                                          fees: summaryViewModel.order.fees,
+                                                          currencyFormatter: CurrencyFormatter(currencySettings: ServiceLocator.currencySettings))
+                let refund = refundUseCase.createRefund()
+                let refundAction = RefundAction.createRefund(siteID: siteID,
+                                                             orderID: summaryViewModel.orderID,
+                                                             refund: refund) { [weak self] refund, error in
+                    guard let self = self else { return }
+                    defer {
+                        self.refundInProgress = false
+                    }
+                    if let error {
+                        self.shouldShowTrialOrderDetails = true
+                        analytics.track(event: .init(statName: .tapToPayAutoRefundFailed, properties: [:], error: error))
+                        return DDLogError("Could not refund Tap to Pay trial payment: \(error)")
+                    }
+                    guard refund != nil else {
+                        self.shouldShowTrialOrderDetails = true
+                        analytics.track(.tapToPayAutoRefundFailed)
+                        return DDLogError("Unexpected response when refunding Tap to Pay trial payment for order: \(summaryViewModel.orderID)")
+                    }
+                    analytics.track(.tapToPayAutoRefundSuccess)
+                    self.dismiss?()
+                    ServiceLocator.noticePresenter.enqueue(
+                        notice: Notice(title: Localization.paymentRefundNoticeTitle,
+                                       message: Localization.paymentRefundNoticeMessage))
+                }
+                stores.dispatch(refundAction)
+            }
+            .store(in: &subscriptions)
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not
@@ -138,6 +188,11 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         analytics.track(.tapToPaySummaryShown)
     }
 
+    func onTrialPaymentFlowFinished() {
+        summaryActive = false
+        paymentFlowFinished = true
+    }
+
     deinit {
         subscriptions.removeAll()
     }
@@ -148,11 +203,33 @@ extension SetUpTapToPayTryPaymentPromptViewModel {
         static let errorCreatingTestPayment = NSLocalizedString(
             "The trial payment could not be started, please try again, or contact support if this problem persists.",
             comment: "Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails.")
+
+        static let paymentRefundNoticeTitle = NSLocalizedString(
+                    "tap.to.pay.try.payment.refundNotice.success.title",
+                    value: "Tap to Pay Trial Payment",
+                    comment: "After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When " +
+                    "this is successful, we show a Notice to alert the user – this is the title of the notice.")
+
+        static let paymentRefundNoticeMessage = NSLocalizedString(
+                    "tap.to.pay.try.payment.refundNotice.success.message",
+                    value: "Trial Tap to Pay payment was successfully refunded.",
+                    comment: "After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When " +
+                    "this is successful, we show a Notice to alert the user – this is the body of the notice.")
+
+        static let paymentRefundReason = NSLocalizedString(
+            "tap.to.pay.try.payment.refund.reason",
+            value: "Trial Tap to Pay payment auto refund",
+            comment: "After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When " +
+            "this is sent to the server, we provide a reason for later identification.")
     }
 }
 
 struct TryAPaymentSummaryViewModel {
     let simplePaymentSummaryViewModel: SimplePaymentsSummaryViewModel
     let siteID: Int64
-    let orderID: Int64
+    let order: Order
+
+    var orderID: Int64 {
+        order.orderID
+    }
 }

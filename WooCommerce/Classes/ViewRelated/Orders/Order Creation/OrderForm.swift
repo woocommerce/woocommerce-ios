@@ -35,6 +35,8 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        rootView.rootViewController = self
+
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             // Set presentation delegate to track the user dismiss flow event
             if let navigationController = navigationController {
@@ -107,6 +109,8 @@ struct OrderForm: View {
 
     let flow: WooAnalyticsEvent.Orders.Flow
 
+    var rootViewController: UIViewController?
+
     @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Scale of the view based on accessibility changes
@@ -119,6 +123,10 @@ struct OrderForm: View {
     @State private var shouldShowStoredTaxRateSheet = false
 
     @State private var shouldShowInformationalCouponTooltip = false
+
+    @State private var shouldShowGiftCardForm = false
+
+    @State private var shouldShowShippingLineDetails = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -140,7 +148,7 @@ struct OrderForm: View {
                             ProductsSection(scroll: scroll,
                                             flow: flow,
                                             viewModel: viewModel, navigationButtonID: $navigationButtonID)
-                                .disabled(viewModel.shouldShowNonEditableIndicators)
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
                                 Divider()
@@ -162,10 +170,15 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
-                                OrderPaymentSection(
+                                AddOrderComponentsSection(
                                     viewModel: viewModel.paymentDataViewModel,
-                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
+                                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
+                                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
+                                .sheet(isPresented: $shouldShowShippingLineDetails) {
+                                    ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
+                                }
                             }
 
                             Spacer(minLength: Layout.sectionSpacing)
@@ -231,6 +244,40 @@ struct OrderForm: View {
                 .ignoresSafeArea(.container, edges: [.horizontal])
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
+                VStack {
+                    HStack {
+                        Text(Localization.orderTotal)
+                        Spacer()
+                        Text(viewModel.orderTotal)
+                    }
+                    .font(.headline)
+                    .padding()
+
+                    Divider()
+                        .padding([.leading], Layout.dividerLeadingPadding)
+
+                    completedButton
+                        .padding()
+                }
+                .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
+                    if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
+                        PaymentMethodsHostingView(parentController: rootViewController,
+                                                  viewModel: collectPaymentViewModel)
+                    } else {
+                        EmptyView()
+                    }
+                }
+            } expandableContent: {
+                OrderPaymentSection(
+                    viewModel: viewModel.paymentDataViewModel,
+                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
+                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                .disabled(viewModel.shouldShowNonEditableIndicators)
+            }
+            .ignoresSafeArea(edges: .horizontal)
+        }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -245,28 +292,24 @@ struct OrderForm: View {
                 switch viewModel.navigationTrailingItem {
                 case .create:
                     Button(Localization.createButton) {
-                        viewModel.createOrder()
+                        viewModel.onCreateOrderTapped()
                     }
                     .id(navigationButtonID)
                     .accessibilityIdentifier(Accessibility.createButtonIdentifier)
                     .disabled(viewModel.disabled)
-                case .done:
-                    Button(Localization.doneButton) {
-                        viewModel.finishEditing()
-                        dismissHandler()
-                    }
-                    .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
                 case .loading:
                     ProgressView()
+                case .none:
+                    EmptyView()
                 }
             }
         }
         .wooNavigationBarStyle()
-        .notice($viewModel.autodismissableNotice)
-        .notice($viewModel.fixedNotice, autoDismiss: false)
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
+        .notice($viewModel.autodismissableNotice)
+        .notice($viewModel.fixedNotice, autoDismiss: false)
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
@@ -322,6 +365,27 @@ struct OrderForm: View {
             .padding()
 
             Spacer()
+        }
+    }
+
+    @ViewBuilder private var completedButton: some View {
+        if flow == .creation {
+            Button {
+                viewModel.onCollectPaymentTapped()
+            } label: {
+                Text(Localization.collectPaymentButton)
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(viewModel.collectPaymentDisabled)
+        } else {
+            Button {
+                viewModel.finishEditing()
+                dismissHandler()
+            } label: {
+                Text(Localization.doneButton)
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
         }
     }
 }
@@ -439,6 +503,7 @@ private struct ProductsSection: View {
                         }) {
                             Image(uiImage: .plusImage)
                         }
+                        .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     }
@@ -452,13 +517,9 @@ private struct ProductsSection: View {
                                            flow: flow,
                                            shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
                                            shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
-                                           onAddDiscount: viewModel.selectOrderItem)
-                    .sheet(item: $viewModel.selectedProductViewModel, content: { selectedProduct in
-                        ProductDiscountView(imageURL: selectedProduct.productRowViewModel.imageURL,
-                                            name: selectedProduct.productRowViewModel.name,
-                                            stockLabel: selectedProduct.productRowViewModel.stockQuantityLabel,
-                                            productRowViewModel: selectedProduct.productRowViewModel,
-                                            discountViewModel: selectedProduct.discountDetailsViewModel)
+                                           onAddDiscount: viewModel.setDiscountViewModel)
+                    .sheet(item: $viewModel.discountViewModel, content: { discountViewModel in
+                        ProductDiscountView(viewModel: discountViewModel)
                     })
                     .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
                         ConfigurableBundleProductView(viewModel: configurableProductViewModel)
@@ -545,6 +606,7 @@ private extension ProductsSection {
                 .foregroundColor(Color(.brand))
             }
         })
+        .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {
@@ -572,12 +634,18 @@ private extension OrderForm {
         static let storedTaxRateBottomSheetStoredTaxRateCornerRadius: CGFloat = 8.0
         static let storedTaxRateBottomSheetButtonIconSize: CGFloat = 24.0
         static let productsHeaderButtonsSpacing: CGFloat = 20
+        static let dividerLeadingPadding: CGFloat = 16
     }
 
     enum Localization {
         static let createButton = NSLocalizedString("Create", comment: "Button to create an order on the Order screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the Order Editing screen")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
+        static let collectPaymentButton = NSLocalizedString(
+            "orderForm.payment.collect.button.title",
+            value: "Collect Payment",
+            comment: "Title of the primary button on the new order screen to collect payment, likely in-person. " +
+            "This button first creates the order, then presents a view for the merchant to choose a payment method.")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
@@ -596,6 +664,18 @@ private extension OrderForm {
                                                                                      "when there is a tax rate stored")
         static let storedTaxRateBottomSheetClearTaxRateButtonTitle = NSLocalizedString("Clear address and stop using this rate",
                                                                                        comment: "Title for the button to clear the stored tax rate")
+        static let scanProductButtonAccessibilityLabel = NSLocalizedString(
+            "orderForm.products.add.scan.button.accessibilityLabel",
+            value: "Scan barcode",
+            comment: "Accessibility label for the barcode scanning button to add product")
+
+        static let addProductButtonAccessibilityLabel = NSLocalizedString(
+            "orderForm.products.add.button.accessibilityLabel",
+            value: "Add product",
+            comment: "Accessibility label for the + button to add product using a form")
+
+
+        static let orderTotal = NSLocalizedString("Order total", comment: "Label for the the row showing the total cost of the order")
     }
 
     enum Accessibility {

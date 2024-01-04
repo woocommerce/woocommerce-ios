@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-29 13:54:05+0000 */
+/* Translation-Revision-Date: 2023-12-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -3429,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "WordPress メディアライブラリから";
 
-/* Title of the downloadable file bottom sheet action for adding file from device. */
-"From device" = "端末から";
-
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "購入から履行まで - アプリから注文処理全体を管理します。";
 
@@ -5053,9 +5050,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "まだファイルはありません";
 
-/* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "画像がありません";
-
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "制限がありません";
 
@@ -5450,8 +5444,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "荷物の寸法は0以上にする必要があります。 商品ページの「配送」セクションで商品の寸法を更新して続行してください。";
 
-/* Row title for the last paid deposit in the WooPayments Deposits overview
-   The title for the customer payment cell */
+/* The title for the customer payment cell */
 "Paid" = "支払済み";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -9822,6 +9815,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "アイコン";
 
+/* Message to display when a phone number or email address has been copied to clipboard */
+"billingInformationViewController.action.copied" = "クリップボードにコピーしました。";
+
+/* Button to copy phone number to clipboard */
+"billingInformationViewController.action.copyPhoneNumber" = "番号をコピー";
+
+/* Button to dismiss the Blaze campaign section on the My Store screen. */
+"blazeCampaignDashboardView.hideBlazeButton" = "Blaze を非表示";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = " キャンセル";
 
@@ -9851,31 +9853,31 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleItem.add" = "追加";
 
 /* Action to select a variation for a bundle item when it is variable. */
-"configureBundleItem.selectVariation" = "バリエーションを選択";
+"configureBundleItem.chooseVariation" = "バリエーションを選択";
 
 /* Action to update a variation for a bundle item when it is variable. */
 "configureBundleItem.updateVariation" = "バリエーションを更新する";
 
-/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
-"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "数量は%1$@～%2$@個以内である必要があります";
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. %1$@ is the product name. %2$@ is the minimum quantity, and %3$@ is the maximum quantity */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRulesFormat" = "%1$@ の数量は%2$@～%3$@個以内である必要があります。";
 
-/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
-"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "数量は最低でも%1$@個必要です";
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. %1$@ is the product name. %2$@ is the minimum quantity. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRuleFormat" = "%1$@ の数量は最低でも%2$@個必要です。";
 
-/* Error message when a variable bundle item is missing a variation. */
-"configureBundleItemError.missingVariation" = "バリエーションを選択してください";
+/* Error message format when a variable bundle item is missing a variation. %1$@ is the variable product name. */
+"configureBundleItemError.missingVariationFormat" = "%1$@ のバリエーションを選択してください。";
 
-/* Error message when a variable bundle item is missing some attributes. */
-"configureBundleItemError.variationMissingAttributes" = "すべてのバリエーション属性のオプションを選択してください";
+/* Error message format when a variable bundle item is missing some attributes. %1$@ is the variable product name. */
+"configureBundleItemError.variationMissingAttributesFormat" = "%1$@ のすべてのバリエーション属性のオプションを選択してください。";
 
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "閉じる";
 
-/* Text for the done button in the bundle product configuration screen in the order form. */
-"configureBundleProduct.done" = "完了";
-
 /* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
 "configureBundleProduct.retry" = "再試行";
+
+/* Text for the save button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.save" = "設定を保存";
 
 /* Title for the bundle product configuration screen in the order form. */
 "configureBundleProduct.title" = "設定";
@@ -9901,6 +9903,12 @@ which should be translated separately and considered part of this sentence. */
 /* Used in configureBundleProductValidationError strings for the singular form of item. */
 "configureBundleProductValidationError.itemSingular" = "個のアイテム";
 
+/* Title of the error notice when the bundle configuration is currently invalid in the bundle product configuration screen. */
+"configureBundleProductValidationError.title" = "設定が必要です";
+
+/* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
+"configureBundleProductValidationSuccess.title" = "設定が完了しました";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "日";
 
@@ -9910,12 +9918,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "有効期限";
 
+/* Display label when a subscription has no trial period. */
+"defaultProductFormTableViewModel.freeTrialRow.noTrialPeriod" = "無料お試しなし";
+
+/* Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.freeTrialRow.title" = "無料お試し";
+
 /* Display label when a subscription never expires. */
 "defaultProductFormTableViewModel.neverExpire" = "期限なし";
-
-/* Display label when a subscription has no trial period.
-   Title for Subscription Free Trial row in the product form screen. */
-"defaultProductFormTableViewModel.noFreeTrial" = "無料お試し";
 
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "標準価格: %1$@ \/ %2$@";
@@ -9928,6 +9938,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the expand chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.show" = "デポジットの詳細を表示";
+
+/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.depositTable.last.title" = "最後";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.canceled.title" = "キャンセル済み";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.estimated.title" = "予定";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.failed.title" = "失敗";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.inTransit.title" = "輸送中";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.paid.title" = "有料";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.pending.title" = "承認待ち";
+
+/* A status for a deposit, shown in a small badge view */
+"deposits.currency.overview.depositTable.status.unknown.title" = "不明";
+
+/* Title of the downloadable file bottom sheet action for adding document from device. */
+"downloadableFileSource.deviceDocument" = "端末上のドキュメント";
+
+/* Title of the downloadable file bottom sheet action for adding media from device. */
+"downloadableFileSource.deviceMedia" = "端末上のメディア";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eコマース";
@@ -10091,6 +10131,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "カスタム金額をどのように追加しますか ?";
 
+/* The title for a button to dismiss the keyboard on the order creation/editing screen */
+"orderForm.productRow.keyboard.toolbar.done.button.title" = "完了";
+
 /* Label for the row showing the cost of fees in the order */
 "orderPaymentSection.customAmounts" = "カスタム金額";
 
@@ -10136,11 +10179,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "バリエーションのある定期購入商品";
 
+/* Alert message to inform the user about a failure in uploading file for a downloadable product. */
+"productDownloadListViewController.notice.errorUploadingLocalFile" = "ファイルのアップロードの際にエラーが発生しました。 もう一度お試しください。";
+
+/* Alert message about an unsupported file type when uploading file for a downloadable product. */
+"productDownloadListViewController.notice.unsupportedFileType" = "選択したファイルタイプはサポートされていません。";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "毎週%1$@";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze を使って宣伝する";
+
+/* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
+"productImagesCollectionViewController.notice" = "画像の順序を変更するには、すべてのアップロードが完了するまでお待ちください。";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "請求の間隔";
@@ -10175,6 +10227,15 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Subtitle for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.subtitle" = "これを有効にすると、初回注文で送料を請求します。";
+
+/* Subtitle for the One time shipping product shipping setting when it is disabled. */
+"productShippingSettings.oneTimeShipping.subtitleDisabled" = "この設定を有効にするには、定期購入に無料お試しや同期された更新日が含まれていない必要があります。";
+
+/* Title for the One time shipping product shipping setting. */
+"productShippingSettings.oneTimeShipping.title" = "1回限りの発送";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "評価回数%ld回";
 
@@ -10189,6 +10250,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "支払いが完了しました";
+
+/* Navigates to Themes screen. */
+"settingsViewController.themesRow" = "テーマ";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10281,11 +10345,47 @@ which should be translated separately and considered part of this sentence. */
 which should be translated separately and considered part of this sentence. */
 "tapToPay.learnMore.text" = "Tap to Pay on iPhone による支払いの受け取りについて%1$@。";
 
+/* Button to dismiss the theme settings screen */
+"themeSettingView.cancelButton" = "キャンセル";
+
+/* Title for the Current section on the theme settings screen */
+"themeSettingView.currentSection" = "現在";
+
+/* Title for the Theme row on the theme settings screen */
+"themeSettingView.themeRow" = "テーマ";
+
+/* Title for the theme settings screen */
+"themeSettingView.title" = "テーマ";
+
+/* Label for the suggested theme section on the theme settings screen */
+"themeSettingView.tryOtherLookLabel" = "他の新しい外観をお試しください";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "不明";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "不明な URL";
+
+/* Cancel button title on the update product inventory view. */
+"updateProductInventoryView.cancelButtonTitle" = "キャンセル";
+
+/* Navigation bar title of the update product inventory view. */
+"updateProductInventoryView.navigationBarTitle" = "商品";
+
+/* Product name label in the update product inventory view. */
+"updateProductInventoryView.productNameTitle" = "商品名";
+
+/* Product quantity label in the update product inventory view. */
+"updateProductInventoryView.productQuantityTitle" = "数量";
+
+/* Stock quantity button when a tap increases the stock once. */
+"updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle" = "数量 + 1";
+
+/* Stock quantity button when the user adds a custom quantity. */
+"updateProductInventoryView.quantityButton.updateQuantityButtonTitle" = "在庫数を更新";
+
+/* Product detailsl button title. */
+"updateProductInventoryView.viewProductDetailsButtonTitle" = "商品情報を表示";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "削除";
@@ -10304,6 +10404,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, 商品, カテゴリー, 新商品, 商品を検索";
+
+/* Placeholder text shown when loading media for the WordPress Media Library */
+"wordpressMediaLibraryPickerViewController.emptyContent.loading" = "メディアを読み込んでいます...";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "セキュリティキーを使用";

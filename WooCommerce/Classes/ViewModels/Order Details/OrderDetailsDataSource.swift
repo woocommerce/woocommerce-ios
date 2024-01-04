@@ -585,7 +585,7 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        cell.dateCreated = noteHeader.toString(dateStyle: .medium, timeStyle: .none)
+        cell.dateCreated = noteHeader.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
     }
 
     private func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
@@ -596,7 +596,7 @@ private extension OrderDetailsDataSource {
         cell.isSystemAuthor = note.isSystemAuthor
         cell.isCustomerNote = note.isCustomerNote
         cell.author = note.author
-        cell.dateCreated = note.dateCreated.toString(dateStyle: .none, timeStyle: .short)
+        cell.dateCreated = note.dateCreated.toStringInSiteTimeZone(dateStyle: .none, timeStyle: .short)
         cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 

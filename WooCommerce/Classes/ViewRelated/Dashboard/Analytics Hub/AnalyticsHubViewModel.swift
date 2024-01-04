@@ -9,6 +9,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let timeZone: TimeZone
     private let analytics: Analytics
 
     private var subscriptions = Set<AnyCancellable>()
@@ -18,14 +19,16 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     init(siteID: Int64,
+         timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
-        let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType)
+        let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
         self.siteID = siteID
+        self.timeZone = timeZone
         self.stores = stores
         self.analytics = analytics
         self.timeRangeSelectionType = selectedType
@@ -141,7 +144,7 @@ private extension AnalyticsHubViewModel {
 
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
-                await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
+                await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
             }
             group.addTask {
                 await self.retrieveItemsSoldStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
@@ -153,11 +156,13 @@ private extension AnalyticsHubViewModel {
     }
 
     @MainActor
-    func retrieveOrderStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async {
-        async let currentPeriodRequest = retrieveStats(earliestDateToInclude: currentTimeRange.start,
+    func retrieveOrderStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        async let currentPeriodRequest = retrieveStats(timeZone: timeZone,
+                                                       earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
                                                        forceRefresh: true)
-        async let previousPeriodRequest = retrieveStats(earliestDateToInclude: previousTimeRange.start,
+        async let previousPeriodRequest = retrieveStats(timeZone: timeZone,
+                                                        earliestDateToInclude: previousTimeRange.start,
                                                         latestDateToInclude: previousTimeRange.end,
                                                         forceRefresh: true)
 
@@ -184,12 +189,14 @@ private extension AnalyticsHubViewModel {
     }
 
     @MainActor
-    func retrieveStats(earliestDateToInclude: Date,
+    func retrieveStats(timeZone: TimeZone,
+                       earliestDateToInclude: Date,
                        latestDateToInclude: Date,
                        forceRefresh: Bool) async throws -> OrderStatsV4 {
         try await withCheckedThrowingContinuation { continuation in
             let action = StatsActionV4.retrieveCustomStats(siteID: siteID,
                                                            unit: timeRangeSelectionType.granularity,
+                                                           timeZone: timeZone,
                                                            earliestDateToInclude: earliestDateToInclude,
                                                            latestDateToInclude: latestDateToInclude,
                                                            quantity: timeRangeSelectionType.intervalSize,
@@ -207,6 +214,7 @@ private extension AnalyticsHubViewModel {
         try await withCheckedThrowingContinuation { continuation in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                               timeRange: .thisYear, // Only needed for storing purposes, we can ignore it.
+                                                              timeZone: timeZone,
                                                               earliestDateToInclude: earliestDateToInclude,
                                                               latestDateToInclude: latestDateToInclude,
                                                               quantity: Constants.maxNumberOfTopItemsSold,
@@ -291,7 +299,7 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newSelectionType in
                 guard let self else { return }
-                self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType)
+                self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: newSelectionType, timezone: timeZone)
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter,
                                                                          analytics: self.analytics)

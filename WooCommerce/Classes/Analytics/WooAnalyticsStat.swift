@@ -185,11 +185,6 @@ public enum WooAnalyticsStat: String {
     case blazeIntroDisplayed = "blaze_intro_displayed"
     case blazeViewDismissed = "blaze_view_dismissed"
 
-    // MARK: Products Onboarding Events
-    //
-    case productsOnboardingEligible = "products_onboarding_store_is_eligible"
-    case productsOnboardingCTATapped = "products_onboarding_cta_tapped"
-
     // MARK: Store Onboarding Events
     //
     case storeOnboardingShown = "store_onboarding_shown"
@@ -234,6 +229,8 @@ public enum WooAnalyticsStat: String {
     case signupSubmitted = "signup_submitted"
     case signupSuccess = "signup_success"
     case signupFailed = "signup_failed"
+    case storeReadyAlertDisplayed = "site_creation_store_ready_alert_displayed"
+    case storeReadyAlertSwitchStoreTapped = "site_creation_store_ready_alert_switch_store_tapped"
 
     // MARK: Help & Support Events
     //
@@ -328,6 +325,8 @@ public enum WooAnalyticsStat: String {
     case tapToPaySetupSuccessDoneTapped = "tap_to_pay_set_up_success_done_tapped"
     case tapToPaySummaryShown = "tap_to_pay_summary_shown"
     case aboutTapToPayOrderCardReaderTapped = "about_tap_to_pay_order_card_reader_tapped"
+    case tapToPayAutoRefundSuccess = "card_present_tap_to_pay_test_payment_refund_success"
+    case tapToPayAutoRefundFailed = "card_present_tap_to_pay_test_payment_refund_failed"
 
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
@@ -353,11 +352,15 @@ public enum WooAnalyticsStat: String {
     case orderNoteEmailCustomerToggled = "add_order_note_email_note_to_customer_toggled"
     case orderDetailAddTrackingButtonTapped = "order_detail_tracking_add_tracking_button_tapped"
     case orderDetailShowBillingTapped = "order_detail_customer_info_show_billing_tapped"
-    case orderDetailCustomerEmailTapped = "order_detail_customer_info_email_menu_email_tapped"
+    case orderDetailCustomerAddressTapped = "order_detail_customer_address_tapped"
+    case orderDetailCustomerAddressEditTapped = "order_detail_customer_address_edit_tapped"
     case orderDetailCustomerEmailMenuTapped = "order_detail_customer_info_email_menu_tapped"
+    case orderDetailCustomerEmailOptionTapped = "order_detail_customer_info_email_option_tapped"
+    case orderDetailCustomerEmailCopyOptionTapped = "order_detail_customer_info_email_copy_option_tapped"
     case orderDetailCustomerPhoneMenuTapped = "order_detail_customer_info_phone_menu_tapped"
     case orderDetailCustomerPhoneOptionTapped = "order_detail_customer_info_phone_menu_phone_tapped"
     case orderDetailCustomerSMSOptionTapped = "order_detail_customer_info_phone_menu_sms_tapped"
+    case orderDetailCustomerCopyNumberOptionTapped = "order_detail_customer_info_phone_menu_copy_tapped"
     case orderDetailOrderStatusEditButtonTapped = "order_detail_order_status_edit_button_tapped"
     case orderDetailRefundDetailTapped = "order_detail_refund_detail_tapped"
     case orderDetailAddOnsViewed = "order_detail_addons_viewed"
@@ -408,6 +411,7 @@ public enum WooAnalyticsStat: String {
     case orderCreationEditCustomAmountTapped = "order_creation_edit_custom_amount_tapped"
     case orderCreationRemoveCustomAmountTapped = "order_creation_remove_custom_amount_tapped"
     case orderCreationClearAddressFromBottomSheetTapped = "tax_rate_auto_tax_rate_clear_address_tapped"
+    case orderFormTotalsPanelToggled = "order_form_totals_panel_toggled"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -471,13 +475,13 @@ public enum WooAnalyticsStat: String {
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
 
     // MARK: Barcode Scanning events
-        //
-        case orderCreationProductBarcodeScanningTapped = "order_creation_product_barcode_scanning_tapped"
-        case orderListProductBarcodeScanningTapped = "order_list_product_barcode_scanning_tapped"
-        case barcodeScanningSuccess = "barcode_scanning_success"
-        case barcodeScanningFailure = "barcode_scanning_failure"
-        case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
-        case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
+    //
+    case orderCreationProductBarcodeScanningTapped = "order_creation_product_barcode_scanning_tapped"
+    case orderListProductBarcodeScanningTapped = "order_list_product_barcode_scanning_tapped"
+    case barcodeScanningSuccess = "barcode_scanning_success"
+    case barcodeScanningFailure = "barcode_scanning_failure"
+    case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
+    case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
     // MARK: Tax Rate selector
     //
@@ -620,7 +624,18 @@ public enum WooAnalyticsStat: String {
     case productListAddProductTapped = "product_list_add_product_button_tapped"
     case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
     case productListShareButtonTapped = "product_list_share_button_tapped"
+
+    // MARK: Product List - Scan to Update Inventory
+    //
     case productListProductBarcodeScanningTapped = "product_list_product_barcode_scanning_tapped"
+    case inventoryUpdateIncrementQuantityTapped = "product_quick_inventory_update_increment_quantity_tapped"
+    case inventoryUpdateManualQuantityTapped = "product_quick_inventory_update_manual_quantity_update_tapped"
+    case inventoryUpdateDismissed = "product_quick_inventory_update_dismissed"
+    case inventoryUpdateQuantityUpdateSuccess = "product_quick_inventory_quantity_update_success"
+    case inventoryUpdateQuantityUpdateFailure = "product_quick_inventory_quantity_update_failure"
+    case inventoryUpdateViewProductDetailsTapped = "product_quick_inventory_view_product_details_tapped"
+    case inventoryUpdateEnableManageStockSuccess = "product_quick_inventory_enable_manage_stock_success"
+    case inventoryUpdateEnableManageStockFailure = "product_quick_inventory_enable_manage_stock_failure"
 
     // MARK: Product List Bulk Editing Events
     //
@@ -867,6 +882,9 @@ public enum WooAnalyticsStat: String {
     case productCreationAISaveAsDraftButtonTapped = "product_creation_ai_save_as_draft_button_tapped"
     case productCreationAISaveAsDraftSuccess = "product_creation_ai_save_as_draft_success"
     case productCreationAISaveAsDraftFailed = "product_creation_ai_save_as_draft_failed"
+    case productCreationAISurveyConfirmationViewDisplayed = "product_creation_ai_survey_confirmation_view_displayed"
+    case productCreationAISurveyStartSurveyButtonTapped = "product_creation_ai_survey_start_survey_button_tapped"
+    case productCreationAISurveySkipButtonTapped = "product_creation_ai_survey_skip_button_tapped"
 
     // MARK: Remote Request Events
     //
@@ -1102,6 +1120,16 @@ public enum WooAnalyticsStat: String {
     case localAnnouncementDisplayed = "local_announcement_displayed"
     case localAnnouncementCallToActionTapped = "local_announcement_cta_tapped"
     case localAnnouncementDismissTapped = "local_announcement_dismissed"
+
+    // MARK: Themes
+    case themePickerScreenDisplayed = "theme_picker_screen_displayed"
+    case themePickerThemeSelected = "theme_picker_theme_selected"
+    case themePreviewScreenDisplayed = "theme_preview_screen_displayed"
+    case themePreviewLayoutSelected = "theme_preview_layout_selected"
+    case themePreviewPageSelected = "theme_preview_page_selected"
+    case themePreviewStartWithThemeButtonTapped = "theme_preview_start_with_theme_button_tapped"
+    case themeInstallationCompleted = "theme_installation_completed"
+    case themeInstallationFailed = "theme_installation_failed"
 }
 
 public extension WooAnalyticsStat {

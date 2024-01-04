@@ -1,0 +1,14 @@
+[
+    {
+        "id": "IAB1",
+        "description": "Arts & Entertainment"
+    },
+    {
+        "id": "IAB2",
+        "description": "Automotive"
+    },
+    {
+        "id": "IAB3",
+        "description": "Business"
+    }
+]

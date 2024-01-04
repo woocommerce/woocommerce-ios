@@ -76,16 +76,12 @@ extension WooAnalyticsEvent {
         case orderCreation = "order_creation"
         /// Shown in beta feature banner for coupon management.
         case couponManagement = "coupon_management"
-        /// Shown in IPP banner for eligible merchants with no IPP transactions.
-        case inPersonPaymentsCashOnDeliveryBanner
-        /// Shown in IPP banner for eligible merchants with a few IPP transactions.
-        case inPersonPaymentsFirstTransactionBanner
-        /// Shown in IPP banner for eligible merchants with a significant number of IPP transactions.
-        case inPersonPaymentsPowerUsersBanner
         /// Shown in store setup task list
         case storeSetup = "store_setup"
         /// Tap to Pay on iPhone feedback button shown in the Payments menu after the first payment with TTP
         case tapToPayFirstPaymentPaymentsMenu
+        /// Shown in Product details form for a AI generated product
+        case productCreationAI = "product_creation_ai"
     }
 
     /// The action performed on the survey screen.
@@ -500,6 +496,7 @@ extension WooAnalyticsEvent {
             case creation
             case editing
             case list
+            case orderDetails = "order_details"
         }
 
         /// Possible item types to add to an Order
@@ -560,6 +557,7 @@ extension WooAnalyticsEvent {
             static let type = "type"
             static let usesGiftCard = "use_gift_card"
             static let taxStatus = "tax_status"
+            static let expanded = "expanded"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -725,6 +723,14 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderStatusChange, properties: properties.compactMapValues { $0 })
         }
 
+        static func orderTotalsExpansionChanged(flow: Flow,
+                                                expanded: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormTotalsPanelToggled, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.expanded: expanded
+            ])
+        }
+
         static func orderCreateButtonTapped(order: Order,
                                             status: OrderStatusEnum,
                                             productCount: Int,
@@ -734,6 +740,26 @@ extension WooAnalyticsEvent {
                                             hasShippingMethod: Bool,
                                             products: [Product]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
+                Keys.orderStatus: status.rawValue,
+                Keys.productCount: Int64(productCount),
+                Keys.customAmountsCount: Int64(customAmountsCount),
+                Keys.hasCustomerDetails: hasCustomerDetails,
+                Keys.hasFees: hasFees,
+                Keys.hasShippingMethod: hasShippingMethod,
+                Keys.productTypes: productTypes(order: order, products: products)
+            ])
+        }
+
+        static func orderCreationCollectPaymentTapped(order: Order,
+                                                      status: OrderStatusEnum,
+                                                      productCount: Int,
+                                                      customAmountsCount: Int,
+                                                      hasCustomerDetails: Bool,
+                                                      hasFees: Bool,
+                                                      hasShippingMethod: Bool,
+                                                      products: [Product]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentTapped, properties: [
+                Keys.flow: Flow.creation.rawValue,
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
                 Keys.customAmountsCount: Int64(customAmountsCount),
@@ -817,9 +843,9 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the user taps to collect a payment
         ///
-        static func collectPaymentTapped() -> WooAnalyticsEvent {
+        static func collectPaymentTapped(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped,
-                              properties: [:])
+                              properties: [Keys.flow: flow.rawValue])
         }
 
         /// Tracked when accessing the system plugin list without it being in sync.
@@ -1188,6 +1214,7 @@ extension WooAnalyticsEvent {
         enum Flow: String {
             case simplePayment = "simple_payment"
             case orderPayment = "order_payment"
+            case orderCreation = "creation"
             case tapToPayTryAPayment = "tap_to_pay_try_a_payment"
         }
 
@@ -2426,18 +2453,6 @@ extension WooAnalyticsEvent {
             case template
         }
 
-        /// Tracks when a store is eligible for products onboarding
-        ///
-        static func storeIsEligible() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productsOnboardingEligible, properties: [:])
-        }
-
-        /// Tracks when the call to action is tapped on the products onboarding banner
-        ///
-        static func bannerCTATapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productsOnboardingCTATapped, properties: [:])
-        }
-
         /// Trackas when the merchants selects a product creation type.
         ///
         static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {
@@ -2787,13 +2802,17 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case path
             case entityName = "entity"
+            case debugDecodingPath = "debug_decoding_path"
+            case debugDecodingDescription = "debug_decoding_description"
         }
 
         static func jsonParsingError(_ error: Error, path: String?, entityName: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .apiJSONParsingError,
                               properties: [
                                 Keys.path.rawValue: path,
-                                Keys.entityName.rawValue: entityName
+                                Keys.entityName.rawValue: entityName,
+                                Keys.debugDecodingPath.rawValue: (error as? DecodingError)?.debugPath,
+                                Keys.debugDecodingDescription.rawValue: (error as? DecodingError)?.debugDescription
                               ].compactMapValues { $0 },
                               error: error)
         }
@@ -2814,6 +2833,7 @@ extension WooAnalyticsEvent {
             case orderCreation = "order_creation"
             case orderList = "order_list"
             case productList = "product_list"
+            case scanToUpdateInventory = "scan_to_update_inventory"
         }
 
         enum BarcodeScanningFailureReason: String {
@@ -2829,8 +2849,13 @@ extension WooAnalyticsEvent {
                                                                               Keys.reason: reason.rawValue])
         }
 
-        static func productSearchViaSKUSuccess(from source: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source])
+        static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {
+            var properties = [Keys.source: source]
+
+            if let stockManaged = stockManaged {
+                properties["stock_managed"] = "\(stockManaged)"
+            }
+            return WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: properties)
         }
 
         static func productSearchViaSKUFailure(from source: String,

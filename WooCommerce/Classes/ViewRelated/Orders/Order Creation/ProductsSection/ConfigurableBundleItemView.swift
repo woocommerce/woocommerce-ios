@@ -23,7 +23,11 @@ struct ConfigurableBundleItemView: View {
                 }
                 .disabled(!viewModel.isOptional)
 
-                ProductRow(viewModel: viewModel.productRowViewModel)
+                if viewModel.canChangeQuantity {
+                    ProductWithQuantityStepperView(viewModel: viewModel.productWithStepperViewModel)
+                } else {
+                    ProductRow(viewModel: viewModel.productWithStepperViewModel.rowViewModel)
+                }
             }
 
             HStack(spacing: 0) {

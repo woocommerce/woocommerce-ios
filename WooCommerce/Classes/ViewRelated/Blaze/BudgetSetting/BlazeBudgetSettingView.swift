@@ -116,7 +116,7 @@ private extension BlazeBudgetSettingView {
             .font(.subheadline)
             .onTapGesture {
                 Task {
-                    await viewModel.updateImpressions()
+                    await viewModel.retryFetchingImpression()
                 }
             }
         }

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 
@@ -21,6 +22,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     var totalAmountText: String {
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
         return String(format: "$%.0f USD", totalBudget)
     }
 
@@ -37,8 +39,8 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     var formattedDateRange: String {
-        // Use the configured formatter to generate the string.
-        dateFormatter.string(from: startDate, to: endDate)
+        let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
+        return dateFormatter.string(from: startDate, to: endDate)
     }
 
     private let dateFormatter: DateIntervalFormatter = {
@@ -48,20 +50,14 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         return formatter
     }()
 
-    private var endDate: Date {
-        Date(timeInterval: Constants.oneDayInSeconds * dayCount, since: startDate)
-    }
-
-    private var totalBudget: Double {
-        dailyAmount * dayCount
-    }
-
     private let siteID: Int64
     private let targetOptions: BlazeTargetOptions?
     private let stores: StoresManager
 
     typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
     private let completionHandler: BlazeBudgetSettingCompletionHandler
+
+    private var settingSubscription: AnyCancellable?
 
     init(siteID: Int64,
          dailyBudget: Double,
@@ -77,6 +73,8 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         self.targetOptions = targetOptions
         self.stores = stores
         self.completionHandler = onCompletion
+
+        observeSettings()
     }
 
     func confirmSettings() {
@@ -85,8 +83,15 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     @MainActor
-    func updateImpressions() async {
+    func retryFetchingImpression() async {
+        await updateImpressions(startDate: startDate, dayCount: dayCount, dailyBudget: dailyAmount)
+    }
+
+    @MainActor
+    func updateImpressions(startDate: Date, dayCount: Double, dailyBudget: Double) async {
         forecastedImpressionState = .loading
+        let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyBudget, dayCount: dayCount)
         let input = BlazeForecastedImpressionsInput(startDate: startDate, endDate: endDate, totalBudget: totalBudget, targetings: targetOptions)
         do {
             let result = try await fetchForecastedImpressions(input: input)
@@ -101,6 +106,25 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
 // MARK: - Private helpers
 private extension BlazeBudgetSettingViewModel {
+
+    func observeSettings() {
+        settingSubscription = $dayCount.combineLatest($dailyAmount, $startDate)
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] dayCount, dailyBudget, startDate in
+                guard let self else { return }
+                Task {
+                    await self.updateImpressions(startDate: startDate, dayCount: dayCount, dailyBudget: dailyBudget)
+                }
+            }
+    }
+
+    func calculateEndDate(from startDate: Date, dayCount: Double) -> Date {
+        Date(timeInterval: Constants.oneDayInSeconds * dayCount, since: startDate)
+    }
+
+    func calculateTotalBudget(dailyBudget: Double, dayCount: Double) -> Double {
+        dailyBudget * dayCount
+    }
 
     @MainActor
     func fetchForecastedImpressions(input: BlazeForecastedImpressionsInput) async throws -> BlazeImpressions {

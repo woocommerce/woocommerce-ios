@@ -23,7 +23,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     var totalAmountText: String {
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
-        return String(format: "$%.0f USD", totalBudget)
+        return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
 
     var formattedTotalDuration: String {
@@ -189,6 +189,12 @@ extension BlazeBudgetSettingViewModel {
             value: "for %1$d days",
             comment: "The total duration for a Blaze campaign in plural form. " +
             "Reads like: for 10 days"
+        )
+        static let totalBudget = NSLocalizedString(
+            "blazeBudgetSettingViewModel.totalBudget",
+            value: "$%.0f USD",
+            comment: "The formatted total budget for a Blaze campaign, fixed in USD. " +
+            "Reads as $11 USD. Keep %.0f as is."
         )
     }
 }

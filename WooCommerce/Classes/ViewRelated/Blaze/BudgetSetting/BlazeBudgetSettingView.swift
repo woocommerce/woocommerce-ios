@@ -315,7 +315,7 @@ private extension BlazeBudgetSettingView {
         )
         static let forecastingFailed = NSLocalizedString(
             "blazeBudgetSettingView.forecastingFailed",
-            value: "Forecasting failed. Retry?",
+            value: "Estimation not loading. Retry?",
             comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
         )
     }

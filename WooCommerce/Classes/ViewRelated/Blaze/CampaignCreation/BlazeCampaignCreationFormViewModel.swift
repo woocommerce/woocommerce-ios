@@ -67,7 +67,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
 private extension BlazeCampaignCreationFormViewModel {
     func updateBudgetDetails() {
-        let amount = String(format: "$%.0f USD", dailyBudget * Double(duration))
+        let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
         let date = dateFormatter.string(for: startDate) ?? ""
         budgetDetailText = String.pluralize(
             duration,
@@ -90,6 +90,12 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "%1$@, %2$d days from %3$@",
             comment: "Blaze campaign budget details with duration in plural form. " +
             "Reads like: $35, 15 days from Dec 31"
+        )
+        static let totalBudget = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.totalBudget",
+            value: "$%.0f USD",
+            comment: "The formatted total budget for a Blaze campaign, fixed in USD. " +
+            "Reads as $11 USD. Keep %.0f as is."
         )
     }
 }

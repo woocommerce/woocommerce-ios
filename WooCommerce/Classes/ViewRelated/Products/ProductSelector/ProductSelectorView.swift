@@ -10,6 +10,7 @@ final class ProductSelectorViewController: UIHostingController<ProductSelectorVi
 
         super.init(rootView: ProductSelectorView(configuration: configuration,
                                                  source: source,
+                                                 usingNavigationController: true,
                                                  isPresented: .constant(true),
                                                  viewModel: viewModel))
     }
@@ -32,6 +33,11 @@ struct ProductSelectorView: View {
     let configuration: Configuration
 
     let source: Source
+
+    /// This view can also be presented by a NavigationController, notably in Blaze usage.
+    /// This is then used to modify some UI behavior that differs from SwiftUI navigation.
+    ///
+    var usingNavigationController: Bool = false
 
     /// Defines whether the view is presented.
     ///
@@ -180,9 +186,16 @@ struct ProductSelectorView: View {
             ToolbarItem(placement: .cancellationAction) {
                 if let cancelButtonTitle = configuration.cancelButtonTitle {
                     Button(cancelButtonTitle) {
-                        isPresented.toggle()
-                        if !isPresented {
+                        // When using navigation controller, the dismissal is handled by the parent navigation controller,
+                        // so we call the callback immediately.
+                        if usingNavigationController {
                             viewModel.closeButtonTapped()
+                        }
+                        else {
+                            isPresented.toggle()
+                            if !isPresented {
+                                viewModel.closeButtonTapped()
+                            }
                         }
                     }
                 }

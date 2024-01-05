@@ -111,12 +111,6 @@ public final class BlazeTargetLocation: NSObject, Decodable, GeneratedCopiable, 
     /// Type of the location
     public let type: String
 
-    /// Post code of the location (if available)
-    public let code: String?
-
-    /// ISO code of the location (if available)
-    public let isoCode: String?
-
     /// Parent of the location.
     /// "Parent" refers to the larger geographical context of a given location.
     /// For example the parent of a city is a state, or the parent of a country is a continent.
@@ -125,14 +119,10 @@ public final class BlazeTargetLocation: NSObject, Decodable, GeneratedCopiable, 
     public init(id: Int64,
                 name: String,
                 type: String,
-                code: String? = nil,
-                isoCode: String? = nil,
                 parentLocation: BlazeTargetLocation? = nil) {
         self.id = id
         self.name = name
         self.type = type
-        self.code = code
-        self.isoCode = isoCode
         self.parentLocation = parentLocation
     }
 }

@@ -47,16 +47,25 @@ final class BlazeRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
 
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        let startDateString = "2023-12-05"
+        let startDate = try XCTUnwrap(dateFormatter.date(from: startDateString))
+
+        let endDateString = "2023-12-11"
+        let endDate = try XCTUnwrap(dateFormatter.date(from: endDateString))
+
         let mainImage = CreateBlazeCampaign.Image(url: "https://example.com/wp-content/uploads/2023/06/0_1-2.png?quality=80&strip=info&w=1500",
                                                   mimeType: "image/png")
-        let targeting = CreateBlazeCampaign.Targeting(locations: [29211, 42546],
-                                                      languages: ["en", "de"],
-                                                      devices: ["mobile"],
-                                                      pageTopics: ["IAB3", "IAB4"])
+        let targeting = BlazeTargetOptions(locations: [29211, 42546],
+                                           languages: ["en", "de"],
+                                           devices: ["mobile"],
+                                           pageTopics: ["IAB3", "IAB4"])
         let campaign = CreateBlazeCampaign.fake().copy(origin: "WooMobile",
                                                        paymentMethodID: "payment-method-id-123",
-                                                       startDate: "2023-12-05",
-                                                       endDate: "2023-12-11",
+                                                       startDate: startDate,
+                                                       endDate: endDate,
                                                        timeZone: "America/New_York",
                                                        totalBudget: 35.00,
                                                        siteName: "Unleash Your Brain's Potential",
@@ -75,8 +84,8 @@ final class BlazeRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
         XCTAssertEqual(request.parameters?["origin"] as? String, campaign.origin)
         XCTAssertEqual(request.parameters?["payment_method_id"] as? String, campaign.paymentMethodID)
-        XCTAssertEqual(request.parameters?["start_date"] as? String, campaign.startDate)
-        XCTAssertEqual(request.parameters?["end_date"] as? String, campaign.endDate)
+        XCTAssertEqual(request.parameters?["start_date"] as? String, startDateString)
+        XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
         XCTAssertEqual(request.parameters?["time_zone"] as? String, campaign.timeZone)
         XCTAssertEqual(request.parameters?["total_budget"] as? Double, campaign.totalBudget)
         XCTAssertEqual(request.parameters?["site_name"] as? String, campaign.siteName)

@@ -3,8 +3,12 @@ import Foundation
 import WooFoundation
 
 struct CashPaymentTenderView: View {
-    @ObservedObject private(set) var viewModel: CashPaymentTenderViewModel
+    @StateObject private var viewModel: CashPaymentTenderViewModel
     @Environment(\.dismiss) var dismiss
+
+    init(viewModel: CashPaymentTenderViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         VStack {
@@ -13,13 +17,12 @@ struct CashPaymentTenderView: View {
                     VStack(alignment: .leading, spacing: Layout.sectionVerticalSpacing) {
                         Text(Localization.customerPaidTitle)
                             .foregroundColor(Color(.secondaryLabel))
-                        TextField("", text: $viewModel.customerPaidAmount)
+                        FormattableAmountTextField(viewModel: viewModel.formattableAmountViewModel)
                             .keyboardType(.decimalPad)
                             .textFieldStyle(.plain)
                             .font(.system(size: 48, weight: .bold))
                             .onTapGesture {
-                                viewModel.customerPaidAmount = ""
-                                viewModel.didTapOnCustomerPaidTextField = true
+                                viewModel.onCustomerPaidAmountTapped()
                             }
                     }
                     .padding(Layout.sectionPadding)
@@ -33,8 +36,7 @@ struct CashPaymentTenderView: View {
                         Text(viewModel.changeDue)
                             .font(.system(size: 48, weight: .bold))
                             .foregroundColor(Color(.label))
-                        // TODO: fix opacity
-                            .opacity(viewModel.customerPaidAmount > viewModel.formattedTotal ? 1: 0.18)
+                            .opacity(viewModel.hasChangeDue ? 1: 0.18)
                     }
                     .padding(Layout.sectionPadding)
 

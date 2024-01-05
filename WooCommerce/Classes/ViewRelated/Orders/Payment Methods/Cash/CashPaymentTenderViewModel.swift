@@ -12,48 +12,48 @@ struct OrderPaidByCashInfo {
 }
 
 final class CashPaymentTenderViewModel: ObservableObject {
+    /// Whether the tender (pay) button is enabled.
+    @Published private(set) var tenderButtonIsEnabled: Bool = true
+    /// Whether to add an order note about the cash payment details.
+    @Published var addNote: Bool = false
+    /// The amount of change for the merchant to give back to the customer.
+    @Published private(set) var changeDue: String = ""
+    /// Whether the change due amount is positive (i.e. whether the merchant needs to give change).
+    @Published private(set) var hasChangeDue: Bool = false
+
     let formattedTotal: String
+    let formattableAmountViewModel: FormattableAmountTextFieldViewModel
+
+    private var didTapOnCustomerPaidTextField = false
+
     private let currencyFormatter: CurrencyFormatter
     private let onOrderPaid: OrderPaidByCashCallback
     private let analytics: Analytics
 
-    var didTapOnCustomerPaidTextField = false
-    @Published var tenderButtonIsEnabled: Bool = true
-    @Published var addNote: Bool = false
-    @Published var changeDue: String = ""
-    @Published var customerPaidAmount: String = "" {
-        didSet {
-            guard customerPaidAmount != oldValue else { return }
-
-            guard let totalAmount = currencyFormatter.convertToDecimal(formattedTotal) as? Decimal,
-                  let customerPaidAmount = currencyFormatter.convertToDecimal(customerPaidAmount) as? Decimal,
-                  customerPaidAmount >= totalAmount else {
-                handleInvalidInput()
-
-                return
-            }
-
-            handleSufficientPayment(customerPaidAmount: customerPaidAmount, totalAmount: totalAmount)
-        }
-    }
-
     init(formattedTotal: String,
          onOrderPaid: @escaping OrderPaidByCashCallback,
+         locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics) {
         self.formattedTotal = formattedTotal
+        self.formattableAmountViewModel = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.onOrderPaid = onOrderPaid
         self.analytics = analytics
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
-        customerPaidAmount = formattedTotal
+        formattableAmountViewModel.presetAmount(formattedTotal)
+        observeFormattableAmountForUIStates()
+    }
+
+    func onCustomerPaidAmountTapped() {
+        formattableAmountViewModel.amount = ""
+        didTapOnCustomerPaidTextField = true
     }
 
     func onMarkOrderAsCompleteButtonTapped() {
         var info: OrderPaidByCashInfo?
-        if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(customerPaidAmount) {
+        if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(formattableAmountViewModel.amount) {
             info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: changeDue, addNoteWithChangeData: addNote)
         }
-
 
         trackOnMarkOrderAsCompleteButtonTapped(with: info)
         onOrderPaid(info)
@@ -61,14 +61,43 @@ final class CashPaymentTenderViewModel: ObservableObject {
 }
 
 private extension CashPaymentTenderViewModel {
-    func handleInvalidInput() {
-        changeDue = "-"
-        tenderButtonIsEnabled = false
-    }
+    func observeFormattableAmountForUIStates() {
+        // Maps the formatted amount to an optional decimal amount as the change due amount.
+        // The value is non-nil when the change due amount is positive.
+        let changeDueAmount: AnyPublisher<Decimal?, Never> = formattableAmountViewModel.$amount.map { [weak self] in
+            guard let self else { return nil }
+            guard let totalAmount = currencyFormatter.convertToDecimal(formattedTotal) as? Decimal,
+                  let customerPaidAmount = currencyFormatter.convertToDecimal($0) as? Decimal,
+                  customerPaidAmount >= totalAmount else {
+                return nil
+            }
+            return customerPaidAmount - totalAmount
+        }
+            .eraseToAnyPublisher()
 
-    func handleSufficientPayment(customerPaidAmount: Decimal, totalAmount: Decimal) {
-        tenderButtonIsEnabled = true
-        changeDue = currencyFormatter.formatAmount(customerPaidAmount - totalAmount) ?? ""
+        changeDueAmount
+            .map { [weak self] amount in
+                guard let self,
+                      let amount,
+                      let formattedAmount = currencyFormatter.formatAmount(amount) else {
+                    return "-"
+                }
+                return formattedAmount
+            }
+            .assign(to: &$changeDue)
+
+        changeDueAmount
+            .map { $0 != nil }
+            .assign(to: &$tenderButtonIsEnabled)
+
+        changeDueAmount
+            .map { amount in
+                guard let amount else {
+                    return false
+                }
+                return !amount.isLessThanOrEqualTo(0)
+            }
+            .assign(to: &$hasChangeDue)
     }
 
     func trackOnMarkOrderAsCompleteButtonTapped(with info: OrderPaidByCashInfo?) {

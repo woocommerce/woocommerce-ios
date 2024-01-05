@@ -63,6 +63,7 @@ final class BlazeRemoteTests: XCTestCase {
                                            devices: ["mobile"],
                                            pageTopics: ["IAB3", "IAB4"])
         let campaign = CreateBlazeCampaign.fake().copy(origin: "WooMobile",
+                                                       originVersion: "1.0.1",
                                                        paymentMethodID: "payment-method-id-123",
                                                        startDate: startDate,
                                                        endDate: endDate,
@@ -83,6 +84,7 @@ final class BlazeRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
         XCTAssertEqual(request.parameters?["origin"] as? String, campaign.origin)
+        XCTAssertEqual(request.parameters?["origin_version"] as? String, campaign.originVersion)
         XCTAssertEqual(request.parameters?["payment_method_id"] as? String, campaign.paymentMethodID)
         XCTAssertEqual(request.parameters?["start_date"] as? String, startDateString)
         XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
@@ -104,6 +106,7 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(targetingDict["page_topics"] as? [String], targeting.pageTopics)
 
         XCTAssertEqual(request.parameters?["target_urn"] as? String, campaign.targetUrn)
+        XCTAssertEqual(request.parameters?["type"] as? String, campaign.type)
     }
 
     func test_createCampaign_properly_relays_networking_errors() async {

@@ -24,6 +24,10 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
     ///
     public let origin: String
 
+    /// App version to track origin
+    ///
+    public let originVersion: String
+
     /// See peeHDf-2ii-p2
     ///
     public let paymentMethodID: String
@@ -84,6 +88,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
     public let type: String
 
     public init(origin: String,
+                originVersion: String,
                 paymentMethodID: String,
                 startDate: Date,
                 endDate: Date,
@@ -98,6 +103,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
                 targetUrn: String,
                 type: String) {
         self.origin = origin
+        self.originVersion = originVersion
         self.paymentMethodID = paymentMethodID
         self.startDate = startDate
         self.endDate = endDate

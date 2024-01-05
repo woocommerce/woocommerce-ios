@@ -329,6 +329,7 @@ extension Networking.CreateBlazeCampaign {
     public static func fake() -> Networking.CreateBlazeCampaign {
         .init(
             origin: .fake(),
+            originVersion: .fake(),
             paymentMethodID: .fake(),
             startDate: .fake(),
             endDate: .fake(),

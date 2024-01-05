@@ -418,6 +418,7 @@ extension Networking.CouponReport {
 extension Networking.CreateBlazeCampaign {
     public func copy(
         origin: CopiableProp<String> = .copy,
+        originVersion: CopiableProp<String> = .copy,
         paymentMethodID: CopiableProp<String> = .copy,
         startDate: CopiableProp<Date> = .copy,
         endDate: CopiableProp<Date> = .copy,
@@ -433,6 +434,7 @@ extension Networking.CreateBlazeCampaign {
         type: CopiableProp<String> = .copy
     ) -> Networking.CreateBlazeCampaign {
         let origin = origin ?? self.origin
+        let originVersion = originVersion ?? self.originVersion
         let paymentMethodID = paymentMethodID ?? self.paymentMethodID
         let startDate = startDate ?? self.startDate
         let endDate = endDate ?? self.endDate
@@ -449,6 +451,7 @@ extension Networking.CreateBlazeCampaign {
 
         return Networking.CreateBlazeCampaign(
             origin: origin,
+            originVersion: originVersion,
             paymentMethodID: paymentMethodID,
             startDate: startDate,
             endDate: endDate,

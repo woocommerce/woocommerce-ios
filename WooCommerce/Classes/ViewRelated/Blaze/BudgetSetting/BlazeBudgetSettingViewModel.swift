@@ -51,6 +51,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }()
 
     private let siteID: Int64
+    private let timeZone: TimeZone
     private let targetOptions: BlazeTargetOptions?
     private let stores: StoresManager
 
@@ -63,6 +64,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
          dailyBudget: Double,
          duration: Int,
          startDate: Date,
+         timeZone: TimeZone = .current,
          targetOptions: BlazeTargetOptions? = nil,
          stores: StoresManager = ServiceLocator.stores,
          onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
@@ -70,6 +72,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         self.dailyAmount = dailyBudget
         self.dayCount = Double(duration)
         self.startDate = startDate
+        self.timeZone = timeZone
         self.targetOptions = targetOptions
         self.stores = stores
         self.completionHandler = onCompletion
@@ -92,7 +95,11 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         forecastedImpressionState = .loading
         let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
         let totalBudget = calculateTotalBudget(dailyBudget: dailyBudget, dayCount: dayCount)
-        let input = BlazeForecastedImpressionsInput(startDate: startDate, endDate: endDate, totalBudget: totalBudget, targetings: targetOptions)
+        let input = BlazeForecastedImpressionsInput(startDate: startDate,
+                                                    endDate: endDate,
+                                                    timeZone: timeZone.identifier,
+                                                    totalBudget: totalBudget,
+                                                    targetings: targetOptions)
         do {
             let result = try await fetchForecastedImpressions(input: input)
             let formattedImpressions = String(format: "%d - %d", result.totalImpressionsMin, result.totalImpressionsMax)

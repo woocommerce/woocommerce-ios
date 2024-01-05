@@ -4,7 +4,7 @@ import Networking
 /// Mock for `BlazeRemote`.
 ///
 final class MockBlazeRemote {
-    private var creatingCampaignResult: Result<String, Error>?
+    private var creatingCampaignResult: Result<Void, Error>?
     private var loadingCampaignResult: Result<[BlazeCampaign], Error>?
     private var fetchingTargetLanguagesResult: Result<[BlazeTargetLanguage], Error>?
     private var fetchingTargetDevicesResult: Result<[BlazeTargetDevice], Error>?
@@ -12,7 +12,7 @@ final class MockBlazeRemote {
     private var fetchingTargetLocationsResult: Result<[BlazeTargetLocation], Error>?
     private var fetchingForecastedImpressionsResult: Result<BlazeImpressions, Error>?
 
-    func whenCreatingCampaign(thenReturn result: Result<String, Error>) {
+    func whenCreatingCampaign(thenReturn result: Result<Void, Error>) {
         creatingCampaignResult = result
     }
 

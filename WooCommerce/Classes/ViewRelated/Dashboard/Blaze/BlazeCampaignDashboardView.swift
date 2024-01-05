@@ -71,7 +71,10 @@ private extension BlazeCampaignDashboardViewHostingController {
             source: .blaze,
             viewModel: ProductSelectorViewModel(siteID: viewModel.siteID, purchasableItemsOnly: true))
 
-        parentNavigationController?.show(productSelectorViewController, sender: self)
+        let blazeNavigationController = UINavigationController(rootViewController: productSelectorViewController)
+
+        blazeNavigationController.modalPresentationStyle = .pageSheet
+        parentNavigationController?.present(blazeNavigationController, animated: true, completion: nil)
     }
 
     /// Reloads data and shows campaign list.

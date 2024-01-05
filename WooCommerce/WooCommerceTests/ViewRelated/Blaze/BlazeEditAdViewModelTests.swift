@@ -37,7 +37,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         XCTAssertEqual(sut.taglineFooterText, expectedString)
     }
 
-    func test_tagline_footer_text_is_singular_when_zero_character_remaining() {
+    func test_tagline_footer_text_is_plural_when_zero_characters_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
@@ -91,7 +91,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         XCTAssertEqual(sut.descriptionFooterText, expectedString)
     }
 
-    func test_description_footer_text_is_singular_when_zero_character_remaining() {
+    func test_description_footer_text_is_plural_when_zero_characters_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,

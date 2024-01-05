@@ -255,23 +255,17 @@ extension Networking.BlazeTargetLocation {
         id: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         type: CopiableProp<String> = .copy,
-        code: NullableCopiableProp<String> = .copy,
-        isoCode: NullableCopiableProp<String> = .copy,
         parentLocation: NullableCopiableProp<BlazeTargetLocation> = .copy
     ) -> Networking.BlazeTargetLocation {
         let id = id ?? self.id
         let name = name ?? self.name
         let type = type ?? self.type
-        let code = code ?? self.code
-        let isoCode = isoCode ?? self.isoCode
         let parentLocation = parentLocation ?? self.parentLocation
 
         return Networking.BlazeTargetLocation(
             id: id,
             name: name,
             type: type,
-            code: code,
-            isoCode: isoCode,
             parentLocation: parentLocation
         )
     }

@@ -104,3 +104,14 @@ extension CashPaymentTenderView {
                                                         comment: "Title for the cancel button.")
     }
 }
+
+// MARK: Previews
+
+struct CashPaymentTenderView_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack {}
+            .sheet(isPresented: .constant(true), content: {
+                CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: "$10.6") { _ in })
+            })
+    }
+}

@@ -31,13 +31,10 @@ final class BlazeRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
 
         // When
-        _ = try await remote.createCampaign(.fake(), siteID: sampleSiteID)
-
-        // When
-        let result = try await remote.createCampaign(.fake(), siteID: sampleSiteID)
+        try await remote.createCampaign(.fake(), siteID: sampleSiteID)
 
         // Then
-        XCTAssertEqual(result, "campaign-12345")
+        // No error
     }
 
     func test_createCampaign_sends_correct_parameters() async throws {

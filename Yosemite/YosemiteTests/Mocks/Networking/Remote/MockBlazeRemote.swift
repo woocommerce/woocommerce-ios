@@ -43,14 +43,14 @@ final class MockBlazeRemote {
 
 extension MockBlazeRemote: BlazeRemoteProtocol {
     func createCampaign(_ campaign: CreateBlazeCampaign,
-                        siteID: Int64) async throws -> String {
+                        siteID: Int64) async throws {
         guard let result = creatingCampaignResult else {
             XCTFail("Could not find result for creating campaign.")
             throw NetworkError.notFound()
         }
         switch result {
-        case .success(let id):
-            return id
+        case .success:
+            return
         case .failure(let error):
             throw error
         }

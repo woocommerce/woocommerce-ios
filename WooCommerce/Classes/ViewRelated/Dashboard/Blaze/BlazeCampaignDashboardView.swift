@@ -59,10 +59,37 @@ private extension BlazeCampaignDashboardViewHostingController {
     }
 
     private func createProductSelectorViewController() -> ProductSelectorViewController {
+        let productSelectorViewModel = ProductSelectorViewModel(
+            siteID: viewModel.siteID,
+            purchasableItemsOnly: true,
+            onProductSelectionStateChanged: { [weak self] product in
+                guard let self = self else { return }
+
+                // Navigate to Campaign Creation Form once a product is selected.
+                let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
+                                                                                            onCompletion: { })
+                let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
+                blazeNavigationController?.show(controller, sender: self)
+            },
+            onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
+                guard let self = self else { return }
+
+                // Navigate to Campaign Creation Form once a product is selected.
+                let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
+                                                                                            onCompletion: { })
+                let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
+                blazeNavigationController?.show(controller, sender: self)
+            },
+            onCloseButtonTapped: { [weak self] in
+                guard let self = self else { return }
+
+                blazeNavigationController?.dismiss(animated: true, completion: nil)
+            }
+        )
+
         return ProductSelectorViewController(configuration: ProductSelectorView.Configuration.configurationForBlaze,
                                              source: .blaze,
-                                             viewModel: ProductSelectorViewModel(siteID: viewModel.siteID,
-                                                                                 purchasableItemsOnly: true))
+                                             viewModel: productSelectorViewModel)
     }
 
     /// Handles navigation to the campaign creation web view

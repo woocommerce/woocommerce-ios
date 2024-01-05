@@ -2390,6 +2390,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(orderItem.quantity, 1)
     }
 
+    func test_when_initialItem_is_bundle_product_it_sets_configurableScannedProductViewModel_without_order_items() throws {
+        // Given
+        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 1, bundleItems: [.fake()])
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialItem: .product(bundleProduct))
+
+        // Then
+        XCTAssertNotNil(viewModel.configurableScannedProductViewModel)
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
     func test_order_created_when_tax_based_on_is_customer_billing_address_then_property_is_updated() {
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {

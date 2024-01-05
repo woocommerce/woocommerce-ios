@@ -8,7 +8,7 @@ final class CreateBlazeCampaignMapperTests: XCTestCase {
     func test_CreateBlazeCampaignMapper_parses_response() throws {
         let id = try mapLoadCreateBlazeCampaignResponse()
 
-        XCTAssertEqual(id, 12345)
+        XCTAssertEqual(id, "campaign-12345")
     }
 }
 
@@ -18,7 +18,7 @@ private extension CreateBlazeCampaignMapperTests {
 
     /// Returns the CreateBlazeCampaignMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapCreateBlazeCampaignResponse(from filename: String) throws -> Int64 {
+    func mapCreateBlazeCampaignResponse(from filename: String) throws -> String {
         guard let response = Loader.contentsOf(filename) else {
             throw FileNotFoundError()
         }
@@ -28,7 +28,7 @@ private extension CreateBlazeCampaignMapperTests {
 
     /// Returns the CreateBlazeCampaignMapper output from `blaze-create-campaign-success.json`
     ///
-    func mapLoadCreateBlazeCampaignResponse() throws -> Int64 {
+    func mapLoadCreateBlazeCampaignResponse() throws -> String {
         return try mapCreateBlazeCampaignResponse(from: "blaze-create-campaign-success")
     }
 

@@ -37,7 +37,7 @@ final class BlazeRemoteTests: XCTestCase {
         let result = try await remote.createCampaign(.fake(), siteID: sampleSiteID)
 
         // Then
-        XCTAssertEqual(result, 12345)
+        XCTAssertEqual(result, "campaign-12345")
     }
 
     func test_createCampaign_sends_correct_parameters() async throws {

@@ -1,25 +1,21 @@
 {
-    "id": 12345,
-    "start_time": "2023-12-05T02:00:00.000Z",
-    "end_time": "2023-12-11T01:59:59.999Z",
+    "id": "campaign-12345",
+    "status": "pending",
+    "target_urn": "urn:wpcom:post:191174658:47",
+    "start_time": "2023-01-15T02:00:00.000Z",
+    "duration_days": 4,
     "total_budget": 35.00,
     "site_name": "Unleash Your Brain's Potential",
     "text_snippet": "Discover the power of computer neural networks in unlocking your brain's full potential.",
-    "target_url": "https://botvik.com/2023/06/25/unlocking-the-secrets-of-computer-neural-networks/?var1=val2&var2=val2",
+    "target_url": "https://example.com/2023/06/25/unlocking-the-secrets-of-computer-neural-networks/?var1=val2&var2=val2",
     "main_image": {
-        "url": "https://i0.wp.com/botvik.com/wp-content/uploads/2023/06/0_1-2.png?quality=80&strip=info&w=1500",
+        "url": "https://example.com/botvik.com/wp-content/uploads/2023/06/0_1-2.png?quality=80&strip=info&w=1500",
         "mime_type": "image/png",
         "crop": {
-            "x": 1.3407676898918837,
-            "y": 1.3407676898918837,
-            "width": 97.31846462021623,
-            "height": 97.31846462021623
+            "x": 1,
+            "y": 1,
+            "width": 97,
+            "height": 97
         }
-    },
-    "targeting": {
-        "locations": [29211, 42546],
-        "languages": ["en", "de"],
-        "devices": ["mobile"],
-        "page_topics": ["IAB3", "IAB4"]
     }
 }

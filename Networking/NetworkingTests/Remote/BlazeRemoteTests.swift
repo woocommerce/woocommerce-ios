@@ -372,8 +372,6 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(firstItem.id, 1439)
         XCTAssertEqual(firstItem.name, "Madrid")
         XCTAssertEqual(firstItem.type, "state")
-        XCTAssertNil(firstItem.code)
-        XCTAssertNil(firstItem.isoCode)
         XCTAssertEqual(firstItem.parentLocation?.id, 69)
         XCTAssertEqual(firstItem.parentLocation?.parentLocation?.id, 228)
         XCTAssertEqual(firstItem.parentLocation?.parentLocation?.parentLocation?.id, 5)

@@ -1,16 +1,15 @@
+import Combine
 import Foundation
+import Yosemite
 
 /// View model for `BlazeBudgetSettingView`
 final class BlazeBudgetSettingViewModel: ObservableObject {
     @Published var dailyAmount: Double
-
     /// Using Double because Slider doesn't work with Int
     @Published var dayCount: Double
-
     @Published var startDate: Date
 
-    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
-    private let completionHandler: BlazeBudgetSettingCompletionHandler
+    @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
@@ -23,8 +22,8 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     var totalAmountText: String {
-        let totalAmount = dailyAmount * dayCount
-        return String(format: "$%.0f USD", totalAmount)
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
+        return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
 
     var formattedTotalDuration: String {
@@ -39,6 +38,11 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                          plural: Localization.multipleDays)
     }
 
+    var formattedDateRange: String {
+        let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
+        return dateFormatter.string(from: startDate, to: endDate)
+    }
+
     private let dateFormatter: DateIntervalFormatter = {
         let formatter = DateIntervalFormatter()
         formatter.dateStyle = .medium
@@ -46,26 +50,105 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         return formatter
     }()
 
-    var formattedDateRange: String {
-        let endDate = Date(timeInterval: Constants.oneDayInSeconds * dayCount, since: startDate)
+    private let siteID: Int64
+    private let timeZone: TimeZone
+    private let targetOptions: BlazeTargetOptions?
+    private let stores: StoresManager
 
-        // Use the configured formatter to generate the string.
-        return dateFormatter.string(from: startDate, to: endDate)
-    }
+    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
+    private let completionHandler: BlazeBudgetSettingCompletionHandler
 
-    init(dailyBudget: Double, duration: Int, startDate: Date, onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
+    private var settingSubscription: AnyCancellable?
+
+    init(siteID: Int64,
+         dailyBudget: Double,
+         duration: Int,
+         startDate: Date,
+         timeZone: TimeZone = .current,
+         targetOptions: BlazeTargetOptions? = nil,
+         stores: StoresManager = ServiceLocator.stores,
+         onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
+        self.siteID = siteID
         self.dailyAmount = dailyBudget
         self.dayCount = Double(duration)
         self.startDate = startDate
+        self.timeZone = timeZone
+        self.targetOptions = targetOptions
+        self.stores = stores
         self.completionHandler = onCompletion
+
+        observeSettings()
     }
 
     func confirmSettings() {
         // TODO: track confirmation
         completionHandler(dailyAmount, Int(dayCount), startDate)
     }
+
+    @MainActor
+    func retryFetchingImpressions() async {
+        await updateImpressions(startDate: startDate, dayCount: dayCount, dailyBudget: dailyAmount)
+    }
+
+    @MainActor
+    func updateImpressions(startDate: Date, dayCount: Double, dailyBudget: Double) async {
+        forecastedImpressionState = .loading
+        let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyBudget, dayCount: dayCount)
+        let input = BlazeForecastedImpressionsInput(startDate: startDate,
+                                                    endDate: endDate,
+                                                    timeZone: timeZone.identifier,
+                                                    totalBudget: totalBudget,
+                                                    targetings: targetOptions)
+        do {
+            let result = try await fetchForecastedImpressions(input: input)
+            let formattedImpressions = String(format: "%d - %d", result.totalImpressionsMin, result.totalImpressionsMax)
+            forecastedImpressionState = .result(formattedResult: formattedImpressions)
+        } catch {
+            DDLogError("⛔️ Error fetching forecasted impression: \(error)")
+            forecastedImpressionState = .failure
+        }
+    }
 }
 
+// MARK: - Private helpers
+private extension BlazeBudgetSettingViewModel {
+
+    func observeSettings() {
+        settingSubscription = $dayCount.combineLatest($dailyAmount, $startDate)
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] dayCount, dailyBudget, startDate in
+                guard let self else { return }
+                Task {
+                    await self.updateImpressions(startDate: startDate, dayCount: dayCount, dailyBudget: dailyBudget)
+                }
+            }
+    }
+
+    func calculateEndDate(from startDate: Date, dayCount: Double) -> Date {
+        Date(timeInterval: Constants.oneDayInSeconds * dayCount, since: startDate)
+    }
+
+    func calculateTotalBudget(dailyBudget: Double, dayCount: Double) -> Double {
+        dailyBudget * dayCount
+    }
+
+    @MainActor
+    func fetchForecastedImpressions(input: BlazeForecastedImpressionsInput) async throws -> BlazeImpressions {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(BlazeAction.fetchForecastedImpressions(siteID: siteID, input: input) { result in
+                switch result {
+                case .success(let impressions):
+                    continuation.resume(returning: impressions)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
+    }
+}
+
+// MARK: - subtypes
 extension BlazeBudgetSettingViewModel {
     enum Constants {
         static let oneDayInSeconds: Double = 86400
@@ -76,6 +159,12 @@ extension BlazeBudgetSettingViewModel {
         static let maximumDayCount = 28
         static let defaultDayCount = 7
         static let dayCountSliderStep = 1
+    }
+
+    enum ForecastedImpressionState: Equatable {
+        case loading
+        case result(formattedResult: String)
+        case failure
     }
 
     private enum Localization {
@@ -107,6 +196,12 @@ extension BlazeBudgetSettingViewModel {
             value: "for %1$d days",
             comment: "The total duration for a Blaze campaign in plural form. " +
             "Reads like: for 10 days"
+        )
+        static let totalBudget = NSLocalizedString(
+            "blazeBudgetSettingViewModel.totalBudget",
+            value: "$%.0f USD",
+            comment: "The formatted total budget for a Blaze campaign, fixed in USD. " +
+            "Reads as $11 USD. Keep %.0f as is."
         )
     }
 }

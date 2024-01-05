@@ -2236,6 +2236,7 @@
 		DE5746312B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746302B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift */; };
 		DE5746342B4512900034B10D /* BlazeBudgetSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */; };
 		DE5746362B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746352B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift */; };
+		DE5746382B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746372B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift */; };
 		DE5C19C52AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C42AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift */; };
 		DE5C19C72AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C62AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift */; };
 		DE5C19C92AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */; };
@@ -4879,6 +4880,7 @@
 		DE5746302B43F6180034B10D /* BlazeCampaignCreationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationFormViewModel.swift; sourceTree = "<group>"; };
 		DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingView.swift; sourceTree = "<group>"; };
 		DE5746352B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingViewModel.swift; sourceTree = "<group>"; };
+		DE5746372B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingViewModelTests.swift; sourceTree = "<group>"; };
 		DE5C19C42AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductNameWithAIViewModelTests.swift; sourceTree = "<group>"; };
 		DE5C19C62AC3F1D30064600A /* AddProductFeaturesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFeaturesViewModelTests.swift; sourceTree = "<group>"; };
 		DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductNameAI.swift"; sourceTree = "<group>"; };
@@ -5795,6 +5797,7 @@
 				024D4E962A2EC68B0090E0E6 /* BlazeWebViewModelTests.swift */,
 				021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */,
 				DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */,
+				DE5746372B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift */,
 				EE572A202B4684FF00B74B2E /* BlazeEditAdViewModelTests.swift */,
 			);
 			path = Blaze;
@@ -14653,6 +14656,7 @@
 				B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */,
 				CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */,
 				02490D1E284F3226002096EF /* ProductImagesSaverTests.swift in Sources */,
+				DE5746382B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift in Sources */,
 				02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */,
 				B9B6DEF1283F8EB100901FB7 /* SitePluginsURLTests.swift in Sources */,
 				D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */,

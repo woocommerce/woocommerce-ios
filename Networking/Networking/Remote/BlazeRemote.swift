@@ -67,7 +67,11 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     public func createCampaign(_ campaign: CreateBlazeCampaign,
                                siteID: Int64) async throws -> Int64 {
         let path = Paths.campaigns(siteID: siteID)
-        let parameters = try campaign.toDictionary(keyEncodingStrategy: .convertToSnakeCase)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = Constants.dateFormat
+        let parameters = try campaign.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
         let mapper = CreateBlazeCampaignMapper()
         return try await enqueue(request, mapper: mapper)

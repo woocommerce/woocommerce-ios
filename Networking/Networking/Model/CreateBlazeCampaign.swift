@@ -28,15 +28,17 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
     ///
     public let paymentMethodID: String
 
-    /// Sample format `2023-12-05`
+    /// Start date of the campaign
+    ///
     /// Including, can't be less than 24 hours after submission time
     ///
-    public let startDate: String
+    public let startDate: Date
 
-    /// Sample format `2023-12-11`
+    /// End date of the campaign
+    ///
     /// Including
     ///
-    public let endDate: String
+    public let endDate: Date
 
     /// Time zone identifier (TZ database name).
     ///
@@ -83,8 +85,8 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
 
     public init(origin: String,
                 paymentMethodID: String,
-                startDate: String,
-                endDate: String,
+                startDate: Date,
+                endDate: Date,
                 timeZone: String,
                 totalBudget: Double,
                 siteName: String,

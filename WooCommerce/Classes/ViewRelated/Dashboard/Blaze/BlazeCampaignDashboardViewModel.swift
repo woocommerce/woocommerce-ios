@@ -70,7 +70,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@ ", siteID, ProductStatus.published.rawValue)
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
-                                                 fetchLimit: 1,
+                                                 fetchLimit: 2,
                                                  sortOrder: .dateDescending)
     }()
 

@@ -4,7 +4,7 @@ import Networking
 /// Mock for `BlazeRemote`.
 ///
 final class MockBlazeRemote {
-    private var creatingCampaignResult: Result<Int64, Error>?
+    private var creatingCampaignResult: Result<String, Error>?
     private var loadingCampaignResult: Result<[BlazeCampaign], Error>?
     private var fetchingTargetLanguagesResult: Result<[BlazeTargetLanguage], Error>?
     private var fetchingTargetDevicesResult: Result<[BlazeTargetDevice], Error>?
@@ -12,7 +12,7 @@ final class MockBlazeRemote {
     private var fetchingTargetLocationsResult: Result<[BlazeTargetLocation], Error>?
     private var fetchingForecastedImpressionsResult: Result<BlazeImpressions, Error>?
 
-    func whenCreatingCampaign(thenReturn result: Result<Int64, Error>) {
+    func whenCreatingCampaign(thenReturn result: Result<String, Error>) {
         creatingCampaignResult = result
     }
 
@@ -43,7 +43,7 @@ final class MockBlazeRemote {
 
 extension MockBlazeRemote: BlazeRemoteProtocol {
     func createCampaign(_ campaign: CreateBlazeCampaign,
-                        siteID: Int64) async throws -> Int64 {
+                        siteID: Int64) async throws -> String {
         guard let result = creatingCampaignResult else {
             XCTFail("Could not find result for creating campaign.")
             throw NetworkError.notFound()

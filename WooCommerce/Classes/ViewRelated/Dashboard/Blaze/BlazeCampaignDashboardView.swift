@@ -64,7 +64,7 @@ private extension BlazeCampaignDashboardViewHostingController {
         viewModel.didSelectCreateCampaign(source: source)
     }
 
-    /// Handles navigation to the Blaze product selector web view
+    /// Handles navigation to the Blaze product selector view
     func navigateToBlazeProductSelector(source: BlazeSource) {
         let productSelectorViewController = ProductSelectorViewController(
             configuration: ProductSelectorView.Configuration.configurationForBlaze,

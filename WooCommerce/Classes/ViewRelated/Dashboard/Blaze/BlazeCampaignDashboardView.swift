@@ -21,7 +21,11 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.createCampaignTapped = { [weak self] in
-            self?.navigateToCampaignCreation(source: .myStoreSection)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+                // No need to do anything since we're using .sheet to navigate.
+            } else {
+                self?.navigateToCampaignCreation(source: .myStoreSection)
+            }
         }
 
         rootView.startCampaignFromIntroTapped = { [weak self] productID in
@@ -153,6 +157,15 @@ struct BlazeCampaignDashboardView: View {
                                        onDismiss: onDismissClosure)
             }
         }
+        .sheet(isPresented: $viewModel.shouldShowProductSelectorView) {
+            if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                ProductSelectorNavigationView(
+                    configuration: ProductSelectorView.Configuration.selectProductForBlaze(),
+                    source: .blaze,
+                    isPresented: $viewModel.shouldShowProductSelectorView,
+                    viewModel: productSelectorViewModel)
+            }
+        }
         .overlay {
             topRightMenu
                 .renderedIf(viewModel.shouldRedactView == false)
@@ -182,6 +195,7 @@ private extension BlazeCampaignDashboardView {
     var createCampaignButton: some View {
         Button {
             viewModel.checkIfIntroViewIsNeeded()
+            viewModel.checkIfShouldShowProductSelector()
             if !viewModel.shouldShowIntroView {
                 createCampaignTapped?()
             }
@@ -336,6 +350,37 @@ private struct ProductInfoView: View {
     }
 }
 
+private extension ProductSelectorView.Configuration {
+    static func selectProductForBlaze() -> ProductSelectorView.Configuration {
+        ProductSelectorView.Configuration(
+            searchHeaderBackgroundColor: .listBackground,
+            prefersLargeTitle: false,
+            title: Localization.productSelectorTitle,
+            cancelButtonTitle: Localization.productSelectorCancel,
+            productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+            variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+    }
+
+    enum Localization {
+        static let productSelectorTitle = NSLocalizedString(
+            "blazeCampaignDashboardView.productSelectorTitle",
+            value: "Ready to promote",
+            comment: "Title for the screen to select product for Blaze campaign")
+        static let productSelectorCancel = NSLocalizedString(
+            "blazeCampaignDashboardView.productSelectorCancel",
+            value: "Cancel",
+            comment: "Text for the cancel button in the Add Product screen")
+        static let productRowAccessibilityHint = NSLocalizedString(
+            "blazeCampaignDashboardView.productRowAccessibilityHint",
+            value: "Selects product for Blaze campaign.",
+            comment: "Accessibility hint for selecting a product in the Add Product screen")
+        static let variableProductRowAccessibilityHint = NSLocalizedString(
+            "blazeCampaignDashboardView.variableProductRowAccessibilityHint",
+            value: "Opens list of product variations.",
+            comment: "Accessibility hint for selecting a variable product in the Add Product screen"
+        )
+    }
+}
 
 struct BlazeCampaignDashboardView_Previews: PreviewProvider {
     static var previews: some View {

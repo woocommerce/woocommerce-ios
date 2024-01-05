@@ -29,6 +29,9 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         }
     }
 
+    @Published var productSelectorViewModel: ProductSelectorViewModel?
+    @Published var shouldShowProductSelectorView: Bool = false
+
     @Published var selectedCampaignURL: URL?
 
     private(set) var shouldRedactView: Bool = true
@@ -95,6 +98,22 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.userDefaults = userDefaults
         observeSectionVisibility()
         configureResultsController()
+        observeProductSelectorPresentationStateForViewModel()
+    }
+
+    func observeProductSelectorPresentationStateForViewModel() {
+        $shouldShowProductSelectorView
+            .removeDuplicates()
+            .map { [weak self] isPresented in
+                guard let self, isPresented else { return nil }
+                return ProductSelectorViewModel(
+                    siteID: siteID,
+                    purchasableItemsOnly: true,
+                    selectionHandlingMode: .simple,
+                    selectionMode: .single
+                )
+            }
+            .assign(to: &$productSelectorViewModel)
     }
 
     @MainActor
@@ -120,6 +139,12 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     func checkIfIntroViewIsNeeded() {
         if blazeCampaignResultsController.numberOfObjects == 0 {
             shouldShowIntroView = true
+        }
+    }
+
+    func checkIfShouldShowProductSelector() {
+        if blazeCampaignResultsController.numberOfObjects > 1 {
+            shouldShowProductSelectorView = true
         }
     }
 

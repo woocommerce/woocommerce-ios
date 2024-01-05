@@ -8,6 +8,7 @@ struct ProductSelectorView: View {
         case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
         case couponForm
         case couponRestrictions
+        case blaze
     }
 
     let configuration: Configuration
@@ -299,6 +300,8 @@ private extension ProductSelectorView.Source {
                 return .couponForm
             case .couponRestrictions:
                 return .couponRestrictions
+            case .blaze:
+                return .blaze
         }
     }
 }

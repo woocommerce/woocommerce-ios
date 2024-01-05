@@ -311,6 +311,50 @@ extension Networking.CouponReport {
         )
     }
 }
+extension Networking.CreateBlazeCampaign {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.CreateBlazeCampaign {
+        .init(
+            origin: .fake(),
+            paymentMethodID: .fake(),
+            startDate: .fake(),
+            endDate: .fake(),
+            timeZone: .fake(),
+            totalBudget: .fake(),
+            siteName: .fake(),
+            textSnippet: .fake(),
+            targetUrl: .fake(),
+            urlParams: .fake(),
+            mainImage: .fake(),
+            targeting: .fake(),
+            targetUrn: .fake(),
+            type: .fake()
+        )
+    }
+}
+extension Networking.CreateBlazeCampaign.Image {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.CreateBlazeCampaign.Image {
+        .init(
+            url: .fake(),
+            mimeType: .fake()
+        )
+    }
+}
+extension Networking.CreateBlazeCampaign.Targeting {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.CreateBlazeCampaign.Targeting {
+        .init(
+            locations: .fake(),
+            languages: .fake(),
+            devices: .fake(),
+            pageTopics: .fake()
+        )
+    }
+}
 extension Networking.CreateProductVariation {
     /// Returns a "ready to use" type filled with fake values.
     ///

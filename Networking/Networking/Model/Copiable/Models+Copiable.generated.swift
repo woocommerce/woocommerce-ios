@@ -394,6 +394,93 @@ extension Networking.CouponReport {
     }
 }
 
+extension Networking.CreateBlazeCampaign {
+    public func copy(
+        origin: CopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
+        startDate: CopiableProp<String> = .copy,
+        endDate: CopiableProp<String> = .copy,
+        timeZone: CopiableProp<String> = .copy,
+        totalBudget: CopiableProp<Double> = .copy,
+        siteName: CopiableProp<String> = .copy,
+        textSnippet: CopiableProp<String> = .copy,
+        targetUrl: CopiableProp<String> = .copy,
+        urlParams: CopiableProp<String> = .copy,
+        mainImage: CopiableProp<CreateBlazeCampaign.Image> = .copy,
+        targeting: NullableCopiableProp<CreateBlazeCampaign.Targeting> = .copy,
+        targetUrn: CopiableProp<String> = .copy,
+        type: CopiableProp<String> = .copy
+    ) -> Networking.CreateBlazeCampaign {
+        let origin = origin ?? self.origin
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
+        let startDate = startDate ?? self.startDate
+        let endDate = endDate ?? self.endDate
+        let timeZone = timeZone ?? self.timeZone
+        let totalBudget = totalBudget ?? self.totalBudget
+        let siteName = siteName ?? self.siteName
+        let textSnippet = textSnippet ?? self.textSnippet
+        let targetUrl = targetUrl ?? self.targetUrl
+        let urlParams = urlParams ?? self.urlParams
+        let mainImage = mainImage ?? self.mainImage
+        let targeting = targeting ?? self.targeting
+        let targetUrn = targetUrn ?? self.targetUrn
+        let type = type ?? self.type
+
+        return Networking.CreateBlazeCampaign(
+            origin: origin,
+            paymentMethodID: paymentMethodID,
+            startDate: startDate,
+            endDate: endDate,
+            timeZone: timeZone,
+            totalBudget: totalBudget,
+            siteName: siteName,
+            textSnippet: textSnippet,
+            targetUrl: targetUrl,
+            urlParams: urlParams,
+            mainImage: mainImage,
+            targeting: targeting,
+            targetUrn: targetUrn,
+            type: type
+        )
+    }
+}
+
+extension Networking.CreateBlazeCampaign.Image {
+    public func copy(
+        url: CopiableProp<String> = .copy,
+        mimeType: CopiableProp<String> = .copy
+    ) -> Networking.CreateBlazeCampaign.Image {
+        let url = url ?? self.url
+        let mimeType = mimeType ?? self.mimeType
+
+        return Networking.CreateBlazeCampaign.Image(
+            url: url,
+            mimeType: mimeType
+        )
+    }
+}
+
+extension Networking.CreateBlazeCampaign.Targeting {
+    public func copy(
+        locations: NullableCopiableProp<[Int64]> = .copy,
+        languages: NullableCopiableProp<[String]> = .copy,
+        devices: NullableCopiableProp<[String]> = .copy,
+        pageTopics: NullableCopiableProp<[String]> = .copy
+    ) -> Networking.CreateBlazeCampaign.Targeting {
+        let locations = locations ?? self.locations
+        let languages = languages ?? self.languages
+        let devices = devices ?? self.devices
+        let pageTopics = pageTopics ?? self.pageTopics
+
+        return Networking.CreateBlazeCampaign.Targeting(
+            locations: locations,
+            languages: languages,
+            devices: devices,
+            pageTopics: pageTopics
+        )
+    }
+}
+
 extension Networking.CreateProductVariation {
     public func copy(
         regularPrice: CopiableProp<String> = .copy,

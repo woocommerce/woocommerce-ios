@@ -65,20 +65,14 @@ private extension BlazeCampaignDashboardViewHostingController {
             onProductSelectionStateChanged: { [weak self] product in
                 guard let self = self else { return }
 
-                // Navigate to Campaign Creation Form once a product is selected.
-                let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
-                                                                                            onCompletion: { })
-                let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
-                blazeNavigationController?.show(controller, sender: self)
+                // Navigate to Campaign Creation Form once a simple/bundle product is selected.
+                self.navigateToCampaignCreation(source: .myStoreSection)
             },
             onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
 
-                // Navigate to Campaign Creation Form once a product is selected.
-                let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
-                                                                                            onCompletion: { })
-                let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
-                blazeNavigationController?.show(controller, sender: self)
+                // Navigate to Campaign Creation Form once a variable product is selected.
+                self.navigateToCampaignCreation(source: .myStoreSection)
             },
             onCloseButtonTapped: { [weak self] in
                 guard let self = self else { return }
@@ -92,17 +86,25 @@ private extension BlazeCampaignDashboardViewHostingController {
                                              viewModel: productSelectorViewModel)
     }
 
-    /// Handles navigation to the campaign creation web view
+    /// Handles navigation to the campaign creation view
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
-                                             source: source,
-                                             siteURL: viewModel.siteURL,
-                                             productID: productID) { [weak self] in
-            self?.handlePostCreation()
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+            let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
+                                                                                        onCompletion: { })
+            let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
+            blazeNavigationController?.show(controller, sender: self)
         }
-        let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
-        parentNavigationController?.show(webViewController, sender: self)
-        viewModel.didSelectCreateCampaign(source: source)
+        else {
+            let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
+                                                 source: source,
+                                                 siteURL: viewModel.siteURL,
+                                                 productID: productID) { [weak self] in
+                self?.handlePostCreation()
+            }
+            let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
+            parentNavigationController?.show(webViewController, sender: self)
+            viewModel.didSelectCreateCampaign(source: source)
+        }
     }
 
     /// Handles navigation to the Blaze product selector view

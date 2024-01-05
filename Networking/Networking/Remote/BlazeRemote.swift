@@ -11,7 +11,7 @@ public protocol BlazeRemoteProtocol {
     /// - Returns: Newly created Blaze campaign's ID
     ///
     func createCampaign(_ campaign: CreateBlazeCampaign,
-                        siteID: Int64) async throws -> Int64
+                        siteID: Int64) async throws -> String
 
     /// Loads campaigns for the site with the provided ID on the given page number.
     /// - Parameters:
@@ -65,7 +65,7 @@ public protocol BlazeRemoteProtocol {
 public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
     public func createCampaign(_ campaign: CreateBlazeCampaign,
-                               siteID: Int64) async throws -> Int64 {
+                               siteID: Int64) async throws -> String {
         let path = Paths.campaigns(siteID: siteID)
 
         let dateFormatter = DateFormatter()

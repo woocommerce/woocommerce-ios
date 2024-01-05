@@ -6,7 +6,7 @@ struct CreateBlazeCampaignMapper: Mapper {
 
     /// (Attempts) to parse the create Blaze campaign response
     ///
-    func map(response: Data) throws -> Int64 {
+    func map(response: Data) throws -> String {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(CreateBlazeCampaignResponse.self, from: response).id
@@ -14,5 +14,5 @@ struct CreateBlazeCampaignMapper: Mapper {
 }
 
 private struct CreateBlazeCampaignResponse: Decodable {
-    public let id: Int64
+    public let id: String
 }

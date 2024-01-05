@@ -75,6 +75,8 @@ struct ProductSelectorView: View {
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
                 .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results)
+                .renderedIf(configuration.multipleSelectionEnabled)
+
                 Spacer()
 
                 Button(viewModel.filterButtonTitle) {
@@ -117,6 +119,7 @@ struct ProductSelectorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
+                    .renderedIf(configuration.multipleSelectionEnabled)
 
                     if let variationListViewModel = variationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelector(
@@ -127,6 +130,7 @@ struct ProductSelectorView: View {
                             }), isActive: $isShowingVariationList) {
                                 EmptyView()
                             }
+                            .renderedIf(configuration.treatsAllProductsAsSimple == false)
                     }
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
@@ -186,7 +190,8 @@ struct ProductSelectorView: View {
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
-        if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
+        if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID),
+            configuration.treatsAllProductsAsSimple == false {
             HStack {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
@@ -209,12 +214,12 @@ struct ProductSelectorView: View {
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
             HStack {
-                ProductRow(multipleSelectionsEnabled: true,
+                ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionEnabled,
                            viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
 
                 ConfigurationIndicator()
-                    .renderedIf(rowViewModel.isConfigurable)
+                    .renderedIf(rowViewModel.isConfigurable && configuration.treatsAllProductsAsSimple == false)
                     .onAppear {
                         guard !hasTrackedBundleProductConfigureCTAShownEvent else {
                             return
@@ -229,7 +234,8 @@ struct ProductSelectorView: View {
                     }
             }
             .onTapGesture {
-                if let configure = rowViewModel.configure, rowViewModel.isConfigurable {
+                if let configure = rowViewModel.configure, rowViewModel.isConfigurable,
+                   configuration.treatsAllProductsAsSimple == false {
                     configure()
                     switch source {
                         case let .orderForm(flow):
@@ -247,6 +253,13 @@ struct ProductSelectorView: View {
 
 extension ProductSelectorView {
     struct Configuration {
+        /// Whether more than one product can be selected.
+        var multipleSelectionEnabled: Bool = true
+
+        /// If this is false, we let users select variations for variable products and specific contents for bundle products.
+        /// Otherwise, the product itself is selected immediately.
+        var treatsAllProductsAsSimple: Bool = false
+
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""

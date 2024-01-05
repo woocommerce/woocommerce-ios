@@ -232,6 +232,18 @@ extension Networking.BlazeTargetLocation {
         )
     }
 }
+extension Networking.BlazeTargetOptions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetOptions {
+        .init(
+            locations: .fake(),
+            languages: .fake(),
+            devices: .fake(),
+            pageTopics: .fake()
+        )
+    }
+}
 extension Networking.BlazeTargetTopic {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -340,18 +352,6 @@ extension Networking.CreateBlazeCampaign.Image {
         .init(
             url: .fake(),
             mimeType: .fake()
-        )
-    }
-}
-extension Networking.CreateBlazeCampaign.Targeting {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.CreateBlazeCampaign.Targeting {
-        .init(
-            locations: .fake(),
-            languages: .fake(),
-            devices: .fake(),
-            pageTopics: .fake()
         )
     }
 }

@@ -277,6 +277,27 @@ extension Networking.BlazeTargetLocation {
     }
 }
 
+extension Networking.BlazeTargetOptions {
+    public func copy(
+        locations: NullableCopiableProp<[Int64]> = .copy,
+        languages: NullableCopiableProp<[String]> = .copy,
+        devices: NullableCopiableProp<[String]> = .copy,
+        pageTopics: NullableCopiableProp<[String]> = .copy
+    ) -> Networking.BlazeTargetOptions {
+        let locations = locations ?? self.locations
+        let languages = languages ?? self.languages
+        let devices = devices ?? self.devices
+        let pageTopics = pageTopics ?? self.pageTopics
+
+        return Networking.BlazeTargetOptions(
+            locations: locations,
+            languages: languages,
+            devices: devices,
+            pageTopics: pageTopics
+        )
+    }
+}
+
 extension Networking.BlazeTargetTopic {
     public func copy(
         id: CopiableProp<String> = .copy,
@@ -398,8 +419,8 @@ extension Networking.CreateBlazeCampaign {
     public func copy(
         origin: CopiableProp<String> = .copy,
         paymentMethodID: CopiableProp<String> = .copy,
-        startDate: CopiableProp<String> = .copy,
-        endDate: CopiableProp<String> = .copy,
+        startDate: CopiableProp<Date> = .copy,
+        endDate: CopiableProp<Date> = .copy,
         timeZone: CopiableProp<String> = .copy,
         totalBudget: CopiableProp<Double> = .copy,
         siteName: CopiableProp<String> = .copy,
@@ -407,7 +428,7 @@ extension Networking.CreateBlazeCampaign {
         targetUrl: CopiableProp<String> = .copy,
         urlParams: CopiableProp<String> = .copy,
         mainImage: CopiableProp<CreateBlazeCampaign.Image> = .copy,
-        targeting: NullableCopiableProp<CreateBlazeCampaign.Targeting> = .copy,
+        targeting: NullableCopiableProp<BlazeTargetOptions> = .copy,
         targetUrn: CopiableProp<String> = .copy,
         type: CopiableProp<String> = .copy
     ) -> Networking.CreateBlazeCampaign {
@@ -456,27 +477,6 @@ extension Networking.CreateBlazeCampaign.Image {
         return Networking.CreateBlazeCampaign.Image(
             url: url,
             mimeType: mimeType
-        )
-    }
-}
-
-extension Networking.CreateBlazeCampaign.Targeting {
-    public func copy(
-        locations: NullableCopiableProp<[Int64]> = .copy,
-        languages: NullableCopiableProp<[String]> = .copy,
-        devices: NullableCopiableProp<[String]> = .copy,
-        pageTopics: NullableCopiableProp<[String]> = .copy
-    ) -> Networking.CreateBlazeCampaign.Targeting {
-        let locations = locations ?? self.locations
-        let languages = languages ?? self.languages
-        let devices = devices ?? self.devices
-        let pageTopics = pageTopics ?? self.pageTopics
-
-        return Networking.CreateBlazeCampaign.Targeting(
-            locations: locations,
-            languages: languages,
-            devices: devices,
-            pageTopics: pageTopics
         )
     }
 }

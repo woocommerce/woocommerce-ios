@@ -10,12 +10,12 @@ public enum BlazeAction: Action {
     /// - `campaign`: New Blaze campaign to be created
     /// - `siteID`: the site in which Blaze campaign should be created.
     /// - `onCompletion`: invoked when the create operation finishes.
-    ///     - `result.success(String)`: ID of the newly created Blaze campaign.
+    ///     - `result.success()`: Successfully created Blaze campaign.
     ///     - `result.failure(Error)`: error indicates issues creating a Blaze campaign.
     ///
     case createCampaign(campaign: CreateBlazeCampaign,
                         siteID: Int64,
-                        onCompletion: (Result<String, Error>) -> Void)
+                        onCompletion: (Result<Void, Error>) -> Void)
 
     /// Retrieves and stores Blaze Campaign for a site
     ///

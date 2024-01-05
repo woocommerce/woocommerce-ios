@@ -79,15 +79,14 @@ public final class BlazeStore: Store {
 private extension BlazeStore {
     func createCampaign(campaign: CreateBlazeCampaign,
                         siteID: Int64,
-                        onCompletion: @escaping (Result<String, Error>) -> Void) {
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
                 // TODO-11540: remove stubbed result when the API is ready.
-                let stubbedResult = "campaign-12345"
-                let campaignID = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                try await mockResponse(stubbedResult: (), onExecution: {
                     try await remote.createCampaign(campaign, siteID: siteID)
                 })
-                onCompletion(.success(campaignID))
+                onCompletion(.success(()))
             } catch {
                 onCompletion(.failure(error))
             }

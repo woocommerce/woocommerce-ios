@@ -73,9 +73,9 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Create campaign
 
-    func test_createCampaign_returns_campaign_ID_upon_success() throws {
+    func test_createCampaign_does_not_throw_errors_upon_success() throws {
         // Given
-        remote.whenCreatingCampaign(thenReturn: .success("12345"))
+        remote.whenCreatingCampaign(thenReturn: .success(()))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,
                                network: network,
@@ -91,8 +91,7 @@ final class BlazeStoreTests: XCTestCase {
         }
 
         //Then
-        let campaignID = try result.get()
-        XCTAssertEqual(campaignID, "12345")
+        try result.get()
     }
 
     func test_createCampaign_returns_error_on_failure() throws {

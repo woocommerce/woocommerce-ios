@@ -6,12 +6,11 @@ import Yosemite
 final class ProductSelectorViewController: UIHostingController<ProductSelectorView> {
     init(configuration: ProductSelectorView.Configuration,
          source: ProductSelectorView.Source,
-         isPresented: Binding<Bool> = .constant(true),
          viewModel: ProductSelectorViewModel) {
 
         super.init(rootView: ProductSelectorView(configuration: configuration,
                                                  source: source,
-                                                 isPresented: isPresented,
+                                                 isPresented: .constant(true),
                                                  viewModel: viewModel))
     }
 

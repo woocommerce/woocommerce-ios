@@ -46,7 +46,7 @@ final class BlazeEditAdViewModel: ObservableObject {
     private var descriptionEmptyError: String?
 
     // AI generation
-    @Published var generatingByAI = false
+    @Published private(set) var generatingByAI = false
 
     var isSaveButtonEnabled: Bool {
         guard generatingByAI == false else {
@@ -180,7 +180,7 @@ extension BlazeEditAdViewModel {
     }
 }
 
-private extension BlazeEditAdViewModel {
+extension BlazeEditAdViewModel {
     enum Localization {
         enum LengthLimit {
             static let plural = NSLocalizedString(

@@ -446,10 +446,7 @@ final class BlazeRemoteTests: XCTestCase {
 
             _ = try await remote.fetchForecastedImpressions(
                 for: sampleSiteID,
-                with: BlazeForecastedImpressionsInput(startDate: dateFormatter.date(from: "2023-12-5")!,
-                                                      endDate: dateFormatter.date(from: "2023-12-11")!,
-                                                      totalBudget: 35
-                                                     )
+                with: BlazeForecastedImpressionsInput.fake()
             )
 
             // Then

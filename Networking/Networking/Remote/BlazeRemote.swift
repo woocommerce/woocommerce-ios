@@ -213,6 +213,8 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     public let startDate: Date
     // End date of the campaign
     public let endDate: Date
+    // Time zone of the user
+    public let timeZone: String
     // Total budget of the campaign
     public let totalBudget: Double
     // Target options for the campaign. Optional.
@@ -220,10 +222,12 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
 
     public init(startDate: Date,
                 endDate: Date,
+                timeZone: String,
                 totalBudget: Double,
                 targetings: BlazeTargetOptions? = nil) {
         self.startDate = startDate
         self.endDate = endDate
+        self.timeZone = timeZone
         self.totalBudget = totalBudget
         self.targetings = targetings
     }
@@ -231,6 +235,7 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     private enum CodingKeys: String, CodingKey {
         case startDate
         case endDate
+        case timeZone
         case totalBudget
         case targetings
     }

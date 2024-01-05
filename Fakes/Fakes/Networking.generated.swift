@@ -181,6 +181,7 @@ extension Networking.BlazeForecastedImpressionsInput {
         .init(
             startDate: .fake(),
             endDate: .fake(),
+            timeZone: .fake(),
             totalBudget: .fake(),
             targetings: .fake()
         )

@@ -10,12 +10,14 @@ final class BlazeForecastedImpressionsInputEncoderTests: XCTestCase {
         let startDate = try XCTUnwrap(dateFormatter.date(from: "2023-12-05"))
         let endDate = try XCTUnwrap(dateFormatter.date(from: "2023-12-11"))
         let totalBudget = 35.00
+        let timeZone = "America/New_York"
         let targetOptions = BlazeTargetOptions(locations: [29211, 42546],
                                                languages: ["en", "de"],
                                                devices: ["mobile"],
                                                pageTopics: ["IAB3", "IAB4"])
         let input = BlazeForecastedImpressionsInput(startDate: startDate,
                                                     endDate: endDate,
+                                                    timeZone: timeZone,
                                                     totalBudget: totalBudget,
                                                     targetings: targetOptions)
 
@@ -26,6 +28,7 @@ final class BlazeForecastedImpressionsInputEncoderTests: XCTestCase {
         XCTAssertEqual(parameters["start_date"] as? String, "2023-12-05")
         XCTAssertEqual(parameters["end_date"] as? String, "2023-12-11")
         XCTAssertEqual(parameters["total_budget"] as? Double, 35.00)
+        XCTAssertEqual(parameters["time_zone"] as? String, timeZone)
 
         let targetingsParams = try XCTUnwrap(parameters["targetings"] as? [String: Any])
         XCTAssertEqual(targetingsParams["locations"] as? [Int64], [29211, 42546])

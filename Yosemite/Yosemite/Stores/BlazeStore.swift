@@ -54,6 +54,8 @@ public final class BlazeStore: Store {
         }
 
         switch action {
+        case let .createCampaign(campaign, siteID, onCompletion):
+            createCampaign(campaign: campaign, siteID: siteID, onCompletion: onCompletion)
         case let .synchronizeCampaigns(siteID, pageNumber, onCompletion):
             synchronizeCampaigns(siteID: siteID,
                                  pageNumber: pageNumber,
@@ -68,6 +70,27 @@ public final class BlazeStore: Store {
             fetchTargetLocations(siteID: siteID, query: query, locale: locale, onCompletion: onCompletion)
         case let .fetchForecastedImpressions(siteID, input, onCompletion):
             fetchForecastedImpressions(siteID: siteID, input: input, onCompletion: onCompletion)
+        }
+    }
+}
+
+// MARK: - Create a new Blaze campaign
+//
+private extension BlazeStore {
+    func createCampaign(campaign: CreateBlazeCampaign,
+                        siteID: Int64,
+                        onCompletion: @escaping (Result<String, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                // TODO-11540: remove stubbed result when the API is ready.
+                let stubbedResult = "campaign-12345"
+                let campaignID = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.createCampaign(campaign, siteID: siteID)
+                })
+                onCompletion(.success(campaignID))
+            } catch {
+                onCompletion(.failure(error))
+            }
         }
     }
 }

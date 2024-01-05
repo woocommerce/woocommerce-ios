@@ -7,101 +7,105 @@ struct CashPaymentTenderView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        ZStack {
-            Color.black.opacity(Layout.backgroundOpacity).edgesIgnoringSafeArea(.all)
-
-            VStack {
-                GeometryReader { geometry in
-                    ScrollView {
-                        VStack(alignment: .center, spacing: Layout.verticalSpacing) {
-                            Text(String.localizedStringWithFormat(Localization.cashPaymentTitle, viewModel.formattedTotal))
-                                .largeTitleStyle()
-
-                            HStack {
-                                Text(Localization.customerPaidTitle)
-                                Spacer()
-                                TextField("", text: $viewModel.customerPaidAmount)
-                                    .keyboardType(.decimalPad)
-                                    .textFieldStyle(.roundedBorder)
-                                    .headlineStyle()
-                                    .onTapGesture {
-                                        viewModel.customerPaidAmount = ""
-                                        viewModel.didTapOnCustomerPaidTextField = true
-                                    }
+        VStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    VStack(alignment: .leading, spacing: Layout.sectionVerticalSpacing) {
+                        Text(Localization.customerPaidTitle)
+                            .foregroundColor(Color(.secondaryLabel))
+                        TextField("", text: $viewModel.customerPaidAmount)
+                            .keyboardType(.decimalPad)
+                            .textFieldStyle(.plain)
+                            .font(.system(size: 48, weight: .bold))
+                            .onTapGesture {
+                                viewModel.customerPaidAmount = ""
+                                viewModel.didTapOnCustomerPaidTextField = true
                             }
-
-                            Text(Localization.cashPaymentFootnote)
-                                .footnoteStyle()
-
-                            Divider()
-
-                            Text(Localization.changeDueTitle)
-                                .font(.title3)
-                                .foregroundColor(Color(.textSubtle))
-                            Text(viewModel.changeDue)
-                                .font(.system(size: 36, weight: .bold))
-                                .foregroundColor(Color(.textSubtle))
-
-                            Toggle(Localization.addNoteToggleTitle, isOn: $viewModel.addNote)
-
-                            Spacer()
-
-                            Button(Localization.markOrderAsCompleteButtonTitle) {
-                                viewModel.onMarkOrderAsCompleteButtonTapped()
-                                dismiss()
-                            }
-                                .buttonStyle(PrimaryButtonStyle())
-                                .disabled(!viewModel.tenderButtonIsEnabled)
-                            Button(Localization.cancelButtonTitle) {
-                                dismiss()
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
-                        }
-                        .padding(Layout.outterPadding)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .background(Color(.systemBackground))
-                        .cornerRadius(Layout.cornerRadius)
-                        .frame(width: geometry.size.width)      // Make the scroll view full-width
-                        .frame(minHeight: geometry.size.height)
                     }
+                    .padding(Layout.sectionPadding)
+
+                    Divider()
+                        .padding(.leading, Layout.dividerHorizontalPadding)
+
+                    VStack(alignment: .leading, spacing: Layout.sectionVerticalSpacing) {
+                        Text(Localization.changeDueTitle)
+                            .foregroundColor(Color(.secondaryLabel))
+                        Text(viewModel.changeDue)
+                            .font(.system(size: 48, weight: .bold))
+                            .foregroundColor(Color(.label))
+                        // TODO: fix opacity
+                            .opacity(viewModel.customerPaidAmount > viewModel.formattedTotal ? 1: 0.18)
+                    }
+                    .padding(Layout.sectionPadding)
+
+                    Toggle(Localization.addNoteToggleTitle, isOn: $viewModel.addNote)
+                        .padding(Layout.togglePadding)
                 }
             }
-            .padding(Layout.outterPadding)
-            .frame(maxWidth: .infinity, alignment: .center)
+
+            VStack(spacing: 0) {
+                Divider()
+                    .frame(height: 1)
+                    .foregroundColor(Color(.separator))
+
+                Button(Localization.markOrderAsCompleteButtonTitle) {
+                    viewModel.onMarkOrderAsCompleteButtonTapped()
+                    dismiss()
+                }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(!viewModel.tenderButtonIsEnabled)
+                    .padding(insets: Layout.buttonPadding)
+            }
+        }
+        .background(Color(.systemBackground))
+        .navigationTitle(String(format: Localization.navigationBarTitle, viewModel.formattedTotal))
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(action: {
+                    withAnimation {
+                        dismiss()
+                    }
+                }, label: {
+                    Text(Localization.cancelButtonTitle)
+                })
+            }
         }
     }
 }
 
 extension CashPaymentTenderView {
     enum Layout {
-        static let verticalSpacing: CGFloat = 16
-        static let backgroundOpacity: CGFloat = 0.5
-        static let cornerRadius: CGFloat = 8
-        static let outterPadding: CGFloat = 24
+        static let verticalSpacing: CGFloat = 24
+        static let dividerHorizontalPadding: CGFloat = 16
+        static let sectionPadding: EdgeInsets = .init(top: 24, leading: 16, bottom: 8, trailing: 16)
+        static let sectionVerticalSpacing: CGFloat = 4
+        static let togglePadding: EdgeInsets = .init(top: 8, leading: 16, bottom: 16, trailing: 16)
+        static let buttonPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     }
 
     enum Localization {
-        static let cashPaymentTitle = NSLocalizedString("cashPaymentTenderView.title",
-                                                        value: "Cash %1$@",
-                                                        comment: "Title for the cash tender view. Reads like Cash $34.45")
         static let customerPaidTitle = NSLocalizedString("cashPaymentTenderView.customerPaid",
-                                                        value: "Customer paid",
+                                                        value: "Cash received",
                                                         comment: "Title for the amount the customer paid.")
-        static let cashPaymentFootnote = NSLocalizedString("cashPaymentTenderView.footnote",
-                                                        value: "Enter the cash amount your customer paid and we'll calculate the change due for you.",
-                                                        comment: "Explanatory footnote for the cash payment view.")
         static let changeDueTitle = NSLocalizedString("cashPaymentTenderView.changeDue",
                                                         value: "Change due",
                                                         comment: "Title for the change due text.")
-        static let addNoteToggleTitle = NSLocalizedString("cashPaymentTenderView.addNoteToggle.title",
-                                                        value: "Add note with change due to order",
-                                                        comment: "Title for the toggle that specifies whether to add a note to the order with the change data.")
-        static let markOrderAsCompleteButtonTitle = NSLocalizedString("cashPaymentTenderView.markOrderAsCompleteButton.title",
-                                                        value: "Mark order as complete",
-                                                        comment: "Title for the Mark order as complete button.")
+        static let addNoteToggleTitle = NSLocalizedString(
+            "cashPaymentTenderView.addNoteToggle.title",
+            value: "Record transaction details in order note",
+            comment: "Title for the toggle that specifies whether to add a note to the order with the change data."
+        )
+        static let markOrderAsCompleteButtonTitle = NSLocalizedString(
+            "cashPaymentTenderView.markOrderAsCompleteButton.title",
+            value: "Mark Order as Complete",
+            comment: "Title for the Mark order as complete button."
+        )
         static let cancelButtonTitle = NSLocalizedString("cashPaymentTenderView.cancelButton",
                                                         value: "Cancel",
                                                         comment: "Title for the cancel button.")
+        static let navigationBarTitle = NSLocalizedString("cashPaymentTenderView.navigationBarTitle",
+                                                        value: "Take Payment (%1$@)",
+                                                        comment: "Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)'")
     }
 }
 
@@ -111,7 +115,9 @@ struct CashPaymentTenderView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {}
             .sheet(isPresented: .constant(true), content: {
-                CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: "$10.6") { _ in })
+                NavigationView {
+                    CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: "$10.6") { _ in })
+                }
             })
     }
 }

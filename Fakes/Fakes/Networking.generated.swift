@@ -226,8 +226,6 @@ extension Networking.BlazeTargetLocation {
             id: .fake(),
             name: .fake(),
             type: .fake(),
-            code: .fake(),
-            isoCode: .fake(),
             parentLocation: .fake()
         )
     }

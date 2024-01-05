@@ -308,12 +308,11 @@ private extension BlazeStore {
                                                 type: "region",
                                                 parentLocation: .init(id: 228,
                                                                       name: "Spain",
-                                                                      type: "country",
-                                                                      isoCode: "ESP"))),
+                                                                      type: "country"))),
                     .init(id: 2035,
                           name: "Madre De Dios",
                           type: "state",
-                          parentLocation: .init(id: 57, name: "Peru", type: "country", isoCode: "PER")),
+                          parentLocation: .init(id: 57, name: "Peru", type: "country")),
                     .init(id: 6457,
                           name: "Madrid",
                           type: "city",
@@ -325,8 +324,7 @@ private extension BlazeStore {
                                                                       type: "region",
                                                                       parentLocation: .init(id: 152,
                                                                                             name: "United States",
-                                                                                            type: "country",
-                                                                                           isoCode: "USA"))))
+                                                                                            type: "country"))))
                 ]
                 let locations: [BlazeTargetLocation] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
                     try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)

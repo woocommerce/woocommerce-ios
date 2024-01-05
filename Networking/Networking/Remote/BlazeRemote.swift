@@ -232,16 +232,17 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
         case targetings
     }
 }
+
 /// Blaze Forecasted Impressions sub-input related to targetings.
-public struct BlazeTargetOptions: Encodable {
+public struct BlazeTargetOptions: Codable, GeneratedFakeable, GeneratedCopiable {
     // Target location IDs for the campaign. Optional.
-    let locations: [Int64]?
+    public let locations: [Int64]?
     // Target languages for the campaign. Optional.
-    let languages: [String]?
+    public let languages: [String]?
     // Target devices for the campaign. Optional.
-    let devices: [String]?
+    public let devices: [String]?
     // Target topics for the campaign. Optional.
-    let pageTopics: [String]?
+    public let pageTopics: [String]?
 
     public init(locations: [Int64]?,
                 languages: [String]?,

@@ -3,8 +3,8 @@ import Codegen
 
 /// Represents the entity sent for creating a new Blaze Campaign
 ///
-public struct CreateBlazeCampaign: Encodable, Equatable, GeneratedFakeable, GeneratedCopiable {
-    public struct Image: Encodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiable {
+    public struct Image: Encodable, GeneratedFakeable, GeneratedCopiable {
         /// URL of the image for the campaign
         ///
         public let url: String
@@ -16,31 +16,6 @@ public struct CreateBlazeCampaign: Encodable, Equatable, GeneratedFakeable, Gene
         public init(url: String, mimeType: String) {
             self.url = url
             self.mimeType = mimeType
-        }
-    }
-
-    public struct Targeting: Encodable, Equatable, GeneratedFakeable, GeneratedCopiable {
-        /// IDs of locations => GET /locations/search?keyword=city
-        ///
-        public let locations: [Int64]?
-
-        /// IDs of languages => GET /targeting/languages
-        ///
-        public let languages: [String]?
-
-        /// IDs of devices => GET /targeting/devices (absent if any)
-        ///
-        public let devices: [String]?
-
-        /// IDs of pageTopics => GET /targeting/page-topics (absent if any)
-        ///
-        public let pageTopics: [String]?
-
-        public init(locations: [Int64]?, languages: [String]?, devices: [String]?, pageTopics: [String]?) {
-            self.locations = locations
-            self.languages = languages
-            self.devices = devices
-            self.pageTopics = pageTopics
         }
     }
 
@@ -94,7 +69,7 @@ public struct CreateBlazeCampaign: Encodable, Equatable, GeneratedFakeable, Gene
     /// Targeting
     /// Can be nil if no targeting
     ///
-    public let targeting: Targeting?
+    public let targeting: BlazeTargetOptions?
 
     /// Sample format `urn:wpcom:post:123456:789`
     /// - 123456 is the site ID
@@ -117,7 +92,7 @@ public struct CreateBlazeCampaign: Encodable, Equatable, GeneratedFakeable, Gene
                 targetUrl: String,
                 urlParams: String,
                 mainImage: Image,
-                targeting: Targeting?,
+                targeting: BlazeTargetOptions?,
                 targetUrn: String,
                 type: String) {
         self.origin = origin

@@ -31,6 +31,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published var selectedCampaignURL: URL?
 
+    var shouldShowProductSelectorView: Bool = false
+
     private(set) var shouldRedactView: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
@@ -95,6 +97,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.userDefaults = userDefaults
         observeSectionVisibility()
         configureResultsController()
+        checkIfShouldShowProductSelector()
     }
 
     @MainActor
@@ -120,6 +123,12 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     func checkIfIntroViewIsNeeded() {
         if blazeCampaignResultsController.numberOfObjects == 0 {
             shouldShowIntroView = true
+        }
+    }
+
+    private func checkIfShouldShowProductSelector() {
+        if productResultsController.numberOfObjects > 1 {
+            shouldShowProductSelectorView = true
         }
     }
 

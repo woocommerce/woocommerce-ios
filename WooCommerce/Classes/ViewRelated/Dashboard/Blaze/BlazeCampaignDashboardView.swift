@@ -21,7 +21,18 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.createCampaignTapped = { [weak self] in
-            self?.navigateToCampaignCreation(source: .myStoreSection)
+            guard let self else { return }
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+                if self.viewModel.shouldShowProductSelectorView {
+                    // navigate to the product selector view using hosting controller
+                    self.navigateToBlazeProductSelector(source: .myStoreSection)
+
+                } else {
+                    // todo: navigate to the campaign creation form with the single existing product found in the store.
+                }
+            } else {
+                self.navigateToCampaignCreation(source: .myStoreSection)
+            }
         }
 
         rootView.startCampaignFromIntroTapped = { [weak self] productID in
@@ -51,6 +62,16 @@ private extension BlazeCampaignDashboardViewHostingController {
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         parentNavigationController?.show(webViewController, sender: self)
         viewModel.didSelectCreateCampaign(source: source)
+    }
+
+    /// Handles navigation to the Blaze product selector web view
+    func navigateToBlazeProductSelector(source: BlazeSource) {
+        let productSelectorViewController = ProductSelectorViewController(
+            configuration: ProductSelectorView.Configuration.configurationForBlaze,
+            source: .blaze,
+            viewModel: ProductSelectorViewModel(siteID: viewModel.siteID, purchasableItemsOnly: true))
+
+        parentNavigationController?.show(productSelectorViewController, sender: self)
     }
 
     /// Reloads data and shows campaign list.

@@ -87,16 +87,18 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.forecastedImpressionState, .failure)
     }
 
-    func test_retryFetchingImpressions_requests_fetching_impression_with_latest_settings() async {
+    func test_retryFetchingImpressions_requests_fetching_impression_with_latest_settings() async throws {
         // Given
         var fetchInput: BlazeForecastedImpressionsInput?
         let expectedStartDate = Date(timeIntervalSinceNow: 86400) // Next day
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "Europe/London"))
         let targetOptions = BlazeTargetOptions(locations: [11, 22], languages: ["en", "vi"], devices: nil, pageTopics: ["Entertainment"])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
                                                     dailyBudget: 15,
                                                     duration: 3,
                                                     startDate: .now,
+                                                    timeZone: timeZone,
                                                     targetOptions: targetOptions,
                                                     stores: stores,
                                                     onCompletion: { _, _, _ in })
@@ -120,6 +122,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         XCTAssertEqual(fetchInput?.startDate, expectedStartDate)
         XCTAssertEqual(fetchInput?.endDate, Date(timeInterval: 7 * 86400, since: expectedStartDate))
         XCTAssertEqual(fetchInput?.totalBudget, 20 * 7)
+        XCTAssertEqual(fetchInput?.timeZone, "Europe/London")
         XCTAssertEqual(fetchInput?.targetings, targetOptions)
     }
 }

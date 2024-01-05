@@ -4,6 +4,14 @@ import Foundation
 /// Protocol for `BlazeRemote` mainly used for mocking.
 ///
 public protocol BlazeRemoteProtocol {
+    /// Creates a new Blaze campaign
+    /// - Parameters:
+    ///    - campaign: Details of the Blaze campaign to be created
+    ///    - siteID: WPCom ID for the site to create the campaign in.
+    ///
+    func createCampaign(_ campaign: CreateBlazeCampaign,
+                        siteID: Int64) async throws
+
     /// Loads campaigns for the site with the provided ID on the given page number.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to load ads campaigns.
@@ -54,6 +62,14 @@ public protocol BlazeRemoteProtocol {
 /// Blaze: Remote Endpoints
 ///
 public final class BlazeRemote: Remote, BlazeRemoteProtocol {
+
+    public func createCampaign(_ campaign: CreateBlazeCampaign,
+                               siteID: Int64) async throws {
+        let path = Paths.campaigns(siteID: siteID)
+        let parameters = try campaign.toDictionary(keyEncodingStrategy: .convertToSnakeCase)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        return try await enqueue(request)
+    }
 
     public func loadCampaigns(for siteID: Int64, pageNumber: Int) async throws -> [BlazeCampaign] {
         let path = Paths.campaignSearch(siteID: siteID)
@@ -155,6 +171,10 @@ private extension BlazeRemote {
     }
 
     enum Paths {
+        static func campaigns(siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1.1/campaigns"
+        }
+
         static func campaignSearch(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1/search/campaigns/site/\(siteID)"
         }

@@ -92,6 +92,7 @@ private extension BlazeBudgetSettingView {
                 .onTapGesture {
                     showingImpressionInfo = true
                 }
+                .renderedIf(viewModel.forecastedImpressionState != .failure)
 
                 forecastedImpressionsView
             }
@@ -315,7 +316,7 @@ private extension BlazeBudgetSettingView {
         )
         static let forecastingFailed = NSLocalizedString(
             "blazeBudgetSettingView.forecastingFailed",
-            value: "Estimation not loading. Retry?",
+            value: "Failed to estimate impressions. Retry?",
             comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
         )
     }

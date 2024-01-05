@@ -5,6 +5,18 @@ import Networking
 //
 public enum BlazeAction: Action {
 
+    /// Creates a new Blaze campaign
+    ///
+    /// - `campaign`: New Blaze campaign to be created
+    /// - `siteID`: the site in which Blaze campaign should be created.
+    /// - `onCompletion`: invoked when the create operation finishes.
+    ///     - `result.success(String)`: ID of the newly created Blaze campaign.
+    ///     - `result.failure(Error)`: error indicates issues creating a Blaze campaign.
+    ///
+    case createCampaign(campaign: CreateBlazeCampaign,
+                        siteID: Int64,
+                        onCompletion: (Result<String, Error>) -> Void)
+
     /// Retrieves and stores Blaze Campaign for a site
     ///
     /// - `siteID`: the site for which Blaze campaigns should be fetched.

@@ -48,13 +48,14 @@ struct PaymentMethodsView: View {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }
-                        .fullScreenCover(isPresented: $showingCashAlert) {
-                            CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
-                                viewModel.markOrderAsPaidByCash(with: info) {
-                                    dismiss()
-                                }
-                            })
-                            .background(FullScreenCoverClearBackgroundView())
+                        .sheet(isPresented: $showingCashAlert) {
+                            NavigationView {
+                                CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
+                                    viewModel.markOrderAsPaidByCash(with: info) {
+                                        dismiss()
+                                    }
+                                })
+                            }
                         }
 
                         if viewModel.showPayWithCardRow {

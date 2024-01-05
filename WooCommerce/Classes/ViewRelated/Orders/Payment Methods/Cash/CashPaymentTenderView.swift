@@ -59,6 +59,7 @@ struct CashPaymentTenderView: View {
         }
         .background(Color(.systemBackground))
         .navigationTitle(String(format: Localization.navigationBarTitle, viewModel.formattedTotal))
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(action: {

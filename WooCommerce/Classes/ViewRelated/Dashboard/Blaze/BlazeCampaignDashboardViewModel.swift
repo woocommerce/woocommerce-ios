@@ -97,7 +97,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.userDefaults = userDefaults
         observeSectionVisibility()
         configureResultsController()
-        checkIfShouldShowProductSelector()
     }
 
     @MainActor
@@ -222,6 +221,8 @@ private extension BlazeCampaignDashboardViewModel {
         } else {
             update(state: .empty)
         }
+
+        checkIfShouldShowProductSelector()
     }
 
     /// Performs initial fetch from storage and updates results.

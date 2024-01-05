@@ -28,13 +28,16 @@ final class BlazeRemoteTests: XCTestCase {
         let remote = BlazeRemote(network: network)
         let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
 
-        network.simulateResponse(requestUrlSuffix: suffix, filename: "generic_success")
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
 
         // When
         _ = try await remote.createCampaign(.fake(), siteID: sampleSiteID)
 
+        // When
+        let result = try await remote.createCampaign(.fake(), siteID: sampleSiteID)
+
         // Then
-        // No error
+        XCTAssertEqual(result, 12345)
     }
 
     func test_createCampaign_sends_correct_parameters() async throws {
@@ -42,7 +45,7 @@ final class BlazeRemoteTests: XCTestCase {
         let remote = BlazeRemote(network: network)
         let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
 
-        network.simulateResponse(requestUrlSuffix: suffix, filename: "generic_success")
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
 
         let mainImage = CreateBlazeCampaign.Image(url: "https://example.com/wp-content/uploads/2023/06/0_1-2.png?quality=80&strip=info&w=1500",
                                                   mimeType: "image/png")

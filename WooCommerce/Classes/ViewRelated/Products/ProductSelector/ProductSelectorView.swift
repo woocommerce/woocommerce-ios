@@ -45,7 +45,7 @@ struct ProductSelectorView: View {
     ///
     private var doneButtonTitle: String {
         // Default to always show Done button in single selection mode.
-        if viewModel.selectionMode == .single {
+        if viewModel.isSingleSelectionMode {
             return Localization.doneButton
         }
 
@@ -198,35 +198,20 @@ struct ProductSelectorView: View {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    // In simple selection handling mode, immediately set the parent variable product
-                    // as selected and do not navigate to the variations list.
-                    if viewModel.selectionHandlingMode == .simple {
-                        viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
-                        return
-                    }
-
-                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
-                    // Display the variations list if toggleSelectionForAllVariations is not allowed
-                    if !viewModel.toggleAllVariationsOnSelection {
+                    if viewModel.shouldToggleVariationOnTap(with: rowViewModel.productOrVariationID) {
                         isShowingVariationList.toggle()
                         self.variationListViewModel = variationListViewModel
                     }
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    // In simple selection handling mode, immediately set the parent variable product
-                    // as selected and do not navigate to the variations list.
-                    if viewModel.selectionHandlingMode == .simple {
-                        viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
-                        return
+                    if viewModel.shouldToggleVariationOnTap(with: rowViewModel.productOrVariationID) {
+                        isShowingVariationList.toggle()
+                        self.variationListViewModel = variationListViewModel
                     }
-                    isShowingVariationList.toggle()
-                    self.variationListViewModel = variationListViewModel
                 }
 
-                // In simple selection handling mode, merchants can only select the parent variable product, so
-                // there is no need to display the disclosure indicator.
-                if viewModel.selectionHandlingMode != .simple {
+                if viewModel.shouldShowDisclosureIndicator() {
                     DisclosureIndicator()
                 }
             }
@@ -254,18 +239,16 @@ struct ProductSelectorView: View {
             }
             .onTapGesture {
                 if let configure = rowViewModel.configure, rowViewModel.isConfigurable {
-                    // In simple selection handling mode, immediately set the product bundle as selected
-                    // and do not navigate to the configuration screen.
-                    if viewModel.selectionHandlingMode == .simple {
-                        viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
-                        return
-                    }
-                    configure()
-                    switch source {
-                        case let .orderForm(flow):
-                            ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productSelector))
-                        default:
-                            break
+                    if viewModel.shouldOpenConfigurationOnTap(with: rowViewModel.productOrVariationID) {
+                        configure()
+                        switch source {
+                            case let .orderForm(flow):
+                                ServiceLocator.analytics.track(
+                                    event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow,
+                                                                                            source: .productSelector))
+                            default:
+                                break
+                        }
                     }
                 } else {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)

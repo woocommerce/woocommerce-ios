@@ -283,7 +283,7 @@ final class ProductSelectorViewModel: ObservableObject {
         }
 
         tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
-        toggleSelection(id: productID)
+        toggleSelection(id: productID, shouldClearSelectionFirst: isSingleSelectionMode)
 
         // The SKU search gives product variations as products. Here we have to handle that.
         if let productVariation = selectedProduct.toProductVariation() {
@@ -300,9 +300,8 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs.append(id)
     }
 
-    private func toggleSelection(id: Int64) {
-        // In single selection mode, remove previously selected product first.
-        if selectionMode == .single {
+    private func toggleSelection(id: Int64, shouldClearSelectionFirst: Bool = false) {
+        if shouldClearSelectionFirst {
             clearSelection()
         }
 
@@ -343,7 +342,7 @@ final class ProductSelectorViewModel: ObservableObject {
         // In single SelectionMode, merchants can first select a simple product,
         // then enter a variable product and select a variation. In this situation,
         // we have to remove the selected simple product first.
-        if selectedVariationIDs.count > 0 && selectionMode == .single {
+        if selectedVariationIDs.count > 0 && isSingleSelectionMode {
             clearSelection()
         }
 
@@ -402,6 +401,41 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs = []
 
         onAllSelectionsCleared?()
+    }
+}
+
+// MARK: - Selection handling mode and selection mode-related
+extension ProductSelectorViewModel {
+    public var isSingleSelectionMode: Bool {
+        return selectionMode == .single
+    }
+
+    public var isSimpleSelectionHandlingMode: Bool {
+        return selectionHandlingMode == .simple
+    }
+
+    func shouldToggleVariationOnTap(with productID: Int64) -> Bool {
+        // In simple selection handling mode, immediately set the parent variable product
+        // as selected and do not open the variations selector.
+        if isSimpleSelectionHandlingMode {
+            changeSelectionStateForProduct(with: productID)
+            return false
+        }
+        return true
+    }
+
+    func shouldShowDisclosureIndicator() -> Bool {
+        return !isSimpleSelectionHandlingMode
+    }
+
+    func shouldOpenConfigurationOnTap(with productID: Int64) -> Bool {
+        // In simple selection handling mode, immediately set the product bundle as selected
+        // and do not open the configuration screen.
+        if isSimpleSelectionHandlingMode {
+            changeSelectionStateForProduct(with: productID)
+            return false
+        }
+        return true
     }
 }
 
@@ -737,7 +771,7 @@ private extension ProductSelectorViewModel {
             // Toggle selected state right away if:
             // - not a variation product, or
             // - a variation product in simple selection handling mode.
-            if product.variations.isEmpty || selectionHandlingMode == .simple {
+            if product.variations.isEmpty || isSimpleSelectionHandlingMode {
                 selectedState = selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
             } else {
                 let intersection = Set(product.variations).intersection(Set(selectedItemsIDs))

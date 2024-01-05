@@ -986,6 +986,9 @@
 		EE839C262ABEF9C900049545 /* AIProductMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE839C252ABEF9C900049545 /* AIProductMapper.swift */; };
 		EE84D62B2B0B46E7008EA80A /* product-variation-subscription-incomplete.json in Resources */ = {isa = PBXBuildFile; fileRef = EE84D62A2B0B46E7008EA80A /* product-variation-subscription-incomplete.json */; };
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
+		EE8C20292B4784F400FE967B /* CreateBlazeCampaignMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8C20282B4784F400FE967B /* CreateBlazeCampaignMapper.swift */; };
+		EE8C202B2B4786D500FE967B /* blaze-create-campaign-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8C202A2B4786D500FE967B /* blaze-create-campaign-success.json */; };
+		EE8C202D2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8C202C2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift */; };
 		EE8DE432294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */; };
 		EE9826902B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json in Resources */ = {isa = PBXBuildFile; fileRef = EE98268F2B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json */; };
 		EE9826922B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json in Resources */ = {isa = PBXBuildFile; fileRef = EE9826912B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json */; };
@@ -2034,6 +2037,9 @@
 		EE839C252ABEF9C900049545 /* AIProductMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProductMapper.swift; sourceTree = "<group>"; };
 		EE84D62A2B0B46E7008EA80A /* product-variation-subscription-incomplete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-subscription-incomplete.json"; sourceTree = "<group>"; };
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
+		EE8C20282B4784F400FE967B /* CreateBlazeCampaignMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBlazeCampaignMapper.swift; sourceTree = "<group>"; };
+		EE8C202A2B4786D500FE967B /* blaze-create-campaign-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-create-campaign-success.json"; sourceTree = "<group>"; };
+		EE8C202C2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBlazeCampaignMapperTests.swift; sourceTree = "<group>"; };
 		EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultApplicationPasswordUseCaseTests.swift; sourceTree = "<group>"; };
 		EE98268F2B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-subscription-sync-renewals-day-month-format.json"; sourceTree = "<group>"; };
 		EE9826912B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-subscription-sync-renewals-day-month-format-int-values.json"; sourceTree = "<group>"; };
@@ -2653,6 +2659,7 @@
 				EE66BB052B29791500518DAF /* theme-activate-success.json */,
 				EE66BB012B2893AF00518DAF /* theme-install-success.json */,
 				DEDA8DB62B187E770076BF0F /* theme-mine-success.json */,
+				EE8C202A2B4786D500FE967B /* blaze-create-campaign-success.json */,
 				DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */,
 				DEDA8DA42B1839320076BF0F /* theme-list-success.json */,
 				EE28C7D72AC17960004A69F4 /* generate-product-failure.json */,
@@ -3173,6 +3180,7 @@
 				DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */,
 				DEA4936C2B3995B700EED015 /* BlazeTargetOptionMappers.swift */,
 				8617EDA32B3C040700BD9D1B /* BlazeImpressionsMapper.swift */,
+				EE8C20282B4784F400FE967B /* CreateBlazeCampaignMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -3341,6 +3349,7 @@
 				DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */,
 				DEA493762B39987B00EED015 /* BlazeTargetOptionMapperTests.swift */,
 				8617EDA52B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift */,
+				EE8C202C2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -3968,6 +3977,7 @@
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
 				B9CA4F332AB213DF00285AB9 /* tax.json in Resources */,
 				456930AD2652AF00009ED69D /* shipping-label-carriers-and-rates-success.json in Resources */,
+				EE8C202B2B4786D500FE967B /* blaze-create-campaign-success.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,
 				6846B01B2A61B590008EB143 /* iap-transaction-handled.json in Resources */,
 				CE13681129FA809600EBF43C /* product-variation-min-max-quantities.json in Resources */,
@@ -4151,6 +4161,7 @@
 				02C1CEF424C6A02B00703EBA /* ProductVariationMapper.swift in Sources */,
 				3105470C262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift in Sources */,
 				EE71CC3D2951A8EA0074D908 /* ApplicationPasswordStorage.swift in Sources */,
+				EE8C20292B4784F400FE967B /* CreateBlazeCampaignMapper.swift in Sources */,
 				311D41302783C0E200052F64 /* StripeRemote.swift in Sources */,
 				267313312559CC930026F7EF /* PaymentGateway.swift in Sources */,
 				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
@@ -4553,6 +4564,7 @@
 				D8FBFF1C22D51C34006E3336 /* OrderStatsRemoteV4Tests.swift in Sources */,
 				EE62EE61295ACF8D009C965B /* RequestConverterTests.swift in Sources */,
 				EE62EE65295AD46D009C965B /* String+URLTests.swift in Sources */,
+				EE8C202D2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift in Sources */,
 				CE6D666F2379E82A007835A1 /* ArrayWooTests.swift in Sources */,
 				DE2E8EAD295418D8002E4B14 /* WordPressSiteRemoteTests.swift in Sources */,
 				45D685FC23D0C739005F87D0 /* ProductSkuMapperTests.swift in Sources */,

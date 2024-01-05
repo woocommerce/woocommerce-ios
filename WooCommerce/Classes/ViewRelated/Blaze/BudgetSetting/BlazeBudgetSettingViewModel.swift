@@ -154,7 +154,7 @@ extension BlazeBudgetSettingViewModel {
         static let dayCountSliderStep = 1
     }
 
-    enum ForecastedImpressionState {
+    enum ForecastedImpressionState: Equatable {
         case loading
         case result(formattedResult: String)
         case failure

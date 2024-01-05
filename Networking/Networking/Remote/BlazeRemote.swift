@@ -185,13 +185,13 @@ private extension BlazeRemote {
 /// Blaze Forecasted Impressions input
 public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     // Start date of the campaign.
-    let startDate: Date
+    public let startDate: Date
     // End date of the campaign
-    let endDate: Date
+    public let endDate: Date
     // Total budget of the campaign
-    let totalBudget: Double
+    public let totalBudget: Double
     // Target options for the campaign. Optional.
-    let targetings: BlazeTargetOptions?
+    public let targetings: BlazeTargetOptions?
 
     public init(startDate: Date,
                 endDate: Date,
@@ -211,15 +211,15 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     }
 }
 /// Blaze Forecasted Impressions sub-input related to targetings.
-public struct BlazeTargetOptions: Encodable {
+public struct BlazeTargetOptions: Encodable, Equatable {
     // Target location IDs for the campaign. Optional.
-    let locations: [Int64]?
+    public let locations: [Int64]?
     // Target languages for the campaign. Optional.
-    let languages: [String]?
+    public let languages: [String]?
     // Target devices for the campaign. Optional.
-    let devices: [String]?
+    public let devices: [String]?
     // Target topics for the campaign. Optional.
-    let pageTopics: [String]?
+    public let pageTopics: [String]?
 
     public init(locations: [Int64]?,
                 languages: [String]?,

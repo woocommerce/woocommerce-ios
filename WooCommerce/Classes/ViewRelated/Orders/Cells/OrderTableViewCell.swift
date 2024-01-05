@@ -52,6 +52,10 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString
+
+        // From iOS 15.0, a focus effect will be applied automatically to a selected cell
+        // modifying its style (e.g: by adding a border)
+        focusEffect = nil
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -148,6 +152,7 @@ private extension OrderTableViewCell {
                 view.trailingAnchor.constraint(equalTo: bottomSeparatorView.trailingAnchor),
                 bottomSeparatorView.heightAnchor.constraint(equalToConstant: separatorHeight/2)
             ])
+            view.backgroundColor = .wooCommercePurple(.shade0)
             return view
         }()
         selectedBackgroundView = backgroundView

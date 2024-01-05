@@ -44,7 +44,6 @@ struct BlazeBudgetSettingView: View {
                 durationSettingView
             }
         }
-
     }
 }
 
@@ -93,10 +92,30 @@ private extension BlazeBudgetSettingView {
                 .onTapGesture {
                     showingImpressionInfo = true
                 }
+                .renderedIf(viewModel.forecastedImpressionState != .failure)
 
-                // TODO: fetch impressions and display
-                Text("2,588 - 3,458")
-                    .bold()
+                forecastedImpressionsView
+            }
+        }
+    }
+
+    @ViewBuilder
+    var forecastedImpressionsView: some View {
+        switch viewModel.forecastedImpressionState {
+        case .loading:
+            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+        case .result(let formattedResult):
+            Text(formattedResult)
+                .bold()
+                .font(.subheadline)
+        case .failure:
+            Button {
+                Task {
+                    await viewModel.retryFetchingImpressions()
+                }
+            } label: {
+                Text(Localization.forecastingFailed)
+                    .foregroundColor(.secondary)
                     .font(.subheadline)
             }
         }
@@ -295,11 +314,16 @@ private extension BlazeBudgetSettingView {
             value: "Apply",
             comment: "Button to apply the changes on the Blaze campaign duration setting screen"
         )
+        static let forecastingFailed = NSLocalizedString(
+            "blazeBudgetSettingView.forecastingFailed",
+            value: "Failed to estimate impressions. Retry?",
+            comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
+        )
     }
 }
 
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(dailyBudget: 5, duration: 7, startDate: .now) { _, _, _ in })
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, duration: 7, startDate: .now) { _, _, _ in })
     }
 }

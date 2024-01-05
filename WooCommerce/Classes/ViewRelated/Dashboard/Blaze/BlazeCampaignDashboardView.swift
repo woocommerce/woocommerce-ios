@@ -8,6 +8,7 @@ import Kingfisher
 final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingController<BlazeCampaignDashboardView> {
     private let viewModel: BlazeCampaignDashboardViewModel
     private let parentNavigationController: UINavigationController?
+    private var blazeNavigationController: UINavigationController?
 
     init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController?) {
         self.viewModel = viewModel
@@ -42,6 +43,8 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         rootView.showAllCampaignsTapped = { [weak self] in
             self?.showCampaignList(isPostCreation: false)
         }
+
+        createBlazeNavigationController()
     }
 
     @available(*, unavailable)
@@ -51,6 +54,17 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 }
 
 private extension BlazeCampaignDashboardViewHostingController {
+    private func createBlazeNavigationController() {
+        blazeNavigationController = UINavigationController(rootViewController: createProductSelectorViewController())
+    }
+
+    private func createProductSelectorViewController() -> ProductSelectorViewController {
+        return ProductSelectorViewController(configuration: ProductSelectorView.Configuration.configurationForBlaze,
+                                             source: .blaze,
+                                             viewModel: ProductSelectorViewModel(siteID: viewModel.siteID,
+                                                                                 purchasableItemsOnly: true))
+    }
+
     /// Handles navigation to the campaign creation web view
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
         let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
@@ -66,15 +80,10 @@ private extension BlazeCampaignDashboardViewHostingController {
 
     /// Handles navigation to the Blaze product selector view
     func navigateToBlazeProductSelector(source: BlazeSource) {
-        let productSelectorViewController = ProductSelectorViewController(
-            configuration: ProductSelectorView.Configuration.configurationForBlaze,
-            source: .blaze,
-            viewModel: ProductSelectorViewModel(siteID: viewModel.siteID, purchasableItemsOnly: true))
-
-        let blazeNavigationController = UINavigationController(rootViewController: productSelectorViewController)
-
-        blazeNavigationController.modalPresentationStyle = .pageSheet
-        parentNavigationController?.present(blazeNavigationController, animated: true, completion: nil)
+        if let blazeNavController = blazeNavigationController {
+            blazeNavController.modalPresentationStyle = .pageSheet
+            parentNavigationController?.present(blazeNavController, animated: true, completion: nil)
+        }
     }
 
     /// Reloads data and shows campaign list.

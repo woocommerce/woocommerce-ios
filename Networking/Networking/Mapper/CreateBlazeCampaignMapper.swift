@@ -6,10 +6,10 @@ struct CreateBlazeCampaignMapper: Mapper {
 
     /// (Attempts) to parse the create Blaze campaign response
     ///
-    func map(response: Data) throws -> String {
+    func map(response: Data) throws -> Void {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try decoder.decode(CreateBlazeCampaignResponse.self, from: response).id
+        _ = try decoder.decode(CreateBlazeCampaignResponse.self, from: response)
     }
 }
 

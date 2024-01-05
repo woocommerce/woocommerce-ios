@@ -8,10 +8,9 @@ public protocol BlazeRemoteProtocol {
     /// - Parameters:
     ///    - campaign: Details of the Blaze campaign to be created
     ///    - siteID: WPCom ID for the site to create the campaign in.
-    /// - Returns: Newly created Blaze campaign's ID
     ///
     func createCampaign(_ campaign: CreateBlazeCampaign,
-                        siteID: Int64) async throws -> String
+                        siteID: Int64) async throws
 
     /// Loads campaigns for the site with the provided ID on the given page number.
     /// - Parameters:
@@ -65,7 +64,7 @@ public protocol BlazeRemoteProtocol {
 public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
     public func createCampaign(_ campaign: CreateBlazeCampaign,
-                               siteID: Int64) async throws -> String {
+                               siteID: Int64) async throws {
         let path = Paths.campaigns(siteID: siteID)
 
         let dateFormatter = DateFormatter()
@@ -74,7 +73,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
         let mapper = CreateBlazeCampaignMapper()
-        return try await enqueue(request, mapper: mapper)
+        try await enqueue(request, mapper: mapper)
     }
 
     public func loadCampaigns(for siteID: Int64, pageNumber: Int) async throws -> [BlazeCampaign] {

@@ -68,12 +68,6 @@ private extension BlazeCampaignDashboardViewHostingController {
                 // Navigate to Campaign Creation Form once a simple/bundle product is selected.
                 self.navigateToCampaignCreation(source: .myStoreSection)
             },
-            onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
-                guard let self = self else { return }
-
-                // Navigate to Campaign Creation Form once a variable product is selected.
-                self.navigateToCampaignCreation(source: .myStoreSection)
-            },
             onCloseButtonTapped: { [weak self] in
                 guard let self = self else { return }
 

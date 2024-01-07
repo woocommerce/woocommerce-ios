@@ -98,8 +98,9 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         self.completionHandler = onCompletion
         self.uploadAnswersUseCase = uploadAnswersUseCase
         self.themeInstaller = themeInstaller
-        self.themesCarouselViewModel = .init(mode: .storeCreationProfiler, stores: stores)
-        self.featureFlagService = featureFlagService
+        self.themesCarouselViewModel = .init(siteID: siteID,
+                                             mode: .storeCreationProfiler,
+                                             stores: stores)
     }
 
     func onAppear() {

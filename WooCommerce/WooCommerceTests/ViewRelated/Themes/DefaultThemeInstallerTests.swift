@@ -4,6 +4,22 @@ import Yosemite
 
 @MainActor
 final class DefaultThemeInstallerTests: XCTestCase {
+
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
+
     func test_it_stores_theme_correctly() throws {
         // Given
         let siteID: Int64 = 123
@@ -126,5 +142,147 @@ final class DefaultThemeInstallerTests: XCTestCase {
         // Then
         XCTAssertNil(installedThemeID)
         XCTAssertNil(activatedThemeID)
+    }
+
+    func test_install_tracks_success() async throws {
+        // Given
+        let themeID = "tsubaki"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let sut = DefaultThemeInstaller(stores: stores, analytics: analytics)
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case let .installTheme(themeID, _, onCompletion):
+                onCompletion(.success(.fake().copy(id: themeID)))
+            case let .activateTheme(themeID, _, onCompletion):
+                onCompletion(.success(.fake().copy(id: themeID)))
+            default:
+                break
+            }
+        }
+        try await sut.install(themeID: themeID, siteID: 99)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_installation_completed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["theme"] as? String, themeID)
+    }
+
+    func test_install_tracks_installation_failure() async throws {
+        // Given
+        let themeID = "tsubaki"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let sut = DefaultThemeInstaller(stores: stores, analytics: analytics)
+        let error = NSError(domain: "test", code: 501)
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case let .installTheme(_, _, onCompletion):
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        try? await sut.install(themeID: themeID, siteID: 99)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_installation_failed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["error_code"] as? String, "501")
+    }
+
+    func test_install_tracks_activation_failure() async throws {
+        // Given
+        let themeID = "tsubaki"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let sut = DefaultThemeInstaller(stores: stores, analytics: analytics)
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case let .installTheme(themeID, _, onCompletion):
+                onCompletion(.success(.fake().copy(id: themeID)))
+            case let .activateTheme(_, _, onCompletion):
+                let error = NSError(domain: "test", code: 500)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        try? await sut.install(themeID: themeID, siteID: 99)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_installation_failed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["error_code"] as? String, "500")
+    }
+
+    func test_installPendingThemeIfNeeded_tracks_success() async throws {
+        // Given
+        let siteID: Int64 = 123
+        let themeID = "amulet"
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let sut = DefaultThemeInstaller(stores: stores,
+                                        userDefaults: userDefaults,
+                                        analytics: analytics)
+
+        sut.scheduleThemeInstall(themeID: themeID, siteID: siteID)
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case let .installTheme(themeID, _, onCompletion):
+                onCompletion(.success(.fake().copy(id: themeID)))
+            case let .activateTheme(themeID, _, onCompletion):
+                onCompletion(.success(.fake().copy(id: themeID)))
+            default:
+                break
+            }
+        }
+
+        try await sut.installPendingThemeIfNeeded(siteID: siteID)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_installation_completed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["theme"] as? String, themeID)
+    }
+
+    func test_installPendingThemeIfNeeded_tracks_failure() async throws {
+        // Given
+        let siteID: Int64 = 123
+        let themeID = "amulet"
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let sut = DefaultThemeInstaller(stores: stores,
+                                        userDefaults: userDefaults,
+                                        analytics: analytics)
+
+        sut.scheduleThemeInstall(themeID: themeID, siteID: siteID)
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressThemeAction.self) { action in
+            switch action {
+            case let .installTheme(themeID, _, onCompletion):
+                onCompletion(.success(.fake().copy(id: themeID)))
+            case let .activateTheme(_, _, onCompletion):
+                let error = NSError(domain: "test", code: 500)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        try? await sut.installPendingThemeIfNeeded(siteID: siteID)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "theme_installation_failed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["error_code"] as? String, "500")
     }
 }

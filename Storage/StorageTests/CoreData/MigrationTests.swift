@@ -2477,6 +2477,125 @@ final class MigrationTests: XCTestCase {
         let pricedIndividually = try XCTUnwrap(migratedProductBundleItemEntity.value(forKey: "pricedIndividually") as? Bool)
         XCTAssertFalse(pricedIndividually, "Confirm expected property exists, and is false by default.")
     }
+
+    func test_migrating_from_104_to_105_removes_price_attribute_from_TopEarnerStatsItem_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 104")
+        let sourceContext = sourceContainer.viewContext
+
+        let topEarnerStatsItem = sourceContext.insert(entityName: "TopEarnerStatsItem", properties: [
+            "productID": 1,
+            "productName": "Product",
+            "quantity": 1,
+            "price": 4.99,
+            "total": 4.99,
+            "currency": "USD",
+            "imageUrl": "https://example.com/woo.jpg"
+        ])
+        try sourceContext.save()
+
+        XCTAssertNotNil(topEarnerStatsItem.entity.attributesByName["price"], "Precondition. Attribute exists.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 105")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedtopEarnerStatsItem = try XCTUnwrap(targetContext.first(entityName: "TopEarnerStatsItem"))
+
+        // The price attribute is removed from the migrated entity.
+        XCTAssertNil(migratedtopEarnerStatsItem.entity.attributesByName["price"], "Confirm attribute no longer exists.")
+    }
+
+    func test_migrating_from_104_to_105_adds_BlazeTargetLanguage_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 104")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. `BlazeTargetLanguage` should not exist in Model 104
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeTargetLanguage", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 105")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `BlazeTargetLanguage` should exist in Model 105
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeTargetLanguage", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetLanguage"), 0)
+
+        // Insert a new BlazeTargetLanguage
+        let language = insertBlazeTargetLanguage(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetLanguage"), 1)
+
+        // Check all attributes
+        XCTAssertEqual(language.value(forKey: "id") as? String, "en")
+        XCTAssertEqual(language.value(forKey: "name") as? String, "English")
+        XCTAssertEqual(language.value(forKey: "locale") as? String, "en")
+    }
+
+    func test_migrating_from_104_to_105_adds_BlazeTargetDevice_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 104")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. `BlazeTargetDevice` should not exist in Model 104
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeTargetDevice", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 105")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `BlazeTargetDevice` should exist in Model 105
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeTargetDevice", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetDevice"), 0)
+
+        // Insert a new BlazeTargetDevice
+        let device = insertBlazeTargetDevice(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetDevice"), 1)
+
+        // Check all attributes
+        XCTAssertEqual(device.value(forKey: "id") as? String, "mobile")
+        XCTAssertEqual(device.value(forKey: "name") as? String, "Mobile")
+        XCTAssertEqual(device.value(forKey: "locale") as? String, "en")
+    }
+
+    func test_migrating_from_104_to_105_adds_BlazeTargetTopic_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 104")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. `BlazeTargetTopic` should not exist in Model 104
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeTargetTopic", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 105")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `BlazeTargetTopic` should exist in Model 105
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeTargetTopic", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetTopic"), 0)
+
+        // Insert a new BlazeTargetTopic
+        let topic = insertBlazeTargetTopic(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeTargetTopic"), 1)
+
+        // Check all attributes
+        XCTAssertEqual(topic.value(forKey: "id") as? String, "IAB1")
+        XCTAssertEqual(topic.value(forKey: "name") as? String, "Arts & Entertainment")
+        XCTAssertEqual(topic.value(forKey: "locale") as? String, "en")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3198,5 +3317,38 @@ private extension MigrationTests {
         }
 
         return campaign
+    }
+
+    /// Inserts a `BlazeTargetLanguage` entity, providing default values for the required properties.
+    @discardableResult
+    func insertBlazeTargetLanguage(to context: NSManagedObjectContext) -> NSManagedObject {
+        let language = context.insert(entityName: "BlazeTargetLanguage", properties: [
+            "id": "en",
+            "name": "English",
+            "locale": "en"
+        ])
+        return language
+    }
+
+    /// Inserts a `BlazeTargetDevice` entity, providing default values for the required properties.
+    @discardableResult
+    func insertBlazeTargetDevice(to context: NSManagedObjectContext) -> NSManagedObject {
+        let device = context.insert(entityName: "BlazeTargetDevice", properties: [
+            "id": "mobile",
+            "name": "Mobile",
+            "locale": "en"
+        ])
+        return device
+    }
+
+    /// Inserts a `BlazeTargetTopic` entity, providing default values for the required properties.
+    @discardableResult
+    func insertBlazeTargetTopic(to context: NSManagedObjectContext) -> NSManagedObject {
+        let topic = context.insert(entityName: "BlazeTargetTopic", properties: [
+            "id": "IAB1",
+            "name": "Arts & Entertainment",
+            "locale": "en"
+        ])
+        return topic
     }
 }

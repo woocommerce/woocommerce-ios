@@ -123,7 +123,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Active navigation bar trailing item.
     /// Defaults to create button.
     ///
-    @Published private(set) var navigationTrailingItem: NavigationItem = .create
+    @Published private(set) var navigationTrailingItem: NavigationItem?
 
     /// Tracks if a network request is being performed.
     ///
@@ -149,11 +149,14 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     var dateString: String {
         switch flow {
-        case .creation:
-            return DateFormatter.mediumLengthLocalizedDateFormatter.string(from: Date())
-        case .editing(let order):
-            let formatter = DateFormatter.dateAndTimeFormatter
-            return formatter.string(from: order.dateCreated)
+            case .creation:
+                let formatter = DateFormatter.mediumLengthLocalizedDateFormatter
+                formatter.timeZone = .siteTimezone
+                return formatter.string(from: Date())
+            case .editing(let order):
+                let formatter = DateFormatter.dateAndTimeFormatter
+                formatter.timeZone = .siteTimezone
+                return formatter.string(from: order.dateCreated)
         }
     }
 
@@ -167,6 +170,8 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
+
+    @Published private(set) var collectPaymentDisabled: Bool = false
 
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
@@ -308,6 +313,11 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published var configurableProductViewModel: ConfigurableBundleProductViewModel? = nil
 
+    /// Configurable bundle product view model to render from a scanned bundle product.
+    /// Used to open the bundle product configuration screen after scanning a bundle product either from the order form or order list.
+    ///
+    @Published var configurableScannedProductViewModel: ConfigurableBundleProductViewModel? = nil
+
     /// Whether the user can select a new tax rate.
     /// The User can change the tax rate by changing the customer address if:
     ///
@@ -363,6 +373,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
+
+    @Published private(set) var orderTotal: String = ""
+
+    @Published var collectPaymentViewModel: PaymentMethodsViewModel? = nil
+
+    @Published var shouldPresentCollectPayment: Bool = false
 
     /// Saves a shipping line.
     ///
@@ -459,6 +475,8 @@ final class EditableOrderViewModel: ObservableObject {
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
         configureDisabledState()
+        configureCollectPaymentDisabledState()
+        configureOrderTotal()
         configureNavigationTrailingItem()
         configureSyncErrors()
         configureStatusBadgeViewModel()
@@ -746,10 +764,15 @@ final class EditableOrderViewModel: ObservableObject {
         trackCustomerNoteAdded()
     }
 
+    func orderTotalsExpansionChanged(expanded: Bool) {
+        analytics.track(event: .Orders.orderTotalsExpansionChanged(flow: flow.analyticsFlow, expanded: expanded))
+    }
+
     // MARK: - API Requests
     /// Creates an order remotely using the provided order details.
     ///
-    func createOrder() {
+    private func createOrder(onSuccess: @escaping (_ order: Order, _ usesGiftCard: Bool) -> Void,
+                             onFailure: @escaping (_ error: Error, _ usesGiftCard: Bool) -> Void) {
         performingNetworkRequest = true
 
         orderSynchronizer.commitAllChanges { [weak self] result, usesGiftCard in
@@ -758,15 +781,25 @@ final class EditableOrderViewModel: ObservableObject {
 
             switch result {
             case .success(let newOrder):
-                self.onFinished(newOrder)
-                self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+                onSuccess(newOrder, usesGiftCard)
             case .failure(let error):
-                self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
-                self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+                onFailure(error, usesGiftCard)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
-        trackCreateButtonTapped()
+    }
+
+    func collectPayment(for order: Order) {
+        let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+
+        self.collectPaymentViewModel = PaymentMethodsViewModel(
+            siteID: siteID,
+            orderID: order.orderID,
+            paymentLink: order.paymentURL,
+            formattedTotal: formattedTotal,
+            flow: .orderCreation)
+
+        self.shouldPresentCollectPayment = true
     }
 
     /// Action triggered on `Done` button tap in order editing flow.
@@ -841,6 +874,33 @@ final class EditableOrderViewModel: ObservableObject {
         analytics.track(.orderCreationAddCustomAmountTapped)
     }
 
+    func onCreateOrderTapped() {
+        createOrder { [weak self] order, usesGiftCard in
+            guard let self else { return }
+            self.onFinished(order)
+            self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+        } onFailure: { [weak self] error, usesGiftCard in
+            guard let self else { return }
+            self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+            self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+        }
+        trackCreateButtonTapped()
+    }
+
+    func onCollectPaymentTapped() {
+        createOrder { [weak self] order, usesGiftCard in
+            guard let self else { return }
+            self.collectPayment(for: order)
+            self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+            self.onFinished(order)
+        } onFailure: { [weak self] error, usesGiftCard in
+            guard let self else { return }
+            self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+            self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
+        }
+        trackCollectPaymentTapped()
+    }
+
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
                                                  onCustomAmountDeleted: { [weak self] feeID in
@@ -876,7 +936,6 @@ extension EditableOrderViewModel {
     ///
     enum NavigationItem: Equatable {
         case create
-        case done
         case loading
     }
 
@@ -956,7 +1015,6 @@ extension EditableOrderViewModel {
         let siteID: Int64
         let shouldShowProductsTotal: Bool
         let itemsTotal: String
-        let orderTotal: String
         let orderIsEmpty: Bool
 
         let shouldShowShippingTotal: Bool
@@ -1016,7 +1074,6 @@ extension EditableOrderViewModel {
              shouldShowTotalCustomAmounts: Bool = false,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
-             orderTotal: String = "0",
              orderIsEmpty: Bool = false,
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
@@ -1053,7 +1110,6 @@ extension EditableOrderViewModel {
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
-            self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.orderIsEmpty = orderIsEmpty
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
@@ -1131,11 +1187,31 @@ private extension EditableOrderViewModel {
             .assign(to: &$disabled)
     }
 
+    func configureCollectPaymentDisabledState() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, $disabled)
+            .map { [weak self] order, viewDisabled -> Bool in
+                guard !viewDisabled else {
+                    return true
+                }
+                let orderTotal = self?.currencyFormatter.convertToDecimal(order.total) as? Decimal ?? .zero
+                return orderTotal <= .zero
+            }
+            .assign(to: &$collectPaymentDisabled)
+    }
+
+    func configureOrderTotal() {
+        Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just("0.00"))
+            .map { [weak self] order, defaultTotal -> String in
+                return self?.currencyFormatter.formatAmount(order.total) ?? self?.currencyFormatter.formatAmount(defaultTotal) ?? ""
+            }
+            .assign(to: &$orderTotal)
+    }
+
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
         Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
-            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem in
+            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem? in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
@@ -1146,7 +1222,7 @@ private extension EditableOrderViewModel {
                 case (.editing, .syncing):
                     return .loading
                 case (.editing, _):
-                    return .done
+                    return .none
                 }
             }
             .assign(to: &$navigationTrailingItem)
@@ -1362,9 +1438,23 @@ private extension EditableOrderViewModel {
         updateOrderWithBaseItem(item)
     }
 
-    /// Updates the Order with the given product
+    /// Updates the Order with the given product from SKU scanning
     ///
     func updateOrderWithBaseItem(_ item: OrderBaseItem) {
+        // When a scanned product is a bundle product, the bundle configuration view is shown first.
+        if case let .product(product) = item, product.productType == .bundle {
+            configurableScannedProductViewModel = .init(product: product,
+                                                 orderItem: nil,
+                                                 childItems: [],
+                                                 onConfigure: { [weak self] configuration in
+                guard let self else { return }
+                self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                self.configurableScannedProductViewModel = nil
+            })
+            return
+        }
+
         guard currentOrderItems.contains(where: { $0.productOrVariationID == item.itemID }) else {
             // If it's not part of the current order, send the correct productType to the synchronizer
             switch item {
@@ -1480,7 +1570,6 @@ private extension EditableOrderViewModel {
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
-                                            orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             orderIsEmpty: order.isEmpty,
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: disableCoupons,
@@ -1714,6 +1803,18 @@ private extension EditableOrderViewModel {
                                                                                 hasFees: orderSynchronizer.order.fees.isNotEmpty,
                                                                                 hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
                                                                                 products: Array(allProducts)))
+    }
+
+    func trackCollectPaymentTapped() {
+        let hasCustomerDetails = customerDataViewModel.isDataAvailable
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationCollectPaymentTapped(order: orderSynchronizer.order,
+                                                                                          status: orderSynchronizer.order.status,
+                                                                                          productCount: orderSynchronizer.order.items.count,
+                                                                                          customAmountsCount: orderSynchronizer.order.fees.count,
+                                                                                          hasCustomerDetails: hasCustomerDetails,
+                                                                                          hasFees: orderSynchronizer.order.fees.isNotEmpty,
+                                                                                          hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+                                                                                          products: Array(allProducts)))
     }
 
     /// Tracks an order creation success
@@ -2285,13 +2386,16 @@ extension TaxBasedOnSetting {
     var displayString: String {
         switch self {
         case .customerBillingAddress:
-            return NSLocalizedString("Calculated on billing address",
+            return NSLocalizedString("editableOrderViewModel.taxBasedOnSetting.customerBillingAddress",
+                                     value: "Calculated on billing address.",
                                      comment: "The string to show on order taxes when they are calculated based on the billing address")
         case .customerShippingAddress:
-            return NSLocalizedString("Calculated on shipping address",
+            return NSLocalizedString("editableOrderViewModel.taxBasedOnSetting.customerShippingAddress",
+                                     value: "Calculated on shipping address.",
                                      comment: "The string to show on order taxes when they are calculated based on the shipping address")
         case .shopBaseAddress:
-            return NSLocalizedString("Calculated on shop base address",
+            return NSLocalizedString("editableOrderViewModel.taxBasedOnSetting.shopBaseAddress",
+                                     value: "Calculated on shop base address.",
                                      comment: "The string to show on order taxes when they are calculated based on the shop base address")
         }
     }

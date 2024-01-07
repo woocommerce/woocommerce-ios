@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 /// View model for `ThemeSettingView`
-/// 
+///
 final class ThemeSettingViewModel: ObservableObject {
 
     @Published private(set) var currentThemeName: String = ""
@@ -10,20 +10,20 @@ final class ThemeSettingViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
-    private let analytics: Analytics
     private(set) var carouselViewModel: ThemesCarouselViewModel
     private let themeInstaller: ThemeInstallerProtocol
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics,
-         themeInstaller: ThemeInstallerProtocol = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.siteID = siteID
         self.stores = stores
-        self.analytics = analytics
         self.themeInstaller = themeInstaller
-        self.carouselViewModel = .init(mode: .themeSettings, stores: stores)
+        self.carouselViewModel = .init(siteID: siteID,
+                                       mode: .themeSettings,
+                                       stores: stores)
 
+        configureCarouselViewModel()
         /// Attempt to install and activate any pending theme selection
         /// to show correct current theme information
         ///
@@ -43,10 +43,24 @@ final class ThemeSettingViewModel: ObservableObject {
 
     func updateCurrentTheme(_ theme: WordPressTheme) {
         currentThemeName = theme.name
+        carouselViewModel.updateCurrentTheme(id: theme.id)
+    }
+
+    func trackViewAppear() {
+        carouselViewModel.trackViewAppear()
     }
 }
 
 private extension ThemeSettingViewModel {
+    func configureCarouselViewModel() {
+        carouselViewModel.onReload = { [weak self] in
+            guard let self else { return }
+            Task {
+                await self.updateCurrentThemeName()
+            }
+        }
+    }
+
     /// Installs pending theme for the current site
     ///
     func installPendingTheme() async {

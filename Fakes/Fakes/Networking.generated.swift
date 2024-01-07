@@ -174,6 +174,86 @@ extension Networking.BlazeCampaign {
         )
     }
 }
+extension Networking.BlazeForecastedImpressionsInput {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeForecastedImpressionsInput {
+        .init(
+            startDate: .fake(),
+            endDate: .fake(),
+            timeZone: .fake(),
+            totalBudget: .fake(),
+            targetings: .fake()
+        )
+    }
+}
+extension Networking.BlazeImpressions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeImpressions {
+        .init(
+            totalImpressionsMin: .fake(),
+            totalImpressionsMax: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetDevice {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetDevice {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            locale: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetLanguage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetLanguage {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            locale: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetLocation {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetLocation {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            type: .fake(),
+            parentLocation: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetOptions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetOptions {
+        .init(
+            locations: .fake(),
+            languages: .fake(),
+            devices: .fake(),
+            pageTopics: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetTopic {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetTopic {
+        .init(
+            id: .fake(),
+            description: .fake(),
+            locale: .fake()
+        )
+    }
+}
 extension Networking.CompositeComponentOptionType {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -239,6 +319,39 @@ extension Networking.CouponReport {
             couponID: .fake(),
             amount: .fake(),
             ordersCount: .fake()
+        )
+    }
+}
+extension Networking.CreateBlazeCampaign {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.CreateBlazeCampaign {
+        .init(
+            origin: .fake(),
+            originVersion: .fake(),
+            paymentMethodID: .fake(),
+            startDate: .fake(),
+            endDate: .fake(),
+            timeZone: .fake(),
+            totalBudget: .fake(),
+            siteName: .fake(),
+            textSnippet: .fake(),
+            targetUrl: .fake(),
+            urlParams: .fake(),
+            mainImage: .fake(),
+            targeting: .fake(),
+            targetUrn: .fake(),
+            type: .fake()
+        )
+    }
+}
+extension Networking.CreateBlazeCampaign.Image {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.CreateBlazeCampaign.Image {
+        .init(
+            url: .fake(),
+            mimeType: .fake()
         )
     }
 }
@@ -2008,7 +2121,6 @@ extension Networking.TopEarnerStatsItem {
             productID: .fake(),
             productName: .fake(),
             quantity: .fake(),
-            price: .fake(),
             total: .fake(),
             currency: .fake(),
             imageUrl: .fake()

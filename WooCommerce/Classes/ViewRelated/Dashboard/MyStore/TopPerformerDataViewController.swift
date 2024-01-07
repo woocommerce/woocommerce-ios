@@ -5,6 +5,7 @@ import Experiments
 import SwiftUI
 import WordPressUI
 import class AutomatticTracks.CrashLogging
+import protocol Storage.StorageManagerType
 
 
 
@@ -12,25 +13,20 @@ final class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 
+    var siteTimeZone: TimeZone = .current {
+        didSet {
+            updateResultsController(siteTimeZone: siteTimeZone)
+        }
+    }
+
     private let timeRange: StatsTimeRangeV4
     private let granularity: StatGranularity
     private let siteID: Int64
-    private let siteTimeZone: TimeZone
     private let currentDate: Date
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
-    private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
-        let storageManager = ServiceLocator.storageManager
-        let formattedDateString: String = {
-            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimeZone)
-            return StatsStoreV4.buildDateString(from: date, with: granularity)
-        }()
-        let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
-        let descriptor = NSSortDescriptor(key: "date", ascending: true)
-
-        return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
+    private var resultsController: ResultsController<StorageTopEarnerStats>?
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
@@ -38,6 +34,7 @@ final class TopPerformerDataViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
+    private let storageManager: StorageManagerType
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     private lazy var viewModel = DashboardTopPerformersViewModel(state: .loading) { [weak self] topPerformersItem in
@@ -49,7 +46,7 @@ final class TopPerformerDataViewController: UIViewController {
     // MARK: - Computed Properties
 
     private var topEarnerStats: TopEarnerStats? {
-        return resultsController.fetchedObjects.first
+        resultsController?.fetchedObjects.first
     }
 
     private var tabDescription: String {
@@ -73,6 +70,7 @@ final class TopPerformerDataViewController: UIViewController {
          siteTimeZone: TimeZone,
          currentDate: Date,
          timeRange: StatsTimeRangeV4,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.siteID = siteID
@@ -80,6 +78,7 @@ final class TopPerformerDataViewController: UIViewController {
         self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
+        self.storageManager = storageManager
         self.usageTracksEventEmitter = usageTracksEventEmitter
         super.init(nibName: nil, bundle: nil)
     }
@@ -96,7 +95,7 @@ final class TopPerformerDataViewController: UIViewController {
         super.viewDidLoad()
         configureView()
         configureTopPerformersView()
-        configureResultsController()
+        updateResultsController(siteTimeZone: siteTimeZone)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -155,7 +154,9 @@ private extension TopPerformerDataViewController {
         updateUIInLoadingState()
     }
 
-    func configureResultsController() {
+    func updateResultsController(siteTimeZone: TimeZone) {
+        let resultsController = createResultsController(siteTimeZone: siteTimeZone)
+        self.resultsController = resultsController
         resultsController.onDidChangeContent = { [weak self] in
             self?.updateUIInLoadedState()
         }
@@ -168,6 +169,17 @@ private extension TopPerformerDataViewController {
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
+    }
+
+    func createResultsController(siteTimeZone: TimeZone) -> ResultsController<StorageTopEarnerStats> {
+        let formattedDateString: String = {
+            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimeZone)
+            return StatsStoreV4.buildDateString(from: date, with: granularity)
+        }()
+        let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
+        let descriptor = NSSortDescriptor(key: "date", ascending: true)
+
+        return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 }
 

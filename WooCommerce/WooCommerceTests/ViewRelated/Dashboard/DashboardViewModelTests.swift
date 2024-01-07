@@ -36,7 +36,7 @@ final class DashboardViewModelTests: XCTestCase {
     func test_statsVersion_changes_from_v4_to_v3_when_store_stats_sync_returns_noRestRoute_error() {
         // Given
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, _, completion) = action {
+            if case let .retrieveStats(_, _, _, _, _, _, _, completion) = action {
                 completion(.failure(DotcomError.noRestRoute))
             }
         }
@@ -54,11 +54,11 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
-            case let .retrieveStats(_, _, _, _, _, _, completion):
+            case let .retrieveStats(_, _, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.empty))
             case let .retrieveSiteVisitStats(_, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 completion(.failure(DotcomError.noRestRoute))
@@ -84,7 +84,7 @@ final class DashboardViewModelTests: XCTestCase {
         // `DotcomError.noRestRoute` error indicates the stats are unavailable.
         var storeStatsResult: Result<Void, Error> = .failure(DotcomError.noRestRoute)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, _, completion) = action {
+            if case let .retrieveStats(_, _, _, _, _, _, _, completion) = action {
                 completion(storeStatsResult)
             }
         }
@@ -100,73 +100,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
     }
 
-    func test_products_onboarding_announcements_take_precedence() async {
-        // Given
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkIfStoreHasProducts(_, _, completion):
-                completion(.success(false))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(_, completion):
-                completion(.success(true))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
-            switch action {
-            case let .loadMessage(_, _, _, completion):
-                completion(.success([Yosemite.JustInTimeMessage.fake()]))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-
-        // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
-
-        // Then (check announcement image because it is unique and not localized)
-        XCTAssertEqual(viewModel.announcementViewModel?.image, .emptyProductsImage)
-    }
-
-    func test_onboarding_announcement_not_displayed_when_previously_dismissed() async {
-        // Given
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkIfStoreHasProducts(_, _, completion):
-                completion(.success(false))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getFeatureAnnouncementVisibility(_, completion):
-                completion(.success(false))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-
-        prepareStoresToShowJustInTimeMessage(.success([]))
-
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-
-        // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
-
-        // Then
-        XCTAssertNil(viewModel.announcementViewModel)
-    }
-
-    func test_view_model_syncs_just_in_time_messages_when_ineligible_for_products_onboarding() async {
+    func test_view_model_syncs_just_in_time_messages() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
         prepareStoresToShowJustInTimeMessage(.success([message]))
@@ -652,6 +586,35 @@ final class DashboardViewModelTests: XCTestCase {
 
         //  Then
         XCTAssertTrue(usecase.uploadAnswersCalled)
+    }
+
+    // MARK: Install theme
+    func test_it_triggers_pending_theme_install_upon_initialization() async throws {
+        // Given
+        let themeInstaller = MockThemeInstaller()
+        _ = DashboardViewModel(siteID: sampleSiteID,
+                               themeInstaller: themeInstaller)
+
+        waitUntil {
+            themeInstaller.installPendingThemeCalled == true
+        }
+
+        //  Then
+        XCTAssertEqual(themeInstaller.installPendingThemeCalledForSiteID, sampleSiteID)
+    }
+
+    // MARK: Blaze Campaigns
+    func test_it_tracks_end_of_blaze_campaign_sync_action_when_blaze_campaign_view_reloads() async {
+        // Given
+        let waitingTimeTracker = AppStartupWaitingTimeTracker()
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, startupWaitingTimeTracker: waitingTimeTracker)
+        XCTAssertTrue(waitingTimeTracker.startupActionsPending.contains(.syncBlazeCampaigns))
+
+        // Then
+        await viewModel.reloadBlazeCampaignView()
+
+        // Then
+        XCTAssertFalse(waitingTimeTracker.startupActionsPending.contains(.syncBlazeCampaigns))
     }
 }
 

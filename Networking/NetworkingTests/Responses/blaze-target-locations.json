@@ -1,0 +1,67 @@
+[
+    {
+        "id": 1439,
+        "name": "Madrid",
+        "type": "state",
+        "parent_location": {
+            "id": 69,
+            "name": "Comunidad De Madrid",
+            "type": "region",
+            "parent_location": {
+                "id": 228,
+                "name": "Spain",
+                "type": "country",
+                "iso_code": "ESP",
+                "parent_location": {
+                    "id": 5,
+                    "name": "Europe",
+                    "type": "continent",
+                    "parent_location": null
+                }
+            }
+        }
+    },
+    {
+        "id": 2035,
+        "name": "Madre De Dios",
+        "type": "state",
+        "parent_location": {
+            "id": 57,
+            "name": "Peru",
+            "type": "country",
+            "iso_code": "PER",
+            "parent_location": {
+                "id": 8,
+                "name": "South America",
+                "type": "continent",
+                "parent_location": null
+            }
+        }
+    },
+    {
+        "id": 6457,
+        "name": "Madrid",
+        "type": "city",
+        "parent_location": {
+            "id": 1841,
+            "name": "Iowa",
+            "type": "state",
+            "parent_location": {
+                "id": 174,
+                "name": "Midwest",
+                "type": "region",
+                "parent_location": {
+                    "id": 152,
+                    "name": "United States",
+                    "type": "country",
+                    "parent_location": {
+                        "id": 6,
+                        "name": "North America",
+                        "type": "continent",
+                        "parent_location": null
+                    }
+                }
+            }
+        }
+    }
+]

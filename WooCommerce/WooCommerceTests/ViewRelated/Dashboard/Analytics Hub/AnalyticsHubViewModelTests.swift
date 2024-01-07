@@ -24,10 +24,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, completion):
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
                 completion(.success(stats))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
@@ -61,9 +61,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, completion):
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
@@ -88,9 +88,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, completion):
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
@@ -124,14 +124,14 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingSessionsCard: AnalyticsReportCardCurrentPeriodViewModel?
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, completion):
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
                 loadingRevenueCard = vm.revenueCard
                 loadingOrdersCard = vm.ordersCard
                 loadingProductsCard = vm.productsStatsCard
                 loadingItemsSoldCard = vm.itemsSoldCard
                 completion(.success(stats))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
                 completion(.success(topEarners))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
@@ -191,9 +191,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, analytics: analytics)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, completion):
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, completion):
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 completion(.success(.fake()))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 completion(.success(.fake()))

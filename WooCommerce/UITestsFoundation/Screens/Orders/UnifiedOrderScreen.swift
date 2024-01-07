@@ -163,6 +163,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Opens the Customer Note screen.
     /// - Returns: Customer Note screen object.
     public func openCustomerNoteScreen() throws -> CustomerNoteScreen {
+        addNoteButton.scrollIntoView()
         addNoteButton.tap()
         return try CustomerNoteScreen()
     }

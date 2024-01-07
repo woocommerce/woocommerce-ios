@@ -13,7 +13,16 @@ final class MockThemeInstaller: ThemeInstallerProtocol {
         installPendingThemeCalled = true
     }
 
+    var installThemeCalledWithThemeID: String?
+    var installThemeCalledForSiteID: Int64?
+    var installThemeError: Error?
+    var installThemeCalled = false
     func install(themeID: String, siteID: Int64) async throws {
-        // no-op
+        installThemeCalledWithThemeID = themeID
+        installThemeCalledForSiteID = siteID
+        installThemeCalled = true
+        if let installThemeError {
+            throw installThemeError
+        }
     }
 }

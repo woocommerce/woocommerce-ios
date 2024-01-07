@@ -6,11 +6,14 @@
     "response": {
         "status": 200,
         "jsonBody": {
-            "access_token": "valid_token",
-            "token_type": "bearer",
-            "blog_id": "0",
-            "blog_url": null,
-            "scope": "global"
+            "success" : "true",
+            "data" : {
+                "user_id" : 123,
+                "two_step_supported_auth_types" : [
+                    "webauthn"
+                ],
+                "two_step_nonce_webauthn" : "aabbccdd"
+            }
         },
         "headers": {
             "Content-Type": "application/json",

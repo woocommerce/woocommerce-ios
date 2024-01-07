@@ -48,12 +48,15 @@ struct ProfilerThemesPickerView: View {
         }
         // Disables large title to avoid a large gap below the navigation bar.
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            carouselViewModel.trackViewAppear()
+        }
     }
 }
 
 struct ProfilerThemesPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilerThemesPickerView(carouselViewModel: .init(mode: .storeCreationProfiler), onSelectedTheme: { _ in }, onSkip: {})
+        ProfilerThemesPickerView(carouselViewModel: .init(siteID: 123, mode: .storeCreationProfiler), onSelectedTheme: { _ in }, onSkip: {})
     }
 }
 

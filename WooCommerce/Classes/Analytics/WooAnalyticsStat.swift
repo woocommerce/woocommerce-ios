@@ -185,11 +185,6 @@ public enum WooAnalyticsStat: String {
     case blazeIntroDisplayed = "blaze_intro_displayed"
     case blazeViewDismissed = "blaze_view_dismissed"
 
-    // MARK: Products Onboarding Events
-    //
-    case productsOnboardingEligible = "products_onboarding_store_is_eligible"
-    case productsOnboardingCTATapped = "products_onboarding_cta_tapped"
-
     // MARK: Store Onboarding Events
     //
     case storeOnboardingShown = "store_onboarding_shown"
@@ -414,6 +409,7 @@ public enum WooAnalyticsStat: String {
     case orderCreationEditCustomAmountTapped = "order_creation_edit_custom_amount_tapped"
     case orderCreationRemoveCustomAmountTapped = "order_creation_remove_custom_amount_tapped"
     case orderCreationClearAddressFromBottomSheetTapped = "tax_rate_auto_tax_rate_clear_address_tapped"
+    case orderFormTotalsPanelToggled = "order_form_totals_panel_toggled"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -1118,6 +1114,16 @@ public enum WooAnalyticsStat: String {
     case localAnnouncementDisplayed = "local_announcement_displayed"
     case localAnnouncementCallToActionTapped = "local_announcement_cta_tapped"
     case localAnnouncementDismissTapped = "local_announcement_dismissed"
+
+    // MARK: Themes
+    case themePickerScreenDisplayed = "theme_picker_screen_displayed"
+    case themePickerThemeSelected = "theme_picker_theme_selected"
+    case themePreviewScreenDisplayed = "theme_preview_screen_displayed"
+    case themePreviewLayoutSelected = "theme_preview_layout_selected"
+    case themePreviewPageSelected = "theme_preview_page_selected"
+    case themePreviewStartWithThemeButtonTapped = "theme_preview_start_with_theme_button_tapped"
+    case themeInstallationCompleted = "theme_installation_completed"
+    case themeInstallationFailed = "theme_installation_failed"
 }
 
 public extension WooAnalyticsStat {

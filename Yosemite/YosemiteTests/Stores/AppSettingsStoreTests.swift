@@ -359,65 +359,6 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).get())
     }
 
-    func test_loadFeedbackVisibility_for_ordersCreation_returns_true_after_marking_it_as_pending() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .ordersCreation, status: .pending) { _ in }
-        subject?.onAction(updateAction)
-
-        // When
-        var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .ordersCreation) { result in
-            visibilityResult = result
-        }
-        subject?.onAction(queryAction)
-
-        // Then
-        let result = try XCTUnwrap(visibilityResult)
-        XCTAssertTrue(result.isSuccess)
-        XCTAssertTrue(try result.get())
-
-    }
-
-    func test_loadFeedbackVisibility_for_ordersCreation_returns_false_after_marking_it_as_dismissed() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .ordersCreation, status: .dismissed) { _ in }
-        subject?.onAction(updateAction)
-
-        // When
-        var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .ordersCreation) { result in
-            visibilityResult = result
-        }
-        subject?.onAction(queryAction)
-
-        // Then
-        let result = try XCTUnwrap(visibilityResult)
-        XCTAssertTrue(result.isSuccess)
-        XCTAssertFalse(try result.get())
-
-    }
-
-    func test_loadFeedbackVisibility_for_ordersCreation_returns_false_after_marking_it_as_given() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .ordersCreation, status: .given(Date())) { _ in }
-        subject?.onAction(updateAction)
-
-        // When
-        var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .ordersCreation) { result in
-            visibilityResult = result
-        }
-        subject?.onAction(queryAction)
-
-        // Then
-        let result = try XCTUnwrap(visibilityResult)
-        XCTAssertTrue(result.isSuccess)
-        XCTAssertFalse(try result.get())
-    }
-
     func test_loadOrderAddOnsSwitchState_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)

@@ -54,10 +54,42 @@ public final class BlazeStore: Store {
         }
 
         switch action {
+        case let .createCampaign(campaign, siteID, onCompletion):
+            createCampaign(campaign: campaign, siteID: siteID, onCompletion: onCompletion)
         case let .synchronizeCampaigns(siteID, pageNumber, onCompletion):
             synchronizeCampaigns(siteID: siteID,
                                  pageNumber: pageNumber,
                                  onCompletion: onCompletion)
+        case let .synchronizeTargetDevices(siteID, locale, onCompletion):
+            synchronizeTargetDevices(siteID: siteID, locale: locale, onCompletion: onCompletion)
+        case let .synchronizeTargetLanguages(siteID, locale, onCompletion):
+            synchronizeTargetLanguages(siteID: siteID, locale: locale, onCompletion: onCompletion)
+        case let .synchronizeTargetTopics(siteID, locale, onCompletion):
+            synchronizeTargetTopics(siteID: siteID, locale: locale, onCompletion: onCompletion)
+        case let .fetchTargetLocations(siteID, query, locale, onCompletion):
+            fetchTargetLocations(siteID: siteID, query: query, locale: locale, onCompletion: onCompletion)
+        case let .fetchForecastedImpressions(siteID, input, onCompletion):
+            fetchForecastedImpressions(siteID: siteID, input: input, onCompletion: onCompletion)
+        }
+    }
+}
+
+// MARK: - Create a new Blaze campaign
+//
+private extension BlazeStore {
+    func createCampaign(campaign: CreateBlazeCampaign,
+                        siteID: Int64,
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                // TODO-11540: remove stubbed result when the API is ready.
+                try await mockResponse(stubbedResult: (), onExecution: {
+                    try await remote.createCampaign(campaign, siteID: siteID)
+                })
+                onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
         }
     }
 }
@@ -118,5 +150,226 @@ private extension BlazeStore {
 
             storageCampaign.update(with: campaign)
         }
+    }
+}
+
+// MARK: - Synchronize target devices
+private extension BlazeStore {
+
+    func synchronizeTargetDevices(siteID: Int64, locale: String, onCompletion: @escaping (Result<[BlazeTargetDevice], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stubbedResult = [
+                    BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale),
+                    BlazeTargetDevice(id: "desktop", name: "Desktop", locale: locale)
+                ]
+                // TODO-11540: remove stubbed result when the API is ready.
+                let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetDevices(for: siteID, locale: locale)
+                })
+                insertStoredTargetDevicesInBackground(readonlyDevices: devices, locale: locale) {
+                    onCompletion(.success(devices))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Removes BlazeTargetDevice entities with the given locale
+    /// and inserts specified BlazeTargetDevice Entities in a background thread.
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func insertStoredTargetDevicesInBackground(readonlyDevices: [Networking.BlazeTargetDevice],
+                                               locale: String,
+                                               onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteBlazeTargetDevices(locale: locale)
+            for device in readonlyDevices {
+                let storageDevice = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetDevice.self)
+                storageDevice.update(with: device)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+// MARK: - Synchronize target languages
+private extension BlazeStore {
+    func synchronizeTargetLanguages(siteID: Int64,
+                                    locale: String,
+                                    onCompletion: @escaping (Result<[BlazeTargetLanguage], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stubbedResult = [
+                    BlazeTargetLanguage(id: "en", name: "English", locale: locale),
+                    BlazeTargetLanguage(id: "es", name: "Spanish", locale: locale)
+                ]
+                // TODO-11540: remove stubbed result when the API is ready.
+                let languages: [BlazeTargetLanguage] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetLanguages(for: siteID, locale: locale)
+                })
+                insertStoredTargetLanguagesInBackground(readonlyLanguages: languages, locale: locale) {
+                    onCompletion(.success(languages))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Removes BlazeTargetLanguage entities with the given locale
+    /// and inserts specified BlazeTargetLanguage Entities in a background thread.
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func insertStoredTargetLanguagesInBackground(readonlyLanguages: [Networking.BlazeTargetLanguage],
+                                                 locale: String,
+                                                 onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteBlazeTargetLanguages(locale: locale)
+            for language in readonlyLanguages {
+                let storageLanguage = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetLanguage.self)
+                storageLanguage.update(with: language)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+// MARK: - Synchronize target topics
+private extension BlazeStore {
+    func synchronizeTargetTopics(siteID: Int64,
+                                 locale: String,
+                                 onCompletion: @escaping (Result<[BlazeTargetTopic], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stubbedResult = [
+                    BlazeTargetTopic(id: "IAB1", description: "Arts & Entertainment", locale: locale),
+                    BlazeTargetTopic(id: "IAB2", description: "Automotive", locale: locale)
+                ]
+                // TODO-11540: remove stubbed result when the API is ready.
+                let topics: [BlazeTargetTopic] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetTopics(for: siteID, locale: locale)
+                })
+                insertStoredTargetTopicsInBackground(readonlyTopics: topics, locale: locale) {
+                    onCompletion(.success(topics))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Removes BlazeTargetTopic entities with the given locale
+    /// and inserts specified BlazeTargetTopic Entities in a background thread.
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func insertStoredTargetTopicsInBackground(readonlyTopics: [Networking.BlazeTargetTopic],
+                                              locale: String,
+                                              onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteBlazeTargetTopics(locale: locale)
+            for topic in readonlyTopics {
+                let storageTopic = derivedStorage.insertNewObject(ofType: Storage.BlazeTargetTopic.self)
+                storageTopic.update(with: topic)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+// MARK: - Fetch target location by keyword
+private extension BlazeStore {
+    func fetchTargetLocations(siteID: Int64,
+                              query: String,
+                              locale: String,
+                              onCompletion: @escaping (Result<[BlazeTargetLocation], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                // TODO-11540: remove stubbed result when the API is ready.
+                let stubbedResult: [BlazeTargetLocation] = [
+                    .init(id: 1439,
+                          name: "Madrid",
+                          type: "state",
+                          parentLocation: .init(id: 69,
+                                                name: "Comunidad De Madrid",
+                                                type: "region",
+                                                parentLocation: .init(id: 228,
+                                                                      name: "Spain",
+                                                                      type: "country"))),
+                    .init(id: 2035,
+                          name: "Madre De Dios",
+                          type: "state",
+                          parentLocation: .init(id: 57, name: "Peru", type: "country")),
+                    .init(id: 6457,
+                          name: "Madrid",
+                          type: "city",
+                          parentLocation: .init(id: 1841,
+                                                name: "Iowa",
+                                                type: "state",
+                                                parentLocation: .init(id: 174,
+                                                                      name: "Midwest",
+                                                                      type: "region",
+                                                                      parentLocation: .init(id: 152,
+                                                                                            name: "United States",
+                                                                                            type: "country"))))
+                ]
+                let locations: [BlazeTargetLocation] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)
+                })
+                onCompletion(.success(locations))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+}
+
+// MARK: - Fetch forecasted impressions for a campaign to be created
+private extension BlazeStore {
+    func fetchForecastedImpressions(siteID: Int64,
+                                    input: BlazeForecastedImpressionsInput,
+                                    onCompletion: @escaping (Result<BlazeImpressions, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                // TODO-11540: remove stubbed result when the API is ready.
+                let stubbedResult = BlazeImpressions(totalImpressionsMin: 5000, totalImpressionsMax: 10000)
+                let impressions: BlazeImpressions = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchForecastedImpressions(for: siteID, with: input)
+                })
+                onCompletion(.success(impressions))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+
+
+    }
+}
+
+// MARK: - Helper for mocking response
+private extension BlazeStore {
+    static var isRunningTests: Bool {
+        NSClassFromString("XCTestCase") != nil
+    }
+
+    func mockResponse<T>(stubbedResult: T, onExecution: () async throws -> T) async throws -> T {
+        // skips stubbed result for unit tests
+        guard Self.isRunningTests else {
+            return stubbedResult
+        }
+        return try await onExecution()
     }
 }

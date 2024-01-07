@@ -123,13 +123,21 @@ struct BlazeCampaignListView: View {
             celebrationBottomSheet()
         }
         .sheet(isPresented: $viewModel.shouldShowIntroView) {
-            BlazeCampaignIntroView(onStartCampaign: {
+            let onCreateCampaignClosure = {
                 viewModel.shouldShowIntroView = false
                 onCreateCampaign()
                 viewModel.didSelectCreateCampaign(source: .introView)
-            }, onDismiss: {
+            }
+            let onDismissClosure = {
                 viewModel.shouldShowIntroView = false
-            })
+            }
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+                BlazeCreateCampaignIntroView(onCreateCampaign: onCreateCampaignClosure,
+                                             onDismiss: onDismissClosure)
+            } else {
+                BlazeCampaignIntroView(onStartCampaign: onCreateCampaignClosure,
+                                       onDismiss: onDismissClosure)
+            }
         }
     }
 }

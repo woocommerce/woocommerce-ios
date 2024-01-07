@@ -125,11 +125,6 @@ final class OrderListViewModel {
     ///
     @Published private(set) var topBanner: TopBanner = .none
 
-    /// If true, no orders banner will be shown as the user has told us that they are not interested in this information.
-    /// It is persisted through app sessions.
-    ///
-    @Published var hideOrdersBanners: Bool = true
-
     init(siteID: Int64,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          stores: StoresManager = ServiceLocator.stores,
@@ -172,23 +167,6 @@ final class OrderListViewModel {
         bindTopBannerState()
     }
 
-    func dismissOrdersBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .ordersCreation,
-                                               status: .dismissed) { [weak self] result in
-            if let error = result.failure {
-                ServiceLocator.crashLogging.logError(error)
-            }
-
-            self?.hideOrdersBanners = true
-        }
-
-        stores.dispatch(action)
-    }
-
-    func updateBannerVisibility() {
-        loadOrdersBannerVisibility()
-    }
-
     /// Handles extra syncing upon pull-to-refresh.
     func onPullToRefresh() {
         /// syncs payment gateways
@@ -214,20 +192,6 @@ final class OrderListViewModel {
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
-    }
-
-    private func loadOrdersBannerVisibility() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .ordersCreation) { [weak self] result in
-            switch result {
-            case .success(let visible):
-                self?.hideOrdersBanners = !visible
-            case.failure(let error):
-                self?.hideOrdersBanners = true
-                ServiceLocator.crashLogging.logError(error)
-            }
-        }
-
-        stores.dispatch(action)
     }
 
     @objc private func handleAppDeactivation() {
@@ -346,15 +310,16 @@ private extension OrderListViewModel {
 // MARK: - Banners
 
 extension OrderListViewModel {
-    /// Figures out what top banner should be shown based on the view model internal state.
+    /// Figures out if should show a data loading error as top banner based on the view model internal state.
     ///
     private func bindTopBannerState() {
-        Publishers.CombineLatest($dataLoadingError, $hideOrdersBanners)
-            .map { loadingError, hasDismissedOrdersBanners -> TopBanner in
-                if let loadingError {
-                    return .error(loadingError)
+        $dataLoadingError
+            .map { loadingError -> TopBanner in
+                if let error = loadingError {
+                    return .error(error)
+                } else {
+                    return .none
                 }
-                return hasDismissedOrdersBanners ? .none : .orderCreation
             }
             .assign(to: &$topBanner)
     }
@@ -404,13 +369,11 @@ extension OrderListViewModel {
     ///
     enum TopBanner: Equatable {
         case error(Error)
-        case orderCreation
         case none
 
         static func ==(lhs: TopBanner, rhs: TopBanner) -> Bool {
             switch (lhs, rhs) {
             case (.error, .error),
-                (.orderCreation, .orderCreation),
                 (.none, .none):
                 return true
             default:

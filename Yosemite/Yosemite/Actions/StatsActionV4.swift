@@ -12,17 +12,19 @@ public enum StatsActionV4: Action {
     /// Synchronizes `OrderStats` for the provided siteID, time range, and date.
     ///
     case retrieveStats(siteID: Int64,
-        timeRange: StatsTimeRangeV4,
-        earliestDateToInclude: Date,
-        latestDateToInclude: Date,
-        quantity: Int,
-        forceRefresh: Bool,
-        onCompletion: (Result<Void, Error>) -> Void)
+                       timeRange: StatsTimeRangeV4,
+                       timeZone: TimeZone,
+                       earliestDateToInclude: Date,
+                       latestDateToInclude: Date,
+                       quantity: Int,
+                       forceRefresh: Bool,
+                       onCompletion: (Result<Void, Error>) -> Void)
 
     /// Retrieves `OrderStats` for the provided siteID, and time range, without saving them to the Storage layer.
     ///
     case retrieveCustomStats(siteID: Int64,
                              unit: StatsGranularityV4,
+                             timeZone: TimeZone,
                              earliestDateToInclude: Date,
                              latestDateToInclude: Date,
                              quantity: Int,
@@ -42,6 +44,7 @@ public enum StatsActionV4: Action {
     ///
     case retrieveTopEarnerStats(siteID: Int64,
                                 timeRange: StatsTimeRangeV4,
+                                timeZone: TimeZone,
                                 earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
                                 quantity: Int,

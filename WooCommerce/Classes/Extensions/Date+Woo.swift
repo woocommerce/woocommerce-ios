@@ -8,7 +8,7 @@ extension Date {
     /// Returns the String Representation of the receiver, with the specified Date + Time Styles applied.
     /// The string returned will be localised in the device's current locale.
     ///
-    func toString(dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style, timeZone: TimeZone = .current) -> String {
+    func toString(dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style, timeZone: TimeZone = .current, locale: Locale = .current) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = dateStyle
         formatter.timeStyle = timeStyle
@@ -16,6 +16,13 @@ extension Date {
         formatter.timeZone = timeZone
 
         return formatter.string(from: self)
+    }
+
+    /// Same as `toString(dateStyle:timeStyle:)` but in the site time zone.
+    /// The string returned will be localized in the device's current locale.
+    ///
+    func toStringInSiteTimeZone(dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style, locale: Locale = .current) -> String {
+        toString(dateStyle: dateStyle, timeStyle: timeStyle, timeZone: .siteTimezone, locale: locale)
     }
 
     /// Returns a localized update string relative to the receiver if it's within one day of now *or*

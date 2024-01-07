@@ -162,8 +162,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let currencySymbol = try container.decode(String.self, forKey: .currencySymbol)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
 
-        let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
-        let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
+        let dateCreated = (try? container.decodeIfPresent(Date.self, forKey: .dateCreated)) ?? Date()
+        let dateModified = (try? container.decodeIfPresent(Date.self, forKey: .dateModified)) ?? Date()
         let datePaid = try container.decodeIfPresent(Date.self, forKey: .datePaid)
 
         let discountTotal = try container.decode(String.self, forKey: .discountTotal)

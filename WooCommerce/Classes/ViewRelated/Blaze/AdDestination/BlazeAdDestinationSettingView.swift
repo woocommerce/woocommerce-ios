@@ -7,7 +7,7 @@ struct BlazeAdDestinationSettingView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                Text("Destination URL")
+                sectionHeading(title: "Destination URL")
 
                 destinationItem(title: "The Product URL",
                                 subtitle: "It will link to https://woo.com/",
@@ -17,7 +17,7 @@ struct BlazeAdDestinationSettingView: View {
                 destinationItem(title: "The site home",
                                 subtitle: "It will link to https://woo.com/")
 
-                Text("URL Parameters")
+                sectionHeading(title: "URL Parameters")
 
                 parameterItem(itemName: "specialpromo")
 
@@ -25,10 +25,14 @@ struct BlazeAdDestinationSettingView: View {
                     // todo
                 }
                 .buttonStyle(PlusButtonStyle())
+                .padding([.leading, .trailing], Layout.contentSpacing)
 
-                Text("2096 characters remaining")
+                VStack {
+                    Text("2096 characters remaining")
 
-                Text("Destination: http://woo.com/")
+                    Text("Destination: http://woo.com/")
+                }
+                .background(Color(.systemGray6))
 
                 Spacer()
             }
@@ -45,7 +49,14 @@ struct BlazeAdDestinationSettingView: View {
         }
     }
 
-    @ViewBuilder
+    private func sectionHeading(title: String) -> some View {
+        Text(title.uppercased())
+            .subheadlineStyle()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(Layout.sectionHeadingPadding)
+            .background(Color(.systemGray6))
+    }
+
     private func destinationItem(title: String,
                                  subtitle: String,
                                  showCheckmark: Bool = false,
@@ -73,9 +84,9 @@ struct BlazeAdDestinationSettingView: View {
                 }
             }
         }
+        .padding(Layout.contentSpacing)
     }
 
-    @ViewBuilder
     private func parameterItem(itemName: String)  -> some View {
         VStack {
             HStack {
@@ -92,6 +103,7 @@ private extension BlazeAdDestinationSettingView {
     enum Layout {
         static let verticalSpacing: CGFloat = 16
         static let contentSpacing: CGFloat = 16
+        static let sectionHeadingPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 8, trailing: 16)
     }
 
     enum Localization {

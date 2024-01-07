@@ -10,12 +10,12 @@ struct BlazeAdDestinationSettingView: View {
                 sectionHeading(title: "Destination URL")
 
                 destinationItem(title: "The Product URL",
-                                subtitle: "It will link to https://woo.com/",
+                                subtitle: "It will link to: https://woo.com/2022/04/11/1234/test/",
                                 showCheckmark: true,
                                 showBottomDivider: true)
 
                 destinationItem(title: "The site home",
-                                subtitle: "It will link to https://woo.com/")
+                                subtitle: "It will link to: https://woo.com/2022/04/11/1234/test/")
 
                 sectionHeading(title: "URL Parameters")
 
@@ -65,26 +65,25 @@ struct BlazeAdDestinationSettingView: View {
             if showCheckmark {
                 Image(systemName: "checkmark")
                     .padding(.leading, Layout.contentSpacing)
+                    .foregroundColor(Color(uiColor: .accent))
             } else {
                 Image(systemName: "checkmark")
-                    .hidden() // Small hack to make the icon space consistent while not showing the icon.
                     .padding(.leading, Layout.contentSpacing)
+                    .hidden() // Small hack to make the icon space consistent while not showing the icon.
             }
 
-            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+            VStack(alignment: .leading) {
                 Text(title)
-                    .font(.body)
-                    .fontWeight(.bold)
-
+                    .bodyStyle()
                 Text(subtitle)
-                    .font(.caption)
+                    .subheadlineStyle()
+                    .multilineTextAlignment(.leading)
 
                 if showBottomDivider {
                     Divider()
                 }
             }
         }
-        .padding(Layout.contentSpacing)
     }
 
     private func parameterItem(itemName: String)  -> some View {

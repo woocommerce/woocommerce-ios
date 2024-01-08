@@ -211,8 +211,6 @@ extension PaymentMethodsView {
                                                 comment: "Tap to Pay on iPhone method title on the select payment method screen")
         static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen")
         static let scanToPay = NSLocalizedString("Scan to Pay", comment: "Scan to Pay method title on the select payment method screen")
-        static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
-        static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
     }
 

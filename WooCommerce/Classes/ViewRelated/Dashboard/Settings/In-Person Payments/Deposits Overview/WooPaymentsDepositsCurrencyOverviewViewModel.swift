@@ -69,9 +69,14 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
                 difference += 7
             }
             scheduledDate = calendar.date(byAdding: .day, value: difference, to: currentDate)
-        case let .monthly(anchor: data):
-            print(data)
-            break
+        case let .monthly(anchor: targetMonth):
+            let currentMonth = calendar.component(.month, from: currentDate)
+            var difference = targetMonth - currentMonth
+            // Adjust if needed, so the difference is always positive:
+            if difference < 0 {
+                difference += 12
+            }
+            scheduledDate = calendar.date(byAdding: .month, value: difference, to: currentDate)
         case .manual:
             break
         }

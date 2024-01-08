@@ -20,7 +20,7 @@ struct CashPaymentTenderView: View {
                         FormattableAmountTextField(viewModel: viewModel.formattableAmountViewModel)
                             .keyboardType(.decimalPad)
                             .textFieldStyle(.plain)
-                            .font(.system(size: 48, weight: .bold))
+                            .font(.system(size: Layout.amountFontSize, weight: .bold))
                             .onTapGesture {
                                 viewModel.onCustomerPaidAmountTapped()
                             }
@@ -34,7 +34,7 @@ struct CashPaymentTenderView: View {
                         Text(Localization.changeDueTitle)
                             .foregroundColor(Color(.secondaryLabel))
                         Text(viewModel.changeDue)
-                            .font(.system(size: 48, weight: .bold))
+                            .font(.system(size: Layout.amountFontSize, weight: .bold))
                             .foregroundColor(Color(.label))
                             .opacity(viewModel.hasChangeDue ? 1: 0.18)
                     }
@@ -78,6 +78,7 @@ struct CashPaymentTenderView: View {
 
 extension CashPaymentTenderView {
     enum Layout {
+        static let amountFontSize: CGFloat = 48
         static let verticalSpacing: CGFloat = 24
         static let dividerHorizontalPadding: CGFloat = 16
         static let sectionPadding: EdgeInsets = .init(top: 24, leading: 16, bottom: 8, trailing: 16)

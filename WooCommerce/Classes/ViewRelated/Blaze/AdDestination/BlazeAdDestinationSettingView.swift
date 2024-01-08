@@ -13,6 +13,7 @@ struct BlazeAdDestinationSettingView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
+                // URL destination section
                 VStack(spacing: 0) {
                     sectionHeading(title: Localization.destinationUrlHeading)
                     destinationItem(title: Localization.productURLLabel,
@@ -26,8 +27,8 @@ struct BlazeAdDestinationSettingView: View {
                 }
                 .padding(.bottom, Layout.sectionVerticalSpacing)
 
+                // URL parameters section
                 VStack {
-                    /// URL Parameters section
                     sectionHeading(title: Localization.urlParametersHeading)
 
                     VStack {
@@ -42,21 +43,25 @@ struct BlazeAdDestinationSettingView: View {
                         .padding([.leading, .trailing], Layout.contentSpacing)
                         .padding(.bottom, Layout.parametersVerticalSpacing)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(.systemBackground))
-
-                    VStack(alignment: .leading) {
-                        Text(viewModel.remainingCharactersLabel)
-                            .padding(.bottom, Layout.contentVerticalSpacing)
-                        Text(viewModel.finalDestinationLabel)
-                    }
-                    .subheadlineStyle()
-                    .padding([.leading, .trailing], Layout.contentSpacing)
-                    .padding([.top, .bottom], Layout.contentVerticalSpacing)
-                    .background(Color(.systemGray6))
                 }
+
+                // Remaining characters and final destination
+                VStack(alignment: .leading) {
+                    Text(viewModel.remainingCharactersLabel)
+                        .subheadlineStyle()
+                        .padding(.bottom, Layout.contentVerticalSpacing)
+
+                    Text(viewModel.finalDestinationLabel)
+                        .subheadlineStyle()
+                }
+                .padding([.leading, .trailing], Layout.contentSpacing)
+                .padding([.top, .bottom], Layout.contentVerticalSpacing)
+                .background(Color(.systemGray6))
+
                 Spacer()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color(.systemGray6))
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.adDestination)
@@ -104,6 +109,7 @@ struct BlazeAdDestinationSettingView: View {
 
                 if showBottomDivider {
                     Divider()
+                        .background(Color(.systemGray3))
                 }
             }
         }
@@ -130,7 +136,7 @@ struct BlazeAdDestinationSettingView: View {
 
             Rectangle()
                 .frame(height: 1)
-                .foregroundColor(Color(.systemGray6))
+                .foregroundColor(Color(.systemGray3))
                 .padding(.leading, Layout.contentSpacing)
         }
     }

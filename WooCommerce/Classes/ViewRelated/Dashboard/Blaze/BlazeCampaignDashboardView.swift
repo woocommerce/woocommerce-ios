@@ -44,7 +44,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 
 private extension BlazeCampaignDashboardViewHostingController {
 
-    private func createProductSelectorViewController() -> ProductSelectorViewController {
+    private var productSelectorViewController: ProductSelectorViewController {
         let productSelectorViewModel = ProductSelectorViewModel(
             siteID: viewModel.siteID,
             purchasableItemsOnly: true,
@@ -89,7 +89,7 @@ private extension BlazeCampaignDashboardViewHostingController {
 
     /// Handles navigation to the Blaze product selector view
     func navigateToBlazeProductSelector(source: BlazeSource) {
-        blazeNavigationController.viewControllers = [createProductSelectorViewController()]
+        blazeNavigationController.viewControllers = [productSelectorViewController]
         parentNavigationController?.present(blazeNavigationController, animated: true, completion: nil)
     }
 

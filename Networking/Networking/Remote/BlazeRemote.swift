@@ -157,6 +157,8 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         return try await enqueue(request, mapper: mapper)
     }
 
+    /// Fetches AI suggestions for new campaign tagline and description.
+    ///
     public func fetchAISuggestions(siteID: Int64,
                                    productID: Int64) async throws -> [BlazeAISuggestion] {
         let path = Paths.aiSuggestions(siteID: siteID)

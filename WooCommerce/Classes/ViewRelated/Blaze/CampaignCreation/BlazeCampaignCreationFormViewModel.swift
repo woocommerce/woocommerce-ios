@@ -22,16 +22,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private var duration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
 
     // Target options
-    private var locations: [Int64]?
-    private var languages: [String]?
-    private var devices: [String]?
-    private var pageTopics: [String]?
+    private(set) var locations: Set<BlazeTargetLocation>?
+    private(set) var languages: Set<BlazeTargetLanguage>?
+    private(set) var devices: Set<BlazeTargetDevice>?
+    private(set) var pageTopics: Set<BlazeTargetTopic>?
 
     var targetOptions: BlazeTargetOptions? {
         guard locations != nil || languages != nil || devices != nil || pageTopics != nil else {
             return nil
         }
-        return BlazeTargetOptions(locations: locations, languages: languages, devices: devices, pageTopics: pageTopics)
+        return BlazeTargetOptions(locations: locations?.map { $0.id },
+                                  languages: languages?.map { $0.id },
+                                  devices: devices?.map { $0.id },
+                                  pageTopics: pageTopics?.map { $0.id })
     }
 
     var budgetSettingViewModel: BlazeBudgetSettingViewModel {
@@ -45,6 +48,12 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.duration = duration
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
+        }
+    }
+
+    var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel {
+        BlazeTargetLanguagePickerViewModel(siteID: siteID) { [weak self] selectedLanguages in
+            self?.languages = selectedLanguages
         }
     }
 

@@ -61,7 +61,7 @@ struct BlazeCampaignCreationForm: View {
 
                 VStack(spacing: 0) {
                     // Language
-                    detailView(title: Localization.language, content: "English, Chinese") {
+                    detailView(title: Localization.language, content: viewModel.targetLanguageText) {
                         isShowingLanguagePicker = true
                     }
 

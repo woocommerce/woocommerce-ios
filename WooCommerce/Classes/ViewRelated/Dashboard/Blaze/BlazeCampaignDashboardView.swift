@@ -8,7 +8,7 @@ import Kingfisher
 final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingController<BlazeCampaignDashboardView> {
     private let viewModel: BlazeCampaignDashboardViewModel
     private let parentNavigationController: UINavigationController?
-    private var blazeNavigationController: UINavigationController?
+    private var blazeNavigationController: WooNavigationController?
 
     init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController?) {
         self.viewModel = viewModel
@@ -55,7 +55,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 
 private extension BlazeCampaignDashboardViewHostingController {
     private func createBlazeNavigationController() {
-        blazeNavigationController = UINavigationController(rootViewController: createProductSelectorViewController())
+        blazeNavigationController = WooNavigationController(rootViewController: createProductSelectorViewController())
     }
 
     private func createProductSelectorViewController() -> ProductSelectorViewController {
@@ -104,7 +104,6 @@ private extension BlazeCampaignDashboardViewHostingController {
     /// Handles navigation to the Blaze product selector view
     func navigateToBlazeProductSelector(source: BlazeSource) {
         if let blazeNavController = blazeNavigationController {
-            blazeNavController.modalPresentationStyle = .pageSheet
             parentNavigationController?.present(blazeNavController, animated: true, completion: nil)
         }
     }

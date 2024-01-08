@@ -925,6 +925,9 @@
 		EE1CB9092B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9052B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift */; };
 		EE1CB90A2B4BC8C500AD24D5 /* CreateBlazeCampaignMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9062B4BC8C500AD24D5 /* CreateBlazeCampaignMapper.swift */; };
 		EE1CB90B2B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9072B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift */; };
+		EE1CB90E2B4BC99E00AD24D5 /* BlazeAISuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB90D2B4BC99E00AD24D5 /* BlazeAISuggestion.swift */; };
+		EE1CB9122B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9112B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift */; };
+		EE1CB9162B4BCFA800AD24D5 /* blaze-ai-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = EE1CB9152B4BCFA800AD24D5 /* blaze-ai-suggestions.json */; };
 		EE1D9A9F2ACD6BA60020D817 /* AIProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1D9A9E2ACD6BA60020D817 /* AIProduct.swift */; };
 		EE28C7DA2AC17961004A69F4 /* generate-product-failure.json in Resources */ = {isa = PBXBuildFile; fileRef = EE28C7D72AC17960004A69F4 /* generate-product-failure.json */; };
 		EE28C7DB2AC17961004A69F4 /* generate-product-invalid-token.json in Resources */ = {isa = PBXBuildFile; fileRef = EE28C7D82AC17961004A69F4 /* generate-product-invalid-token.json */; };
@@ -1976,6 +1979,9 @@
 		EE1CB9052B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlazeTargetOptionMappers.swift; sourceTree = "<group>"; };
 		EE1CB9062B4BC8C500AD24D5 /* CreateBlazeCampaignMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateBlazeCampaignMapper.swift; sourceTree = "<group>"; };
 		EE1CB9072B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlazeImpressionsMapper.swift; sourceTree = "<group>"; };
+		EE1CB90D2B4BC99E00AD24D5 /* BlazeAISuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAISuggestion.swift; sourceTree = "<group>"; };
+		EE1CB9112B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAISuggestionListMapper.swift; sourceTree = "<group>"; };
+		EE1CB9152B4BCFA800AD24D5 /* blaze-ai-suggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-ai-suggestions.json"; sourceTree = "<group>"; };
 		EE1D9A9E2ACD6BA60020D817 /* AIProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProduct.swift; sourceTree = "<group>"; };
 		EE28C7D72AC17960004A69F4 /* generate-product-failure.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-failure.json"; sourceTree = "<group>"; };
 		EE28C7D82AC17961004A69F4 /* generate-product-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-invalid-token.json"; sourceTree = "<group>"; };
@@ -2646,6 +2652,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				EE1CB9152B4BCFA800AD24D5 /* blaze-ai-suggestions.json */,
 				8617EDA72B3C0E3800BD9D1B /* blaze-impressions.json */,
 				DEA493702B3997ED00EED015 /* blaze-target-devices.json */,
 				DEA4936E2B3997ED00EED015 /* blaze-target-languages.json */,
@@ -3441,6 +3448,7 @@
 		EE1CB8F22B4BC7F300AD24D5 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
+				EE1CB90C2B4BC96F00AD24D5 /* AI */,
 				EE1CB8FB2B4BC85B00AD24D5 /* BlazeCampaign.swift */,
 				EE1CB8FE2B4BC85B00AD24D5 /* BlazeImpressions.swift */,
 				EE1CB8FC2B4BC85B00AD24D5 /* BlazeTargetOptions.swift */,
@@ -3456,8 +3464,17 @@
 				EE1CB9072B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift */,
 				EE1CB9052B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift */,
 				EE1CB9062B4BC8C500AD24D5 /* CreateBlazeCampaignMapper.swift */,
+				EE1CB9112B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift */,
 			);
 			path = Blaze;
+			sourceTree = "<group>";
+		};
+		EE1CB90C2B4BC96F00AD24D5 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				EE1CB90D2B4BC99E00AD24D5 /* BlazeAISuggestion.swift */,
+			);
+			path = AI;
 			sourceTree = "<group>";
 		};
 		EE338A0A294AF92A00183934 /* AppliicationPassword */ = {
@@ -3932,6 +3949,7 @@
 				EEE846A32A54745F005239B6 /* identify-language-failure.json in Resources */,
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				31054718262E2F5E00C5C02B /* wcpay-payment-intent-requires-confirmation.json in Resources */,
+				EE1CB9162B4BCFA800AD24D5 /* blaze-ai-suggestions.json in Resources */,
 				DE66C5672977CEB800DAA978 /* shipping-label-status-success-without-data.json in Resources */,
 				D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */,
 				D865CE65278CA202002C8520 /* stripe-payment-intent-canceled.json in Resources */,
@@ -4225,6 +4243,7 @@
 				B505F6EA20BEFC3700BB1B69 /* MockNetwork.swift in Sources */,
 				CC9A24A32641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift in Sources */,
 				CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */,
+				EE1CB90E2B4BC99E00AD24D5 /* BlazeAISuggestion.swift in Sources */,
 				03DCB772262591D900C8953D /* CouponsRemote.swift in Sources */,
 				CE6BFEE52236BF05005C79FB /* Product.swift in Sources */,
 				077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */,
@@ -4301,6 +4320,7 @@
 				EE57C1152979371B00BC31E7 /* ApplicationPassword.swift in Sources */,
 				B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */,
 				DE78DE462B2AE880002E58DE /* WordPressPage.swift in Sources */,
+				EE1CB9122B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift in Sources */,
 				B556FD69211CE2EC00B5DAE7 /* NetworkError.swift in Sources */,
 				EE078D912AD2EFBA00C1199E /* JWTokenMapper.swift in Sources */,
 				024124862AC93E470035A247 /* OrderItemBundleItem.swift in Sources */,

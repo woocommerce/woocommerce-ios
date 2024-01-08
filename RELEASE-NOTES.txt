@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.9
+-----
+
+
 16.8
 -----
 - [**] Payments: merchants can collect payment directly from the order creation form [https://github.com/woocommerce/woocommerce-ios/pull/11490]

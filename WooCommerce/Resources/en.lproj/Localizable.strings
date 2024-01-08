@@ -125,12 +125,6 @@ which should be translated separately and considered part of this sentence. */
 /* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
 "%1$d Category" = "%1$d Category";
 
-/* Singular summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
-"%1$d deposit" = "%1$d deposit";
-
-/* Plural summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
-"%1$d deposits" = "%1$d deposits";
-
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "%1$d item";
 
@@ -479,7 +473,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner
    Title on the action sheet to select an option for adding new product */
 "Add a product" = "Add a product";
 
@@ -522,9 +515,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Add Category";
-
-/* Title for the Coupon screen during order creation */
-"Add Coupon" = "Add Coupon";
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Add credit card";
@@ -575,8 +565,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Add File";
 
-/* Title of the add gift card screen in the order form.
-   Title text of the button that adds shipping line when creating a new order */
+/* Title of the add gift card screen in the order form. */
 "Add Gift Card" = "Add Gift Card";
 
 /* Description for the text field on the add product features screen */
@@ -637,17 +626,13 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "Add Products";
 
-/* Title for the Products onboarding banner */
-"Add products to sell" = "Add products to sell";
-
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "Add products to the group";
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Add products' downloadable files' info remotely";
 
-/* Title for the Shipping Line screen during order creation
-   Title text of the button that adds shipping line when creating a new order */
+/* Title for the Shipping Line screen during order creation */
 "Add Shipping" = "Add Shipping";
 
 /* Title for the button to add the Shipping Address in Order Details */
@@ -960,6 +945,18 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > App (Application) settings section title */
 "App Settings" = "App Settings";
 
+/* Button to dismiss the alert asking for confirmation to switch store. */
+"appCoordinator.storeReadyAlert.cancelButton" = "Cancel";
+
+/* Message of the alert to ask confirmation to switch to the newly created store. */
+"appCoordinator.storeReadyAlert.message" = "Do you want to start managing it now?";
+
+/* Button to switch to the new store. */
+"appCoordinator.storeReadyAlert.switchStoreButton" = "Switch Store";
+
+/* Title of the alert to ask confirmation to switch to the newly created store. */
+"appCoordinator.storeReadyAlert.title" = "Your new store is ready.";
+
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication.";
 
@@ -1101,9 +1098,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic family";
 
-/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
-"Available funds" = "Available funds";
-
 /* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
 "Available funds are deposited automatically, %1$@." = "Available funds are deposited automatically, %1$@.";
 
@@ -1226,15 +1220,221 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to create a product manually */
 "Blank" = "Blank";
 
-/* Title of the Blaze view.
-   Title of the hub menu Blaze button */
+/* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
 /* Title of the Blaze campaign list view */
 "Blaze Campaigns" = "Blaze Campaigns";
 
+/* Button to apply the changes on the Blaze campaign duration setting screen */
+"blazeBudgetSettingView.apply" = "Apply";
+
+/* Button to dismiss the Blaze budget setting screen */
+"blazeBudgetSettingView.cancel" = "Cancel";
+
+/* Button to dismiss the Blaze impression info screen */
+"blazeBudgetSettingView.done" = "Done";
+
+/* Label for the campaign duration on the Blaze budget setting screen */
+"blazeBudgetSettingView.duration" = "Duration";
+
+/* Button to edit the campaign duration on the Blaze budget setting screen */
+"blazeBudgetSettingView.edit" = "Edit";
+
+/* Label for the estimated impressions on the Blaze budget setting screen */
+"blazeBudgetSettingView.estimatedImpressions" = "Estimated people reached per day";
+
+/* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
+"blazeBudgetSettingView.forecastingFailed" = "Failed to estimate impressions. Retry?";
+
+/* Explanation about Blaze campaign impression */
+"blazeBudgetSettingView.impressionInfo" = "Impressions reflect the frequency with which your ad appears to potential customers.\n\nWhile exact numbers can't be assured due to fluctuating online traffic and user behavior, we aim to match your ad's actual impressions as closely as possible to your target count.\n\nRemember, impressions are about visibility, not action taken by viewers.";
+
+/* Title of the modal to explain Blaze campaign impressions */
+"blazeBudgetSettingView.impressions" = "Impressions";
+
+/* Title of the Blaze campaign duration setting screen */
+"blazeBudgetSettingView.setDuration" = "Set duration";
+
+/* Label of the start date picker on the Blaze campaign duration setting screen */
+"blazeBudgetSettingView.starts" = "Starts";
+
+/* Subtitle of the Blaze budget setting screen */
+"blazeBudgetSettingView.subtitle" = "How much would you like to spend on your product promotion campaign?";
+
+/* Title of the Blaze budget setting screen */
+"blazeBudgetSettingView.title" = "Set your budget";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingView.totalSpend" = "Total spend";
+
+/* Button to update the budget on the Blaze budget setting screen */
+"blazeBudgetSettingView.update" = "Update";
+
+/* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
+"blazeBudgetSettingViewModel.dailyAmount" = "%1$@ daily";
+
+/* The duration for a Blaze campaign in plural form. Reads like: 10 days */
+"blazeBudgetSettingViewModel.multipleDays" = "%1$d days";
+
+/* The duration for a Blaze campaign in singular form. */
+"blazeBudgetSettingViewModel.singleDay" = "%1$d day";
+
+/* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
+"blazeBudgetSettingViewModel.totalBudget" = "$%.0f USD";
+
+/* The total duration for a Blaze campaign in plural form. Reads like: for 10 days */
+"blazeBudgetSettingViewModel.totalDurationMultipleDays" = "for %1$d days";
+
+/* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
+"blazeBudgetSettingViewModel.totalDurationSingleDay" = "for %1$d day";
+
+/* Title of the Ad destination field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.adDestination" = "Ad destination";
+
+/* Title of the Budget field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.budget" = "Budget";
+
+/* Button to confirm ad details on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.confirmDetails" = "Confirm Details";
+
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.details" = "Details";
+
+/* Title of the Devices field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.devices" = "Devices";
+
+/* Button to edit ad details on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.editAd" = "Edit ad";
+
+/* Title of the Interests field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.interests" = "Interests";
+
+/* Title of the Language field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.language" = "Language";
+
+/* Title of the Location field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.location" = "Location";
+
+/* Button to shop on the Blaze ad preview */
+"blazeCampaignCreationForm.shopNow" = "Shop Now";
+
+/* Title of the Blaze campaign creation screen */
+"blazeCampaignCreationForm.title" = "Preview";
+
+/* Blaze campaign budget details with duration in plural form. Reads like: $35, 15 days from Dec 31 */
+"blazeCampaignCreationFormViewModel.budgetMultipleDays" = "%1$@, %2$d days from %3$@";
+
+/* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
+"blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d day from %3$@";
+
+/* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
+"blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f USD";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Hide Blaze";
+
+/* Subtitle for the access a vast audience feature */
+"blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Your ads on millions of sites within the WordPress.com and Tumblr networks.";
+
+/* Title for the access a vast audience feature */
+"blazeCreateCampaignIntroView.audienceFeature.title" = "Access a vast audience";
+
+/* Create Your Campaign button label */
+"blazeCreateCampaignIntroView.createYourCampaign" = "Create Your Campaign";
+
+/* Subtitle for the Global reach feature */
+"blazeCreateCampaignIntroView.globalReach.subtitle" = "Our tool presents your product where interested shoppers can find it.";
+
+/* Title for the Global reach feature */
+"blazeCreateCampaignIntroView.globalReach.title" = "Global reach made simple";
+
+/* Learn how Blaze works button label */
+"blazeCreateCampaignIntroView.learnHowBlazeWorks" = "Learn how Blaze works";
+
+/* Subtitle for the quick start big impact feature */
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "Launch ads in minutes – no experience or big budget needed, starting at just $5 USD.";
+
+/* Title for the quick start big impact feature */
+"blazeCreateCampaignIntroView.quickStart.title" = "Quick start, big impact";
+
+/* Subtitle for the Blaze campaign intro view */
+"blazeCreateCampaignIntroView.subtitle" = "Our tool is designed to empower merchants with fast, simple ad campaign setups for maximum traffic boost.";
+
+/* Title for the Blaze campaign intro view */
+"blazeCreateCampaignIntroView.title" = "Get your products seen by millions";
+
+/* Cancel button in the Blaze Edit Ad screen. */
+"blazeEditAdView.cancel" = "Cancel";
+
+/* Placeholder for Description text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.description.placeholder" = "Description text for the Blaze Ad";
+
+/* Description title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.description.title" = "Description";
+
+/* Change image button title in the Blaze Edit Ad screen. */
+"blazeEditAdView.image.changeImage" = "Change image";
+
+/* Regenerate by AI button title in the Blaze Edit Ad screen. */
+"blazeEditAdView.regenerateByAI" = "Regenerate by AI";
+
+/* Save button in the Blaze Edit Ad screen. */
+"blazeEditAdView.save" = "Save";
+
+/* Placeholder for Tagline text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.tagline.placeholder" = "Title for the Blaze Ad";
+
+/* Tagline title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.tagline.title" = "Tagline";
+
+/* Title for the Blaze Edit Ad screen. */
+"blazeEditAdView.title" = "Edit Ad";
+
+/* Edit Blaze Ad screen: Error message if Description field is empty. */
+"blazeEditAdViewModel.description.emptyError" = "Description cannot be empty";
+
+/* Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining */
+"blazeEditAdViewModel.lengthLimit.plural" = "%1$d characters remaining";
+
+/* Edit Blaze Ad screen: Singular form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 1 character remaining */
+"blazeEditAdViewModel.lengthLimit.singular" = "%1$d character remaining";
+
+/* Edit Blaze Ad screen: Error message if Tagline field is empty. */
+"blazeEditAdViewModel.tagline.emptyError" = "Tagline cannot be empty";
+
+/* Subtitle for the Choose a product step */
+"blazeLearnHowView.chooseProduct.subtitle" = "Choose what to promote with Blaze.";
+
+/* Title for the Choose a product step */
+"blazeLearnHowView.chooseProduct.title" = "Choose a product";
+
+/* Subtitle for Customize Targeting step */
+"blazeLearnHowView.customizeTargeting.subtitle" = "Select audience by location or interests, and see potential reach.";
+
+/* Title for Customize Targeting step */
+"blazeLearnHowView.customizeTargeting.title" = "Customize targeting";
+
+/* Subtitle for Go live step */
+"blazeLearnHowView.goLive.subtitle" = "Watch as your promotion begins and track its success.";
+
+/* Title for Go live step */
+"blazeLearnHowView.goLive.title" = "Go live";
+
+/* Subtitle for Quick review step */
+"blazeLearnHowView.quickReview.subtitle" = "Submit your ad for a fast moderator check.";
+
+/* Title for Quick review step */
+"blazeLearnHowView.quickReview.title" = "Quick review";
+
+/* Subtitle for Set Your Budget step */
+"blazeLearnHowView.setYourBudget.subtitle" = "Decide on your spend and campaign length.";
+
+/* Title for Set Your Budget step */
+"blazeLearnHowView.setYourBudget.title" = "Set your budget";
+
+/* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
+"blazeLearnHowView.title" = "Learn how %1$@ works";
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Block Quote";
@@ -1292,9 +1492,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for the total budget of a Blaze campaign */
 "Budget" = "Budget";
-
-/* Message for the Products onboarding banner */
-"Build your catalog by adding what you want to sell." = "Build your catalog by adding what you want to sell.";
 
 /* SEO title feature on the Free Trial Summary Screen */
 "Built-in SEO" = "Built-in SEO";
@@ -1354,15 +1551,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "Calculated amount";
-
-/* The string to show on order taxes when they are calculated based on the billing address */
-"Calculated on billing address" = "Calculated on billing address";
-
-/* The string to show on order taxes when they are calculated based on the shipping address */
-"Calculated on shipping address" = "Calculated on shipping address";
-
-/* The string to show on order taxes when they are calculated based on the shop base address */
-"Calculated on shop base address" = "Calculated on shop base address";
 
 /* Call phone number button title */
 "Call" = "Call";
@@ -1453,7 +1641,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
-   Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
    Cancel the more menu action sheet in Reviews screen.
@@ -2214,8 +2401,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "Country where the product was manufactured or assembled";
 
-/* Label for the row showing the cost of coupon in the order
-   Title for the coupon field on the Coupon Details screen during order creation
+/* Title for the coupon field on the Coupon Details screen during order creation
    Title for the Coupon screen during order creation */
 "Coupon" = "Coupon";
 
@@ -2252,9 +2438,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Coupons (%1$@)";
-
-/* Title text for the coupons row informational tooltip */
-"Coupons unavailable" = "Coupons unavailable";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Crash Immediately";
@@ -2314,9 +2497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Create Order iOS Shortcut */
 "Create order" = "Create order";
-
-/* Title of the banner notice in the Orders tab */
-"Create orders!" = "Create orders!";
 
 /* Continue button on the add product features screen */
 "Create Product Details" = "Create Product Details";
@@ -2569,17 +2749,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "Denmark";
 
-/* Section header for the deposits list in the WooPayments Deposits overview */
-"Deposits" = "Deposits";
-
 /* Accessibility label for the collapse chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.hide" = "Hide deposit details";
 
 /* Accessibility label for the expand chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.show" = "Show deposit details";
 
-/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
-"deposits.currency.overview.depositTable.last.title" = "Last";
+/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
+"deposits.currency.overview.availableFunds" = "Available funds";
 
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.canceled.title" = "Canceled";
@@ -2601,6 +2778,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.unknown.title" = "Unknown";
+
+/* Section header for the last deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.lastDeposit" = "Last Deposit";
+
+/* Button text to view more about payment schedules on the WooPayments Deposits View. */
+"deposits.currency.overview.learnMore" = "Learn more about when you'll receive your funds";
+
+/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
+"deposits.currency.overview.pendingFunds" = "Pending funds";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Describe your product";
@@ -2663,9 +2849,6 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "Discount %1$@";
 
-/* Label for the the row showing the total discount of the order */
-"Discount total" = "Discount total";
-
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
 "Discount Type" = "Discount Type";
@@ -2708,7 +2891,6 @@ which should be translated separately and considered part of this sentence. */
    Label for the banner Dismiss button
    The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
-   The title of the button to dismiss the Orders top banner
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Dismiss";
@@ -2754,9 +2936,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Do you want to move this product to the Trash?";
-
-/* Confirm message for navigating to coupons when creating a new order */
-"Do you want to navigate to the Coupons Menu? These changes will be discarded." = "Do you want to navigate to the Coupons Menu? These changes will be discarded.";
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Documents";
@@ -2993,6 +3172,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "Custom Amount";
+
+/* The string to show on order taxes when they are calculated based on the billing address */
+"editableOrderViewModel.taxBasedOnSetting.customerBillingAddress" = "Calculated on billing address.";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"editableOrderViewModel.taxBasedOnSetting.customerShippingAddress" = "Calculated on shipping address.";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"editableOrderViewModel.taxBasedOnSetting.shopBaseAddress" = "Calculated on shop base address.";
 
 /* Industry option in the store creation category question. */
 "Education and learning" = "Education and learning";
@@ -3397,6 +3585,12 @@ which should be translated separately and considered part of this sentence. */
 /* Button to cancel installation on the Jetpack setup interrupted screen */
 "Exit Without Connecting" = "Exit Without Connecting";
 
+/* Accessibility label to collapse an expandable bottom sheet */
+"expandableBottomSheet.chevron.collapse" = "Hide details";
+
+/* Accessibility label to expand an expandable bottom sheet */
+"expandableBottomSheet.chevron.expand" = "Show details";
+
 /* Accessibility value when a banner is expanded */
 "Expanded" = "Expanded";
 
@@ -3761,7 +3955,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
-   Title of the button to give feedback about the Orders features
    Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Give feedback";
@@ -3774,12 +3967,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
-
-/* Confirm button title for navigating to coupons when creating a new order */
-"Go" = "Go";
-
-/* Button title on the Coupon screen empty statewhen creating a new order that navigates to the Coupons Section */
-"Go to Coupons" = "Go to Coupons";
 
 /* Title for the 'Go To Settings' button in the privacy banner */
 "Go to Settings" = "Go to Settings";
@@ -4359,8 +4546,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
 "Item weight must be larger than 0" = "Item weight must be larger than 0";
 
-/* Description for Top Performers right column header
-   Title for the items sold column on the products card on the analytics hub screen.
+/* Title for the items sold column on the products card on the analytics hub screen.
    Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "Items Sold";
 
@@ -4535,9 +4721,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Learn more about the data we collect about your store and your options to control this data sharing.";
-
-/* Button text to view more about payment schedules on the WooPayments Deposits View. */
-"Learn more about when you'll receive your funds" = "Learn more about when you'll receive your funds";
 
 /* Country option for a site address. */
 "Lebanon" = "Lebanon";
@@ -5249,7 +5432,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
-   Row title for the next deposit in the WooPayments Deposits overview
    The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
@@ -5638,11 +5820,38 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the total cost of the order */
 "Order total" = "Order total";
 
-/* An accessibility label for a More info button, rendered as a question mark icon, which shows coupon information. */
-"order.form.paymentSection.coupon.moreInfo.accessibilityLabel" = "Coupon information";
+/* Title for the Coupon screen during order creation */
+"order.form.coupon.add.button.title" = "Add Coupon";
 
-/* An accessibility label for a More info button, rendered as a question mark icon, which shows tax information. */
-"order.form.paymentSection.taxes.moreInfo.accessibilityLabel" = "Tax information";
+/* Cancel button title when showing the coupon list selector */
+"order.form.coupon.cancel.button.title" = "Cancel";
+
+/* Confirm button title for navigating to coupons when creating a new order */
+"order.form.coupon.empty.goToCoupons.alert.confirm.button.title" = "Go";
+
+/* Confirm message for navigating to coupons when creating a new order */
+"order.form.coupon.empty.goToCoupons.alert.message" = "Do you want to navigate to the Coupons Menu? These changes will be discarded.";
+
+/* Button title on the Coupon screen empty state when adding coupons to a new order. The button navigates to the Coupons Section */
+"order.form.coupon.empty.goToCoupons.button.title" = "Go to Coupons";
+
+/* An accessibility label for a More info button, rendered as a question mark icon, which shows coupon information. */
+"order.form.coupon.moreInfo.accessibilityLabel" = "Coupon information";
+
+/* Description text for the coupons row informational tooltip */
+"order.form.coupon.unavailable.tooltip.description" = "To add Coupons, please remove your Product Discounts";
+
+/* Title text for the coupons row informational tooltip */
+"order.form.coupon.unavailable.tooltip.title" = "Coupons unavailable";
+
+/* Title text of the button that adds shipping line when creating a new order */
+"order.form.giftCard.add.button.title" = "Add Gift Card";
+
+/* A 'Learn More' label text, which shows tax information upon being clicked. */
+"order.form.paymentSection.taxes.learnMore" = "Learn More.";
+
+/* Title text of the button that adds shipping line when creating a new order */
+"order.form.shipping.add.button.title" = "Add Shipping";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Custom Amounts";
@@ -5665,6 +5874,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "How do you want to add your custom amount?";
 
+/* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
+"orderForm.payment.collect.button.title" = "Collect Payment";
+
 /* The title for a button to dismiss the keyboard on the order creation/editing screen */
 "orderForm.productRow.keyboard.toolbar.done.button.title" = "Done";
 
@@ -5674,14 +5886,26 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "Scan barcode";
 
-/* Label for the row showing the cost of fees in the order */
-"orderPaymentSection.customAmounts" = "Custom amounts";
+/* Label for the row showing the cost of coupon in the order */
+"orderPaymentSection.coupon" = "Coupon";
 
-/* Title text of the section that shows Payment details when creating a new order */
-"orderPaymentSection.paymentTotals" = "Payment totals";
+/* Label for the row showing the cost of fees in the order */
+"orderPaymentSection.customAmountsTotal" = "Custom amounts";
+
+/* Label for the the row showing the total discount of the order */
+"orderPaymentSection.discountTotal" = "Discount total";
 
 /* Label for the row showing the total cost of products in the order */
-"orderPaymentSection.products" = "Products";
+"orderPaymentSection.productsTotal" = "Products";
+
+/* Label for the row showing the cost of shipping in the order */
+"orderPaymentSection.shippingTotal" = "Shipping";
+
+/* Label for the row showing the taxes in the order */
+"orderPaymentSection.taxes" = "Taxes";
+
+/* Notice in editable order details when the tax rate was added to the order */
+"orderPaymentSection.taxRateAddedAutomaticallyRowText" = "Tax rate location added automatically";
 
 /* Orders stat label on dashboard - should be plural.
    The title of the Orders tab.
@@ -5884,9 +6108,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the subscription status type */
 "Pending Cancel" = "Pending Cancel";
-
-/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
-"Pending funds" = "Pending funds";
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "Pending Review";
@@ -6449,6 +6670,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promote with Blaze";
 
+/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
+"productFormViewController.blazeCelebrationCTA" = "Got it";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"productFormViewController.blazeCelebrationSubtitle" = "The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running.";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"productFormViewController.blazeCelebrationTitle" = "All set!";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Please wait until all uploads are finished before reordering images.";
 
@@ -6482,8 +6712,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Sign-up Fee";
 
-/* Description for Top Performers left column header
-   Display label for the composite product's component option type
+/* Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Product Total label for payment view
@@ -7427,8 +7656,7 @@ which should be translated separately and considered part of this sentence. */
    Date an item was shipped */
 "Shipped %@" = "Shipped %@";
 
-/* Label for the row showing the cost of shipping in the order
-   Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
+/* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
    Placeholder for the name field on the Shipping Line Details screen during order creation
    Product Shipping Settings navigation title
    Shipping label for payment view
@@ -8283,9 +8511,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "Tax classes";
 
-/* Notice in editable order details when the tax rate was added to the order */
-"Tax rate location added automatically" = "Tax rate location added automatically";
-
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "Tax rates for different locations can be managed in your store’s admin.";
 
@@ -8302,8 +8527,7 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's tax status setting option */
 "Taxable" = "Taxable";
 
-/* Label for the row showing the taxes in the order
-   Line description for tax charged on the whole cart. Only shown when non-zero
+/* Line description for tax charged on the whole cart. Only shown when non-zero
    Taxes label for payment view */
 "Taxes" = "Taxes";
 
@@ -8585,7 +8809,8 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "The site address must be shorter than 64 characters.";
 
-/* Error message shown a URL does not point to an existing site. */
+/* Error message shown a URL does not point to an existing site.
+   Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.";
 
 /* Message shown when site deletion API failed */
@@ -8627,20 +8852,23 @@ which should be translated separately and considered part of this sentence. */
 /* Text indicating the error state in the themes carousel view */
 "themesCarouselView.error" = "Failed to load themes.";
 
+/* The content of the message shown at the end of the themes carousel view */
+"themesCarouselView.lastMessageContent" = "You can find your perfect theme in the WooCommerce Theme Store.";
+
+/* The heading of the message shown at the end of the themes carousel view */
+"themesCarouselView.lastMessageHeading" = "Looking for more?";
+
 /* Text indicating the loading state in the themes carousel view */
 "themesCarouselView.loading" = "Loading themes...";
 
 /* Button to reload themes in the themes carousel view */
 "themesCarouselView.retry" = "Retry";
 
-/* The heading of the message shown at the end of the carousel on the WordPress theme list */
-"themesCarouselViewModel.lastMessageHeading" = "Looking for more?";
+/* Error message for when theme image cannot be loaded on the themes carousel view. %@ is the place holder for 'tap here'. Reads like: Sorry, it seems there is an issue with the template loading. Please tap here for a live demo */
+"themesCarouselView.thumbnailError" = "Sorry, it seems there is an issue with the template loading. Please %@ for a live demo";
 
-/* The content of the message shown at the end of carousel in the store creation profiler flow */
-"themesCarouselViewModel.profiler.lastMessageContent" = "Once your store is set up, find your perfect theme in the WooCommerce Theme Store.";
-
-/* The content of the message shown at the end of the carousel on the theme settings screen */
-"themesCarouselViewModel.themeSetting.lastMessageContent" = "Find your perfect theme in the WooCommerce Theme Store.";
+/* Action to show live demo on the themes carousel view */
+"themesCarouselView.thumbnailError.tapHere" = "tap here";
 
 /* Button to dismiss the theme settings screen */
 "themeSettingView.cancelButton" = "Cancel";
@@ -8665,6 +8893,34 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to skip theme carousel screen. */
 "themesPickerView.skipButtonTitle" = "Skip";
+
+/* The error message shown if the app can't show a theme demo. */
+"ThemesPreviewView.errorLoadingThemeDemo" = "Unable to render the demo for this theme. Please try another theme.";
+
+/* Menu item: desktop
+   Menu item: mobile */
+"themesPreviewView.menuMobile" = "Mobile";
+
+/* Menu item: tablet */
+"themesPreviewView.menuTablet" = "Tablet";
+
+/* Heading for sheet displaying list of pages */
+"themesPreviewView.pagesSheetHeading" = "View other store pages on this theme";
+
+/* Title of the preview screen */
+"themesPreviewView.preview" = "Preview";
+
+/* The label for the home page of a theme. */
+"themesPreviewViewModel.homepageLabel" = "Home";
+
+/* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Start with Tsubaki */
+"themesPreviewViewModel.startWithThemeButton" = "Start with %1$@";
+
+/* Message to convey that theme installation failed. */
+"themesPreviewViewModel.themeInstallError" = "Theme installation failed. Please try again.";
+
+/* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
+"themesPreviewViewModel.useThisThemeButton" = "Use %1$@";
 
 /* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
 "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments.";
@@ -8887,9 +9143,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first";
 
-/* Description text for the coupons row informational tooltip */
-"To add Coupons, please remove your Product Discounts" = "To add Coupons, please remove your Product Discounts";
-
 /* Subtitle on the notice presented when the store name is updated */
 "To change again, visit Store Settings." = "To change again, visit Store Settings.";
 
@@ -8959,9 +9212,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Tonga" = "Tonga";
-
-/* Header label for Top Performers section of My Store tab. */
-"Top Performers" = "Top Performers";
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Topic not found for id:";
@@ -9953,9 +10203,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic error message when In-Person Payments is unavailable */
 "We're sorry, we were unable to verify In-Person Payments for this store." = "We're sorry, we were unable to verify In-Person Payments for this store.";
-
-/* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";

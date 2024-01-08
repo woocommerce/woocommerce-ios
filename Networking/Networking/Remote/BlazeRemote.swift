@@ -57,6 +57,14 @@ public protocol BlazeRemoteProtocol {
         for siteID: Int64,
         with input: BlazeForecastedImpressionsInput
     ) async throws -> BlazeImpressions
+
+    /// Fetches AI suggested tagline and description for given product
+    /// - Parameters:
+    ///    - siteID: WPCom ID for the site to create the campaign in.
+    ///    - productID: ID of the product  to create the campaign for.
+    ///
+    func fetchAISuggestions(siteID: Int64,
+                            productID: Int64) async throws -> [BlazeAISuggestion]
 }
 
 /// Blaze: Remote Endpoints

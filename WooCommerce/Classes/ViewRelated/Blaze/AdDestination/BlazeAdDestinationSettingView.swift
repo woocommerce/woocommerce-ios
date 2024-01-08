@@ -6,6 +6,8 @@ struct BlazeAdDestinationSettingView: View {
 
     @ObservedObject private var viewModel: BlazeAdDestinationSettingViewModel
 
+    typealias DestinationType = BlazeAdDestinationSettingViewModel.DestinationURLType
+
     init(viewModel: BlazeAdDestinationSettingViewModel) {
         self.viewModel = viewModel
     }
@@ -18,12 +20,12 @@ struct BlazeAdDestinationSettingView: View {
                     sectionHeading(title: Localization.destinationUrlHeading)
                     destinationItem(title: Localization.productURLLabel,
                                     subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
-                                    type: BlazeAdDestinationSettingViewModel.DestinationURLType.product,
+                                    type: DestinationType.product,
                                     showBottomDivider: true)
 
                     destinationItem(title: Localization.siteHomeLabel,
                                     subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),
-                                    type: BlazeAdDestinationSettingViewModel.DestinationURLType.home)
+                                    type: DestinationType.home)
                 }
                 .padding(.bottom, Layout.sectionVerticalSpacing)
 
@@ -83,7 +85,7 @@ struct BlazeAdDestinationSettingView: View {
 
     private func destinationItem(title: String,
                                  subtitle: String,
-                                 type: BlazeAdDestinationSettingViewModel.DestinationURLType,
+                                 type: DestinationType,
                                  showBottomDivider: Bool = false) -> some View {
         HStack(alignment: .center) {
             if type == viewModel.selectedDestinationType {

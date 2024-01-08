@@ -13,6 +13,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     @Published var parameters: [BlazeAdURLParameter]
 
+    // Text to be shown on the view for remaining available characters for custom added parameters.
     var remainingCharactersLabel: String {
         let remainingCharacters = calculateRemainingCharacters()
         let lengthText = String.pluralize(remainingCharacters,
@@ -21,6 +22,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         return String(format: lengthText, remainingCharacters)
     }
 
+    // Text to be shown on the view for the final ad campaign URL including parameters, if any.
     var finalDestinationLabel: String {
         let baseURL: String
         switch selectedDestinationType {

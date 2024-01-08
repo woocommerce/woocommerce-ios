@@ -35,18 +35,24 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
         availableBalance = formatAmount(overview.availableBalance)
         depositScheduleHint = depositScheduleHintText()
         balanceTypeHint = balanceTypeHintText()
+        nextScheduledDeposit = calculateNextScheduledDeposit()
     }
 
     @Published var pendingBalance: String = ""
     @Published var lastDepositAmount: String = ""
     @Published var lastDepositDate: String = ""
     @Published var lastDepositStatus: WooPaymentsDepositStatus = .unknown
+    @Published var nextScheduledDeposit: String? = nil
     @Published var availableBalance: String = ""
     @Published var depositScheduleHint: String = ""
     @Published var balanceTypeHint: String = ""
     @Published var showWebviewURL: URL? = nil
     @Published var currency: CurrencyCode
     @Published var tabTitle: String
+
+    private func calculateNextScheduledDeposit() -> String {
+        return formatDate(Date()) ?? Localization.noDateString
+    }
 
     private func formatAmount(_ amount: NSDecimalNumber) -> String {
         if let wooCurrencyFormatter {

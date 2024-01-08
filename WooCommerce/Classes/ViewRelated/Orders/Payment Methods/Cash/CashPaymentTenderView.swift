@@ -89,11 +89,11 @@ extension CashPaymentTenderView {
 
     enum Localization {
         static let customerPaidTitle = NSLocalizedString("cashPaymentTenderView.customerPaid",
-                                                        value: "Cash received",
-                                                        comment: "Title for the amount the customer paid.")
+                                                         value: "Cash received",
+                                                         comment: "Title for the amount the customer paid.")
         static let changeDueTitle = NSLocalizedString("cashPaymentTenderView.changeDue",
-                                                        value: "Change due",
-                                                        comment: "Title for the change due text.")
+                                                      value: "Change due",
+                                                      comment: "Title for the change due text.")
         static let addNoteToggleTitle = NSLocalizedString(
             "cashPaymentTenderView.addNoteToggle.title",
             value: "Record transaction details in order note",
@@ -105,11 +105,11 @@ extension CashPaymentTenderView {
             comment: "Title for the Mark order as complete button."
         )
         static let cancelButtonTitle = NSLocalizedString("cashPaymentTenderView.cancelButton",
-                                                        value: "Cancel",
-                                                        comment: "Title for the cancel button.")
+                                                         value: "Cancel",
+                                                         comment: "Title for the cancel button.")
         static let navigationBarTitle = NSLocalizedString("cashPaymentTenderView.navigationBarTitle",
-                                                        value: "Take Payment (%1$@)",
-                                                        comment: "Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)'")
+                                                          value: "Take Payment (%1$@)",
+                                                          comment: "Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)'")
     }
 }
 

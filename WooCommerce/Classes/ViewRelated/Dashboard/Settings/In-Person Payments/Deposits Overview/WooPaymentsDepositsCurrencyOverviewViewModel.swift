@@ -61,8 +61,14 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
                                          value: 1,
                                          to: currentDate)
         case let .weekly(anchor: dayOfTheWeek):
-            print(dayOfTheWeek)
-            break
+            let targetWeekday = dayOfTheWeek.dayIndex
+            let today = calendar.component(.weekday, from: currentDate)
+            var difference = targetWeekday - today
+            // Adjust so the difference is always positive:
+            if difference < 0 {
+                difference += 7
+            }
+            scheduledDate = calendar.date(byAdding: .day, value: difference, to: currentDate)
         case let .monthly(anchor: data):
             print(data)
             break

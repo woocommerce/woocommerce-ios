@@ -315,7 +315,7 @@ public enum WooPaymentsDepositInterval: Equatable, GeneratedFakeable, GeneratedC
             return localizedDayName
         }
 
-        private var dayIndex: Int {
+        public var dayIndex: Int {
             switch self {
             case .sunday:
                 return 0

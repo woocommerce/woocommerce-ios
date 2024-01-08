@@ -70,6 +70,8 @@ public final class BlazeStore: Store {
             fetchTargetLocations(siteID: siteID, query: query, locale: locale, onCompletion: onCompletion)
         case let .fetchForecastedImpressions(siteID, input, onCompletion):
             fetchForecastedImpressions(siteID: siteID, input: input, onCompletion: onCompletion)
+        case let .fetchAISuggestions(siteID, productID, onCompletion):
+            fetchAISuggestions(siteID: siteID, productID: productID, onCompletion: onCompletion)
         }
     }
 }
@@ -356,6 +358,27 @@ private extension BlazeStore {
         }
 
 
+    }
+}
+
+// MARK: - Fetch AI based suggestions
+//
+private extension BlazeStore {
+    func fetchAISuggestions(siteID: Int64,
+                            productID: Int64,
+                            onCompletion: @escaping (Result<[BlazeAISuggestion], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                // TODO-11540: remove stubbed result when the API is ready.
+                let stubbedResult = [BlazeAISuggestion(siteName: "Shiny thing", textSnippet: "Get this new and shiny thing")]
+                let suggestions: [BlazeAISuggestion] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
+                    try await remote.fetchAISuggestions(siteID: siteID, productID: productID)
+                })
+                onCompletion(.success(suggestions))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 

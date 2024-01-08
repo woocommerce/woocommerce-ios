@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import Yosemite
 import Photos
+import struct Networking.BlazeAISuggestion
 @testable import WooCommerce
 
 final class BlazeEditAdViewModelTests: XCTestCase {
@@ -15,6 +16,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 1)
@@ -28,6 +30,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 31)
@@ -41,6 +44,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 32)
@@ -54,6 +58,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -69,6 +74,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 1)
@@ -82,6 +88,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 139)
@@ -95,6 +102,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 140)
@@ -108,6 +116,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -122,6 +131,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // Then
@@ -132,6 +142,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -151,6 +162,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -164,6 +176,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When

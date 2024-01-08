@@ -2283,6 +2283,7 @@
 		DE7B479727A3C4980018742E /* CouponDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */; };
 		DE7E5E7D2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E7C2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift */; };
 		DE7E5E7F2B4BC52C002E28D2 /* MultiSelectionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E7E2B4BC52C002E28D2 /* MultiSelectionList.swift */; };
+		DE7E5E812B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E802B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
@@ -4929,6 +4930,7 @@
 		DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		DE7E5E7C2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLanguagePickerView.swift; sourceTree = "<group>"; };
 		DE7E5E7E2B4BC52C002E28D2 /* MultiSelectionList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectionList.swift; sourceTree = "<group>"; };
+		DE7E5E802B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLanguagePickerViewModel.swift; sourceTree = "<group>"; };
 		DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -11164,6 +11166,7 @@
 			isa = PBXGroup;
 			children = (
 				DE7E5E7C2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift */,
+				DE7E5E802B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift */,
 			);
 			path = TargetOptions;
 			sourceTree = "<group>";
@@ -13640,6 +13643,7 @@
 				2631D4F829ED0B5C00F13F20 /* WPComPlanNameSanitizer.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				02A723262AB2E1A6003AEC7E /* GiftCardInputView.swift in Sources */,
+				DE7E5E812B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift in Sources */,
 				0211252825773F220075AD2A /* Models+Copiable.generated.swift in Sources */,
 				4596853F2540669900D17B90 /* DownloadableFileSource.swift in Sources */,
 				021DD44D286A3A8D004F0468 /* UIViewController+Navigation.swift in Sources */,

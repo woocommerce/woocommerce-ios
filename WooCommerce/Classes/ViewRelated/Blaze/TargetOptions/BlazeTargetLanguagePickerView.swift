@@ -18,16 +18,31 @@ struct BlazeTargetLanguagePickerView: View {
     }
 
     var body: some View {
-        MultiSelectionList(title: "Languages",
-                           allOptionsTitle: "All languages",
+        MultiSelectionList(title: Localization.title,
+                           allOptionsTitle: Localization.allTitle,
                            contents: viewModel.languages,
                            contentKeyPath: \.name, 
                            onQueryChanged: { query in
             // TODO: update content list
-        }, 
+        },
                            onDismiss: onDismiss,
                            onCompletion: onCompletion)
 
+    }
+}
+
+private extension BlazeTargetLanguagePickerView {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "blazeTargetLanguagePickerView.title",
+            value: "Languages",
+            comment: "Title of the target language picker view for Blaze campaign creation"
+        )
+        static let allTitle = NSLocalizedString(
+            "blazeTargetLanguagePickerView.allTitle",
+            value: "All languages",
+            comment: "Title of the row to select all target languages for Blaze campaign creation"
+        )
     }
 }
 

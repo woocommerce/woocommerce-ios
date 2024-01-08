@@ -166,18 +166,15 @@ public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, Generated
 public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let amount: Int
     public let currency: String
-    public let depositsCount: Int?
 
-    public init(amount: Int, currency: String, depositsCount: Int?) {
+    public init(amount: Int, currency: String) {
         self.amount = amount
         self.currency = currency
-        self.depositsCount = depositsCount
     }
 
     public enum CodingKeys: String, CodingKey {
         case amount
         case currency
-        case depositsCount = "deposits_count"
     }
 }
 

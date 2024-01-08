@@ -8,7 +8,7 @@ import Kingfisher
 final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingController<BlazeCampaignDashboardView> {
     private let viewModel: BlazeCampaignDashboardViewModel
     private let parentNavigationController: UINavigationController?
-    private var blazeNavigationController: WooNavigationController?
+    private lazy var blazeNavigationController = WooNavigationController()
 
     init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController?) {
         self.viewModel = viewModel
@@ -34,7 +34,6 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             self?.showCampaignList(isPostCreation: false)
         }
 
-        createBlazeNavigationController()
     }
 
     @available(*, unavailable)
@@ -44,9 +43,6 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 }
 
 private extension BlazeCampaignDashboardViewHostingController {
-    private func createBlazeNavigationController() {
-        blazeNavigationController = WooNavigationController(rootViewController: createProductSelectorViewController())
-    }
 
     private func createProductSelectorViewController() -> ProductSelectorViewController {
         let productSelectorViewModel = ProductSelectorViewModel(
@@ -61,7 +57,7 @@ private extension BlazeCampaignDashboardViewHostingController {
             onCloseButtonTapped: { [weak self] in
                 guard let self = self else { return }
 
-                blazeNavigationController?.dismiss(animated: true, completion: nil)
+                blazeNavigationController.dismiss(animated: true, completion: nil)
             }
         )
 
@@ -87,15 +83,14 @@ private extension BlazeCampaignDashboardViewHostingController {
         } else {
             let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID, onCompletion: { })
             let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
-            blazeNavigationController?.show(controller, sender: self)
+            blazeNavigationController.show(controller, sender: self)
         }
     }
 
     /// Handles navigation to the Blaze product selector view
     func navigateToBlazeProductSelector(source: BlazeSource) {
-        if let blazeNavController = blazeNavigationController {
-            parentNavigationController?.present(blazeNavController, animated: true, completion: nil)
-        }
+        blazeNavigationController.viewControllers = [createProductSelectorViewController()]
+        parentNavigationController?.present(blazeNavigationController, animated: true, completion: nil)
     }
 
     /// Handles navigation to the webview Blaze creation

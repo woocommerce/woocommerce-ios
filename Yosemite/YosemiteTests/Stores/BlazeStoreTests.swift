@@ -71,6 +71,51 @@ final class BlazeStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - Create campaign
+
+    func test_createCampaign_does_not_throw_errors_upon_success() throws {
+        // Given
+        remote.whenCreatingCampaign(thenReturn: .success(()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.createCampaign(campaign: .fake(),
+                                                      siteID: self.sampleSiteID,
+                                                      onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        try result.get()
+    }
+
+    func test_createCampaign_returns_error_on_failure() throws {
+        // Given
+        remote.whenCreatingCampaign(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.createCampaign(campaign: .fake(),
+                                                      siteID: self.sampleSiteID,
+                                                      onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
     // MARK: - synchronizeCampaigns
 
     func test_synchronizeCampaigns_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() throws {

@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 16.8
+We're excited to bring you a seamless update to your WooCommerce app! Now, processing payments is easier than ever with the ability to collect them directly from the order creation form, and with order totals displayed in a handy expandable drawer, you won't need to scroll to find the information you need. We've also enhanced the store creation process to notify you once your store is ready, even if the app was closed. Our dashboard has been fine-tuned to resolve decoding errors and we've introduced an updated UI for the Deposit Summary. For those who love customization, the new Lightweight Storefront feature allows theme selection during setup and in settings. Plus, we've made sure that order creation, payment, and refund dates, as well as analytics, are now shown in your store's time zone. Jetpack installations have been smoothed out, and logging into self-hosted sites is now more reliable across multiple devices. Lastly, product bundles just got more efficient with a direct form access after scanning. Enjoy these updates designed for a more intuitive and productive experience managing your store.
+
 ## 16.7
 Exciting news! The latest update makes updating inventory a breeze—simply scan barcodes to effortlessly manage stock. The app now automatically refunds Tap to Pay trial payments. We've also improved user experience by making downloadable files more discoverable and adding search functionality to the list of product categories. Update now for a smoother and faster WooCommerce experience!
 

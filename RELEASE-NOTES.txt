@@ -12,6 +12,7 @@
 - [*] Similar to orders above, the latest time range in analytics is now in the store time zone instead of the device time zone. [https://github.com/woocommerce/woocommerce-ios/pull/11479]
 - [*] For JCP sites, Jetpack installation flow should now succeed without an error in the beginning. [https://github.com/woocommerce/woocommerce-ios/pull/11558]
 - [*] Login: logging in to self-hosted sites without Jetpack connection (with application password) on multiple devices of the same device family (iPhone/iPad) is now supported. Previously, the previously logged in device becomes logged out after logging in to the same account/store on a different device of the same device family.   [https://github.com/woocommerce/woocommerce-ios/pull/11575]
+- [*] Product bundles: bundle configuration form is now shown after scanning a bundle product with barcode in the order list or order form. [https://github.com/woocommerce/woocommerce-ios/pull/11610]
 - [internal] Dashboard: The "Add products to sell" products onboarding banner is removed from the dashboard (replaced by Add Product task in store onboarding task list) [https://github.com/woocommerce/woocommerce-ios/pull/11596]
 
 16.7

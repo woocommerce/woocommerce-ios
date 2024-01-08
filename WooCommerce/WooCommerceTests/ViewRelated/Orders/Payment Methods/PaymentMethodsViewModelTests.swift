@@ -9,11 +9,12 @@ import WooFoundation
 
 private typealias Dependencies = PaymentMethodsViewModel.Dependencies
 
+@MainActor
 final class PaymentMethodsViewModelTests: XCTestCase {
 
     var subscriptions = Set<AnyCancellable>()
 
-    func test_loading_is_enabled_while_marking_order_as_paid() {
+    func test_loading_is_enabled_while_marking_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -33,7 +34,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        let loadingStates: [Bool] = waitFor { promise in
+        let loadingStates: [Bool] = await waitForAsync { promise in
             viewModel.$showLoadingIndicator
                 .dropFirst() // Initial value
                 .collect(2)  // Collect toggle
@@ -42,14 +43,14 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                     promise(loadingStates)
                 }
                 .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
+            await viewModel.markOrderAsPaidByCash(with: nil)
         }
 
         // Then
         XCTAssertEqual(loadingStates, [true, false]) // Loading, then not loading.
     }
 
-    func test_view_is_disabled_while_loading_is_enabled() {
+    func test_view_is_disabled_while_loading_is_enabled() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let dependencies = Dependencies(stores: stores)
@@ -58,7 +59,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        let loading: Bool = waitFor { promise in
+        let loading: Bool = await waitForAsync { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .updateOrderStatus:
@@ -69,8 +70,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                     XCTFail("Unexpected action: \(action)")
                 }
             }
-
-            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
+            await viewModel.markOrderAsPaidByCash(with: nil)
         }
 
         // Then
@@ -78,7 +78,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.disableViewActions)
     }
 
-    func test_view_model_updates_order_async_after_order_marked_as_paid() throws {
+    func test_view_model_updates_order_async_after_order_marked_as_paid() async throws {
         // Given
         let storage = MockStorageManager()
         let order = Order.fake().copy(status: .pending)
@@ -94,7 +94,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        let (siteID, orderID): (Int64, Int64) = waitFor { promise in
+        let (siteID, orderID): (Int64, Int64) = await waitForAsync { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .updateOrderStatus(_, _, _, onCompletion):
@@ -105,7 +105,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                     XCTFail("Unexpected action: \(action)")
                 }
             }
-            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
+            await viewModel.markOrderAsPaidByCash(with: nil)
         }
 
         // Then
@@ -113,7 +113,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_onSuccess_is_invoked_after_order_is_marked_as_paid() {
+    func test_onSuccess_is_invoked_after_order_is_marked_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let dependencies = Dependencies(stores: stores)
@@ -131,18 +131,11 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             }
         }
 
-        // When
-        let onSuccessInvoked: Bool = waitFor { promise in
-            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {
-                promise(true)
-            })
-        }
-
-        // Then
-        XCTAssertTrue(onSuccessInvoked)
+        // When/Then
+        await viewModel.markOrderAsPaidByCash(with: nil)
     }
 
-    func test_view_model_attempts_completed_notice_presentation_when_marking_an_order_as_paid() {
+    func test_view_model_attempts_completed_notice_presentation_when_marking_an_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
@@ -162,7 +155,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         }
 
         // When
-        let receivedCompleted: Bool = waitFor { promise in
+        let receivedCompleted: Bool = await waitForAsync { promise in
             noticeSubject.sink { intent in
                 switch intent {
                 case .error, .created:
@@ -172,14 +165,14 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 }
             }
             .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
+            await viewModel.markOrderAsPaidByCash(with: nil)
         }
 
         // Then
         XCTAssertTrue(receivedCompleted)
     }
 
-    func test_view_model_attempts_error_notice_presentation_when_failing_to_mark_order_as_paid() {
+    func test_view_model_attempts_error_notice_presentation_when_failing_to_mark_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
@@ -197,7 +190,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         }
 
         // When
-        let receivedError: Bool = waitFor { promise in
+        let receivedError: Bool = await waitForAsync { promise in
             noticeSubject.sink { intent in
                 switch intent {
                 case .error:
@@ -207,14 +200,14 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 }
             }
             .store(in: &self.subscriptions)
-            viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
+            await viewModel.markOrderAsPaidByCash(with: nil)
         }
 
         // Then
         XCTAssertTrue(receivedError)
     }
 
-    func test_completed_event_is_tracked_after_marking_order_as_paid() {
+    func test_completed_event_is_tracked_after_marking_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -238,7 +231,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
+        await viewModel.markOrderAsPaidByCash(with: nil)
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
@@ -250,7 +243,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
-    func test_completed_event_is_tracked_after_marking_order_as_paid_with_zero_decimals_currency() {
+    func test_completed_event_is_tracked_after_marking_order_as_paid_with_zero_decimals_currency() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -277,7 +270,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
+        await viewModel.markOrderAsPaidByCash(with: nil)
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
@@ -367,7 +360,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
-    func test_failed_event_is_tracked_after_failing_to_mark_order_as_paid() {
+    func test_failed_event_is_tracked_after_failing_to_mark_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -389,7 +382,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        viewModel.markOrderAsPaidByCash(with: nil, onCompletion: {})
+        await viewModel.markOrderAsPaidByCash(with: nil)
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowFailed.rawValue)
@@ -397,7 +390,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
     }
 
-    func test_markOrderAsPaidByCash_when_passing_info_with_add_note_true_sends_note() {
+    func test_markOrderAsPaidByCash_when_passing_info_with_add_note_true_sends_note() async {
         // Given
         let cashPaymentInfo = OrderPaidByCashInfo(customerPaidAmount: "$50", changeGivenAmount: "$20", addNoteWithChangeData: true)
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -429,17 +422,12 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        let onSuccessInvoked: Bool = waitFor { promise in
-            viewModel.markOrderAsPaidByCash(with: cashPaymentInfo, onCompletion: {
-                promise(true)
-            })
-        }
+        await viewModel.markOrderAsPaidByCash(with: cashPaymentInfo)
 
         // Then
         let expectedNote = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText,
                                                             cashPaymentInfo.customerPaidAmount,
                                                             cashPaymentInfo.changeGivenAmount)
-        XCTAssertTrue(onSuccessInvoked)
         XCTAssertEqual(passedNote, expectedNote)
     }
 

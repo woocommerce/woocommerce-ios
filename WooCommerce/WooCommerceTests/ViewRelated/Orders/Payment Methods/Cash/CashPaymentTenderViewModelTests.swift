@@ -3,55 +3,55 @@ import Combine
 import WooFoundation
 @testable import WooCommerce
 
-class CashPaymentTenderViewModelTests: XCTestCase {
-    func test_customerCash_when_amount_is_not_suficient_handles_invalid_input() {
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: {_ in })
-        viewModel.customerPaidAmount = "5.00"
+final class CashPaymentTenderViewModelTests: XCTestCase {
+    private let usStoreSettings = CurrencySettings()
 
+    func test_when_amount_is_not_sufficient_it_handles_invalid_input() {
+        // Given
+        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: { _ in })
+
+        // When
+        viewModel.formattableAmountViewModel.amount = "5"
+
+        // Then
         XCTAssertFalse(viewModel.tenderButtonIsEnabled)
+        XCTAssertFalse(viewModel.hasChangeDue)
         XCTAssertEqual(viewModel.changeDue, "-")
     }
 
-    func test_customerCash_when_amount_is_sufficient_handles_valid_input() {
+    func test_when_amount_is_sufficient_it_handles_valid_input() {
         // Given
-        let total = "$10.00"
-        let customerCash = "15.00"
-        let usStoreSettings = CurrencySettings()
-        let currencyFormatter = CurrencyFormatter(currencySettings: usStoreSettings)
+        let viewModel = CashPaymentTenderViewModel(formattedTotal: "$10.00", onOrderPaid: { _ in }, storeCurrencySettings: usStoreSettings)
 
         // When
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: {_ in }, storeCurrencySettings: usStoreSettings)
-        viewModel.customerPaidAmount = "15.00"
+        // Formattable input amount needs to be entered one digit at a time.
+        viewModel.formattableAmountViewModel.amount = "1"
+        viewModel.formattableAmountViewModel.amount = "15"
 
         // Then
-        guard let totalAmount = currencyFormatter.convertToDecimal(total) as? Decimal,
-              let customerPaidAmount = currencyFormatter.convertToDecimal(customerCash) as? Decimal else {
-            XCTFail()
-
-            return
-        }
-
         XCTAssertTrue(viewModel.tenderButtonIsEnabled)
-        XCTAssertEqual(viewModel.changeDue, currencyFormatter.formatAmount(customerPaidAmount - totalAmount))
+        XCTAssertTrue(viewModel.hasChangeDue)
+        XCTAssertEqual(viewModel.changeDue, "$5.00")
     }
 
-    func test_onMarkOrderAsCompleteButtonTapped_then_calls_callback_with_right_info() {
+    func test_when_onMarkOrderAsCompleteButtonTapped_it_calls_callback_with_right_info() {
         // Given
         var onOrderPaidInfo: OrderPaidByCashInfo?
-        let usStoreSettings = CurrencySettings()
-        let currencyFormatter = CurrencyFormatter(currencySettings: usStoreSettings)
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: { info in
+        let viewModel = CashPaymentTenderViewModel(formattedTotal: "$5.00", onOrderPaid: { info in
             onOrderPaidInfo = info
         }, storeCurrencySettings: usStoreSettings)
 
         // When
-        viewModel.customerPaidAmount = "15.00"
-        viewModel.addNote = false
+        // Formattable input amount needs to be entered one digit at a time.
+        viewModel.formattableAmountViewModel.amount = "5"
+        viewModel.formattableAmountViewModel.amount = "5."
+        viewModel.formattableAmountViewModel.amount = "5.5"
+        viewModel.addNote = true
         viewModel.onMarkOrderAsCompleteButtonTapped()
 
         // Then
-        XCTAssertEqual(onOrderPaidInfo?.customerPaidAmount, currencyFormatter.formatHumanReadableAmount(viewModel.customerPaidAmount))
-        XCTAssertEqual(onOrderPaidInfo?.changeGivenAmount, viewModel.changeDue)
-        XCTAssertEqual(onOrderPaidInfo?.addNoteWithChangeData, viewModel.addNote)
+        XCTAssertEqual(onOrderPaidInfo?.customerPaidAmount, "$5.50")
+        XCTAssertEqual(onOrderPaidInfo?.changeGivenAmount, "$0.50")
+        XCTAssertEqual(onOrderPaidInfo?.addNoteWithChangeData, true)
     }
 }

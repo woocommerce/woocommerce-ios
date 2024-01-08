@@ -165,21 +165,19 @@ final class PaymentMethodsViewModel: ObservableObject {
         updateCardPaymentVisibility()
     }
 
-    func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?, onCompletion: @escaping () -> Void) {
+    @MainActor
+    func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?) async {
         showLoadingIndicator = true
-        markOrderAsPaid { [weak self] in
-            guard let self = self,
-                  let info,
-                  info.addNoteWithChangeData else {
-                self?.finishOrderPaidByCashFlow()
-                onCompletion()
-                return
+        do {
+            try await markOrderAsPaid()
+            updateOrderAsynchronously()
+            if let info, info.addNoteWithChangeData {
+                await addPaidByCashNoteToOrder(with: info)
             }
-
-            addPaidByCashNoteToOrder(with: info) {
-                self.finishOrderPaidByCashFlow()
-                onCompletion()
-            }
+            finishOrderPaidByCashFlow()
+        } catch {
+            presentNoticeSubject.send(.error(Localization.markAsPaidError))
+            trackFlowFailed()
         }
     }
 
@@ -288,35 +286,28 @@ final class PaymentMethodsViewModel: ObservableObject {
 private extension PaymentMethodsViewModel {
     /// Mark an order as paid and notify if successful.
     ///
-    func markOrderAsPaid(onSuccess: @escaping () -> Void) {
-        let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
-            guard let self = self else { return }
-
-            if let error = error {
-                self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
-                self.trackFlowFailed()
-                return DDLogError("⛔️ Error updating order: \(error)")
-            }
-
-            self.updateOrderAsynchronously()
-
-            onSuccess()
-
+    @MainActor
+    func markOrderAsPaid() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { error in
+                guard let error else {
+                    return continuation.resume(returning: ())
+                }
+                continuation.resume(throwing: error)
+            })
         }
-        stores.dispatch(action)
     }
 
-    func addPaidByCashNoteToOrder(with info: OrderPaidByCashInfo, onCompletion: @escaping () -> Void) {
-        let noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
-        let action = OrderNoteAction.addOrderNote(siteID: siteID,
-                                                  orderID: orderID,
-                                                  isCustomerNote: false,
-                                                  note: noteText) { _, _ in
-            onCompletion()
-        }
-
-        Task { @MainActor in
-            self.stores.dispatch(action)
+    @MainActor
+    func addPaidByCashNoteToOrder(with info: OrderPaidByCashInfo) async {
+        await withCheckedContinuation { continuation in
+            let noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
+            stores.dispatch(OrderNoteAction.addOrderNote(siteID: siteID,
+                                                      orderID: orderID,
+                                                      isCustomerNote: false,
+                                                      note: noteText) { _, _ in
+                continuation.resume(returning: ())
+            })
         }
     }
 
@@ -443,7 +434,7 @@ private extension PaymentMethodsViewModel {
 
         static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
                                                         value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
-                                                        comment: "Title for the cash tender view. Reads like Cash $34.45")
+                                                        comment: "Note from the cash tender view.")
     }
 }
 

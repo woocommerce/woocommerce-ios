@@ -51,7 +51,8 @@ struct PaymentMethodsView: View {
                         .sheet(isPresented: $showingCashAlert) {
                             NavigationView {
                                 CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
-                                    viewModel.markOrderAsPaidByCash(with: info) {
+                                    Task { @MainActor in
+                                        await viewModel.markOrderAsPaidByCash(with: info)
                                         dismiss()
                                     }
                                 })

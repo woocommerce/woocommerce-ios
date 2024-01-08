@@ -10,11 +10,10 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
     private let contentKeyPath: KeyPath<T, String>
     private let onQueryChanged: ((String) -> Void)?
     private let onDismiss: () -> Void
-    private let onCompletion: (Set<T>) -> Void
+    private let onCompletion: (Set<T>?) -> Void
 
     @State private var query: String = ""
-    @State private var selectedItems: Set<T> = []
-    @State private var allOptionSelected: Bool = false
+    @State private var selectedItems: Set<T>
 
     /// Subtypes and static variables are not allowed on generic types
     /// so we have to use constants here.
@@ -38,9 +37,10 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
          allOptionsTitle: String,
          contents: [T],
          contentKeyPath: KeyPath<T, String>,
+         selectedItems: Set<T>? = nil,
          onQueryChanged: ((String) -> Void)? = nil,
          onDismiss: @escaping () -> Void,
-         onCompletion: @escaping (Set<T>) -> Void) {
+         onCompletion: @escaping (Set<T>?) -> Void) {
         self.title = title
         self.allOptionsTitle = allOptionsTitle
         self.contents = contents
@@ -48,63 +48,62 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
         self.onQueryChanged = onQueryChanged
         self.onDismiss = onDismiss
         self.onCompletion = onCompletion
+        self.selectedItems = selectedItems ?? []
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            if let onQueryChanged {
-                SearchHeader(text: $query, placeholder: searchBarPlaceholderText) { _ in
-                    onQueryChanged(query)
-                }
-            }
-
-            List {
-                Section {
-                    HStack {
-                        Text(allOptionsTitle)
-                        Spacer()
-                        Image(uiImage: .checkmarkStyledImage)
-                            .renderedIf(allOptionSelected)
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        allOptionSelected.toggle()
-                        if allOptionSelected {
-                            selectedItems = Set(contents)
-                        } else {
-                            selectedItems.removeAll()
-                        }
-                    }
+        NavigationView {
+            VStack(spacing: 0) {
+                if onQueryChanged != nil {
+                    SearchHeader(text: $query, placeholder: searchBarPlaceholderText)
                 }
 
-                Section {
-                    ForEach(contents) { item in
+                List {
+                    Section {
                         HStack {
-                            Text(item[keyPath: contentKeyPath])
+                            Text(allOptionsTitle)
                             Spacer()
                             Image(uiImage: .checkmarkStyledImage)
-                                .renderedIf(selectedItems.contains(item))
+                                .renderedIf(selectedItems.isEmpty)
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            selectedItems.insert(item)
+                            selectedItems = []
+                        }
+                    }
+
+                    Section {
+                        ForEach(contents) { item in
+                            HStack {
+                                Text(item[keyPath: contentKeyPath])
+                                Spacer()
+                                Image(uiImage: .checkmarkStyledImage)
+                                    .renderedIf(selectedItems.contains(item))
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedItems.insert(item)
+                            }
                         }
                     }
                 }
+                .listStyle(.grouped)
             }
-            .listStyle(.grouped)
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(title)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(cancelButtonTitle, action: onDismiss)
-            }
-
-            ToolbarItem(placement: .confirmationAction) {
-                Button(saveButtonTitle) {
-                    onCompletion(selectedItems)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(title)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(cancelButtonTitle, action: onDismiss)
                 }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(saveButtonTitle) {
+                        onCompletion(selectedItems.isEmpty ? nil : selectedItems)
+                    }
+                }
+            }
+            .onChange(of: query) { value in
+                onQueryChanged?(value)
             }
         }
     }

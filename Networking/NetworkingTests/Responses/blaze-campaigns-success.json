@@ -20,7 +20,6 @@
             "avatar_url": "https://0.gravatar.com/avatar/1?s=96&d=identicon",
             "budget_cents": 500,
             "format": "html5",
-            "target_urn": "urn:wpcom:post:1:134",
             "target_url": "https://example.com/product/fried-egg-bacon-bagel/",
             "user_target_language": "0",
             "user_target_geo": "0",
@@ -71,9 +70,7 @@
                 "duration_days": 7,
                 "budget_day": 5,
                 "spent_budget_cents": 0,
-                "budget_left": 35,
-                "total_budget": 35,
-                "total_budget_used": 0
+                "budget_left": 35
             }
         }
     ],

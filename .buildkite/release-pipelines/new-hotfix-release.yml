@@ -3,19 +3,19 @@ steps:
     plugins:
       - automattic/a8c-ci-toolkit#3.0.1
       - automattic/git-s3-cache#1.1.4:
-        bucket: "a8c-repo-mirrors"
-        # This is not necessarily the actual name of the repo or the GitHub organization
-        # it belongs to. It is the key used in the bucket, which is set based on
-        # the Buildkite pipeline slug
-        repo: "automattic/woocommerce-ios/"
+          bucket: "a8c-repo-mirrors"
+          # This is not necessarily the actual name of the repo or the GitHub organization
+          # it belongs to. It is the key used in the bucket, which is set based on
+          # the Buildkite pipeline slug
+          repo: "automattic/woocommerce-ios/"
     env:
       # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
       IMAGE_ID: xcode-14.3.1
     command: |
       .buildkite/commands/configure-environment.sh
 
-      echo '--- :closed_lock_with_key: Access secrets'
+      echo '--- :closed_lock_with_key: Access Secrets'
       bundle exec fastlane run configure_apply
 
-      echo '--- :fire: Start new hotfix release'
+      echo '--- :fire: Start New Hotfix Release'
       bundle exec fastlane new_hotfix_release version:${VERSION} skip_confirm:true

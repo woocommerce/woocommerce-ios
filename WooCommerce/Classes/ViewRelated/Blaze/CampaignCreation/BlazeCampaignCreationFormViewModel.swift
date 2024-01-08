@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import struct Networking.BlazeAISuggestion
 
 /// View model for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
@@ -46,6 +47,28 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
+    }
+
+    var editAdViewModel: BlazeEditAdViewModel {
+        // TODO: Send ad data to edit screen
+        let adData = BlazeEditAdData(image: .init(image: .blazeIntroIllustration, source: .asset(asset: .init())),
+                                     tagline: "From $99",
+                                     description: "Get the latest white shirt for a stylish look")
+        // TODO: Send suggestions to edit screen
+        let suggestions = {
+            var suggestions = [BlazeAISuggestion]()
+            for i in 0..<3 {
+                suggestions.append(BlazeAISuggestion(siteName: "Tagline \(i+1)",
+                                                     textSnippet: "Description \(i+1)"))
+            }
+            return suggestions
+        }()
+        return BlazeEditAdViewModel(siteID: siteID,
+                                    adData: adData,
+                                    suggestions: suggestions,
+                                    onSave: { _ in
+            // TODO: Update ad with edited data
+        })
     }
 
     @Published private(set) var budgetDetailText: String = ""

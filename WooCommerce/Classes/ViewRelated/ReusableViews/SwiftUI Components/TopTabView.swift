@@ -1,21 +1,20 @@
 import SwiftUI
 
-struct TopTabItem<ViewType: View> {
+struct TopTabItem<Content: View> {
     let name: String
-    let view: ViewType
+    let content: () -> Content
     let onSelected: (() -> Void)?
 
     init(name: String,
-         view: ViewType,
+         @ViewBuilder content: @escaping () -> Content,
          onSelected: (() -> Void)? = nil) {
         self.name = name
-        self.view = view
+        self.content = content
         self.onSelected = onSelected
     }
 }
 
-@available(iOS 16.0, *)
-struct TopTabView<ViewType: View>: View {
+struct TopTabView<Content: View>: View {
     @State private var selectedTab = 0
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
@@ -24,9 +23,9 @@ struct TopTabView<ViewType: View>: View {
 
     @Binding var showTabs: Bool
 
-    let tabs: [TopTabItem<ViewType>]
+    let tabs: [TopTabItem<Content>]
 
-    init(tabs: [TopTabItem<ViewType>],
+    init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true)) {
         self.tabs = tabs
         self._showTabs = showTabs
@@ -96,7 +95,7 @@ struct TopTabView<ViewType: View>: View {
                 HStack(spacing: 0) {
                     ForEach(0..<tabs.count, id: \.self) { index in
                         // Tab content as passed to the TopTabView at init
-                        tabs[index].view
+                        tabs[index].content()
                             .frame(width: geometry.size.width)
                     }
                 }
@@ -214,33 +213,44 @@ struct TopTabView<ViewType: View>: View {
     }
 }
 
-@available(iOS 16.0, *)
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let tabs: [TopTabItem] = [
-            TopTabItem(name: "A tab name", view: AnyView(Text("Content for Tab 1")
-                .font(.largeTitle)
-                .padding())),
-            TopTabItem(name: "Tab2", view: AnyView(Text("Content for Tab 2")
-                .font(.largeTitle)
-                .padding())),
-            TopTabItem(name: "More detail", view: AnyView(Text("Content for Tab 3")
-                .font(.largeTitle)
-                .padding())),
-            TopTabItem(name: "A really long tab name", view: AnyView(Text("Content for Tab 4")
-                .font(.largeTitle)
-                .padding())),
-            TopTabItem(name: "Tab", view: AnyView(Text("Content for Tab 5")
-                .font(.largeTitle)
-                .padding())),
+            TopTabItem(name: "A tab name", content: {
+                Text("Content for Tab 1")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "A tab name", content: {
+                Text("Content for Tab 2")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "More detail", content: {
+                Text("Content for Tab 3")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "A really long tab name", content: {
+                Text("Content for Tab 4")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "Tab", content: {
+                Text("Content for Tab 5")
+                    .font(.largeTitle)
+                    .padding()
+            })
         ]
         TopTabView(tabs: tabs)
             .previewLayout(.sizeThatFits)
 
         let oneTab: [TopTabItem] = [
-            TopTabItem(name: "A tab name", view: AnyView(Text("Content for Tab 1")
-                .font(.largeTitle)
-                .padding()))
+            TopTabItem(name: "A tab name", content: {
+                Text("Content for Tab 1")
+                    .font(.largeTitle)
+                    .padding()
+            })
         ]
         TopTabView(tabs: oneTab)
             .previewLayout(.sizeThatFits)

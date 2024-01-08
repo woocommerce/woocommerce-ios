@@ -51,7 +51,28 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     @Published var tabTitle: String
 
     private func calculateNextScheduledDeposit() -> String {
-        return formatDate(Date()) ?? Localization.noDateString
+        let currentDate = Date()
+        let calendar = Calendar.current
+        var scheduledDate: Date? = nil
+
+        switch overview.depositInterval {
+        case .daily:
+            scheduledDate = calendar.date(byAdding: .day,
+                                         value: 1,
+                                         to: currentDate)
+        case let .weekly(anchor: dayOfTheWeek):
+            print(dayOfTheWeek)
+            break
+        case let .monthly(anchor: data):
+            print(data)
+            break
+        case .manual:
+            break
+        }
+        guard let scheduledDate else {
+            return Localization.noDateString
+        }
+        return formatDate(scheduledDate) ?? Localization.noDateString
     }
 
     private func formatAmount(_ amount: NSDecimalNumber) -> String {

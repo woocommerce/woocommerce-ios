@@ -1,0 +1,21 @@
+{
+    "creatives": [
+        {
+            "site_name": "Classic Fridge!",
+            "text_snippet": "Apartment Sized 7.5 cu. ft. Two Door Refrigerator with Retro Design and Low Energy Consumption. Click for more!"
+        },
+        {
+            "site_name": "Funky Retro Fridge",
+            "text_snippet": "Epic Black Retro Refrigerator with Chrome handles, low energy consumption and lots of door storage. Buy now!"
+        },
+        {
+            "site_name": "Cool Vintage Refrigerator",
+            "text_snippet": "Automatic Defrost, Low Energy Consumption, 2L bottle Storage, 1 Year Warranty. Check it out!"
+        }
+    ],
+    "targeting": {
+        "languages": [
+            "en"
+        ]
+    }
+}

@@ -4,6 +4,12 @@ import SwiftUI
 struct BlazeAdDestinationSettingView: View {
     @Environment(\.dismiss) private var dismiss
 
+    @ObservedObject private var viewModel: BlazeAdDestinationSettingViewModel
+
+    init(viewModel: BlazeAdDestinationSettingViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
@@ -35,7 +41,7 @@ struct BlazeAdDestinationSettingView: View {
                     .background(Color(.systemBackground))
 
                     VStack {
-                        Text("2096 characters remaining")
+                        Text(viewModel.remainingCharactersLabel)
                             .padding(.bottom, Layout.contentVerticalSpacing)
                         Text("Destination: http://woo.com/")
                     }
@@ -179,6 +185,6 @@ private extension BlazeAdDestinationSettingView {
 
 struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeAdDestinationSettingView()
+        BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/"))
     }
 }

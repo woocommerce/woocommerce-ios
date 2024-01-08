@@ -46,7 +46,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   statusKey: (ProductStatus.published.rawValue)))
+                                   statusKey: (ProductStatus.published.rawValue),
+                                   purchasable: true))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -68,7 +69,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
-                                                                     statusKey: (ProductStatus.published.rawValue)))
+                                                                     statusKey: (ProductStatus.published.rawValue),
+                                                                     purchasable: true))
 
         mockSynchronizeCampaigns()
 
@@ -156,7 +158,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
-                                                                     statusKey: (ProductStatus.published.rawValue)))
+                                                                     statusKey: (ProductStatus.published.rawValue),
+                                                                     purchasable: true))
         mockSynchronizeCampaigns()
 
         // When
@@ -189,11 +192,13 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let product1: Product = .fake().copy(siteID: sampleSiteID,
-                                             statusKey: (ProductStatus.published.rawValue))
+                                             statusKey: (ProductStatus.published.rawValue),
+                                             purchasable: true)
         insertProduct(product1)
 
         let product2: Product = .fake().copy(siteID: sampleSiteID,
-                                             statusKey: (ProductStatus.published.rawValue))
+                                             statusKey: (ProductStatus.published.rawValue),
+                                             purchasable: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -284,7 +289,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
-                                              statusKey: (ProductStatus.published.rawValue))
+                                              statusKey: (ProductStatus.published.rawValue),
+                                              purchasable: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -410,7 +416,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
-                                              statusKey: (ProductStatus.published.rawValue))
+                                              statusKey: (ProductStatus.published.rawValue),
+                                              purchasable: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -597,7 +604,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
-                                              statusKey: (ProductStatus.published.rawValue))
+                                              statusKey: (ProductStatus.published.rawValue),
+                                              purchasable: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -662,10 +670,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         insertProduct(Product.fake().copy(siteID: sampleSiteID,
                                           productID: 1,
-                                          statusKey: (ProductStatus.published.rawValue)))
+                                          statusKey: (ProductStatus.published.rawValue),
+                                          purchasable: true))
         insertProduct(Product.fake().copy(siteID: sampleSiteID,
                                           productID: 2,
-                                          statusKey: (ProductStatus.published.rawValue)))
+                                          statusKey: (ProductStatus.published.rawValue),
+                                          purchasable: true))
 
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
@@ -793,7 +803,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
-                                              statusKey: (ProductStatus.published.rawValue))
+                                              statusKey: (ProductStatus.published.rawValue),
+                                              purchasable: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,

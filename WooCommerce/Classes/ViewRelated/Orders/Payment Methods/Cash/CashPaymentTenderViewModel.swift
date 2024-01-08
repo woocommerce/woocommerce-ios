@@ -51,7 +51,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
 
     func onMarkOrderAsCompleteButtonTapped() {
         var info: OrderPaidByCashInfo?
-        if let customerPaidAmount = currencyFormatter.formatHumanReadableAmount(formattableAmountViewModel.amount) {
+        if let customerPaidAmount = currencyFormatter.formatAmount(formattableAmountViewModel.amount) {
             info = .init(customerPaidAmount: customerPaidAmount, changeGivenAmount: changeDue, addNoteWithChangeData: addNote)
         }
 
@@ -63,7 +63,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
 private extension CashPaymentTenderViewModel {
     func observeFormattableAmountForUIStates() {
         // Maps the formatted amount to an optional decimal amount as the change due amount.
-        // The value is non-nil when the change due amount is positive.
+        // The value is non-nil when the change due amount is not negative.
         let changeDueAmount: AnyPublisher<Decimal?, Never> = formattableAmountViewModel.$amount.map { [weak self] in
             guard let self else { return nil }
             guard let totalAmount = currencyFormatter.convertToDecimal(formattedTotal) as? Decimal,

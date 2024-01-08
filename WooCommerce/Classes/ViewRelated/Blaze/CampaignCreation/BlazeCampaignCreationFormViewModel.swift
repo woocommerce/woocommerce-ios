@@ -69,6 +69,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.completionHandler = onCompletion
 
         updateBudgetDetails()
+        updateTargetLanguagesText()
     }
 
     func didTapEditAd() {
@@ -92,7 +93,9 @@ private extension BlazeCampaignCreationFormViewModel {
             guard let languages, languages.isEmpty == false else {
                 return Localization.all
             }
-            return languages.map { $0.name }.joined(separator: ", ")
+            return languages.sorted(by: { $0.name < $1.name })
+                .map { $0.name }
+                .joined(separator: ", ")
         }()
     }
 }

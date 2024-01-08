@@ -17,7 +17,7 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
 
     /// Blaze campaign ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeTargetLanguage> = {
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeTargetLanguage.id, ascending: false)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeTargetLanguage.id, ascending: true)
         let resultsController = ResultsController<StorageBlazeTargetLanguage>(storageManager: storageManager,
                                                                               sortedBy: [sortDescriptorByID])
         return resultsController

@@ -24,7 +24,7 @@ struct ShippingLabelCustomPackageForm: View {
                             showingPackageTypes.toggle()
                         }
                         .sheet(isPresented: $showingPackageTypes, content: {
-                            SelectionList(title: Localization.packageTypeLabel,
+                            SingleSelectionList(title: Localization.packageTypeLabel,
                                           items: ShippingLabelCustomPackageFormViewModel.PackageType.allCases,
                                           contentKeyPath: \.localizedName,
                                           selected: $viewModel.packageType)

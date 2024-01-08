@@ -2168,7 +2168,7 @@
 		DE126D0F26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0E26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift */; };
 		DE157E152B01F26500542A9B /* ProductFormDataModel+SubscriptionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE157E142B01F26500542A9B /* ProductFormDataModel+SubscriptionDescription.swift */; };
 		DE157E1A2B02406400542A9B /* ProductSubscriptionPeriodPickerUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE157E192B02406400542A9B /* ProductSubscriptionPeriodPickerUseCase.swift */; };
-		DE19BB0C26C2688B00AB70D9 /* SelectionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB0B26C2688B00AB70D9 /* SelectionList.swift */; };
+		DE19BB0C26C2688B00AB70D9 /* SingleSelectionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB0B26C2688B00AB70D9 /* SingleSelectionList.swift */; };
 		DE19BB1226C3811100AB70D9 /* LearnMoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */; };
 		DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */; };
 		DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1926C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift */; };
@@ -2281,6 +2281,7 @@
 		DE7B479327A38ADA0018742E /* CouponDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B479227A38ADA0018742E /* CouponDetails.swift */; };
 		DE7B479527A38B8F0018742E /* CouponDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B479427A38B8F0018742E /* CouponDetailsViewModel.swift */; };
 		DE7B479727A3C4980018742E /* CouponDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */; };
+		DE7E5E7D2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E7C2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
@@ -4812,7 +4813,7 @@
 		DE126D0E26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormInputViewModelTests.swift; sourceTree = "<group>"; };
 		DE157E142B01F26500542A9B /* ProductFormDataModel+SubscriptionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormDataModel+SubscriptionDescription.swift"; sourceTree = "<group>"; };
 		DE157E192B02406400542A9B /* ProductSubscriptionPeriodPickerUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSubscriptionPeriodPickerUseCase.swift; sourceTree = "<group>"; };
-		DE19BB0B26C2688B00AB70D9 /* SelectionList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionList.swift; sourceTree = "<group>"; };
+		DE19BB0B26C2688B00AB70D9 /* SingleSelectionList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSelectionList.swift; sourceTree = "<group>"; };
 		DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreRow.swift; sourceTree = "<group>"; };
 		DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetails.swift; sourceTree = "<group>"; };
 		DE19BB1926C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetailsViewModel.swift; sourceTree = "<group>"; };
@@ -4925,6 +4926,7 @@
 		DE7B479227A38ADA0018742E /* CouponDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponDetails.swift; sourceTree = "<group>"; };
 		DE7B479427A38B8F0018742E /* CouponDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponDetailsViewModel.swift; sourceTree = "<group>"; };
 		DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponDetailsViewModelTests.swift; sourceTree = "<group>"; };
+		DE7E5E7C2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLanguagePickerView.swift; sourceTree = "<group>"; };
 		DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -7885,7 +7887,7 @@
 				E15FC74026BC1CED00CF83E6 /* AttributedText.swift */,
 				E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */,
 				E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */,
-				DE19BB0B26C2688B00AB70D9 /* SelectionList.swift */,
+				DE19BB0B26C2688B00AB70D9 /* SingleSelectionList.swift */,
 				CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */,
 				DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */,
 				E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */,
@@ -11155,6 +11157,14 @@
 			path = CouponDetails;
 			sourceTree = "<group>";
 		};
+		DE7E5E7B2B4BB5F7002E28D2 /* TargetOptions */ = {
+			isa = PBXGroup;
+			children = (
+				DE7E5E7C2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift */,
+			);
+			path = TargetOptions;
+			sourceTree = "<group>";
+		};
 		DE85E4EB2AB416F5008789E1 /* EntryPoint */ = {
 			isa = PBXGroup;
 			children = (
@@ -11243,6 +11253,7 @@
 		DED91DF72AD78A0C00CDCC53 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
+				DE7E5E7B2B4BB5F7002E28D2 /* TargetOptions */,
 				DE5746322B4512750034B10D /* BudgetSetting */,
 				DE57462D2B43EAF20034B10D /* CampaignCreation */,
 				EEC259402B43E4D6004D703C /* BlazeEditAd */,
@@ -13747,7 +13758,7 @@
 				CE13681529FBD42100EBF43C /* QuantityRules.swift in Sources */,
 				CC4A4FF126557D0E00B75DCD /* TitleAndToggleRow.swift in Sources */,
 				029B0F57234197B80010C1F3 /* ProductSearchUICommand.swift in Sources */,
-				DE19BB0C26C2688B00AB70D9 /* SelectionList.swift in Sources */,
+				DE19BB0C26C2688B00AB70D9 /* SingleSelectionList.swift in Sources */,
 				261B526E29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift in Sources */,
 				68ED2BD62ADD2C8C00ECA88D /* LineDetailView.swift in Sources */,
 				45DB705A26124C710064A6CF /* TitleAndTextFieldRow.swift in Sources */,
@@ -14036,6 +14047,7 @@
 				02162726237963AF000208D2 /* ProductFormViewController.swift in Sources */,
 				0313651728ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift in Sources */,
 				571CDD5A250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift in Sources */,
+				DE7E5E7D2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift in Sources */,
 				02B1AA6529A4705A00D54FCB /* TabbedViewController.swift in Sources */,
 				4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */,
 				02A723282AB2E1C2003AEC7E /* GiftCardInputViewModel.swift in Sources */,

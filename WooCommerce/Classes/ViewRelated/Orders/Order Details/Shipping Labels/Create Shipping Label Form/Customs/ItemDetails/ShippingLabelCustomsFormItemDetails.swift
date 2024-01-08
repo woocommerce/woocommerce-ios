@@ -143,7 +143,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         isShowingCountries.toggle()
                     }
                     .sheet(isPresented: $isShowingCountries, content: {
-                        SelectionList(title: Localization.originTitle,
+                        SingleSelectionList(title: Localization.originTitle,
                                       items: viewModel.allCountries,
                                       contentKeyPath: \.name,
                                       selected: $viewModel.originCountry)

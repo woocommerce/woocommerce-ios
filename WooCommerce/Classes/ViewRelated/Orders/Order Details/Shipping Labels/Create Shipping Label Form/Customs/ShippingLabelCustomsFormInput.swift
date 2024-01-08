@@ -79,7 +79,7 @@ struct ShippingLabelCustomsFormInput: View {
                 showingContentTypes.toggle()
             }
             .sheet(isPresented: $showingContentTypes, content: {
-                SelectionList(title: Localization.contentTypeTitle,
+                SingleSelectionList(title: Localization.contentTypeTitle,
                               items: ShippingLabelCustomsForm.ContentsType.allCases,
                               contentKeyPath: \.localizedName,
                               selected: $viewModel.contentsType)
@@ -114,7 +114,7 @@ struct ShippingLabelCustomsFormInput: View {
                 showingRestrictionTypes.toggle()
             }
             .sheet(isPresented: $showingRestrictionTypes, content: {
-                SelectionList(title: Localization.restrictionTypeTitle,
+                SingleSelectionList(title: Localization.restrictionTypeTitle,
                               items: ShippingLabelCustomsForm.RestrictionType.allCases,
                               contentKeyPath: \.localizedName,
                               selected: $viewModel.restrictionType)

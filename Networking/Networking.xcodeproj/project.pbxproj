@@ -928,6 +928,7 @@
 		EE1CB90E2B4BC99E00AD24D5 /* BlazeAISuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB90D2B4BC99E00AD24D5 /* BlazeAISuggestion.swift */; };
 		EE1CB9122B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9112B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift */; };
 		EE1CB9162B4BCFA800AD24D5 /* blaze-ai-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = EE1CB9152B4BCFA800AD24D5 /* blaze-ai-suggestions.json */; };
+		EE1CB9182B4BD22800AD24D5 /* BlazeAISuggestionListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9172B4BD22800AD24D5 /* BlazeAISuggestionListMapperTests.swift */; };
 		EE1D9A9F2ACD6BA60020D817 /* AIProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1D9A9E2ACD6BA60020D817 /* AIProduct.swift */; };
 		EE28C7DA2AC17961004A69F4 /* generate-product-failure.json in Resources */ = {isa = PBXBuildFile; fileRef = EE28C7D72AC17960004A69F4 /* generate-product-failure.json */; };
 		EE28C7DB2AC17961004A69F4 /* generate-product-invalid-token.json in Resources */ = {isa = PBXBuildFile; fileRef = EE28C7D82AC17961004A69F4 /* generate-product-invalid-token.json */; };
@@ -1982,6 +1983,7 @@
 		EE1CB90D2B4BC99E00AD24D5 /* BlazeAISuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAISuggestion.swift; sourceTree = "<group>"; };
 		EE1CB9112B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAISuggestionListMapper.swift; sourceTree = "<group>"; };
 		EE1CB9152B4BCFA800AD24D5 /* blaze-ai-suggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-ai-suggestions.json"; sourceTree = "<group>"; };
+		EE1CB9172B4BD22800AD24D5 /* BlazeAISuggestionListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAISuggestionListMapperTests.swift; sourceTree = "<group>"; };
 		EE1D9A9E2ACD6BA60020D817 /* AIProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProduct.swift; sourceTree = "<group>"; };
 		EE28C7D72AC17960004A69F4 /* generate-product-failure.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-failure.json"; sourceTree = "<group>"; };
 		EE28C7D82AC17961004A69F4 /* generate-product-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-invalid-token.json"; sourceTree = "<group>"; };
@@ -3351,6 +3353,7 @@
 				DEA493762B39987B00EED015 /* BlazeTargetOptionMapperTests.swift */,
 				8617EDA52B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift */,
 				EE8C202C2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift */,
+				EE1CB9172B4BD22800AD24D5 /* BlazeAISuggestionListMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -4715,6 +4718,7 @@
 				D8FBFF1E22D51F39006E3336 /* OrderStatsMapperV4Tests.swift in Sources */,
 				02E7FFCB256218F600C53030 /* ShippingLabelRemoteTests.swift in Sources */,
 				DE50296528C60A8000551736 /* JetpackUserMapperTests.swift in Sources */,
+				EE1CB9182B4BD22800AD24D5 /* BlazeAISuggestionListMapperTests.swift in Sources */,
 				028F3F942B0DF9A800F8E227 /* OrderEncoderTests.swift in Sources */,
 				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,
 				2685C102263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift in Sources */,

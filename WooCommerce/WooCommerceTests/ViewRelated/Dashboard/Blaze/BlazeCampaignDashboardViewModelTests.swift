@@ -635,6 +635,40 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowIntroView)
     }
 
+    // MARK: shouldShowProductSelectorView
+    func test_when_there_are_multiple_products_then_shouldShowProductSelectorView_is_true() async {
+        // Given
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 1,
+                                          statusKey: (ProductStatus.published.rawValue)))
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 2,
+                                          statusKey: (ProductStatus.published.rawValue)))
+
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        await viewModel.reload()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowProductSelectorView)
+    }
+
+    func test_when_there_is_one_product_then_shouldShowProductSelectorView_is_false() async throws {
+        // Given
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 1,
+                                          statusKey: (ProductStatus.published.rawValue)))
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // When
+        await viewModel.reload()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowProductSelectorView)
+    }
+
+
     // MARK: `selectedCampaignURL`
 
     func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {

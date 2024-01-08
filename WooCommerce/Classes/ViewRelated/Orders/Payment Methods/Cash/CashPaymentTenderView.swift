@@ -21,9 +21,12 @@ struct CashPaymentTenderView: View {
                             .keyboardType(.decimalPad)
                             .textFieldStyle(.plain)
                             .font(.system(size: Layout.amountFontSize, weight: .bold))
-                            .onTapGesture {
-                                viewModel.onCustomerPaidAmountTapped()
-                            }
+                            .simultaneousGesture(
+                                TapGesture()
+                                    .onEnded { _ in
+                                        viewModel.onCustomerPaidAmountTapped()
+                                    }
+                            )
                     }
                     .padding(Layout.sectionPadding)
 

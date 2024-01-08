@@ -111,6 +111,7 @@ struct BlazeCampaignCreationForm: View {
         }
         .sheet(isPresented: $isShowingBudgetSetting) {
             BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
+        }
         .sheet(isPresented: $isShowingAdDestinationScreen) {
             BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
         }

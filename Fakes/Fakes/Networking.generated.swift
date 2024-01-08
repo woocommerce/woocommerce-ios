@@ -2314,7 +2314,6 @@ extension Networking.WooPaymentsCurrencyDeposits {
     public static func fake() -> Networking.WooPaymentsCurrencyDeposits {
         .init(
             lastPaid: .fake(),
-            nextScheduled: .fake(),
             lastManualDeposits: .fake()
         )
     }

@@ -17,20 +17,16 @@ public struct WooPaymentsDepositsOverview: Codable, GeneratedFakeable, Generated
 
 public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let lastPaid: [WooPaymentsDeposit]
-    public let nextScheduled: [WooPaymentsDeposit]
     public let lastManualDeposits: [WooPaymentsManualDeposit]
 
     public init(lastPaid: [WooPaymentsDeposit],
-                nextScheduled: [WooPaymentsDeposit],
                 lastManualDeposits: [WooPaymentsManualDeposit]) {
         self.lastPaid = lastPaid
-        self.nextScheduled = nextScheduled
         self.lastManualDeposits = lastManualDeposits
     }
 
     enum CodingKeys: String, CodingKey {
         case lastPaid = "last_paid"
-        case nextScheduled = "next_scheduled"
         case lastManualDeposits = "last_manual_deposits"
     }
 }

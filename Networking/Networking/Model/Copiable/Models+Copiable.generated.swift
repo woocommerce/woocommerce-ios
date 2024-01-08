@@ -3277,16 +3277,13 @@ extension Networking.WooPaymentsCurrencyBalances {
 extension Networking.WooPaymentsCurrencyDeposits {
     public func copy(
         lastPaid: CopiableProp<[WooPaymentsDeposit]> = .copy,
-        nextScheduled: CopiableProp<[WooPaymentsDeposit]> = .copy,
         lastManualDeposits: CopiableProp<[WooPaymentsManualDeposit]> = .copy
     ) -> Networking.WooPaymentsCurrencyDeposits {
         let lastPaid = lastPaid ?? self.lastPaid
-        let nextScheduled = nextScheduled ?? self.nextScheduled
         let lastManualDeposits = lastManualDeposits ?? self.lastManualDeposits
 
         return Networking.WooPaymentsCurrencyDeposits(
             lastPaid: lastPaid,
-            nextScheduled: nextScheduled,
             lastManualDeposits: lastManualDeposits
         )
     }

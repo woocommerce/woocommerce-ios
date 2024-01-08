@@ -6,27 +6,34 @@ struct BlazeTargetLanguagePickerView: View {
 
     @ObservedObject private var viewModel: BlazeTargetLanguagePickerViewModel
 
+    private let selectedLanguages: Set<BlazeTargetLanguage>?
     private let onDismiss: () -> Void
-    private let onCompletion: (Set<BlazeTargetLanguage>) -> Void
 
     init(viewModel: BlazeTargetLanguagePickerViewModel,
-         onDismiss: @escaping () -> Void,
-         onCompletion: @escaping (Set<BlazeTargetLanguage>) -> Void) {
+         selectedLanguages: Set<BlazeTargetLanguage>?,
+         onDismiss: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.selectedLanguages = selectedLanguages
         self.onDismiss = onDismiss
-        self.onCompletion = onCompletion
     }
 
     var body: some View {
         MultiSelectionList(title: Localization.title,
                            allOptionsTitle: Localization.allTitle,
                            contents: viewModel.languages,
-                           contentKeyPath: \.name, 
+                           contentKeyPath: \.name,
+                           selectedItems: selectedLanguages,
                            onQueryChanged: { query in
-            // TODO: update content list
-        },
+                                viewModel.searchQuery = query
+                            },
                            onDismiss: onDismiss,
-                           onCompletion: onCompletion)
+                           onCompletion: { selectedLanguages in
+                                viewModel.confirmSelection(selectedLanguages)
+                                onDismiss()
+                            })
+        .task {
+            await viewModel.syncLanguages()
+        }
 
     }
 }
@@ -48,6 +55,6 @@ private extension BlazeTargetLanguagePickerView {
 
 struct BlazeTargetLanguagePickerView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeTargetLanguagePickerView(viewModel: BlazeTargetLanguagePickerViewModel(siteID: 123), onDismiss: {}, onCompletion: { _ in })
+        BlazeTargetLanguagePickerView(viewModel: BlazeTargetLanguagePickerViewModel(siteID: 123) { _ in }, selectedLanguages: nil, onDismiss: {})
     }
 }

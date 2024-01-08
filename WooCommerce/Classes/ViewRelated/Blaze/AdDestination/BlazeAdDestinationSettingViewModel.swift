@@ -21,6 +21,21 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         return String(format: lengthText, remainingCharacters)
     }
 
+    var finalDestinationLabel: String {
+        let baseURL: String
+        switch selectedDestinationType {
+        case .product:
+            baseURL = productURL
+        case .home:
+            baseURL = homeURL
+        }
+
+        let paramString = buildParameterString()
+        let finalURL = baseURL + (paramString.isEmpty ? "" : "?\(paramString)")
+
+        return String(format: Localization.finalDestination, finalURL)
+    }
+
     init (productURL: String,
           homeURL: String,
           selectedDestinationType: DestinationURLType = .product,
@@ -35,25 +50,28 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         selectedDestinationType = type
     }
 
-    private func calculateRemainingCharacters() -> Int {
-        var parameterLength = 0
+    func buildParameterString() -> String {
+        var parameterString = ""
         for parameter in parameters {
             // In URL format, the parameter is written such as "key=value".
-            parameterLength += parameter.key.count + "=".count + parameter.value.count
+            parameterString += parameter.key + "=" + parameter.value
+
+            // If it's not the last parameter, add an ampersand.
+            if parameter != parameters.last {
+                parameterString += "&"
+            }
         }
 
-        // Include also number of ampersands, which is used to separate parameters.
-        // Exampe: "key1=value1&key2=value2"
-        let numberOfAmpersands = max(0, parameters.count - 1)
+        return parameterString
+    }
 
-        // Calculate remaining characters
-        let remainingCharacters = Constant.maxParameterLength - (parameterLength + numberOfAmpersands)
-
-        // If remainingCharacters is negative, return 0, else return the calculated value
+    private func calculateRemainingCharacters() -> Int {
+        let remainingCharacters = Constant.maxParameterLength - buildParameterString().count
+        // Should stop at zero and not show negative number.
         return max(0, remainingCharacters)
     }
 
-    struct BlazeAdURLParameters {
+    struct BlazeAdURLParameters: Equatable {
         var key: String
         var value: String
     }
@@ -83,7 +101,7 @@ private extension BlazeAdDestinationSettingViewModel {
 
         static let finalDestination = NSLocalizedString(
             "blazeAdDestinationSettingVieModel.finalDestination",
-            value: "Destination: %d",
+            value: "Destination: %1$@",
             comment: "Blaze Ad Destination: The final URl destination including optional parameters. " +
             "Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue"
         )

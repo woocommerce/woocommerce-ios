@@ -44,7 +44,7 @@ struct BlazeAdDestinationSettingView: View {
                     VStack {
                         Text(viewModel.remainingCharactersLabel)
                             .padding(.bottom, Layout.contentVerticalSpacing)
-                        Text("Destination: http://woo.com/")
+                        Text(viewModel.finalDestinationLabel)
                     }
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)

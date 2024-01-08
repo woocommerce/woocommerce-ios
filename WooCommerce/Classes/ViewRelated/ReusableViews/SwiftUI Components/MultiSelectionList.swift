@@ -2,7 +2,7 @@ import SwiftUI
 import struct Yosemite.BlazeTargetLanguage
 
 /// View to select multiple items from a list with an optional search bar.
-struct MultipleSelectionList<T: Hashable & Identifiable>: View {
+struct MultiSelectionList<T: Hashable & Identifiable>: View {
     private let title: String
     private let allOptionsTitle: String
     private let contents: [T]
@@ -117,7 +117,7 @@ struct MultipleSelectionList_Previews: PreviewProvider {
             BlazeTargetLanguage(id: "1", name: "English", locale: "en"),
             BlazeTargetLanguage(id: "2", name: "Vietnamese", locale: "vi")
         ]
-        MultipleSelectionList(title: "Languages",
+        MultiSelectionList(title: "Languages",
                               allOptionsTitle: "All languages",
                               contents: languages,
                               contentKeyPath: \.id,

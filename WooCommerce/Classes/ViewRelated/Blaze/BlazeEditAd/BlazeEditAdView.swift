@@ -36,7 +36,7 @@ struct BlazeEditAdView: View {
 
                         description
 
-                        regenerateByAI
+                        suggestedByAI
                     }
                     .padding(insets: Layout.textBlockInsets)
                 }
@@ -113,8 +113,6 @@ private extension BlazeEditAdView {
                     .allowsHitTesting(false)
                     .renderedIf(viewModel.tagline.isEmpty)
             }
-            .redacted(reason: viewModel.generatingByAI ? .placeholder : [])
-            .shimmering(active: viewModel.generatingByAI)
             .overlay(
                 RoundedRectangle(cornerRadius: Layout.cornerRadius)
                     .stroke(focusedField == .tagline ? Color(.brand) : Color(.separator), lineWidth: Layout.strokeWidth)
@@ -151,8 +149,6 @@ private extension BlazeEditAdView {
                     .allowsHitTesting(false)
                     .renderedIf(viewModel.description.isEmpty)
             }
-            .redacted(reason: viewModel.generatingByAI ? .placeholder : [])
-            .shimmering(active: viewModel.generatingByAI)
             .overlay(
                 RoundedRectangle(cornerRadius: Layout.cornerRadius)
                     .stroke(focusedField == .description ? Color(.brand) : Color(.separator), lineWidth: Layout.strokeWidth)
@@ -163,31 +159,75 @@ private extension BlazeEditAdView {
         }
     }
 
-    var regenerateByAI: some View {
+    var suggestedByAI: some View {
         HStack {
-            Button {
-                viewModel.didTapRegenerateByAI()
-            } label: {
-                HStack {
-                    Image(uiImage: .sparklesImage)
-                        .renderingMode(.template)
-                        .resizable()
-                        .foregroundColor(viewModel.generatingByAI ? Color(.tertiaryLabel) : Color(.brand))
-                        .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
+            HStack(spacing: 0) {
+                Image(uiImage: .sparklesImage)
+                    .renderingMode(.template)
+                    .resizable()
+                    .foregroundColor(Color(uiColor: .label))
+                    .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
 
-                    Text(Localization.regenerateByAI)
-                        .fontWeight(.semibold)
-                        .foregroundColor(viewModel.generatingByAI ? Color(.tertiaryLabel) : Color(.brand))
-                        .bodyStyle()
-                }
+                Text(Localization.suggestedByAI)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(uiColor: .label))
+                    .bodyStyle()
             }
-            .disabled(viewModel.generatingByAI)
 
             Spacer()
 
-            ProgressView()
-                .tint(Color(.tertiaryLabel))
-                .renderedIf(viewModel.generatingByAI)
+            HStack(spacing: Layout.SuggestedByAI.hSpacing) {
+                SwitchSuggestionButton(type: .previous,
+                                       isEnabled: viewModel.canSelectPreviousSuggestion) {
+                    viewModel.didTapPrevious()
+                }
+
+                SwitchSuggestionButton(type: .next,
+                                       isEnabled: viewModel.canSelectNextSuggestion) {
+                    viewModel.didTapNext()
+                }
+            }
+        }
+    }
+}
+
+private extension BlazeEditAdView {
+    struct SwitchSuggestionButton: View {
+        enum ButtonType {
+            case previous
+            case next
+        }
+
+        let type: ButtonType
+        let isEnabled: Bool
+        let action: () -> Void
+
+        private var image: Image {
+            switch type {
+            case .previous:
+                return Image(systemName: "chevron.backward")
+            case .next:
+                return Image(systemName: "chevron.forward")
+            }
+        }
+
+        var body: some View {
+            Button(action: {
+                action()
+            }, label: {
+                image
+                    .font(.body.weight(.semibold))
+                    .foregroundColor(isEnabled ? Color(.primary) : Color(.textTertiary))
+                    .padding(Layout.SuggestedByAI.SwitchButton.padding)
+                    .background(
+                        RoundedRectangle(cornerRadius: Layout.SuggestedByAI.SwitchButton.cornerRadius)
+                            .strokeBorder(
+                                Color(uiColor: .separator),
+                                lineWidth: Layout.SuggestedByAI.SwitchButton.strokeWidth
+                            )
+                    )
+            })
+            .disabled(!isEnabled)
         }
     }
 }
@@ -240,10 +280,10 @@ private extension BlazeEditAdView {
                 comment: "Placeholder for Description text field in the Blaze Edit Ad screen."
             )
         }
-        static let regenerateByAI = NSLocalizedString(
-            "blazeEditAdView.regenerateByAI",
-            value: "Regenerate by AI",
-            comment: "Regenerate by AI button title in the Blaze Edit Ad screen."
+        static let suggestedByAI = NSLocalizedString(
+            "blazeEditAdView.suggestedByAI",
+            value: "Suggested by AI",
+            comment: "Suggested by AI title in the Blaze Edit Ad screen."
         )
     }
 }
@@ -274,6 +314,16 @@ private enum Layout {
         static let minimumEditorHeight: CGFloat = 140
     }
 
+    enum SuggestedByAI {
+        static let hSpacing: CGFloat = 16
+
+        enum SwitchButton {
+            static let padding: CGFloat = 8
+            static let cornerRadius: CGFloat = 8
+            static let strokeWidth: CGFloat = 1
+        }
+    }
+
     static let sparkleIconSize: CGFloat = 24
 }
 
@@ -283,6 +333,7 @@ struct BlazeEditAdView_Previews: PreviewProvider {
                                          adData: .init(image: .init(image: .init(), source: .asset(asset: .init())),
                                                        tagline: "Tagline",
                                                        description: "Description"),
+                                         suggestions: [],
                                          onSave: { _ in })
         )
     }

@@ -93,8 +93,9 @@ private extension BlazeCampaignCreationFormViewModel {
             guard let languages, languages.isEmpty == false else {
                 return Localization.all
             }
-            return languages.sorted(by: { $0.name < $1.name })
+            return languages
                 .map { $0.name }
+                .sorted()
                 .joined(separator: ", ")
         }()
     }

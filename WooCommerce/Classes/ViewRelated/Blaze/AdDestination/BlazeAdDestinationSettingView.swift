@@ -45,13 +45,12 @@ struct BlazeAdDestinationSettingView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(.systemBackground))
 
-                    VStack {
+                    VStack(alignment: .leading) {
                         Text(viewModel.remainingCharactersLabel)
                             .padding(.bottom, Layout.contentVerticalSpacing)
                         Text(viewModel.finalDestinationLabel)
                     }
                     .subheadlineStyle()
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.leading, .trailing], Layout.contentSpacing)
                     .padding([.top, .bottom], Layout.contentVerticalSpacing)
                     .background(Color(.systemGray6))

@@ -208,6 +208,15 @@ private extension BlazeAdDestinationSettingView {
 
 struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product", homeURL: "https://woo.com/"))
+        BlazeAdDestinationSettingView(
+            viewModel: .init(
+                productURL: "https://woo.com/product",
+                homeURL: "https://woo.com/",
+                parameters: [
+                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key1", value: "value1"),
+                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key2", value: "value2")
+                ]
+            )
+        )
     }
 }

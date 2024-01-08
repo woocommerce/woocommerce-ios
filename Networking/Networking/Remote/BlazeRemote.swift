@@ -157,7 +157,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         return try await enqueue(request, mapper: mapper)
     }
 
-    /// Fetches AI suggestions for new campaign tagline and description.
+    /// Fetches AI based suggestions for Blaze campaign tagline and description for given product ID
     ///
     public func fetchAISuggestions(siteID: Int64,
                                    productID: Int64) async throws -> [BlazeAISuggestion] {

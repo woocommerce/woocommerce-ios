@@ -73,7 +73,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private lazy var productResultsController: ResultsController<StorageProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@ AND purchasable == %@",
                                     siteID,
-                                    ProductStatus.published.rawValue, 
+                                    ProductStatus.published.rawValue,
                                     NSNumber(value: true))
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,

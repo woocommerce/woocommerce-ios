@@ -445,6 +445,28 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldRedactView)
     }
 
+    func test_shouldRedactView_is_true_after_reload_finishes_when_only_non_purchasable_product_available() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.published.rawValue),
+                                              purchasable: false)
+
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts(insertProductToStorage: fakeProduct)
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertTrue(sut.shouldRedactView)
+    }
+
     // MARK: `shouldShowShowAllCampaignsButton`
 
     func test_shouldShowShowAllCampaignsButton_is_false_while_reloading() async {

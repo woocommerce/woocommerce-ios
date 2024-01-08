@@ -29,8 +29,12 @@ struct BlazeAdDestinationSettingView: View {
                 VStack {
                     /// URL Parameters section
                     sectionHeading(title: Localization.urlParametersHeading)
+
                     VStack {
-                        parameterItem(itemName: "specialpromo")
+                        ForEach(viewModel.parameters, id: \.self) { parameter in
+                            parameterItem(itemName: parameter.key)
+                        }
+
                         Button(Localization.addParameterButton) {
                             // todo
                         }

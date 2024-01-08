@@ -11,7 +11,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     @Published var selectedDestinationType: DestinationURLType
 
-    @Published var parameters: [BlazeAdURLParameters]
+    @Published var parameters: [BlazeAdURLParameter]
 
     var remainingCharactersLabel: String {
         let remainingCharacters = calculateRemainingCharacters()
@@ -39,7 +39,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     init (productURL: String,
           homeURL: String,
           selectedDestinationType: DestinationURLType = .product,
-          parameters: [BlazeAdURLParameters] = []) {
+          parameters: [BlazeAdURLParameter] = [BlazeAdURLParameter(key: "key1", value: "value1")]) {
         self.productURL = productURL
         self.homeURL = homeURL
         self.selectedDestinationType = selectedDestinationType
@@ -71,7 +71,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         return max(0, remainingCharacters)
     }
 
-    struct BlazeAdURLParameters: Equatable {
+    struct BlazeAdURLParameter: Equatable, Hashable {
         var key: String
         var value: String
     }

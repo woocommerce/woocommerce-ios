@@ -31,6 +31,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published var selectedCampaignURL: URL?
 
+    // When there's multiple products in the site, campaign creation flow should open product selector View first.
     var shouldShowProductSelectorView: Bool {
         return productResultsController.numberOfObjects > 1
     }

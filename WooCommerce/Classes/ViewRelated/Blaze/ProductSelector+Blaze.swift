@@ -1,10 +1,9 @@
 import Foundation
 
-internal extension ProductSelectorView.Configuration {
+extension ProductSelectorView.Configuration {
     static let configurationForBlaze = ProductSelectorView.Configuration(
         multipleSelectionEnabled: false,
         treatsAllProductsAsSimple: true,
-        searchHeaderBackgroundColor: .listBackground,
         prefersLargeTitle: false,
         title: BlazeLocalization.productSelectorTitle,
         cancelButtonTitle: BlazeLocalization.productSelectorCancel,

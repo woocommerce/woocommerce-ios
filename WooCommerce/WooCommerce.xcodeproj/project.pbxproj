@@ -11162,13 +11162,13 @@
 			path = CouponDetails;
 			sourceTree = "<group>";
 		};
-		DE7E5E7B2B4BB5F7002E28D2 /* TargetOptions */ = {
+		DE7E5E7B2B4BB5F7002E28D2 /* TargetLanguages */ = {
 			isa = PBXGroup;
 			children = (
 				DE7E5E7C2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift */,
 				DE7E5E802B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift */,
 			);
-			path = TargetOptions;
+			path = TargetLanguages;
 			sourceTree = "<group>";
 		};
 		DE85E4EB2AB416F5008789E1 /* EntryPoint */ = {
@@ -11259,7 +11259,7 @@
 		DED91DF72AD78A0C00CDCC53 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
-				DE7E5E7B2B4BB5F7002E28D2 /* TargetOptions */,
+				DE7E5E7B2B4BB5F7002E28D2 /* TargetLanguages */,
 				DE5746322B4512750034B10D /* BudgetSetting */,
 				DE57462D2B43EAF20034B10D /* CampaignCreation */,
 				EEC259402B43E4D6004D703C /* BlazeEditAd */,

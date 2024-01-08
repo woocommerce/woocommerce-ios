@@ -90,7 +90,7 @@ private extension BlazeTargetLanguagePickerViewModel {
                 guard query.isNotEmpty else {
                     return languages
                 }
-                return languages.filter { $0.name.contains(query) }
+                return languages.filter { $0.name.lowercased().contains(query.lowercased()) }
             }
             .assign(to: &$languages)
     }

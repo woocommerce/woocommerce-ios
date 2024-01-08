@@ -163,6 +163,11 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
                                    productID: Int64) async throws -> [BlazeAISuggestion] {
         let path = Paths.aiSuggestions(siteID: siteID)
 
+        /// Expected format:
+        /// {
+        ///     "urn": "urn:wpcom:post:<site_id>:<product_id>"
+        /// }
+        ///
         let parameters = [Keys.AISuggestions.urn: "\(Keys.AISuggestions.urn):\(Keys.AISuggestions.wpcom):\(Keys.AISuggestions.post):\(siteID):\(productID)"]
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)

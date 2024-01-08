@@ -22,12 +22,14 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.createCampaignTapped = { [weak self] in
-            guard let self else { return }
-            self.navigateToCampaignCreation(source: .myStoreSection)
+            self?.navigateToCampaignCreation(source: .myStoreSection)
         }
 
         rootView.startCampaignFromIntroTapped = { [weak self] productID in
-            self?.navigateToCampaignCreation(source: .introView, productID: productID)
+            // Ensures the intro view is dismissed before navigating to the creation flow
+            self?.parentNavigationController?.dismiss(animated: true) {
+                self?.navigateToCampaignCreation(source: .introView, productID: productID)
+            }
         }
 
         rootView.showAllCampaignsTapped = { [weak self] in

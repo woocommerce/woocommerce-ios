@@ -16,6 +16,11 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = Localization.title
+    }
 }
 
 private extension BlazeCampaignCreationFormHostingController {
@@ -30,6 +35,16 @@ private extension BlazeCampaignCreationFormHostingController {
             // TODO: Update ad with edited data
         }))
         present(vc, animated: true)
+    }
+}
+
+private extension BlazeCampaignCreationFormHostingController {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "blazeCampaignCreationForm.title",
+            value: "Preview",
+            comment: "Title of the Blaze campaign creation screen"
+        )
     }
 }
 
@@ -95,7 +110,6 @@ struct BlazeCampaignCreationForm: View {
             }
             .padding(.horizontal, Layout.contentPadding)
         }
-        .navigationTitle(Localization.title)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 0) {
                 Divider()

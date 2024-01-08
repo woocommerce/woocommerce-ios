@@ -156,6 +156,17 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         let mapper = BlazeImpressionsMapper()
         return try await enqueue(request, mapper: mapper)
     }
+
+    public func fetchAISuggestions(siteID: Int64,
+                                   productID: Int64) async throws -> [BlazeAISuggestion] {
+        let path = Paths.aiSuggestions(siteID: siteID)
+
+        let parameters = [Keys.AISuggestions.urn: "\(Keys.AISuggestions.urn):\(Keys.AISuggestions.wpcom):\(Keys.AISuggestions.post):\(siteID):\(productID)"]
+
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        let mapper = BlazeAISuggestionListMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 private extension BlazeRemote {
@@ -195,6 +206,10 @@ private extension BlazeRemote {
         static func campaignImpressions(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1.1/forecast"
         }
+
+        static func aiSuggestions(siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1.1/suggestions"
+        }
     }
 
     enum Keys {
@@ -203,6 +218,11 @@ private extension BlazeRemote {
         static let page = "page"
         static let query = "query"
         static let locale = "locale"
+        enum AISuggestions {
+            static let urn = "urn"
+            static let wpcom = "wpcom"
+            static let post = "post"
+        }
     }
 
     enum Values {

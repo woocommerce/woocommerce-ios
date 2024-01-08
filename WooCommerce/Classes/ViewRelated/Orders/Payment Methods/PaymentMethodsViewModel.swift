@@ -433,8 +433,8 @@ private extension PaymentMethodsViewModel {
                                              "%1$@ is a placeholder for the total amount to collect")
 
         static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
-                                                        value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
-                                                        comment: "Note from the cash tender view.")
+                                                               value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
+                                                               comment: "Note from the cash tender view.")
     }
 }
 

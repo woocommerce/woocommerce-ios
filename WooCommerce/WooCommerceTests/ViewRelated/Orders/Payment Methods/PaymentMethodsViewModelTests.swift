@@ -933,7 +933,7 @@ private extension PaymentMethodsViewModelTests {
 private extension PaymentMethodsViewModelTests {
     enum Localization {
         static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
-                                                        value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
-                                                        comment: "Title for the cash tender view. Reads like Cash $34.45")
+                                                               value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
+                                                               comment: "Title for the cash tender view. Reads like Cash $34.45")
     }
 }

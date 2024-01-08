@@ -77,8 +77,8 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
                 difference += 12
             }
             scheduledDate = calendar.date(byAdding: .month, value: difference, to: currentDate)
-        case .manual:
-            break
+        default:
+            scheduledDate = nil
         }
         guard let scheduledDate else {
             return Localization.noDateString

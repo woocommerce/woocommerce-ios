@@ -109,7 +109,7 @@ struct BlazeCampaignCreationForm: View {
             .background(Color(uiColor: .systemBackground))
         }
         .sheet(isPresented: $isShowingAdDestinationScreen) {
-            BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://example.com"))
+            BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
         }
     }
 }

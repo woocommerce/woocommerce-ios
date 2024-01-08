@@ -1,7 +1,15 @@
 import Foundation
 
 final class BlazeAdDestinationSettingViewModel: ObservableObject {
+    enum DestinationURLType {
+        case product
+        case home
+    }
+
     var productURL: String
+    var homeURL: String
+
+    @Published var selectedDestinationType: DestinationURLType
 
     @Published var parameters: [BlazeAdURLParameters]
 
@@ -14,9 +22,17 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     }
 
     init (productURL: String,
+          homeURL: String,
+          selectedDestinationType: DestinationURLType = .product,
           parameters: [BlazeAdURLParameters] = []) {
         self.productURL = productURL
+        self.homeURL = homeURL
+        self.selectedDestinationType = selectedDestinationType
         self.parameters = parameters
+    }
+
+    func setDestinationType(type: DestinationURLType) {
+        selectedDestinationType = type
     }
 
     private func calculateRemainingCharacters() -> Int {

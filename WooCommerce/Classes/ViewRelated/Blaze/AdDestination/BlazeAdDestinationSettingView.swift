@@ -16,12 +16,13 @@ struct BlazeAdDestinationSettingView: View {
                 VStack(spacing: 0) {
                     sectionHeading(title: Localization.destinationUrlHeading)
                     destinationItem(title: Localization.productURLLabel,
-                                    subtitle: "It will link to: https://woo.com/2022/04/11/1234/test/",
-                                    showCheckmark: true,
+                                    subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
+                                    type: BlazeAdDestinationSettingViewModel.DestinationURLType.product,
                                     showBottomDivider: true)
 
                     destinationItem(title: Localization.siteHomeLabel,
-                                    subtitle: "It will link to: https://woo.com/2022/04/11/1234/test/")
+                                    subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),
+                                    type: BlazeAdDestinationSettingViewModel.DestinationURLType.home)
                 }
                 .padding(.bottom, Layout.sectionVerticalSpacing)
 
@@ -74,10 +75,10 @@ struct BlazeAdDestinationSettingView: View {
 
     private func destinationItem(title: String,
                                  subtitle: String,
-                                 showCheckmark: Bool = false,
+                                 type: BlazeAdDestinationSettingViewModel.DestinationURLType,
                                  showBottomDivider: Bool = false) -> some View {
         HStack(alignment: .center) {
-            if showCheckmark {
+            if type == viewModel.selectedDestinationType {
                 Image(systemName: "checkmark")
                     .padding(.leading, Layout.contentSpacing)
                     .padding(.trailing, Layout.contentHorizontalSpacing)
@@ -105,6 +106,9 @@ struct BlazeAdDestinationSettingView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.systemBackground))
+        .onTapGesture {
+            viewModel.setDestinationType(type: type)
+        }
     }
 
     private func parameterItem(itemName: String) -> some View {
@@ -169,6 +173,14 @@ private extension BlazeAdDestinationSettingView {
             comment: "Label for the site home destination option in Blaze Ad Destination screen."
         )
 
+
+        static let destinationUrlSubtitle = NSLocalizedString(
+            "blazeAdDestinationSettingView.destinationUrlSubtitle",
+            value: "It will link to: %1$@",
+            comment: "Subtitle for each destination type showing the URL to link to. " +
+            "%1$@ will be replaced by the URL."
+        )
+
         static let urlParametersHeading = NSLocalizedString(
             "blazeAdDestinationSettingView.urlParametersHeading",
             value: "URL Parameters",
@@ -185,6 +197,6 @@ private extension BlazeAdDestinationSettingView {
 
 struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/"))
+        BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product", homeURL: "https://woo.com/"))
     }
 }

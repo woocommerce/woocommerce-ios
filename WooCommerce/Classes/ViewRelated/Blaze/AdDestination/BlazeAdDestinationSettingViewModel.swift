@@ -24,18 +24,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     // Text to be shown on the view for the final ad campaign URL including parameters, if any.
     var finalDestinationLabel: String {
-        let baseURL: String
-        switch selectedDestinationType {
-        case .product:
-            baseURL = productURL
-        case .home:
-            baseURL = homeURL
-        }
-
-        let paramString = buildParameterString()
-        let finalURL = baseURL + (paramString.isEmpty ? "" : "?\(paramString)")
-
-        return String(format: Localization.finalDestination, finalURL)
+        return String(format: Localization.finalDestination, buildFinalDestinationURL())
     }
 
     init (productURL: String,
@@ -52,7 +41,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         selectedDestinationType = type
     }
 
-    func buildParameterString() -> String {
+    private func buildParameterString() -> String {
         var parameterString = ""
         for parameter in parameters {
             // In URL format, the parameter is written such as "key=value".
@@ -65,6 +54,19 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         }
 
         return parameterString
+    }
+
+    private func buildFinalDestinationURL() -> String {
+        let baseURL: String
+        switch selectedDestinationType {
+        case .product:
+            baseURL = productURL
+        case .home:
+            baseURL = homeURL
+        }
+
+        let paramString = buildParameterString()
+        return baseURL + (paramString.isEmpty ? "" : "?\(paramString)")
     }
 
     private func calculateRemainingCharacters() -> Int {

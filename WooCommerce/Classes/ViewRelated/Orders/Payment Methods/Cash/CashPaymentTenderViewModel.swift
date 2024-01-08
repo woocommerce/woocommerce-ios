@@ -24,7 +24,8 @@ final class CashPaymentTenderViewModel: ObservableObject {
     let formattedTotal: String
     let formattableAmountViewModel: FormattableAmountTextFieldViewModel
 
-    private var didTapOnCustomerPaidTextField = false
+    /// Keeps track of whether the change due has been calculated (e.g. user has enters a different cash amount from the original amount).
+    @Published private var hasCalculatedChangeDue: Bool = false
 
     private let currencyFormatter: CurrencyFormatter
     private let onOrderPaid: OrderPaidByCashCallback
@@ -46,7 +47,6 @@ final class CashPaymentTenderViewModel: ObservableObject {
 
     func onCustomerPaidAmountTapped() {
         formattableAmountViewModel.amount = ""
-        didTapOnCustomerPaidTextField = true
     }
 
     func onMarkOrderAsCompleteButtonTapped() {
@@ -77,9 +77,7 @@ private extension CashPaymentTenderViewModel {
 
         changeDueAmount
             .map { [weak self] amount in
-                guard let self,
-                      let amount,
-                      let formattedAmount = currencyFormatter.formatAmount(amount) else {
+                guard let self, let amount, let formattedAmount = currencyFormatter.formatAmount(amount) else {
                     return "-"
                 }
                 return formattedAmount
@@ -98,10 +96,21 @@ private extension CashPaymentTenderViewModel {
                 return !amount.isLessThanOrEqualTo(0)
             }
             .assign(to: &$hasChangeDue)
+
+        changeDueAmount
+            .scan(false, { hasCalculatedChangeDue, amount in
+                guard let amount else {
+                    return hasCalculatedChangeDue
+                }
+                return hasCalculatedChangeDue || !amount.isLessThanOrEqualTo(0)
+            })
+            .assign(to: &$hasCalculatedChangeDue)
     }
 
     func trackOnMarkOrderAsCompleteButtonTapped(with info: OrderPaidByCashInfo?) {
-        analytics.track(.cashPaymentTenderViewOnMarkOrderAsCompleteButtonTapped, withProperties: ["add_note": info?.addNoteWithChangeData ?? false,
-                                                                                                  "change_due_was_calculated": didTapOnCustomerPaidTextField])
+        analytics.track(.cashPaymentTenderViewOnMarkOrderAsCompleteButtonTapped, withProperties: [
+            "add_note": info?.addNoteWithChangeData ?? false,
+            "change_due_was_calculated": hasCalculatedChangeDue
+        ])
     }
 }

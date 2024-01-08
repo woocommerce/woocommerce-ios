@@ -87,7 +87,7 @@ struct BlazeCampaignItemView: View {
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(Localization.budget)
                         .subheadlineStyle()
-                    Text(String(format: "%.2f", campaign.totalBudget))
+                    Text(String(format: "%.0f", campaign.budgetCents / Constants.centsToUnit))
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
@@ -125,6 +125,10 @@ private extension BlazeCampaignItemView {
         static let strokeWidth: CGFloat = 0.5
     }
 
+    enum Constants {
+        static let centsToUnit: Double = 100
+    }
+
     enum Localization {
         static let impressions = NSLocalizedString("Impressions", comment: "Title label for the total impressions of a Blaze ads campaign")
         static let clicks = NSLocalizedString("Clicks", comment: "Title label for the total clicks of a Blaze ads campaign")
@@ -135,14 +139,14 @@ private extension BlazeCampaignItemView {
 struct BlazeCampaignItemView_Previews: PreviewProvider {
     static let campaign: BlazeCampaign = .init(siteID: 123,
                                                campaignID: 11,
-                                               productID: 33,
+                                               productURL: "https://example.com",
                                                name: "Fluffy bunny pouch",
                                                uiStatus: BlazeCampaign.Status.finished.rawValue,
                                                contentImageURL: nil,
                                                contentClickURL: nil,
                                                totalImpressions: 112,
                                                totalClicks: 22,
-                                               totalBudget: 35)
+                                               budgetCents: 500)
     static var previews: some View {
         BlazeCampaignItemView(campaign: campaign)
     }

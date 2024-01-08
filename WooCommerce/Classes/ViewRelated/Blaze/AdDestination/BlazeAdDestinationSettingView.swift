@@ -6,37 +6,48 @@ struct BlazeAdDestinationSettingView: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                sectionHeading(title: "Destination URL")
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
+                    sectionHeading(title: Localization.destinationUrlHeading)
+                    destinationItem(title: Localization.productURLLabel,
+                                    subtitle: "It will link to: https://woo.com/2022/04/11/1234/test/",
+                                    showCheckmark: true,
+                                    showBottomDivider: true)
 
-                destinationItem(title: "The Product URL",
-                                subtitle: "It will link to: https://woo.com/2022/04/11/1234/test/",
-                                showCheckmark: true,
-                                showBottomDivider: true)
-
-                destinationItem(title: "The site home",
-                                subtitle: "It will link to: https://woo.com/2022/04/11/1234/test/")
-
-                sectionHeading(title: "URL Parameters")
-
-                parameterItem(itemName: "specialpromo")
-
-                Button("Add parameter") {
-                    // todo
+                    destinationItem(title: Localization.siteHomeLabel,
+                                    subtitle: "It will link to: https://woo.com/2022/04/11/1234/test/")
                 }
-                .buttonStyle(PlusButtonStyle())
-                .padding([.leading, .trailing], Layout.contentSpacing)
+                .padding(.bottom, Layout.sectionVerticalSpacing)
 
                 VStack {
-                    Text("2096 characters remaining")
+                    /// URL Parameters section
+                    sectionHeading(title: Localization.urlParametersHeading)
+                    VStack {
+                        parameterItem(itemName: "specialpromo")
+                        Button(Localization.addParameterButton) {
+                            // todo
+                        }
+                        .buttonStyle(PlusButtonStyle())
+                        .padding([.leading, .trailing], Layout.contentSpacing)
+                        .padding(.bottom, Layout.parametersVerticalSpacing)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(.systemBackground))
 
-                    Text("Destination: http://woo.com/")
+                    VStack {
+                        Text("2096 characters remaining")
+                            .padding(.bottom, Layout.contentVerticalSpacing)
+                        Text("Destination: http://woo.com/")
+                    }
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding([.leading, .trailing], Layout.contentSpacing)
+                    .padding([.top, .bottom], Layout.contentVerticalSpacing)
+                    .background(Color(.systemGray6))
                 }
-                .background(Color(.systemGray6))
-
                 Spacer()
             }
-            .background(Color(.systemBackground))
+            .background(Color(.systemGray6))
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.adDestination)
             .toolbar {
@@ -48,52 +59,66 @@ struct BlazeAdDestinationSettingView: View {
             }
         }
     }
-
     private func sectionHeading(title: String) -> some View {
         Text(title.uppercased())
             .subheadlineStyle()
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Layout.sectionHeadingPadding)
-            .background(Color(.systemGray6))
     }
 
     private func destinationItem(title: String,
                                  subtitle: String,
                                  showCheckmark: Bool = false,
                                  showBottomDivider: Bool = false) -> some View {
-        HStack(alignment: .center, spacing: Layout.contentSpacing) {
+        HStack(alignment: .center) {
             if showCheckmark {
                 Image(systemName: "checkmark")
                     .padding(.leading, Layout.contentSpacing)
+                    .padding(.trailing, Layout.contentHorizontalSpacing)
                     .foregroundColor(Color(uiColor: .accent))
             } else {
                 Image(systemName: "checkmark")
                     .padding(.leading, Layout.contentSpacing)
+                    .padding(.trailing, Layout.contentHorizontalSpacing)
                     .hidden() // Small hack to make the icon space consistent while not showing the icon.
             }
 
             VStack(alignment: .leading) {
                 Text(title)
                     .bodyStyle()
+                    .padding(.top, Layout.contentVerticalSpacing)
                 Text(subtitle)
                     .subheadlineStyle()
                     .multilineTextAlignment(.leading)
+                    .padding(.bottom, Layout.contentVerticalSpacing)
 
                 if showBottomDivider {
                     Divider()
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.systemBackground))
     }
 
-    private func parameterItem(itemName: String)  -> some View {
+    private func parameterItem(itemName: String) -> some View {
         VStack {
             HStack {
                 Text(itemName)
+                    .padding([.top, .bottom], Layout.parametersVerticalSpacing)
                 Spacer()
                 Image(systemName: "chevron.right")
+                    .foregroundColor(Color(.systemGray4))
+                    .padding(.leading, 8)
+                    .padding(.trailing, Layout.contentSpacing)
             }
-            Divider()
+            .padding(.leading, Layout.contentSpacing)
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Rectangle()
+                .frame(height: 1)
+                .foregroundColor(Color(.systemGray6))
+                .padding(.leading, Layout.contentSpacing)
         }
     }
 }
@@ -102,6 +127,10 @@ private extension BlazeAdDestinationSettingView {
     enum Layout {
         static let verticalSpacing: CGFloat = 16
         static let contentSpacing: CGFloat = 16
+        static let contentVerticalSpacing: CGFloat = 8
+        static let contentHorizontalSpacing: CGFloat = 8
+        static let sectionVerticalSpacing: CGFloat = 24
+        static let parametersVerticalSpacing: CGFloat = 11
         static let sectionHeadingPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 8, trailing: 16)
     }
 
@@ -115,6 +144,35 @@ private extension BlazeAdDestinationSettingView {
             "blazeAdDestinationSettingView.adDestination",
             value: "Ad Destination",
             comment: "Title of the Blaze Ad Destination setting screen."
+        )
+
+        static let destinationUrlHeading = NSLocalizedString(
+            "blazeAdDestinationSettingView.destinationUrlHeading",
+            value: "Destination URL",
+            comment: "Heading for the destination URL section in Blaze Ad Destination screen.")
+
+        static let productURLLabel = NSLocalizedString(
+            "blazeAdDestinationSettingView.productURLLabel",
+            value: "The Product URL",
+            comment: "Label for the product URL destination option in Blaze Ad Destination screen."
+        )
+
+        static let siteHomeLabel = NSLocalizedString(
+            "blazeAdDestinationSettingView.siteHomeLabel",
+            value: "The site home",
+            comment: "Label for the site home destination option in Blaze Ad Destination screen."
+        )
+
+        static let urlParametersHeading = NSLocalizedString(
+            "blazeAdDestinationSettingView.urlParametersHeading",
+            value: "URL Parameters",
+            comment: "Heading for the URL Parameters section in Blaze Ad Destination screen."
+        )
+
+        static let addParameterButton = NSLocalizedString(
+            "blazeAdDestinationSettingView.addParameterButton",
+            value: "Add parameter",
+            comment: "Button to add a new URL parameter in Blaze Ad Destination screen."
         )
     }
 }

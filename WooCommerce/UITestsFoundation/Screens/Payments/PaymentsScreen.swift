@@ -23,7 +23,7 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     private let markAsPaidButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Mark as Paid"]
+        $0.buttons["Mark Order as Complete"]
     }
 
     private let learnMoreButtonGetter: (XCUIApplication) -> XCUIElement = {

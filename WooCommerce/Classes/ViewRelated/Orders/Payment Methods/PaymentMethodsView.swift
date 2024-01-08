@@ -48,7 +48,7 @@ struct PaymentMethodsView: View {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }
-                        .sheet(isPresented: $showingCashAlert) {
+                        .fullScreenCover(isPresented: $showingCashAlert) {
                             NavigationView {
                                 CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
                                     Task { @MainActor in

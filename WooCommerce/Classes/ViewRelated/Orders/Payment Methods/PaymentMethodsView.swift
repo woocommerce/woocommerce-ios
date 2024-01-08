@@ -48,16 +48,6 @@ struct PaymentMethodsView: View {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }
-                        .fullScreenCover(isPresented: $showingCashAlert) {
-                            NavigationView {
-                                CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
-                                    Task { @MainActor in
-                                        await viewModel.markOrderAsPaidByCash(with: info)
-                                        dismiss()
-                                    }
-                                })
-                            }
-                        }
 
                         if viewModel.showPayWithCardRow {
                             Divider()
@@ -105,6 +95,17 @@ struct PaymentMethodsView: View {
                     ) {
                         AttributedText(learnMoreViewModel.learnMoreAttributedString)
                     }.padding(.horizontal)
+
+                    NavigationLink(isActive: $showingCashAlert) {
+                        CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
+                            Task { @MainActor in
+                                await viewModel.markOrderAsPaidByCash(with: info)
+                                dismiss()
+                            }
+                        })
+                    } label: {
+                        EmptyView()
+                    }.hidden()
                 }
 
                 // Pushes content to the top

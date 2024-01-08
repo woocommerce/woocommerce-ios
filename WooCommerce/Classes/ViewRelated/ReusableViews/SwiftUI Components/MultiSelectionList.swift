@@ -68,7 +68,11 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            selectedItems = []
+                            if selectedItems.isEmpty {
+                                selectedItems = Set(contents)
+                            } else {
+                                selectedItems = []
+                            }
                         }
                     }
 
@@ -82,7 +86,11 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                             }
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                selectedItems.insert(item)
+                                if selectedItems.contains(item) {
+                                    selectedItems.remove(item)
+                                } else {
+                                    selectedItems.insert(item)
+                                }
                             }
                         }
                     }
@@ -95,7 +103,6 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(cancelButtonTitle, action: onDismiss)
                 }
-
                 ToolbarItem(placement: .confirmationAction) {
                     Button(saveButtonTitle) {
                         onCompletion(selectedItems.isEmpty ? nil : selectedItems)

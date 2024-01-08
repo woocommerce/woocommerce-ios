@@ -315,7 +315,29 @@ public enum WooPaymentsDepositInterval: Equatable, GeneratedFakeable, GeneratedC
             return localizedDayName
         }
 
-        public var dayIndex: Int {
+        // Identifier for the weekday unit
+        // The weekday units are the numbers 1 through N (where for the Gregorian calendar N=7 and 1 is Sunday)
+        // https://developer.apple.com/documentation/foundation/calendar/component/weekday
+        public var dayToInt: Int {
+            switch self {
+            case .sunday:
+                return 1
+            case .monday:
+                return 2
+            case .tuesday:
+                return 3
+            case .wednesday:
+                return 4
+            case .thursday:
+                return 5
+            case .friday:
+                return 6
+            case .saturday:
+                return 7
+            }
+        }
+
+        private var dayIndex: Int {
             switch self {
             case .sunday:
                 return 0

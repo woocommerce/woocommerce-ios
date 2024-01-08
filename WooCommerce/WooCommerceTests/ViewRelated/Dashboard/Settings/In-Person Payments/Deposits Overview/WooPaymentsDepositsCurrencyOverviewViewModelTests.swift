@@ -88,4 +88,71 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         assertEqual(sut.availableBalance, "CA$12.35")
     }
 
+    func test_when_calculateNextScheduledDeposit_is_daily_then_next_expected_scheduled_date_is_a_day_after() {
+        // Given
+        let overview = WooPaymentsDepositsOverviewByCurrency.fake().copy(depositInterval: .daily)
+        let currentDate = DateComponents(year: 2024, month: 1, day: 8)
+        guard let date = Calendar.current.date(from: currentDate) else {
+            return XCTFail("Unable to construct date.")
+        }
+        let nextExpectedScheduledDepositDate = "Jan 9, 2024"
+
+        // When
+        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview, date: date)
+
+        // Then
+        assertEqual(nextExpectedScheduledDepositDate, sut.nextScheduledDeposit)
+    }
+
+    func test_when_calculateNextScheduledDeposit_is_weekly_then_next_expected_deposit_scheduled_date_is_the_given_week_on_anchor_day() {
+        // Given
+        let overview = WooPaymentsDepositsOverviewByCurrency
+            .fake()
+            .copy(depositInterval: .weekly(anchor: .monday))
+        let currentDate = DateComponents(year: 2024, month: 1, day: 8)
+        guard let date = Calendar.current.date(from: currentDate) else {
+            return XCTFail("Unable to construct date.")
+        }
+        let nextExpectedScheduledDepositDate = "Jan 15, 2024"
+
+        // When
+        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview,
+                                                           date: date)
+
+        // Then
+        assertEqual(nextExpectedScheduledDepositDate, sut.nextScheduledDeposit)
+    }
+
+    func test_when_calculateNextScheduledDeposit_is_monthly_then_next_expected_deposit_scheduled_date_is_the_given_month() {
+        // Given
+        let overview = WooPaymentsDepositsOverviewByCurrency
+            .fake()
+            .copy(depositInterval: .monthly(anchor: 12))
+        let currentDate = DateComponents(year: 2024, month: 1, day: 8)
+        guard let date = Calendar.current.date(from: currentDate) else {
+            return XCTFail("Unable to construct date.")
+        }
+        let nextExpectedScheduledDepositDate = "Dec 8, 2024"
+
+        // When
+        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview,
+                                                           date: date)
+
+        // Then
+        assertEqual(nextExpectedScheduledDepositDate, sut.nextScheduledDeposit)
+    }
+
+    func test_when_calculateNextScheduledDeposit_is_manual_then_next_expected_scheduled_deposit_date_is_not_applicable() {
+        // Given
+        let overview = WooPaymentsDepositsOverviewByCurrency
+            .fake()
+            .copy(depositInterval: .manual)
+
+        // When
+        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview)
+
+        // Then
+        assertEqual("N/A", sut.nextScheduledDeposit)
+    }
+
 }

@@ -7,16 +7,19 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     private let analytics: Analytics
     private let currencySettings: CurrencySettings?
     private let locale: Locale
+    private let date: Date
 
     init(overview: WooPaymentsDepositsOverviewByCurrency,
          analytics: Analytics = ServiceLocator.analytics,
          siteCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         locale: Locale = Locale.current) {
+         locale: Locale = Locale.current,
+         date: Date = Date.init()) {
         self.overview = overview
         self.analytics = analytics
         self.currency = overview.currency
         self.tabTitle = overview.currency.rawValue.uppercased()
         self.locale = locale
+        self.date = date
 
         if overview.currency == siteCurrencySettings.currencyCode {
             currencySettings = siteCurrencySettings
@@ -51,7 +54,7 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     @Published var tabTitle: String
 
     private func calculateNextScheduledDeposit() -> String {
-        let currentDate = Date()
+        let currentDate = date
         let calendar = Calendar.current
         var scheduledDate: Date? = nil
 
@@ -61,11 +64,11 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
                                          value: 1,
                                          to: currentDate)
         case let .weekly(anchor: dayOfTheWeek):
-            let targetWeekday = dayOfTheWeek.dayIndex
+            let targetWeekday = dayOfTheWeek.dayToInt
             let today = calendar.component(.weekday, from: currentDate)
             var difference = targetWeekday - today
             // Adjust so the difference is always positive:
-            if difference < 0 {
+            if difference <= 0 {
                 difference += 7
             }
             scheduledDate = calendar.date(byAdding: .day, value: difference, to: currentDate)

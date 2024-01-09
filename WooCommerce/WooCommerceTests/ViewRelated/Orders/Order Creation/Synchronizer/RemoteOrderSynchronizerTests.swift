@@ -632,7 +632,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(update.fields, OrderUpdateField.allCases)
     }
 
-    func test_sending_customer_id_input_does_not_trigger_sync_in_creation_flow() throws {
+    func test_sending_customer_id_input_does_not_trigger_sync_in_creation_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
@@ -645,7 +645,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setCustomerID.send(16)
     }
 
-    func test_sending_customer_id_input_does_not_trigger_sync_in_edit_flow() throws {
+    func test_sending_customer_id_input_does_not_trigger_sync_in_edit_flow() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -659,7 +659,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setCustomerID.send(16)
     }
 
-    func test_sending_customer_id_then_addresses_input_triggers_sync_in_creation_flow() throws {
+    func test_sending_customer_id_then_addresses_input_triggers_sync_in_creation_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
@@ -683,7 +683,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(orderToCreate.customerID, 16)
     }
 
-    func test_sending_customer_id_then_addresses_input_triggers_sync_in_edit_flow() throws {
+    func test_sending_customer_id_then_addresses_input_triggers_sync_in_edit_flow() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)

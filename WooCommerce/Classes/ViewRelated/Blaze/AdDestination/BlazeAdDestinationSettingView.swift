@@ -62,8 +62,6 @@ struct BlazeAdDestinationSettingView: View {
                                 .subheadlineStyle()
                         }
                         .padding(.vertical, Layout.contentVerticalSpacing)
-                        .background(Color(.systemGray6))
-
                     }
                 }
                 .listStyle(.grouped)

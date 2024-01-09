@@ -64,7 +64,7 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                             Text(allOptionsTitle)
                             Spacer()
                             Image(uiImage: .checkmarkStyledImage)
-                                .renderedIf(selectedItems.isEmpty)
+                                .renderedIf(selectedItems.count == contents.count)
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
@@ -105,7 +105,8 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(saveButtonTitle) {
-                        onCompletion(selectedItems.isEmpty ? nil : selectedItems)
+                        let allItemSelected = selectedItems.count == contents.count
+                        onCompletion(allItemSelected ? nil : selectedItems)
                     }
                 }
             }

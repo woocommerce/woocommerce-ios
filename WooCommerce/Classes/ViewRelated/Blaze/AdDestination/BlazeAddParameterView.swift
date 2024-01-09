@@ -28,7 +28,6 @@ final class BlazeAddParameterViewModel: ObservableObject {
         self.completionHandler = onCompletion
     }
 
-    // todo: use this in view
     func didTapSave() {
         completionHandler(key, value)
     }
@@ -61,13 +60,11 @@ final class BlazeAddParameterViewModel: ObservableObject {
     }
 }
 
-
 private extension BlazeAddParameterViewModel {
     enum Constant {
         static let baseURLForValidation = "https://woo.com/?key="
     }
 }
-
 
 /// View for adding a parameter to a Blaze campaign's URL.
 ///
@@ -127,6 +124,7 @@ struct BlazeAddParameterView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button(Localization.save) {
                         viewModel.didTapSave()
+                        dismiss()
                     }
                     .disabled(viewModel.shouldDisableSaveButton)
                 }
@@ -140,7 +138,6 @@ struct BlazeAddParameterView_Previews: PreviewProvider {
         BlazeAddParameterView(viewModel: BlazeAddParameterViewModel(remainingCharacters: 999) { _, _ in })
     }
 }
-
 
 private extension BlazeAddParameterView {
     enum Layout {

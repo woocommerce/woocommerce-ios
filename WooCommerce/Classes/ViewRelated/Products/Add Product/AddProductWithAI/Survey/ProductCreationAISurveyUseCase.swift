@@ -12,34 +12,40 @@ final class ProductCreationAISurveyUseCase {
         self.analytics = analytics
     }
 
-    private var numberOfTimesAIProductCreated: Int {
+    private var numberOfTimesProductCreationAISurveySuggested: Int {
         get {
-            defaults.integer(forKey: UserDefaults.Key.numberOfTimesAIProductCreated.rawValue)
+            defaults.integer(forKey: UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested.rawValue)
         }
         set {
-            defaults.set(newValue, forKey: UserDefaults.Key.numberOfTimesAIProductCreated.rawValue)
+            defaults.set(newValue, forKey: UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested.rawValue)
         }
+    }
+
+    /// Returns `true` if Survey has been suggested before
+    ///
+    func haveSuggestedSurveyBefore() -> Bool {
+        numberOfTimesProductCreationAISurveySuggested > 0
     }
 
     /// Returns `true` if it is time to present Product Creation AI survey.
     ///
     func shouldShowProductCreationAISurvey() -> Bool {
-        guard numberOfTimesAIProductCreated >= 3 else {
+        guard !defaults.bool(forKey: UserDefaults.Key.didStartProductCreationAISurvey.rawValue) else {
             return false
         }
-        return !defaults.bool(forKey: UserDefaults.Key.didSuggestProductCreationAISurvey.rawValue)
+        return numberOfTimesProductCreationAISurveySuggested < 2
     }
 
-    /// Saves that we have asked the user to provide feedback in survey
+    /// Increments the survey suggested counter by 1
     ///
     func didSuggestProductCreationAISurvey() {
+        numberOfTimesProductCreationAISurveySuggested += 1
         analytics.track(event: .ProductCreationAI.Survey.confirmationViewDisplayed())
-        defaults[.didSuggestProductCreationAISurvey] = true
     }
 
-    /// Increments the AI product created count by 1
+    /// Saves that user started the survey
     ///
-    func didCreateAIProduct() {
-        numberOfTimesAIProductCreated += 1
+    func didStartProductCreationAISurvey() {
+        defaults[.didStartProductCreationAISurvey] = true
     }
 }

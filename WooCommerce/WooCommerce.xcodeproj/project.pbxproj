@@ -2288,6 +2288,9 @@
 		DE7E5E7F2B4BC52C002E28D2 /* MultiSelectionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E7E2B4BC52C002E28D2 /* MultiSelectionList.swift */; };
 		DE7E5E812B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E802B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift */; };
 		DE7E5E832B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E822B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift */; };
+		DE7E5E862B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */; };
+		DE7E5E882B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */; };
+		DE7E5E8A2B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
@@ -4939,6 +4942,9 @@
 		DE7E5E7E2B4BC52C002E28D2 /* MultiSelectionList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectionList.swift; sourceTree = "<group>"; };
 		DE7E5E802B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLanguagePickerViewModel.swift; sourceTree = "<group>"; };
 		DE7E5E822B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLanguagePickerViewModelTests.swift; sourceTree = "<group>"; };
+		DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDevicePickerViewModel.swift; sourceTree = "<group>"; };
+		DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDevicePickerView.swift; sourceTree = "<group>"; };
+		DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDeviceViewModelTests.swift; sourceTree = "<group>"; };
 		DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -5810,6 +5816,7 @@
 			children = (
 				024D4E962A2EC68B0090E0E6 /* BlazeWebViewModelTests.swift */,
 				DE7E5E822B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift */,
+				DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */,
 				021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */,
 				DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */,
 				DE5746372B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift */,
@@ -11189,6 +11196,15 @@
 			path = TargetLanguages;
 			sourceTree = "<group>";
 		};
+		DE7E5E842B4D11BD002E28D2 /* TargetDevices */ = {
+			isa = PBXGroup;
+			children = (
+				DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */,
+				DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */,
+			);
+			path = TargetDevices;
+			sourceTree = "<group>";
+		};
 		DE85E4EB2AB416F5008789E1 /* EntryPoint */ = {
 			isa = PBXGroup;
 			children = (
@@ -11277,6 +11293,7 @@
 		DED91DF72AD78A0C00CDCC53 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
+				DE7E5E842B4D11BD002E28D2 /* TargetDevices */,
 				DE7E5E7B2B4BB5F7002E28D2 /* TargetLanguages */,
 				DE5746322B4512750034B10D /* BudgetSetting */,
 				8646A9B82B46C79A001F606C /* AdDestination */,
@@ -13553,6 +13570,7 @@
 				027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */,
 				B97C6E562B15E51A008A2BF2 /* UpdateProductInventoryView.swift in Sources */,
 				268EC45F26CEA50C00716F5C /* EditCustomerNote.swift in Sources */,
+				DE7E5E862B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift in Sources */,
 				4535EE7E281BE04A004212B4 /* CouponAmountInputFormatter.swift in Sources */,
 				209AD3D22AC1EDF600825D76 /* WooPaymentsDepositsCurrencyOverviewView.swift in Sources */,
 				CE35F11B2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.swift in Sources */,
@@ -13661,6 +13679,7 @@
 				AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */,
 				D8752EF7265E60F4008ACC80 /* PaymentCaptureCelebration.swift in Sources */,
 				B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */,
+				DE7E5E882B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift in Sources */,
 				EE6B2AD129DC522300048A8F /* StoreCreationProgressView.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
 				2631D4F829ED0B5C00F13F20 /* WPComPlanNameSanitizer.swift in Sources */,
@@ -14854,6 +14873,7 @@
 				02BC5AA524D27F8900C43326 /* ProductVariationFormViewModel+UpdatesTests.swift in Sources */,
 				D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */,
 				02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */,
+				DE7E5E8A2B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift in Sources */,
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
 				CCCFFC5D2934F0BA006130AF /* StatsIntervalDataParserTests.swift in Sources */,
 				953728F82B23635300FDF1D1 /* UIAlertController+helpers.swift in Sources */,

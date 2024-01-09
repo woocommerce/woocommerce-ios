@@ -48,7 +48,7 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
         self.onQueryChanged = onQueryChanged
         self.onDismiss = onDismiss
         self.onCompletion = onCompletion
-        self.selectedItems = selectedItems ?? []
+        self.selectedItems = selectedItems ?? Set(contents)
     }
 
     var body: some View {
@@ -125,11 +125,11 @@ struct MultipleSelectionList_Previews: PreviewProvider {
             BlazeTargetLanguage(id: "2", name: "Vietnamese", locale: "vi")
         ]
         MultiSelectionList(title: "Languages",
-                              allOptionsTitle: "All languages",
-                              contents: languages,
-                              contentKeyPath: \.id,
-                              onQueryChanged: { _ in },
-                              onDismiss: {},
-                              onCompletion: { _ in })
+                           allOptionsTitle: "All languages",
+                           contents: languages,
+                           contentKeyPath: \.id,
+                           onQueryChanged: { _ in },
+                           onDismiss: {},
+                           onCompletion: { _ in })
     }
 }

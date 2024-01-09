@@ -8,6 +8,7 @@ import Kingfisher
 final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingController<BlazeCampaignDashboardView> {
     private let viewModel: BlazeCampaignDashboardViewModel
     private let parentNavigationController: UINavigationController?
+    private lazy var blazeNavigationController = WooNavigationController()
 
     init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController?) {
         self.viewModel = viewModel
@@ -25,12 +26,16 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.startCampaignFromIntroTapped = { [weak self] productID in
-            self?.navigateToCampaignCreation(source: .introView, productID: productID)
+            // Ensures the intro view is dismissed before navigating to the creation flow
+            self?.parentNavigationController?.dismiss(animated: true) {
+                self?.navigateToCampaignCreation(source: .introView, productID: productID)
+            }
         }
 
         rootView.showAllCampaignsTapped = { [weak self] in
             self?.showCampaignList(isPostCreation: false)
         }
+
     }
 
     @available(*, unavailable)
@@ -40,12 +45,67 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 }
 
 private extension BlazeCampaignDashboardViewHostingController {
-    /// Handles navigation to the campaign creation web view
+
+    private var productSelectorViewController: ProductSelectorViewController {
+        let productSelectorViewModel = ProductSelectorViewModel(
+            siteID: viewModel.siteID,
+            purchasableItemsOnly: true,
+            onProductSelectionStateChanged: { [weak self] product in
+                guard let self = self else { return }
+
+                // Navigate to Campaign Creation Form once any type of product is selected.
+                self.navigateToNativeCampaignCreation(source: .myStoreSection)
+            },
+            onCloseButtonTapped: { [weak self] in
+                guard let self = self else { return }
+
+                blazeNavigationController.dismiss(animated: true, completion: nil)
+            }
+        )
+
+        return ProductSelectorViewController(configuration: ProductSelectorView.Configuration.configurationForBlaze,
+                                             source: .blaze,
+                                             viewModel: productSelectorViewModel)
+    }
+
+    /// Handles navigation to the campaign creation view.
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+            /// If there are multiple products available, Blaze product selector view will be shown first.
+            if viewModel.shouldShowProductSelectorView {
+                navigateToBlazeProductSelector(source: source)
+            } else {
+                navigateToNativeCampaignCreation(source: source, productID: productID)
+            }
+        } else {
+            navigateToWebCampaignCreation(source: source, productID: productID)
+        }
+    }
+
+    /// Handles navigation to the native Blaze creation
+    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
+        let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID, onCompletion: { })
+        let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
+        if blazeNavigationController.presentingViewController != nil {
+            blazeNavigationController.show(controller, sender: self)
+        } else {
+            blazeNavigationController.viewControllers = [controller]
+            parentNavigationController?.present(blazeNavigationController, animated: true)
+        }
+    }
+
+    /// Handles navigation to the Blaze product selector view
+    func navigateToBlazeProductSelector(source: BlazeSource) {
+        blazeNavigationController.viewControllers = [productSelectorViewController]
+        parentNavigationController?.present(blazeNavigationController, animated: true, completion: nil)
+    }
+
+    /// Handles navigation to the webview Blaze creation
+    func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
         let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
-                                             source: source,
-                                             siteURL: viewModel.siteURL,
-                                             productID: productID) { [weak self] in
+                source: source,
+                siteURL: viewModel.siteURL,
+                productID: productID) { [weak self] in
             self?.handlePostCreation()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)

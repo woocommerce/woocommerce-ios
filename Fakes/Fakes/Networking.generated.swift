@@ -156,6 +156,16 @@ extension Networking.Announcement {
         )
     }
 }
+extension Networking.BlazeAISuggestion {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeAISuggestion {
+        .init(
+            siteName: .fake(),
+            textSnippet: .fake()
+        )
+    }
+}
 extension Networking.BlazeCampaign {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -163,14 +173,14 @@ extension Networking.BlazeCampaign {
         .init(
             siteID: .fake(),
             campaignID: .fake(),
-            productID: .fake(),
+            productURL: .fake(),
             name: .fake(),
             uiStatus: .fake(),
             contentImageURL: .fake(),
             contentClickURL: .fake(),
             totalImpressions: .fake(),
             totalClicks: .fake(),
-            totalBudget: .fake()
+            budgetCents: .fake()
         )
     }
 }
@@ -2292,8 +2302,7 @@ extension Networking.WooPaymentsBalance {
     public static func fake() -> Networking.WooPaymentsBalance {
         .init(
             amount: .fake(),
-            currency: .fake(),
-            depositsCount: .fake()
+            currency: .fake()
         )
     }
 }
@@ -2314,7 +2323,6 @@ extension Networking.WooPaymentsCurrencyDeposits {
     public static func fake() -> Networking.WooPaymentsCurrencyDeposits {
         .init(
             lastPaid: .fake(),
-            nextScheduled: .fake(),
             lastManualDeposits: .fake()
         )
     }

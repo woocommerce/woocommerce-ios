@@ -2302,8 +2302,7 @@ extension Networking.WooPaymentsBalance {
     public static func fake() -> Networking.WooPaymentsBalance {
         .init(
             amount: .fake(),
-            currency: .fake(),
-            depositsCount: .fake()
+            currency: .fake()
         )
     }
 }
@@ -2324,7 +2323,6 @@ extension Networking.WooPaymentsCurrencyDeposits {
     public static func fake() -> Networking.WooPaymentsCurrencyDeposits {
         .init(
             lastPaid: .fake(),
-            nextScheduled: .fake(),
             lastManualDeposits: .fake()
         )
     }

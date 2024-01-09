@@ -17,20 +17,16 @@ public struct WooPaymentsDepositsOverview: Codable, GeneratedFakeable, Generated
 
 public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let lastPaid: [WooPaymentsDeposit]
-    public let nextScheduled: [WooPaymentsDeposit]
     public let lastManualDeposits: [WooPaymentsManualDeposit]
 
     public init(lastPaid: [WooPaymentsDeposit],
-                nextScheduled: [WooPaymentsDeposit],
                 lastManualDeposits: [WooPaymentsManualDeposit]) {
         self.lastPaid = lastPaid
-        self.nextScheduled = nextScheduled
         self.lastManualDeposits = lastManualDeposits
     }
 
     enum CodingKeys: String, CodingKey {
         case lastPaid = "last_paid"
-        case nextScheduled = "next_scheduled"
         case lastManualDeposits = "last_manual_deposits"
     }
 }
@@ -170,18 +166,15 @@ public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, Generated
 public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let amount: Int
     public let currency: String
-    public let depositsCount: Int?
 
-    public init(amount: Int, currency: String, depositsCount: Int?) {
+    public init(amount: Int, currency: String) {
         self.amount = amount
         self.currency = currency
-        self.depositsCount = depositsCount
     }
 
     public enum CodingKeys: String, CodingKey {
         case amount
         case currency
-        case depositsCount = "deposits_count"
     }
 }
 

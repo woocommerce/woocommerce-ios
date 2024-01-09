@@ -1,20 +1,20 @@
 import SwiftUI
 
-struct TopTabItem {
+struct TopTabItem<Content: View> {
     let name: String
-    let view: AnyView
+    let content: () -> Content
     let onSelected: (() -> Void)?
 
     init(name: String,
-         view: AnyView,
+         @ViewBuilder content: @escaping () -> Content,
          onSelected: (() -> Void)? = nil) {
         self.name = name
-        self.view = view
+        self.content = content
         self.onSelected = onSelected
     }
 }
 
-struct TopTabView: View {
+struct TopTabView<Content: View>: View {
     @State private var selectedTab = 0
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
@@ -23,9 +23,9 @@ struct TopTabView: View {
 
     @Binding var showTabs: Bool
 
-    let tabs: [TopTabItem]
+    let tabs: [TopTabItem<Content>]
 
-    init(tabs: [TopTabItem],
+    init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true)) {
         self.tabs = tabs
         self._showTabs = showTabs
@@ -95,7 +95,7 @@ struct TopTabView: View {
                 HStack(spacing: 0) {
                     ForEach(0..<tabs.count, id: \.self) { index in
                         // Tab content as passed to the TopTabView at init
-                        tabs[index].view
+                        tabs[index].content()
                             .frame(width: geometry.size.width)
                     }
                 }
@@ -204,41 +204,53 @@ struct TopTabView: View {
     }
 
     private enum Layout {
-        static let tabPadding: CGFloat = 10
-        static let selectedTabIndicatorHeight: CGFloat = 2
+        static var tabPadding: CGFloat { 10 }
+        static var selectedTabIndicatorHeight: CGFloat { 2 }
     }
 
     private enum Colors {
-        static let selected: Color = .withColorStudio(name: .wooCommercePurple, shade: .shade50)
+        static var selected: Color { .withColorStudio(name: .wooCommercePurple, shade: .shade50) }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let tabs: [TopTabItem] = [
-            TopTabItem(name: "A tab name", view: AnyView(Text("Content for Tab 1")
-                .font(.largeTitle)
-                .padding())),
-            TopTabItem(name: "Tab2", view: AnyView(Text("Content for Tab 2")
-                .font(.largeTitle)
-                .padding())),
-            TopTabItem(name: "More detail", view: AnyView(Text("Content for Tab 3")
-                .font(.largeTitle)
-                .padding())),
-            TopTabItem(name: "A really long tab name", view: AnyView(Text("Content for Tab 4")
-                .font(.largeTitle)
-                .padding())),
-            TopTabItem(name: "Tab", view: AnyView(Text("Content for Tab 5")
-                .font(.largeTitle)
-                .padding())),
+            TopTabItem(name: "A tab name", content: {
+                Text("Content for Tab 1")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "A tab name", content: {
+                Text("Content for Tab 2")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "More detail", content: {
+                Text("Content for Tab 3")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "A really long tab name", content: {
+                Text("Content for Tab 4")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "Tab", content: {
+                Text("Content for Tab 5")
+                    .font(.largeTitle)
+                    .padding()
+            })
         ]
         TopTabView(tabs: tabs)
             .previewLayout(.sizeThatFits)
 
         let oneTab: [TopTabItem] = [
-            TopTabItem(name: "A tab name", view: AnyView(Text("Content for Tab 1")
-                .font(.largeTitle)
-                .padding()))
+            TopTabItem(name: "A tab name", content: {
+                Text("Content for Tab 1")
+                    .font(.largeTitle)
+                    .padding()
+            })
         ]
         TopTabView(tabs: oneTab)
             .previewLayout(.sizeThatFits)

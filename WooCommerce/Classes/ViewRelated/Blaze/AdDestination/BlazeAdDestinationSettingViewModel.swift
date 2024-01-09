@@ -41,19 +41,8 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         selectedDestinationType = type
     }
 
-    private func buildParameterString() -> String {
-        var parameterString = ""
-        for parameter in parameters {
-            // In URL format, the parameter is written such as "key=value".
-            parameterString += parameter.key + "=" + parameter.value
-
-            // If it's not the last parameter, add an ampersand.
-            if parameter != parameters.last {
-                parameterString += "&"
-            }
-        }
-
-        return parameterString
+    private var parameterString: String {
+        parameters.map { $0.key + "=" + $0.value }.joined(separator: "&")
     }
 
     private func buildFinalDestinationURL() -> String {

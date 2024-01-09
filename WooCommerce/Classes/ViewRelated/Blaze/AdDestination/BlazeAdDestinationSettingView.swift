@@ -43,6 +43,7 @@ struct BlazeAdDestinationSettingView: View {
                                 Text(Localization.addParameterButton)
                             }
                         }
+                        .foregroundColor(Color(uiColor: .accent))
                         .listRowInsets(EdgeInsets())
                         .padding(.leading, Layout.contentSpacing)
                         .listRowSeparator(.hidden, edges: .bottom)

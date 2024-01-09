@@ -43,6 +43,8 @@ struct BlazeAdDestinationSettingView: View {
                         .listRowInsets(EdgeInsets())
                         .buttonStyle(PlusButtonStyle())
                         .padding(.leading, Layout.contentSpacing)
+                        .listRowSeparator(.hidden, edges: .bottom)
+
                     } header: {
                         Text(Localization.urlParametersHeading)
                     } footer: {

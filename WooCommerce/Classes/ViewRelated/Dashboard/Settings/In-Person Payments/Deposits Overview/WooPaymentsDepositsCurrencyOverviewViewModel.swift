@@ -61,6 +61,9 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
         return Localization.noDateString
     }
 
+    // Mimics calculating the next scheduled deposit date in WooPayments
+    // https://github.com/Automattic/woocommerce-payments/blob/develop/client/deposits/utils/index.ts
+    //
     private func calculateNextScheduledDeposit() -> String {
         let currentDate = date
         let calendar = Calendar.current

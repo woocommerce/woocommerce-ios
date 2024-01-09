@@ -100,7 +100,8 @@ struct BlazeAdDestinationSettingView: View {
                     .bodyStyle()
                     .padding(.top, Layout.contentVerticalSpacing)
                 Text(subtitle)
-                    .subheadlineStyle()
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+                    .captionStyle()
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, Layout.contentVerticalSpacing)
 

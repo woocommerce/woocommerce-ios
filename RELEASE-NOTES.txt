@@ -2,7 +2,7 @@
 
 16.9
 -----
-
+- [*] Payments: cash payment is now in fullscreen and supports entering a different amount paid by the customer with an option to record it in an order note. The calculated change due amount is also shown. [https://github.com/woocommerce/woocommerce-ios/pull/11365]
 
 16.8
 -----

@@ -36,7 +36,10 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: locale)
         insertLanguage(english)
         insertLanguage(vietnamese)
-        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, locale: Locale(identifier: locale), storageManager: storageManager, onSelection: { _ in })
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, 
+                                                           locale: Locale(identifier: locale),
+                                                           storageManager: storageManager,
+                                                           onSelection: { _ in })
 
         // When
         viewModel.searchQuery = ""
@@ -54,7 +57,10 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: locale)
         insertLanguage(english)
         insertLanguage(vietnamese)
-        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, locale: Locale(identifier: locale), storageManager: storageManager, onSelection: { _ in })
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, 
+                                                           locale: Locale(identifier: locale),
+                                                           storageManager: storageManager,
+                                                           onSelection: { _ in })
 
         // When
         viewModel.searchQuery = "vi"

@@ -18,8 +18,10 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
 
     /// Blaze target language ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeTargetLanguage> = {
+        let predicate = NSPredicate(format: "locale == %@", locale.identifier)
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeTargetLanguage.id, ascending: true)
         let resultsController = ResultsController<StorageBlazeTargetLanguage>(storageManager: storageManager,
+                                                                              matching: predicate,
                                                                               sortedBy: [sortDescriptorByID])
         return resultsController
     }()

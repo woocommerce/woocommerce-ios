@@ -36,7 +36,7 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: locale)
         insertLanguage(english)
         insertLanguage(vietnamese)
-        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, 
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
                                                            locale: Locale(identifier: locale),
                                                            storageManager: storageManager,
                                                            onSelection: { _ in })
@@ -57,7 +57,7 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: locale)
         insertLanguage(english)
         insertLanguage(vietnamese)
-        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, 
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
                                                            locale: Locale(identifier: locale),
                                                            storageManager: storageManager,
                                                            onSelection: { _ in })

@@ -45,6 +45,7 @@ struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
     @State private var isShowingBudgetSetting = false
+    @State private var isShowingLanguagePicker = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -67,8 +68,8 @@ struct BlazeCampaignCreationForm: View {
 
                 VStack(spacing: 0) {
                     // Language
-                    detailView(title: Localization.language, content: "English, Chinese") {
-                        // TODO: open language screen
+                    detailView(title: Localization.language, content: viewModel.targetLanguageText) {
+                        isShowingLanguagePicker = true
                     }
 
                     divider
@@ -116,6 +117,12 @@ struct BlazeCampaignCreationForm: View {
         }
         .sheet(isPresented: $isShowingBudgetSetting) {
             BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
+        }
+        .sheet(isPresented: $isShowingLanguagePicker) {
+            BlazeTargetLanguagePickerView(viewModel: viewModel.targetLanguageViewModel, selectedLanguages: viewModel.languages) {
+                isShowingLanguagePicker = false
+            }
+
         }
     }
 }

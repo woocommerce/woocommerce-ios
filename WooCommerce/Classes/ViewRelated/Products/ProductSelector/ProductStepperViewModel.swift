@@ -10,10 +10,6 @@ final class ProductStepperViewModel: ObservableObject {
     ///
     @Published var enteredQuantity: Decimal
 
-    /// When a decrement action would remove the product, we can use this property to emphasise that to the user
-    ///
-    @Published var decrementWillRemoveProduct: Bool = false
-
     let accessibilityLabel: String
 
     /// Minimum value of the product quantity
@@ -27,11 +23,7 @@ final class ProductStepperViewModel: ObservableObject {
     /// Whether the quantity can be decremented.
     ///
     var shouldDisableQuantityDecrementer: Bool {
-        if removeProductIntent != nil { // Allow decrementing below minimum quantity to remove product
-            return quantity < minimumQuantity
-        } else {
-            return quantity <= minimumQuantity
-        }
+        quantity <= minimumQuantity
     }
 
     /// Whether the quantity can be incremented.
@@ -64,19 +56,6 @@ final class ProductStepperViewModel: ObservableObject {
         self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
         self.enteredQuantity = quantity
-        bindDecrementWillRemoveProduct()
-    }
-
-    private func bindDecrementWillRemoveProduct() {
-        $enteredQuantity
-            .map { [weak self] enteredQuantity in
-                guard let self,
-                    self.removeProductIntent != nil else {
-                    return false
-                }
-                return enteredQuantity <= self.minimumQuantity
-            }
-            .assign(to: &$decrementWillRemoveProduct)
     }
 
     func resetEnteredQuantity() {
@@ -90,7 +69,7 @@ final class ProductStepperViewModel: ObservableObject {
         }
 
         guard newQuantity >= minimumQuantity else {
-            removeProductIntent?()
+            // This shouldn't be possible, if the stepper is correctly disabled
             return
         }
 

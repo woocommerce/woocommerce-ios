@@ -55,7 +55,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     init (productURL: String,
           homeURL: String,
           selectedDestinationType: DestinationURLType = .product,
-          parameters: [BlazeAdURLParameter] = [BlazeAdURLParameter(key: "key1", value: "value1")]) {
+          parameters: [BlazeAdURLParameter] = []) {
         self.productURL = productURL
         self.homeURL = homeURL
         self.selectedDestinationType = selectedDestinationType

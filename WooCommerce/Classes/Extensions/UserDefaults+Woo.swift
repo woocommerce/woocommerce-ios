@@ -50,8 +50,8 @@ extension UserDefaults {
         case hasDismissedBlazeSectionOnMyStore
 
         // Product Creation AI
-        case numberOfTimesAIProductCreated
-        case didSuggestProductCreationAISurvey
+        case numberOfTimesAIProductCreationAISurveySuggested
+        case didStartProductCreationAISurvey
 
         // Theme installation
         case themesPendingInstall

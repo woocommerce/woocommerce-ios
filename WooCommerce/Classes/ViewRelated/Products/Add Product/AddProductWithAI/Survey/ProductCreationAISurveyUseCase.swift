@@ -12,34 +12,34 @@ final class ProductCreationAISurveyUseCase {
         self.analytics = analytics
     }
 
-    private var numberOfTimesAIProductCreated: Int {
+    private(set) var numberOfTimesAIProductCreationAISurveySuggested: Int {
         get {
-            defaults.integer(forKey: UserDefaults.Key.numberOfTimesAIProductCreated.rawValue)
+            defaults.integer(forKey: UserDefaults.Key.numberOfTimesAIProductCreationAISurveySuggested.rawValue)
         }
         set {
-            defaults.set(newValue, forKey: UserDefaults.Key.numberOfTimesAIProductCreated.rawValue)
+            defaults.set(newValue, forKey: UserDefaults.Key.numberOfTimesAIProductCreationAISurveySuggested.rawValue)
         }
     }
 
     /// Returns `true` if it is time to present Product Creation AI survey.
     ///
     func shouldShowProductCreationAISurvey() -> Bool {
-        guard numberOfTimesAIProductCreated >= 3 else {
+        guard !defaults.bool(forKey: UserDefaults.Key.didStartProductCreationAISurvey.rawValue) else {
             return false
         }
-        return !defaults.bool(forKey: UserDefaults.Key.didSuggestProductCreationAISurvey.rawValue)
+        return numberOfTimesAIProductCreationAISurveySuggested < 2
     }
 
-    /// Saves that we have asked the user to provide feedback in survey
+    /// Increments the survey suggested counter by 1
     ///
     func didSuggestProductCreationAISurvey() {
+        numberOfTimesAIProductCreationAISurveySuggested += 1
         analytics.track(event: .ProductCreationAI.Survey.confirmationViewDisplayed())
-        defaults[.didSuggestProductCreationAISurvey] = true
     }
 
-    /// Increments the AI product created count by 1
+    /// Saves that user started the survey
     ///
-    func didCreateAIProduct() {
-        numberOfTimesAIProductCreated += 1
+    func didStartProductCreationAISurvey() {
+        defaults[.didStartProductCreationAISurvey] = true
     }
 }

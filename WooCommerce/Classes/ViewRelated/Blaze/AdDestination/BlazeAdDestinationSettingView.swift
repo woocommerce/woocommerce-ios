@@ -88,17 +88,12 @@ struct BlazeAdDestinationSettingView: View {
                                  type: DestinationType,
                                  showBottomDivider: Bool = false) -> some View {
         HStack(alignment: .center) {
-            if type == viewModel.selectedDestinationType {
-                Image(systemName: "checkmark")
-                    .padding(.leading, Layout.contentSpacing)
-                    .padding(.trailing, Layout.contentHorizontalSpacing)
-                    .foregroundColor(Color(uiColor: .accent))
-            } else {
-                Image(systemName: "checkmark")
-                    .padding(.leading, Layout.contentSpacing)
-                    .padding(.trailing, Layout.contentHorizontalSpacing)
-                    .hidden() // Small hack to make the icon space consistent while not showing the icon.
-            }
+            Image(systemName: "checkmark")
+                .padding(.leading, Layout.contentSpacing)
+                .padding(.trailing, Layout.contentHorizontalSpacing)
+                .if(type != viewModel.selectedDestinationType) { view in
+                    view.hidden()
+                }
 
             VStack(alignment: .leading) {
                 Text(title)

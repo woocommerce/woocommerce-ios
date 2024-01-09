@@ -6,8 +6,8 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         case home
     }
 
-    var productURL: String
-    var homeURL: String
+    let productURL: String
+    let homeURL: String
 
     @Published var selectedDestinationType: DestinationURLType
 

@@ -14,7 +14,7 @@ struct ProductCreationAISurveyConfirmationViewModel {
         self.onSkip = onSkip
         self.analytics = analytics
         let useCase = ProductCreationAISurveyUseCase()
-        skipButtonTitle = useCase.numberOfTimesProductCreationAISurveySuggested == 0 ? Localization.remindMeLater : Localization.dontShowItAgain
+        skipButtonTitle = useCase.haveSuggestedSurveyBefore() ? Localization.dontShowItAgain : Localization.remindMeLater
     }
 
     func didTapStartTheSurvey() {

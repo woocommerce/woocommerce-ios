@@ -74,4 +74,31 @@ final class ProductCreationAISurveyUseCaseTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "product_creation_ai_survey_confirmation_view_displayed" }))
     }
+
+    // MARK: haveSuggestedSurveyBefore
+
+    func test_haveSuggestedSurveyBefore_is_false_if_survey_not_displayed_before() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+
+        // When
+        let sut = ProductCreationAISurveyUseCase(defaults: defaults)
+
+        // Then
+        XCTAssertFalse(sut.haveSuggestedSurveyBefore())
+    }
+
+    func test_haveSuggestedSurveyBefore_is_true_if_survey_displayed_before() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = ProductCreationAISurveyUseCase(defaults: defaults)
+
+        // When
+        sut.didSuggestProductCreationAISurvey()
+
+        // Then
+        XCTAssertTrue(sut.haveSuggestedSurveyBefore())
+    }
 }

@@ -12,13 +12,19 @@ final class ProductCreationAISurveyUseCase {
         self.analytics = analytics
     }
 
-    private(set) var numberOfTimesProductCreationAISurveySuggested: Int {
+    private var numberOfTimesProductCreationAISurveySuggested: Int {
         get {
             defaults.integer(forKey: UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested.rawValue)
         }
         set {
             defaults.set(newValue, forKey: UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested.rawValue)
         }
+    }
+
+    /// Returns `true` if Survey has been suggested before
+    ///
+    func haveSuggestedSurveyBefore() -> Bool {
+        numberOfTimesProductCreationAISurveySuggested > 0
     }
 
     /// Returns `true` if it is time to present Product Creation AI survey.

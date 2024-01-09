@@ -351,6 +351,23 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.tagline, "Third suggested tagline")
     }
+
+    // MARK: Preselect suggestion
+    func test_it_preselects_suggestion_if_injected_tagline_and_description_match() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
+                                                                                       source: .media(media: .fake())),
+                                                               tagline: sampleAISuggestions[1].siteName,
+                                                               description: sampleAISuggestions[1].textSnippet),
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // Then
+        // Check that suggestion at index 1 is selected by testing button states
+        XCTAssertTrue(sut.canSelectPreviousSuggestion)
+        XCTAssertTrue(sut.canSelectNextSuggestion)
+    }
 }
 
 private extension BlazeEditAdViewModelTests {

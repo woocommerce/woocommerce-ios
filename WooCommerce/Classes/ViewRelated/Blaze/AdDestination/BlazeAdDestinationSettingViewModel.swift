@@ -65,8 +65,8 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     }
 
     struct BlazeAdURLParameter: Equatable, Hashable {
-        var key: String
-        var value: String
+        let key: String
+        let value: String
     }
 }
 

@@ -15,22 +15,20 @@ struct BlazeAdDestinationSettingView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
-                // URL destination section
-                VStack(spacing: 0) {
-                    sectionHeading(title: Localization.destinationUrlHeading)
-                    destinationItem(title: Localization.productURLLabel,
-                                    subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
-                                    type: DestinationType.product,
-                                    showBottomDivider: true)
-
-                    destinationItem(title: Localization.siteHomeLabel,
-                                    subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),
-                                    type: DestinationType.home)
-                }
-                .padding(.bottom, Layout.sectionVerticalSpacing)
-
-                // URL parameters section
                 List {
+                    Section {
+                        destinationItem(title: Localization.productURLLabel,
+                                        subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
+                                        type: DestinationType.product)
+
+                        destinationItem(title: Localization.siteHomeLabel,
+                                        subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),
+                                        type: DestinationType.home)
+                    } header: {
+                        Text(Localization.destinationUrlHeading)
+                    }
+
+
                     Section {
                         ForEach(viewModel.parameters, id: \.self) { parameter in
                             parameterItem(itemName: parameter.key)
@@ -87,17 +85,14 @@ struct BlazeAdDestinationSettingView: View {
 
     private func destinationItem(title: String,
                                  subtitle: String,
-                                 type: DestinationType,
-                                 showBottomDivider: Bool = false) -> some View {
+                                 type: DestinationType) -> some View {
         HStack(alignment: .center) {
             if type == viewModel.selectedDestinationType {
                 Image(systemName: "checkmark")
-                    .padding(.leading, Layout.contentSpacing)
                     .padding(.trailing, Layout.contentHorizontalSpacing)
                     .foregroundColor(Color(uiColor: .accent))
             } else {
                 Image(systemName: "checkmark")
-                    .padding(.leading, Layout.contentSpacing)
                     .padding(.trailing, Layout.contentHorizontalSpacing)
                     .hidden() // Small hack to make the icon space consistent while not showing the icon.
             }
@@ -110,17 +105,10 @@ struct BlazeAdDestinationSettingView: View {
                     .subheadlineStyle()
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, Layout.contentVerticalSpacing)
-
-                if showBottomDivider {
-                    Divider()
-                        .background(Color(.systemGray3))
-                }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
         .onTapGesture {
-            viewModel.setDestinationType(type: type)
+            viewModel.setDestinationType(as: type)
         }
     }
 

@@ -37,7 +37,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         self.parameters = parameters
     }
 
-    func setDestinationType(type: DestinationURLType) {
+    func setDestinationType(as type: DestinationURLType) {
         selectedDestinationType = type
     }
 

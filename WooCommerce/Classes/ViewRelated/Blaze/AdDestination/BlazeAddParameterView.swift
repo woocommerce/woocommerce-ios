@@ -49,9 +49,20 @@ struct BlazeAddParameterView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                Text("Hello World")
+            List {
+                HStack {
+                    Text(Localization.keyTitle)
+                        .frame(width: Layout.keyWidth, alignment: .leading)
+                    TextField(Localization.keyLabel, text: $viewModel.key)
+                }
+
+                HStack {
+                    Text(Localization.valueTitle)
+                        .frame(width: Layout.keyWidth, alignment: .leading)
+                    TextField(Localization.valueLabel, text: $viewModel.value)
+                }
             }
+            .listStyle(.grouped)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -81,6 +92,9 @@ struct BlazeAddParameterView_Previews: PreviewProvider {
 
 
 private extension BlazeAddParameterView {
+    enum Layout {
+        static let keyWidth: CGFloat = 96
+    }
     enum Localization {
         static let cancel = NSLocalizedString(
             "blazeAddParameterView.cancel",
@@ -99,5 +113,30 @@ private extension BlazeAddParameterView {
             value: "Save",
             comment: "Button to save on the Blaze Add Parameter screen"
         )
+
+        static let keyTitle = NSLocalizedString(
+            "blazeAddParameterView.keyTitle",
+            value: "Key",
+            comment: "Title for the Key input on the Blaze Add Parameter screen"
+        )
+
+        static let valueTitle = NSLocalizedString(
+            "blazeAddParameterView.valueTitle",
+            value: "Value",
+            comment: "Title for the Value input on the Blaze Add Parameter screen"
+        )
+
+        static let keyLabel = NSLocalizedString(
+            "blazeAddParameterView.keyLabel",
+            value: "Enter parameter key",
+            comment: "Label for the Key input on the Blaze Add Parameter screen"
+        )
+
+        static let valueLabel = NSLocalizedString(
+            "blazeAddParameterView.valueLabel",
+            value: "Enter parameter value",
+            comment: "Label for the Value input on the Blaze Add Parameter screen"
+        )
+
     }
 }

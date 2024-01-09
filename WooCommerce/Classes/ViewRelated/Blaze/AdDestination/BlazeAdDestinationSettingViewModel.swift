@@ -65,7 +65,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     func setDestinationType(as type: DestinationURLType) {
         selectedDestinationType = type
     }
-    
+
     func setSelectedParameterIndex(to index: Int) {
         selectedParameterIndex = index
     }
@@ -78,7 +78,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     private var parameterString: String {
         parameters.map { $0.key + "=" + $0.value }.joined(separator: "&")
     }
-    
+
     private func buildFinalDestinationURL() -> String {
         let baseURL: String
         switch selectedDestinationType {

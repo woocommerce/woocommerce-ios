@@ -6,6 +6,7 @@ import protocol Storage.StorageManagerType
 final class BlazeTargetLanguagePickerViewModel: ObservableObject {
 
     @Published var searchQuery: String = ""
+    /// Languages to be displayed after filtering with `searchQuery` if available.
     @Published private(set) var languages: [BlazeTargetLanguage] = []
     @Published private var fetchedLanguages: [BlazeTargetLanguage] = []
 

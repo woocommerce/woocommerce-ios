@@ -2287,6 +2287,7 @@
 		DE7E5E812B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E802B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift */; };
 		DE7E5E832B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E822B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift */; };
 		DE7E5E862B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */; };
+		DE7E5E882B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
@@ -4937,6 +4938,7 @@
 		DE7E5E802B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLanguagePickerViewModel.swift; sourceTree = "<group>"; };
 		DE7E5E822B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLanguagePickerViewModelTests.swift; sourceTree = "<group>"; };
 		DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDevicePickerViewModel.swift; sourceTree = "<group>"; };
+		DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDevicePickerView.swift; sourceTree = "<group>"; };
 		DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -11182,6 +11184,7 @@
 			isa = PBXGroup;
 			children = (
 				DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */,
+				DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */,
 			);
 			path = TargetDevices;
 			sourceTree = "<group>";
@@ -13657,6 +13660,7 @@
 				AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */,
 				D8752EF7265E60F4008ACC80 /* PaymentCaptureCelebration.swift in Sources */,
 				B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */,
+				DE7E5E882B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift in Sources */,
 				EE6B2AD129DC522300048A8F /* StoreCreationProgressView.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
 				2631D4F829ED0B5C00F13F20 /* WPComPlanNameSanitizer.swift in Sources */,

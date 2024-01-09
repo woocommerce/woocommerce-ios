@@ -37,11 +37,15 @@ struct BlazeAdDestinationSettingView: View {
                         }
                         .onDelete(perform: deleteParameter)
 
-                        Button(Localization.addParameterButton) {
+                        Button(action: {
                             // todo
+                        }) {
+                            HStack {
+                                Image(systemName: "plus")
+                                Text(Localization.addParameterButton)
+                            }
                         }
                         .listRowInsets(EdgeInsets())
-                        .buttonStyle(PlusButtonStyle())
                         .padding(.leading, Layout.contentSpacing)
                         .listRowSeparator(.hidden, edges: .bottom)
 

@@ -86,8 +86,18 @@ private extension BlazeTargetLanguagePickerViewModel {
         fetchedLanguages = resultsController.fetchedObjects
     }
 
+    /// Observes changes in the search query and filter the fetched results for display.
+    /// The debounce in search query messes with the initial state, so we ignore the initial query
+    /// and display the first fetch result immediately.
+    ///
     func configureDisplayedData() {
-        $searchQuery.debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+        $fetchedLanguages
+            .prefix(1) // first fetch result is displayed immediately, ignoring the empty search query
+            .assign(to: &$languages)
+
+        $searchQuery
+            .dropFirst() // ignores initial value
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .combineLatest($fetchedLanguages)
             .map { query, languages in
                 guard query.isNotEmpty else {

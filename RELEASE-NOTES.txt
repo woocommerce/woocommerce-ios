@@ -2,7 +2,7 @@
 
 16.9
 -----
-
+- [*] Order Creation/Editing: removed ability to delete an order line using the `-` button on the stepper, to avoid accidental deletion. [https://github.com/woocommerce/woocommerce-ios/pull/11651]
 
 16.8
 -----

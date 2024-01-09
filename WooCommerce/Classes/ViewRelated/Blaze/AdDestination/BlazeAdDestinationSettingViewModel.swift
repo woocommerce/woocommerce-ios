@@ -13,6 +13,9 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     @Published var parameters: [BlazeAdURLParameter]
 
+    // This is used as a flag whether merchant wants to add a new parameter or update an existing one.
+    // - if nil: Merchant wants to add a new parameter.
+    // - if non-nil: Update an existing parameter at this index.
     var selectedParameterIndex: Int?
 
     // Text to be shown on the view for remaining available characters for custom added parameters.
@@ -31,11 +34,12 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     // View model for the add parameter view.
     var blazeAddParameterViewModel: BlazeAddParameterViewModel {
-        let parameter = selectedParameterIndex != nil ? parameters[selectedParameterIndex!] : nil
+        let urlParameter = selectedParameterIndex != nil ? parameters[selectedParameterIndex!] : nil
 
         return BlazeAddParameterViewModel(
             remainingCharacters: calculateRemainingCharacters(),
-            parameter: parameter
+            isNotFirstParameter: parameters.count > 1,
+            parameter: urlParameter
         ) { [weak self] key, value in
             guard let self = self else {return}
 

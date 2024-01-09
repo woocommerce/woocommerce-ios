@@ -8,11 +8,14 @@ final class BlazeAddParameterViewModel: ObservableObject {
 
     typealias Parameter =  BlazeAdDestinationSettingViewModel.BlazeAdURLParameter
     let remainingCharacters: Int
-    let isFirstParameter: Bool
+    let isNotFirstParameter: Bool
     let parameter: Parameter?
 
+    // For adding or editing a new parameter, the input becomes "key=value"
+    // However, for adding or editing 2nd or more parameters, the input becomes "&key=value" due to how URL parameter work.
     var totalInputLength: Int {
-        (isFirstParameter ? 0 : "&".count) + key.count + "=".count + value.count
+        let inputString = (isNotFirstParameter ? "&" : "") + key + "=" + value
+        return inputString.count
     }
 
     var shouldDisableSaveButton: Bool {
@@ -23,11 +26,11 @@ final class BlazeAddParameterViewModel: ObservableObject {
     private let completionHandler: BlazeAddParameterCompletionHandler
 
     init(remainingCharacters: Int,
-         isFirstParameter: Bool = true,
+         isNotFirstParameter: Bool = true,
          parameter: Parameter? = nil,
          onCompletion: @escaping BlazeAddParameterCompletionHandler) {
         self.remainingCharacters = remainingCharacters
-        self.isFirstParameter = isFirstParameter
+        self.isNotFirstParameter = isNotFirstParameter
         self.parameter = parameter
         self.completionHandler = onCompletion
 

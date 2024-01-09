@@ -3,6 +3,8 @@ import SwiftUI
 final class BlazeAddParameterViewModel: ObservableObject {
     @Published var key: String = ""
     @Published var value: String = ""
+    @Published var hasValidationError: Bool = false
+    @Published var hasCountError: Bool = false
 
     let remainingCharacters: Int
     let isFirstParameter: Bool
@@ -12,9 +14,8 @@ final class BlazeAddParameterViewModel: ObservableObject {
     }
 
     var shouldDisableSaveButton: Bool {
-        key.isEmpty || value.isEmpty || remainingCharacters - totalInputLength <= 0
+        key.isEmpty || value.isEmpty || hasCountError || hasValidationError
     }
-
 
     typealias BlazeAddParameterCompletionHandler = (_ key: String, _ value: String) -> Void
     private let completionHandler: BlazeAddParameterCompletionHandler
@@ -31,6 +32,40 @@ final class BlazeAddParameterViewModel: ObservableObject {
     func didTapSave() {
         completionHandler(key, value)
     }
+
+    func validateInput(text: String) {
+        validateParameter(text: text)
+        validateInputLength()
+    }
+
+    /// To keep it simple, the existing String.isValidURL() is used to validate the parameter key or value.
+    /// Since that function requires a full URL, Constant.baseURLForValidation is used to build it.
+    /// The constant uses "?key=" even though this function is used to validate parameter key too,
+    /// but that's OK because key and value strings has the same validation rule.
+    ///
+    private func validateParameter(text: String) {
+        let url = Constant.baseURLForValidation + text
+        if url.isValidURL() {
+            hasValidationError = false
+        } else {
+            hasValidationError = true
+        }
+    }
+
+    private func validateInputLength() {
+        if remainingCharacters - totalInputLength <= 0 {
+            hasCountError = true
+        } else {
+            hasCountError = false
+        }
+    }
+}
+
+
+private extension BlazeAddParameterViewModel {
+    enum Constant {
+        static let baseURLForValidation = "https://woo.com/?key="
+    }
 }
 
 
@@ -46,20 +81,36 @@ struct BlazeAddParameterView: View {
         self.viewModel = viewModel
     }
 
-
     var body: some View {
         NavigationView {
             List {
-                HStack {
-                    Text(Localization.keyTitle)
-                        .frame(width: Layout.keyWidth, alignment: .leading)
-                    TextField(Localization.keyLabel, text: $viewModel.key)
-                }
+                Section {
+                    HStack {
+                        Text(Localization.keyTitle)
+                            .frame(width: Layout.keyWidth, alignment: .leading)
+                        TextField(Localization.keyLabel, text: $viewModel.key)
+                    }
+                    .onChange(of: viewModel.key) { newValue in
+                        viewModel.validateInput(text: newValue)
+                    }
 
-                HStack {
-                    Text(Localization.valueTitle)
-                        .frame(width: Layout.keyWidth, alignment: .leading)
-                    TextField(Localization.valueLabel, text: $viewModel.value)
+                    HStack {
+                        Text(Localization.valueTitle)
+                            .frame(width: Layout.keyWidth, alignment: .leading)
+                        TextField(Localization.valueLabel, text: $viewModel.value)
+                    }
+                    .onChange(of: viewModel.value) { newValue in
+                        viewModel.validateInput(text: newValue)
+                    }
+                } footer: {
+                    VStack(alignment: .leading, spacing: Layout.errorVerticalSpacing) {
+                        if viewModel.hasValidationError {
+                            Text(Localization.validationError)
+                        }
+                        if viewModel.hasCountError {
+                            Text(Localization.characterCountError)
+                        }
+                    }
                 }
             }
             .listStyle(.grouped)
@@ -94,6 +145,7 @@ struct BlazeAddParameterView_Previews: PreviewProvider {
 private extension BlazeAddParameterView {
     enum Layout {
         static let keyWidth: CGFloat = 96
+        static let errorVerticalSpacing: CGFloat = 8
     }
     enum Localization {
         static let cancel = NSLocalizedString(
@@ -138,5 +190,16 @@ private extension BlazeAddParameterView {
             comment: "Label for the Value input on the Blaze Add Parameter screen"
         )
 
+        static let validationError = NSLocalizedString(
+            "blazeAddParameterView.validationError",
+            value: "You have entered an invalid character to the parameter. Please remove and try again.",
+            comment: "Label for the validation error on the Blaze Add Parameter screen."
+        )
+
+        static let characterCountError = NSLocalizedString(
+            "blazeAddParameterView.characterCountError",
+            value: "The input you have entered is too long. Please shorten and try again.",
+            comment: "Label for the character count error on the Blaze Add Parameter screen."
+        )
     }
 }

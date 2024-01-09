@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 
 final class ProductCreationAISurveyUseCaseTests: XCTestCase {
-    func test_shouldShowProductCreationAISurvey_is_false_true_if_survey_not_displayed_before() throws {
+    func test_shouldShowProductCreationAISurvey_is_true_if_survey_not_displayed_before() throws {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
@@ -11,7 +11,7 @@ final class ProductCreationAISurveyUseCaseTests: XCTestCase {
         let sut = ProductCreationAISurveyUseCase(defaults: defaults)
 
         // Then
-        XCTAssertFalse(sut.shouldShowProductCreationAISurvey())
+        XCTAssertTrue(sut.shouldShowProductCreationAISurvey())
     }
 
     func test_it_asks_to_show_survey_if_user_dismissed_first_time() throws {

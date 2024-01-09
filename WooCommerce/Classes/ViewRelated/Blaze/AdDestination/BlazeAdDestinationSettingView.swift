@@ -66,8 +66,7 @@ struct BlazeAdDestinationSettingView: View {
                 }
                 .listStyle(.grouped)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray6))
+            .background(Color(.listBackground))
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.adDestination)
             .toolbar {
@@ -131,7 +130,7 @@ struct BlazeAdDestinationSettingView: View {
                 Text(itemName)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundColor(Color(.systemGray4))
+                    .tint(.secondary)
                     .padding(.leading, Layout.contentHorizontalSpacing)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

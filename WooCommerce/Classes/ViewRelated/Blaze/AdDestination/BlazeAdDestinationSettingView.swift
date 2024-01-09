@@ -30,38 +30,37 @@ struct BlazeAdDestinationSettingView: View {
                 .padding(.bottom, Layout.sectionVerticalSpacing)
 
                 // URL parameters section
-                VStack {
-                    sectionHeading(title: Localization.urlParametersHeading)
-
-                    VStack {
+                List {
+                    Section {
                         ForEach(viewModel.parameters, id: \.self) { parameter in
                             parameterItem(itemName: parameter.key)
                         }
+                        .onDelete(perform: deleteParameter)
 
                         Button(Localization.addParameterButton) {
                             // todo
                         }
+                        .listRowInsets(EdgeInsets())
                         .buttonStyle(PlusButtonStyle())
-                        .padding([.leading, .trailing], Layout.contentSpacing)
-                        .padding(.bottom, Layout.parametersVerticalSpacing)
+                        .padding(.leading, Layout.contentSpacing)
+                    } header: {
+                        Text(Localization.urlParametersHeading)
+                    } footer: {
+                        // Remaining characters and final destination
+                        VStack(alignment: .leading) {
+                            Text(viewModel.remainingCharactersLabel)
+                                .subheadlineStyle()
+                                .padding(.bottom, Layout.contentVerticalSpacing)
+
+                            Text(viewModel.finalDestinationLabel)
+                                .subheadlineStyle()
+                        }
+                        .padding([.top, .bottom], Layout.contentVerticalSpacing)
+                        .background(Color(.systemGray6))
+
                     }
-                    .background(Color(.systemBackground))
                 }
-
-                // Remaining characters and final destination
-                VStack(alignment: .leading) {
-                    Text(viewModel.remainingCharactersLabel)
-                        .subheadlineStyle()
-                        .padding(.bottom, Layout.contentVerticalSpacing)
-
-                    Text(viewModel.finalDestinationLabel)
-                        .subheadlineStyle()
-                }
-                .padding([.leading, .trailing], Layout.contentSpacing)
-                .padding([.top, .bottom], Layout.contentVerticalSpacing)
-                .background(Color(.systemGray6))
-
-                Spacer()
+                .listStyle(.grouped)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color(.systemGray6))
@@ -126,21 +125,17 @@ struct BlazeAdDestinationSettingView: View {
         VStack {
             HStack {
                 Text(itemName)
-                    .padding([.top, .bottom], Layout.parametersVerticalSpacing)
                 Spacer()
                 Image(systemName: "chevron.right")
                     .foregroundColor(Color(.systemGray4))
-                    .padding(.leading, 8)
-                    .padding(.trailing, Layout.contentSpacing)
+                    .padding(.leading, Layout.contentHorizontalSpacing)
             }
-            .padding(.leading, Layout.contentSpacing)
             .frame(maxWidth: .infinity, alignment: .leading)
-
-            Rectangle()
-                .frame(height: 1)
-                .foregroundColor(Color(.systemGray3))
-                .padding(.leading, Layout.contentSpacing)
         }
+    }
+
+    private func deleteParameter(at offsets: IndexSet) {
+        viewModel.parameters.remove(atOffsets: offsets)
     }
 }
 
@@ -214,7 +209,8 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                 homeURL: "https://woo.com/",
                 parameters: [
                     BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key1", value: "value1"),
-                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key2", value: "value2")
+                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key2", value: "value2"),
+                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key1", value: "value1")
                 ]
             )
         )

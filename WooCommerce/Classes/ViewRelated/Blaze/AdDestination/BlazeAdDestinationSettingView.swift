@@ -51,6 +51,7 @@ struct BlazeAdDestinationSettingView: View {
                         .listRowInsets(EdgeInsets())
                         .padding(.leading, Layout.contentSpacing)
                         .listRowSeparator(.hidden, edges: .bottom)
+                        .disabled(viewModel.calculateRemainingCharacters() == 0)
 
                     } header: {
                         Text(Localization.urlParametersHeading)

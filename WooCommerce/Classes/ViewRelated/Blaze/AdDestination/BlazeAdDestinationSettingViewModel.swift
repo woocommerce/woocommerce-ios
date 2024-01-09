@@ -102,7 +102,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         return baseURL + (paramString.isEmpty ? "" : "?\(paramString)")
     }
 
-    private func calculateRemainingCharacters() -> Int {
+    func calculateRemainingCharacters() -> Int {
         let remainingCharacters = Constant.maxParameterLength - buildParameterString().count
         // Should stop at zero and not show negative number.
         return max(0, remainingCharacters)

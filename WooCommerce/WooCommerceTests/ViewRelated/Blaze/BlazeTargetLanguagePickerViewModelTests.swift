@@ -46,7 +46,7 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         }
     }
 
-    func test_languages_filters_matching_languages_if_searchQuery_is_empty() {
+    func test_languages_filters_matching_languages_if_searchQuery_is_not_empty() {
         // Given
         let english = BlazeTargetLanguage(id: "en", name: "English", locale: "en")
         let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: "en")

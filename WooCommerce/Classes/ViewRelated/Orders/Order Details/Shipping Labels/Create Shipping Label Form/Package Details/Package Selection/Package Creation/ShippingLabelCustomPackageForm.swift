@@ -25,9 +25,9 @@ struct ShippingLabelCustomPackageForm: View {
                         }
                         .sheet(isPresented: $showingPackageTypes, content: {
                             SingleSelectionList(title: Localization.packageTypeLabel,
-                                          items: ShippingLabelCustomPackageFormViewModel.PackageType.allCases,
-                                          contentKeyPath: \.localizedName,
-                                          selected: $viewModel.packageType)
+                                                items: ShippingLabelCustomPackageFormViewModel.PackageType.allCases,
+                                                contentKeyPath: \.localizedName,
+                                                selected: $viewModel.packageType)
                         })
 
                         Divider()

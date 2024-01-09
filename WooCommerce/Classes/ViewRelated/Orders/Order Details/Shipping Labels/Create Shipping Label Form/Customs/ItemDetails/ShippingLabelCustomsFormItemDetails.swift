@@ -144,9 +144,9 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     }
                     .sheet(isPresented: $isShowingCountries, content: {
                         SingleSelectionList(title: Localization.originTitle,
-                                      items: viewModel.allCountries,
-                                      contentKeyPath: \.name,
-                                      selected: $viewModel.originCountry)
+                                            items: viewModel.allCountries,
+                                            contentKeyPath: \.name,
+                                            selected: $viewModel.originCountry)
                     })
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)

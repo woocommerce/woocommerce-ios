@@ -79,8 +79,8 @@ struct SingleSelectionList<T: Hashable>: View {
 struct SelectionList_Previews: PreviewProvider {
     static var previews: some View {
         SingleSelectionList(title: "Lunch",
-                      items: ["🥪", "🥓", "🥗"],
-                      contentKeyPath: \.self,
-                      selected: .constant("🥓")) { _ in }
+                            items: ["🥪", "🥓", "🥗"],
+                            contentKeyPath: \.self,
+                            selected: .constant("🥓")) { _ in }
     }
 }

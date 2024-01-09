@@ -38,9 +38,9 @@ struct AnalyticsTimeRangeCard: View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
                 SingleSelectionList(title: Localization.timeRangeSelectionTitle,
-                              items: Range.allCases,
-                              contentKeyPath: \.description,
-                              selected: internalSelectionBinding()) { selection in
+                                    items: Range.allCases,
+                                    contentKeyPath: \.description,
+                                    selected: internalSelectionBinding()) { selection in
                     onSelected(selection)
                 }
                 .sheet(isPresented: $showCustomRangeSelectionView) {

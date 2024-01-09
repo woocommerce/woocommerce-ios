@@ -80,9 +80,9 @@ struct ShippingLabelCustomsFormInput: View {
             }
             .sheet(isPresented: $showingContentTypes, content: {
                 SingleSelectionList(title: Localization.contentTypeTitle,
-                              items: ShippingLabelCustomsForm.ContentsType.allCases,
-                              contentKeyPath: \.localizedName,
-                              selected: $viewModel.contentsType)
+                                    items: ShippingLabelCustomsForm.ContentsType.allCases,
+                                    contentKeyPath: \.localizedName,
+                                    selected: $viewModel.contentsType)
             })
             Divider()
                 .padding(.leading, Constants.horizontalPadding)
@@ -115,9 +115,9 @@ struct ShippingLabelCustomsFormInput: View {
             }
             .sheet(isPresented: $showingRestrictionTypes, content: {
                 SingleSelectionList(title: Localization.restrictionTypeTitle,
-                              items: ShippingLabelCustomsForm.RestrictionType.allCases,
-                              contentKeyPath: \.localizedName,
-                              selected: $viewModel.restrictionType)
+                                    items: ShippingLabelCustomsForm.RestrictionType.allCases,
+                                    contentKeyPath: \.localizedName,
+                                    selected: $viewModel.restrictionType)
             })
             Divider()
                 .padding(.leading, Constants.horizontalPadding)

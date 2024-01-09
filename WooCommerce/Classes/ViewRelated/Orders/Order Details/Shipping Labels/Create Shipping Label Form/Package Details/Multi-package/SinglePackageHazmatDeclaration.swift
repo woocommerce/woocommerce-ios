@@ -47,9 +47,9 @@ struct SinglePackageHazmatDeclaration: View {
                         .padding(.horizontal, Constants.horizontalPadding)
                         .sheet(isPresented: $isShowingHazmatSelection) {
                             SingleSelectionList(title: Localization.selectHazmatCategory,
-                                          items: viewModel.selectableHazmatCategories,
-                                          contentKeyPath: \.localizedName,
-                                          selected: $viewModel.selectedHazmatCategory)
+                                                items: viewModel.selectableHazmatCategories,
+                                                contentKeyPath: \.localizedName,
+                                                selected: $viewModel.selectedHazmatCategory)
                         }
                     })
 

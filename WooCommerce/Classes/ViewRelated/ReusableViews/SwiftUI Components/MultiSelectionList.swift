@@ -125,11 +125,11 @@ struct MultipleSelectionList_Previews: PreviewProvider {
             BlazeTargetLanguage(id: "2", name: "Vietnamese", locale: "vi")
         ]
         MultiSelectionList(title: "Languages",
-                              allOptionsTitle: "All languages",
-                              contents: languages,
-                              contentKeyPath: \.id,
-                              onQueryChanged: { _ in },
-                              onDismiss: {},
-                              onCompletion: { _ in })
+                           allOptionsTitle: "All languages",
+                           contents: languages,
+                           contentKeyPath: \.id,
+                           onQueryChanged: { _ in },
+                           onDismiss: {},
+                           onCompletion: { _ in })
     }
 }

@@ -48,7 +48,7 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
         self.onQueryChanged = onQueryChanged
         self.onDismiss = onDismiss
         self.onCompletion = onCompletion
-        self.selectedItems = selectedItems ?? []
+        self.selectedItems = selectedItems ?? Set(contents)
     }
 
     var body: some View {

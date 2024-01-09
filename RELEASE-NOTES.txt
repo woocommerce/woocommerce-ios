@@ -2,7 +2,7 @@
 
 16.9
 -----
-
+- [*] Order creation: after selecting a registered customer, the customer is now linked to the order. [https://github.com/woocommerce/woocommerce-ios/pull/11645]
 
 16.8
 -----

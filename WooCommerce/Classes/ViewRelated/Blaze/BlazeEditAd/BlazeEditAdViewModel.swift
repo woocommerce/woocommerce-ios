@@ -148,7 +148,7 @@ final class BlazeEditAdViewModel: ObservableObject {
             try selectSuggestion(at: newIndex)
             self.selectedSuggestionIndex = newIndex
         } catch {
-            DDLogError("⛔️ Error selecting suggestion: \(error)")
+            DDLogError("⛔️ Error selecting Blaze AI suggestion: \(error)")
         }
     }
 
@@ -172,7 +172,7 @@ final class BlazeEditAdViewModel: ObservableObject {
             try selectSuggestion(at: newIndex)
             selectedSuggestionIndex = newIndex
         } catch {
-            DDLogError("⛔️ Error selecting suggestion: \(error)")
+            DDLogError("⛔️ Error selecting Blaze AI suggestion: \(error)")
         }
     }
 }

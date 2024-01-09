@@ -46,7 +46,8 @@ final class OrdersSplitViewWrapperController: UIViewController {
         let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
         let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
 
-        ordersSplitViewController.showDetailViewController(loaderNavigationController, sender: nil)
+        ordersSplitViewController.setViewController(loaderNavigationController, for: .secondary)
+        ordersSplitViewController.show(.secondary)
     }
 
     func presentOrderCreationFlow() {
@@ -66,7 +67,8 @@ private extension OrdersSplitViewWrapperController {
         )
         emptyStateViewController.configure(config)
 
-        ordersSplitViewController.viewControllers = [ordersNavigationController, emptyStateViewController]
+        ordersSplitViewController.setViewController(ordersNavigationController, for: .primary)
+        ordersSplitViewController.setViewController(emptyStateViewController, for: .secondary)
     }
 
     func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {

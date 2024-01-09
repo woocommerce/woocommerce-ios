@@ -53,6 +53,14 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     @Published var currency: CurrencyCode
     @Published var tabTitle: String
 
+    var nextScheduledDepositText: String {
+        if let nextScheduledDeposit {
+            let text = String.localizedStringWithFormat(Localization.nextScheduledDepositText, nextScheduledDeposit)
+            return text
+        }
+        return Localization.noDateString
+    }
+
     private func calculateNextScheduledDeposit() -> String {
         let currentDate = date
         let calendar = Calendar.current
@@ -207,5 +215,11 @@ private extension WooPaymentsDepositsCurrencyOverviewViewModel {
             "Est. %1$@",
             comment: "String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. " +
             "%1$@ will be replaced with a locale-appropriate date string.")
+        static let nextScheduledDepositText = NSLocalizedString(
+            "deposits.currency.overview.nextScheduledDeposit",
+            value: "Next deposit is scheduled for %@",
+            comment: "Text indicating the date for the next scheduled deposit. " +
+            "Reads as 'Next deposit is scheduled for Dec 8, 2024'"
+        )
     }
 }

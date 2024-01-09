@@ -96,12 +96,14 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
             return XCTFail("Unable to construct date.")
         }
         let nextExpectedScheduledDepositDate = "Jan 9, 2024"
+        let expectedString = "Next deposit is scheduled for Jan 9, 2024"
 
         // When
         sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview, date: date)
 
         // Then
         assertEqual(nextExpectedScheduledDepositDate, sut.nextScheduledDeposit)
+        assertEqual(expectedString, sut.nextScheduledDepositText)
     }
 
     func test_when_calculateNextScheduledDeposit_is_weekly_then_next_expected_deposit_scheduled_date_is_the_given_week_on_anchor_day() {
@@ -118,9 +120,11 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         // When
         sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview,
                                                            date: date)
+        let expectedString = "Next deposit is scheduled for Jan 15, 2024"
 
         // Then
         assertEqual(nextExpectedScheduledDepositDate, sut.nextScheduledDeposit)
+        assertEqual(expectedString, sut.nextScheduledDepositText)
     }
 
     func test_when_calculateNextScheduledDeposit_is_monthly_then_next_expected_deposit_scheduled_date_is_the_given_month() {
@@ -137,9 +141,11 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         // When
         sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview,
                                                            date: date)
+        let expectedString = "Next deposit is scheduled for Dec 8, 2024"
 
         // Then
         assertEqual(nextExpectedScheduledDepositDate, sut.nextScheduledDeposit)
+        assertEqual(expectedString, sut.nextScheduledDepositText)
     }
 
     func test_when_calculateNextScheduledDeposit_is_manual_then_next_expected_scheduled_deposit_date_is_not_applicable() {
@@ -147,12 +153,14 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         let overview = WooPaymentsDepositsOverviewByCurrency
             .fake()
             .copy(depositInterval: .manual)
+        let nextExpectedScheduledDepositDate = "N/A"
+        let expectedString = "Next deposit is scheduled for N/A"
 
         // When
         sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview)
 
         // Then
-        assertEqual("N/A", sut.nextScheduledDeposit)
+        assertEqual(nextExpectedScheduledDepositDate, sut.nextScheduledDeposit)
+        assertEqual(expectedString, sut.nextScheduledDepositText)
     }
-
 }

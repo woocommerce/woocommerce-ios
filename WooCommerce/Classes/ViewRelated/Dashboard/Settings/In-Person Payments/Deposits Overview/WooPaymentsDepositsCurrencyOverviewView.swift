@@ -76,13 +76,11 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 
                 Divider()
 
-                if let nextScheduledDeposit = viewModel.nextScheduledDeposit {
-                    Text("Next deposit is scheduled for \(nextScheduledDeposit)")
+                Text(viewModel.nextScheduledDepositText)
                         .font(.footnote)
                         .foregroundColor(.secondary)
                         .padding(.vertical)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                }
 
                 Button {
                     viewModel.learnMoreTapped()

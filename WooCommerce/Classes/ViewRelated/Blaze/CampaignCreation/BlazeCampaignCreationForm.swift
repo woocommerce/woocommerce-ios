@@ -54,6 +54,7 @@ struct BlazeCampaignCreationForm: View {
 
     @State private var isShowingBudgetSetting = false
     @State private var isShowingLanguagePicker = false
+    @State private var isShowingAdDestinationScreen = false
     @State private var isShowingDevicePicker = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
@@ -106,7 +107,7 @@ struct BlazeCampaignCreationForm: View {
 
                 // Ad destination
                 detailView(title: Localization.adDestination, content: "https://example.com") {
-                    // TODO: open destination screen
+                    isShowingAdDestinationScreen = true
                 }
                 .overlay { roundedRectangleBorder }
             }
@@ -132,6 +133,9 @@ struct BlazeCampaignCreationForm: View {
                 isShowingLanguagePicker = false
             }
         }
+        .sheet(isPresented: $isShowingAdDestinationScreen) {
+            BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
+            }
         .sheet(isPresented: $isShowingDevicePicker) {
             BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel, selectedDevices: viewModel.devices) {
                 isShowingDevicePicker = false

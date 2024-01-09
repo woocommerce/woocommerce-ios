@@ -160,41 +160,56 @@ extension Networking.Announcement {
     }
 }
 
+extension Networking.BlazeAISuggestion {
+    public func copy(
+        siteName: CopiableProp<String> = .copy,
+        textSnippet: CopiableProp<String> = .copy
+    ) -> Networking.BlazeAISuggestion {
+        let siteName = siteName ?? self.siteName
+        let textSnippet = textSnippet ?? self.textSnippet
+
+        return Networking.BlazeAISuggestion(
+            siteName: siteName,
+            textSnippet: textSnippet
+        )
+    }
+}
+
 extension Networking.BlazeCampaign {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         campaignID: CopiableProp<Int64> = .copy,
-        productID: NullableCopiableProp<Int64> = .copy,
+        productURL: CopiableProp<String> = .copy,
         name: CopiableProp<String> = .copy,
         uiStatus: CopiableProp<String> = .copy,
         contentImageURL: NullableCopiableProp<String> = .copy,
         contentClickURL: NullableCopiableProp<String> = .copy,
         totalImpressions: CopiableProp<Int64> = .copy,
         totalClicks: CopiableProp<Int64> = .copy,
-        totalBudget: CopiableProp<Double> = .copy
+        budgetCents: CopiableProp<Double> = .copy
     ) -> Networking.BlazeCampaign {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
-        let productID = productID ?? self.productID
+        let productURL = productURL ?? self.productURL
         let name = name ?? self.name
         let uiStatus = uiStatus ?? self.uiStatus
         let contentImageURL = contentImageURL ?? self.contentImageURL
         let contentClickURL = contentClickURL ?? self.contentClickURL
         let totalImpressions = totalImpressions ?? self.totalImpressions
         let totalClicks = totalClicks ?? self.totalClicks
-        let totalBudget = totalBudget ?? self.totalBudget
+        let budgetCents = budgetCents ?? self.budgetCents
 
         return Networking.BlazeCampaign(
             siteID: siteID,
             campaignID: campaignID,
-            productID: productID,
+            productURL: productURL,
             name: name,
             uiStatus: uiStatus,
             contentImageURL: contentImageURL,
             contentClickURL: contentClickURL,
             totalImpressions: totalImpressions,
             totalClicks: totalClicks,
-            totalBudget: totalBudget
+            budgetCents: budgetCents
         )
     }
 }
@@ -3241,17 +3256,14 @@ extension Networking.WooPaymentsAccountDepositSummary {
 extension Networking.WooPaymentsBalance {
     public func copy(
         amount: CopiableProp<Int> = .copy,
-        currency: CopiableProp<String> = .copy,
-        depositsCount: NullableCopiableProp<Int> = .copy
+        currency: CopiableProp<String> = .copy
     ) -> Networking.WooPaymentsBalance {
         let amount = amount ?? self.amount
         let currency = currency ?? self.currency
-        let depositsCount = depositsCount ?? self.depositsCount
 
         return Networking.WooPaymentsBalance(
             amount: amount,
-            currency: currency,
-            depositsCount: depositsCount
+            currency: currency
         )
     }
 }
@@ -3277,16 +3289,13 @@ extension Networking.WooPaymentsCurrencyBalances {
 extension Networking.WooPaymentsCurrencyDeposits {
     public func copy(
         lastPaid: CopiableProp<[WooPaymentsDeposit]> = .copy,
-        nextScheduled: CopiableProp<[WooPaymentsDeposit]> = .copy,
         lastManualDeposits: CopiableProp<[WooPaymentsManualDeposit]> = .copy
     ) -> Networking.WooPaymentsCurrencyDeposits {
         let lastPaid = lastPaid ?? self.lastPaid
-        let nextScheduled = nextScheduled ?? self.nextScheduled
         let lastManualDeposits = lastManualDeposits ?? self.lastManualDeposits
 
         return Networking.WooPaymentsCurrencyDeposits(
             lastPaid: lastPaid,
-            nextScheduled: nextScheduled,
             lastManualDeposits: lastManualDeposits
         )
     }

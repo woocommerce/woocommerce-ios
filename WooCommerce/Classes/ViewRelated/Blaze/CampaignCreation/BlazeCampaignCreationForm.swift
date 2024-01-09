@@ -16,6 +16,11 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = Localization.title
+    }
 }
 
 private extension BlazeCampaignCreationFormHostingController {
@@ -33,11 +38,22 @@ private extension BlazeCampaignCreationFormHostingController {
     }
 }
 
+private extension BlazeCampaignCreationFormHostingController {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "blazeCampaignCreationForm.title",
+            value: "Preview",
+            comment: "Title of the Blaze campaign creation screen"
+        )
+    }
+}
+
 /// Form to enter details for creating a new Blaze campaign.
 struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
     @State private var isShowingBudgetSetting = false
+    @State private var isShowingLanguagePicker = false
     @State private var isShowingAdDestinationScreen = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
@@ -61,8 +77,8 @@ struct BlazeCampaignCreationForm: View {
 
                 VStack(spacing: 0) {
                     // Language
-                    detailView(title: Localization.language, content: "English, Chinese") {
-                        // TODO: open language screen
+                    detailView(title: Localization.language, content: viewModel.targetLanguageText) {
+                        isShowingLanguagePicker = true
                     }
 
                     divider
@@ -96,7 +112,6 @@ struct BlazeCampaignCreationForm: View {
             }
             .padding(.horizontal, Layout.contentPadding)
         }
-        .navigationTitle(Localization.title)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 0) {
                 Divider()
@@ -112,6 +127,12 @@ struct BlazeCampaignCreationForm: View {
         .sheet(isPresented: $isShowingBudgetSetting) {
             BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
         }
+        .sheet(isPresented: $isShowingLanguagePicker) {
+            BlazeTargetLanguagePickerView(viewModel: viewModel.targetLanguageViewModel, selectedLanguages: viewModel.languages) {
+                isShowingLanguagePicker = false
+            }
+        }
+
         .sheet(isPresented: $isShowingAdDestinationScreen) {
             BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
         }

@@ -40,5 +40,7 @@ extension WooAnalyticsEvent.ProductListFilter {
         case couponForm = "coupon_form"
         /// From coupon form > usage restrictions > exclude products.
         case couponRestrictions = "coupon_restrictions"
+        /// From Blaze campaign creation flow
+        case blaze = "blaze"
     }
 }

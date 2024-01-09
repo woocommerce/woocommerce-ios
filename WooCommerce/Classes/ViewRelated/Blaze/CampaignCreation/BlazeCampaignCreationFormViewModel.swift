@@ -22,16 +22,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private var duration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
 
     // Target options
-    private var locations: [Int64]?
-    private var languages: [String]?
-    private var devices: [String]?
-    private var pageTopics: [String]?
+    private(set) var locations: Set<BlazeTargetLocation>?
+    private(set) var languages: Set<BlazeTargetLanguage>?
+    private(set) var devices: Set<BlazeTargetDevice>?
+    private(set) var pageTopics: Set<BlazeTargetTopic>?
 
     var targetOptions: BlazeTargetOptions? {
         guard locations != nil || languages != nil || devices != nil || pageTopics != nil else {
             return nil
         }
-        return BlazeTargetOptions(locations: locations, languages: languages, devices: devices, pageTopics: pageTopics)
+        return BlazeTargetOptions(locations: locations?.map { $0.id },
+                                  languages: languages?.map { $0.id },
+                                  devices: devices?.map { $0.id },
+                                  pageTopics: pageTopics?.map { $0.id })
     }
 
     var budgetSettingViewModel: BlazeBudgetSettingViewModel {
@@ -48,7 +51,23 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
+    var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel {
+        BlazeTargetLanguagePickerViewModel(siteID: siteID) { [weak self] selectedLanguages in
+            self?.languages = selectedLanguages
+            self?.updateTargetLanguagesText()
+        }
+    }
+
+    var targetDeviceViewModel: BlazeTargetDevicePickerViewModel {
+        BlazeTargetDevicePickerViewModel(siteID: siteID) { [weak self] selectedDevices in
+            self?.devices = selectedDevices
+            self?.updateTargetDevicesText()
+        }
+    }
+
     @Published private(set) var budgetDetailText: String = ""
+    @Published private(set) var targetLanguageText: String = ""
+    @Published private(set) var targetDeviceText: String = ""
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -58,6 +77,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.completionHandler = onCompletion
 
         updateBudgetDetails()
+        updateTargetLanguagesText()
+        updateTargetDevicesText()
     }
 
     func didTapEditAd() {
@@ -74,6 +95,30 @@ private extension BlazeCampaignCreationFormViewModel {
             singular: String(format: Localization.budgetSingleDay, amount, duration, date),
             plural: String(format: Localization.budgetMultipleDays, amount, duration, date)
         )
+    }
+
+    func updateTargetLanguagesText() {
+        targetLanguageText = {
+            guard let languages, languages.isEmpty == false else {
+                return Localization.all
+            }
+            return languages
+                .map { $0.name }
+                .sorted()
+                .joined(separator: ", ")
+        }()
+    }
+
+    func updateTargetDevicesText() {
+        targetDeviceText = {
+            guard let devices, devices.isEmpty == false else {
+                return Localization.all
+            }
+            return devices
+                .map { $0.name }
+                .sorted()
+                .joined(separator: ", ")
+        }()
     }
 }
 
@@ -96,6 +141,11 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "$%.0f USD",
             comment: "The formatted total budget for a Blaze campaign, fixed in USD. " +
             "Reads as $11 USD. Keep %.0f as is."
+        )
+        static let all = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.all",
+            value: "All",
+            comment: "Text indicating all targets for a Blaze campaign"
         )
     }
 }

@@ -65,7 +65,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     func setDestinationType(as type: DestinationURLType) {
         selectedDestinationType = type
     }
-
+    
     func setSelectedParameterIndex(to index: Int) {
         selectedParameterIndex = index
     }
@@ -74,21 +74,11 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         selectedParameterIndex =  nil
     }
 
-    private func buildParameterString() -> String {
-        var parameterString = ""
-        for parameter in parameters {
-            // In URL format, the parameter is written such as "key=value".
-            parameterString += parameter.key + "=" + parameter.value
-
-            // If it's not the last parameter, add an ampersand.
-            if parameter != parameters.last {
-                parameterString += "&"
-            }
-        }
-
-        return parameterString
+    // Parameter string should be in a format of "key=value&key2=value2&key3=value3"
+    private var parameterString: String {
+        parameters.map { $0.key + "=" + $0.value }.joined(separator: "&")
     }
-
+    
     private func buildFinalDestinationURL() -> String {
         let baseURL: String
         switch selectedDestinationType {
@@ -98,19 +88,18 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
             baseURL = homeURL
         }
 
-        let paramString = buildParameterString()
-        return baseURL + (paramString.isEmpty ? "" : "?\(paramString)")
+        return baseURL + (parameterString.isEmpty ? "" : "?\(parameterString)")
     }
 
     func calculateRemainingCharacters() -> Int {
-        let remainingCharacters = Constant.maxParameterLength - buildParameterString().count
+        let remainingCharacters = Constant.maxParameterLength - parameterString.count
         // Should stop at zero and not show negative number.
         return max(0, remainingCharacters)
     }
 
     struct BlazeAdURLParameter: Equatable, Hashable {
-        var key: String
-        var value: String
+        let key: String
+        let value: String
     }
 }
 

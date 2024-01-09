@@ -319,25 +319,25 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.hasDisplayedTipAfterBlazeCampaignCreation])
     }
 
-    /// Verifies that `numberOfTimesAIProductCreationAISurveySuggested` is set to `nil` upon reset
+    /// Verifies that `numberOfTimesProductCreationAISurveySuggested` is set to `nil` upon reset
     ///
-    func test_numberOfTimesAIProductCreationAISurveySuggested_is_set_to_nil_upon_reset() throws {
+    func test_numberOfTimesProductCreationAISurveySuggested_is_set_to_nil_upon_reset() throws {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
 
         // When
-        defaults[UserDefaults.Key.numberOfTimesAIProductCreationAISurveySuggested] = 2
+        defaults[UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested] = 2
 
         // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesAIProductCreationAISurveySuggested] as? Int), 2)
+        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested] as? Int), 2)
 
         // When
         sut.reset()
 
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesAIProductCreationAISurveySuggested])
+        XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested])
     }
 
     /// Verifies that `didStartProductCreationAISurvey` is set to `nil` upon reset

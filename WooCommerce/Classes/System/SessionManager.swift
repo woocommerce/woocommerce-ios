@@ -173,7 +173,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.aiPromptTone] = nil
         defaults[.hasDisplayedTipAfterBlazeCampaignCreation] = nil
         defaults[.hasDismissedBlazeSectionOnMyStore] = nil
-        defaults[.numberOfTimesAIProductCreationAISurveySuggested] = nil
+        defaults[.numberOfTimesProductCreationAISurveySuggested] = nil
         defaults[.didStartProductCreationAISurvey] = nil
         defaults[.themesPendingInstall] = nil
         defaults[.siteIDPendingStoreSwitch] = nil

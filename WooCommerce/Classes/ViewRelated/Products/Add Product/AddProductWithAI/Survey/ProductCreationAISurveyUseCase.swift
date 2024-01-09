@@ -12,12 +12,12 @@ final class ProductCreationAISurveyUseCase {
         self.analytics = analytics
     }
 
-    private(set) var numberOfTimesAIProductCreationAISurveySuggested: Int {
+    private(set) var numberOfTimesProductCreationAISurveySuggested: Int {
         get {
-            defaults.integer(forKey: UserDefaults.Key.numberOfTimesAIProductCreationAISurveySuggested.rawValue)
+            defaults.integer(forKey: UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested.rawValue)
         }
         set {
-            defaults.set(newValue, forKey: UserDefaults.Key.numberOfTimesAIProductCreationAISurveySuggested.rawValue)
+            defaults.set(newValue, forKey: UserDefaults.Key.numberOfTimesProductCreationAISurveySuggested.rawValue)
         }
     }
 
@@ -27,13 +27,13 @@ final class ProductCreationAISurveyUseCase {
         guard !defaults.bool(forKey: UserDefaults.Key.didStartProductCreationAISurvey.rawValue) else {
             return false
         }
-        return numberOfTimesAIProductCreationAISurveySuggested < 2
+        return numberOfTimesProductCreationAISurveySuggested < 2
     }
 
     /// Increments the survey suggested counter by 1
     ///
     func didSuggestProductCreationAISurvey() {
-        numberOfTimesAIProductCreationAISurveySuggested += 1
+        numberOfTimesProductCreationAISurveySuggested += 1
         analytics.track(event: .ProductCreationAI.Survey.confirmationViewDisplayed())
     }
 

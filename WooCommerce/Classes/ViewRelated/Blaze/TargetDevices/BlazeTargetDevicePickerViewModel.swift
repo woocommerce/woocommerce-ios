@@ -36,6 +36,28 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
 
         configureResultsController()
     }
+
+    @MainActor
+    func syncDevices() async {
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(BlazeAction.synchronizeTargetDevices(siteID: siteID, locale: locale.identifier) { result in
+                    switch result {
+                    case .success:
+                        continuation.resume(returning: Void())
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                })
+            }
+        } catch {
+            DDLogError("⛔️ Error syncing Blaze target devices: \(error)")
+        }
+    }
+
+    func confirmSelection(_ selectedDevices: Set<BlazeTargetDevice>?) {
+        onSelection(selectedDevices)
+    }
 }
 
 private extension BlazeTargetDevicePickerViewModel {

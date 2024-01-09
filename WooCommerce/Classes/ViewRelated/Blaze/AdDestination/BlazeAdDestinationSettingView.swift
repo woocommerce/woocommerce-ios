@@ -57,7 +57,7 @@ struct BlazeAdDestinationSettingView: View {
                             Text(viewModel.finalDestinationLabel)
                                 .subheadlineStyle()
                         }
-                        .padding([.top, .bottom], Layout.contentVerticalSpacing)
+                        .padding(.vertical, Layout.contentVerticalSpacing)
                         .background(Color(.systemGray6))
 
                     }

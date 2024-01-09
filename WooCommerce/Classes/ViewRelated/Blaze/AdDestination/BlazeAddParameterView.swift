@@ -1,13 +1,15 @@
 import SwiftUI
 
 final class BlazeAddParameterViewModel: ObservableObject {
-    @Published var key: String = ""
-    @Published var value: String = ""
+    @Published var key: String
+    @Published var value: String
     @Published var hasValidationError: Bool = false
     @Published var hasCountError: Bool = false
 
+    typealias Parameter =  BlazeAdDestinationSettingViewModel.BlazeAdURLParameter
     let remainingCharacters: Int
     let isFirstParameter: Bool
+    let parameter: Parameter?
 
     var totalInputLength: Int {
         (isFirstParameter ? 0 : "&".count) + key.count + "=".count + value.count
@@ -22,10 +24,15 @@ final class BlazeAddParameterViewModel: ObservableObject {
 
     init(remainingCharacters: Int,
          isFirstParameter: Bool = true,
+         parameter: Parameter? = nil,
          onCompletion: @escaping BlazeAddParameterCompletionHandler) {
         self.remainingCharacters = remainingCharacters
         self.isFirstParameter = isFirstParameter
+        self.parameter = parameter
         self.completionHandler = onCompletion
+
+        key = parameter?.key ?? ""
+        value = parameter?.value ?? ""
     }
 
     func didTapSave() {
@@ -111,7 +118,7 @@ struct BlazeAddParameterView: View {
                 }
             }
             .listStyle(.grouped)
-            .navigationTitle(Localization.title)
+            .navigationTitle(viewModel.parameter == nil ? Localization.title : Localization.editTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -155,6 +162,12 @@ private extension BlazeAddParameterView {
             "blazeAddParameterView.title",
             value: "Add Parameter",
             comment: "Title of the Blaze Add Parameter screen"
+        )
+
+        static let editTitle = NSLocalizedString(
+            "blazeAddParameterView.editTitle",
+            value: "Edit Parameter",
+            comment: "Title of the Blaze Add Parameter screen in edit mode"
         )
 
         static let save = NSLocalizedString(

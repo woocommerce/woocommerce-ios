@@ -13,6 +13,8 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     @Published var parameters: [BlazeAdURLParameter]
 
+    var selectedParameterIndex: Int?
+
     // Text to be shown on the view for remaining available characters for custom added parameters.
     var remainingCharactersLabel: String {
         let remainingCharacters = calculateRemainingCharacters()
@@ -29,9 +31,20 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     // View model for the add parameter view.
     var blazeAddParameterViewModel: BlazeAddParameterViewModel {
-        BlazeAddParameterViewModel(remainingCharacters: calculateRemainingCharacters()) { [weak self] key, value in
-            guard let self else {return }
-            parameters.append(BlazeAdURLParameter(key: key, value: value))
+        let parameter = selectedParameterIndex != nil ? parameters[selectedParameterIndex!] : nil
+
+        return BlazeAddParameterViewModel(
+            remainingCharacters: calculateRemainingCharacters(),
+            parameter: parameter
+        ) { [weak self] key, value in
+            guard let self = self else {return}
+
+            if let index = self.selectedParameterIndex {
+                self.parameters[index] = BlazeAdURLParameter(key: key, value: value)
+                clearSelectedParameterIndex()
+            } else {
+                self.parameters.append(BlazeAdURLParameter(key: key, value: value))
+            }
         }
     }
 
@@ -47,6 +60,14 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     func setDestinationType(as type: DestinationURLType) {
         selectedDestinationType = type
+    }
+
+    func setSelectedParameterIndex(to index: Int) {
+        selectedParameterIndex = index
+    }
+
+    func clearSelectedParameterIndex() {
+        selectedParameterIndex =  nil
     }
 
     private func buildParameterString() -> String {

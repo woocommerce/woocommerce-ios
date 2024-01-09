@@ -54,6 +54,8 @@ public final class BlazeStore: Store {
         }
 
         switch action {
+        case let .createCampaign(campaign, siteID, onCompletion):
+            createCampaign(campaign: campaign, siteID: siteID, onCompletion: onCompletion)
         case let .synchronizeCampaigns(siteID, pageNumber, onCompletion):
             synchronizeCampaigns(siteID: siteID,
                                  pageNumber: pageNumber,
@@ -68,6 +70,26 @@ public final class BlazeStore: Store {
             fetchTargetLocations(siteID: siteID, query: query, locale: locale, onCompletion: onCompletion)
         case let .fetchForecastedImpressions(siteID, input, onCompletion):
             fetchForecastedImpressions(siteID: siteID, input: input, onCompletion: onCompletion)
+        }
+    }
+}
+
+// MARK: - Create a new Blaze campaign
+//
+private extension BlazeStore {
+    func createCampaign(campaign: CreateBlazeCampaign,
+                        siteID: Int64,
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                // TODO-11540: remove stubbed result when the API is ready.
+                try await mockResponse(stubbedResult: (), onExecution: {
+                    try await remote.createCampaign(campaign, siteID: siteID)
+                })
+                onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
         }
     }
 }
@@ -286,12 +308,11 @@ private extension BlazeStore {
                                                 type: "region",
                                                 parentLocation: .init(id: 228,
                                                                       name: "Spain",
-                                                                      type: "country",
-                                                                      isoCode: "ESP"))),
+                                                                      type: "country"))),
                     .init(id: 2035,
                           name: "Madre De Dios",
                           type: "state",
-                          parentLocation: .init(id: 57, name: "Peru", type: "country", isoCode: "PER")),
+                          parentLocation: .init(id: 57, name: "Peru", type: "country")),
                     .init(id: 6457,
                           name: "Madrid",
                           type: "city",
@@ -303,8 +324,7 @@ private extension BlazeStore {
                                                                       type: "region",
                                                                       parentLocation: .init(id: 152,
                                                                                             name: "United States",
-                                                                                            type: "country",
-                                                                                           isoCode: "USA"))))
+                                                                                            type: "country"))))
                 ]
                 let locations: [BlazeTargetLocation] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
                     try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)

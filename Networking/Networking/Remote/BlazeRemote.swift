@@ -4,6 +4,14 @@ import Foundation
 /// Protocol for `BlazeRemote` mainly used for mocking.
 ///
 public protocol BlazeRemoteProtocol {
+    /// Creates a new Blaze campaign
+    /// - Parameters:
+    ///    - campaign: Details of the Blaze campaign to be created
+    ///    - siteID: WPCom ID for the site to create the campaign in.
+    ///
+    func createCampaign(_ campaign: CreateBlazeCampaign,
+                        siteID: Int64) async throws
+
     /// Loads campaigns for the site with the provided ID on the given page number.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to load ads campaigns.
@@ -49,11 +57,32 @@ public protocol BlazeRemoteProtocol {
         for siteID: Int64,
         with input: BlazeForecastedImpressionsInput
     ) async throws -> BlazeImpressions
+
+    /// Fetches AI based suggestions for Blaze campaign tagline and description for given product ID
+    /// - Parameters:
+    ///    - siteID: WPCom ID for the site to create the campaign in.
+    ///    - productID: ID of the product to create the campaign for.
+    ///
+    func fetchAISuggestions(siteID: Int64,
+                            productID: Int64) async throws -> [BlazeAISuggestion]
 }
 
 /// Blaze: Remote Endpoints
 ///
 public final class BlazeRemote: Remote, BlazeRemoteProtocol {
+
+    public func createCampaign(_ campaign: CreateBlazeCampaign,
+                               siteID: Int64) async throws {
+        let path = Paths.campaigns(siteID: siteID)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = Constants.dateFormat
+        let parameters = try campaign.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        let mapper = CreateBlazeCampaignMapper()
+        try await enqueue(request, mapper: mapper)
+    }
 
     public func loadCampaigns(for siteID: Int64, pageNumber: Int) async throws -> [BlazeCampaign] {
         let path = Paths.campaignSearch(siteID: siteID)
@@ -127,6 +156,24 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         let mapper = BlazeImpressionsMapper()
         return try await enqueue(request, mapper: mapper)
     }
+
+    /// Fetches AI based suggestions for Blaze campaign tagline and description for given product ID
+    ///
+    public func fetchAISuggestions(siteID: Int64,
+                                   productID: Int64) async throws -> [BlazeAISuggestion] {
+        let path = Paths.aiSuggestions(siteID: siteID)
+
+        /// Expected format:
+        /// {
+        ///     "urn": "urn:wpcom:post:<site_id>:<product_id>"
+        /// }
+        ///
+        let parameters = [Keys.AISuggestions.urn: "\(Keys.AISuggestions.urn):\(Keys.AISuggestions.wpcom):\(Keys.AISuggestions.post):\(siteID):\(productID)"]
+
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
+        let mapper = BlazeAISuggestionListMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 private extension BlazeRemote {
@@ -155,12 +202,20 @@ private extension BlazeRemote {
     }
 
     enum Paths {
+        static func campaigns(siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1.1/campaigns"
+        }
+
         static func campaignSearch(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1/search/campaigns/site/\(siteID)"
         }
 
         static func campaignImpressions(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1.1/forecast"
+        }
+
+        static func aiSuggestions(siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1.1/suggestions"
         }
     }
 
@@ -170,6 +225,11 @@ private extension BlazeRemote {
         static let page = "page"
         static let query = "query"
         static let locale = "locale"
+        enum AISuggestions {
+            static let urn = "urn"
+            static let wpcom = "wpcom"
+            static let post = "post"
+        }
     }
 
     enum Values {
@@ -185,41 +245,47 @@ private extension BlazeRemote {
 /// Blaze Forecasted Impressions input
 public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     // Start date of the campaign.
-    let startDate: Date
+    public let startDate: Date
     // End date of the campaign
-    let endDate: Date
-    // Formatted string of the total budget of the campaign
-    let formattedTotalBudget: String
+    public let endDate: Date
+    // Time zone of the user
+    public let timeZone: String
+    // Total budget of the campaign
+    public let totalBudget: Double
     // Target options for the campaign. Optional.
-    let targetings: BlazeTargetOptions?
+    public let targetings: BlazeTargetOptions?
 
     public init(startDate: Date,
                 endDate: Date,
-                formattedTotalBudget: String,
+                timeZone: String,
+                totalBudget: Double,
                 targetings: BlazeTargetOptions? = nil) {
         self.startDate = startDate
         self.endDate = endDate
-        self.formattedTotalBudget = formattedTotalBudget
+        self.timeZone = timeZone
+        self.totalBudget = totalBudget
         self.targetings = targetings
     }
 
     private enum CodingKeys: String, CodingKey {
         case startDate
         case endDate
-        case formattedTotalBudget = "total_budget"
+        case timeZone
+        case totalBudget
         case targetings
     }
 }
+
 /// Blaze Forecasted Impressions sub-input related to targetings.
-public struct BlazeTargetOptions: Encodable {
+public struct BlazeTargetOptions: Encodable, GeneratedFakeable, GeneratedCopiable, Equatable {
     // Target location IDs for the campaign. Optional.
-    let locations: [Int64]?
+    public let locations: [Int64]?
     // Target languages for the campaign. Optional.
-    let languages: [String]?
+    public let languages: [String]?
     // Target devices for the campaign. Optional.
-    let devices: [String]?
+    public let devices: [String]?
     // Target topics for the campaign. Optional.
-    let pageTopics: [String]?
+    public let pageTopics: [String]?
 
     public init(locations: [Int64]?,
                 languages: [String]?,

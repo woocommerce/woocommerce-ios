@@ -4,12 +4,18 @@ import Networking
 /// Mock for `BlazeRemote`.
 ///
 final class MockBlazeRemote {
+    private var creatingCampaignResult: Result<Void, Error>?
     private var loadingCampaignResult: Result<[BlazeCampaign], Error>?
     private var fetchingTargetLanguagesResult: Result<[BlazeTargetLanguage], Error>?
     private var fetchingTargetDevicesResult: Result<[BlazeTargetDevice], Error>?
     private var fetchingTargetTopicsResult: Result<[BlazeTargetTopic], Error>?
     private var fetchingTargetLocationsResult: Result<[BlazeTargetLocation], Error>?
     private var fetchingForecastedImpressionsResult: Result<BlazeImpressions, Error>?
+    private var fetchingAISuggestionsResult: Result<[BlazeAISuggestion], Error>?
+
+    func whenCreatingCampaign(thenReturn result: Result<Void, Error>) {
+        creatingCampaignResult = result
+    }
 
     func whenLoadingCampaign(thenReturn result: Result<[BlazeCampaign], Error>) {
         loadingCampaignResult = result
@@ -34,9 +40,27 @@ final class MockBlazeRemote {
     func whenFetchingForecastedImpressions(thenReturn result: Result<BlazeImpressions, Error>?) {
         fetchingForecastedImpressionsResult = result
     }
+
+    func whenFetchingAISuggestionsResult(thenReturn result: Result<[BlazeAISuggestion], Error>?) {
+        fetchingAISuggestionsResult = result
+    }
 }
 
 extension MockBlazeRemote: BlazeRemoteProtocol {
+    func createCampaign(_ campaign: CreateBlazeCampaign,
+                        siteID: Int64) async throws {
+        guard let result = creatingCampaignResult else {
+            XCTFail("Could not find result for creating campaign.")
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
     func fetchTargetLanguages(for siteID: Int64, locale: String) async throws -> [BlazeTargetLanguage] {
         guard let result = fetchingTargetLanguagesResult else {
             XCTFail("Could not find result for fetching target languages.")
@@ -114,6 +138,20 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         switch result {
         case .success(let campaigns):
             return campaigns
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func fetchAISuggestions(siteID: Int64,
+                            productID: Int64) async throws -> [BlazeAISuggestion] {
+        guard let result = fetchingAISuggestionsResult else {
+            XCTFail("Could not find result for fetching AI suggestions.")
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case .success(let suggestions):
+            return suggestions
         case .failure(let error):
             throw error
         }

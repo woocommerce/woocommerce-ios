@@ -992,7 +992,7 @@ private extension DashboardViewController {
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
         static let tabStripSpacing = CGFloat(12)
-        static let headerStackViewSpacing = CGFloat(4)
+        static let headerStackViewSpacing = CGFloat(0)
         static let containerStackViewSpacing = CGFloat(16)
     }
 }

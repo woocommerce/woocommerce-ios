@@ -27,6 +27,14 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         return String(format: Localization.finalDestination, buildFinalDestinationURL())
     }
 
+    // View model for the add parameter view.
+    var blazeAddParameterViewModel: BlazeAddParameterViewModel {
+        BlazeAddParameterViewModel(remainingCharacters: calculateRemainingCharacters()) { [weak self] key, value in
+            guard let self else {return }
+            parameters.append(BlazeAdURLParameter(key: key, value: value))
+        }
+    }
+
     init (productURL: String,
           homeURL: String,
           selectedDestinationType: DestinationURLType = .product,

@@ -8,6 +8,8 @@ struct BlazeAdDestinationSettingView: View {
 
     typealias DestinationType = BlazeAdDestinationSettingViewModel.DestinationURLType
 
+    @State private var isShowingAddParameterView = false
+
     init(viewModel: BlazeAdDestinationSettingViewModel) {
         self.viewModel = viewModel
     }
@@ -75,6 +77,9 @@ struct BlazeAdDestinationSettingView: View {
                     }
                 }
             }
+            .sheet(isPresented: $isShowingAddParameterView) {
+                BlazeAddParameterView(viewModel: viewModel.blazeAddParameterViewModel)
+            }
         }
     }
     private func sectionHeading(title: String) -> some View {
@@ -115,14 +120,16 @@ struct BlazeAdDestinationSettingView: View {
 
     private func parameterItem(itemName: String) -> some View {
         VStack {
-            HStack {
-                Text(itemName)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .tint(.secondary)
-                    .padding(.leading, Layout.contentHorizontalSpacing)
+            Button(action: { isShowingAddParameterView = true }) {
+                HStack {
+                    Text(itemName)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .tint(.secondary)
+                        .padding(.leading, Layout.contentHorizontalSpacing)
+                }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .buttonStyle(.plain)
         }
     }
 

@@ -81,7 +81,8 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
 
         // When
         let expectedItems = Set([english])
-        viewModel.confirmSelection(expectedItems)
+        viewModel.selectedLanguages = expectedItems
+        viewModel.confirmSelection()
 
         // Then
         XCTAssertEqual(selectedItems, expectedItems)

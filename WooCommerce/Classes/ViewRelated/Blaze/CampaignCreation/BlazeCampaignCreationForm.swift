@@ -129,7 +129,7 @@ struct BlazeCampaignCreationForm: View {
             BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
         }
         .sheet(isPresented: $isShowingLanguagePicker) {
-            BlazeTargetLanguagePickerView(viewModel: viewModel.targetLanguageViewModel, selectedLanguages: viewModel.languages) {
+            BlazeTargetLanguagePickerView(viewModel: viewModel.targetLanguageViewModel) {
                 isShowingLanguagePicker = false
             }
         }

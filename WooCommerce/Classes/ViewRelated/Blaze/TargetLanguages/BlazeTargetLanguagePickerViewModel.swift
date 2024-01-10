@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 /// View model for `BlazeTargetLanguagePickerView`
 final class BlazeTargetLanguagePickerViewModel: ObservableObject {
 
+    @Published var selectedLanguages: Set<BlazeTargetLanguage>?
     @Published var searchQuery: String = ""
     /// Languages to be displayed after filtering with `searchQuery` if available.
     @Published private(set) var languages: [BlazeTargetLanguage] = []
@@ -15,6 +16,10 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let onSelection: (Set<BlazeTargetLanguage>?) -> Void
+
+    var shouldDisableSaveButton: Bool {
+        selectedLanguages?.isEmpty == true
+    }
 
     /// Blaze target language ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeTargetLanguage> = {
@@ -27,11 +32,13 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
+         selectedLanguages: Set<BlazeTargetLanguage>? = nil,
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          onSelection: @escaping (Set<BlazeTargetLanguage>?) -> Void) {
         self.siteID = siteID
+        self.selectedLanguages = selectedLanguages
         self.locale = locale
         self.stores = stores
         self.storageManager = storageManager
@@ -59,7 +66,7 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
         }
     }
 
-    func confirmSelection(_ selectedLanguages: Set<BlazeTargetLanguage>?) {
+    func confirmSelection() {
         onSelection(selectedLanguages)
     }
 }

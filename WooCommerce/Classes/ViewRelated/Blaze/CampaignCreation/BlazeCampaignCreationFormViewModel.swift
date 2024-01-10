@@ -52,7 +52,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel {
-        BlazeTargetLanguagePickerViewModel(siteID: siteID) { [weak self] selectedLanguages in
+        BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
             self?.languages = selectedLanguages
             self?.updateTargetLanguagesText()
         }

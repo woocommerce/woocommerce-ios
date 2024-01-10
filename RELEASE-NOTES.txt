@@ -2,6 +2,7 @@
 
 16.9
 -----
+- [internal] Product Creation AI: Change when and how many times we ask users to participate in survey. [https://github.com/woocommerce/woocommerce-ios/pull/11646]
 
 
 16.8

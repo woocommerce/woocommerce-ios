@@ -5,8 +5,8 @@ import struct Yosemite.BlazeTargetLanguage
 struct BlazeTargetLanguagePickerView: View {
 
     @ObservedObject private var viewModel: BlazeTargetLanguagePickerViewModel
+    @State private var selectedLanguages: Set<BlazeTargetLanguage>?
 
-    private let selectedLanguages: Set<BlazeTargetLanguage>?
     private let onDismiss: () -> Void
 
     init(viewModel: BlazeTargetLanguagePickerViewModel,
@@ -18,23 +18,33 @@ struct BlazeTargetLanguagePickerView: View {
     }
 
     var body: some View {
-        MultiSelectionList(title: Localization.title,
-                           allOptionsTitle: Localization.allTitle,
-                           contents: viewModel.languages,
-                           contentKeyPath: \.name,
-                           selectedItems: selectedLanguages,
-                           onQueryChanged: { query in
-                                viewModel.searchQuery = query
-                            },
-                           onDismiss: onDismiss,
-                           onCompletion: { selectedLanguages in
-                                viewModel.confirmSelection(selectedLanguages)
-                                onDismiss()
-                            })
-        .task {
-            await viewModel.syncLanguages()
+        NavigationView {
+            Group {
+                MultiSelectionList(allOptionsTitle: Localization.allTitle,
+                                   contents: viewModel.languages,
+                                   contentKeyPath: \.name,
+                                   selectedItems: $selectedLanguages,
+                                   onQueryChanged: { query in
+                    viewModel.searchQuery = query
+                })
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Localization.title)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButtonTitle, action: onDismiss)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.saveButtonTitle) {
+                        viewModel.confirmSelection(selectedLanguages)
+                        onDismiss()
+                    }
+                }
+            }
+            .task {
+                await viewModel.syncLanguages()
+            }
         }
-
     }
 }
 
@@ -50,11 +60,21 @@ private extension BlazeTargetLanguagePickerView {
             value: "All languages",
             comment: "Title of the row to select all target languages for Blaze campaign creation"
         )
+        static let cancelButtonTitle = NSLocalizedString(
+            "blazeTargetLanguagePickerView.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the target language picker for campaign creation"
+        )
+        static let saveButtonTitle = NSLocalizedString(
+            "blazeTargetLanguagePickerView.save",
+            value: "Save",
+            comment: "Button to save the selections on the target language picker for campaign creation"
+        )
     }
 }
 
 struct BlazeTargetLanguagePickerView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeTargetLanguagePickerView(viewModel: BlazeTargetLanguagePickerViewModel(siteID: 123) { _ in }, selectedLanguages: nil, onDismiss: {})
+        BlazeTargetLanguagePickerView(viewModel: BlazeTargetLanguagePickerViewModel(siteID: 123) { _ in }, selectedLanguages: [], onDismiss: {})
     }
 }

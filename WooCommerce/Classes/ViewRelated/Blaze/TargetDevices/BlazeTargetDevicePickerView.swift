@@ -5,8 +5,8 @@ import struct Yosemite.BlazeTargetDevice
 struct BlazeTargetDevicePickerView: View {
 
     @ObservedObject private var viewModel: BlazeTargetDevicePickerViewModel
+    @State private var selectedDevices: Set<BlazeTargetDevice>?
 
-    private let selectedDevices: Set<BlazeTargetDevice>?
     private let onDismiss: () -> Void
 
     init(viewModel: BlazeTargetDevicePickerViewModel,
@@ -18,40 +18,60 @@ struct BlazeTargetDevicePickerView: View {
     }
 
     var body: some View {
-        MultiSelectionList(title: Localization.title,
-                           allOptionsTitle: Localization.allTitle,
-                           contents: viewModel.devices,
-                           contentKeyPath: \.name,
-                           selectedItems: selectedDevices,
-                           onDismiss: onDismiss,
-                           onCompletion: { selectedDevices in
-                                viewModel.confirmSelection(selectedDevices)
-                                onDismiss()
-                            })
-        .task {
-            await viewModel.syncDevices()
+        NavigationView {
+            Group {
+                MultiSelectionList(allOptionsTitle: Localization.allTitle,
+                                   contents: viewModel.devices,
+                                   contentKeyPath: \.name,
+                                   selectedItems: $selectedDevices)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Localization.title)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButtonTitle, action: onDismiss)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.saveButtonTitle) {
+                        viewModel.confirmSelection(selectedDevices)
+                        onDismiss()
+                    }
+                }
+            }
+            .task {
+                await viewModel.syncDevices()
+            }
         }
-
     }
 }
 
 private extension BlazeTargetDevicePickerView {
     enum Localization {
         static let title = NSLocalizedString(
-            "blazeTargetLanguagePickerView.title",
+            "blazeTargetDevicePickerView.title",
             value: "Devices",
             comment: "Title of the target device picker view for Blaze campaign creation"
         )
         static let allTitle = NSLocalizedString(
-            "blazeTargetLanguagePickerView.allTitle",
+            "blazeTargetDevicePickerView.allTitle",
             value: "All devices",
             comment: "Title of the row to select all target devices for Blaze campaign creation"
+        )
+        static let cancelButtonTitle = NSLocalizedString(
+            "blazeTargetDevicePickerView.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the target device picker for campaign creation"
+        )
+        static let saveButtonTitle = NSLocalizedString(
+            "blazeTargetDevicePickerView.save",
+            value: "Save",
+            comment: "Button to save the selections on the target device picker for campaign creation"
         )
     }
 }
 
 struct BlazeTargetDevicePickerView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeTargetDevicePickerView(viewModel: BlazeTargetDevicePickerViewModel(siteID: 123) { _ in }, selectedDevices: nil, onDismiss: {})
+        BlazeTargetDevicePickerView(viewModel: BlazeTargetDevicePickerViewModel(siteID: 123) { _ in }, selectedDevices: [], onDismiss: {})
     }
 }

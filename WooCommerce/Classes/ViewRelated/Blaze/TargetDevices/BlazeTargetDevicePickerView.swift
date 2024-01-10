@@ -36,6 +36,7 @@ struct BlazeTargetDevicePickerView: View {
                         viewModel.confirmSelection(selectedDevices)
                         onDismiss()
                     }
+                    .disabled(selectedDevices?.isEmpty == true)
                 }
             }
             .task {

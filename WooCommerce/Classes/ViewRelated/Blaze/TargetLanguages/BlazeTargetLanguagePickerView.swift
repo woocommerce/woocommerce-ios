@@ -39,6 +39,7 @@ struct BlazeTargetLanguagePickerView: View {
                         viewModel.confirmSelection(selectedLanguages)
                         onDismiss()
                     }
+                    .disabled(selectedLanguages?.isEmpty == true)
                 }
             }
             .task {

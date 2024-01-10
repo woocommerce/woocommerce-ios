@@ -77,6 +77,7 @@ struct BlazeAdDestinationSettingView: View {
                     Button(Localization.cancel) {
                         dismiss()
                     }
+                    .foregroundColor(Color(uiColor: .accent))
                 }
             }
             .sheet(isPresented: $isShowingAddParameterView) {

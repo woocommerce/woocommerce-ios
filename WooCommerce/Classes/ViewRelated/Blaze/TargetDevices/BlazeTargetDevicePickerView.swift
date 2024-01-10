@@ -20,10 +20,24 @@ struct BlazeTargetDevicePickerView: View {
     var body: some View {
         NavigationView {
             Group {
-                MultiSelectionList(allOptionsTitle: Localization.allTitle,
-                                   contents: viewModel.devices,
-                                   contentKeyPath: \.name,
-                                   selectedItems: $selectedDevices)
+                switch viewModel.syncState {
+                case .syncing:
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                case .result(let devices):
+                    MultiSelectionList(allOptionsTitle: Localization.allTitle,
+                                       contents: devices,
+                                       contentKeyPath: \.name,
+                                       selectedItems: $selectedDevices)
+                case .error:
+                    ErrorStateView(title: Localization.errorMessage,
+                                   image: .errorImage,
+                                   actionTitle: Localization.tryAgain,
+                                   actionHandler: {
+                        Task {
+                            await viewModel.syncDevices()
+                        }
+                    })
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
@@ -67,6 +81,16 @@ private extension BlazeTargetDevicePickerView {
             "blazeTargetDevicePickerView.save",
             value: "Save",
             comment: "Button to save the selections on the target device picker for campaign creation"
+        )
+        static let errorMessage = NSLocalizedString(
+            "blazeTargetDevicePickerView.errorMessage",
+            value: "Error syncing data",
+            comment: "Error message when data syncing fails on the target device picker for campaign creation"
+        )
+        static let tryAgain = NSLocalizedString(
+            "blazeTargetDevicePickerView.tryAgain",
+            value: "Try Again",
+            comment: "Button to retry syncing data on the target device picker for campaign creation"
         )
     }
 }

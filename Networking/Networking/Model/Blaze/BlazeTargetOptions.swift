@@ -3,7 +3,7 @@ import Foundation
 
 /// Language to target for a Blaze campaign.
 ///
-public struct BlazeTargetLanguage: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct BlazeTargetLanguage: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable {
 
     /// ID of the language.
     public let id: String
@@ -35,7 +35,7 @@ public struct BlazeTargetLanguage: Decodable, Equatable, GeneratedCopiable, Gene
 
 /// Device to target for a Blaze campaign.
 ///
-public struct BlazeTargetDevice: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct BlazeTargetDevice: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable {
 
     /// ID of the device.
     public let id: String
@@ -67,7 +67,7 @@ public struct BlazeTargetDevice: Decodable, Equatable, GeneratedCopiable, Genera
 
 /// Topic to target for a Blaze campaign.
 ///
-public struct BlazeTargetTopic: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct BlazeTargetTopic: Decodable, Equatable, Identifiable, Hashable, GeneratedCopiable, GeneratedFakeable {
 
     /// ID of the topic.
     public let id: String
@@ -100,7 +100,7 @@ public struct BlazeTargetTopic: Decodable, Equatable, GeneratedCopiable, Generat
 /// Location to target for a Blaze campaign.
 /// This has to be a class so that it can reference a property with the type of itself.
 ///
-public final class BlazeTargetLocation: NSObject, Decodable, GeneratedCopiable, GeneratedFakeable {
+public final class BlazeTargetLocation: NSObject, Decodable, Identifiable, GeneratedCopiable, GeneratedFakeable {
 
     /// ID of the location
     public let id: Int64

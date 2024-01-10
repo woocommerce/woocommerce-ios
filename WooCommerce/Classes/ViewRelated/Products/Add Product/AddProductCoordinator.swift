@@ -358,7 +358,6 @@ private extension AddProductCoordinator {
     ///
     func presentProductCreationAIFeedbackIfApplicable() {
         let useCase = ProductCreationAISurveyUseCase()
-        useCase.didCreateAIProduct()
 
         guard useCase.shouldShowProductCreationAISurvey() else {
             return
@@ -370,6 +369,7 @@ private extension AddProductCoordinator {
             self.productCreationAISurveyPresenter.dismiss(onDismiss: { [weak self] in
                 let survey = SurveyCoordinatingController(survey: .productCreationAI)
                 self?.navigationController.present(survey, animated: true, completion: nil)
+                useCase.didStartProductCreationAISurvey()
             })
         }, onSkip: { [weak self] in
             self?.productCreationAISurveyPresenter.dismiss()

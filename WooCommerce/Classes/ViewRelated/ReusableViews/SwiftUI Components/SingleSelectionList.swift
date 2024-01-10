@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct SelectionList<T: Hashable>: View {
+/// View for selecting single item from a list
+struct SingleSelectionList<T: Hashable>: View {
     /// Title of the screen
     private let title: String
 
@@ -77,9 +78,9 @@ struct SelectionList<T: Hashable>: View {
 
 struct SelectionList_Previews: PreviewProvider {
     static var previews: some View {
-        SelectionList(title: "Lunch",
-                      items: ["🥪", "🥓", "🥗"],
-                      contentKeyPath: \.self,
-                      selected: .constant("🥓")) { _ in }
+        SingleSelectionList(title: "Lunch",
+                            items: ["🥪", "🥓", "🥗"],
+                            contentKeyPath: \.self,
+                            selected: .constant("🥓")) { _ in }
     }
 }

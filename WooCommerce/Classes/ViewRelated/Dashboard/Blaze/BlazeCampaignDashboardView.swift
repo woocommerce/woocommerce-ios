@@ -54,7 +54,8 @@ private extension BlazeCampaignDashboardViewHostingController {
                 guard let self = self else { return }
 
                 // Navigate to Campaign Creation Form once any type of product is selected.
-                self.navigateToNativeCampaignCreation(source: .myStoreSection)
+                self.navigateToNativeCampaignCreation(source: .myStoreSection,
+                                                      productID: product.productID)
             },
             onCloseButtonTapped: { [weak self] in
                 guard let self = self else { return }
@@ -71,6 +72,10 @@ private extension BlazeCampaignDashboardViewHostingController {
     /// Handles navigation to the campaign creation view.
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+            guard let productID else {
+                return navigateToBlazeProductSelector(source: source)
+            }
+
             /// If there are multiple products available, Blaze product selector view will be shown first.
             if viewModel.shouldShowProductSelectorView {
                 navigateToBlazeProductSelector(source: source)
@@ -83,8 +88,10 @@ private extension BlazeCampaignDashboardViewHostingController {
     }
 
     /// Handles navigation to the native Blaze creation
-    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID, onCompletion: { })
+    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
+        let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
+                                                                               productID: productID,
+                                                                               onCompletion: { })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
         if blazeNavigationController.presentingViewController != nil {
             blazeNavigationController.show(controller, sender: self)

@@ -1,12 +1,17 @@
 import Foundation
 import Yosemite
+import WooFoundation
+import protocol Storage.StorageManagerType
 import struct Networking.BlazeAISuggestion
+import Photos
 
 /// View model for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     let siteID: Int64
+    private let productID: Int64
     private let stores: StoresManager
+    private let productImageLoader: ProductUIImageLoader
     private let completionHandler: () -> Void
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -93,10 +98,16 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var targetDeviceText: String = ""
 
     init(siteID: Int64,
+         productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager,
+    productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
+        self.productID = productID
         self.stores = stores
+        self.storage = storage
+        self.productImageLoader = productImageLoader
         self.completionHandler = onCompletion
 
         updateBudgetDetails()

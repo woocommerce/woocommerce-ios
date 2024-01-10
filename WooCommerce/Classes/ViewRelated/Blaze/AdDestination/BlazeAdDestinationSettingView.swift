@@ -120,22 +120,20 @@ struct BlazeAdDestinationSettingView: View {
     }
 
     private func parameterItem(itemName: String, index: Int) -> some View {
-        VStack {
-            Button(action: {
-                viewModel.setSelectedParameterIndex(to: index)
-                isShowingAddParameterView = true
-            }) {
-                HStack {
-                    Text(itemName)
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .tint(.secondary)
-                        .padding(.leading, Layout.contentHorizontalSpacing)
-                }
+        Button(action: {
+            viewModel.setSelectedParameterIndex(to: index)
+            isShowingAddParameterView = true
+        }) {
+            HStack {
+                Text(itemName)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .tint(.secondary)
+                    .padding(.leading, Layout.contentHorizontalSpacing)
             }
-            .buttonStyle(.plain)
-            .contentShape(Rectangle())
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .buttonStyle(.plain)
     }
 
     private func deleteParameter(at offsets: IndexSet) {

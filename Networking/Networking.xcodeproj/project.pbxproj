@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -312,7 +312,7 @@
 		45150A9C2683417A006922EA /* StateOfACountry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45150A9B2683417A006922EA /* StateOfACountry.swift */; };
 		45150A9E26836A57006922EA /* CountryListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45150A9D26836A57006922EA /* CountryListMapper.swift */; };
 		45150AA026837357006922EA /* CountryListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45150A9F26837357006922EA /* CountryListMapperTests.swift */; };
-		45150AA2268373F8006922EA /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 45150AA1268373F8006922EA /* countries.json */; };
+		45150AA2268373F8006922EA /* country-list.json in Resources */ = {isa = PBXBuildFile; fileRef = 45150AA1268373F8006922EA /* country-list.json */; };
 		45152809257A7C6E0076B03C /* ProductAttributesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45152808257A7C6E0076B03C /* ProductAttributesRemote.swift */; };
 		4515280D257A7EEC0076B03C /* ProductAttributeListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515280C257A7EEC0076B03C /* ProductAttributeListMapper.swift */; };
 		45152811257A81730076B03C /* ProductAttributeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45152810257A81730076B03C /* ProductAttributeMapper.swift */; };
@@ -1361,7 +1361,7 @@
 		45150A9B2683417A006922EA /* StateOfACountry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateOfACountry.swift; sourceTree = "<group>"; };
 		45150A9D26836A57006922EA /* CountryListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListMapper.swift; sourceTree = "<group>"; };
 		45150A9F26837357006922EA /* CountryListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListMapperTests.swift; sourceTree = "<group>"; };
-		45150AA1268373F8006922EA /* countries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
+		45150AA1268373F8006922EA /* country-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "country-list.json"; sourceTree = "<group>"; };
 		45152808257A7C6E0076B03C /* ProductAttributesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributesRemote.swift; sourceTree = "<group>"; };
 		4515280C257A7EEC0076B03C /* ProductAttributeListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeListMapper.swift; sourceTree = "<group>"; };
 		45152810257A81730076B03C /* ProductAttributeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeMapper.swift; sourceTree = "<group>"; };
@@ -2795,7 +2795,7 @@
 				2683D70F24456EE4002A1589 /* categories-extra.json */,
 				2683D70D24456DB7002A1589 /* categories-empty.json */,
 				45B204BB24890B1200FE6526 /* category.json */,
-				45150AA1268373F8006922EA /* countries.json */,
+				45150AA1268373F8006922EA /* country-list.json */,
 				266C7F9125AD3C87006ED243 /* attribute-term.json */,
 				EE57C12A297F8F8600BC31E7 /* attribute-term-without-data.json */,
 				26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */,
@@ -3823,7 +3823,7 @@
 				EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */,
 				02BA23C922EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json in Resources */,
 				CCB2CAA226209A1200285CA0 /* generic_success_data.json in Resources */,
-				45150AA2268373F8006922EA /* countries.json in Resources */,
+				45150AA2268373F8006922EA /* country-list.json in Resources */,
 				DEA6B1CA296D0E8B005AA5E9 /* systemStatus-without-data.json in Resources */,
 				743E84F422172D0A00FAC9D7 /* shipment_tracking_multiple.json in Resources */,
 				DEA493722B3997ED00EED015 /* blaze-target-languages.json in Resources */,

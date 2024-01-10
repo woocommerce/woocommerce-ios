@@ -54,7 +54,7 @@ private extension CountryListMapperTests {
     /// Returns the [Country] output upon receiving `countries`
     ///
     func mapCountriesResponse() -> [Country]? {
-        return mapCountries(from: "countries")
+        return mapCountries(from: "country-list")
     }
 
     /// Returns the [Country] output upon receiving `countries-without-data`

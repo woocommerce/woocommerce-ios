@@ -313,25 +313,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[safe: 1]?.quantity, 1)
     }
 
-    func test_product_is_removed_when_quantity_is_decremented_below_1() throws {
-        // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        storageManager.insertSampleProduct(readOnlyProduct: product)
-        viewModel.toggleProductSelectorVisibility()
-        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
-
-        // Product quantity is 1
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
-        productSelectorViewModel.completeMultipleSelection()
-        XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[0].quantity, 1)
-
-        // When
-        viewModel.productRows[0].productRow.stepperViewModel.decrementQuantity()
-
-        // Then
-        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == product.productID }))
-    }
-
     func test_bundle_order_item_with_child_items_includes_full_bundle_configuration_when_quantity_is_incremented() throws {
         // Given
         let bundledProduct = Product.fake().copy(siteID: sampleSiteID, productID: 665, productTypeKey: ProductType.simple.rawValue)

@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 /// Hosting controller for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormHostingController: UIHostingController<BlazeCampaignCreationForm> {
@@ -48,6 +49,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingLanguagePicker = false
     @State private var isShowingAdDestinationScreen = false
     @State private var isShowingDevicePicker = false
+    @State private var isShowingErrorAlert: Bool = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -114,6 +116,7 @@ struct BlazeCampaignCreationForm: View {
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
                 .padding(Layout.contentPadding)
+                .disabled(!viewModel.canConfirmDetails)
             }
             .background(Color(uiColor: .systemBackground))
         }
@@ -133,6 +136,30 @@ struct BlazeCampaignCreationForm: View {
                 isShowingDevicePicker = false
             }
         }
+        .onChange(of: viewModel.errorState) { newValue in
+            isShowingErrorAlert = newValue != .none
+        }
+        .alert(isPresented: $isShowingErrorAlert, content: {
+            Alert(title: Text(Localization.ErrorAlert.error),
+                  message: Text(viewModel.errorState.errorMessage),
+                  primaryButton: .default(Text(Localization.ErrorAlert.retry), action: {
+                Task {
+                    switch viewModel.errorState {
+                    case .none:
+                        return
+                    case .fetchingAISuggestions:
+                        await viewModel.loadAISuggestions()
+                    }
+                }
+            }),
+                  secondaryButton: .cancel())
+        })
+        .task {
+            await viewModel.loadAISuggestions()
+        }
+        .task {
+            await viewModel.downloadProductImage()
+        }
     }
 }
 
@@ -140,25 +167,29 @@ private extension BlazeCampaignCreationForm {
     var adPreview: some View {
         VStack(spacing: Layout.contentPadding) {
             VStack(alignment: .leading, spacing: Layout.contentMargin) {
-                // TODO: use product image here
-                // Product image
-                Image(uiImage: .blazeIntroIllustration)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .cornerRadius(Layout.cornerRadius)
+                // Image
+                if viewModel.isDownloadingImage {
+                    remoteImage
+                } else {
+                    localImage
+                }
 
-                // TODO: dynamic content
                 // Tagline
-                Text("From $99")
+                Text(viewModel.isLoadingAISuggestions ? "Placeholder tagline" : viewModel.tagline)
                     .captionStyle()
+                    .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
+                    .shimmering(active: viewModel.isLoadingAISuggestions)
 
                 HStack(spacing: Layout.contentPadding) {
-                    // TODO: dynamic content
                     // Description
-                    Text("Get the latest white shirt for a stylish look")
+                    Text(viewModel.isLoadingAISuggestions ? "This is a placeholder description" : viewModel.description)
                         .fontWeight(.semibold)
                         .headlineStyle()
                         .multilineTextAlignment(.leading)
+                        .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
+                        .shimmering(active: viewModel.isLoadingAISuggestions)
+
+                    Spacer()
 
                     // Simulate shop button
                     Text(Localization.shopNow)
@@ -179,7 +210,6 @@ private extension BlazeCampaignCreationForm {
 
             // Button to edit ad details
             Button(action: {
-                // TODO
                 viewModel.didTapEditAd()
             }, label: {
                 Text(Localization.editAd)
@@ -188,6 +218,8 @@ private extension BlazeCampaignCreationForm {
                     .foregroundColor(.accentColor)
             })
             .buttonStyle(.plain)
+            .redacted(reason: viewModel.isDownloadingImage || viewModel.isLoadingAISuggestions ? .placeholder : [])
+            .shimmering(active: viewModel.isDownloadingImage || viewModel.isLoadingAISuggestions)
         }
         .padding(Layout.contentPadding)
         .background(Color(uiColor: .systemGray6))
@@ -223,6 +255,23 @@ private extension BlazeCampaignCreationForm {
     var roundedRectangleBorder: some View {
         RoundedRectangle(cornerRadius: Layout.cornerRadius)
             .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
+    }
+
+    var remoteImage: some View {
+        KFImage(viewModel.productImage)
+            .placeholder {
+                Image(uiImage: .blazeProductPlaceholder)
+            }
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .cornerRadius(Layout.cornerRadius)
+    }
+
+    var localImage: some View {
+        Image(uiImage: viewModel.image.image)
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .cornerRadius(Layout.cornerRadius)
     }
 }
 
@@ -294,6 +343,18 @@ private extension BlazeCampaignCreationForm {
             value: "Confirm Details",
             comment: "Button to confirm ad details on the Blaze campaign creation screen"
         )
+        enum ErrorAlert {
+            static let error = NSLocalizedString(
+                "blazeCampaignCreationForm.errorAlert.error",
+                value: "Oops! We've hit a snag",
+                comment: "Title on the error alert displayed on the Blaze campaign creation screen"
+            )
+            static let retry = NSLocalizedString(
+                "blazeCampaignCreationForm.errorAlert.retry",
+                value: "Retry",
+                comment: "Button on the error alert displayed on the Blaze campaign creation screen"
+            )
+        }
     }
 }
 

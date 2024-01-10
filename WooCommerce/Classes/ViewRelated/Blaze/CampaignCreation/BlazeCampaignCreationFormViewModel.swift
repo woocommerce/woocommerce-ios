@@ -119,6 +119,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var errorState: ErrorState = .none
     private var suggestions: [BlazeAISuggestion] = []
 
+    var canConfirmDetails: Bool {
+        guard !isDownloadingImage else {
+            return false
+        }
+        return tagline.isNotEmpty && description.isNotEmpty
+    }
+
     /// ResultController to to track the current product count.
     ///
     private lazy var productsResultsController: ResultsController<StorageProduct> = {

@@ -66,19 +66,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     var editAdViewModel: BlazeEditAdViewModel {
-        // TODO: Send ad data to edit screen
-        let adData = BlazeEditAdData(image: .init(image: .blazeIntroIllustration, source: .asset(asset: .init())),
-                                     tagline: "From $99",
-                                     description: "Get the latest white shirt for a stylish look")
-        // TODO: Send suggestions to edit screen
-        let suggestions = {
-            var suggestions = [BlazeAISuggestion]()
-            for i in 0..<3 {
-                suggestions.append(BlazeAISuggestion(siteName: "Tagline \(i+1)",
-                                                     textSnippet: "Description \(i+1)"))
-            }
-            return suggestions
-        }()
+        let adData = BlazeEditAdData(image: image,
+                                     tagline: tagline,
+                                     description: description)
         return BlazeEditAdViewModel(siteID: siteID,
                                     adData: adData,
                                     suggestions: suggestions,

@@ -133,6 +133,7 @@ struct BlazeAdDestinationSettingView: View {
                 }
             }
             .buttonStyle(.plain)
+            .contentShape(Rectangle())
         }
     }
 

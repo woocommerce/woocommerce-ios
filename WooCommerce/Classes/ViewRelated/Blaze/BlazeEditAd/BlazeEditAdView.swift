@@ -72,7 +72,7 @@ private extension BlazeEditAdView {
             EditableImageView(imageState: viewModel.imageState,
                               aspectRatio: .fill,
                               emptyContent: {
-                Image(uiImage: .addImage)
+                Image(uiImage: .blazeProductPlaceholder)
             })
             .frame(width: Layout.Image.imageViewSize * scale, height: Layout.Image.imageViewSize * scale)
             .cornerRadius(Layout.Image.cornerRadius)

@@ -126,7 +126,7 @@ struct BlazeAdDestinationSettingView: View {
                 Text(itemName)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .tint(.secondary)
+                    .foregroundColor(.secondary)
                     .padding(.leading, Layout.contentHorizontalSpacing)
             }
             .contentShape(Rectangle())

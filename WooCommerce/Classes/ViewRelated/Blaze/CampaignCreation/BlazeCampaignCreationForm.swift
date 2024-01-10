@@ -25,15 +25,7 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
 private extension BlazeCampaignCreationFormHostingController {
     func navigateToEditAd() {
-        // TODO: Send ad data to edit screen
-        let adData = BlazeEditAdData(image: .init(image: .blazeIntroIllustration, source: .asset(asset: .init())),
-                                     tagline: "From $99",
-                                     description: "Get the latest white shirt for a stylish look")
-        let vc = BlazeEditAdHostingController(viewModel: BlazeEditAdViewModel(siteID: viewModel.siteID,
-                                                                              adData: adData,
-                                                                              onSave: { _ in
-            // TODO: Update ad with edited data
-        }))
+        let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
         present(vc, animated: true)
     }
 }

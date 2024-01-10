@@ -13,9 +13,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     @Published private(set) var parameters: [BlazeAdURLParameter]
 
-    // This is used as a flag whether merchant wants to add a new parameter or update an existing one.
-    // - if nil: Merchant wants to add a new parameter.
-    // - if non-nil: Update this parameter in the `parameters` array.
+    // This is used as a flag whether merchant wants to add a new parameter (if nil) or update an existing one (if not)
     var selectedParameter: BlazeAdURLParameter?
 
     // Text to be shown on the view for remaining available characters for custom added parameters.
@@ -34,9 +32,17 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     // View model for the add parameter view.
     var blazeAddParameterViewModel: BlazeAddParameterViewModel {
+
+        // The remaining characters to be used for validation in `BlazeAddParameterViewModel.
+        // If more than 1 parameter exist and user is adding a new character, the value should be reduced further by 1.
+        // This to take into account the need to add "&" separator character to the new parameter.
+        var adjustedRemainingCharacters = calculateRemainingCharacters()
+        if parameters.count > 1 && selectedParameter == nil {
+            adjustedRemainingCharacters = calculateRemainingCharacters() - 1
+        }
+
         return BlazeAddParameterViewModel(
-            remainingCharacters: calculateRemainingCharacters(),
-            isNotFirstParameter: parameters.count > 1,
+            remainingCharacters: adjustedRemainingCharacters,
             parameter: selectedParameter,
             onCancel: { [weak self] in
                 guard let self = self else { return }

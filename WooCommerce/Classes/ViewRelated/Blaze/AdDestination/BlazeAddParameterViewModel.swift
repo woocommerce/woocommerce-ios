@@ -8,7 +8,6 @@ final class BlazeAddParameterViewModel: ObservableObject {
     @Published var hasCountError: Bool = false
 
     let remainingCharacters: Int
-    let isNotFirstParameter: Bool
     let parameter: BlazeAdURLParameter?
 
     var shouldDisableSaveButton: Bool {
@@ -21,12 +20,10 @@ final class BlazeAddParameterViewModel: ObservableObject {
     private let cancellationHandler: () -> Void
 
     init(remainingCharacters: Int,
-         isNotFirstParameter: Bool = true,
          parameter: BlazeAdURLParameter? = nil,
          onCancel: @escaping () -> Void,
          onCompletion: @escaping BlazeAddParameterCompletionHandler) {
         self.remainingCharacters = remainingCharacters
-        self.isNotFirstParameter = isNotFirstParameter
         self.parameter = parameter
         self.cancellationHandler = onCancel
         self.completionHandler = onCompletion
@@ -56,10 +53,7 @@ final class BlazeAddParameterViewModel: ObservableObject {
     }
 
     private func validateInputLength() {
-        // For adding or editing a new parameter, the two inputs are to be combined to be "key=value".
-        // However, for adding or editing 2nd or more parameters, the input becomes "&key=value" due to how URL parameter work.
-        let totalInputString = (isNotFirstParameter ? "&" : "") + key + "=" + value
-
+        let totalInputString = key + "=" + value
         hasCountError = remainingCharacters - totalInputString.count <= 0
     }
 }

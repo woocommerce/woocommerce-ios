@@ -9,11 +9,12 @@ extension Storage.BlazeTargetDevice: ReadOnlyConvertible {
     public func update(with campaign: Yosemite.BlazeTargetDevice) {
         id = campaign.id
         name = campaign.name
+        locale = campaign.locale
     }
 
     /// Returns a ReadOnly (`Networking.BlazeTargetDevice`) version of the `Storage.BlazeTargetDevice`
     ///
     public func toReadOnly() -> BlazeTargetDevice {
-        .init(id: id, name: name)
+        .init(id: id, name: name, locale: locale)
     }
 }

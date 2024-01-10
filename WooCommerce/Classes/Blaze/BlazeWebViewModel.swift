@@ -18,7 +18,7 @@ enum BlazeSource {
 
 /// View model for Blaze webview.
 final class BlazeWebViewModel {
-    let title = Localization.title
+    let title = "Blaze"
     let initialURL: URL?
 
     // MARK: - Analytics
@@ -85,7 +85,7 @@ extension BlazeWebViewModel: AuthenticatedWebViewModel {
         }
 
         currentStep = extractCurrentStep(from: url) ?? currentStep
-        if currentStep == Constants.completionStep {
+        if currentStep == Constants.completionStep && !isCompleted {
             ServiceLocator.analytics.track(event: .Blaze.blazeFlowCompleted(source: source, step: currentStep))
             isCompleted = true
             userDefaults.restoreBlazeSectionOnMyStore(for: siteID)
@@ -136,9 +136,5 @@ private extension BlazeWebViewModel {
         static let blazeCampaignsURLPath = "campaigns"
         // Deducted from JPiOS Tracks event `jpios_blaze_flow_completed`.
         static let completionStep: WooAnalyticsEvent.Blaze.Step = .custom(step: "step-5")
-    }
-
-    enum Localization {
-        static let title = NSLocalizedString("Blaze", comment: "Title of the Blaze view.")
     }
 }

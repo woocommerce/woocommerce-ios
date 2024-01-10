@@ -34,14 +34,17 @@
     </entity>
     <entity name="BlazeTargetDevice" representedClassName="BlazeTargetDevice" syncable="YES">
         <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="locale" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="BlazeTargetLanguage" representedClassName="BlazeTargetLanguage" syncable="YES">
         <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="locale" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="BlazeTargetTopic" representedClassName="BlazeTargetTopic" syncable="YES">
         <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="locale" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="Country" representedClassName="Country" syncable="YES">

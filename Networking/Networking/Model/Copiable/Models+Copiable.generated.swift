@@ -160,41 +160,71 @@ extension Networking.Announcement {
     }
 }
 
+extension Networking.BlazeAISuggestion {
+    public func copy(
+        siteName: CopiableProp<String> = .copy,
+        textSnippet: CopiableProp<String> = .copy
+    ) -> Networking.BlazeAISuggestion {
+        let siteName = siteName ?? self.siteName
+        let textSnippet = textSnippet ?? self.textSnippet
+
+        return Networking.BlazeAISuggestion(
+            siteName: siteName,
+            textSnippet: textSnippet
+        )
+    }
+}
+
 extension Networking.BlazeCampaign {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         campaignID: CopiableProp<Int64> = .copy,
-        productID: NullableCopiableProp<Int64> = .copy,
+        productURL: CopiableProp<String> = .copy,
         name: CopiableProp<String> = .copy,
         uiStatus: CopiableProp<String> = .copy,
         contentImageURL: NullableCopiableProp<String> = .copy,
         contentClickURL: NullableCopiableProp<String> = .copy,
         totalImpressions: CopiableProp<Int64> = .copy,
         totalClicks: CopiableProp<Int64> = .copy,
-        totalBudget: CopiableProp<Double> = .copy
+        budgetCents: CopiableProp<Double> = .copy
     ) -> Networking.BlazeCampaign {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
-        let productID = productID ?? self.productID
+        let productURL = productURL ?? self.productURL
         let name = name ?? self.name
         let uiStatus = uiStatus ?? self.uiStatus
         let contentImageURL = contentImageURL ?? self.contentImageURL
         let contentClickURL = contentClickURL ?? self.contentClickURL
         let totalImpressions = totalImpressions ?? self.totalImpressions
         let totalClicks = totalClicks ?? self.totalClicks
-        let totalBudget = totalBudget ?? self.totalBudget
+        let budgetCents = budgetCents ?? self.budgetCents
 
         return Networking.BlazeCampaign(
             siteID: siteID,
             campaignID: campaignID,
-            productID: productID,
+            productURL: productURL,
             name: name,
             uiStatus: uiStatus,
             contentImageURL: contentImageURL,
             contentClickURL: contentClickURL,
             totalImpressions: totalImpressions,
             totalClicks: totalClicks,
-            totalBudget: totalBudget
+            budgetCents: budgetCents
+        )
+    }
+}
+
+extension Networking.BlazeImpressions {
+    public func copy(
+        totalImpressionsMin: CopiableProp<Int64> = .copy,
+        totalImpressionsMax: CopiableProp<Int64> = .copy
+    ) -> Networking.BlazeImpressions {
+        let totalImpressionsMin = totalImpressionsMin ?? self.totalImpressionsMin
+        let totalImpressionsMax = totalImpressionsMax ?? self.totalImpressionsMax
+
+        return Networking.BlazeImpressions(
+            totalImpressionsMin: totalImpressionsMin,
+            totalImpressionsMax: totalImpressionsMax
         )
     }
 }
@@ -202,14 +232,17 @@ extension Networking.BlazeCampaign {
 extension Networking.BlazeTargetDevice {
     public func copy(
         id: CopiableProp<String> = .copy,
-        name: CopiableProp<String> = .copy
+        name: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetDevice {
         let id = id ?? self.id
         let name = name ?? self.name
+        let locale = locale ?? self.locale
 
         return Networking.BlazeTargetDevice(
             id: id,
-            name: name
+            name: name,
+            locale: locale
         )
     }
 }
@@ -217,14 +250,17 @@ extension Networking.BlazeTargetDevice {
 extension Networking.BlazeTargetLanguage {
     public func copy(
         id: CopiableProp<String> = .copy,
-        name: CopiableProp<String> = .copy
+        name: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetLanguage {
         let id = id ?? self.id
         let name = name ?? self.name
+        let locale = locale ?? self.locale
 
         return Networking.BlazeTargetLanguage(
             id: id,
-            name: name
+            name: name,
+            locale: locale
         )
     }
 }
@@ -234,24 +270,39 @@ extension Networking.BlazeTargetLocation {
         id: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         type: CopiableProp<String> = .copy,
-        code: NullableCopiableProp<String> = .copy,
-        isoCode: NullableCopiableProp<String> = .copy,
         parentLocation: NullableCopiableProp<BlazeTargetLocation> = .copy
     ) -> Networking.BlazeTargetLocation {
         let id = id ?? self.id
         let name = name ?? self.name
         let type = type ?? self.type
-        let code = code ?? self.code
-        let isoCode = isoCode ?? self.isoCode
         let parentLocation = parentLocation ?? self.parentLocation
 
         return Networking.BlazeTargetLocation(
             id: id,
             name: name,
             type: type,
-            code: code,
-            isoCode: isoCode,
             parentLocation: parentLocation
+        )
+    }
+}
+
+extension Networking.BlazeTargetOptions {
+    public func copy(
+        locations: NullableCopiableProp<[Int64]> = .copy,
+        languages: NullableCopiableProp<[String]> = .copy,
+        devices: NullableCopiableProp<[String]> = .copy,
+        pageTopics: NullableCopiableProp<[String]> = .copy
+    ) -> Networking.BlazeTargetOptions {
+        let locations = locations ?? self.locations
+        let languages = languages ?? self.languages
+        let devices = devices ?? self.devices
+        let pageTopics = pageTopics ?? self.pageTopics
+
+        return Networking.BlazeTargetOptions(
+            locations: locations,
+            languages: languages,
+            devices: devices,
+            pageTopics: pageTopics
         )
     }
 }
@@ -259,14 +310,17 @@ extension Networking.BlazeTargetLocation {
 extension Networking.BlazeTargetTopic {
     public func copy(
         id: CopiableProp<String> = .copy,
-        description: CopiableProp<String> = .copy
+        description: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetTopic {
         let id = id ?? self.id
         let description = description ?? self.description
+        let locale = locale ?? self.locale
 
         return Networking.BlazeTargetTopic(
             id: id,
-            description: description
+            description: description,
+            locale: locale
         )
     }
 }
@@ -366,6 +420,75 @@ extension Networking.CouponReport {
             couponID: couponID,
             amount: amount,
             ordersCount: ordersCount
+        )
+    }
+}
+
+extension Networking.CreateBlazeCampaign {
+    public func copy(
+        origin: CopiableProp<String> = .copy,
+        originVersion: CopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
+        startDate: CopiableProp<Date> = .copy,
+        endDate: CopiableProp<Date> = .copy,
+        timeZone: CopiableProp<String> = .copy,
+        totalBudget: CopiableProp<Double> = .copy,
+        siteName: CopiableProp<String> = .copy,
+        textSnippet: CopiableProp<String> = .copy,
+        targetUrl: CopiableProp<String> = .copy,
+        urlParams: CopiableProp<String> = .copy,
+        mainImage: CopiableProp<CreateBlazeCampaign.Image> = .copy,
+        targeting: NullableCopiableProp<BlazeTargetOptions> = .copy,
+        targetUrn: CopiableProp<String> = .copy,
+        type: CopiableProp<String> = .copy
+    ) -> Networking.CreateBlazeCampaign {
+        let origin = origin ?? self.origin
+        let originVersion = originVersion ?? self.originVersion
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
+        let startDate = startDate ?? self.startDate
+        let endDate = endDate ?? self.endDate
+        let timeZone = timeZone ?? self.timeZone
+        let totalBudget = totalBudget ?? self.totalBudget
+        let siteName = siteName ?? self.siteName
+        let textSnippet = textSnippet ?? self.textSnippet
+        let targetUrl = targetUrl ?? self.targetUrl
+        let urlParams = urlParams ?? self.urlParams
+        let mainImage = mainImage ?? self.mainImage
+        let targeting = targeting ?? self.targeting
+        let targetUrn = targetUrn ?? self.targetUrn
+        let type = type ?? self.type
+
+        return Networking.CreateBlazeCampaign(
+            origin: origin,
+            originVersion: originVersion,
+            paymentMethodID: paymentMethodID,
+            startDate: startDate,
+            endDate: endDate,
+            timeZone: timeZone,
+            totalBudget: totalBudget,
+            siteName: siteName,
+            textSnippet: textSnippet,
+            targetUrl: targetUrl,
+            urlParams: urlParams,
+            mainImage: mainImage,
+            targeting: targeting,
+            targetUrn: targetUrn,
+            type: type
+        )
+    }
+}
+
+extension Networking.CreateBlazeCampaign.Image {
+    public func copy(
+        url: CopiableProp<String> = .copy,
+        mimeType: CopiableProp<String> = .copy
+    ) -> Networking.CreateBlazeCampaign.Image {
+        let url = url ?? self.url
+        let mimeType = mimeType ?? self.mimeType
+
+        return Networking.CreateBlazeCampaign.Image(
+            url: url,
+            mimeType: mimeType
         )
     }
 }
@@ -699,6 +822,141 @@ extension Networking.Media {
             alt: alt,
             height: height,
             width: width
+        )
+    }
+}
+
+extension Networking.Note {
+    public func copy(
+        noteID: CopiableProp<Int64> = .copy,
+        hash: CopiableProp<Int64> = .copy,
+        read: CopiableProp<Bool> = .copy,
+        icon: NullableCopiableProp<String> = .copy,
+        noticon: NullableCopiableProp<String> = .copy,
+        timestamp: CopiableProp<String> = .copy,
+        timestampAsDate: CopiableProp<Date> = .copy,
+        kind: CopiableProp<Note.Kind> = .copy,
+        subkind: NullableCopiableProp<Note.Subkind> = .copy,
+        type: NullableCopiableProp<String> = .copy,
+        subtype: NullableCopiableProp<String> = .copy,
+        url: NullableCopiableProp<String> = .copy,
+        title: NullableCopiableProp<String> = .copy,
+        subjectAsData: CopiableProp<Data> = .copy,
+        subject: CopiableProp<[NoteBlock]> = .copy,
+        headerAsData: CopiableProp<Data> = .copy,
+        header: CopiableProp<[NoteBlock]> = .copy,
+        bodyAsData: CopiableProp<Data> = .copy,
+        body: CopiableProp<[NoteBlock]> = .copy,
+        metaAsData: CopiableProp<Data> = .copy,
+        meta: CopiableProp<MetaContainer> = .copy
+    ) -> Networking.Note {
+        let noteID = noteID ?? self.noteID
+        let hash = hash ?? self.hash
+        let read = read ?? self.read
+        let icon = icon ?? self.icon
+        let noticon = noticon ?? self.noticon
+        let timestamp = timestamp ?? self.timestamp
+        let timestampAsDate = timestampAsDate ?? self.timestampAsDate
+        let kind = kind ?? self.kind
+        let subkind = subkind ?? self.subkind
+        let type = type ?? self.type
+        let subtype = subtype ?? self.subtype
+        let url = url ?? self.url
+        let title = title ?? self.title
+        let subjectAsData = subjectAsData ?? self.subjectAsData
+        let subject = subject ?? self.subject
+        let headerAsData = headerAsData ?? self.headerAsData
+        let header = header ?? self.header
+        let bodyAsData = bodyAsData ?? self.bodyAsData
+        let body = body ?? self.body
+        let metaAsData = metaAsData ?? self.metaAsData
+        let meta = meta ?? self.meta
+
+        return Networking.Note(
+            noteID: noteID,
+            hash: hash,
+            read: read,
+            icon: icon,
+            noticon: noticon,
+            timestamp: timestamp,
+            timestampAsDate: timestampAsDate,
+            kind: kind,
+            subkind: subkind,
+            type: type,
+            subtype: subtype,
+            url: url,
+            title: title,
+            subjectAsData: subjectAsData,
+            subject: subject,
+            headerAsData: headerAsData,
+            header: header,
+            bodyAsData: bodyAsData,
+            body: body,
+            metaAsData: metaAsData,
+            meta: meta
+        )
+    }
+}
+
+extension Networking.NoteBlock {
+    public func copy(
+        media: CopiableProp<[NoteMedia]> = .copy,
+        ranges: CopiableProp<[NoteRange]> = .copy,
+        text: NullableCopiableProp<String> = .copy,
+        actions: CopiableProp<[String: Bool]> = .copy,
+        meta: CopiableProp<MetaContainer> = .copy,
+        type: NullableCopiableProp<String> = .copy
+    ) -> Networking.NoteBlock {
+        let media = media ?? self.media
+        let ranges = ranges ?? self.ranges
+        let text = text ?? self.text
+        let actions = actions ?? self.actions
+        let meta = meta ?? self.meta
+        let type = type ?? self.type
+
+        return Networking.NoteBlock(
+            media: media,
+            ranges: ranges,
+            text: text,
+            actions: actions,
+            meta: meta,
+            type: type
+        )
+    }
+}
+
+extension Networking.NoteRange {
+    public func copy(
+        kind: CopiableProp<NoteRange.Kind> = .copy,
+        type: NullableCopiableProp<String> = .copy,
+        range: CopiableProp<NSRange> = .copy,
+        url: NullableCopiableProp<URL> = .copy,
+        commentID: NullableCopiableProp<Int64> = .copy,
+        postID: NullableCopiableProp<Int64> = .copy,
+        siteID: NullableCopiableProp<Int64> = .copy,
+        userID: NullableCopiableProp<Int64> = .copy,
+        value: NullableCopiableProp<String> = .copy
+    ) -> Networking.NoteRange {
+        let kind = kind ?? self.kind
+        let type = type ?? self.type
+        let range = range ?? self.range
+        let url = url ?? self.url
+        let commentID = commentID ?? self.commentID
+        let postID = postID ?? self.postID
+        let siteID = siteID ?? self.siteID
+        let userID = userID ?? self.userID
+        let value = value ?? self.value
+
+        return Networking.NoteRange(
+            kind: kind,
+            type: type,
+            range: range,
+            url: url,
+            commentID: commentID,
+            postID: postID,
+            siteID: siteID,
+            userID: userID,
+            value: value
         )
     }
 }
@@ -2998,17 +3256,14 @@ extension Networking.WooPaymentsAccountDepositSummary {
 extension Networking.WooPaymentsBalance {
     public func copy(
         amount: CopiableProp<Int> = .copy,
-        currency: CopiableProp<String> = .copy,
-        depositsCount: NullableCopiableProp<Int> = .copy
+        currency: CopiableProp<String> = .copy
     ) -> Networking.WooPaymentsBalance {
         let amount = amount ?? self.amount
         let currency = currency ?? self.currency
-        let depositsCount = depositsCount ?? self.depositsCount
 
         return Networking.WooPaymentsBalance(
             amount: amount,
-            currency: currency,
-            depositsCount: depositsCount
+            currency: currency
         )
     }
 }
@@ -3034,16 +3289,13 @@ extension Networking.WooPaymentsCurrencyBalances {
 extension Networking.WooPaymentsCurrencyDeposits {
     public func copy(
         lastPaid: CopiableProp<[WooPaymentsDeposit]> = .copy,
-        nextScheduled: CopiableProp<[WooPaymentsDeposit]> = .copy,
         lastManualDeposits: CopiableProp<[WooPaymentsManualDeposit]> = .copy
     ) -> Networking.WooPaymentsCurrencyDeposits {
         let lastPaid = lastPaid ?? self.lastPaid
-        let nextScheduled = nextScheduled ?? self.nextScheduled
         let lastManualDeposits = lastManualDeposits ?? self.lastManualDeposits
 
         return Networking.WooPaymentsCurrencyDeposits(
             lastPaid: lastPaid,
-            nextScheduled: nextScheduled,
             lastManualDeposits: lastManualDeposits
         )
     }

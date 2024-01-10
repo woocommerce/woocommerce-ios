@@ -30,11 +30,14 @@ struct MediaPickerImage: Equatable {
 /// A view that hosts a mutable image in different states.
 struct EditableImageView<Content: View>: View {
     private let imageState: EditableImageViewState
+    private let aspectRatio: ContentMode
     private let emptyContent: () -> Content
 
     init(imageState: EditableImageViewState,
+         aspectRatio: ContentMode = .fit,
          @ViewBuilder emptyContent: @escaping () -> Content) {
         self.imageState = imageState
+        self.aspectRatio = aspectRatio
         self.emptyContent = emptyContent
     }
 
@@ -43,7 +46,7 @@ struct EditableImageView<Content: View>: View {
             case .success(let image):
                 Image(uiImage: image.image)
                     .resizable()
-                    .scaledToFit()
+                    .aspectRatio(contentMode: aspectRatio)
             case .loading:
                 ProgressView()
             case .empty:

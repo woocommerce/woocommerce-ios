@@ -31,7 +31,7 @@ struct ProductCreationAISurveyConfirmationView: View {
                         .headlineStyle()
                         .multilineTextAlignment(.center)
 
-                    Text(Localization.subtitle)
+                    Text(Localization.description)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
                         .multilineTextAlignment(.center)
@@ -44,7 +44,7 @@ struct ProductCreationAISurveyConfirmationView: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal, Layout.buttonHorizontalPadding)
 
-                Button(Localization.skip) {
+                Button(viewModel.skipButtonTitle) {
                     viewModel.didTapSkip()
                 }
                 .buttonStyle(SecondaryButtonStyle())
@@ -68,21 +68,14 @@ private extension ProductCreationAISurveyConfirmationView {
                                              value: "We value your input!",
                                              comment: "Title in Product Creation AI survey confirmation view.")
 
-        static let subtitle = NSLocalizedString("productCreationAISurveyConfirmationView.subtitle",
-                                                value: "You've used our AI-assisted feature to add products multiple times now."
-                                                + " "
-                                                + "We'd love to hear your thoughts to make it even better.",
-                                                comment: "Subtitle in Product Creation AI survey confirmation view.")
+        static let description = NSLocalizedString("productCreationAISurveyConfirmationView.description",
+                                                   value: "Got a minute? Help us improve our AI-assisted features with your quick feedback.",
+                                                   comment: "Description in Product Creation AI survey confirmation view.")
 
         static let startTheSurvey = NSLocalizedString("productCreationAISurveyConfirmationView.startTheSurvey",
                                                       value: "Start the Survey",
                                                       comment: "Start Survey button title in Product Creation AI survey confirmation view.")
-
-        static let skip = NSLocalizedString("productCreationAISurveyConfirmationView.skip",
-                                            value: "Skip",
-                                            comment: "Dismiss button title in Product Creation AI survey confirmation view.")
     }
-
 }
 
 struct ProductCreationAISurveyConfirmationView_Previews: PreviewProvider {

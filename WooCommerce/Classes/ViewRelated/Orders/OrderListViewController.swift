@@ -45,6 +45,17 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         return dataSource
     }()
 
+    /// Returns the first Order in the OrderList datasource
+    ///
+    var firstAvailableOrder: Order? {
+        let firstIndexPath = IndexPath(row: 0, section: 0)
+        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
+              let orderViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            return nil
+        }
+        return orderViewModel.order
+    }
+
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: OrderTableViewCell.self,
                                                                                                 estimatedRowHeight: Settings.estimatedRowHeight,
                                                                                                 tableViewStyle: .grouped,
@@ -169,6 +180,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         configureStorePlanBannerPresenter()
+
+        checkSelectedItem()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -185,8 +198,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
-
-        viewModel.updateBannerVisibility()
     }
 
     override func viewDidLayoutSubviews() {
@@ -263,8 +274,6 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error(let error):
                     self.setErrorTopBanner(for: error)
-                case .orderCreation:
-                    self.setOrderCreationTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -376,7 +385,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
         viewModel.dataLoadingError = nil
-        viewModel.updateBannerVisibility()
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
@@ -821,20 +829,6 @@ private extension OrderListViewController {
             guard let self = self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
             supportForm.show(from: self)
-        })
-        showTopBannerView()
-    }
-
-    /// Sets the `topBannerView` property to an orders banner.
-    ///
-    func setOrderCreationTopBanner() {
-        topBannerView = OrdersTopBannerFactory.createOrdersBanner(onTopButtonPressed: { [weak self] in
-            self?.tableView.updateHeaderHeight()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.dismissOrdersBanner()
-        }, onGiveFeedbackButtonPressed: { [weak self] in
-            let surveyNavigation = SurveyCoordinatingController(survey: .orderCreation)
-            self?.present(surveyNavigation, animated: true, completion: nil)
         })
         showTopBannerView()
     }

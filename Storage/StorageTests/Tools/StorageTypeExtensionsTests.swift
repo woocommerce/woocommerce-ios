@@ -1285,20 +1285,63 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundCharge, charge2)
     }
 
-    func test_load_BlazeTargetDevice_by_id() throws {
+    func test_loadAllBlazeTargetDevices_with_locale() throws {
         // Given
         let device1 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
         device1.id = "mobile"
         device1.name = "Mobile"
+        device1.locale = "en"
 
         let device2 = storage.insertNewObject(ofType: BlazeTargetDevice.self)
         device2.id = "desktop"
         device2.name = "Desktop"
+        device2.locale = "es"
 
         // When
-        let foundDevice = try XCTUnwrap(storage.loadBlazeTargetDevice(id: "mobile"))
+        let foundDevices = try XCTUnwrap(storage.loadAllBlazeTargetDevices(locale: "en"))
 
         // Then
-        XCTAssertEqual(foundDevice, device1)
+        XCTAssertEqual(foundDevices.count, 1)
+        XCTAssertEqual(foundDevices.first, device1)
+    }
+
+    func test_loadAllBlazeTargetLanguages_with_locale() throws {
+        // Given
+        let language1 = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
+        language1.id = "en"
+        language1.name = "English"
+        language1.locale = "en"
+
+        let language2 = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
+        language2.id = "en"
+        language2.name = "Tiếng Anh"
+        language2.locale = "vi"
+
+        // When
+        let foundLanguages = try XCTUnwrap(storage.loadAllBlazeTargetLanguages(locale: "en"))
+
+        // Then
+        XCTAssertEqual(foundLanguages.count, 1)
+        XCTAssertEqual(foundLanguages.first, language1)
+    }
+
+    func test_loadAllBlazeTargetTopics_with_locale() throws {
+        // Given
+        let topic1 = storage.insertNewObject(ofType: BlazeTargetTopic.self)
+        topic1.id = "1"
+        topic1.name = "Cuisines"
+        topic1.locale = "en"
+
+        let topic2 = storage.insertNewObject(ofType: BlazeTargetTopic.self)
+        topic2.id = "1"
+        topic2.name = "Ẩm thực"
+        topic2.locale = "vi"
+
+        // When
+        let foundTopics = try XCTUnwrap(storage.loadAllBlazeTargetTopics(locale: "en"))
+
+        // Then
+        XCTAssertEqual(foundTopics.count, 1)
+        XCTAssertEqual(foundTopics.first, topic1)
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 
+/// View model for `BlazeAddParameterView`
 final class BlazeAddParameterViewModel: ObservableObject {
     @Published var key: String
     @Published var value: String
@@ -11,7 +12,7 @@ final class BlazeAddParameterViewModel: ObservableObject {
     let isNotFirstParameter: Bool
     let parameter: Parameter?
 
-    // For adding or editing a new parameter, the input becomes "key=value"
+    // For adding or editing a new parameter, the two inputs are to be combined to be "key=value".
     // However, for adding or editing 2nd or more parameters, the input becomes "&key=value" due to how URL parameter work.
     var totalInputLength: Int {
         let inputString = (isNotFirstParameter ? "&" : "") + key + "=" + value
@@ -47,26 +48,17 @@ final class BlazeAddParameterViewModel: ObservableObject {
         validateInputLength()
     }
 
-    /// To keep it simple, the existing String.isValidURL() is used to validate the parameter key or value.
-    /// Since that function requires a full URL, Constant.baseURLForValidation is used to build it.
-    /// The constant uses "?key=" even though this function is used to validate parameter key too,
-    /// but that's OK because key and value strings has the same validation rule.
+    /// This function validates the URL parameters using String.isValidURL().
+    /// It requires a full URL, thus Constant.baseURLForValidation is added.
+    /// The constant uses "?key=", but it's also used to validate parameter keys, as they both follow the same validation rule.
     ///
     private func validateParameter(text: String) {
         let url = Constant.baseURLForValidation + text
-        if url.isValidURL() {
-            hasValidationError = false
-        } else {
-            hasValidationError = true
-        }
+        hasValidationError = !url.isValidURL()
     }
 
     private func validateInputLength() {
-        if remainingCharacters - totalInputLength <= 0 {
-            hasCountError = true
-        } else {
-            hasCountError = false
-        }
+        hasCountError = remainingCharacters - totalInputLength <= 0
     }
 }
 

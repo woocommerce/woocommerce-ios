@@ -397,21 +397,17 @@ platform :ios do
     ensure_git_status_clean
 
     new_version = options[:version] || UI.input('Version number for the new hotfix?')
-    build_code_hotfix = build_code_hotfix(release_version: new_version)
 
     # Parse the provided version into an AppVersion object
     parsed_version = VERSION_FORMATTER.parse(new_version)
+    build_code_hotfix = BUILD_CODE_FORMATTER.build_code(version: parsed_version)
     previous_version = VERSION_FORMATTER.release_version(VERSION_CALCULATOR.previous_patch_version(version: parsed_version))
 
     # Check versions
     message = <<-MESSAGE
 
-      Current release version: #{release_version_current}
       New hotfix version: #{new_version}
-
-      Current build code: #{build_code_current}
       New build code: #{build_code_hotfix}
-
       Branching from tag: #{previous_version}
 
     MESSAGE
@@ -1358,14 +1354,6 @@ def build_code_code_freeze
   build_code_code_freeze = VERSION_CALCULATOR.next_release_version(version: release_version_current)
   # Return the formatted build code
   BUILD_CODE_FORMATTER.build_code(version: build_code_code_freeze)
-end
-
-# Returns the build code of the app for the code freeze. It is the hotfix version name plus sets the build number to 0
-#
-def build_code_hotfix(release_version:)
-  version = VERSION_FORMATTER.parse(release_version)
-  # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version: version)
 end
 
 # Returns the next build code of the app

@@ -72,8 +72,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         return BlazeEditAdViewModel(siteID: siteID,
                                     adData: adData,
                                     suggestions: suggestions,
-                                    onSave: { _ in
-            // TODO: Update ad with edited data
+                                    onSave: { [weak self] adData in
+            guard let self else { return }
+            self.image = adData.image
+            self.tagline = adData.tagline
+            self.description = adData.description
         })
     }
 

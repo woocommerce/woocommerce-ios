@@ -21,8 +21,8 @@ struct BlazeAddParameterView: View {
                             .frame(width: Layout.keyWidth, alignment: .leading)
                         TextField(Localization.keyLabel, text: $viewModel.key)
                     }
-                    .onChange(of: viewModel.key) { newValue in
-                        viewModel.validateInput(text: newValue)
+                    .onChange(of: viewModel.key) { _ in
+                        viewModel.validateInputs()
                     }
 
                     HStack {
@@ -30,8 +30,8 @@ struct BlazeAddParameterView: View {
                             .frame(width: Layout.keyWidth, alignment: .leading)
                         TextField(Localization.valueLabel, text: $viewModel.value)
                     }
-                    .onChange(of: viewModel.value) { newValue in
-                        viewModel.validateInput(text: newValue)
+                    .onChange(of: viewModel.value) { _ in
+                        viewModel.validateInputs()
                     }
                 } footer: {
                     VStack(alignment: .leading, spacing: Layout.errorVerticalSpacing) {

@@ -43,16 +43,14 @@ final class BlazeAddParameterViewModel: ObservableObject {
         completionHandler(key, value)
     }
 
-    func validateInput(text: String) {
-        validateParameter(text: text)
+    func validateInputs() {
+        validateParameters()
         validateInputLength()
     }
 
     /// This function validates the URL parameters using String.isValidURL().
-    /// It requires a full URL, thus Constant.baseURLForValidation is added.
-    /// The constant uses "?key=", but it's also used to validate parameter keys, as they both follow the same validation rule.
-    ///
-    private func validateParameter() {
+    /// isValidURL() needs  a full URL, thus Constant.baseURLForValidation is added.
+    private func validateParameters() {
         let url = "https://woo.com/?\(key)=\(value)" // use constant for this
         hasValidationError = !url.isValidURL()
     }

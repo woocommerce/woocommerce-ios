@@ -53,7 +53,10 @@ public final class PasswordScreen: ScreenObject {
         if app.buttons["Save Password"].waitForExistence(timeout: 15) {
             // There should be no need to wait for this button to exist since it's part of the same
             // alert where "Save Password" is.
-            app.buttons["Not Now"].tap()
+            let dismissButton = app.buttons["Not Now"]
+            // Additionally wait for existence of the button to account for animations, even though the test runner should wait for the app to idle before moving on.
+            XCTAssertTrue(dismissButton.waitForExistence(timeout: 2))
+            dismissButton.tap()
         }
     }
 

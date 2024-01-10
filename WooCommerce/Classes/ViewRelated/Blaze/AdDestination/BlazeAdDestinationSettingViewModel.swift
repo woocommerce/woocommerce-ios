@@ -9,7 +9,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     let productURL: String
     let homeURL: String
 
-    @Published var selectedDestinationType: DestinationURLType
+    @Published private(set) var selectedDestinationType: DestinationURLType
 
     @Published private(set) var parameters: [BlazeAdURLParameter]
 

@@ -154,13 +154,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     func loadAISuggestions() async {
         isLoadingAISuggestions = true
         errorState = .none
-        tagline = ""
-        description = ""
 
         do {
             suggestions = try await fetchAISuggestions()
-            tagline = suggestions.first?.siteName ?? ""
-            description = suggestions.first?.textSnippet ?? ""
+            if let firstSuggestion = suggestions.first {
+                tagline = firstSuggestion.siteName
+                description = firstSuggestion.textSnippet
+            }
         } catch {
             DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
             errorState = .fetchingAISuggestions

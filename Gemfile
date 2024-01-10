@@ -19,7 +19,7 @@ gem 'fastlane-plugin-sentry', '~> 1.0'
 # The 9.0.1 version includes a fix for the pot file generation.
 # We want to resolve to any 9.x compatible version, _starting from_ 9.0.1.
 # Using '~> 9.0.1' would resolve to 9.0.x compatible version, missing out on any new feature release.
-gem 'fastlane-plugin-wpmreleasetoolkit', '~> 9.1'
+gem 'fastlane-plugin-wpmreleasetoolkit', '~> 9.3'
 gem 'rake', '~> 12.3'
 gem 'rubocop', '~> 1.56'
 gem 'rubocop-rake', '~> 0.6'

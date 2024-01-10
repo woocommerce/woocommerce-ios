@@ -6,11 +6,16 @@ final class FreeTrialBannerViewModelTests: XCTestCase {
 
     /// All Expiry dates came in GMT from the API.
     ///
-    static let gmtTimezone = TimeZone(secondsFromGMT: 0) ?? .current
+    private static let gmtTimezone = TimeZone(secondsFromGMT: 0) ?? .current
+    private static let calendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = gmtTimezone
+        return calendar
+    }()
 
     func test_few_days_left_in_trial() {
         // Given
-        let expiryDate = Date().adding(days: 3)?.startOfDay(timezone: Self.gmtTimezone)
+        let expiryDate = Date().adding(days: 3, using: Self.calendar)?.startOfDay(timezone: Self.gmtTimezone)
         let sitePlan = WPComSitePlan(hasDomainCredit: false, expiryDate: expiryDate)
 
         // When
@@ -22,7 +27,7 @@ final class FreeTrialBannerViewModelTests: XCTestCase {
 
     func test_1_day_left_in_trial() {
         // Given
-        let expiryDate = Date().adding(days: 1)?.startOfDay(timezone: Self.gmtTimezone)
+        let expiryDate = Date().adding(days: 1, using: Self.calendar)?.startOfDay(timezone: Self.gmtTimezone)
         let sitePlan = WPComSitePlan(hasDomainCredit: false, expiryDate: expiryDate)
 
         // When
@@ -46,7 +51,7 @@ final class FreeTrialBannerViewModelTests: XCTestCase {
 
     func test_no_days_left_on_trial() {
         // Given
-        let expiryDate = Date().adding(days: -3)?.startOfDay(timezone: Self.gmtTimezone)
+        let expiryDate = Date().adding(days: -3, using: Self.calendar)?.startOfDay(timezone: Self.gmtTimezone)
         let sitePlan = WPComSitePlan(hasDomainCredit: false, expiryDate: expiryDate)
 
         // When

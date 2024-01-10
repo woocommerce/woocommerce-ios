@@ -52,8 +52,8 @@ final class BlazeAddParameterViewModel: ObservableObject {
     /// It requires a full URL, thus Constant.baseURLForValidation is added.
     /// The constant uses "?key=", but it's also used to validate parameter keys, as they both follow the same validation rule.
     ///
-    private func validateParameter(text: String) {
-        let url = Constant.baseURLForValidation + text
+    private func validateParameter() {
+        let url = "https://woo.com/?\(key)=\(value)" // use constant for this
         hasValidationError = !url.isValidURL()
     }
 

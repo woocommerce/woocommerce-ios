@@ -40,9 +40,12 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
             remainingCharacters: calculateRemainingCharacters(),
             isNotFirstParameter: parameters.count > 1,
             parameter: urlParameter,
-            onCancel: { self.clearSelectedParameterIndex() },
+            onCancel: { [weak self] in
+                guard let self = self else { return }
+                self.clearSelectedParameterIndex()
+            },
             onCompletion: { [weak self] key, value in
-                guard let self = self else {return}
+                guard let self = self else { return }
 
                 if let index = self.selectedParameterIndex {
                     self.parameters[index] = BlazeAdURLParameter(key: key, value: value)

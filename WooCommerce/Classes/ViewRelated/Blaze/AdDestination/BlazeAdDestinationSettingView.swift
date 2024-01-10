@@ -39,7 +39,6 @@ struct BlazeAdDestinationSettingView: View {
                         .onDelete(perform: deleteParameter)
 
                         Button(action: {
-                            viewModel.clearSelectedParameterIndex()
                             isShowingAddParameterView = true
                         }) {
                             HStack {

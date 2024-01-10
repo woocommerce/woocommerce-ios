@@ -26,17 +26,25 @@ final class BlazeAddParameterViewModel: ObservableObject {
     typealias BlazeAddParameterCompletionHandler = (_ key: String, _ value: String) -> Void
     private let completionHandler: BlazeAddParameterCompletionHandler
 
+    private let cancellationHandler: () -> Void
+
     init(remainingCharacters: Int,
          isNotFirstParameter: Bool = true,
          parameter: Parameter? = nil,
+         onCancel: @escaping () -> Void,
          onCompletion: @escaping BlazeAddParameterCompletionHandler) {
         self.remainingCharacters = remainingCharacters
         self.isNotFirstParameter = isNotFirstParameter
         self.parameter = parameter
+        self.cancellationHandler = onCancel
         self.completionHandler = onCompletion
 
         key = parameter?.key ?? ""
         value = parameter?.value ?? ""
+    }
+
+    func didTapCancel() {
+        cancellationHandler()
     }
 
     func didTapSave() {

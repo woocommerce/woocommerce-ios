@@ -39,17 +39,19 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         return BlazeAddParameterViewModel(
             remainingCharacters: calculateRemainingCharacters(),
             isNotFirstParameter: parameters.count > 1,
-            parameter: urlParameter
-        ) { [weak self] key, value in
-            guard let self = self else {return}
+            parameter: urlParameter,
+            onCancel: { self.clearSelectedParameterIndex() },
+            onCompletion: { [weak self] key, value in
+                guard let self = self else {return}
 
-            if let index = self.selectedParameterIndex {
-                self.parameters[index] = BlazeAdURLParameter(key: key, value: value)
-                clearSelectedParameterIndex()
-            } else {
-                self.parameters.append(BlazeAdURLParameter(key: key, value: value))
+                if let index = self.selectedParameterIndex {
+                    self.parameters[index] = BlazeAdURLParameter(key: key, value: value)
+                    clearSelectedParameterIndex()
+                } else {
+                    self.parameters.append(BlazeAdURLParameter(key: key, value: value))
+                }
             }
-        }
+        )
     }
 
     init (productURL: String,

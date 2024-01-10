@@ -50,6 +50,7 @@ struct BlazeAddParameterView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {
+                        viewModel.didTapCancel()
                         dismiss()
                     }
                     .foregroundColor(Color(uiColor: .accent))
@@ -69,7 +70,10 @@ struct BlazeAddParameterView: View {
 
 struct BlazeAddParameterView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeAddParameterView(viewModel: BlazeAddParameterViewModel(remainingCharacters: 999) { _, _ in })
+        BlazeAddParameterView(viewModel: BlazeAddParameterViewModel(remainingCharacters: 999,
+                                                                    onCancel: { },
+                                                                    onCompletion: { _, _ in })
+        )
     }
 }
 

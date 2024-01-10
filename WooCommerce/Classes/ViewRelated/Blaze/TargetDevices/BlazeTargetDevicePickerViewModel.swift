@@ -100,7 +100,7 @@ private extension BlazeTargetDevicePickerViewModel {
     func configureSyncState() {
         $devices.combineLatest($isSyncingData, $syncError)
             .map { devices, isSyncing, error -> SyncState in
-                if error != nil {
+                if error != nil, devices.isEmpty {
                     return .error
                 } else if isSyncing, devices.isEmpty {
                     return .syncing

@@ -36,6 +36,7 @@ struct BlazeTargetDevicePickerView: View {
                     })
                 }
             }
+            .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {

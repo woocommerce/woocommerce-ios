@@ -28,6 +28,7 @@ struct BlazeTargetLanguagePickerView: View {
                     viewModel.searchQuery = query
                 })
             }
+            .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {

@@ -22,6 +22,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     var onEditAd: (() -> Void)?
 
+    var productImage: URL? {
+        product?.imageURL
+    }
+    @Published private(set) var image: MediaPickerImage = .init(image: .blazeProductPlaceholder, source: .memory)
+    @Published private(set) var tagline: String = ""
+    @Published private(set) var description: String = ""
+
     // Budget details
     private var startDate = Date.now
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
@@ -97,6 +104,29 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""
 
+    // AI Suggestions
+    @Published private(set) var isLoadingAISuggestions: Bool = true
+    private let storage: StorageManagerType
+    private var product: Product? {
+        guard let product = productsResultsController.fetchedObjects.first else {
+            assertionFailure("Unable to fetch product with ID: \(productID)")
+            return nil
+        }
+        return product
+    }
+
+    @Published private(set) var errorState: ErrorState = .none
+    private var suggestions: [BlazeAISuggestion] = []
+
+    /// ResultController to to track the current product count.
+    ///
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let predicate = \StorageProduct.siteID == siteID && \StorageProduct.productID == productID
+        let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
+        try? controller.performFetch()
+        return controller
+    }()
+
     init(siteID: Int64,
          productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -117,6 +147,24 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     func didTapEditAd() {
         onEditAd?()
+    }
+
+    func loadAISuggestions() async {
+        isLoadingAISuggestions = true
+        errorState = .none
+        tagline = ""
+        description = ""
+
+        do {
+            suggestions = try await fetchAISuggestions()
+            tagline = suggestions.first?.siteName ?? ""
+            description = suggestions.first?.textSnippet ?? ""
+        } catch {
+            DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
+            errorState = .fetchingAISuggestions
+        }
+
+        isLoadingAISuggestions = false
     }
 }
 
@@ -156,6 +204,47 @@ private extension BlazeCampaignCreationFormViewModel {
     }
 }
 
+// MARK: - Blaze AI Suggestions
+private extension BlazeCampaignCreationFormViewModel {
+    @MainActor
+    func fetchAISuggestions() async throws -> [BlazeAISuggestion] {
+        try await withCheckedThrowingContinuation({ continuation in
+            stores.dispatch(BlazeAction.fetchAISuggestions(siteID: siteID, productID: productID) { result in
+                switch result {
+                case .success(let suggestions):
+                    if suggestions.isEmpty {
+                        continuation.resume(throwing: FetchAISuggestionsError.suggestionsEmpty)
+                    } else {
+                        continuation.resume(returning: suggestions)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        })
+    }
+
+    enum FetchAISuggestionsError: Error {
+        case suggestionsEmpty
+    }
+}
+
+extension BlazeCampaignCreationFormViewModel {
+    enum ErrorState: Equatable {
+        case none
+        case fetchingAISuggestions
+
+        var errorMessage: String {
+            switch self {
+            case .none:
+                return ""
+            case .fetchingAISuggestions:
+                return Localization.ErrorMessage.fetchingAISuggestions
+            }
+        }
+    }
+}
+
 private extension BlazeCampaignCreationFormViewModel {
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(
@@ -181,5 +270,12 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "All",
             comment: "Text indicating all targets for a Blaze campaign"
         )
+        enum ErrorMessage {
+            static let fetchingAISuggestions = NSLocalizedString(
+                "blazeCampaignCreationFormViewModel.fetchingAISuggestions",
+                value: "Failed to load suggestions for tagline and description",
+                comment: "Error message indicating that loading suggestions for tagline and description failed"
+            )
+        }
     }
 }

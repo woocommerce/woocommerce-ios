@@ -7,9 +7,14 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
 
     @Published var selectedLanguages: Set<BlazeTargetLanguage>?
     @Published var searchQuery: String = ""
+    @Published private(set) var syncState = SyncState.syncing
+
     /// Languages to be displayed after filtering with `searchQuery` if available.
-    @Published private(set) var languages: [BlazeTargetLanguage] = []
+    @Published private var languages: [BlazeTargetLanguage] = []
     @Published private var fetchedLanguages: [BlazeTargetLanguage] = []
+
+    @Published private var isSyncingData: Bool = false
+    @Published private var syncError: Error?
 
     private let siteID: Int64
     private let locale: Locale
@@ -50,6 +55,8 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
 
     @MainActor
     func syncLanguages() async {
+        syncError = nil
+        isSyncingData = true
         do {
             try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(BlazeAction.synchronizeTargetLanguages(siteID: siteID, locale: locale.identifier) { result in
@@ -63,7 +70,9 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
             }
         } catch {
             DDLogError("⛔️ Error syncing Blaze target languages: \(error)")
+            syncError = error
         }
+        isSyncingData = false
     }
 
     func confirmSelection() {
@@ -98,6 +107,17 @@ private extension BlazeTargetLanguagePickerViewModel {
     /// and display the first fetch result immediately.
     ///
     func configureDisplayedData() {
+        $languages.combineLatest($isSyncingData, $syncError)
+            .map { devices, isSyncing, error -> SyncState in
+                if error != nil, devices.isEmpty {
+                    return .error
+                } else if isSyncing, devices.isEmpty {
+                    return .syncing
+                }
+                return .result(items: devices)
+            }
+            .assign(to: &$syncState)
+
         $fetchedLanguages
             .prefix(1) // first fetch result is displayed immediately, ignoring the empty search query
             .assign(to: &$languages)
@@ -113,5 +133,13 @@ private extension BlazeTargetLanguagePickerViewModel {
                 return languages.filter { $0.name.lowercased().contains(query.lowercased()) }
             }
             .assign(to: &$languages)
+    }
+}
+
+extension BlazeTargetLanguagePickerViewModel {
+    enum SyncState: Equatable {
+        case syncing
+        case result(items: [BlazeTargetLanguage])
+        case error
     }
 }

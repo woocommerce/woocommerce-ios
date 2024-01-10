@@ -17,13 +17,27 @@ struct BlazeTargetLanguagePickerView: View {
     var body: some View {
         NavigationView {
             Group {
-                MultiSelectionList(allOptionsTitle: Localization.allTitle,
-                                   contents: viewModel.languages,
-                                   contentKeyPath: \.name,
-                                   selectedItems: $viewModel.selectedLanguages,
-                                   onQueryChanged: { query in
-                    viewModel.searchQuery = query
-                })
+                switch viewModel.syncState {
+                case .syncing:
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                case .result(let languages):
+                    MultiSelectionList(allOptionsTitle: Localization.allTitle,
+                                       contents: languages,
+                                       contentKeyPath: \.name,
+                                       selectedItems: $viewModel.selectedLanguages,
+                                       onQueryChanged: { query in
+                        viewModel.searchQuery = query
+                    })
+                case .error:
+                    ErrorStateView(title: Localization.errorMessage,
+                                   image: .errorImage,
+                                   actionTitle: Localization.tryAgain,
+                                   actionHandler: {
+                        Task {
+                            await viewModel.syncLanguages()
+                        }
+                    })
+                }
             }
             .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
@@ -68,6 +82,16 @@ private extension BlazeTargetLanguagePickerView {
             "blazeTargetLanguagePickerView.save",
             value: "Save",
             comment: "Button to save the selections on the target language picker for campaign creation"
+        )
+        static let errorMessage = NSLocalizedString(
+            "blazeTargetLanguagePickerView.errorMessage",
+            value: "Error syncing data",
+            comment: "Error message when data syncing fails on the target language picker for campaign creation"
+        )
+        static let tryAgain = NSLocalizedString(
+            "blazeTargetLanguagePickerView.tryAgain",
+            value: "Try Again",
+            comment: "Button to retry syncing data on the target language picker for campaign creation"
         )
     }
 }

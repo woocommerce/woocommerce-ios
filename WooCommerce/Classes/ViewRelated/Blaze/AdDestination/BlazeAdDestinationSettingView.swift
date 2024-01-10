@@ -21,10 +21,12 @@ struct BlazeAdDestinationSettingView: View {
                     destinationItem(title: Localization.productURLLabel,
                                     subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
                                     type: DestinationType.product)
+                    .listRowInsets(EdgeInsets())
 
                     destinationItem(title: Localization.siteHomeLabel,
                                     subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),
                                     type: DestinationType.home)
+                    .listRowInsets(EdgeInsets())
                 } header: {
                     Text(Localization.destinationUrlHeading)
                 }
@@ -47,6 +49,7 @@ struct BlazeAdDestinationSettingView: View {
                     }
                     .foregroundColor(Color(uiColor: .accent))
                     .listRowInsets(EdgeInsets())
+                    .padding(.top, 0)
                     .padding(.leading, Layout.contentSpacing)
                     .listRowSeparator(.hidden, edges: .bottom)
                     .disabled(viewModel.calculateRemainingCharacters() == 0)
@@ -57,11 +60,13 @@ struct BlazeAdDestinationSettingView: View {
                     // Remaining characters and final destination
                     VStack(alignment: .leading) {
                         Text(viewModel.remainingCharactersLabel)
-                            .subheadlineStyle()
-                            .padding(.bottom, Layout.contentVerticalSpacing)
+                            .foregroundColor(Color(uiColor: .secondaryLabel))
+                            .captionStyle()
+                            .padding(.bottom, Layout.footerVerticalSpacing)
 
                         Text(viewModel.finalDestinationLabel)
-                            .subheadlineStyle()
+                            .foregroundColor(Color(uiColor: .secondaryLabel))
+                            .captionStyle()
                     }
                     .padding(.vertical, Layout.contentVerticalSpacing)
                 }
@@ -95,6 +100,7 @@ struct BlazeAdDestinationSettingView: View {
                                  type: DestinationType) -> some View {
         HStack(alignment: .center) {
             Image(systemName: "checkmark")
+                .padding(.leading, Layout.contentSpacing)
                 .padding(.trailing, Layout.contentHorizontalSpacing)
                 .foregroundColor(Color(uiColor: .accent))
                 .if(type != viewModel.selectedDestinationType) { view in
@@ -143,6 +149,7 @@ private extension BlazeAdDestinationSettingView {
     enum Layout {
         static let verticalSpacing: CGFloat = 16
         static let contentSpacing: CGFloat = 16
+        static let footerVerticalSpacing: CGFloat =  10
         static let contentVerticalSpacing: CGFloat = 8
         static let contentHorizontalSpacing: CGFloat = 8
         static let sectionVerticalSpacing: CGFloat = 24

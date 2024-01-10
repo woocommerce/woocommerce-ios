@@ -33,9 +33,8 @@ struct BlazeAdDestinationSettingView: View {
 
 
                 Section {
-                    ForEach(viewModel.parameters.indices, id: \.self) { index in
-                        let parameter = viewModel.parameters[index]
-                        parameterItem(itemName: parameter.key, index: index)
+                    ForEach(viewModel.parameters, id: \.id) { parameter in
+                        parameterItem(parameter: parameter)
                     }
                     .onDelete(perform: deleteParameter)
 
@@ -123,13 +122,13 @@ struct BlazeAdDestinationSettingView: View {
         }
     }
 
-    private func parameterItem(itemName: String, index: Int) -> some View {
+    private func parameterItem(parameter: BlazeAdURLParameter) -> some View {
         Button(action: {
-            viewModel.setSelectedParameterIndex(to: index)
+            viewModel.selectParameter(item: parameter)
             isShowingAddParameterView = true
         }) {
             HStack {
-                Text(itemName)
+                Text(parameter.key)
                 Spacer()
                 Image(systemName: "chevron.right")
                     .foregroundColor(.secondary)

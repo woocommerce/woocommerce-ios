@@ -15,8 +15,8 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     // This is used as a flag whether merchant wants to add a new parameter or update an existing one.
     // - if nil: Merchant wants to add a new parameter.
-    // - if non-nil: Update an existing parameter at this index.
-    var selectedParameterIndex: Int?
+    // - if non-nil: Update this parameter in the `parameters` array.
+    var selectedParameter: BlazeAdURLParameter?
 
     // Text to be shown on the view for remaining available characters for custom added parameters.
     var remainingCharactersLabel: String {
@@ -34,22 +34,22 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     // View model for the add parameter view.
     var blazeAddParameterViewModel: BlazeAddParameterViewModel {
-        let urlParameter = selectedParameterIndex != nil ? parameters[selectedParameterIndex!] : nil
-
         return BlazeAddParameterViewModel(
             remainingCharacters: calculateRemainingCharacters(),
             isNotFirstParameter: parameters.count > 1,
-            parameter: urlParameter,
+            parameter: selectedParameter,
             onCancel: { [weak self] in
                 guard let self = self else { return }
-                self.clearSelectedParameterIndex()
+                self.clearSelectedParameter()
             },
             onCompletion: { [weak self] key, value in
                 guard let self = self else { return }
 
-                if let index = self.selectedParameterIndex {
-                    self.parameters[index] = BlazeAdURLParameter(key: key, value: value)
-                    clearSelectedParameterIndex()
+                if selectedParameter != nil {
+                    updateSelectedParameter(newKey: key, newValue: value)
+
+                    // Once a parameter is updated, clear the selected parameter for next add/update action.
+                    clearSelectedParameter()
                 } else {
                     self.parameters.append(BlazeAdURLParameter(key: key, value: value))
                 }
@@ -71,14 +71,6 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         selectedDestinationType = type
     }
 
-    func setSelectedParameterIndex(to index: Int) {
-        selectedParameterIndex = index
-    }
-
-    func clearSelectedParameterIndex() {
-        selectedParameterIndex =  nil
-    }
-
     private func buildFinalDestinationURL() -> String {
         let baseURL: String
         switch selectedDestinationType {
@@ -97,9 +89,26 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         return max(0, remainingCharacters)
     }
 
+    func selectParameter(item: BlazeAdURLParameter) {
+        selectedParameter = item
+    }
+
     func deleteParameter(at offsets: IndexSet) {
         parameters.remove(atOffsets: offsets)
     }
+
+    private func updateSelectedParameter(newKey: String, newValue: String) {
+        if let index = parameters.firstIndex(where: { $0.id == selectedParameter?.id }) {
+            parameters[index] = BlazeAdURLParameter(key: newKey, value: newValue)
+        }
+    }
+
+
+    private func clearSelectedParameter() {
+        selectedParameter =  nil
+    }
+
+
 }
 
 private extension BlazeAdDestinationSettingViewModel {

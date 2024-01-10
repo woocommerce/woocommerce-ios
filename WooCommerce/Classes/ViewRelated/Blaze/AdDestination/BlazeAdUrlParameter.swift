@@ -2,8 +2,15 @@ import Foundation
 
 /// A Blaze campaign's custom URL parameter. By default a campaign can link to a product URL,
 /// or to home page URL. Optionally it can also have one or more URL parameters added to the link.
-struct BlazeAdURLParameter: Equatable, Hashable {
+struct BlazeAdURLParameter: Equatable, Hashable, Identifiable {
+    /// Unique ID of the parameter
+    /// We need this because in a query string, the `key` can be duplicated. See: https://stackoverflow.com/a/70264621
+    let id = UUID().uuidString
+
+    /// The parameter key
     let key: String
+
+    /// The parameter value
     let value: String
 }
 

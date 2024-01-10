@@ -11,13 +11,6 @@ final class BlazeAddParameterViewModel: ObservableObject {
     let isNotFirstParameter: Bool
     let parameter: BlazeAdURLParameter?
 
-    // For adding or editing a new parameter, the two inputs are to be combined to be "key=value".
-    // However, for adding or editing 2nd or more parameters, the input becomes "&key=value" due to how URL parameter work.
-    var totalInputLength: Int {
-        let inputString = (isNotFirstParameter ? "&" : "") + key + "=" + value
-        return inputString.count
-    }
-
     var shouldDisableSaveButton: Bool {
         key.isEmpty || value.isEmpty || hasCountError || hasValidationError
     }
@@ -65,7 +58,11 @@ final class BlazeAddParameterViewModel: ObservableObject {
     }
 
     private func validateInputLength() {
-        hasCountError = remainingCharacters - totalInputLength <= 0
+        // For adding or editing a new parameter, the two inputs are to be combined to be "key=value".
+        // However, for adding or editing 2nd or more parameters, the input becomes "&key=value" due to how URL parameter work.
+        let totalInputString = (isNotFirstParameter ? "&" : "") + key + "=" + value
+
+        hasCountError = remainingCharacters - totalInputString.count <= 0
     }
 }
 

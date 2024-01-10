@@ -292,6 +292,10 @@ final class OrdersRootViewController: UIViewController {
     /// This is to update the order detail in split view
     ///
     private func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int) {
+        guard let splitViewController else {
+            return
+        }
+
         guard viewModels.isNotEmpty else {
             let emptyStateViewController = EmptyStateViewController(style: .basic)
             let config = EmptyStateViewController.Config.simple(
@@ -299,16 +303,16 @@ final class OrdersRootViewController: UIViewController {
                 image: .emptySearchResultsImage
             )
             emptyStateViewController.configure(config)
-            splitViewController?.setViewController(UINavigationController(rootViewController: emptyStateViewController), for: .secondary)
-            splitViewController?.show(.secondary)
+            splitViewController.setViewController(UINavigationController(rootViewController: emptyStateViewController), for: .secondary)
+            splitViewController.show(.secondary)
             return
         }
 
         let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
-        splitViewController?.setViewController(orderDetailsNavigationController, for: .secondary)
-        splitViewController?.show(.secondary)
+        splitViewController.setViewController(orderDetailsNavigationController, for: .secondary)
+        splitViewController.show(.secondary)
     }
 }
 

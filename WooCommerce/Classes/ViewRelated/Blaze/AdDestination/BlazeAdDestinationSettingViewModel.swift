@@ -11,7 +11,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     @Published var selectedDestinationType: DestinationURLType
 
-    @Published var parameters: [BlazeAdURLParameter]
+    @Published private(set) var parameters: [BlazeAdURLParameter]
 
     // This is used as a flag whether merchant wants to add a new parameter or update an existing one.
     // - if nil: Merchant wants to add a new parameter.
@@ -97,6 +97,10 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         let remainingCharacters = Constant.maxParameterLength - parameterString.count
         // Should stop at zero and not show negative number.
         return max(0, remainingCharacters)
+    }
+
+    func deleteParameter(at offsets: IndexSet) {
+        parameters.remove(atOffsets: offsets)
     }
 
     struct BlazeAdURLParameter: Equatable, Hashable {

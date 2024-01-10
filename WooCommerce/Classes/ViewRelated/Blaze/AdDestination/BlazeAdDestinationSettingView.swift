@@ -138,7 +138,7 @@ struct BlazeAdDestinationSettingView: View {
     }
 
     private func deleteParameter(at offsets: IndexSet) {
-        viewModel.parameters.remove(atOffsets: offsets)
+        viewModel.deleteParameter(at: offsets)
     }
 }
 

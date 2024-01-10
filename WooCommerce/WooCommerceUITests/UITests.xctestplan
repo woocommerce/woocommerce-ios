@@ -25,6 +25,7 @@
   },
   "testTargets" : [
     {
+      "parallelizable" : true,
       "skippedTests" : [
         "UniversalLinksTests\/test_load_orders_universal_link()",
         "UniversalLinksTests\/test_load_payments_universal_link()"

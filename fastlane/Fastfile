@@ -480,7 +480,7 @@ platform :ios do
   #####################################################################################
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
-    UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if ios_current_branch_is_hotfix
+    UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if release_is_hotfix?
     ensure_git_branch_is_release_branch
 
     # Verify that there's nothing in progress in the working copy
@@ -1379,6 +1379,13 @@ def build_code_next
   build_code_next = VERSION_CALCULATOR.next_build_number(version: build_code_current)
   # Return the formatted build code
   BUILD_CODE_FORMATTER.build_code(version: build_code_next)
+end
+
+def release_is_hotfix?
+  # Read the current release version from the .xcconfig file and parse it into an AppVersion object
+  current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
+  # Calculate and return whether the release version is a hotfix
+  VERSION_CALCULATOR.release_is_hotfix?(version: current_version)
 end
 
 def commit_version_bump

@@ -22,6 +22,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     var onEditAd: (() -> Void)?
 
+    @Published private(set) var isDownloadingImage: Bool = true
     var productImage: URL? {
         product?.imageURL
     }
@@ -166,9 +167,28 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
         isLoadingAISuggestions = false
     }
+
+    func downloadProductImage() async {
+        isDownloadingImage = true
+        if let productImage = await loadProductImage() {
+            image = productImage
+        }
+        isDownloadingImage = false
+    }
 }
 
 private extension BlazeCampaignCreationFormViewModel {
+    func loadProductImage() async -> MediaPickerImage? {
+        await withCheckedContinuation({ continuation in
+            guard let firstImage = product?.images.first else {
+                return continuation.resume(returning: nil)
+            }
+            _ = productImageLoader.requestImage(productImage: firstImage) { image in
+                continuation.resume(returning: .init(image: image, source: .memory))
+            }
+        })
+    }
+
     func updateBudgetDetails() {
         let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
         let date = dateFormatter.string(for: startDate) ?? ""

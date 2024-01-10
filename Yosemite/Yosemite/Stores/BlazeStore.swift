@@ -370,7 +370,9 @@ private extension BlazeStore {
         Task { @MainActor in
             do {
                 // TODO-11540: remove stubbed result when the API is ready.
-                let stubbedResult = [BlazeAISuggestion(siteName: "Shiny thing", textSnippet: "Get this new and shiny thing")]
+                let stubbedResult = [BlazeAISuggestion(siteName: "Shiny thing", textSnippet: "Get this new and shiny thing"),
+                                     BlazeAISuggestion(siteName: "New stuff", textSnippet: "Buy this new thing first"),
+                                     BlazeAISuggestion(siteName: "Exciting items", textSnippet: "Purchase these exciting items")]
                 let suggestions: [BlazeAISuggestion] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
                     try await remote.fetchAISuggestions(siteID: siteID, productID: productID)
                 })

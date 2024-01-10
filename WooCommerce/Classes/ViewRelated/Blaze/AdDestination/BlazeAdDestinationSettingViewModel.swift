@@ -76,11 +76,6 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         selectedParameterIndex =  nil
     }
 
-    // Parameter string should be in a format of "key=value&key2=value2&key3=value3"
-    private var parameterString: String {
-        parameters.map { $0.key + "=" + $0.value }.joined(separator: "&")
-    }
-
     private func buildFinalDestinationURL() -> String {
         let baseURL: String
         switch selectedDestinationType {
@@ -90,22 +85,17 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
             baseURL = homeURL
         }
 
-        return baseURL + (parameterString.isEmpty ? "" : "?\(parameterString)")
+        return baseURL + parameters.convertToQueryString()
     }
 
     func calculateRemainingCharacters() -> Int {
-        let remainingCharacters = Constant.maxParameterLength - parameterString.count
+        let remainingCharacters = Constant.maxParameterLength - parameters.convertToQueryString().count
         // Should stop at zero and not show negative number.
         return max(0, remainingCharacters)
     }
 
     func deleteParameter(at offsets: IndexSet) {
         parameters.remove(atOffsets: offsets)
-    }
-
-    struct BlazeAdURLParameter: Equatable, Hashable {
-        let key: String
-        let value: String
     }
 }
 

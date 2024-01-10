@@ -7,10 +7,9 @@ final class BlazeAddParameterViewModel: ObservableObject {
     @Published var hasValidationError: Bool = false
     @Published var hasCountError: Bool = false
 
-    typealias Parameter =  BlazeAdDestinationSettingViewModel.BlazeAdURLParameter
     let remainingCharacters: Int
     let isNotFirstParameter: Bool
-    let parameter: Parameter?
+    let parameter: BlazeAdURLParameter?
 
     // For adding or editing a new parameter, the two inputs are to be combined to be "key=value".
     // However, for adding or editing 2nd or more parameters, the input becomes "&key=value" due to how URL parameter work.
@@ -30,7 +29,7 @@ final class BlazeAddParameterViewModel: ObservableObject {
 
     init(remainingCharacters: Int,
          isNotFirstParameter: Bool = true,
-         parameter: Parameter? = nil,
+         parameter: BlazeAdURLParameter? = nil,
          onCancel: @escaping () -> Void,
          onCompletion: @escaping BlazeAddParameterCompletionHandler) {
         self.remainingCharacters = remainingCharacters

@@ -212,9 +212,9 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                 productURL: "https://woo.com/product",
                 homeURL: "https://woo.com/",
                 parameters: [
-                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key1", value: "value1"),
-                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key2", value: "value2"),
-                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key1", value: "value1")
+                    BlazeAdURLParameter(key: "key1", value: "value1"),
+                    BlazeAdURLParameter(key: "key2", value: "value2"),
+                    BlazeAdURLParameter(key: "key1", value: "value1")
                 ]
             )
         )

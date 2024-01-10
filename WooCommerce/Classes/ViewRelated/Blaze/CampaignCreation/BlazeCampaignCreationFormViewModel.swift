@@ -6,6 +6,7 @@ import struct Networking.BlazeAISuggestion
 import Photos
 
 /// View model for `BlazeCampaignCreationForm`
+@MainActor
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     let siteID: Int64

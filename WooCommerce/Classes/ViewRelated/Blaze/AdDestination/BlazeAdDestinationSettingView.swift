@@ -16,59 +16,57 @@ struct BlazeAdDestinationSettingView: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 0) {
-                List {
-                    Section {
-                        destinationItem(title: Localization.productURLLabel,
-                                        subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
-                                        type: DestinationType.product)
+            List {
+                Section {
+                    destinationItem(title: Localization.productURLLabel,
+                                    subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
+                                    type: DestinationType.product)
 
-                        destinationItem(title: Localization.siteHomeLabel,
-                                        subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),
-                                        type: DestinationType.home)
-                    } header: {
-                        Text(Localization.destinationUrlHeading)
-                    }
-
-
-                    Section {
-                        ForEach(viewModel.parameters.indices, id: \.self) { index in
-                            let parameter = viewModel.parameters[index]
-                            parameterItem(itemName: parameter.key, index: index)
-                        }
-                        .onDelete(perform: deleteParameter)
-
-                        Button(action: {
-                            isShowingAddParameterView = true
-                        }) {
-                            HStack {
-                                Image(systemName: "plus")
-                                Text(Localization.addParameterButton)
-                            }
-                        }
-                        .foregroundColor(Color(uiColor: .accent))
-                        .listRowInsets(EdgeInsets())
-                        .padding(.leading, Layout.contentSpacing)
-                        .listRowSeparator(.hidden, edges: .bottom)
-                        .disabled(viewModel.calculateRemainingCharacters() == 0)
-
-                    } header: {
-                        Text(Localization.urlParametersHeading)
-                    } footer: {
-                        // Remaining characters and final destination
-                        VStack(alignment: .leading) {
-                            Text(viewModel.remainingCharactersLabel)
-                                .subheadlineStyle()
-                                .padding(.bottom, Layout.contentVerticalSpacing)
-
-                            Text(viewModel.finalDestinationLabel)
-                                .subheadlineStyle()
-                        }
-                        .padding(.vertical, Layout.contentVerticalSpacing)
-                    }
+                    destinationItem(title: Localization.siteHomeLabel,
+                                    subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),
+                                    type: DestinationType.home)
+                } header: {
+                    Text(Localization.destinationUrlHeading)
                 }
-                .listStyle(.grouped)
+
+
+                Section {
+                    ForEach(viewModel.parameters.indices, id: \.self) { index in
+                        let parameter = viewModel.parameters[index]
+                        parameterItem(itemName: parameter.key, index: index)
+                    }
+                    .onDelete(perform: deleteParameter)
+
+                    Button(action: {
+                        isShowingAddParameterView = true
+                    }) {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text(Localization.addParameterButton)
+                        }
+                    }
+                    .foregroundColor(Color(uiColor: .accent))
+                    .listRowInsets(EdgeInsets())
+                    .padding(.leading, Layout.contentSpacing)
+                    .listRowSeparator(.hidden, edges: .bottom)
+                    .disabled(viewModel.calculateRemainingCharacters() == 0)
+
+                } header: {
+                    Text(Localization.urlParametersHeading)
+                } footer: {
+                    // Remaining characters and final destination
+                    VStack(alignment: .leading) {
+                        Text(viewModel.remainingCharactersLabel)
+                            .subheadlineStyle()
+                            .padding(.bottom, Layout.contentVerticalSpacing)
+
+                        Text(viewModel.finalDestinationLabel)
+                            .subheadlineStyle()
+                    }
+                    .padding(.vertical, Layout.contentVerticalSpacing)
+                }
             }
+            .listStyle(.grouped)
             .background(Color(.listBackground))
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.adDestination)

@@ -31,11 +31,15 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
 
     func test_languages_include_all_fetchedLanguages_if_searchQuery_is_empty() {
         // Given
-        let english = BlazeTargetLanguage(id: "en", name: "English", locale: "en")
-        let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: "en")
+        let locale = "en_US"
+        let english = BlazeTargetLanguage(id: "en", name: "English", locale: locale)
+        let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: locale)
         insertLanguage(english)
         insertLanguage(vietnamese)
-        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, storageManager: storageManager, onSelection: { _ in })
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
+                                                           locale: Locale(identifier: locale),
+                                                           storageManager: storageManager,
+                                                           onSelection: { _ in })
 
         // When
         viewModel.searchQuery = ""
@@ -48,11 +52,15 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
 
     func test_languages_filters_matching_languages_if_searchQuery_is_not_empty() {
         // Given
-        let english = BlazeTargetLanguage(id: "en", name: "English", locale: "en")
-        let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: "en")
+        let locale = "en_US"
+        let english = BlazeTargetLanguage(id: "en", name: "English", locale: locale)
+        let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: locale)
         insertLanguage(english)
         insertLanguage(vietnamese)
-        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, storageManager: storageManager, onSelection: { _ in })
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
+                                                           locale: Locale(identifier: locale),
+                                                           storageManager: storageManager,
+                                                           onSelection: { _ in })
 
         // When
         viewModel.searchQuery = "vi"
@@ -66,7 +74,6 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
     func test_confirmSelection_triggers_onSelection_correctly() {
         // Given
         let english = BlazeTargetLanguage(id: "en", name: "English", locale: "en")
-        let vietnamese = BlazeTargetLanguage(id: "vi", name: "Vietnamese", locale: "en")
         var selectedItems: Set<BlazeTargetLanguage>?
         let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID, storageManager: storageManager, onSelection: { items in
             selectedItems = items

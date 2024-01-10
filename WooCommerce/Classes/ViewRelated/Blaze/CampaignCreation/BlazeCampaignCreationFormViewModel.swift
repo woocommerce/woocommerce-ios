@@ -58,8 +58,16 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
+    var targetDeviceViewModel: BlazeTargetDevicePickerViewModel {
+        BlazeTargetDevicePickerViewModel(siteID: siteID) { [weak self] selectedDevices in
+            self?.devices = selectedDevices
+            self?.updateTargetDevicesText()
+        }
+    }
+
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
+    @Published private(set) var targetDeviceText: String = ""
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -70,6 +78,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
         updateBudgetDetails()
         updateTargetLanguagesText()
+        updateTargetDevicesText()
     }
 
     func didTapEditAd() {
@@ -94,6 +103,18 @@ private extension BlazeCampaignCreationFormViewModel {
                 return Localization.all
             }
             return languages
+                .map { $0.name }
+                .sorted()
+                .joined(separator: ", ")
+        }()
+    }
+
+    func updateTargetDevicesText() {
+        targetDeviceText = {
+            guard let devices, devices.isEmpty == false else {
+                return Localization.all
+            }
+            return devices
                 .map { $0.name }
                 .sorted()
                 .joined(separator: ", ")

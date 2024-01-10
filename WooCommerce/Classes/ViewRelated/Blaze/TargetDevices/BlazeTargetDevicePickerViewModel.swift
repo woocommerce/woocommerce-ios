@@ -5,10 +5,15 @@ import protocol Storage.StorageManagerType
 /// View model for `BlazeTargetDevicePicker`
 final class BlazeTargetDevicePickerViewModel: ObservableObject {
 
+    @Published var selectedDevices: Set<BlazeTargetDevice>?
     @Published private(set) var syncState = SyncState.syncing
     @Published private var devices: [BlazeTargetDevice] = []
     @Published private var isSyncingData: Bool = false
     @Published private var syncError: Error?
+
+    var shouldDisableSaveButton: Bool {
+        selectedDevices?.isEmpty == true || syncState == .error || syncState == .syncing
+    }
 
     /// Blaze target device ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeTargetDevice> = {
@@ -27,11 +32,13 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
     private let onSelection: (Set<BlazeTargetDevice>?) -> Void
 
     init(siteID: Int64,
+         selectedDevices: Set<BlazeTargetDevice>?,
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          onSelection: @escaping (Set<BlazeTargetDevice>?) -> Void) {
         self.siteID = siteID
+        self.selectedDevices = selectedDevices
         self.locale = locale
         self.stores = stores
         self.storageManager = storageManager
@@ -63,7 +70,7 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
         isSyncingData = false
     }
 
-    func confirmSelection(_ selectedDevices: Set<BlazeTargetDevice>?) {
+    func confirmSelection() {
         onSelection(selectedDevices)
     }
 }
@@ -105,7 +112,7 @@ private extension BlazeTargetDevicePickerViewModel {
 }
 
 extension BlazeTargetDevicePickerViewModel {
-    enum SyncState {
+    enum SyncState: Equatable {
         case syncing
         case result(items: [BlazeTargetDevice])
         case error

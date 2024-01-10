@@ -38,12 +38,13 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         insertDevice(mobile)
         insertDevice(mobileVi)
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
+                                                         selectedDevices: nil,
                                                          locale: locale,
                                                          storageManager: storageManager,
                                                          onSelection: { _ in })
 
         // Then
-        XCTAssertEqual(viewModel.devices, [mobile])
+        XCTAssertEqual(viewModel.syncState, .result(items: [mobile]))
     }
 
     func test_confirmSelection_triggers_onSelection_correctly() {
@@ -51,6 +52,7 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         let mobile = BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale.identifier)
         var selectedItems: Set<BlazeTargetDevice>?
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
+                                                         selectedDevices: nil,
                                                          locale: locale,
                                                          storageManager: storageManager,
                                                          onSelection: { items in
@@ -59,7 +61,8 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
 
         // When
         let expectedItems = Set([mobile])
-        viewModel.confirmSelection(expectedItems)
+        viewModel.selectedDevices = expectedItems
+        viewModel.confirmSelection()
 
         // Then
         XCTAssertEqual(selectedItems, expectedItems)

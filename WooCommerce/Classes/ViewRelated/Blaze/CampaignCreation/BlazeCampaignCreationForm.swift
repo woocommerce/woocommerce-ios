@@ -137,7 +137,7 @@ struct BlazeCampaignCreationForm: View {
             BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
             }
         .sheet(isPresented: $isShowingDevicePicker) {
-            BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel, selectedDevices: viewModel.devices) {
+            BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel) {
                 isShowingDevicePicker = false
             }
         }

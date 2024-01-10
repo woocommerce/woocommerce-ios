@@ -59,7 +59,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     var targetDeviceViewModel: BlazeTargetDevicePickerViewModel {
-        BlazeTargetDevicePickerViewModel(siteID: siteID) { [weak self] selectedDevices in
+        BlazeTargetDevicePickerViewModel(siteID: siteID, selectedDevices: devices) { [weak self] selectedDevices in
             self?.devices = selectedDevices
             self?.updateTargetDevicesText()
         }

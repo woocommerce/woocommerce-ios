@@ -5,15 +5,12 @@ import struct Yosemite.BlazeTargetDevice
 struct BlazeTargetDevicePickerView: View {
 
     @ObservedObject private var viewModel: BlazeTargetDevicePickerViewModel
-    @State private var selectedDevices: Set<BlazeTargetDevice>?
 
     private let onDismiss: () -> Void
 
     init(viewModel: BlazeTargetDevicePickerViewModel,
-         selectedDevices: Set<BlazeTargetDevice>?,
          onDismiss: @escaping () -> Void) {
         self.viewModel = viewModel
-        self.selectedDevices = selectedDevices
         self.onDismiss = onDismiss
     }
 
@@ -27,7 +24,7 @@ struct BlazeTargetDevicePickerView: View {
                     MultiSelectionList(allOptionsTitle: Localization.allTitle,
                                        contents: devices,
                                        contentKeyPath: \.name,
-                                       selectedItems: $selectedDevices)
+                                       selectedItems: $viewModel.selectedDevices)
                 case .error:
                     ErrorStateView(title: Localization.errorMessage,
                                    image: .errorImage,
@@ -47,10 +44,10 @@ struct BlazeTargetDevicePickerView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.saveButtonTitle) {
-                        viewModel.confirmSelection(selectedDevices)
+                        viewModel.confirmSelection()
                         onDismiss()
                     }
-                    .disabled(selectedDevices?.isEmpty == true)
+                    .disabled(viewModel.shouldDisableSaveButton)
                 }
             }
             .task {
@@ -97,6 +94,6 @@ private extension BlazeTargetDevicePickerView {
 
 struct BlazeTargetDevicePickerView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeTargetDevicePickerView(viewModel: BlazeTargetDevicePickerViewModel(siteID: 123) { _ in }, selectedDevices: [], onDismiss: {})
+        BlazeTargetDevicePickerView(viewModel: BlazeTargetDevicePickerViewModel(siteID: 123, selectedDevices: nil) { _ in }, onDismiss: {})
     }
 }

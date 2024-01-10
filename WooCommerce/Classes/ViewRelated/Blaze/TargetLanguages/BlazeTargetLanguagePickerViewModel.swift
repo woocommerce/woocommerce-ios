@@ -23,7 +23,7 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
     private let onSelection: (Set<BlazeTargetLanguage>?) -> Void
 
     var shouldDisableSaveButton: Bool {
-        selectedLanguages?.isEmpty == true
+        selectedLanguages?.isEmpty == true || syncState == .error || syncState == .syncing
     }
 
     /// Blaze target language ResultsController.

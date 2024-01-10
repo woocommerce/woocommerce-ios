@@ -123,6 +123,57 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .result(items: [english]))
     }
 
+    func test_save_button_is_enabled_when_selectedLanguages_is_not_empty_and_syncState_is_result() {
+        // Given
+        let locale = "en_US"
+        let english = BlazeTargetLanguage(id: "en", name: "English", locale: locale)
+        insertLanguage(english)
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
+                                                           locale: Locale(identifier: locale),
+                                                           stores: stores,
+                                                           storageManager: storageManager,
+                                                           onSelection: { _ in })
+        XCTAssertEqual(viewModel.syncState, .result(items: [english]))
+
+        // When
+        viewModel.selectedLanguages = []
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisableSaveButton)
+
+        // When
+        viewModel.selectedLanguages = [english]
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisableSaveButton)
+    }
+
+    func test_save_button_is_disabled_when_syncState_is_not_result() async {
+        // Given
+        let locale = "en_US"
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
+                                                           locale: Locale(identifier: locale),
+                                                           stores: stores,
+                                                           storageManager: storageManager,
+                                                           onSelection: { _ in })
+
+        // When
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .synchronizeTargetLanguages(_, _, onCompletion):
+                // Then
+                XCTAssertTrue(viewModel.shouldDisableSaveButton)
+                onCompletion(.failure(NSError(domain: "Test", code: 500)))
+            default:
+                break
+            }
+        }
+        await viewModel.syncLanguages()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisableSaveButton)
+    }
+
     func test_confirmSelection_triggers_onSelection_correctly() {
         // Given
         let english = BlazeTargetLanguage(id: "en", name: "English", locale: "en")

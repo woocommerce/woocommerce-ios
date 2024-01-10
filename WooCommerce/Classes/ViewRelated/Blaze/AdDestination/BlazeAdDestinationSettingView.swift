@@ -131,7 +131,7 @@ struct BlazeAdDestinationSettingView: View {
                     .tint(.secondary)
                     .padding(.leading, Layout.contentHorizontalSpacing)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

@@ -19,7 +19,7 @@ final class FreeTrialBannerViewModelTests: XCTestCase {
         let sitePlan = WPComSitePlan(hasDomainCredit: false, expiryDate: expiryDate)
 
         // When
-        let viewModel = FreeTrialBannerViewModel(sitePlan: sitePlan)
+        let viewModel = FreeTrialBannerViewModel(sitePlan: sitePlan, timeZone: Self.gmtTimezone)
 
         // Then
         XCTAssertEqual(viewModel.message, NSLocalizedString("3 days left in your trial.", comment: ""))
@@ -31,7 +31,7 @@ final class FreeTrialBannerViewModelTests: XCTestCase {
         let sitePlan = WPComSitePlan(hasDomainCredit: false, expiryDate: expiryDate)
 
         // When
-        let viewModel = FreeTrialBannerViewModel(sitePlan: sitePlan)
+        let viewModel = FreeTrialBannerViewModel(sitePlan: sitePlan, timeZone: Self.gmtTimezone)
 
         // Then
         XCTAssertEqual(viewModel.message, NSLocalizedString("1 day left in your trial.", comment: ""))
@@ -43,7 +43,7 @@ final class FreeTrialBannerViewModelTests: XCTestCase {
         let sitePlan = WPComSitePlan(hasDomainCredit: false, expiryDate: expiryDate)
 
         // When
-        let viewModel = FreeTrialBannerViewModel(sitePlan: sitePlan)
+        let viewModel = FreeTrialBannerViewModel(sitePlan: sitePlan, timeZone: Self.gmtTimezone)
 
         // Then
         XCTAssertEqual(viewModel.message, NSLocalizedString("Your trial has ended.", comment: ""))
@@ -55,7 +55,7 @@ final class FreeTrialBannerViewModelTests: XCTestCase {
         let sitePlan = WPComSitePlan(hasDomainCredit: false, expiryDate: expiryDate)
 
         // When
-        let viewModel = FreeTrialBannerViewModel(sitePlan: sitePlan)
+        let viewModel = FreeTrialBannerViewModel(sitePlan: sitePlan, timeZone: Self.gmtTimezone)
 
         // Then
         XCTAssertEqual(viewModel.message, NSLocalizedString("Your trial has ended.", comment: ""))

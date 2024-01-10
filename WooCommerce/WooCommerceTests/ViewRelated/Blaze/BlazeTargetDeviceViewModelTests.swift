@@ -38,7 +38,6 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         insertDevice(mobile)
         insertDevice(mobileVi)
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
-                                                         selectedDevices: nil,
                                                          locale: locale,
                                                          storageManager: storageManager,
                                                          onSelection: { _ in })
@@ -50,7 +49,6 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
     func test_state_is_correct_when_no_cached_data_is_found() async {
         // Given
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
-                                                         selectedDevices: nil,
                                                          locale: locale,
                                                          stores: stores,
                                                          storageManager: storageManager,
@@ -78,7 +76,6 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         let mobile = BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale.identifier)
         insertDevice(mobile)
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
-                                                         selectedDevices: nil,
                                                          locale: locale,
                                                          stores: stores,
                                                          storageManager: storageManager,
@@ -105,7 +102,6 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         let mobile = BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale.identifier)
         insertDevice(mobile)
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
-                                                         selectedDevices: nil,
                                                          locale: locale,
                                                          storageManager: storageManager,
                                                          onSelection: { _ in })
@@ -127,7 +123,6 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
     func test_save_button_is_disabled_when_syncState_is_not_result() async {
         // Given
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
-                                                         selectedDevices: nil,
                                                          locale: locale,
                                                          stores: stores,
                                                          storageManager: storageManager,
@@ -155,7 +150,6 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         let mobile = BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale.identifier)
         var selectedItems: Set<BlazeTargetDevice>?
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
-                                                         selectedDevices: nil,
                                                          locale: locale,
                                                          storageManager: storageManager,
                                                          onSelection: { items in

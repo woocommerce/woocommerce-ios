@@ -32,7 +32,7 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
     private let onSelection: (Set<BlazeTargetDevice>?) -> Void
 
     init(siteID: Int64,
-         selectedDevices: Set<BlazeTargetDevice>?,
+         selectedDevices: Set<BlazeTargetDevice>? = nil,
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,

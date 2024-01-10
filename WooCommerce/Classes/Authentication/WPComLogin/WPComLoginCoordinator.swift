@@ -125,7 +125,7 @@ private extension WPComLoginCoordinator {
         await withCheckedContinuation { continuation in
             let credentials = Credentials(username: username, authToken: authToken)
             stores.authenticate(credentials: credentials)
-                .synchronizeEntities(onCompletion: { [weak self] in
+            stores.synchronizeEntities(onCompletion: { [weak self] in
                     guard let self else { return }
                     self.completionHandler()
                     continuation.resume()

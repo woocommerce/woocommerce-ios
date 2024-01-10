@@ -122,7 +122,7 @@ private extension AccountCreationFormViewModel {
     func handleSuccess(data: CreateAccountResult) async {
         await withCheckedContinuation { continuation in
             stores.authenticate(credentials: .init(username: data.username, authToken: data.authToken))
-                .synchronizeEntities(onCompletion: {
+            stores.synchronizeEntities(onCompletion: {
                     continuation.resume(returning: ())
                 })
         }

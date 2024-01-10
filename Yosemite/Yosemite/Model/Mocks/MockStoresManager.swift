@@ -150,18 +150,15 @@ public class MockStoresManager: StoresManager {
         /// Does nothing
     }
 
-    @discardableResult
-    public func authenticate(credentials: Credentials) -> StoresManager {
-        return self
+    public func authenticate(credentials: Credentials) {
+        // Does nothing
     }
 
-    @discardableResult
-    public func deauthenticate() -> StoresManager {
-        return self
+    public func deauthenticate() {
+        // Does nothing
     }
 
-    @discardableResult
-    public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+    public func synchronizeEntities(onCompletion: (() -> Void)?) {
         if let siteID = sessionManager.defaultStoreID {
             Task {
                 await synchronizeGeneralSiteSettings(siteID: siteID)
@@ -174,7 +171,6 @@ public class MockStoresManager: StoresManager {
         } else {
             onCompletion?()
         }
-        return self
     }
 
     public func updateDefaultStore(storeID: Int64) {

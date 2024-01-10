@@ -516,6 +516,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 let credentials = Credentials.wpcom(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
+                ServiceLocator.stores
                     .synchronizeEntities(onCompletion: onCompletion)
             case .failure:
                 ServiceLocator.stores.synchronizeEntities(onCompletion: onCompletion)

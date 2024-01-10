@@ -19,18 +19,15 @@ public protocol StoresManager {
 
     /// Switches the internal state to Authenticated.
     ///
-    @discardableResult
-    func authenticate(credentials: Credentials) -> StoresManager
+    func authenticate(credentials: Credentials)
 
     /// Switches the state to a Deauthenticated one.
     ///
-    @discardableResult
-    func deauthenticate() -> StoresManager
+    func deauthenticate()
 
     /// Synchronizes all of the Session's Entities.
     ///
-    @discardableResult
-    func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager
+    func synchronizeEntities(onCompletion: (() -> Void)?)
 
     /// Updates the Default Store as specified.
     ///

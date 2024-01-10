@@ -150,15 +150,12 @@ class DefaultStoresManager: StoresManager {
 
     /// Switches the internal state to Authenticated.
     ///
-    @discardableResult
-    func authenticate(credentials: Credentials) -> StoresManager {
+    func authenticate(credentials: Credentials) {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()
         listenToWPCOMInvalidWPCOMTokenNotification()
-
-        return self
     }
 
     /// De-authenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
@@ -183,8 +180,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Synchronizes all of the Session's Entities.
     ///
-    @discardableResult
-    func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
+    func synchronizeEntities(onCompletion: (() -> Void)? = nil) {
         let group = DispatchGroup()
 
         group.enter()
@@ -204,8 +200,6 @@ class DefaultStoresManager: StoresManager {
         group.notify(queue: .main) {
             onCompletion?()
         }
-
-        return self
     }
 
     /// Prepares for changing the selected store and remains Authenticated.
@@ -232,8 +226,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Switches the state to a Deauthenticated one.
     ///
-    @discardableResult
-    func deauthenticate() -> StoresManager {
+    func deauthenticate() {
         applicationPasswordGenerationFailureObserver = nil
 
         let resetAction = CardPresentPaymentAction.reset
@@ -250,8 +243,6 @@ class DefaultStoresManager: StoresManager {
         updateAndReloadWidgetInformation(with: nil)
 
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
-
-        return self
     }
 
     /// Updates the Default Store as specified.

@@ -225,10 +225,7 @@ extension BlazeEditAdViewModel {
 // MARK: AI suggestion
 private extension BlazeEditAdViewModel {
     func setSelectedSuggestionIfApplicable() {
-        guard let matchingIndex = suggestions.firstIndex(where: { $0.siteName == tagline && $0.textSnippet == description}) else {
-            return selectedSuggestionIndex = nil
-        }
-        selectedSuggestionIndex = matchingIndex
+        selectedSuggestionIndex = suggestions.firstIndex(where: { $0.siteName == tagline && $0.textSnippet == description})
     }
 
     func selectSuggestion(at index: Int) throws {

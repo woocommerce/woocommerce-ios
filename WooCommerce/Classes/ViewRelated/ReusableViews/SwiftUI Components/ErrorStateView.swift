@@ -7,7 +7,7 @@ struct ErrorStateView: View {
     var image: UIImage?
     let actionTitle: String
     let actionHandler: () -> Void
-    
+
     var body: some View {
         VStack(spacing: 32) {
             Text(title)

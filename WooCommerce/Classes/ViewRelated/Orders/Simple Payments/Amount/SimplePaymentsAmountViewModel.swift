@@ -126,7 +126,9 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     /// Track the flow cancel scenario.
     ///
     func userDidCancelFlow() {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: .simplePayment))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: .simplePayment,
+                                                                                   country: SiteAddress().countryCode,
+                                                                                   currency: currencySettings.currencyCode.rawValue))
     }
 
 

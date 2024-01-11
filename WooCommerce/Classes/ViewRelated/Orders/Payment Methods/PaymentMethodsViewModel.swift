@@ -388,7 +388,9 @@ private extension PaymentMethodsViewModel {
     /// Tracks the `paymentsFlowCanceled` event.
     ///
     func trackFlowCanceled() {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: flow))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: flow,
+                                                                                   country: cardPresentPaymentsConfiguration.countryCode,
+                                                                                   currency: currencySettings.currencyCode.rawValue))
     }
 
     /// Tracks `paymentsFlowCollect` event.

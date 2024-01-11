@@ -1261,8 +1261,12 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .paymentsFlowCompleted, properties: properties)
         }
 
-        static func paymentsFlowCanceled(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowCanceled, properties: [Keys.flow: flow.rawValue])
+        static func paymentsFlowCanceled(flow: Flow, country: CountryCode, currency: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowCanceled, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.country: country.rawValue,
+                Keys.currency: currency
+            ])
         }
 
         static func paymentsFlowFailed(flow: Flow, source: Source, country: CountryCode, currency: String) -> WooAnalyticsEvent {

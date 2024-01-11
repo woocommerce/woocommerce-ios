@@ -64,6 +64,15 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         observePaymentFlowFinishedToAttemptRefund()
     }
 
+    /// Called when the user dismisses the prompt view.
+    func onDismiss() {
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow
+            .paymentsFlowCanceled(flow: .tapToPayTryAPayment,
+                                  country: configuration.countryCode,
+                                  currency: currencySettings.currencyCode.rawValue))
+        dismiss?()
+    }
+
     /// Set up to observe readers connecting / disconnecting
     ///
     private func beginConnectedReaderObservation() {

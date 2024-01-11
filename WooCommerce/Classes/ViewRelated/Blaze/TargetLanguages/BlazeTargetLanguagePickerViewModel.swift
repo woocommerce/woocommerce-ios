@@ -10,7 +10,7 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
     @Published private(set) var syncState = SyncState.syncing
 
     /// Languages to be displayed after filtering with `searchQuery` if available.
-    @Published private var languages: [BlazeTargetLanguage] = []
+    @Published private var displayedLanguages: [BlazeTargetLanguage] = []
     @Published private var fetchedLanguages: [BlazeTargetLanguage] = []
 
     @Published private var isSyncingData: Bool = false
@@ -107,20 +107,20 @@ private extension BlazeTargetLanguagePickerViewModel {
     /// and display the first fetch result immediately.
     ///
     func configureDisplayedData() {
-        $languages.combineLatest($isSyncingData, $syncError)
-            .map { languages, isSyncing, error -> SyncState in
-                if error != nil, languages.isEmpty {
+        $fetchedLanguages.combineLatest($displayedLanguages, $isSyncingData, $syncError)
+            .map { fetchedLanguages, displayedLanguages, isSyncing, error -> SyncState in
+                if error != nil, fetchedLanguages.isEmpty {
                     return .error
-                } else if isSyncing, languages.isEmpty {
+                } else if isSyncing, fetchedLanguages.isEmpty {
                     return .syncing
                 }
-                return .result(items: languages)
+                return .result(items: displayedLanguages)
             }
             .assign(to: &$syncState)
 
         $fetchedLanguages
             .prefix(1) // first fetch result is displayed immediately, ignoring the empty search query
-            .assign(to: &$languages)
+            .assign(to: &$displayedLanguages)
 
         $searchQuery
             .dropFirst() // ignores initial value
@@ -132,7 +132,7 @@ private extension BlazeTargetLanguagePickerViewModel {
                 }
                 return languages.filter { $0.name.lowercased().contains(query.lowercased()) }
             }
-            .assign(to: &$languages)
+            .assign(to: &$displayedLanguages)
     }
 }
 

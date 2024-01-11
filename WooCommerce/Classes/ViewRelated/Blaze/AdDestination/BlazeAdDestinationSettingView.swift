@@ -33,7 +33,7 @@ struct BlazeAdDestinationSettingView: View {
 
 
                 Section {
-                    ForEach(viewModel.parameters, id: \.id) { parameter in
+                    ForEach(viewModel.parameters) { parameter in
                         parameterItem(parameter: parameter)
                     }
                     .onDelete(perform: deleteParameter)

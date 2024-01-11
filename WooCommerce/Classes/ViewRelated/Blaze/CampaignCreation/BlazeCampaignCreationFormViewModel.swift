@@ -124,7 +124,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         image != nil && tagline.isNotEmpty && description.isNotEmpty
     }
 
-    /// ResultController to to track the current product count.
+    /// ResultController to get the product for the given product ID
     ///
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let predicate = \StorageProduct.siteID == siteID && \StorageProduct.productID == productID

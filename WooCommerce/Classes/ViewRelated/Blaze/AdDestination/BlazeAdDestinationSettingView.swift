@@ -8,63 +8,70 @@ struct BlazeAdDestinationSettingView: View {
 
     typealias DestinationType = BlazeAdDestinationSettingViewModel.DestinationURLType
 
+    @State private var isShowingAddParameterView = false
+
     init(viewModel: BlazeAdDestinationSettingViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 0) {
-                // URL destination section
-                VStack(spacing: 0) {
-                    sectionHeading(title: Localization.destinationUrlHeading)
+            List {
+                Section {
                     destinationItem(title: Localization.productURLLabel,
                                     subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
-                                    type: DestinationType.product,
-                                    showBottomDivider: true)
+                                    type: DestinationType.product)
+                    .listRowInsets(EdgeInsets())
 
                     destinationItem(title: Localization.siteHomeLabel,
                                     subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),
                                     type: DestinationType.home)
+                    .listRowInsets(EdgeInsets())
+                } header: {
+                    Text(Localization.destinationUrlHeading)
                 }
-                .padding(.bottom, Layout.sectionVerticalSpacing)
 
-                // URL parameters section
-                VStack {
-                    sectionHeading(title: Localization.urlParametersHeading)
 
-                    VStack {
-                        ForEach(viewModel.parameters, id: \.self) { parameter in
-                            parameterItem(itemName: parameter.key)
-                        }
-
-                        Button(Localization.addParameterButton) {
-                            // todo
-                        }
-                        .buttonStyle(PlusButtonStyle())
-                        .padding([.leading, .trailing], Layout.contentSpacing)
-                        .padding(.bottom, Layout.parametersVerticalSpacing)
+                Section {
+                    ForEach(viewModel.parameters) { parameter in
+                        parameterItem(parameter: parameter)
                     }
-                    .background(Color(.systemBackground))
+                    .onDelete(perform: deleteParameter)
+
+                    Button(action: {
+                        isShowingAddParameterView = true
+                    }) {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text(Localization.addParameterButton)
+                        }
+                    }
+                    .foregroundColor(Color(uiColor: .accent))
+                    .listRowInsets(EdgeInsets())
+                    .padding(.top, 0)
+                    .padding(.leading, Layout.contentSpacing)
+                    .listRowSeparator(.hidden, edges: .bottom)
+                    .disabled(viewModel.calculateRemainingCharacters() == 0)
+
+                } header: {
+                    Text(Localization.urlParametersHeading)
+                } footer: {
+                    // Remaining characters and final destination
+                    VStack(alignment: .leading) {
+                        Text(viewModel.remainingCharactersLabel)
+                            .foregroundColor(Color(uiColor: .secondaryLabel))
+                            .captionStyle()
+                            .padding(.bottom, Layout.footerVerticalSpacing)
+
+                        Text(viewModel.finalDestinationLabel)
+                            .foregroundColor(Color(uiColor: .secondaryLabel))
+                            .captionStyle()
+                    }
+                    .padding(.vertical, Layout.contentVerticalSpacing)
                 }
-
-                // Remaining characters and final destination
-                VStack(alignment: .leading) {
-                    Text(viewModel.remainingCharactersLabel)
-                        .subheadlineStyle()
-                        .padding(.bottom, Layout.contentVerticalSpacing)
-
-                    Text(viewModel.finalDestinationLabel)
-                        .subheadlineStyle()
-                }
-                .padding([.leading, .trailing], Layout.contentSpacing)
-                .padding([.top, .bottom], Layout.contentVerticalSpacing)
-                .background(Color(.systemGray6))
-
-                Spacer()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray6))
+            .listStyle(.grouped)
+            .background(Color(.listBackground))
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.adDestination)
             .toolbar {
@@ -72,7 +79,11 @@ struct BlazeAdDestinationSettingView: View {
                     Button(Localization.cancel) {
                         dismiss()
                     }
+                    .foregroundColor(Color(uiColor: .accent))
                 }
+            }
+            .sheet(isPresented: $isShowingAddParameterView) {
+                BlazeAddParameterView(viewModel: viewModel.blazeAddParameterViewModel)
             }
         }
     }
@@ -85,12 +96,12 @@ struct BlazeAdDestinationSettingView: View {
 
     private func destinationItem(title: String,
                                  subtitle: String,
-                                 type: DestinationType,
-                                 showBottomDivider: Bool = false) -> some View {
+                                 type: DestinationType) -> some View {
         HStack(alignment: .center) {
             Image(systemName: "checkmark")
                 .padding(.leading, Layout.contentSpacing)
                 .padding(.trailing, Layout.contentHorizontalSpacing)
+                .foregroundColor(Color(uiColor: .accent))
                 .if(type != viewModel.selectedDestinationType) { view in
                     view.hidden()
                 }
@@ -104,39 +115,32 @@ struct BlazeAdDestinationSettingView: View {
                     .captionStyle()
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, Layout.contentVerticalSpacing)
-
-                if showBottomDivider {
-                    Divider()
-                        .background(Color(.systemGray3))
-                }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
         .onTapGesture {
-            viewModel.setDestinationType(type: type)
+            viewModel.setDestinationType(as: type)
         }
     }
 
-    private func parameterItem(itemName: String) -> some View {
-        VStack {
+    private func parameterItem(parameter: BlazeAdURLParameter) -> some View {
+        Button(action: {
+            viewModel.selectParameter(item: parameter)
+            isShowingAddParameterView = true
+        }) {
             HStack {
-                Text(itemName)
-                    .padding([.top, .bottom], Layout.parametersVerticalSpacing)
+                Text(parameter.key)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundColor(Color(.systemGray4))
-                    .padding(.leading, 8)
-                    .padding(.trailing, Layout.contentSpacing)
+                    .foregroundColor(.secondary)
+                    .padding(.leading, Layout.contentHorizontalSpacing)
             }
-            .padding(.leading, Layout.contentSpacing)
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            Rectangle()
-                .frame(height: 1)
-                .foregroundColor(Color(.systemGray3))
-                .padding(.leading, Layout.contentSpacing)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+    }
+
+    private func deleteParameter(at offsets: IndexSet) {
+        viewModel.deleteParameter(at: offsets)
     }
 }
 
@@ -144,6 +148,7 @@ private extension BlazeAdDestinationSettingView {
     enum Layout {
         static let verticalSpacing: CGFloat = 16
         static let contentSpacing: CGFloat = 16
+        static let footerVerticalSpacing: CGFloat =  10
         static let contentVerticalSpacing: CGFloat = 8
         static let contentHorizontalSpacing: CGFloat = 8
         static let sectionVerticalSpacing: CGFloat = 24
@@ -209,8 +214,9 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                 productURL: "https://woo.com/product",
                 homeURL: "https://woo.com/",
                 parameters: [
-                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key1", value: "value1"),
-                    BlazeAdDestinationSettingViewModel.BlazeAdURLParameter(key: "key2", value: "value2")
+                    BlazeAdURLParameter(key: "key1", value: "value1"),
+                    BlazeAdURLParameter(key: "key2", value: "value2"),
+                    BlazeAdURLParameter(key: "key1", value: "value1")
                 ]
             )
         )

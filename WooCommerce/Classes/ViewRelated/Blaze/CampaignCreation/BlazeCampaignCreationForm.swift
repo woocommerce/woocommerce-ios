@@ -172,11 +172,10 @@ private extension BlazeCampaignCreationForm {
         VStack(spacing: Layout.contentPadding) {
             VStack(alignment: .leading, spacing: Layout.contentMargin) {
                 // Image
-                if viewModel.image == nil {
-                    remoteImage
-                } else {
-                    localImage
-                }
+                Image(uiImage: viewModel.image?.image ?? .blazeProductPlaceholder)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .cornerRadius(Layout.cornerRadius)
 
                 // Tagline
                 Text(viewModel.isLoadingAISuggestions ? "Placeholder tagline" : viewModel.tagline)
@@ -259,23 +258,6 @@ private extension BlazeCampaignCreationForm {
     var roundedRectangleBorder: some View {
         RoundedRectangle(cornerRadius: Layout.cornerRadius)
             .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
-    }
-
-    var remoteImage: some View {
-        KFImage(viewModel.productImage)
-            .placeholder {
-                Image(uiImage: .blazeProductPlaceholder)
-            }
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .cornerRadius(Layout.cornerRadius)
-    }
-
-    var localImage: some View {
-        Image(uiImage: viewModel.image?.image ?? .blazeProductPlaceholder)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .cornerRadius(Layout.cornerRadius)
     }
 }
 

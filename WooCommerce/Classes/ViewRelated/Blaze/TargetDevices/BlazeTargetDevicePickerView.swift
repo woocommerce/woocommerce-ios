@@ -82,7 +82,7 @@ private extension BlazeTargetDevicePickerView {
         )
         static let errorMessage = NSLocalizedString(
             "blazeTargetDevicePickerView.errorMessage",
-            value: "Error syncing data",
+            value: "Error syncing target devices. Please try again.",
             comment: "Error message when data syncing fails on the target device picker for campaign creation"
         )
         static let tryAgain = NSLocalizedString(

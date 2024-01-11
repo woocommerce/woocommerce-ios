@@ -85,7 +85,7 @@ private extension BlazeTargetLanguagePickerView {
         )
         static let errorMessage = NSLocalizedString(
             "blazeTargetLanguagePickerView.errorMessage",
-            value: "Error syncing data",
+            value: "Error syncing target languages. Please try again.",
             comment: "Error message when data syncing fails on the target language picker for campaign creation"
         )
         static let tryAgain = NSLocalizedString(

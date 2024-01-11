@@ -1265,9 +1265,13 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .paymentsFlowCanceled, properties: [Keys.flow: flow.rawValue])
         }
 
-        static func paymentsFlowFailed(flow: Flow, source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowFailed, properties: [Keys.flow: flow.rawValue,
-                                                                          Keys.source: source.rawValue])
+        static func paymentsFlowFailed(flow: Flow, source: Source, country: CountryCode, currency: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowFailed, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.source: source.rawValue,
+                Keys.country: country.rawValue,
+                Keys.currency: currency
+            ])
         }
 
         static func paymentsFlowCollect(flow: Flow,

@@ -61,6 +61,8 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
 
+    private let currencySettings: CurrencySettings
+
     lazy var presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never> = {
         presentNoticeSubject.eraseToAnyPublisher()
     }()
@@ -83,6 +85,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         self.stores = stores
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.presentNoticeSubject = presentNoticeSubject
+        self.currencySettings = storeCurrencySettings
         self.analytics = analytics
 
         updateInitialOrderStatus()
@@ -110,7 +113,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
 
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.creationError))
-                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment, source: .amount))
+                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment,
+                                                                                              source: .amount,
+                                                                                              country: SiteAddress().countryCode,
+                                                                                              currency: currencySettings.currencyCode.rawValue))
                 DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
         }

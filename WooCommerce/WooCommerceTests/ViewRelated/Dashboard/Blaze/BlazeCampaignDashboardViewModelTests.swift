@@ -700,7 +700,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowProductSelectorView)
     }
 
-    // MARK: shouldShowProductSelectorView
+    // MARK: latestPublishedProduct
+
     func test_latestPublishedProduct_returns_correct_product() throws {
         // Given
         insertProduct(Product.fake().copy(siteID: sampleSiteID,

@@ -700,6 +700,41 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowProductSelectorView)
     }
 
+    // MARK: shouldShowProductSelectorView
+    func test_latestPublishedProduct_returns_correct_product() throws {
+        // Given
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 1,
+                                          statusKey: (ProductStatus.published.rawValue),
+                                          purchasable: true))
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 2,
+                                          statusKey: (ProductStatus.draft.rawValue),
+                                          purchasable: true))
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 3,
+                                          statusKey: (ProductStatus.published.rawValue),
+                                          purchasable: true))
+
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Then
+        let product = try XCTUnwrap(viewModel.latestPublishedProduct)
+        XCTAssertEqual(viewModel.latestPublishedProduct?.productID, 3)
+    }
+
+    func test_latestPublishedProduct_is_nil_when_no_published_product_available() throws {
+        // Given
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 1,
+                                          statusKey: (ProductStatus.draft.rawValue),
+                                          purchasable: true))
+
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Then
+        XCTAssertNil(viewModel.latestPublishedProduct)
+    }
 
     // MARK: `selectedCampaignURL`
 

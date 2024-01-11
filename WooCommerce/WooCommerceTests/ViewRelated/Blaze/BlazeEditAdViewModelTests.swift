@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import Yosemite
 import Photos
+import struct Networking.BlazeAISuggestion
 @testable import WooCommerce
 
 final class BlazeEditAdViewModelTests: XCTestCase {
@@ -10,11 +11,16 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                                tagline: "Sample Tagline",
                                                description: "Sample description")
 
+    private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
+                                       BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
+                                       BlazeAISuggestion(siteName: "Third suggested tagline", textSnippet: "Third suggested description")]
+
     // MARK: Tagline
     func test_tagline_footer_text_is_plural_when_multiple_characters_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 1)
@@ -28,6 +34,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 31)
@@ -41,6 +48,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.tagline = sampleString(length: 32)
@@ -54,6 +62,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -69,6 +78,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 1)
@@ -82,6 +92,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 139)
@@ -95,6 +106,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
         // When
         sut.description = sampleString(length: 140)
@@ -108,6 +120,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -122,6 +135,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // Then
@@ -132,6 +146,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -151,6 +166,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -164,6 +180,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
                                        onSave: { _ in })
 
         // When
@@ -171,6 +188,185 @@ final class BlazeEditAdViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.isSaveButtonEnabled)
+    }
+
+    // MARK: Can select previous suggestions
+
+    func test_canSelectPreviousSuggestion_is_false_initially() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake(), .fake(), .fake()],
+                                       onSave: { _ in })
+
+        // Then
+        XCTAssertFalse(sut.canSelectPreviousSuggestion)
+    }
+
+    func test_canSelectPreviousSuggestion_is_true_when_second_suggestion_selected() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapNext()
+        sut.didTapNext()
+
+        XCTAssertEqual(sut.tagline, "Second suggested tagline")
+
+        // Then
+        XCTAssertTrue(sut.canSelectPreviousSuggestion)
+    }
+
+    func test_canSelectPreviousSuggestion_is_false_when_first_suggestion_selected() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapNext()
+        sut.didTapPrevious()
+
+        XCTAssertEqual(sut.tagline, "First suggested tagline")
+
+        // Then
+        XCTAssertFalse(sut.canSelectPreviousSuggestion)
+    }
+
+    // MARK: Can select next suggestions
+
+    func test_canSelectNextSuggestion_is_true_initially() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // Then
+        XCTAssertTrue(sut.canSelectNextSuggestion)
+    }
+
+    func test_canSelectNextSuggestion_is_false_when_last_suggestion_selected() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapNext()
+        sut.didTapNext()
+        sut.didTapNext()
+
+        XCTAssertEqual(sut.tagline, "Third suggested tagline")
+
+        // Then
+        XCTAssertFalse(sut.canSelectNextSuggestion)
+    }
+
+    // MARK: `didTapPrevious`
+
+    func test_didTapPrevious_does_not_change_selection_if_no_suggestion_selected() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapPrevious()
+
+        // Then
+        XCTAssertEqual(sut.tagline, "Sample Tagline")
+    }
+
+    func test_didTapPrevious_selects_previous_item_when_a_suggestion_selected_already() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        sut.didTapNext()
+        sut.didTapNext()
+        XCTAssertEqual(sut.tagline, "Second suggested tagline")
+
+        // When
+        sut.didTapPrevious()
+
+        // Then
+        XCTAssertEqual(sut.tagline, "First suggested tagline")
+    }
+
+    // MARK: `didTapNext`
+
+    func test_didTapNext_selects_first_item_when_no_suggestion_is_selected_already() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapNext()
+
+        // Then
+        XCTAssertEqual(sut.tagline, "First suggested tagline")
+    }
+
+    func test_didTapNext_selects_next_item_when_a_suggestion_selected_already() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+        sut.didTapNext()
+        XCTAssertEqual(sut.tagline, "First suggested tagline")
+
+        // When
+        sut.didTapNext()
+
+        // Then
+        XCTAssertEqual(sut.tagline, "Second suggested tagline")
+    }
+
+    func test_didTapNext_does_not_change_selection_when_the_last_suggestion_selected() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+        sut.didTapNext()
+        sut.didTapNext()
+        sut.didTapNext()
+        XCTAssertEqual(sut.tagline, "Third suggested tagline")
+
+        // When
+        sut.didTapNext()
+
+        // Then
+        XCTAssertEqual(sut.tagline, "Third suggested tagline")
+    }
+
+    // MARK: Preselect suggestion
+    func test_it_preselects_suggestion_if_injected_tagline_and_description_match() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
+                                                                                       source: .media(media: .fake())),
+                                                               tagline: sampleAISuggestions[1].siteName,
+                                                               description: sampleAISuggestions[1].textSnippet),
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // Then
+        // Check that suggestion at index 1 is selected by testing button states
+        XCTAssertTrue(sut.canSelectPreviousSuggestion)
+        XCTAssertTrue(sut.canSelectNextSuggestion)
     }
 }
 

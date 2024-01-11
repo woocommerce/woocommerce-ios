@@ -8,11 +8,11 @@ struct FreeTrialBannerViewModel {
     ///
     let message: String
 
-    init(sitePlan: WPComSitePlan) {
+    init(sitePlan: WPComSitePlan, timeZone: TimeZone = .current) {
 
         // Normalize dates in the same timezone.
-        let today = Date().startOfDay(timezone: .current)
-        guard let expiryDate = sitePlan.expiryDate?.startOfDay(timezone: .current) else {
+        let today = Date().startOfDay(timezone: timeZone)
+        guard let expiryDate = sitePlan.expiryDate?.startOfDay(timezone: timeZone) else {
             message = ""
             return
         }

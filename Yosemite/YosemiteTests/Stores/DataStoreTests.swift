@@ -44,7 +44,7 @@ final class DataStoreTests: XCTestCase {
     func test_synchronizeCountries_persists_Country_on_success() throws {
         // Given
         let remote = DataRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "data/countries", filename: "countries")
+        network.simulateResponse(requestUrlSuffix: "data/countries", filename: "country-list")
         let store = DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When

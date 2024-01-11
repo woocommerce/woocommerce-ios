@@ -475,9 +475,9 @@ final class BlazeStoreTests: XCTestCase {
     func test_synchronizeTargetTopics_overwrites_existing_topics_with_the_given_locale() throws {
         // Given
         let locale = "en"
-        storeTargetTopic(.init(id: "test", description: "Test", locale: locale))
-        storeTargetTopic(.init(id: "test-2", description: "Test 2", locale: "vi"))
-        remote.whenFetchingTargetTopics(thenReturn: .success([.init(id: "IAB1", description: "Arts", locale: locale)]))
+        storeTargetTopic(.init(id: "test", name: "Test", locale: locale))
+        storeTargetTopic(.init(id: "test-2", name: "Test 2", locale: "vi"))
+        remote.whenFetchingTargetTopics(thenReturn: .success([.init(id: "IAB1", name: "Arts", locale: locale)]))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,
                                network: network,

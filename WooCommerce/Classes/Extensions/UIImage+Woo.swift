@@ -55,6 +55,12 @@ extension UIImage {
         UIImage(named: "blaze-intro-illustration")!
     }
 
+    /// Blaze product placeholder
+    ///
+    static var blazeProductPlaceholder: UIImage {
+        UIImage(named: "blaze-product-placeholder")!
+    }
+
     /// Currency Image
     ///
     static var currencyImage: UIImage {

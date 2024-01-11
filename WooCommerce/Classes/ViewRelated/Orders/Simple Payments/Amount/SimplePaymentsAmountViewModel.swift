@@ -71,6 +71,9 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private var initialOrderStatus: OrderStatusEnum = .pending
 
+    /// Store country code for analytics.
+    private let countryCode: CountryCode
+
     /// Analytics tracker.
     ///
     private let analytics: Analytics
@@ -80,12 +83,14 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
          locale: Locale = Locale.autoupdatingCurrent,
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         countryCode: CountryCode = SiteAddress().countryCode,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.presentNoticeSubject = presentNoticeSubject
         self.currencySettings = storeCurrencySettings
+        self.countryCode = countryCode
         self.analytics = analytics
 
         updateInitialOrderStatus()
@@ -115,7 +120,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
                 self.presentNoticeSubject.send(.error(Localization.creationError))
                 self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .simplePayment,
                                                                                               source: .amount,
-                                                                                              country: SiteAddress().countryCode,
+                                                                                              country: countryCode,
                                                                                               currency: currencySettings.currencyCode.rawValue))
                 DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
@@ -127,7 +132,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: .simplePayment,
-                                                                                   country: SiteAddress().countryCode,
+                                                                                   country: countryCode,
                                                                                    currency: currencySettings.currencyCode.rawValue))
     }
 

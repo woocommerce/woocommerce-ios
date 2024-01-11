@@ -71,10 +71,9 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// Product ResultsController.
     /// Fetch limit is set to 2 to check if there's multiple products in the site, without having to fetch all products.
     private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@ AND purchasable == %@",
+        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@",
                                     siteID,
-                                    ProductStatus.published.rawValue,
-                                    NSNumber(value: true))
+                                    ProductStatus.published.rawValue)
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
                                                  fetchLimit: 2,

@@ -310,16 +310,16 @@ extension Networking.BlazeTargetOptions {
 extension Networking.BlazeTargetTopic {
     public func copy(
         id: CopiableProp<String> = .copy,
-        description: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
         locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetTopic {
         let id = id ?? self.id
-        let description = description ?? self.description
+        let name = name ?? self.name
         let locale = locale ?? self.locale
 
         return Networking.BlazeTargetTopic(
             id: id,
-            description: description,
+            name: name,
             locale: locale
         )
     }

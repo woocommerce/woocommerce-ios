@@ -33,15 +33,21 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] in
-            let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
-                                                 source: .campaignList,
-                                                 siteURL: viewModel.siteURL,
-                                                 productID: nil) {
-                self?.handlePostCreation()
-            }
-            let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
-            self?.navigationController?.show(webViewController, sender: self)
+            self?.navigateToWebCampaignCreation(source: .campaignList)
         }
+    }
+
+    /// Handles navigation to the webview Blaze creation
+    func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
+        let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
+                source: source,
+                siteURL: viewModel.siteURL,
+                productID: productID) { [weak self] in
+            self?.handlePostCreation()
+        }
+        let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
+        self.navigationController?.show(webViewController, sender: self)
+        viewModel.didSelectCreateCampaign(source: source)
     }
 
     override func viewDidLoad() {

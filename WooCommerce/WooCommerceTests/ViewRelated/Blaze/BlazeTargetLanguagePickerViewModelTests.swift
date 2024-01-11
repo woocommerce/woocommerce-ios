@@ -76,6 +76,7 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         let locale = "en_US"
         let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
                                                            locale: Locale(identifier: locale),
+                                                           stores: stores,
                                                            storageManager: storageManager,
                                                            onSelection: { _ in })
 

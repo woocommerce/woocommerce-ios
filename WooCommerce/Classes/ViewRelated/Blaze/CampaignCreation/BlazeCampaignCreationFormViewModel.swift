@@ -129,7 +129,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let predicate = \StorageProduct.siteID == siteID && \StorageProduct.productID == productID
         let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
-        try? controller.performFetch()
+        do {
+            try controller.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch product for BlazeCampaignCreationFormViewModel: \(error)")
+        }
         return controller
     }()
 

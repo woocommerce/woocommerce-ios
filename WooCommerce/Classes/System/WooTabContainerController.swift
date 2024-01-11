@@ -13,7 +13,6 @@ class WooTabContainerController: UIViewController {
         }
 
         didSet {
-            // Configure the new controller if it exists
             guard let newWrappedController = wrappedController else {
                 return
             }
@@ -22,7 +21,6 @@ class WooTabContainerController: UIViewController {
             view.addSubview(newWrappedController.view)
             newWrappedController.didMove(toParent: self)
 
-            // Set constraints for the wrapped view
             newWrappedController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 newWrappedController.view.topAnchor.constraint(equalTo: view.topAnchor),

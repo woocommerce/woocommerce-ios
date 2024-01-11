@@ -54,7 +54,7 @@ final class BlazeAddParameterViewModel: ObservableObject {
 
     private func validateInputLength() {
         let totalInputString = key + "=" + value
-        hasCountError = remainingCharacters - totalInputString.count <= 0
+        hasCountError = remainingCharacters - totalInputString.count < 0
     }
 }
 

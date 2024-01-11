@@ -9,7 +9,7 @@ struct ErrorStateView: View {
     let actionHandler: () -> Void
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: Layout.contentSpacing) {
             Text(title)
                 .headlineStyle()
 
@@ -25,6 +25,12 @@ struct ErrorStateView: View {
             Button(actionTitle, action: actionHandler)
         }
         .padding()
+    }
+}
+
+extension ErrorStateView {
+    private enum Layout {
+        static let contentSpacing: CGFloat = 32
     }
 }
 

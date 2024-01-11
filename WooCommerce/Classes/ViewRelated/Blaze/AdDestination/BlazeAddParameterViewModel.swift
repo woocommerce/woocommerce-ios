@@ -4,8 +4,8 @@ import Foundation
 final class BlazeAddParameterViewModel: ObservableObject {
     @Published var key: String
     @Published var value: String
-    @Published var hasValidationError: Bool = false
-    @Published var hasCountError: Bool = false
+    @Published private(set) var hasValidationError: Bool = false
+    @Published private(set) var hasCountError: Bool = false
 
     let remainingCharacters: Int
     let parameter: BlazeAdURLParameter?

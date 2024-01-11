@@ -1,5 +1,4 @@
 import SwiftUI
-import Kingfisher
 
 /// Hosting controller for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormHostingController: UIHostingController<BlazeCampaignCreationForm> {

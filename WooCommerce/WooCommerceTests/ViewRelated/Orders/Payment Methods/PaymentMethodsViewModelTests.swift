@@ -231,7 +231,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
         let orderID: Int64 = 232
         let dependencies = Dependencies(stores: stores,
-                                        analytics: WooAnalytics(analyticsProvider: analytics))
+                                        analytics: WooAnalytics(analyticsProvider: analytics),
+                                        cardPresentPaymentsConfiguration: .init(country: .GB))
         let viewModel = PaymentMethodsViewModel(orderID: orderID,
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
@@ -245,6 +246,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
         assertEqual(analytics.receivedProperties.first?["amount_normalized"] as? Int, 1200)
+        assertEqual(analytics.receivedProperties.first?["country"] as? String, "GB")
         assertEqual(analytics.receivedProperties.first?["currency"] as? String, "USD")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
@@ -270,6 +272,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let orderID: Int64 = 232
         let dependencies = Dependencies(stores: stores,
                                         analytics: WooAnalytics(analyticsProvider: analytics),
+                                        cardPresentPaymentsConfiguration: .init(country: .GB),
                                         currencySettings: currencySettings)
         let viewModel = PaymentMethodsViewModel(orderID: orderID,
                                                 formattedTotal: "¥12",
@@ -284,6 +287,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "¥12")
         assertEqual(analytics.receivedProperties.first?["amount_normalized"] as? Int, 12)
+        assertEqual(analytics.receivedProperties.first?["country"] as? String, "GB")
         assertEqual(analytics.receivedProperties.first?["currency"] as? String, "JPY")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
@@ -434,8 +438,12 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
         let orderID: Int64 = 232
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        let currencySettings = CurrencySettings()
+        currencySettings.currencyCode = .JPY
         let dependencies = Dependencies(stores: stores,
-                                        analytics: WooAnalytics(analyticsProvider: analytics))
+                                        analytics: WooAnalytics(analyticsProvider: analytics),
+                                        cardPresentPaymentsConfiguration: .init(country: .JP),
+                                        currencySettings: currencySettings)
         let viewModel = PaymentMethodsViewModel(orderID: orderID,
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
@@ -449,6 +457,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
+        assertEqual(analytics.receivedProperties.first?["country"] as? String, "JP")
+        assertEqual(analytics.receivedProperties.first?["currency"] as? String, "JPY")
     }
 
     func test_collect_event_is_tracked_when_sharing_payment_links() {

@@ -2,8 +2,9 @@
 
 16.9
 -----
+- [*] Order Creation/Editing: removed ability to delete an order line using the `-` button on the stepper, to avoid accidental deletion. [https://github.com/woocommerce/woocommerce-ios/pull/11651]
 - [internal] Product Creation AI: Change when and how many times we ask users to participate in survey. [https://github.com/woocommerce/woocommerce-ios/pull/11646]
-
+- [*] Order creation: after selecting a registered customer, the customer is now linked to the order. [https://github.com/woocommerce/woocommerce-ios/pull/11645]
 
 16.8
 -----

@@ -632,6 +632,83 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(update.fields, OrderUpdateField.allCases)
     }
 
+    func test_sending_customer_id_input_does_not_trigger_sync_in_creation_flow() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        synchronizer.setCustomerID.send(16)
+    }
+
+    func test_sending_customer_id_input_does_not_trigger_sync_in_edit_flow() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        synchronizer.setCustomerID.send(16)
+    }
+
+    func test_sending_customer_id_then_addresses_input_triggers_sync_in_creation_flow() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let orderToCreate = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                    case let .createOrder(_, order, _, completion):
+                        completion(.success(order))
+                        promise(order)
+                    default:
+                        XCTFail("Unexpected action: \(action)")
+                }
+            }
+            synchronizer.setCustomerID.send(16)
+            synchronizer.setAddresses.send(.init(billing: .fake(), shipping: .fake()))
+        }
+
+        // Then
+        XCTAssertEqual(orderToCreate.customerID, 16)
+    }
+
+    func test_sending_customer_id_then_addresses_input_triggers_sync_in_edit_flow() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, fields, completion):
+                    completion(.success(order))
+                    promise((order, fields))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            synchronizer.setCustomerID.send(16)
+            synchronizer.setAddresses.send(.init(billing: .fake(), shipping: .fake()))
+        }
+
+        // Then
+        XCTAssertEqual(update.order.customerID, 16)
+        XCTAssertTrue(update.fields.contains(.customerID))
+    }
+
     func test_states_are_properly_set_upon_success_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

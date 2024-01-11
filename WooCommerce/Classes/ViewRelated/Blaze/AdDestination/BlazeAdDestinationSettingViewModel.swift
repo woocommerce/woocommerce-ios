@@ -126,15 +126,15 @@ private extension BlazeAdDestinationSettingViewModel {
         enum parameterCharactersLimit {
             static let plural = NSLocalizedString(
                 "blazeAdDestinationSettingVieModel.parameterCharactersLimit.plural",
-                value: "%d characters remaining",
-                comment: "Blaze Ad Destination: Plural form for characters limit label %d will be replaced by a number. " +
+                value: "%1$@ characters remaining",
+                comment: "Blaze Ad Destination: Plural form for characters limit label. %1$@ will be replaced by a number. " +
                 "Read like: 10 characters remaining"
             )
 
             static let singular = NSLocalizedString(
                 "blazeAdDestinationSettingVieModel.parameterCharactersLimit.singular",
-                value: "%d character remaining",
-                comment: "Blaze Ad Destination: Singular form for characters limit label %d will be replaced by a number. " +
+                value: "%1$@ character remaining",
+                comment: "Blaze Ad Destination: Singular form for characters limit label. %1$@ will be replaced by a number. " +
                 "Read like: 1 character remaining"
             )
         }
@@ -143,6 +143,7 @@ private extension BlazeAdDestinationSettingViewModel {
             "blazeAdDestinationSettingVieModel.finalDestination",
             value: "Destination: %1$@",
             comment: "Blaze Ad Destination: The final URl destination including optional parameters. " +
+            "%1$@ will be replaced by the URL text. " +
             "Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue"
         )
     }

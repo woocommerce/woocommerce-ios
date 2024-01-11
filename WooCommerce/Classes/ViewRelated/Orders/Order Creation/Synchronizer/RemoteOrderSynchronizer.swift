@@ -53,6 +53,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setNote = PassthroughSubject<String?, Never>()
 
+    let setCustomerID = PassthroughSubject<Int64, Never>()
+
     var retryTrigger = PassthroughSubject<Void, Never>()
 
     // MARK: Private properties
@@ -292,6 +294,15 @@ private extension RemoteOrderSynchronizer {
                 if case .editing = flow {
                     self?.orderSyncTrigger.send(order)
                 }
+            }
+            .store(in: &subscriptions)
+
+        setCustomerID.withLatestFrom(orderPublisher)
+            .map { customerID, order in
+                order.copy(customerID: customerID)
+            }
+            .sink { [weak self] order in
+                self?.order = order
             }
             .store(in: &subscriptions)
 

@@ -158,7 +158,30 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     func didTapEditAd() {
         onEditAd?()
     }
+}
 
+// MARK: Image download
+extension BlazeCampaignCreationFormViewModel {
+    func downloadProductImage() async {
+        image = await loadProductImage()
+    }
+}
+
+private extension BlazeCampaignCreationFormViewModel {
+    func loadProductImage() async -> MediaPickerImage? {
+        await withCheckedContinuation({ continuation in
+            guard let firstImage = product?.images.first else {
+                return continuation.resume(returning: nil)
+            }
+            _ = productImageLoader.requestImage(productImage: firstImage) { image in
+                continuation.resume(returning: .init(image: image, source: .productImage(image: firstImage)))
+            }
+        })
+    }
+}
+
+// MARK: - Blaze AI Suggestions
+extension BlazeCampaignCreationFormViewModel {
     func loadAISuggestions() async {
         isLoadingAISuggestions = true
         errorState = .none
@@ -176,24 +199,35 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
         isLoadingAISuggestions = false
     }
-
-    func downloadProductImage() async {
-        image = await loadProductImage()
-    }
 }
 
 private extension BlazeCampaignCreationFormViewModel {
-    func loadProductImage() async -> MediaPickerImage? {
-        await withCheckedContinuation({ continuation in
-            guard let firstImage = product?.images.first else {
-                return continuation.resume(returning: nil)
-            }
-            _ = productImageLoader.requestImage(productImage: firstImage) { image in
-                continuation.resume(returning: .init(image: image, source: .productImage(image: firstImage)))
-            }
+    @MainActor
+    func fetchAISuggestions() async throws -> [BlazeAISuggestion] {
+        try await withCheckedThrowingContinuation({ continuation in
+            stores.dispatch(BlazeAction.fetchAISuggestions(siteID: siteID, productID: productID) { result in
+                switch result {
+                case .success(let suggestions):
+                    if suggestions.isEmpty {
+                        continuation.resume(throwing: FetchAISuggestionsError.suggestionsEmpty)
+                    } else {
+                        continuation.resume(returning: suggestions)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
         })
     }
 
+    enum FetchAISuggestionsError: Error {
+        case suggestionsEmpty
+    }
+}
+
+// MARK: - Private helpers
+
+private extension BlazeCampaignCreationFormViewModel {
     func updateBudgetDetails() {
         let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
         let date = dateFormatter.string(for: startDate) ?? ""
@@ -226,31 +260,6 @@ private extension BlazeCampaignCreationFormViewModel {
                 .sorted()
                 .joined(separator: ", ")
         }()
-    }
-}
-
-// MARK: - Blaze AI Suggestions
-private extension BlazeCampaignCreationFormViewModel {
-    @MainActor
-    func fetchAISuggestions() async throws -> [BlazeAISuggestion] {
-        try await withCheckedThrowingContinuation({ continuation in
-            stores.dispatch(BlazeAction.fetchAISuggestions(siteID: siteID, productID: productID) { result in
-                switch result {
-                case .success(let suggestions):
-                    if suggestions.isEmpty {
-                        continuation.resume(throwing: FetchAISuggestionsError.suggestionsEmpty)
-                    } else {
-                        continuation.resume(returning: suggestions)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            })
-        })
-    }
-
-    enum FetchAISuggestionsError: Error {
-        case suggestionsEmpty
     }
 }
 

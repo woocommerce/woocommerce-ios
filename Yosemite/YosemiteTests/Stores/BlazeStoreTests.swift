@@ -38,6 +38,14 @@ final class BlazeStoreTests: XCTestCase {
         return viewStorage.countObjects(ofType: StorageBlazeTargetDevice.self)
     }
 
+    private var storedTargetLanguageCount: Int {
+        return viewStorage.countObjects(ofType: StorageBlazeTargetLanguage.self)
+    }
+
+    private var storedTargetTopicCount: Int {
+        return viewStorage.countObjects(ofType: StorageBlazeTargetTopic.self)
+    }
+
     /// SiteID
     ///
     private let sampleSiteID: Int64 = 120934
@@ -61,6 +69,51 @@ final class BlazeStoreTests: XCTestCase {
         storageManager = nil
         remote = nil
         super.tearDown()
+    }
+
+    // MARK: - Create campaign
+
+    func test_createCampaign_does_not_throw_errors_upon_success() throws {
+        // Given
+        remote.whenCreatingCampaign(thenReturn: .success(()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.createCampaign(campaign: .fake(),
+                                                      siteID: self.sampleSiteID,
+                                                      onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        try result.get()
+    }
+
+    func test_createCampaign_returns_error_on_failure() throws {
+        // Given
+        remote.whenCreatingCampaign(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.createCampaign(campaign: .fake(),
+                                                      siteID: self.sampleSiteID,
+                                                      onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     // MARK: - synchronizeCampaigns
@@ -202,7 +255,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
         }
@@ -223,7 +276,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
                 promise(result)
             }))
         }
@@ -233,11 +286,12 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetDeviceCount, 1)
     }
 
-    func test_synchronizeTargetDevices_overwrites_existing_devices() throws {
+    func test_synchronizeTargetDevices_overwrites_existing_devices_with_the_given_locale() throws {
         // Given
-        storeTargetDevice(.init(id: "test", name: "Test"))
-        storeTargetDevice(.init(id: "test-2", name: "Test 2"))
-        remote.whenFetchingTargetDevices(thenReturn: .success([.init(id: "mobile", name: "Mobile")]))
+        let locale = "vi"
+        storeTargetDevice(.init(id: "test", name: "Test", locale: locale))
+        storeTargetDevice(.init(id: "test-2", name: "Test 2", locale: "en"))
+        remote.whenFetchingTargetDevices(thenReturn: .success([.init(id: "mobile", name: "Mobile", locale: locale)]))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,
                                network: network,
@@ -246,17 +300,20 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
                 promise(result)
             }))
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(storedTargetDeviceCount, 1)
-        let device = try XCTUnwrap(viewStorage.firstObject(ofType: StorageBlazeTargetDevice.self))
+        XCTAssertEqual(storedTargetDeviceCount, 2)
+        let devices = viewStorage.loadAllBlazeTargetDevices(locale: locale)
+        XCTAssertEqual(devices.count, 1)
+        let device = try XCTUnwrap(devices.first)
         XCTAssertEqual(device.id, "mobile")
         XCTAssertEqual(device.name, "Mobile")
+        XCTAssertEqual(device.locale, locale)
     }
 
     func test_synchronizeTargetDevices_returns_error_on_failure() throws {
@@ -269,7 +326,329 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, onCompletion: { result in
+            store.onAction(BlazeAction.synchronizeTargetDevices(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - Synchronize target languages
+
+    func test_synchronizeTargetLanguages_is_successful_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let languages = try result.get()
+        XCTAssertEqual(languages.count, 1)
+    }
+
+    func test_synchronizeTargetLanguages_stores_languages_upon_success() throws {
+        // Given
+        remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedTargetLanguageCount, 0)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedTargetLanguageCount, 1)
+    }
+
+    func test_synchronizeTargetLanguages_overwrites_existing_languages_with_the_given_locale() throws {
+        // Given
+        let locale = "en"
+        storeTargetLanguage(.init(id: "test", name: "Test", locale: locale))
+        storeTargetLanguage(.init(id: "test-2", name: "Test 2", locale: "vi"))
+        remote.whenFetchingTargetLanguages(thenReturn: .success([.init(id: "en", name: "English", locale: locale)]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedTargetLanguageCount, 2)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedTargetLanguageCount, 2)
+        let languages = viewStorage.loadAllBlazeTargetLanguages(locale: locale)
+        XCTAssertEqual(languages.count, 1)
+        let language = try XCTUnwrap(languages.first)
+        XCTAssertEqual(language.id, "en")
+        XCTAssertEqual(language.name, "English")
+        XCTAssertEqual(language.locale, locale)
+    }
+
+    func test_synchronizeTargetLanguages_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingTargetLanguages(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetLanguages(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - Synchronize target topics
+
+    func test_synchronizeTargetTopics_is_successful_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingTargetTopics(thenReturn: .success([.fake().copy(id: "IAB1")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetTopics(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let topics = try result.get()
+        XCTAssertEqual(topics.count, 1)
+    }
+
+    func test_synchronizeTargetTopics_stores_topics_upon_success() throws {
+        // Given
+        remote.whenFetchingTargetTopics(thenReturn: .success([.fake().copy(id: "IAB1")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedTargetTopicCount, 0)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetTopics(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedTargetTopicCount, 1)
+    }
+
+    func test_synchronizeTargetTopics_overwrites_existing_topics_with_the_given_locale() throws {
+        // Given
+        let locale = "en"
+        storeTargetTopic(.init(id: "test", description: "Test", locale: locale))
+        storeTargetTopic(.init(id: "test-2", description: "Test 2", locale: "vi"))
+        remote.whenFetchingTargetTopics(thenReturn: .success([.init(id: "IAB1", description: "Arts", locale: locale)]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedTargetTopicCount, 2)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetTopics(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedTargetTopicCount, 2)
+        let topics = viewStorage.loadAllBlazeTargetTopics(locale: locale)
+        XCTAssertEqual(topics.count, 1)
+        let topic = try XCTUnwrap(topics.first)
+        XCTAssertEqual(topic.id, "IAB1")
+        XCTAssertEqual(topic.name, "Arts")
+        XCTAssertEqual(topic.locale, locale)
+    }
+
+    func test_synchronizeTargetTopics_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingTargetTopics(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeTargetTopics(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - Fetching target locations
+
+    func test_fetchTargetLocations_is_successful_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingTargetLocations(thenReturn: .success([.fake().copy(id: 123)]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchTargetLocations(siteID: self.sampleSiteID, query: "test", locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let locations = try result.get()
+        XCTAssertEqual(locations.count, 1)
+    }
+
+    func test_fetchTargetLocations_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingTargetLocations(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchTargetLocations(siteID: self.sampleSiteID, query: "test", locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - Fetching forecasted impressions
+
+    func test_fetchForecastedImpressions_is_successful_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingForecastedImpressions(thenReturn: .success(.fake().copy(totalImpressionsMax: 12345)))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchForecastedImpressions(siteID: self.sampleSiteID,
+                                                                  input: BlazeForecastedImpressionsInput.fake(),
+                                                                  onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let impressions = try result.get()
+        XCTAssertEqual(impressions.totalImpressionsMax, 12345)
+    }
+
+    func test_fetchForecastedImpressions_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingForecastedImpressions(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchForecastedImpressions(siteID: self.sampleSiteID,
+                                                                  input: BlazeForecastedImpressionsInput.fake(),
+                                                                  onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - Fetching AI suggestions
+
+    func test_fetchAISuggestions_returns_suggestions_when_fetching_successfully() throws {
+        // Given
+        let suggestions = [BlazeAISuggestion(siteName: "Name 1", textSnippet: "Description 1"),
+                           BlazeAISuggestion(siteName: "Name 2", textSnippet: "Description 2")]
+        remote.whenFetchingAISuggestionsResult(thenReturn: .success(suggestions))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchAISuggestions(siteID: self.sampleSiteID,
+                                                          productID: 123,
+                                                          onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let value = try result.get()
+        XCTAssertEqual(value, suggestions)
+    }
+
+    func test_fetchAISuggestions_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingAISuggestionsResult(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchAISuggestions(siteID: self.sampleSiteID,
+                                                          productID: 123,
+                                                          onCompletion: { result in
                 promise(result)
             }))
         }
@@ -294,5 +673,19 @@ private extension BlazeStoreTests {
         let storedDevice = storage.insertNewObject(ofType: BlazeTargetDevice.self)
         storedDevice.update(with: device)
         return storedDevice
+    }
+
+    @discardableResult
+    func storeTargetLanguage(_ language: Networking.BlazeTargetLanguage) -> Storage.BlazeTargetLanguage {
+        let storedLanguage = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
+        storedLanguage.update(with: language)
+        return storedLanguage
+    }
+
+    @discardableResult
+    func storeTargetTopic(_ topic: Networking.BlazeTargetTopic) -> Storage.BlazeTargetTopic {
+        let storedTopic = storage.insertNewObject(ofType: BlazeTargetTopic.self)
+        storedTopic.update(with: topic)
+        return storedTopic
     }
 }

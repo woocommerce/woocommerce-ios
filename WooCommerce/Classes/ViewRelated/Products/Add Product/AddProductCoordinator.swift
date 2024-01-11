@@ -15,8 +15,6 @@ final class AddProductCoordinator: Coordinator {
     enum Source {
         /// Initiated from the products tab.
         case productsTab
-        /// Initiated from the product onboarding card in the dashboard.
-        case productOnboarding
         /// Initiated from the store onboarding card in the dashboard.
         case storeOnboarding
         /// Initiated from the product description AI announcement modal in the dashboard.
@@ -112,7 +110,7 @@ final class AddProductCoordinator: Coordinator {
 
     func start() {
         switch source {
-        case .productsTab, .productOnboarding:
+        case .productsTab:
             analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
         default:
             break
@@ -360,7 +358,6 @@ private extension AddProductCoordinator {
     ///
     func presentProductCreationAIFeedbackIfApplicable() {
         let useCase = ProductCreationAISurveyUseCase()
-        useCase.didCreateAIProduct()
 
         guard useCase.shouldShowProductCreationAISurvey() else {
             return
@@ -372,6 +369,7 @@ private extension AddProductCoordinator {
             self.productCreationAISurveyPresenter.dismiss(onDismiss: { [weak self] in
                 let survey = SurveyCoordinatingController(survey: .productCreationAI)
                 self?.navigationController.present(survey, animated: true, completion: nil)
+                useCase.didStartProductCreationAISurvey()
             })
         }, onSkip: { [weak self] in
             self?.productCreationAISurveyPresenter.dismiss()

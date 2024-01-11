@@ -178,6 +178,8 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.couponLines.rawValue] = try order.coupons.compactMap { try $0.toDictionary() }
                     case .customerNote:
                         params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
+                    case .customerID:
+                        params[Order.CodingKeys.customerID.rawValue] = order.customerID
                     }
                 }
 
@@ -264,6 +266,8 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.status.rawValue] = order.status.rawValue
                     case .items:
                         params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
+                    case .customerID:
+                        params[Order.CodingKeys.customerID.rawValue] = order.customerID
                     }
                 }
 
@@ -418,6 +422,7 @@ public extension OrdersRemote {
         case couponLines
         case items
         case status
+        case customerID
     }
 
     /// Order fields supported for create
@@ -431,5 +436,6 @@ public extension OrdersRemote {
         case shippingLines
         case couponLines
         case customerNote
+        case customerID
     }
 }

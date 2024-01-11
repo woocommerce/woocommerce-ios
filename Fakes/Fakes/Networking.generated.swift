@@ -156,6 +156,16 @@ extension Networking.Announcement {
         )
     }
 }
+extension Networking.BlazeAISuggestion {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeAISuggestion {
+        .init(
+            siteName: .fake(),
+            textSnippet: .fake()
+        )
+    }
+}
 extension Networking.BlazeCampaign {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -163,14 +173,37 @@ extension Networking.BlazeCampaign {
         .init(
             siteID: .fake(),
             campaignID: .fake(),
-            productID: .fake(),
+            productURL: .fake(),
             name: .fake(),
             uiStatus: .fake(),
             contentImageURL: .fake(),
             contentClickURL: .fake(),
             totalImpressions: .fake(),
             totalClicks: .fake(),
-            totalBudget: .fake()
+            budgetCents: .fake()
+        )
+    }
+}
+extension Networking.BlazeForecastedImpressionsInput {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeForecastedImpressionsInput {
+        .init(
+            startDate: .fake(),
+            endDate: .fake(),
+            timeZone: .fake(),
+            totalBudget: .fake(),
+            targetings: .fake()
+        )
+    }
+}
+extension Networking.BlazeImpressions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeImpressions {
+        .init(
+            totalImpressionsMin: .fake(),
+            totalImpressionsMax: .fake()
         )
     }
 }
@@ -180,7 +213,8 @@ extension Networking.BlazeTargetDevice {
     public static func fake() -> Networking.BlazeTargetDevice {
         .init(
             id: .fake(),
-            name: .fake()
+            name: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -190,7 +224,8 @@ extension Networking.BlazeTargetLanguage {
     public static func fake() -> Networking.BlazeTargetLanguage {
         .init(
             id: .fake(),
-            name: .fake()
+            name: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -202,9 +237,19 @@ extension Networking.BlazeTargetLocation {
             id: .fake(),
             name: .fake(),
             type: .fake(),
-            code: .fake(),
-            isoCode: .fake(),
             parentLocation: .fake()
+        )
+    }
+}
+extension Networking.BlazeTargetOptions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeTargetOptions {
+        .init(
+            locations: .fake(),
+            languages: .fake(),
+            devices: .fake(),
+            pageTopics: .fake()
         )
     }
 }
@@ -214,7 +259,8 @@ extension Networking.BlazeTargetTopic {
     public static func fake() -> Networking.BlazeTargetTopic {
         .init(
             id: .fake(),
-            description: .fake()
+            description: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -283,6 +329,39 @@ extension Networking.CouponReport {
             couponID: .fake(),
             amount: .fake(),
             ordersCount: .fake()
+        )
+    }
+}
+extension Networking.CreateBlazeCampaign {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.CreateBlazeCampaign {
+        .init(
+            origin: .fake(),
+            originVersion: .fake(),
+            paymentMethodID: .fake(),
+            startDate: .fake(),
+            endDate: .fake(),
+            timeZone: .fake(),
+            totalBudget: .fake(),
+            siteName: .fake(),
+            textSnippet: .fake(),
+            targetUrl: .fake(),
+            urlParams: .fake(),
+            mainImage: .fake(),
+            targeting: .fake(),
+            targetUrn: .fake(),
+            type: .fake()
+        )
+    }
+}
+extension Networking.CreateBlazeCampaign.Image {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.CreateBlazeCampaign.Image {
+        .init(
+            url: .fake(),
+            mimeType: .fake()
         )
     }
 }
@@ -2223,8 +2302,7 @@ extension Networking.WooPaymentsBalance {
     public static func fake() -> Networking.WooPaymentsBalance {
         .init(
             amount: .fake(),
-            currency: .fake(),
-            depositsCount: .fake()
+            currency: .fake()
         )
     }
 }
@@ -2245,7 +2323,6 @@ extension Networking.WooPaymentsCurrencyDeposits {
     public static func fake() -> Networking.WooPaymentsCurrencyDeposits {
         .init(
             lastPaid: .fake(),
-            nextScheduled: .fake(),
             lastManualDeposits: .fake()
         )
     }

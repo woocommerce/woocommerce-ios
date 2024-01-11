@@ -151,7 +151,7 @@ private extension AddProductWithAIContainerView {
 struct AddProductWithAIContainerView_Previews: PreviewProvider {
     static var previews: some View {
         AddProductWithAIContainerView(viewModel: .init(siteID: 123,
-                                                       source: .productOnboarding,
+                                                       source: .storeOnboarding,
                                                        onCancel: { },
                                                        onCompletion: { _ in }))
     }

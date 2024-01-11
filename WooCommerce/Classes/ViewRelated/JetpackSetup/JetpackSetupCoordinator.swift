@@ -1,6 +1,6 @@
 import UIKit
 import Yosemite
-import enum Alamofire.AFError
+import enum Networking.NetworkError
 import class Networking.AlamofireNetwork
 import WordPressAuthenticator
 import WooFoundation
@@ -134,14 +134,14 @@ private extension JetpackSetupCoordinator {
         do {
             let user = try await fetchJetpackUser()
             jetpackConnectedEmail = user.wpcomUser?.email
-        } catch AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) {
+        } catch NetworkError.notFound {
             /// 404 error means Jetpack is not installed or activated yet.
             requiresConnectionOnly = false
             jetpackConnectedEmail = nil
             /// Early return because we know that Jetpack is not installed
             /// We don't have to check installation status by checking with the system plugin list.
             return
-        } catch AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) {
+        } catch let NetworkError.unacceptableStatusCode(statusCode, _) where statusCode == 403 {
             /// 403 means the site Jetpack connection is not established yet
             /// and the user has no permission to handle this.
             throw JetpackCheckError.missingPermission

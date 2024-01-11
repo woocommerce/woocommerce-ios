@@ -543,6 +543,9 @@ private struct ProductsSection: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground(modal: true)))
+            .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
+                ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
+            }
             .sheet(isPresented: $viewModel.isProductSelectorPresented, onDismiss: {
                 scroll.scrollTo(addProductButton)
             }, content: {

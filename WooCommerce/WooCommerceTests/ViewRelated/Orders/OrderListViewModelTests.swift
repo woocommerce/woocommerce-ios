@@ -241,7 +241,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Banner visibility
 
-    func test_when_having_no_error_and_orders_banner_should_not_be_shown_then_shows_nothing() {
+    func test_banner_should_not_be_shown_when_there_is_no_error() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -252,55 +252,9 @@ final class OrderListViewModelTests: XCTestCase {
                 break
             }
         }
-        viewModel.activate()
 
         // When
-        viewModel.updateBannerVisibility()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .none
-        }
-    }
-
-    func test_when_having_no_error_and_orders_banner_should_be_shown_then_shows_orders_banner() {
-        // Given
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .loadFeedbackVisibility(_, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
         viewModel.activate()
-
-        // When
-        viewModel.updateBannerVisibility()
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .orderCreation
-        }
-    }
-
-    func test_when_having_no_error_and_orders_banner_visibility_loading_fails_shows_nothing() {
-        // Given
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .loadFeedbackVisibility(_, onCompletion):
-                let error = NSError(domain: "Test", code: 503, userInfo: nil)
-                onCompletion(.failure(error))
-            default:
-                break
-            }
-        }
-        viewModel.activate()
-
-        // When
-        viewModel.updateBannerVisibility()
 
         // Then
         waitUntil {
@@ -315,40 +269,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // When
-        viewModel.updateBannerVisibility()
         viewModel.dataLoadingError = expectedError
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .error(expectedError)
-        }
-    }
-
-    func test_when_dismissing_banners_then_does_not_show_banners() {
-        // Given
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, filters: nil)
-        viewModel.activate()
-
-        // When
-        viewModel.updateBannerVisibility()
-        viewModel.hideOrdersBanners = true
-
-        // Then
-        waitUntil {
-            viewModel.topBanner == .none
-        }
-    }
-
-    func test_hiding_orders_banners_still_shows_error_banner() {
-        // Given
-        let expectedError = MockError()
-        let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
-        viewModel.activate()
-
-        // When
-        viewModel.updateBannerVisibility()
-        viewModel.dataLoadingError = expectedError
-        viewModel.hideOrdersBanners = true
 
         // Then
         waitUntil {

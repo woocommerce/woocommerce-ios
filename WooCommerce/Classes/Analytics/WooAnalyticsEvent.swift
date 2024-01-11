@@ -1229,6 +1229,7 @@ extension WooAnalyticsEvent {
             static let state = "state"
             static let amount = "amount"
             static let amountNormalized = "amount_normalized"
+            static let country = "country"
             static let currency = "currency"
             static let paymentMethod = "payment_method"
             static let source = "source"
@@ -1240,6 +1241,7 @@ extension WooAnalyticsEvent {
         static func paymentsFlowCompleted(flow: Flow,
                                           amount: String,
                                           amountNormalized: Int,
+                                          country: CountryCode,
                                           currency: String,
                                           method: PaymentMethod,
                                           orderID: Int64,
@@ -1247,6 +1249,7 @@ extension WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                                                                        Keys.amount: amount,
                                                                        Keys.amountNormalized: amountNormalized,
+                                                                       Keys.country: country.rawValue,
                                                                        Keys.currency: currency,
                                                                        Keys.paymentMethod: method.rawValue,
                                                                        Keys.orderID: orderID]
@@ -1271,10 +1274,16 @@ extension WooAnalyticsEvent {
                                         method: PaymentMethod,
                                         orderID: Int64,
                                         cardReaderType: CardReaderType?,
-                                        millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
-                                                                       Keys.paymentMethod: method.rawValue,
-                                                                       Keys.orderID: orderID]
+                                        millisecondsSinceOrderAddNew: Int64?,
+                                        country: CountryCode,
+                                        currency: String) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.flow: flow.rawValue,
+                Keys.paymentMethod: method.rawValue,
+                Keys.orderID: orderID,
+                Keys.country: country.rawValue,
+                Keys.currency: currency
+            ]
 
             if let cardReaderType = cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue
@@ -2451,18 +2460,6 @@ extension WooAnalyticsEvent {
         enum CreationType: String {
             case manual
             case template
-        }
-
-        /// Tracks when a store is eligible for products onboarding
-        ///
-        static func storeIsEligible() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productsOnboardingEligible, properties: [:])
-        }
-
-        /// Tracks when the call to action is tapped on the products onboarding banner
-        ///
-        static func bannerCTATapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productsOnboardingCTATapped, properties: [:])
         }
 
         /// Trackas when the merchants selects a product creation type.

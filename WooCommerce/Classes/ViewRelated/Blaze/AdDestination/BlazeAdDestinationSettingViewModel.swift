@@ -33,7 +33,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     // View model for the add parameter view.
     var blazeAddParameterViewModel: BlazeAddParameterViewModel {
 
-        // The remaining characters to be used for validation in `BlazeAddParameterViewModel.
+        // The remaining characters to be used for validation in `BlazeAddParameterViewModel`.
         // If more than 1 parameter exist and user is adding a new character, the value should be reduced further by 1.
         // This to take into account the need to add "&" separator character to the new parameter.
         let adjustedRemainingCharacters: Int = {
@@ -112,12 +112,9 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         }
     }
 
-
     private func clearSelectedParameter() {
         selectedParameter =  nil
     }
-
-
 }
 
 private extension BlazeAdDestinationSettingViewModel {

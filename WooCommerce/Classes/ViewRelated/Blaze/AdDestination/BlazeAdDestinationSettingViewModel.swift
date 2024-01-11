@@ -54,7 +54,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
                 if selectedParameter != nil {
                     updateSelectedParameter(newKey: key, newValue: value)
 
-                    // Once a parameter is updated, clear the selected parameter for next add/update action.
+                    // Once a parameter is updated, clear the selected parameter to prepare for the next add/update action.
                     clearSelectedParameter()
                 } else {
                     self.parameters.append(BlazeAdURLParameter(key: key, value: value))

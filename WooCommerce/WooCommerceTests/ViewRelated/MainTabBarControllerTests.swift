@@ -523,6 +523,7 @@ private extension MainTabBarController {
     }
 
     func tabRootViewController(tab: WooTab) -> UIViewController? {
+        // swiftlint:disable:next empty_enum_arguments
         guard let viewController = tabRootViewControllers[safe: tab.visibleIndex()] else {
             XCTFail("Unexpected access to root controller at tab: \(tab)")
             return nil

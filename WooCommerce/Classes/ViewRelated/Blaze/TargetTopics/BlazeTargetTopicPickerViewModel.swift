@@ -3,7 +3,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 
 /// View model for `BlazeTargetTopicPickerView`
-final class BlazeTargetTopicPickerViewModel {
+final class BlazeTargetTopicPickerViewModel: ObservableObject {
 
     @Published var selectedTopics: Set<BlazeTargetTopic>?
     @Published private(set) var syncState = SyncState.syncing
@@ -49,12 +49,12 @@ final class BlazeTargetTopicPickerViewModel {
     }
 
     @MainActor
-    func syncDevices() async {
+    func syncTopics() async {
         syncError = nil
         isSyncingData = true
         do {
             try await withCheckedThrowingContinuation { continuation in
-                stores.dispatch(BlazeAction.synchronizeTargetDevices(siteID: siteID, locale: locale.identifier) { result in
+                stores.dispatch(BlazeAction.synchronizeTargetTopics(siteID: siteID, locale: locale.identifier) { result in
                     switch result {
                     case .success:
                         continuation.resume(returning: Void())

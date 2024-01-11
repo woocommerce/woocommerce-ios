@@ -108,13 +108,13 @@ private extension BlazeTargetLanguagePickerViewModel {
     ///
     func configureDisplayedData() {
         $languages.combineLatest($isSyncingData, $syncError)
-            .map { devices, isSyncing, error -> SyncState in
-                if error != nil, devices.isEmpty {
+            .map { languages, isSyncing, error -> SyncState in
+                if error != nil, languages.isEmpty {
                     return .error
-                } else if isSyncing, devices.isEmpty {
+                } else if isSyncing, languages.isEmpty {
                     return .syncing
                 }
-                return .result(items: devices)
+                return .result(items: languages)
             }
             .assign(to: &$syncState)
 

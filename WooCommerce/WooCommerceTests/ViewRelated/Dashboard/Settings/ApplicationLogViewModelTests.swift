@@ -35,7 +35,7 @@ class ApplicationLogViewModelTests: XCTestCase {
         XCTAssertEqual(model.lines.count, 1)
         let line = model.lines[0]
         XCTAssertNotNil(line.date)
-        XCTAssertEqual(line.dateText, "Jun 7, 2021 at 11:59:46 AM")
+        XCTAssertEqual(line.dateText, "Jun 7, 2021 at 11:59:46 AM")
         XCTAssertEqual(line.text, "🔵 Tracked application_opened")
     }
 

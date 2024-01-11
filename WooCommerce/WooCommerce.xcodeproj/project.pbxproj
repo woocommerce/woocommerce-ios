@@ -2292,6 +2292,7 @@
 		DE7E5E862B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */; };
 		DE7E5E882B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */; };
 		DE7E5E8A2B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */; };
+		DE7E5E8C2B4E9353002E28D2 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E8B2B4E9353002E28D2 /* ErrorStateView.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
@@ -4947,6 +4948,7 @@
 		DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDevicePickerViewModel.swift; sourceTree = "<group>"; };
 		DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDevicePickerView.swift; sourceTree = "<group>"; };
 		DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDeviceViewModelTests.swift; sourceTree = "<group>"; };
+		DE7E5E8B2B4E9353002E28D2 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
 		DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -7888,6 +7890,7 @@
 			isa = PBXGroup;
 			children = (
 				EE3B17B52AA03837004D3E0C /* CelebrationView.swift */,
+				DE7E5E8B2B4E9353002E28D2 /* ErrorStateView.swift */,
 				D449C51926DE6B5000D75B02 /* IconListItem.swift */,
 				D449C51A26DE6B5000D75B02 /* LargeTitle.swift */,
 				D449C51826DE6B5000D75B02 /* ReportList.swift */,
@@ -12974,6 +12977,7 @@
 				DE7842F726F2E9340030C792 /* UIViewController+Connectivity.swift in Sources */,
 				E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */,
 				CCF87BBE279047BC00461C43 /* InfiniteScrollList.swift in Sources */,
+				DE7E5E8C2B4E9353002E28D2 /* ErrorStateView.swift in Sources */,
 				DE63115B2AF1E13200587641 /* WPComLoginCoordinator.swift in Sources */,
 				EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */,
 				D85A3C5226C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift in Sources */,

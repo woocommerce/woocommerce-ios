@@ -723,6 +723,9 @@ final class EditableOrderViewModel: ObservableObject {
 
     func addCustomerAddressToOrder(customer: Customer) {
         let input = Self.createAddressesInputIfPossible(billingAddress: customer.billing, shippingAddress: customer.shipping)
+        // The customer ID needs to be set before the addresses, so that the customer ID doesn't get overridden by the API response (customer_id = 0
+        // by default) from updating the order's addresses remotely.
+        orderSynchronizer.setCustomerID.send(customer.customerID)
         orderSynchronizer.setAddresses.send(input)
         resetAddressForm()
     }

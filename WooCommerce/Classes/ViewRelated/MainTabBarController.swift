@@ -89,7 +89,7 @@ final class MainTabBarController: UITabBarController {
     /// Tab view controllers
     ///
     private let dashboardNavigationController = WooTabNavigationController()
-    private let ordersNavigationController = WooTabNavigationController()
+    private let ordersContainerController = WooTabContainerController()
     private let productsNavigationController = WooTabNavigationController()
     private let reviewsNavigationController = WooTabNavigationController()
     private let hubMenuNavigationController = WooTabNavigationController()
@@ -424,9 +424,9 @@ extension MainTabBarController {
     static func presentOrderCreationFlow() {
         switchToOrdersTab {
             let tabBar = AppDelegate.shared.tabBarController
-            let ordersNavigationController = tabBar?.ordersNavigationController
+            let ordersContainerController = tabBar?.ordersContainerController
 
-            guard let ordersSplitViewWrapperController = ordersNavigationController?.viewControllers.first as? OrdersSplitViewWrapperController else {
+            guard let ordersSplitViewWrapperController = ordersContainerController?.wrappedController as? OrdersSplitViewWrapperController else {
                 return
             }
 
@@ -495,7 +495,7 @@ private extension MainTabBarController {
             controllers.insert(dashboardNavigationController, at: dashboardTabIndex)
 
             let ordersTabIndex = WooTab.orders.visibleIndex()
-            controllers.insert(ordersNavigationController, at: ordersTabIndex)
+            controllers.insert(ordersContainerController, at: ordersTabIndex)
 
             let productsTabIndex = WooTab.products.visibleIndex()
             controllers.insert(productsNavigationController, at: productsTabIndex)
@@ -529,7 +529,7 @@ private extension MainTabBarController {
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
         let ordersViewController = createOrdersViewController(siteID: siteID)
-        ordersNavigationController.viewControllers = [ordersViewController]
+        ordersContainerController.wrappedController = ordersViewController
 
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]
@@ -556,7 +556,9 @@ private extension MainTabBarController {
         if isOrdersSplitViewFeatureFlagOn {
             return OrdersSplitViewWrapperController(siteID: siteID)
         } else {
-            return OrdersRootViewController(siteID: siteID)
+            let rootNavigationController = WooTabNavigationController()
+            rootNavigationController.viewControllers = [OrdersRootViewController(siteID: siteID)]
+            return rootNavigationController
         }
     }
 

@@ -26,7 +26,11 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
 private extension BlazeCampaignCreationFormHostingController {
     func navigateToEditAd() {
-        let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
+        guard let viewModel = viewModel.editAdViewModel else {
+            assertionFailure("Edit ad button should be disabled until image is ready.")
+            return
+        }
+        let vc = BlazeEditAdHostingController(viewModel: viewModel)
         present(vc, animated: true)
     }
 }
@@ -168,7 +172,7 @@ private extension BlazeCampaignCreationForm {
         VStack(spacing: Layout.contentPadding) {
             VStack(alignment: .leading, spacing: Layout.contentMargin) {
                 // Image
-                if viewModel.isDownloadingImage {
+                if viewModel.image == nil {
                     remoteImage
                 } else {
                     localImage
@@ -218,8 +222,8 @@ private extension BlazeCampaignCreationForm {
                     .foregroundColor(.accentColor)
             })
             .buttonStyle(.plain)
-            .redacted(reason: viewModel.isDownloadingImage || viewModel.isLoadingAISuggestions ? .placeholder : [])
-            .shimmering(active: viewModel.isDownloadingImage || viewModel.isLoadingAISuggestions)
+            .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
+            .shimmering(active: !viewModel.canEditAd)
         }
         .padding(Layout.contentPadding)
         .background(Color(uiColor: .systemGray6))
@@ -268,7 +272,7 @@ private extension BlazeCampaignCreationForm {
     }
 
     var localImage: some View {
-        Image(uiImage: viewModel.image.image)
+        Image(uiImage: viewModel.image?.image ?? .blazeProductPlaceholder)
             .resizable()
             .aspectRatio(contentMode: .fill)
             .cornerRadius(Layout.cornerRadius)

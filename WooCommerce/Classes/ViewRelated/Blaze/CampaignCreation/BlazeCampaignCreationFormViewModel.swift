@@ -23,11 +23,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     var onEditAd: (() -> Void)?
 
-    @Published private(set) var isDownloadingImage: Bool = true
     var productImage: URL? {
         product?.imageURL
     }
-    @Published private(set) var image: MediaPickerImage = .init(image: .blazeProductPlaceholder, source: .memory)
+    @Published private(set) var image: MediaPickerImage?
     @Published private(set) var tagline: String = ""
     @Published private(set) var description: String = ""
 
@@ -66,7 +65,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
-    var editAdViewModel: BlazeEditAdViewModel {
+    var editAdViewModel: BlazeEditAdViewModel? {
+        guard let image else {
+            assertionFailure("Product image is not downloaded. Edit ad button should be disabled.")
+            return nil
+        }
         let adData = BlazeEditAdData(image: image,
                                      tagline: tagline,
                                      description: description)
@@ -113,11 +116,12 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var errorState: ErrorState = .none
     private var suggestions: [BlazeAISuggestion] = []
 
+    var canEditAd: Bool {
+        image != nil && !isLoadingAISuggestions
+    }
+
     var canConfirmDetails: Bool {
-        guard !isDownloadingImage else {
-            return false
-        }
-        return tagline.isNotEmpty && description.isNotEmpty
+        image != nil && tagline.isNotEmpty && description.isNotEmpty
     }
 
     /// ResultController to to track the current product count.
@@ -170,11 +174,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     func downloadProductImage() async {
-        isDownloadingImage = true
-        if let productImage = await loadProductImage() {
-            image = productImage
-        }
-        isDownloadingImage = false
+        image = await loadProductImage()
     }
 }
 
@@ -185,7 +185,7 @@ private extension BlazeCampaignCreationFormViewModel {
                 return continuation.resume(returning: nil)
             }
             _ = productImageLoader.requestImage(productImage: firstImage) { image in
-                continuation.resume(returning: .init(image: image, source: .memory))
+                continuation.resume(returning: .init(image: image, source: .productImage(image: firstImage)))
             }
         })
     }

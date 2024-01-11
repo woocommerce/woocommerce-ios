@@ -16,8 +16,8 @@ struct MediaPickerImage: Equatable {
         case asset(asset: PHAsset)
         /// From site media library.
         case media(media: Media)
-        /// From device memory.
-        case memory
+        /// From product image.
+        case productImage(image: ProductImage)
     }
 
     let image: UIImage

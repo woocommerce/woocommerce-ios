@@ -49,7 +49,7 @@ private extension BlazeCampaignDashboardViewHostingController {
     private var productSelectorViewController: ProductSelectorViewController {
         let productSelectorViewModel = ProductSelectorViewModel(
             siteID: viewModel.siteID,
-            purchasableItemsOnly: true,
+            purchasableItemsOnly: false,
             onProductSelectionStateChanged: { [weak self] product in
                 guard let self = self else { return }
 

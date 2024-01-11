@@ -24,7 +24,10 @@ struct BlazeTargetTopicPickerView: View {
                                        allOptionsTitle: Localization.allTitle,
                                        contents: topics,
                                        contentKeyPath: \.name,
-                                       selectedItems: $viewModel.selectedTopics)
+                                       selectedItems: $viewModel.selectedTopics,
+                                       onQueryChanged: { query in
+                        viewModel.searchQuery = query
+                    })
                 case .error:
                     ErrorStateView(title: Localization.errorMessage,
                                    image: .errorImage,

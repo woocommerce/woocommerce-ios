@@ -6,8 +6,10 @@ import protocol Storage.StorageManagerType
 final class BlazeTargetTopicPickerViewModel: ObservableObject {
 
     @Published var selectedTopics: Set<BlazeTargetTopic>?
+    @Published var searchQuery: String = ""
     @Published private(set) var syncState = SyncState.syncing
-    @Published private var topics: [BlazeTargetTopic] = []
+    @Published private var displayedTopics: [BlazeTargetTopic] = []
+    @Published private var fetchedTopics: [BlazeTargetTopic] = []
     @Published private var isSyncingData: Bool = false
     @Published private var syncError: Error?
 
@@ -18,7 +20,7 @@ final class BlazeTargetTopicPickerViewModel: ObservableObject {
     /// Blaze target device ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeTargetTopic> = {
         let predicate = NSPredicate(format: "locale == %@", locale.identifier)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeTargetTopic.id, ascending: true)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeTargetTopic.name, ascending: true)
         let resultsController = ResultsController<StorageBlazeTargetTopic>(storageManager: storageManager,
                                                                            matching: predicate,
                                                                            sortedBy: [sortDescriptorByID])
@@ -94,20 +96,36 @@ private extension BlazeTargetTopicPickerViewModel {
     }
 
     func updateResults() {
-        topics = resultsController.fetchedObjects
+        fetchedTopics = resultsController.fetchedObjects
     }
 
     func configureSyncState() {
-        $topics.combineLatest($isSyncingData, $syncError)
-            .map { topics, isSyncing, error -> SyncState in
-                if error != nil, topics.isEmpty {
+        $fetchedTopics.combineLatest($displayedTopics, $isSyncingData, $syncError)
+            .map { fetchedTopics, displayedTopics, isSyncing, error -> SyncState in
+                if error != nil, fetchedTopics.isEmpty {
                     return .error
-                } else if isSyncing, topics.isEmpty {
+                } else if isSyncing, fetchedTopics.isEmpty {
                     return .syncing
                 }
-                return .result(items: topics)
+                return .result(items: displayedTopics)
             }
             .assign(to: &$syncState)
+
+        $fetchedTopics
+            .prefix(1) // first fetch result is displayed immediately, ignoring the empty search query
+            .assign(to: &$displayedTopics)
+
+        $searchQuery
+            .dropFirst() // ignores initial value
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .combineLatest($fetchedTopics)
+            .map { query, topics in
+                guard query.isNotEmpty else {
+                    return topics
+                }
+                return topics.filter { $0.name.lowercased().contains(query.lowercased()) }
+            }
+            .assign(to: &$displayedTopics)
     }
 }
 

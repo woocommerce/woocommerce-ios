@@ -7,7 +7,6 @@ struct BlazeAddParameterView: View {
 
     @ObservedObject private var viewModel: BlazeAddParameterViewModel
 
-
     init(viewModel: BlazeAddParameterViewModel) {
         self.viewModel = viewModel
     }
@@ -16,8 +15,9 @@ struct BlazeAddParameterView: View {
         NavigationView {
             List {
                 Section {
-                    HStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
                         Text(Localization.keyTitle)
+                            .fixedSize()
                             .frame(width: Layout.keyWidth, alignment: .leading)
                         TextField(Localization.keyLabel, text: $viewModel.key)
                     }
@@ -25,8 +25,9 @@ struct BlazeAddParameterView: View {
                         viewModel.validateInputs()
                     }
 
-                    HStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
                         Text(Localization.valueTitle)
+                            .fixedSize()
                             .frame(width: Layout.keyWidth, alignment: .leading)
                         TextField(Localization.valueLabel, text: $viewModel.value)
                     }

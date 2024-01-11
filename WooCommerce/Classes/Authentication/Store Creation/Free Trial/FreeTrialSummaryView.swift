@@ -103,10 +103,9 @@ struct FreeTrialSummaryView: View {
                             Image(uiImage: .freeTrialIllustration)
                         }
                         Spacer()
-                    }
-                    .background(Color(.listBackground))
-                )
+                    })
             }
+            .background(Color(.listBackground))
 
             // Continue Footer
             VStack() {
@@ -126,6 +125,7 @@ struct FreeTrialSummaryView: View {
 
                 Text(Localization.noCardRequired)
                     .subheadlineStyle()
+                    .padding(.bottom, Layout.titleSpacing)
             }
             .background(Color(.listForeground(modal: false)))
         }

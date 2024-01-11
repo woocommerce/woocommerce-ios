@@ -53,6 +53,23 @@ final class BlazeCampaignListViewModel: ObservableObject {
         return resultsController
     }()
 
+    // When there's multiple products in the site, campaign creation flow should open product selector View first.
+    var shouldShowProductSelectorView: Bool {
+        return productResultsController.numberOfObjects > 1
+    }
+
+    /// Product ResultsController.
+    /// Fetch limit is set to 2 to check if there's multiple products in the site, without having to fetch all products.
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@",
+                                    siteID,
+                                    ProductStatus.published.rawValue)
+        return ResultsController<StorageProduct>(storageManager: storageManager,
+                                                 matching: predicate,
+                                                 fetchLimit: 2,
+                                                 sortOrder: .dateDescending)
+    }()
+
     init(siteID: Int64,
          siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
@@ -134,9 +151,16 @@ private extension BlazeCampaignListViewModel {
         resultsController.onDidResetContent = { [weak self] in
             self?.updateResults()
         }
+        productResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        productResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
 
         do {
             try resultsController.performFetch()
+            try productResultsController.performFetch()
             updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)

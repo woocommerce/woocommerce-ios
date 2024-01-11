@@ -21,6 +21,12 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
         comment: "Placeholder in the search bar of a multiple selection list"
     )
 
+    private let searchResultHeader = NSLocalizedString(
+        "multipleSelectionList.searchResults",
+        value: "Search results",
+        comment: "Header for the search result section on a a multiple selection list"
+    )
+
     init(headerMessage: String? = nil,
          allOptionsTitle: String? = nil,
          contents: [T],
@@ -43,7 +49,7 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
 
             List {
                 Section {
-                    if let allOptionsTitle {
+                    if let allOptionsTitle, query.isEmpty {
                         HStack {
                             Text(allOptionsTitle)
                             Spacer()
@@ -60,7 +66,9 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                         }
                     }
                 } header: {
-                    Text(headerMessage ?? "")
+                    if let headerMessage, query.isEmpty {
+                        Text(headerMessage)
+                    }
                 }
 
                 Section {
@@ -76,6 +84,9 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                             toggleItem(item)
                         }
                     }
+                } header: {
+                    Text(searchResultHeader)
+                        .renderedIf(query.isNotEmpty)
                 }
             }
             .listStyle(.grouped)

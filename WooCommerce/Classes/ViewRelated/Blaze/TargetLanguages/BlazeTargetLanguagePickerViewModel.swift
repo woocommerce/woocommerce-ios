@@ -5,16 +5,26 @@ import protocol Storage.StorageManagerType
 /// View model for `BlazeTargetLanguagePickerView`
 final class BlazeTargetLanguagePickerViewModel: ObservableObject {
 
+    @Published var selectedLanguages: Set<BlazeTargetLanguage>?
     @Published var searchQuery: String = ""
+    @Published private(set) var syncState = SyncState.syncing
+
     /// Languages to be displayed after filtering with `searchQuery` if available.
-    @Published private(set) var languages: [BlazeTargetLanguage] = []
+    @Published private var languages: [BlazeTargetLanguage] = []
     @Published private var fetchedLanguages: [BlazeTargetLanguage] = []
+
+    @Published private var isSyncingData: Bool = false
+    @Published private var syncError: Error?
 
     private let siteID: Int64
     private let locale: Locale
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let onSelection: (Set<BlazeTargetLanguage>?) -> Void
+
+    var shouldDisableSaveButton: Bool {
+        selectedLanguages?.isEmpty == true || syncState == .error || syncState == .syncing
+    }
 
     /// Blaze target language ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeTargetLanguage> = {
@@ -27,11 +37,13 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
+         selectedLanguages: Set<BlazeTargetLanguage>? = nil,
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          onSelection: @escaping (Set<BlazeTargetLanguage>?) -> Void) {
         self.siteID = siteID
+        self.selectedLanguages = selectedLanguages
         self.locale = locale
         self.stores = stores
         self.storageManager = storageManager
@@ -43,6 +55,8 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
 
     @MainActor
     func syncLanguages() async {
+        syncError = nil
+        isSyncingData = true
         do {
             try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(BlazeAction.synchronizeTargetLanguages(siteID: siteID, locale: locale.identifier) { result in
@@ -56,10 +70,12 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
             }
         } catch {
             DDLogError("⛔️ Error syncing Blaze target languages: \(error)")
+            syncError = error
         }
+        isSyncingData = false
     }
 
-    func confirmSelection(_ selectedLanguages: Set<BlazeTargetLanguage>?) {
+    func confirmSelection() {
         onSelection(selectedLanguages)
     }
 }
@@ -91,6 +107,17 @@ private extension BlazeTargetLanguagePickerViewModel {
     /// and display the first fetch result immediately.
     ///
     func configureDisplayedData() {
+        $languages.combineLatest($isSyncingData, $syncError)
+            .map { languages, isSyncing, error -> SyncState in
+                if error != nil, languages.isEmpty {
+                    return .error
+                } else if isSyncing, languages.isEmpty {
+                    return .syncing
+                }
+                return .result(items: languages)
+            }
+            .assign(to: &$syncState)
+
         $fetchedLanguages
             .prefix(1) // first fetch result is displayed immediately, ignoring the empty search query
             .assign(to: &$languages)
@@ -106,5 +133,13 @@ private extension BlazeTargetLanguagePickerViewModel {
                 return languages.filter { $0.name.lowercased().contains(query.lowercased()) }
             }
             .assign(to: &$languages)
+    }
+}
+
+extension BlazeTargetLanguagePickerViewModel {
+    enum SyncState: Equatable {
+        case syncing
+        case result(items: [BlazeTargetLanguage])
+        case error
     }
 }

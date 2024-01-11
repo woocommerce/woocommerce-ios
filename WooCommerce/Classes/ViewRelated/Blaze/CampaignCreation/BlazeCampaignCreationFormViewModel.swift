@@ -75,14 +75,14 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel {
-        BlazeTargetLanguagePickerViewModel(siteID: siteID) { [weak self] selectedLanguages in
+        BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
             self?.languages = selectedLanguages
             self?.updateTargetLanguagesText()
         }
     }
 
     var targetDeviceViewModel: BlazeTargetDevicePickerViewModel {
-        BlazeTargetDevicePickerViewModel(siteID: siteID) { [weak self] selectedDevices in
+        BlazeTargetDevicePickerViewModel(siteID: siteID, selectedDevices: devices) { [weak self] selectedDevices in
             self?.devices = selectedDevices
             self?.updateTargetDevicesText()
         }

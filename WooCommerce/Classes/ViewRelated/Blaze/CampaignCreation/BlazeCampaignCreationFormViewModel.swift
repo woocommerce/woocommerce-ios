@@ -113,7 +113,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         return product
     }
 
-    @Published private(set) var errorState: ErrorState = .none
+    @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
 
     var canEditAd: Bool {
@@ -184,7 +184,7 @@ private extension BlazeCampaignCreationFormViewModel {
 extension BlazeCampaignCreationFormViewModel {
     func loadAISuggestions() async {
         isLoadingAISuggestions = true
-        errorState = .none
+        error = nil
 
         do {
             suggestions = try await fetchAISuggestions()
@@ -194,7 +194,7 @@ extension BlazeCampaignCreationFormViewModel {
             }
         } catch {
             DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
-            errorState = .fetchingAISuggestions
+            self.error = .failedToLoadAISuggestions
         }
 
         isLoadingAISuggestions = false
@@ -264,18 +264,8 @@ private extension BlazeCampaignCreationFormViewModel {
 }
 
 extension BlazeCampaignCreationFormViewModel {
-    enum ErrorState: Equatable {
-        case none
-        case fetchingAISuggestions
-
-        var errorMessage: String {
-            switch self {
-            case .none:
-                return ""
-            case .fetchingAISuggestions:
-                return Localization.ErrorMessage.fetchingAISuggestions
-            }
-        }
+    enum BlazeCampaignCreationError: Error {
+        case failedToLoadAISuggestions
     }
 }
 
@@ -304,12 +294,5 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "All",
             comment: "Text indicating all targets for a Blaze campaign"
         )
-        enum ErrorMessage {
-            static let fetchingAISuggestions = NSLocalizedString(
-                "blazeCampaignCreationFormViewModel.fetchingAISuggestions",
-                value: "Failed to load suggestions for tagline and description",
-                comment: "Error message indicating that loading suggestions for tagline and description failed"
-            )
-        }
     }
 }

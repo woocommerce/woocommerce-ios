@@ -72,15 +72,15 @@ private extension BlazeCampaignDashboardViewHostingController {
     /// Handles navigation to the campaign creation view.
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-            guard let productID else {
-                return navigateToBlazeProductSelector(source: source)
-            }
-
-            /// If there are multiple products available, Blaze product selector view will be shown first.
-            if viewModel.shouldShowProductSelectorView {
-                navigateToBlazeProductSelector(source: source)
-            } else {
+            if let productID {
                 navigateToNativeCampaignCreation(source: source, productID: productID)
+            } else if viewModel.shouldShowProductSelectorView {
+                navigateToBlazeProductSelector(source: source)
+            } else if let product = viewModel.latestPublishedProduct {
+                navigateToNativeCampaignCreation(source: source, productID: product.productID)
+            } else {
+                // Navigate to product selector as we don't have a product ID
+                navigateToBlazeProductSelector(source: source)
             }
         } else {
             navigateToWebCampaignCreation(source: source, productID: productID)

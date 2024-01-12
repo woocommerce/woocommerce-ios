@@ -139,6 +139,7 @@ private extension BlazeCampaignItemView {
 struct BlazeCampaignItemView_Previews: PreviewProvider {
     static let campaign: BlazeCampaign = .init(siteID: 123,
                                                campaignID: 11,
+                                               productID: 33,
                                                productURL: "https://example.com",
                                                name: "Fluffy bunny pouch",
                                                uiStatus: BlazeCampaign.Status.finished.rawValue,

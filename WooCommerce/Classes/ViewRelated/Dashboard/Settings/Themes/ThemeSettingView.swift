@@ -71,6 +71,7 @@ struct ThemeSettingView: View {
                 viewModel.trackViewAppear()
             }
         }
+        .navigationViewStyle(.stack)
     }
 }
 

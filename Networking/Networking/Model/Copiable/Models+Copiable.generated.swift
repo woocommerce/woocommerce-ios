@@ -180,7 +180,6 @@ extension Networking.BlazeCampaign {
         siteID: CopiableProp<Int64> = .copy,
         campaignID: CopiableProp<Int64> = .copy,
         productID: NullableCopiableProp<Int64> = .copy,
-        productURL: CopiableProp<String> = .copy,
         name: CopiableProp<String> = .copy,
         uiStatus: CopiableProp<String> = .copy,
         contentImageURL: NullableCopiableProp<String> = .copy,
@@ -192,7 +191,6 @@ extension Networking.BlazeCampaign {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
         let productID = productID ?? self.productID
-        let productURL = productURL ?? self.productURL
         let name = name ?? self.name
         let uiStatus = uiStatus ?? self.uiStatus
         let contentImageURL = contentImageURL ?? self.contentImageURL
@@ -205,7 +203,6 @@ extension Networking.BlazeCampaign {
             siteID: siteID,
             campaignID: campaignID,
             productID: productID,
-            productURL: productURL,
             name: name,
             uiStatus: uiStatus,
             contentImageURL: contentImageURL,

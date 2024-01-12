@@ -89,7 +89,15 @@ final class MainTabBarController: UITabBarController {
     /// Tab view controllers
     ///
     private let dashboardNavigationController = WooTabNavigationController()
+    private let ordersContainerController = TabContainerController()
+
+    /// Unfortunately, we can't use the above container to directly hold a WooTabNavigationController, due to
+    /// a longstanding bug where a black bar equal to the tab bar height is shown when a nav controller
+    /// is shown as an embedded vc in a tab. See link for details, but the solutions don't work here.
+    /// https://stackoverflow.com/questions/28608817/uinavigationcontroller-embedded-in-a-container-view-displays-a-table-view-contr
+    // remove when .splitViewInOrdersTab is removed.
     private let ordersNavigationController = WooTabNavigationController()
+
     private let productsNavigationController = WooTabNavigationController()
     private let reviewsNavigationController = WooTabNavigationController()
     private let hubMenuNavigationController = WooTabNavigationController()
@@ -424,9 +432,9 @@ extension MainTabBarController {
     static func presentOrderCreationFlow() {
         switchToOrdersTab {
             let tabBar = AppDelegate.shared.tabBarController
-            let ordersNavigationController = tabBar?.ordersNavigationController
+            let ordersContainerController = tabBar?.ordersContainerController
 
-            guard let ordersSplitViewWrapperController = ordersNavigationController?.viewControllers.first as? OrdersSplitViewWrapperController else {
+            guard let ordersSplitViewWrapperController = ordersContainerController?.wrappedController as? OrdersSplitViewWrapperController else {
                 return
             }
 
@@ -495,7 +503,11 @@ private extension MainTabBarController {
             controllers.insert(dashboardNavigationController, at: dashboardTabIndex)
 
             let ordersTabIndex = WooTab.orders.visibleIndex()
-            controllers.insert(ordersNavigationController, at: ordersTabIndex)
+            if isOrdersSplitViewFeatureFlagOn {
+                controllers.insert(ordersContainerController, at: ordersTabIndex)
+            } else {
+                controllers.insert(ordersNavigationController, at: ordersTabIndex)
+            }
 
             let productsTabIndex = WooTab.products.visibleIndex()
             controllers.insert(productsNavigationController, at: productsTabIndex)
@@ -529,7 +541,11 @@ private extension MainTabBarController {
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
         let ordersViewController = createOrdersViewController(siteID: siteID)
-        ordersNavigationController.viewControllers = [ordersViewController]
+        if isOrdersSplitViewFeatureFlagOn {
+            ordersContainerController.wrappedController = ordersViewController
+        } else {
+            ordersNavigationController.viewControllers = [ordersViewController]
+        }
 
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]

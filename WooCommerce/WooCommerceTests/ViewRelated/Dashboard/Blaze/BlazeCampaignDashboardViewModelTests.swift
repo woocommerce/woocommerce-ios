@@ -452,7 +452,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldRedactView)
     }
 
-    func test_shouldRedactView_is_true_after_reload_finishes_when_only_non_purchasable_product_available() async {
+    // Creating Blaze campaign for non-purchasable product is allowed.
+    func test_shouldRedactView_is_false_after_reload_finishes_when_only_non_purchasable_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
@@ -471,7 +472,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
 
         // Then
-        XCTAssertTrue(sut.shouldRedactView)
+        XCTAssertFalse(sut.shouldRedactView)
     }
 
     // MARK: `shouldShowShowAllCampaignsButton`

@@ -26,9 +26,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private var stores: MockStoresManager!
+
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        stores = MockStoresManager(sessionManager: .testingInstance)
     }
 
     // MARK: Initial values
@@ -71,16 +74,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    productID: sampleProductID,
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [sampleProductImage]))
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            guard let self = self else { return }
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success(sampleAISuggestions))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess(sampleAISuggestions)
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
         imageLoader.requestImageStubbedResponse = sampleImage
@@ -107,16 +101,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    productID: sampleProductID,
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [.fake()]))
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            guard let self = self else { return }
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success(sampleAISuggestions))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess(sampleAISuggestions)
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
         imageLoader.requestImageStubbedResponse = sampleImage
@@ -145,16 +130,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    productID: sampleProductID,
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [.fake()]))
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            guard let self = self else { return }
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success(sampleAISuggestions))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess(sampleAISuggestions)
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
         imageLoader.requestImageStubbedResponse = sampleImage
@@ -182,15 +158,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    productID: sampleProductID,
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [.fake()]))
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.failure(MockError()))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockDomainSuggestionsFailure(MockError())
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
         imageLoader.requestImageStubbedResponse = sampleImage
@@ -216,16 +184,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    productID: sampleProductID,
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [])) // Product has no image
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            guard let self = self else { return }
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success(sampleAISuggestions))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess(sampleAISuggestions)
         let imageLoader = MockProductUIImageLoader()
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -247,7 +206,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     func test_loadAISuggestions_sends_correct_product_ID_to_fetch() async throws {
         // Given
         var expectedProductID: Int64?
-        let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             guard let self = self else { return }
             switch action {
@@ -272,16 +230,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_tagline_and_description_upon_success() async throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            guard let self = self else { return }
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success(sampleAISuggestions))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess(sampleAISuggestions)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -298,15 +247,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_error_if_request_fails() async throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.failure(MockError()))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockDomainSuggestionsFailure(MockError())
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -321,15 +262,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_error_if_no_suggestions_available() async throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success([]))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess([])
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -350,16 +283,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    productID: sampleProductID,
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [])) // Product has no image
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            guard let self = self else { return }
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success(sampleAISuggestions))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess(sampleAISuggestions)
         let imageLoader = MockProductUIImageLoader()
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -385,16 +309,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    productID: sampleProductID,
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [.fake()]))
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success([BlazeAISuggestion(siteName: "", // Empty tagline
-                                                       textSnippet: "Description")]))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "", // Empty tagline
+                                                    textSnippet: "Description")])
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
         imageLoader.requestImageStubbedResponse = sampleImage
@@ -422,16 +338,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    productID: sampleProductID,
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [.fake()]))
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case let .fetchAISuggestions(_, _, completion):
-                completion(.success([BlazeAISuggestion(siteName: "Tagline",
-                                                       textSnippet: "")]))  // Empty description
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
+        mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "Tagline",
+                                                   textSnippet: "")])  // Empty description
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
         imageLoader.requestImageStubbedResponse = sampleImage
@@ -489,5 +397,30 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
 
     func requestImage(asset: PHAsset, targetSize: CGSize, skipsDegradedImage: Bool, completion: @escaping (UIImage) -> Void) {
         // no-op
+    }
+}
+
+private extension BlazeCampaignCreationFormViewModelTests {
+    func mockAISuggestionsSuccess(_ suggestions: [BlazeAISuggestion]) {
+        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
+            guard let self = self else { return }
+            switch action {
+            case let .fetchAISuggestions(_, _, completion):
+                completion(.success(suggestions))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+    }
+
+    func mockDomainSuggestionsFailure(_ error: Error) {
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchAISuggestions(_, _, completion):
+                completion(.failure(error))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
     }
 }

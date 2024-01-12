@@ -72,6 +72,10 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
         budgetCents = try container.decode(Double.self, forKey: .budgetCents)
 
         let targetUrn = try container.decode(String.self, forKey: .targetUrn)
+        /// Extracts the product ID from the `target_urn` response.
+        /// The response looks like the following: `urn:wpcom:post:1:134`
+        /// The product ID is the last number following the colon in the response (`134`).
+        /// If the product ID cannot be extracted, it returns null instead.
         productID = Int64(String(targetUrn.split(separator: ":").last ?? ""))
 
         let content = try container.decode(ContentConfig.self, forKey: .contentConfig)

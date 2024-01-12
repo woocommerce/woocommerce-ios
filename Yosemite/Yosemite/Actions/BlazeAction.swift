@@ -98,5 +98,5 @@ public enum BlazeAction: Action {
     ///
     case fetchAISuggestions(siteID: Int64,
                             productID: Int64,
-                              onCompletion: (Result<[BlazeAISuggestion], Error>) -> Void)
+                            onCompletion: (Result<[BlazeAISuggestion], Error>) -> Void)
 }

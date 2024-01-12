@@ -487,17 +487,18 @@ platform :ios do
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
 
-    UI.message('Checking app strings translation status...')
-    check_translation_progress(
-      glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
-      abort_on_violations: false
-    )
+    # Don't check translation coverage for now since we are finalizing the release in CI
+    # UI.message('Checking app strings translation status...')
+    # check_translation_progress(
+    #   glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
+    #   abort_on_violations: false
+    # )
 
-    UI.message('Checking release notes strings translation status...')
-    check_translation_progress(
-      glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-      abort_on_violations: false
-    )
+    # UI.message('Checking release notes strings translation status...')
+    # check_translation_progress(
+    #   glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
+    #   abort_on_violations: false
+    # )
 
     download_localized_strings_and_metadata_from_glotpress
     lint_localizations

@@ -134,7 +134,7 @@ struct BlazeCampaignCreationForm: View {
         }
         .sheet(isPresented: $isShowingAdDestinationScreen) {
             BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
-            }
+        }
         .sheet(isPresented: $isShowingDevicePicker) {
             BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel) {
                 isShowingDevicePicker = false
@@ -144,6 +144,7 @@ struct BlazeCampaignCreationForm: View {
             BlazeTargetTopicPickerView(viewModel: viewModel.targetTopicViewModel) {
                 isShowingTopicPicker = false
             }
+        }
         .onChange(of: viewModel.error) { newValue in
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }

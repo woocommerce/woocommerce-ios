@@ -52,6 +52,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingLanguagePicker = false
     @State private var isShowingAdDestinationScreen = false
     @State private var isShowingDevicePicker = false
+    @State private var isShowingTopicPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
@@ -96,8 +97,8 @@ struct BlazeCampaignCreationForm: View {
                     divider
 
                     // Interests
-                    detailView(title: Localization.interests, content: "Sports, Styles & Fashion, Travel, Shopping") {
-                        // TODO: open interests screen
+                    detailView(title: Localization.interests, content: viewModel.targetTopicText) {
+                        isShowingTopicPicker = true
                     }
                 }
                 .overlay { roundedRectangleBorder }
@@ -133,10 +134,15 @@ struct BlazeCampaignCreationForm: View {
         }
         .sheet(isPresented: $isShowingAdDestinationScreen) {
             BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
-            }
+        }
         .sheet(isPresented: $isShowingDevicePicker) {
             BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel) {
                 isShowingDevicePicker = false
+            }
+        }
+        .sheet(isPresented: $isShowingTopicPicker) {
+            BlazeTargetTopicPickerView(viewModel: viewModel.targetTopicViewModel) {
+                isShowingTopicPicker = false
             }
         }
         .onChange(of: viewModel.error) { newValue in

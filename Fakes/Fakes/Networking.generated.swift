@@ -259,7 +259,7 @@ extension Networking.BlazeTargetTopic {
     public static func fake() -> Networking.BlazeTargetTopic {
         .init(
             id: .fake(),
-            description: .fake(),
+            name: .fake(),
             locale: .fake()
         )
     }

@@ -36,9 +36,9 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(list, [
-            .init(id: "IAB1", description: "Arts & Entertainment", locale: "vi"),
-            .init(id: "IAB2", description: "Automotive", locale: "vi"),
-            .init(id: "IAB3", description: "Business", locale: "vi")
+            .init(id: "IAB1", name: "Arts & Entertainment", locale: "vi"),
+            .init(id: "IAB2", name: "Automotive", locale: "vi"),
+            .init(id: "IAB3", name: "Business", locale: "vi")
         ])
     }
 

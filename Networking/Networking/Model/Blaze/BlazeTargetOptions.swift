@@ -72,15 +72,15 @@ public struct BlazeTargetTopic: Decodable, Equatable, Identifiable, Hashable, Ge
     /// ID of the topic.
     public let id: String
 
-    /// Description of the topic.
-    public let description: String
+    /// Name of the topic.
+    public let name: String
 
     /// Locale of the topic name
     public let locale: String
 
-    public init(id: String, description: String, locale: String) {
+    public init(id: String, name: String, locale: String) {
         self.id = id
-        self.description = description
+        self.name = name
         self.locale = locale
     }
 
@@ -88,12 +88,12 @@ public struct BlazeTargetTopic: Decodable, Equatable, Identifiable, Hashable, Ge
         self.locale = decoder.userInfo[.locale] as? String ?? "en"
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
-        self.description = try container.decode(String.self, forKey: .description)
+        self.name = try container.decode(String.self, forKey: .name)
     }
 
     private enum CodingKeys: CodingKey {
         case id
-        case description
+        case name
     }
 }
 

@@ -98,9 +98,17 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
+    var targetTopicViewModel: BlazeTargetTopicPickerViewModel {
+        BlazeTargetTopicPickerViewModel(siteID: siteID, selectedTopics: pageTopics) { [weak self] topics in
+            self?.pageTopics = topics
+            self?.updateTargetTopicText()
+        }
+    }
+
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""
+    @Published private(set) var targetTopicText: String = ""
 
     // AI Suggestions
     @Published private(set) var isLoadingAISuggestions: Bool = true
@@ -153,6 +161,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateBudgetDetails()
         updateTargetLanguagesText()
         updateTargetDevicesText()
+        updateTargetTopicText()
     }
 
     func didTapEditAd() {
@@ -256,6 +265,18 @@ private extension BlazeCampaignCreationFormViewModel {
                 return Localization.all
             }
             return devices
+                .map { $0.name }
+                .sorted()
+                .joined(separator: ", ")
+        }()
+    }
+
+    func updateTargetTopicText() {
+        targetTopicText = {
+            guard let pageTopics, pageTopics.isEmpty == false else {
+                return Localization.all
+            }
+            return pageTopics
                 .map { $0.name }
                 .sorted()
                 .joined(separator: ", ")

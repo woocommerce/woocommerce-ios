@@ -73,7 +73,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
 
     func test_result_state_contains_only_topics_matching_given_locale() {
         // Given
-        let topic = BlazeTargetTopic(id: "test", name: "Test", locale: "en")
+        let topic = BlazeTargetTopic(id: "test", name: "Test", locale: locale.identifier)
         let topicVi = BlazeTargetTopic(id: "test", name: "Test", locale: "vi")
         insertTopic(topic)
         insertTopic(topicVi)
@@ -113,7 +113,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
 
     func test_state_is_result_when_there_is_cached_data() async {
         // Given
-        let topic = BlazeTargetTopic(id: "test", name: "Test", locale: "en")
+        let topic = BlazeTargetTopic(id: "test", name: "Test", locale: locale.identifier)
         insertTopic(topic)
         let viewModel = BlazeTargetTopicPickerViewModel(siteID: sampleSiteID,
                                                         locale: locale,
@@ -139,7 +139,7 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
 
     func test_save_button_is_enabled_when_selectedTopics_is_not_empty_and_syncState_is_result() {
         // Given
-        let topic = BlazeTargetTopic(id: "test", name: "Test", locale: "en")
+        let topic = BlazeTargetTopic(id: "test", name: "Test", locale: locale.identifier)
         insertTopic(topic)
         let viewModel = BlazeTargetTopicPickerViewModel(siteID: sampleSiteID,
                                                         locale: locale,

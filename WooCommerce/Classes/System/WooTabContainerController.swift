@@ -4,7 +4,7 @@ import UIKit
 /// Provided as an alternative to `WooTabNavigationController`, for root controllers which should not be in a nav view
 /// For example, a Split View, which will not work correctly on iPhone when wrapped in a navigation view.
 /// This wraps a controller which can be replaced when the selected site changes.
-class WooTabContainerController: UIViewController {
+final class TabContainerController: UIViewController {
     var wrappedController: UIViewController? {
         willSet {
             wrappedController?.willMove(toParent: nil)

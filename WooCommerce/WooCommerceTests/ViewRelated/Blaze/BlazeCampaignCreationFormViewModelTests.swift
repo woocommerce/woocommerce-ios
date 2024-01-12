@@ -382,8 +382,7 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
 
 private extension BlazeCampaignCreationFormViewModelTests {
     func mockAISuggestionsSuccess(_ suggestions: [BlazeAISuggestion]) {
-        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            guard let self = self else { return }
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchAISuggestions(_, _, completion):
                 completion(.success(suggestions))

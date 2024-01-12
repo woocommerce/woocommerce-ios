@@ -1229,6 +1229,7 @@ extension WooAnalyticsEvent {
             static let state = "state"
             static let amount = "amount"
             static let amountNormalized = "amount_normalized"
+            static let country = "country"
             static let currency = "currency"
             static let paymentMethod = "payment_method"
             static let source = "source"
@@ -1240,6 +1241,7 @@ extension WooAnalyticsEvent {
         static func paymentsFlowCompleted(flow: Flow,
                                           amount: String,
                                           amountNormalized: Int,
+                                          country: CountryCode,
                                           currency: String,
                                           method: PaymentMethod,
                                           orderID: Int64,
@@ -1247,6 +1249,7 @@ extension WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                                                                        Keys.amount: amount,
                                                                        Keys.amountNormalized: amountNormalized,
+                                                                       Keys.country: country.rawValue,
                                                                        Keys.currency: currency,
                                                                        Keys.paymentMethod: method.rawValue,
                                                                        Keys.orderID: orderID]
@@ -1258,23 +1261,37 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .paymentsFlowCompleted, properties: properties)
         }
 
-        static func paymentsFlowCanceled(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowCanceled, properties: [Keys.flow: flow.rawValue])
+        static func paymentsFlowCanceled(flow: Flow, country: CountryCode, currency: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowCanceled, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.country: country.rawValue,
+                Keys.currency: currency
+            ])
         }
 
-        static func paymentsFlowFailed(flow: Flow, source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowFailed, properties: [Keys.flow: flow.rawValue,
-                                                                          Keys.source: source.rawValue])
+        static func paymentsFlowFailed(flow: Flow, source: Source, country: CountryCode, currency: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsFlowFailed, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.source: source.rawValue,
+                Keys.country: country.rawValue,
+                Keys.currency: currency
+            ])
         }
 
         static func paymentsFlowCollect(flow: Flow,
                                         method: PaymentMethod,
                                         orderID: Int64,
                                         cardReaderType: CardReaderType?,
-                                        millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
-                                                                       Keys.paymentMethod: method.rawValue,
-                                                                       Keys.orderID: orderID]
+                                        millisecondsSinceOrderAddNew: Int64?,
+                                        country: CountryCode,
+                                        currency: String) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.flow: flow.rawValue,
+                Keys.paymentMethod: method.rawValue,
+                Keys.orderID: orderID,
+                Keys.country: country.rawValue,
+                Keys.currency: currency
+            ]
 
             if let cardReaderType = cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue

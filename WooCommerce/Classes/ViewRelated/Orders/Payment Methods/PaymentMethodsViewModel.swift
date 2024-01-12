@@ -388,6 +388,7 @@ private extension PaymentMethodsViewModel {
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow,
                                                                                     amount: formattedTotal,
                                                                                     amountNormalized: amountInSmallestUnit,
+                                                                                    country: cardPresentPaymentsConfiguration.countryCode,
                                                                                     currency: currencySettings.currencyCode.rawValue,
                                                                                     method: method,
                                                                                     orderID: orderID,
@@ -397,13 +398,18 @@ private extension PaymentMethodsViewModel {
     /// Tracks the `paymentsFlowFailed` event.
     ///
     func trackFlowFailed() {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: flow, source: .paymentMethod))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: flow,
+                                                                                 source: .paymentMethod,
+                                                                                 country: cardPresentPaymentsConfiguration.countryCode,
+                                                                                 currency: currencySettings.currencyCode.rawValue))
     }
 
     /// Tracks the `paymentsFlowCanceled` event.
     ///
     func trackFlowCanceled() {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: flow))
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: flow,
+                                                                                   country: cardPresentPaymentsConfiguration.countryCode,
+                                                                                   currency: currencySettings.currencyCode.rawValue))
     }
 
     /// Tracks `paymentsFlowCollect` event.
@@ -416,7 +422,9 @@ private extension PaymentMethodsViewModel {
                                                                                   orderID: orderID,
                                                                                   cardReaderType: cardReaderType,
                                                                                   millisecondsSinceOrderAddNew:
-                                                                                    try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
+                                                                                    try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
+                                                                                  country: cardPresentPaymentsConfiguration.countryCode,
+                                                                                  currency: currencySettings.currencyCode.rawValue))
     }
 }
 

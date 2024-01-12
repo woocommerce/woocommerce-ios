@@ -81,7 +81,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
                                                  sortOrder: .dateDescending)
     }()
 
-    private var latestPublishedProduct: Product? {
+    var latestPublishedProduct: Product? {
         productResultsController.fetchedObjects.first
     }
 

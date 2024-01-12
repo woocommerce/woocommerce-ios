@@ -609,6 +609,54 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Fetching AI suggestions
+
+    func test_fetchAISuggestions_returns_suggestions_when_fetching_successfully() throws {
+        // Given
+        let suggestions = [BlazeAISuggestion(siteName: "Name 1", textSnippet: "Description 1"),
+                           BlazeAISuggestion(siteName: "Name 2", textSnippet: "Description 2")]
+        remote.whenFetchingAISuggestionsResult(thenReturn: .success(suggestions))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchAISuggestions(siteID: self.sampleSiteID,
+                                                          productID: 123,
+                                                          onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let value = try result.get()
+        XCTAssertEqual(value, suggestions)
+    }
+
+    func test_fetchAISuggestions_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingAISuggestionsResult(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchAISuggestions(siteID: self.sampleSiteID,
+                                                          productID: 123,
+                                                          onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }
 
 private extension BlazeStoreTests {

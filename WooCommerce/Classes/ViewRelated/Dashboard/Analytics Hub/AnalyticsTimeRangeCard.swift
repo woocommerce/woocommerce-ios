@@ -37,10 +37,10 @@ struct AnalyticsTimeRangeCard: View {
     var body: some View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
-                SelectionList(title: Localization.timeRangeSelectionTitle,
-                              items: Range.allCases,
-                              contentKeyPath: \.description,
-                              selected: internalSelectionBinding()) { selection in
+                SingleSelectionList(title: Localization.timeRangeSelectionTitle,
+                                    items: Range.allCases,
+                                    contentKeyPath: \.description,
+                                    selected: internalSelectionBinding()) { selection in
                     onSelected(selection)
                 }
                 .sheet(isPresented: $showCustomRangeSelectionView) {

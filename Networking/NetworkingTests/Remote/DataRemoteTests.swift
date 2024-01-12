@@ -23,7 +23,7 @@ class DataRemoteTests: XCTestCase {
     func test_loadCountries_returns_countries_on_success() throws {
         // Given
         let remote = DataRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "data/countries", filename: "countries")
+        network.simulateResponse(requestUrlSuffix: "data/countries", filename: "country-list")
 
         // When
         let result: Result<[Country], Error> = waitFor { promise in

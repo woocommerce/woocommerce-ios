@@ -126,8 +126,7 @@ struct SetUpTapToPayPaymentPromptView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
-                    paymentFlowDismissed()
-                    viewModel.dismiss?()
+                    viewModel.onDismiss()
                 },
                        label: {
                     Text(Localization.doneButton)
@@ -135,10 +134,6 @@ struct SetUpTapToPayPaymentPromptView: View {
             }
         }
         .navigationBarHidden(false)
-    }
-
-    private func paymentFlowDismissed() {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: .tapToPayTryAPayment))
     }
 
     private func completedOrder(summaryViewModel: TryAPaymentSummaryViewModel) -> some View {

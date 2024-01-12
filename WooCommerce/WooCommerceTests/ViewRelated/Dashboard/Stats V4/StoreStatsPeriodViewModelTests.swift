@@ -192,7 +192,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 
         // Then
         if #available(iOS 16.0, *) {
-            XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Monday, Jan 3", "Monday, Jan 3 at 1:00 AM"])
+            XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Monday, Jan 3", "Monday, Jan 3 at 1:00 AM"])
         } else {
             XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Monday, Jan 3", "Monday, Jan 3, 1:00 AM"])
         }

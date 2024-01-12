@@ -113,6 +113,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
 
+    @Published private var isLoadingProductImage: Bool = true
+
     var canEditAd: Bool {
         image != nil && !isLoadingAISuggestions
     }
@@ -160,7 +162,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 // MARK: Image download
 extension BlazeCampaignCreationFormViewModel {
     func downloadProductImage() async {
+        isLoadingProductImage = true
         image = await loadProductImage()
+        isLoadingProductImage = false
     }
 }
 

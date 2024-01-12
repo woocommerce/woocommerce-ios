@@ -16,6 +16,7 @@ final class BlazeCampaignListMapperTests: XCTestCase {
         let item = try XCTUnwrap(campaigns.first)
         XCTAssertEqual(item.siteID, dummySiteID)
         XCTAssertEqual(item.campaignID, 34518)
+        XCTAssertEqual(item.productID, 134)
         XCTAssertEqual(item.productURL, "https://example.com/product/fried-egg-bacon-bagel/")
         XCTAssertEqual(item.name, "Fried-egg Bacon Bagel")
         XCTAssertEqual(item.uiStatus, "rejected")

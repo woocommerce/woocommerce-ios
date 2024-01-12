@@ -42,23 +42,35 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     }
 
     private let currencyFormatter: CurrencyFormatter
+    private let currencySettings: CurrencySettings
     private let trialPaymentAmount: String
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.didChangeShouldShow = didChangeShouldShow
         self.connectionAnalyticsTracker = connectionAnalyticsTracker
         self.configuration = configuration
         self.stores = stores
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.currencyFormatter = currencyFormatter
+        self.currencySettings = currencySettings
         self.trialPaymentAmount = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount) ?? "0.50"
 
         beginConnectedReaderObservation()
         updateFormattedPaymentAmount()
         observePaymentFlowFinishedToAttemptRefund()
+    }
+
+    /// Called when the user dismisses the prompt view.
+    func onDismiss() {
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow
+            .paymentsFlowCanceled(flow: .tapToPayTryAPayment,
+                                  country: configuration.countryCode,
+                                  currency: currencySettings.currencyCode.rawValue))
+        dismiss?()
     }
 
     /// Set up to observe readers connecting / disconnecting
@@ -108,7 +120,10 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.errorCreatingTestPayment))
                 self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: .tapToPayTryAPayment,
-                                                                                              source: .tapToPayTryAPaymentPrompt))
+                                                                                              source: .tapToPayTryAPaymentPrompt,
+                                                                                              country: configuration.countryCode,
+                                                                                              currency: currencySettings.currencyCode.rawValue))
+
                 DDLogError("⛔️ Error creating Tap to Pay try a payment order: \(error)")
             }
         }

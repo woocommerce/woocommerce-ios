@@ -6,9 +6,7 @@ steps:
       # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
       IMAGE_ID: xcode-15.1
     command: |
-      echo $RELEASE_VERSION
       .buildkite/commands/configure-environment.sh
-      echo $RELEASE_VERSION
 
       echo '--- :git: Checkout Release Branch'
       .buildkite/commands/checkout-release-branch.sh

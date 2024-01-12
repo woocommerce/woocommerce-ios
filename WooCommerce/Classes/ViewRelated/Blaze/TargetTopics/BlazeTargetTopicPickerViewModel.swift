@@ -100,32 +100,22 @@ private extension BlazeTargetTopicPickerViewModel {
     }
 
     func configureSyncState() {
-        $fetchedTopics.combineLatest($displayedTopics, $isSyncingData, $syncError)
-            .map { fetchedTopics, displayedTopics, isSyncing, error -> SyncState in
-                if error != nil, fetchedTopics.isEmpty {
+        $fetchedTopics.combineLatest($searchQuery, $isSyncingData, $syncError)
+            .map { topics, query, isSyncing, error -> SyncState in
+                if error != nil, topics.isEmpty {
                     return .error
-                } else if isSyncing, fetchedTopics.isEmpty {
+                } else if isSyncing, topics.isEmpty {
                     return .syncing
                 }
-                return .result(items: displayedTopics)
+                let items: [BlazeTargetTopic] = {
+                    guard query.isNotEmpty else {
+                        return topics
+                    }
+                    return topics.filter { $0.name.lowercased().contains(query.lowercased()) }
+                }()
+                return .result(items: items)
             }
             .assign(to: &$syncState)
-
-        $fetchedTopics
-            .prefix(1) // first fetch result is displayed immediately, ignoring the empty search query
-            .assign(to: &$displayedTopics)
-
-        $searchQuery
-            .dropFirst() // ignores initial value
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .combineLatest($fetchedTopics)
-            .map { query, topics in
-                guard query.isNotEmpty else {
-                    return topics
-                }
-                return topics.filter { $0.name.lowercased().contains(query.lowercased()) }
-            }
-            .assign(to: &$displayedTopics)
     }
 }
 

@@ -4,7 +4,7 @@ import Yosemite
 
 /// Blaze ad data for the "Edit Ad Screen" form
 struct BlazeEditAdData: Equatable {
-    let image: MediaPickerImage
+    let image: MediaPickerImage?
     let tagline: String
     let description: String
 }

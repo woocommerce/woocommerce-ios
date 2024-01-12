@@ -25,11 +25,7 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
 private extension BlazeCampaignCreationFormHostingController {
     func navigateToEditAd() {
-        guard let viewModel = viewModel.editAdViewModel else {
-            assertionFailure("Edit ad button should be disabled until image is ready.")
-            return
-        }
-        let vc = BlazeEditAdHostingController(viewModel: viewModel)
+        let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
         present(vc, animated: true)
     }
 }

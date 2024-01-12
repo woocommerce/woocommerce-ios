@@ -62,11 +62,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
-    var editAdViewModel: BlazeEditAdViewModel? {
-        guard let image else {
-            assertionFailure("Product image is not downloaded. Edit ad button should be disabled.")
-            return nil
-        }
+    var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
                                      tagline: tagline,
                                      description: description)

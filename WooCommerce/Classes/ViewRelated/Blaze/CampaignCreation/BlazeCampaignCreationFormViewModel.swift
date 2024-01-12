@@ -295,7 +295,7 @@ private extension BlazeCampaignCreationFormViewModel {
     func updateTargetLocationText() {
         targetLocationText = {
             guard let locations, locations.isEmpty == false else {
-                return Localization.all
+                return Localization.everywhere
             }
             return locations
                 .map { $0.name }
@@ -335,6 +335,11 @@ private extension BlazeCampaignCreationFormViewModel {
             "blazeCampaignCreationFormViewModel.all",
             value: "All",
             comment: "Text indicating all targets for a Blaze campaign"
+        )
+        static let everywhere = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.everywhere",
+            value: "Everywhere",
+            comment: "Text indicating all locations for a Blaze campaign"
         )
     }
 }

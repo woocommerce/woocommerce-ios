@@ -386,8 +386,12 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         }
 
         let analytics = MockAnalyticsProvider()
+        let currencySettings = CurrencySettings()
+        currencySettings.currencyCode = .JPY
         let dependencies = Dependencies(stores: stores,
-                                        analytics: WooAnalytics(analyticsProvider: analytics))
+                                        analytics: WooAnalytics(analyticsProvider: analytics),
+                                        cardPresentPaymentsConfiguration: .init(country: .GB),
+                                        currencySettings: currencySettings)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 dependencies: dependencies)
@@ -399,6 +403,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowFailed.rawValue)
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "payment_method")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["country"] as? String, "GB")
+        assertEqual(analytics.receivedProperties.first?["currency"] as? String, "JPY")
     }
 
     func test_failed_event_is_tracked_after_failing_to_collect_payment() {

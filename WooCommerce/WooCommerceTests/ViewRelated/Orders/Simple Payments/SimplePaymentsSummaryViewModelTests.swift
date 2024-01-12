@@ -521,10 +521,14 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         }
 
         let mockAnalytics = MockAnalyticsProvider()
+        let currencySettings = CurrencySettings()
+        currencySettings.currencyCode = .JPY
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxLines: [],
                                                        stores: mockStores,
+                                                       countryCode: .JP,
+                                                       currencySettings: currencySettings,
                                                        analytics: WooAnalytics(analyticsProvider: mockAnalytics))
 
         // When
@@ -534,6 +538,8 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual(mockAnalytics.receivedEvents, [WooAnalyticsStat.paymentsFlowFailed.rawValue])
         assertEqual(mockAnalytics.receivedProperties.first?["source"] as? String, "summary")
         assertEqual(mockAnalytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(mockAnalytics.receivedProperties.first?["country"] as? String, "JP")
+        assertEqual(mockAnalytics.receivedProperties.first?["currency"] as? String, "JPY")
     }
 
     func test_taxes_toggle_state_is_properly_loaded() {

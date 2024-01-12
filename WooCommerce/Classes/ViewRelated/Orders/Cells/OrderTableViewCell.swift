@@ -93,6 +93,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
             return
         }

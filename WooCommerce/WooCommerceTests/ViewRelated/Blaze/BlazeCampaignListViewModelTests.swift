@@ -383,6 +383,99 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedCampaignURL?.absoluteString, "https://wordpress.com/advertising/campaigns/123/example.com?source=campaign_list")
     }
 
+    // MARK: - Create campaign navigation
+    func test_given_disabled_i3_blaz_featureflag_when_tapping_create_campaign_then_destination_is_webview() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)
+        let viewModel = BlazeCampaignListViewModel(
+            siteID: sampleSiteID,
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService
+        )
+
+        // When
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
+                return
+            }
+            self.insertCampaigns([campaign])
+            onCompletion(.success(true))
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.createCampaignDestination, .webviewForm(productID: nil))
+    }
+
+    func test_given_enabled_i3_blaze_featureflag_and_single_product_when_tapping_create_campaign_then_destination_is_campaignForm() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)
+        let viewModel = BlazeCampaignListViewModel(
+            siteID: sampleSiteID,
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService
+        )
+        let productID: Int64 = 1
+        let product1: Product = .fake().copy(siteID: sampleSiteID,
+                                             productID: productID,
+                                             statusKey: (ProductStatus.published.rawValue),
+                                             purchasable: true)
+
+        // When
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
+                return
+            }
+            self.insertCampaigns([campaign])
+            onCompletion(.success(true))
+        }
+        insertProduct(product1)
+
+        // Then
+        XCTAssertEqual(viewModel.createCampaignDestination, .campaignForm(productID: productID))
+    }
+
+    func test_given_enabled_i3_blaze_featureflag_and_multiple_products_when_tapping_create_campaign_then_destination_is_productSelector() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)
+        let viewModel = BlazeCampaignListViewModel(
+            siteID: sampleSiteID,
+            stores: stores,
+            storageManager: storageManager,
+            featureFlagService: featureFlagService
+        )
+        let product1: Product = .fake().copy(siteID: sampleSiteID,
+                                             productID: 1,
+                                             statusKey: (ProductStatus.published.rawValue),
+                                             purchasable: true)
+
+        let product2: Product = .fake().copy(siteID: sampleSiteID,
+                                             productID: 2,
+                                             statusKey: (ProductStatus.published.rawValue),
+                                             purchasable: false)
+
+        // When
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
+                return
+            }
+            self.insertCampaigns([campaign])
+            onCompletion(.success(true))
+        }
+        insertProduct(product1)
+        insertProduct(product2)
+
+        // Then
+        XCTAssertEqual(viewModel.createCampaignDestination, .productSelector)
+    }
+
     // MARK: - Analytics
 
     func test_blazeEntryPointDisplayed_is_tracked_upon_view_appear() throws {
@@ -454,6 +547,12 @@ private extension BlazeCampaignListViewModelTests {
             let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaign.self)
             newCampaign.update(with: campaign)
         }
+        storage.saveIfNeeded()
+    }
+
+    func insertProduct(_ readOnlyProduct: Product) {
+        let newProduct = storage.insertNewObject(ofType: StorageProduct.self)
+        newProduct.update(with: readOnlyProduct)
         storage.saveIfNeeded()
     }
 }

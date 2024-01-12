@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Experiments
 import protocol Storage.StorageManagerType
 
 /// Conformance to support listing in SwiftUI
@@ -11,7 +12,7 @@ extension BlazeCampaign: Identifiable {
 
 /// View model for `BlazeCampaignListView`
 final class BlazeCampaignListViewModel: ObservableObject {
-    enum CreateCampaignDestination {
+    enum CreateCampaignDestination: Equatable {
         case productSelector
         case campaignForm(productID: Int64)
         case webviewForm(productID: Int64?)
@@ -75,18 +76,24 @@ final class BlazeCampaignListViewModel: ObservableObject {
                                                  sortOrder: .dateDescending)
     }()
 
+    /// Service to check if a feature flag is enabled.
+    ///
+    private let featureFlagService: FeatureFlagService
+
     init(siteID: Int64,
          siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         configureResultsController()
@@ -183,7 +190,7 @@ private extension BlazeCampaignListViewModel {
 // MARK: Create campaign navigation
 private extension BlazeCampaignListViewModel {
     func updateCreateCampaignDestination() {
-        createCampaignDestination = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation)
+        createCampaignDestination = featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation)
         ? determineDestination()
         : .webviewForm(productID: productResultsController.fetchedObjects.first?.productID)
     }

@@ -4,6 +4,9 @@ import SwiftUI
 struct BlazeTargetLocationPickerView: View {
 
     @ObservedObject private var viewModel: BlazeTargetLocationPickerViewModel
+
+    @FocusState private var isSearchMode
+
     private let onDismiss: () -> Void
 
     init(viewModel: BlazeTargetLocationPickerViewModel,
@@ -16,17 +19,13 @@ struct BlazeTargetLocationPickerView: View {
         NavigationView {
             VStack {
                 SearchHeader(text: $viewModel.searchQuery,
-                             placeholder: Localization.searchBarPlaceholderText)
-
-                switch (viewModel.searchQuery.isEmpty, viewModel.isSearching, viewModel.searchResults.isEmpty) {
-                case (true, _, _):
-                    emptyView
-                case (false, true, true):
-                    loadingView
-                case (false, false, true):
-                    noResultView
-                case (false, _, false):
-                    resultList
+                             placeholder: Localization.searchBarPlaceholderText,
+                             isFocused: _isSearchMode,
+                             customizations: .init(showsCancelButton: true))
+                if isSearchMode {
+                    searchView
+                } else {
+                    pickerView
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -49,6 +48,36 @@ struct BlazeTargetLocationPickerView: View {
 }
 
 private extension BlazeTargetLocationPickerView {
+    @ViewBuilder
+    var searchView: some View {
+        switch (viewModel.searchQuery.isEmpty, viewModel.isSearching, viewModel.searchResults.isEmpty) {
+        case (true, _, _):
+            emptyView
+        case (false, true, true):
+            loadingView
+        case (false, false, true):
+            noResultView
+        case (false, _, false):
+            resultList
+        }
+    }
+
+    var pickerView: some View {
+        List {
+            Section {
+                Text("Everywhere")
+            } footer: {
+                Text("Or select specific locations by entering queries in the search box")
+            }
+            Section {
+                ForEach(Array(viewModel.selectedLocations ?? [])) { item in
+                    Text(item.name)
+                }
+            }
+        }
+        .listStyle(.grouped)
+    }
+
     var emptyView: some View {
         VStack(spacing: Layout.contentSpacing) {
             Spacer()
@@ -93,6 +122,11 @@ private extension BlazeTargetLocationPickerView {
                         .captionStyle()
                         .renderedIf(item.allParentLocationNames.isNotEmpty)
                 }
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    isSearchMode = false
+                    viewModel.selectItem(item)
+                }
             }
             Spacer()
         }
@@ -132,7 +166,7 @@ private extension BlazeTargetLocationPickerView {
         )
         static let hintMessage = NSLocalizedString(
             "blazeTargetLocationPickerView.hintMessage",
-            value: "Start typing country, state or city to see available option",
+            value: "Start typing country, state or city to see available options",
             comment: "Hint message to enter search query on the target location picker for campaign creation"
         )
         static let longerQuery = NSLocalizedString(

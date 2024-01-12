@@ -33,6 +33,12 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
         observeSearchQuery()
     }
 
+    func selectItem(_ item: BlazeTargetLocation) {
+        var items = selectedLocations ?? .init()
+        items.insert(item)
+        selectedLocations = items
+    }
+
     func confirmSelection() {
         // TODO
     }

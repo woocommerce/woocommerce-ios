@@ -5,7 +5,15 @@ import protocol Storage.StorageManagerType
 /// View model for `BlazeTargetDevicePicker`
 final class BlazeTargetDevicePickerViewModel: ObservableObject {
 
-    @Published private(set) var devices: [BlazeTargetDevice] = []
+    @Published var selectedDevices: Set<BlazeTargetDevice>?
+    @Published private(set) var syncState = SyncState.syncing
+    @Published private var devices: [BlazeTargetDevice] = []
+    @Published private var isSyncingData: Bool = false
+    @Published private var syncError: Error?
+
+    var shouldDisableSaveButton: Bool {
+        selectedDevices?.isEmpty == true || syncState == .error || syncState == .syncing
+    }
 
     /// Blaze target device ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeTargetDevice> = {
@@ -24,21 +32,26 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
     private let onSelection: (Set<BlazeTargetDevice>?) -> Void
 
     init(siteID: Int64,
+         selectedDevices: Set<BlazeTargetDevice>? = nil,
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          onSelection: @escaping (Set<BlazeTargetDevice>?) -> Void) {
         self.siteID = siteID
+        self.selectedDevices = selectedDevices
         self.locale = locale
         self.stores = stores
         self.storageManager = storageManager
         self.onSelection = onSelection
 
         configureResultsController()
+        configureSyncState()
     }
 
     @MainActor
     func syncDevices() async {
+        syncError = nil
+        isSyncingData = true
         do {
             try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(BlazeAction.synchronizeTargetDevices(siteID: siteID, locale: locale.identifier) { result in
@@ -52,10 +65,12 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
             }
         } catch {
             DDLogError("⛔️ Error syncing Blaze target devices: \(error)")
+            syncError = error
         }
+        isSyncingData = false
     }
 
-    func confirmSelection(_ selectedDevices: Set<BlazeTargetDevice>?) {
+    func confirmSelection() {
         onSelection(selectedDevices)
     }
 }
@@ -80,5 +95,26 @@ private extension BlazeTargetDevicePickerViewModel {
 
     func updateResults() {
         devices = resultsController.fetchedObjects
+    }
+
+    func configureSyncState() {
+        $devices.combineLatest($isSyncingData, $syncError)
+            .map { devices, isSyncing, error -> SyncState in
+                if error != nil, devices.isEmpty {
+                    return .error
+                } else if isSyncing, devices.isEmpty {
+                    return .syncing
+                }
+                return .result(items: devices)
+            }
+            .assign(to: &$syncState)
+    }
+}
+
+extension BlazeTargetDevicePickerViewModel {
+    enum SyncState: Equatable {
+        case syncing
+        case result(items: [BlazeTargetDevice])
+        case error
     }
 }

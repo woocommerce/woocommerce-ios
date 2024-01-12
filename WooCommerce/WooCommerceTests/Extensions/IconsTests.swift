@@ -31,6 +31,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.blazeIntroIllustration)
     }
 
+    func test_blazeProductPlaceholder_is_not_nil() {
+        XCTAssertNotNil(UIImage.blazeProductPlaceholder)
+    }
+
     func test_currency_image_is_not_nil() {
         XCTAssertNotNil(UIImage.currencyImage)
     }

@@ -165,10 +165,7 @@ private extension BlazeStore {
                     BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale),
                     BlazeTargetDevice(id: "desktop", name: "Desktop", locale: locale)
                 ]
-                // TODO-11540: remove stubbed result when the API is ready.
-                let devices: [BlazeTargetDevice] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchTargetDevices(for: siteID, locale: locale)
-                })
+                let devices = try await remote.fetchTargetDevices(for: siteID, locale: locale)
                 insertStoredTargetDevicesInBackground(readonlyDevices: devices, locale: locale) {
                     onCompletion(.success(devices))
                 }
@@ -207,14 +204,7 @@ private extension BlazeStore {
                                     onCompletion: @escaping (Result<[BlazeTargetLanguage], Error>) -> Void) {
         Task { @MainActor in
             do {
-                let stubbedResult = [
-                    BlazeTargetLanguage(id: "en", name: "English", locale: locale),
-                    BlazeTargetLanguage(id: "es", name: "Spanish", locale: locale)
-                ]
-                // TODO-11540: remove stubbed result when the API is ready.
-                let languages: [BlazeTargetLanguage] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchTargetLanguages(for: siteID, locale: locale)
-                })
+                let languages = try await remote.fetchTargetLanguages(for: siteID, locale: locale)
                 insertStoredTargetLanguagesInBackground(readonlyLanguages: languages, locale: locale) {
                     onCompletion(.success(languages))
                 }
@@ -253,14 +243,7 @@ private extension BlazeStore {
                                  onCompletion: @escaping (Result<[BlazeTargetTopic], Error>) -> Void) {
         Task { @MainActor in
             do {
-                let stubbedResult = [
-                    BlazeTargetTopic(id: "IAB1", description: "Arts & Entertainment", locale: locale),
-                    BlazeTargetTopic(id: "IAB2", description: "Automotive", locale: locale)
-                ]
-                // TODO-11540: remove stubbed result when the API is ready.
-                let topics: [BlazeTargetTopic] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchTargetTopics(for: siteID, locale: locale)
-                })
+                let topics = try await remote.fetchTargetTopics(for: siteID, locale: locale)
                 insertStoredTargetTopicsInBackground(readonlyTopics: topics, locale: locale) {
                     onCompletion(.success(topics))
                 }
@@ -300,37 +283,7 @@ private extension BlazeStore {
                               onCompletion: @escaping (Result<[BlazeTargetLocation], Error>) -> Void) {
         Task { @MainActor in
             do {
-                // TODO-11540: remove stubbed result when the API is ready.
-                let stubbedResult: [BlazeTargetLocation] = [
-                    .init(id: 1439,
-                          name: "Madrid",
-                          type: "state",
-                          parentLocation: .init(id: 69,
-                                                name: "Comunidad De Madrid",
-                                                type: "region",
-                                                parentLocation: .init(id: 228,
-                                                                      name: "Spain",
-                                                                      type: "country"))),
-                    .init(id: 2035,
-                          name: "Madre De Dios",
-                          type: "state",
-                          parentLocation: .init(id: 57, name: "Peru", type: "country")),
-                    .init(id: 6457,
-                          name: "Madrid",
-                          type: "city",
-                          parentLocation: .init(id: 1841,
-                                                name: "Iowa",
-                                                type: "state",
-                                                parentLocation: .init(id: 174,
-                                                                      name: "Midwest",
-                                                                      type: "region",
-                                                                      parentLocation: .init(id: 152,
-                                                                                            name: "United States",
-                                                                                            type: "country"))))
-                ]
-                let locations: [BlazeTargetLocation] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)
-                })
+                let locations = try await remote.fetchTargetLocations(for: siteID, query: query, locale: locale)
                 onCompletion(.success(locations))
             } catch {
                 onCompletion(.failure(error))
@@ -370,7 +323,9 @@ private extension BlazeStore {
         Task { @MainActor in
             do {
                 // TODO-11540: remove stubbed result when the API is ready.
-                let stubbedResult = [BlazeAISuggestion(siteName: "Shiny thing", textSnippet: "Get this new and shiny thing")]
+                let stubbedResult = [BlazeAISuggestion(siteName: "Shiny thing", textSnippet: "Get this new and shiny thing"),
+                                     BlazeAISuggestion(siteName: "New stuff", textSnippet: "Buy this new thing first"),
+                                     BlazeAISuggestion(siteName: "Exciting items", textSnippet: "Purchase these exciting items")]
                 let suggestions: [BlazeAISuggestion] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
                     try await remote.fetchAISuggestions(siteID: siteID, productID: productID)
                 })

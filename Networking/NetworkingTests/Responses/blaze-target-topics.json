@@ -1,4 +1,4 @@
-[
+{ "page_topics": [
     {
         "id": "IAB1",
         "description": "Arts & Entertainment"
@@ -11,4 +11,4 @@
         "id": "IAB3",
         "description": "Business"
     }
-]
+]}

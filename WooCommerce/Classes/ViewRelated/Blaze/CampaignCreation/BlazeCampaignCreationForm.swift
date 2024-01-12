@@ -25,7 +25,11 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
 private extension BlazeCampaignCreationFormHostingController {
     func navigateToEditAd() {
-        let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
+        guard let viewModel = viewModel.editAdViewModel else {
+            assertionFailure("Edit ad button should be disabled until image is ready.")
+            return
+        }
+        let vc = BlazeEditAdHostingController(viewModel: viewModel)
         present(vc, animated: true)
     }
 }
@@ -48,6 +52,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingLanguagePicker = false
     @State private var isShowingAdDestinationScreen = false
     @State private var isShowingDevicePicker = false
+    @State private var isShowingAISuggestionsErrorAlert: Bool = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -114,6 +119,7 @@ struct BlazeCampaignCreationForm: View {
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
                 .padding(Layout.contentPadding)
+                .disabled(!viewModel.canConfirmDetails)
             }
             .background(Color(uiColor: .systemBackground))
         }
@@ -121,7 +127,7 @@ struct BlazeCampaignCreationForm: View {
             BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
         }
         .sheet(isPresented: $isShowingLanguagePicker) {
-            BlazeTargetLanguagePickerView(viewModel: viewModel.targetLanguageViewModel, selectedLanguages: viewModel.languages) {
+            BlazeTargetLanguagePickerView(viewModel: viewModel.targetLanguageViewModel) {
                 isShowingLanguagePicker = false
             }
         }
@@ -129,9 +135,28 @@ struct BlazeCampaignCreationForm: View {
             BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
             }
         .sheet(isPresented: $isShowingDevicePicker) {
-            BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel, selectedDevices: viewModel.devices) {
+            BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel) {
                 isShowingDevicePicker = false
             }
+        }
+        .onChange(of: viewModel.error) { newValue in
+            isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
+        }
+        .alert(isPresented: $isShowingAISuggestionsErrorAlert, content: {
+            Alert(title: Text(Localization.ErrorAlert.title),
+                  message: Text(Localization.ErrorAlert.ErrorMessage.fetchingAISuggestions),
+                  primaryButton: .default(Text(Localization.ErrorAlert.retry), action: {
+                Task {
+                    await viewModel.loadAISuggestions()
+                }
+            }),
+                  secondaryButton: .cancel())
+        })
+        .task {
+            await viewModel.loadAISuggestions()
+        }
+        .task {
+            await viewModel.downloadProductImage()
         }
     }
 }
@@ -140,25 +165,28 @@ private extension BlazeCampaignCreationForm {
     var adPreview: some View {
         VStack(spacing: Layout.contentPadding) {
             VStack(alignment: .leading, spacing: Layout.contentMargin) {
-                // TODO: use product image here
-                // Product image
-                Image(uiImage: .blazeIntroIllustration)
+                // Image
+                Image(uiImage: viewModel.image?.image ?? .blazeProductPlaceholder)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .cornerRadius(Layout.cornerRadius)
 
-                // TODO: dynamic content
                 // Tagline
-                Text("From $99")
+                Text(viewModel.isLoadingAISuggestions ? "Placeholder tagline" : viewModel.tagline)
                     .captionStyle()
+                    .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
+                    .shimmering(active: viewModel.isLoadingAISuggestions)
 
                 HStack(spacing: Layout.contentPadding) {
-                    // TODO: dynamic content
                     // Description
-                    Text("Get the latest white shirt for a stylish look")
+                    Text(viewModel.isLoadingAISuggestions ? "This is a placeholder description" : viewModel.description)
                         .fontWeight(.semibold)
                         .headlineStyle()
                         .multilineTextAlignment(.leading)
+                        .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
+                        .shimmering(active: viewModel.isLoadingAISuggestions)
+
+                    Spacer()
 
                     // Simulate shop button
                     Text(Localization.shopNow)
@@ -179,7 +207,6 @@ private extension BlazeCampaignCreationForm {
 
             // Button to edit ad details
             Button(action: {
-                // TODO
                 viewModel.didTapEditAd()
             }, label: {
                 Text(Localization.editAd)
@@ -188,6 +215,8 @@ private extension BlazeCampaignCreationForm {
                     .foregroundColor(.accentColor)
             })
             .buttonStyle(.plain)
+            .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
+            .shimmering(active: !viewModel.canEditAd)
         }
         .padding(Layout.contentPadding)
         .background(Color(uiColor: .systemGray6))
@@ -294,11 +323,30 @@ private extension BlazeCampaignCreationForm {
             value: "Confirm Details",
             comment: "Button to confirm ad details on the Blaze campaign creation screen"
         )
+        enum ErrorAlert {
+            enum ErrorMessage {
+                static let fetchingAISuggestions = NSLocalizedString(
+                    "blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions",
+                    value: "Failed to load suggestions for tagline and description",
+                    comment: "Error message indicating that loading suggestions for tagline and description failed"
+                )
+            }
+            static let title = NSLocalizedString(
+                "blazeCampaignCreationForm.errorAlert.title",
+                value: "Oops! We've hit a snag",
+                comment: "Title on the error alert displayed on the Blaze campaign creation screen"
+            )
+            static let retry = NSLocalizedString(
+                "blazeCampaignCreationForm.errorAlert.retry",
+                value: "Retry",
+                comment: "Button on the error alert displayed on the Blaze campaign creation screen"
+            )
+        }
     }
 }
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm(viewModel: .init(siteID: 123) {})
+        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123) {})
     }
 }

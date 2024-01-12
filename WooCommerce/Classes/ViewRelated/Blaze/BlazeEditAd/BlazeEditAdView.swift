@@ -72,9 +72,8 @@ private extension BlazeEditAdView {
             EditableImageView(imageState: viewModel.imageState,
                               aspectRatio: .fill,
                               emptyContent: {
-                Image(uiImage: .addImage)
+                Image(uiImage: .blazeProductPlaceholder)
             })
-            .frame(width: Layout.Image.imageViewSize * scale, height: Layout.Image.imageViewSize * scale)
             .cornerRadius(Layout.Image.cornerRadius)
             .mediaSourceActionSheet(showsActionSheet: $isShowingMediaPickerSheet, selectMedia: { source in
                 viewModel.addImage(from: source)
@@ -302,7 +301,6 @@ private enum Layout {
     static let placeholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
 
     enum Image {
-        static let imageViewSize: CGFloat = 148
         static let cornerRadius: CGFloat = 8
     }
 

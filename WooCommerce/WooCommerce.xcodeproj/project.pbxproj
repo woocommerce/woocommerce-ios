@@ -1485,6 +1485,9 @@
 		8646A9BA2B46C7CA001F606C /* BlazeAdDestinationSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8646A9B92B46C7CA001F606C /* BlazeAdDestinationSettingView.swift */; };
 		86558EA82AD91B7800E10EDF /* BlazeCampaignIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86558EA72AD91B7800E10EDF /* BlazeCampaignIntroView.swift */; };
 		866016512B47F8F800B4047E /* ProductSelector+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866016502B47F8F800B4047E /* ProductSelector+Blaze.swift */; };
+		867B330F2B4D39B900DCBEA6 /* BlazeAddParameterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867B330E2B4D39B900DCBEA6 /* BlazeAddParameterView.swift */; };
+		86967D812B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86967D802B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift */; };
+		86967D832B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86967D822B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift */; };
 		86A4EBBD2B2F1306008011F5 /* ThemesPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A4EBBC2B2F1306008011F5 /* ThemesPreviewViewModel.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		86DE68822B4BA47A00B437A6 /* BlazeAdDestinationSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */; };
@@ -2291,6 +2294,7 @@
 		DE7E5E862B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */; };
 		DE7E5E882B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */; };
 		DE7E5E8A2B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */; };
+		DE7E5E8C2B4E9353002E28D2 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E8B2B4E9353002E28D2 /* ErrorStateView.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
@@ -4100,6 +4104,9 @@
 		8646A9B92B46C7CA001F606C /* BlazeAdDestinationSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdDestinationSettingView.swift; sourceTree = "<group>"; };
 		86558EA72AD91B7800E10EDF /* BlazeCampaignIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignIntroView.swift; sourceTree = "<group>"; };
 		866016502B47F8F800B4047E /* ProductSelector+Blaze.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSelector+Blaze.swift"; sourceTree = "<group>"; };
+		867B330E2B4D39B900DCBEA6 /* BlazeAddParameterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddParameterView.swift; sourceTree = "<group>"; };
+		86967D802B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddParameterViewModel.swift; sourceTree = "<group>"; };
+		86967D822B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdUrlParameter.swift; sourceTree = "<group>"; };
 		86A4EBBC2B2F1306008011F5 /* ThemesPreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewViewModel.swift; sourceTree = "<group>"; };
 		86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdDestinationSettingViewModel.swift; sourceTree = "<group>"; };
 		86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewViewModelTests.swift; sourceTree = "<group>"; };
@@ -4945,6 +4952,7 @@
 		DE7E5E852B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDevicePickerViewModel.swift; sourceTree = "<group>"; };
 		DE7E5E872B4D16EB002E28D2 /* BlazeTargetDevicePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDevicePickerView.swift; sourceTree = "<group>"; };
 		DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetDeviceViewModelTests.swift; sourceTree = "<group>"; };
+		DE7E5E8B2B4E9353002E28D2 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
 		DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -7886,6 +7894,7 @@
 			isa = PBXGroup;
 			children = (
 				EE3B17B52AA03837004D3E0C /* CelebrationView.swift */,
+				DE7E5E8B2B4E9353002E28D2 /* ErrorStateView.swift */,
 				D449C51926DE6B5000D75B02 /* IconListItem.swift */,
 				D449C51A26DE6B5000D75B02 /* LargeTitle.swift */,
 				D449C51826DE6B5000D75B02 /* ReportList.swift */,
@@ -8617,6 +8626,9 @@
 			children = (
 				8646A9B92B46C7CA001F606C /* BlazeAdDestinationSettingView.swift */,
 				86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */,
+				867B330E2B4D39B900DCBEA6 /* BlazeAddParameterView.swift */,
+				86967D802B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift */,
+				86967D822B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift */,
 			);
 			path = AdDestination;
 			sourceTree = "<group>";
@@ -12899,7 +12911,9 @@
 				025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */,
 				EEFF472A2B2AB24D009BF302 /* StoreCreationStoreSwitchScheduler.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
+				86967D812B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift in Sources */,
 				EE45E2B92A409BA40085F227 /* ProductDescriptionAITooltipUseCase.swift in Sources */,
+				86967D832B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift in Sources */,
 				456AB0E7283E610500019CFF /* WCShipInstallTableViewCell.swift in Sources */,
 				024A8F1F2A588FA500ABF3EB /* EditableImageView.swift in Sources */,
 				02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */,
@@ -12971,6 +12985,7 @@
 				DE7842F726F2E9340030C792 /* UIViewController+Connectivity.swift in Sources */,
 				E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */,
 				CCF87BBE279047BC00461C43 /* InfiniteScrollList.swift in Sources */,
+				DE7E5E8C2B4E9353002E28D2 /* ErrorStateView.swift in Sources */,
 				DE63115B2AF1E13200587641 /* WPComLoginCoordinator.swift in Sources */,
 				EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */,
 				D85A3C5226C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift in Sources */,
@@ -14071,6 +14086,7 @@
 				0375799928201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift in Sources */,
 				E10BC15E26CC06970064F5E2 /* ScrollableVStack.swift in Sources */,
 				B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */,
+				867B330F2B4D39B900DCBEA6 /* BlazeAddParameterView.swift in Sources */,
 				D8610CE2257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift in Sources */,
 				038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */,
 				03E471CE293F63B4001A58AD /* PaymentCaptureOrchestrator.swift in Sources */,

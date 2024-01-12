@@ -93,11 +93,13 @@ private extension BlazeCampaignListHostingController {
                                                                                onCompletion: { })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
 
+        // This function can be called from product selector, which is handled by BlazeNavigationController.
+        // In this case, we need to show the controller from BlazeNavigationController.
+        // Otherwise, we show it from the current navigation controller.
         if blazeNavigationController.presentingViewController != nil {
             blazeNavigationController.show(controller, sender: self)
         } else {
-            blazeNavigationController.viewControllers = [controller]
-            self.navigationController?.present(blazeNavigationController, animated: true)
+            self.navigationController?.show(controller, sender: self)
         }
     }
 
@@ -118,7 +120,6 @@ private extension BlazeCampaignListHostingController {
                 self.navigationController?.dismiss(animated: true, completion: nil)
             }
         )
-
         return ProductSelectorViewController(configuration: ProductSelectorView.Configuration.configurationForBlaze,
                                              source: .blaze,
                                              viewModel: productSelectorViewModel)

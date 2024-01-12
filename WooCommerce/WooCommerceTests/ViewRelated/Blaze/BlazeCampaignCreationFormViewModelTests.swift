@@ -176,7 +176,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [])) // Product has no image
         mockAISuggestionsSuccess(sampleAISuggestions)
-        let imageLoader = MockProductUIImageLoader()
+
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -275,7 +275,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                    statusKey: (ProductStatus.published.rawValue),
                                    images: [])) // Product has no image
         mockAISuggestionsSuccess(sampleAISuggestions)
-        let imageLoader = MockProductUIImageLoader()
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,

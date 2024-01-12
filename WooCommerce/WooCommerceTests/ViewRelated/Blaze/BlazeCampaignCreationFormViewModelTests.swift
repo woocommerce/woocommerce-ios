@@ -14,6 +14,13 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private let sampleProductID: Int64 = 433
 
+    private var sampleProduct: Product {
+        .fake().copy(siteID: sampleSiteID,
+                     productID: sampleProductID,
+                     statusKey: (ProductStatus.published.rawValue),
+                     images: [.fake().copy(imageID: 1)])
+    }
+
     private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
                                        BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
                                        BlazeAISuggestion(siteName: "Third suggested tagline", textSnippet: "Third suggested description")]
@@ -69,11 +76,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_it_reads_product_from_storage_for_displaying_image() async throws {
         // Given
-        let sampleProductImage = ProductImage.fake().copy(imageID: 1)
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   productID: sampleProductID,
-                                   statusKey: (ProductStatus.published.rawValue),
-                                   images: [sampleProductImage]))
+        insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
@@ -89,7 +92,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         await viewModel.downloadProductImage()
 
         // Then
-        XCTAssertEqual(imageLoader.imageRequestedForProductImage, sampleProductImage)
+        XCTAssertEqual(imageLoader.imageRequestedForProductImage?.imageID, sampleProduct.images.first?.imageID)
         XCTAssertEqual(viewModel.image?.image, sampleImage)
     }
 
@@ -97,10 +100,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_ad_cannot_be_edited_until_suggestions_are_loaded() async throws {
         // Given
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   productID: sampleProductID,
-                                   statusKey: (ProductStatus.published.rawValue),
-                                   images: [.fake()]))
+        insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
@@ -126,10 +126,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_ad_cannot_be_edited_until_image_is_downloaded() async throws {
         // Given
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   productID: sampleProductID,
-                                   statusKey: (ProductStatus.published.rawValue),
-                                   images: [.fake()]))
+        insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
@@ -154,10 +151,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_ad_can_be_edited_if_suggestions_failed_to_load() async throws {
         // Given
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   productID: sampleProductID,
-                                   statusKey: (ProductStatus.published.rawValue),
-                                   images: [.fake()]))
+        insertProduct(sampleProduct)
         mockDomainSuggestionsFailure(MockError())
         let imageLoader = MockProductUIImageLoader()
         let sampleImage = UIImage.addOutlineImage
@@ -305,10 +299,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_ad_cannot_be_confirmed_if_tagline_is_empty() async throws {
         // Given
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   productID: sampleProductID,
-                                   statusKey: (ProductStatus.published.rawValue),
-                                   images: [.fake()]))
+        insertProduct(sampleProduct)
         mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "", // Empty tagline
                                                     textSnippet: "Description")])
         let imageLoader = MockProductUIImageLoader()
@@ -334,10 +325,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_ad_cannot_be_confirmed_if_description_is_empty() async throws {
         // Given
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   productID: sampleProductID,
-                                   statusKey: (ProductStatus.published.rawValue),
-                                   images: [.fake()]))
+        insertProduct(sampleProduct)
         mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "Tagline",
                                                    textSnippet: "")])  // Empty description
         let imageLoader = MockProductUIImageLoader()

@@ -1,12 +1,18 @@
 import Foundation
 import Yosemite
+import WooFoundation
+import protocol Storage.StorageManagerType
 import struct Networking.BlazeAISuggestion
+import Photos
 
 /// View model for `BlazeCampaignCreationForm`
+@MainActor
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     let siteID: Int64
+    private let productID: Int64
     private let stores: StoresManager
+    private let productImageLoader: ProductUIImageLoader
     private let completionHandler: () -> Void
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -16,6 +22,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }()
 
     var onEditAd: (() -> Void)?
+
+    var productImage: URL? {
+        product?.imageURL
+    }
+    @Published private(set) var image: MediaPickerImage?
+    @Published private(set) var tagline: String = ""
+    @Published private(set) var description: String = ""
 
     // Budget details
     private var startDate = Date.now
@@ -52,25 +65,22 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
-    var editAdViewModel: BlazeEditAdViewModel {
-        // TODO: Send ad data to edit screen
-        let adData = BlazeEditAdData(image: .init(image: .blazeIntroIllustration, source: .asset(asset: .init())),
-                                     tagline: "From $99",
-                                     description: "Get the latest white shirt for a stylish look")
-        // TODO: Send suggestions to edit screen
-        let suggestions = {
-            var suggestions = [BlazeAISuggestion]()
-            for i in 0..<3 {
-                suggestions.append(BlazeAISuggestion(siteName: "Tagline \(i+1)",
-                                                     textSnippet: "Description \(i+1)"))
-            }
-            return suggestions
-        }()
+    var editAdViewModel: BlazeEditAdViewModel? {
+        guard let image else {
+            assertionFailure("Product image is not downloaded. Edit ad button should be disabled.")
+            return nil
+        }
+        let adData = BlazeEditAdData(image: image,
+                                     tagline: tagline,
+                                     description: description)
         return BlazeEditAdViewModel(siteID: siteID,
                                     adData: adData,
                                     suggestions: suggestions,
-                                    onSave: { _ in
-            // TODO: Update ad with edited data
+                                    onSave: { [weak self] adData in
+            guard let self else { return }
+            self.image = adData.image
+            self.tagline = adData.tagline
+            self.description = adData.description
         })
     }
 
@@ -100,11 +110,52 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var targetDeviceText: String = ""
     @Published private(set) var targetTopicText: String = ""
 
+    // AI Suggestions
+    @Published private(set) var isLoadingAISuggestions: Bool = true
+    private let storage: StorageManagerType
+    private var product: Product? {
+        guard let product = productsResultsController.fetchedObjects.first else {
+            assertionFailure("Unable to fetch product with ID: \(productID)")
+            return nil
+        }
+        return product
+    }
+
+    @Published private(set) var error: BlazeCampaignCreationError?
+    private var suggestions: [BlazeAISuggestion] = []
+
+    var canEditAd: Bool {
+        image != nil && !isLoadingAISuggestions
+    }
+
+    var canConfirmDetails: Bool {
+        image != nil && tagline.isNotEmpty && description.isNotEmpty
+    }
+
+    /// ResultController to get the product for the given product ID
+    ///
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let predicate = \StorageProduct.siteID == siteID && \StorageProduct.productID == productID
+        let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
+        do {
+            try controller.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch product for BlazeCampaignCreationFormViewModel: \(error)")
+        }
+        return controller
+    }()
+
     init(siteID: Int64,
+         productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager,
+    productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
+        self.productID = productID
         self.stores = stores
+        self.storage = storage
+        self.productImageLoader = productImageLoader
         self.completionHandler = onCompletion
 
         updateBudgetDetails()
@@ -117,6 +168,73 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         onEditAd?()
     }
 }
+
+// MARK: Image download
+extension BlazeCampaignCreationFormViewModel {
+    func downloadProductImage() async {
+        image = await loadProductImage()
+    }
+}
+
+private extension BlazeCampaignCreationFormViewModel {
+    func loadProductImage() async -> MediaPickerImage? {
+        await withCheckedContinuation({ continuation in
+            guard let firstImage = product?.images.first else {
+                return continuation.resume(returning: nil)
+            }
+            _ = productImageLoader.requestImage(productImage: firstImage) { image in
+                continuation.resume(returning: .init(image: image, source: .productImage(image: firstImage)))
+            }
+        })
+    }
+}
+
+// MARK: - Blaze AI Suggestions
+extension BlazeCampaignCreationFormViewModel {
+    func loadAISuggestions() async {
+        isLoadingAISuggestions = true
+        error = nil
+
+        do {
+            suggestions = try await fetchAISuggestions()
+            if let firstSuggestion = suggestions.first {
+                tagline = firstSuggestion.siteName
+                description = firstSuggestion.textSnippet
+            }
+        } catch {
+            DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
+            self.error = .failedToLoadAISuggestions
+        }
+
+        isLoadingAISuggestions = false
+    }
+}
+
+private extension BlazeCampaignCreationFormViewModel {
+    @MainActor
+    func fetchAISuggestions() async throws -> [BlazeAISuggestion] {
+        try await withCheckedThrowingContinuation({ continuation in
+            stores.dispatch(BlazeAction.fetchAISuggestions(siteID: siteID, productID: productID) { result in
+                switch result {
+                case .success(let suggestions):
+                    if suggestions.isEmpty {
+                        continuation.resume(throwing: FetchAISuggestionsError.suggestionsEmpty)
+                    } else {
+                        continuation.resume(returning: suggestions)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        })
+    }
+
+    enum FetchAISuggestionsError: Error {
+        case suggestionsEmpty
+    }
+}
+
+// MARK: - Private helpers
 
 private extension BlazeCampaignCreationFormViewModel {
     func updateBudgetDetails() {
@@ -163,6 +281,12 @@ private extension BlazeCampaignCreationFormViewModel {
                 .sorted()
                 .joined(separator: ", ")
         }()
+    }
+}
+
+extension BlazeCampaignCreationFormViewModel {
+    enum BlazeCampaignCreationError: Error {
+        case failedToLoadAISuggestions
     }
 }
 

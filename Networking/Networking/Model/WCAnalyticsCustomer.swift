@@ -5,7 +5,7 @@ public struct WCAnalyticsCustomer: Codable, GeneratedCopiable, GeneratedFakeable
     /// The siteID for the WCAnalyticsCustomer
     public let siteID: Int64
 
-    /// Unique identifier for the user
+    /// Unique identifier for the user, only non-zero when the user is registered
     public let userID: Int64
 
     /// Customer name

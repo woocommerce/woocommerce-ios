@@ -54,7 +54,8 @@ private extension BlazeCampaignDashboardViewHostingController {
                 guard let self = self else { return }
 
                 // Navigate to Campaign Creation Form once any type of product is selected.
-                self.navigateToNativeCampaignCreation(source: .myStoreSection)
+                self.navigateToNativeCampaignCreation(source: .myStoreSection,
+                                                      productID: product.productID)
             },
             onCloseButtonTapped: { [weak self] in
                 guard let self = self else { return }
@@ -71,11 +72,15 @@ private extension BlazeCampaignDashboardViewHostingController {
     /// Handles navigation to the campaign creation view.
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-            /// If there are multiple products available, Blaze product selector view will be shown first.
-            if viewModel.shouldShowProductSelectorView {
-                navigateToBlazeProductSelector(source: source)
-            } else {
+            if let productID {
                 navigateToNativeCampaignCreation(source: source, productID: productID)
+            } else if viewModel.shouldShowProductSelectorView {
+                navigateToBlazeProductSelector(source: source)
+            } else if let product = viewModel.latestPublishedProduct {
+                navigateToNativeCampaignCreation(source: source, productID: product.productID)
+            } else {
+                // Navigate to product selector as we don't have a product ID
+                navigateToBlazeProductSelector(source: source)
             }
         } else {
             navigateToWebCampaignCreation(source: source, productID: productID)
@@ -83,8 +88,10 @@ private extension BlazeCampaignDashboardViewHostingController {
     }
 
     /// Handles navigation to the native Blaze creation
-    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID, onCompletion: { })
+    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
+        let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
+                                                                               productID: productID,
+                                                                               onCompletion: { })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
         if blazeNavigationController.presentingViewController != nil {
             blazeNavigationController.show(controller, sender: self)

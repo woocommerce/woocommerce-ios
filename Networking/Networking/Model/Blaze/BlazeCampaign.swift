@@ -12,6 +12,9 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
     /// ID of the campaign
     public let campaignID: Int64
 
+    /// ID of the product in the campaign
+    public let productID: Int64?
+
     /// URL of the product in the campaign
     public let productURL: String
 
@@ -38,6 +41,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
 
     public init(siteID: Int64,
                 campaignID: Int64,
+                productID: Int64?,
                 productURL: String,
                 name: String,
                 uiStatus: String,
@@ -48,6 +52,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
                 budgetCents: Double) {
         self.siteID = siteID
         self.campaignID = campaignID
+        self.productID = productID
         self.productURL = productURL
         self.name = name
         self.uiStatus = uiStatus
@@ -71,6 +76,9 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
         uiStatus = try container.decode(String.self, forKey: .uiStatus)
         budgetCents = try container.decode(Double.self, forKey: .budgetCents)
         productURL = try container.decode(String.self, forKey: .targetUrl)
+
+        let targetUrn = try container.decode(String.self, forKey: .targetUrn)
+        productID = Int64(String(targetUrn.split(separator: ":").last ?? ""))
 
         let content = try container.decode(ContentConfig.self, forKey: .contentConfig)
         contentImageURL = content.imageURL
@@ -109,6 +117,7 @@ private extension BlazeCampaign {
     enum CodingKeys: String, CodingKey {
         case campaignId
         case name
+        case targetUrn
         case targetUrl
         case uiStatus
         case contentConfig

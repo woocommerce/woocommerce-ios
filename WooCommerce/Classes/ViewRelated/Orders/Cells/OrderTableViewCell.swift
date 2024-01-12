@@ -97,8 +97,14 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
             return
         }
+        var backgroundConfiguration: UIBackgroundConfiguration
 
-        var backgroundConfiguration = UIBackgroundConfiguration.listPlainCell().updated(for: state)
+        if #available(iOS 16.0, *) {
+            backgroundConfiguration = defaultBackgroundConfiguration().updated(for: state)
+        } else {
+            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell().updated(for: state)
+        }
+
         if state.isSelected || state.isHighlighted {
             backgroundConfiguration.backgroundColor = .wooCommercePurple(.shade0)
         }

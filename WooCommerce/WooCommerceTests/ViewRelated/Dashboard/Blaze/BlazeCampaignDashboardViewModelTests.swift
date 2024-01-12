@@ -721,7 +721,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         let product = try XCTUnwrap(viewModel.latestPublishedProduct)
-        XCTAssertEqual(viewModel.latestPublishedProduct?.productID, 3)
+        XCTAssertEqual(product.productID, 3)
     }
 
     func test_latestPublishedProduct_is_nil_when_no_published_product_available() throws {

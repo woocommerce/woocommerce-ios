@@ -21,6 +21,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                      images: [.fake().copy(imageID: 1)])
     }
 
+    private let sampleImage = UIImage.addOutlineImage
+
     private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
                                        BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
                                        BlazeAISuggestion(siteName: "Third suggested tagline", textSnippet: "Third suggested description")]
@@ -35,10 +37,13 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
+    private var imageLoader: MockProductUIImageLoader!
+
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .testingInstance)
+        imageLoader = MockProductUIImageLoader()
     }
 
     // MARK: Initial values
@@ -78,9 +83,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
-        let imageLoader = MockProductUIImageLoader()
-        let sampleImage = UIImage.addOutlineImage
-        imageLoader.requestImageStubbedResponse = sampleImage
+        mockDownloadImage(sampleImage)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -102,9 +105,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
-        let imageLoader = MockProductUIImageLoader()
-        let sampleImage = UIImage.addOutlineImage
-        imageLoader.requestImageStubbedResponse = sampleImage
+        mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -128,9 +129,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
-        let imageLoader = MockProductUIImageLoader()
-        let sampleImage = UIImage.addOutlineImage
-        imageLoader.requestImageStubbedResponse = sampleImage
+        mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -153,9 +152,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockDomainSuggestionsFailure(MockError())
-        let imageLoader = MockProductUIImageLoader()
-        let sampleImage = UIImage.addOutlineImage
-        imageLoader.requestImageStubbedResponse = sampleImage
+        mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -302,9 +299,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "", // Empty tagline
                                                     textSnippet: "Description")])
-        let imageLoader = MockProductUIImageLoader()
-        let sampleImage = UIImage.addOutlineImage
-        imageLoader.requestImageStubbedResponse = sampleImage
+        mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -328,9 +323,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess([BlazeAISuggestion(siteName: "Tagline",
                                                    textSnippet: "")])  // Empty description
-        let imageLoader = MockProductUIImageLoader()
-        let sampleImage = UIImage.addOutlineImage
-        imageLoader.requestImageStubbedResponse = sampleImage
+        mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -410,5 +403,9 @@ private extension BlazeCampaignCreationFormViewModelTests {
                 XCTFail("Unexpected action: \(action)")
             }
         }
+    }
+
+    func mockDownloadImage(_ image: UIImage?) {
+        imageLoader.requestImageStubbedResponse = image
     }
 }

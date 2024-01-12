@@ -23,9 +23,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     var onEditAd: (() -> Void)?
 
-    var productImage: URL? {
-        product?.imageURL
-    }
     @Published private(set) var image: MediaPickerImage?
     @Published private(set) var tagline: String = ""
     @Published private(set) var description: String = ""

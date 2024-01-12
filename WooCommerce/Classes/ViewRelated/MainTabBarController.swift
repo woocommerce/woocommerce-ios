@@ -89,7 +89,7 @@ final class MainTabBarController: UITabBarController {
     /// Tab view controllers
     ///
     private let dashboardNavigationController = WooTabNavigationController()
-    private let ordersContainerController = WooTabContainerController()
+    private let ordersContainerController = TabContainerController()
 
     /// Unfortunately, we can't use the above container to directly hold a WooTabNavigationController, due to
     /// a longstanding bug where a black bar equal to the tab bar height is shown when a nav controller

@@ -511,7 +511,7 @@ private extension MainTabBarController {
                     continue
                 }
                 rootViewControllers.append(containedViewController)
-            } else if let containerController = viewController as? WooTabContainerController {
+            } else if let containerController = viewController as? TabContainerController {
                 guard let containedViewController = containerController.wrappedController else {
                     continue
                 }

@@ -487,19 +487,8 @@ platform :ios do
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
 
-    # Don't check translation coverage for now since we are finalizing the release in CI
-    # UI.message('Checking app strings translation status...')
-    # check_translation_progress(
-    #   glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
-    #   abort_on_violations: false
-    # )
-
-    # UI.message('Checking release notes strings translation status...')
-    # check_translation_progress(
-    #   glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-    #   abort_on_violations: false
-    # )
-
+    # Don't check translation coverage in CI
+    check_translation_progress_all unless is_ci
     download_localized_strings_and_metadata_from_glotpress
     lint_localizations
 
@@ -544,6 +533,27 @@ platform :ios do
     create_release_management_pull_request(
       base_branch: DEFAULT_BRANCH,
       title: "Merge #{release_version_current} final to #{DEFAULT_BRANCH}"
+    )
+  end
+
+  lane :check_translation_progress_all do
+    check_translation_progress_strings
+    check_translation_progress_release_notes
+  end
+
+  lane :check_translation_progress_strings do
+    UI.message('Checking app strings translation status...')
+    check_translation_progress(
+      glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
+      abort_on_violations: false
+    )
+  end
+
+  lane :check_translation_progress_release_notes do
+    UI.message('Checking release notes strings translation status...')
+    check_translation_progress(
+      glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
+      abort_on_violations: false
     )
   end
 

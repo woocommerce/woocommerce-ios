@@ -1,1 +1,1 @@
-[ { "id": "en", "name": "English" }, { "id": "es", "name": "Spanish" } ]
+{ "languages": [ { "id": "en", "name": "English" }, { "id": "es", "name": "Spanish" } ] }

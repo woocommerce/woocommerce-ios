@@ -3,7 +3,7 @@ import struct Yosemite.BlazeTargetLanguage
 
 /// View to select multiple items from a list with an optional search bar.
 struct MultiSelectionList<T: Hashable & Identifiable>: View {
-    private let allOptionsTitle: String
+    private let allOptionsTitle: String?
     private let contents: [T]
     /// Key path to find the content to be displayed
     private let contentKeyPath: KeyPath<T, String>
@@ -20,7 +20,7 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
         comment: "Placeholder in the search bar of a multiple selection list"
     )
 
-    init(allOptionsTitle: String,
+    init(allOptionsTitle: String? = nil,
          contents: [T],
          contentKeyPath: KeyPath<T, String>,
          selectedItems: Binding<Set<T>?>,
@@ -39,19 +39,21 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
             }
 
             List {
-                Section {
-                    HStack {
-                        Text(allOptionsTitle)
-                        Spacer()
-                        Image(uiImage: .checkmarkStyledImage)
-                            .renderedIf(allItemsSelected)
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        if allItemsSelected {
-                            selectedItems = []
-                        } else {
-                            selectedItems = Set(contents)
+                if let allOptionsTitle {
+                    Section {
+                        HStack {
+                            Text(allOptionsTitle)
+                            Spacer()
+                            Image(uiImage: .checkmarkStyledImage)
+                                .renderedIf(allItemsSelected)
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if allItemsSelected {
+                                selectedItems = []
+                            } else {
+                                selectedItems = Set(contents)
+                            }
                         }
                     }
                 }

@@ -66,7 +66,7 @@ final class BlazeTargetTopicPickerViewModel: ObservableObject {
                 })
             }
         } catch {
-            DDLogError("⛔️ Error syncing Blaze target devices: \(error)")
+            DDLogError("⛔️ Error syncing Blaze target topics: \(error)")
             syncError = error
         }
         isSyncingData = false

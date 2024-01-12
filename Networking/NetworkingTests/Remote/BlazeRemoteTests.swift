@@ -152,7 +152,6 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(item.budgetCents, 500)
         XCTAssertEqual(item.totalClicks, 0)
         XCTAssertEqual(item.totalImpressions, 0)
-        XCTAssertEqual(item.productURL, "https://example.com/product/fried-egg-bacon-bagel/")
     }
 
     /// Verifies that loadCampaigns sends the correct parameters.

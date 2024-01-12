@@ -11,6 +11,16 @@ extension BlazeCampaign: Identifiable {
 
 /// View model for `BlazeCampaignListView`
 final class BlazeCampaignListViewModel: ObservableObject {
+    enum CreateCampaignDestination {
+        case productSelector
+        case campaignForm(productID: Int64)
+        case webviewForm(productID: Int64?)
+        case noProductAvailable
+    }
+
+    // To determine what to open when tapping "Create". Defaults to missing product error but gets updated later on.
+    @Published private(set) var createCampaignDestination: CreateCampaignDestination = .noProductAvailable
+
     @Published private(set) var campaigns: [BlazeCampaign] = []
     @Published var shouldDisplayPostCampaignCreationTip = false
     @Published var shouldShowIntroView = false {
@@ -52,11 +62,6 @@ final class BlazeCampaignListViewModel: ObservableObject {
                                                                         sortedBy: [sortDescriptorByID])
         return resultsController
     }()
-
-    // When there's multiple products in the site, campaign creation flow should open product selector View first.
-    var shouldShowProductSelectorView: Bool {
-        return productResultsController.numberOfObjects > 1
-    }
 
     /// Product ResultsController.
     /// Fetch limit is set to 2 to check if there's multiple products in the site, without having to fetch all products.
@@ -170,7 +175,33 @@ private extension BlazeCampaignListViewModel {
     /// Updates row view models and sync state.
     func updateResults() {
         campaigns = resultsController.fetchedObjects
+        updateCreateCampaignDestination()
         transitionToResultsUpdatedState()
+    }
+}
+
+// MARK: Create campaign navigation
+private extension BlazeCampaignListViewModel {
+    func updateCreateCampaignDestination() {
+        createCampaignDestination = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation)
+        ? determineDestination()
+        : .webviewForm(productID: productResultsController.fetchedObjects.first?.productID)
+    }
+
+    // Figure out what view should be presented when "Create" button is tapped, depending on the number of eligible products.
+    func determineDestination() -> CreateCampaignDestination {
+        switch productResultsController.fetchedObjects.count {
+        case 0:
+            return .noProductAvailable
+        case 1:
+            guard let product = self.productResultsController.fetchedObjects.first else {
+                // Should not happen since we already checked the count, but just in case.
+                return .noProductAvailable
+            }
+            return .campaignForm(productID: product.productID)
+        default:
+            return .productSelector
+        }
     }
 }
 

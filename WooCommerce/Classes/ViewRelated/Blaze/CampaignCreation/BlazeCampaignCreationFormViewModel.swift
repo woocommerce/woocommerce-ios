@@ -105,10 +105,18 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
+    var targetLocationViewModel: BlazeTargetLocationPickerViewModel {
+        BlazeTargetLocationPickerViewModel(siteID: siteID, selectedLocations: locations) { [weak self] locations in
+            self?.locations = locations
+            self?.updateTargetLocationText()
+        }
+    }
+
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""
     @Published private(set) var targetTopicText: String = ""
+    @Published private(set) var targetLocationText: String = ""
 
     // AI Suggestions
     @Published private(set) var isLoadingAISuggestions: Bool = true
@@ -162,6 +170,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateTargetLanguagesText()
         updateTargetDevicesText()
         updateTargetTopicText()
+        updateTargetLocationText()
     }
 
     func didTapEditAd() {
@@ -277,6 +286,18 @@ private extension BlazeCampaignCreationFormViewModel {
                 return Localization.all
             }
             return pageTopics
+                .map { $0.name }
+                .sorted()
+                .joined(separator: ", ")
+        }()
+    }
+
+    func updateTargetLocationText() {
+        targetLocationText = {
+            guard let locations, locations.isEmpty == false else {
+                return Localization.all
+            }
+            return locations
                 .map { $0.name }
                 .sorted()
                 .joined(separator: ", ")

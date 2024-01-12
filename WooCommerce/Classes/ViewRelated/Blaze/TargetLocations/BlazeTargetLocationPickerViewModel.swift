@@ -8,12 +8,15 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let onCompletion: (Set<BlazeTargetLocation>?) -> Void
 
-    init(selectedLocations: Set<BlazeTargetLocation>? = nil, 
-         siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         selectedLocations: Set<BlazeTargetLocation>? = nil,
+         stores: StoresManager = ServiceLocator.stores,
+         onCompletion: @escaping (Set<BlazeTargetLocation>?) -> Void) {
         self.selectedLocations = selectedLocations
         self.siteID = siteID
         self.stores = stores
+        self.onCompletion = onCompletion
     }
 }

@@ -4,9 +4,12 @@ import SwiftUI
 struct BlazeTargetLocationPickerView: View {
 
     @ObservedObject private var viewModel: BlazeTargetLocationPickerViewModel
+    private let onDismiss: () -> Void
 
-    init(viewModel: BlazeTargetLocationPickerViewModel) {
+    init(viewModel: BlazeTargetLocationPickerViewModel,
+         onDismiss: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -15,5 +18,5 @@ struct BlazeTargetLocationPickerView: View {
 }
 
 #Preview {
-    BlazeTargetLocationPickerView(viewModel: .init(siteID: 123))
+    BlazeTargetLocationPickerView(viewModel: .init(siteID: 123) { _ in }) {}
 }

@@ -14,7 +14,7 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
         rawStatus = campaign.uiStatus
         contentClickURL = campaign.contentClickURL
         contentImageURL = campaign.contentImageURL
-        totalBudget = campaign.budgetCents // TODO-11532: update the storage model property name
+        totalBudget = campaign.budgetCents
         totalClicks = campaign.totalClicks
         totalImpressions = campaign.totalImpressions
     }
@@ -25,7 +25,6 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
         BlazeCampaign(siteID: siteID,
                       campaignID: campaignID,
                       productID: productID?.int64Value,
-                      productURL: "", // TODO-11532: map the new attribute `productURL` here
                       name: name,
                       uiStatus: rawStatus,
                       contentImageURL: contentImageURL,

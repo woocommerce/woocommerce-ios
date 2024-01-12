@@ -256,7 +256,6 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
         let currencySettings = CurrencySettings()
         currencySettings.currencyCode = .JPY
-        let siteAddress = SiteAddress(siteSettings: [.fake().copy(settingID: "woocommerce_default_country", value: "US:PA")])
         let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID,
                                                       stores: testingStore,
                                                       storeCurrencySettings: currencySettings,

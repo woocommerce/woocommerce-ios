@@ -116,7 +116,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private var isLoadingProductImage: Bool = true
 
     var canEditAd: Bool {
-        image != nil && !isLoadingAISuggestions
+        !(isLoadingProductImage || isLoadingAISuggestions)
     }
 
     var canConfirmDetails: Bool {

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+17.0
+-----
+
+
 16.9
 -----
 - [*] Order Creation/Editing: removed ability to delete an order line using the `-` button on the stepper, to avoid accidental deletion. [https://github.com/woocommerce/woocommerce-ios/pull/11651]

@@ -2165,6 +2165,7 @@
 		DE0134172A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */; };
 		DE0134192A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134182A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift */; };
 		DE02ABAD2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABAC2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift */; };
+		DE02ABAF2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABAE2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift */; };
 		DE0A2EAA281BA083007A8015 /* ProductCategoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EA9281BA083007A8015 /* ProductCategoryList.swift */; };
 		DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */; };
 		DE0A2EAF281BA278007A8015 /* ProductCategorySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */; };
@@ -4829,6 +4830,7 @@
 		DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationViewModel.swift; sourceTree = "<group>"; };
 		DE0134182A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationViewModelTests.swift; sourceTree = "<group>"; };
 		DE02ABAC2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLocationSearchView.swift; sourceTree = "<group>"; };
+		DE02ABAE2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLocationPickerViewModelTests.swift; sourceTree = "<group>"; };
 		DE0A2EA9281BA083007A8015 /* ProductCategoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryList.swift; sourceTree = "<group>"; };
 		DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelector.swift; sourceTree = "<group>"; };
 		DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModel.swift; sourceTree = "<group>"; };
@@ -5838,6 +5840,7 @@
 				DE7E5E822B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift */,
 				DE7E5E922B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift */,
 				DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */,
+				DE02ABAE2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift */,
 				021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */,
 				DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */,
 				DE5746372B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift */,
@@ -14548,6 +14551,7 @@
 				02C27BD0282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift in Sources */,
 				2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */,
 				DE61978D289A5326005E4362 /* WooSetupWebViewModelTests.swift in Sources */,
+				DE02ABAF2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift in Sources */,
 				D802548726552E07001B2CC1 /* CardPresentModalNonRetryableErrorTests.swift in Sources */,
 				B9DC770729F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift in Sources */,
 				02BAB02924D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift in Sources */,

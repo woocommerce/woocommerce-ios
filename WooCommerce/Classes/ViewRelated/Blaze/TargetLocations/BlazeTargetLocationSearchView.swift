@@ -67,7 +67,7 @@ private extension BlazeTargetLocationSearchView {
                 HStack {
                     Text(item.name)
                     Spacer()
-                    Text(item.type)
+                    Text(item.type.capitalized)
                         .foregroundColor(.secondary)
                         .captionStyle()
                 }

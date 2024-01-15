@@ -140,7 +140,7 @@ private extension MultiSelectionList {
     }
 
     func toggleItem(_ item: T) {
-        var updatedItems = selectedItems ?? []
+        var updatedItems = selectedItems ?? Set(contents)
         if updatedItems.contains(item) {
             updatedItems.remove(item)
         } else {

@@ -43,6 +43,11 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
         var optionSet = Set(selectedSearchResults)
         optionSet.insert(item)
         selectedSearchResults = Array(optionSet)
+
+        // add the new item to the selected list
+        var selectedItems = selectedLocations ?? []
+        selectedItems.insert(item)
+        selectedLocations = selectedItems
     }
 
     func confirmSelection() {

@@ -43,6 +43,11 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         configureTableView()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configurePreferredContentSize()
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         configurePreferredContentSize()

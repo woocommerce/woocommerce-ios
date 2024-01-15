@@ -17,7 +17,7 @@ extension CardPresentPaymentOnboardingState {
                 let .stripeAccountPendingRequirement(plugin, _),
                 let .countryNotSupportedStripe(plugin, _):
                 return plugin.gatewayID
-            default:
+            case .loading, .selectPlugin, .countryNotSupported, .pluginNotInstalled, .genericError, .noConnectionError:
                 return nil
         }
     }

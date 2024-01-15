@@ -503,6 +503,7 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
             return handleSwitchingDetails(viewModels: [viewModel], currentIndex: 0)
@@ -518,7 +519,6 @@ private extension OrdersRootViewController {
             show(orderViewController, sender: self)
         }
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
     }
 }
 

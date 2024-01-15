@@ -144,7 +144,13 @@ private extension OrderTableViewCell {
 
 private extension OrderTableViewCell {
     func configureBackground() {
-        var backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
+        var backgroundConfiguration: UIBackgroundConfiguration
+
+        if #available(iOS 16.0, *) {
+            backgroundConfiguration = defaultBackgroundConfiguration()
+        } else {
+            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
+        }
         backgroundConfiguration.backgroundColor = .listBackground
         self.backgroundConfiguration = backgroundConfiguration
     }

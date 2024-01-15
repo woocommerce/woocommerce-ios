@@ -57,9 +57,9 @@ struct CashPaymentTenderView: View {
                     viewModel.onMarkOrderAsCompleteButtonTapped()
                     dismiss()
                 }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .disabled(!viewModel.tenderButtonIsEnabled)
-                    .padding(insets: Layout.buttonPadding)
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(!viewModel.tenderButtonIsEnabled)
+                .padding(insets: Layout.buttonPadding)
             }
         }
         .background(Color(.systemBackground))
@@ -92,12 +92,16 @@ extension CashPaymentTenderView {
     }
 
     enum Localization {
-        static let customerPaidTitle = NSLocalizedString("cashPaymentTenderView.customerPaid",
-                                                         value: "Cash received",
-                                                         comment: "Title for the amount the customer paid.")
-        static let changeDueTitle = NSLocalizedString("cashPaymentTenderView.changeDue",
-                                                      value: "Change due",
-                                                      comment: "Title for the change due text.")
+        static let customerPaidTitle = NSLocalizedString(
+            "cashPaymentTenderView.customerPaid",
+            value: "Cash received",
+            comment: "Title for the amount the customer paid."
+        )
+        static let changeDueTitle = NSLocalizedString(
+            "cashPaymentTenderView.changeDue",
+            value: "Change due",
+            comment: "Title for the change due text."
+        )
         static let addNoteToggleTitle = NSLocalizedString(
             "cashPaymentTenderView.addNoteToggle.title",
             value: "Record transaction details in order note",
@@ -108,12 +112,16 @@ extension CashPaymentTenderView {
             value: "Mark Order as Complete",
             comment: "Title for the Mark order as complete button."
         )
-        static let cancelButtonTitle = NSLocalizedString("cashPaymentTenderView.cancelButton",
-                                                         value: "Cancel",
-                                                         comment: "Title for the cancel button.")
-        static let navigationBarTitle = NSLocalizedString("cashPaymentTenderView.navigationBarTitle",
-                                                          value: "Take Payment (%1$@)",
-                                                          comment: "Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)'")
+        static let cancelButtonTitle = NSLocalizedString(
+            "cashPaymentTenderView.cancelButton",
+            value: "Cancel",
+            comment: "Title for the cancel button."
+        )
+        static let navigationBarTitle = NSLocalizedString(
+            "cashPaymentTenderView.navigationBarTitle",
+            value: "Take Payment (%1$@)",
+            comment: "Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)'"
+        )
     }
 }
 

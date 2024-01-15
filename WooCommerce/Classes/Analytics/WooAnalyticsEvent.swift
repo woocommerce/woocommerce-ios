@@ -1981,12 +1981,17 @@ extension WooAnalyticsEvent {
         ///   - reason: the reason why the onboarding step was shown (effectively the name of the step)
         ///   - countryCode: the country code of the store
         ///   - error: the logged error response from the API, if any.
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardPresentOnboardingCtaFailed(reason: String, countryCode: CountryCode, error: Error? = nil) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingCtaFailed(reason: String,
+                                                   countryCode: CountryCode,
+                                                   error: Error? = nil,
+                                                   gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCtaFailed,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
+                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
                               ], error: error)
         }
 

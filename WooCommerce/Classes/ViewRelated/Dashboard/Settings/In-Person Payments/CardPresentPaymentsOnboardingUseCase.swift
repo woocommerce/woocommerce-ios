@@ -560,7 +560,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
     func trackCardPresentPluginActionFailed(_ error: Error, trigger: PluginFailureTrigger) {
         analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: trigger.rawValue,
                                                                                 countryCode: storeCountryCode,
-                                                                                error: error))
+                                                                                error: error,
+                                                                                gatewayID: preferredPluginLocal?.gatewayID))
     }
 }
 

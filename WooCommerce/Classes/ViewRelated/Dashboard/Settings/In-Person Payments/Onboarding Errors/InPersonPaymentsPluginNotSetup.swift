@@ -99,6 +99,8 @@ private extension InPersonPaymentsPluginNotSetup {
     private func trackPluginSetupTappedEvent() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaFailed(
             reason: "plugin_setup_tapped",
-            countryCode: cardPresentConfiguration.countryCode))
+            countryCode: cardPresentConfiguration.countryCode,
+            gatewayID: plugin.gatewayID
+        ))
     }
 }

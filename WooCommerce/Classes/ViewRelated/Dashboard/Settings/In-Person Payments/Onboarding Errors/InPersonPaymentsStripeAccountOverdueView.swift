@@ -48,7 +48,9 @@ private extension InPersonPaymentsStripeAccountOverdue {
     func trackPluginSetupTappedEvent() {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaFailed(
             reason: "stripe_account_setup_tapped",
-            countryCode: CardPresentConfigurationLoader().configuration.countryCode))
+            countryCode: CardPresentConfigurationLoader().configuration.countryCode,
+            gatewayID: plugin.gatewayID
+        ))
     }
 }
 

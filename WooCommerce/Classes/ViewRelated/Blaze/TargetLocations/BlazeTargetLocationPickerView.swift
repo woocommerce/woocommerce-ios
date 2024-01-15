@@ -108,28 +108,25 @@ private extension BlazeTargetLocationPickerView {
     }
 
     var resultList: some View {
-        List {
-            ForEach(viewModel.searchResults) { item in
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text(item.name)
-                        Spacer()
-                        Text(item.type)
-                            .foregroundColor(.secondary)
-                            .captionStyle()
-                    }
-                    Text(item.allParentLocationNames.joined(separator: ", "))
+        List(viewModel.searchResults) { item in
+            VStack(alignment: .leading) {
+                HStack {
+                    Text(item.name)
+                    Spacer()
+                    Text(item.type)
                         .foregroundColor(.secondary)
                         .captionStyle()
-                        .renderedIf(item.allParentLocationNames.isNotEmpty)
                 }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    isSearchMode = false
-                    viewModel.addOptionFromSearchResult(item)
-                }
+                Text(item.allParentLocationNames.joined(separator: ", "))
+                    .foregroundColor(.secondary)
+                    .captionStyle()
+                    .renderedIf(item.allParentLocationNames.isNotEmpty)
             }
-            Spacer()
+            .contentShape(Rectangle())
+            .onTapGesture {
+                isSearchMode = false
+                viewModel.addOptionFromSearchResult(item)
+            }
         }
         .listStyle(.plain)
     }
@@ -182,7 +179,7 @@ private extension BlazeTargetLocationPickerView {
         )
         static let searchHint = NSLocalizedString(
             "blazeTargetLocationPickerView.searchHint",
-            value: "Or select specific locations by entering queries in the search box",
+            value: "Or add specific locations by entering queries in the search box",
             comment: "Suggestion for searching for specific locations on the target location picker for campaign creation"
         )
         static let headerMessage = NSLocalizedString(

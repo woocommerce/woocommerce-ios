@@ -53,22 +53,20 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
     /// Handles navigation to the native Blaze creation
     func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
-        DispatchQueue.main.async {
-            let controller = BlazeCampaignCreationFormHostingController(
-                viewModel: .init(siteID: self.siteID,
-                                 productID: productID,
-                                 onCompletion: self.onCampaignCreated
-                     )
-            )
+        let controller = BlazeCampaignCreationFormHostingController(
+            viewModel: .init(siteID: self.siteID,
+                             productID: productID,
+                             onCompletion: self.onCampaignCreated
+                 )
+        )
 
-            // This function can be called from navigateToBlazeProductSelector(), in which case we need to show the
-            // Campaign Creation Form from blazeNavigationController.
-            // Otherwise, we show it from the current navigation controller.
-            if self.blazeNavigationController.presentingViewController != nil {
-                self.blazeNavigationController.show(controller, sender: self)
-            } else {
-                self.navigationController.show(controller, sender: self)
-            }
+        // This function can be called from navigateToBlazeProductSelector(), in which case we need to show the
+        // Campaign Creation Form from blazeNavigationController.
+        // Otherwise, we show it from the current navigation controller.
+        if self.blazeNavigationController.presentingViewController != nil {
+            self.blazeNavigationController.show(controller, sender: self)
+        } else {
+            self.navigationController.show(controller, sender: self)
         }
     }
 

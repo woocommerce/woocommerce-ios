@@ -6,7 +6,6 @@ import struct Networking.BlazeAISuggestion
 import Photos
 
 /// View model for `BlazeCampaignCreationForm`
-@MainActor
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     let siteID: Int64
@@ -162,6 +161,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
 // MARK: Image download
 extension BlazeCampaignCreationFormViewModel {
+    @MainActor
     func downloadProductImage() async {
         image = await loadProductImage()
     }
@@ -182,6 +182,7 @@ private extension BlazeCampaignCreationFormViewModel {
 
 // MARK: - Blaze AI Suggestions
 extension BlazeCampaignCreationFormViewModel {
+    @MainActor
     func loadAISuggestions() async {
         isLoadingAISuggestions = true
         error = nil

@@ -44,6 +44,12 @@ struct BlazeTargetLocationPickerView: View {
             }
         }
         .navigationViewStyle(.stack)
+        .onChange(of: isSearchMode) { newValue in
+            // clears the search query when search view is dismissed.
+            if newValue == false {
+                viewModel.searchQuery = ""
+            }
+        }
     }
 }
 

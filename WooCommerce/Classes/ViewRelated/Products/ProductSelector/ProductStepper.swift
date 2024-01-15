@@ -35,14 +35,8 @@ struct ProductStepper: View {
                     textFieldFocused = false
                 }
             } label: {
-                if viewModel.decrementWillRemoveProduct {
-                    Image(systemName: "xmark.circle")
-                        .font(.system(size: Layout.stepperButtonSize))
-                        .foregroundColor(Color(.error))
-                } else {
-                    Image(systemName: "minus.circle")
-                        .font(.system(size: Layout.stepperButtonSize))
-                }
+                Image(systemName: "minus.circle")
+                    .font(.system(size: Layout.stepperButtonSize))
             }
             .accessibilityHidden(true)
             .disabled(viewModel.shouldDisableQuantityDecrementer)

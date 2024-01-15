@@ -139,6 +139,10 @@ protocol OrderSynchronizer {
     ///
     var setNote: PassthroughSubject<String?, Never> { get }
 
+    /// Sets an order customer ID.
+    ///
+    var setCustomerID: PassthroughSubject<Int64, Never> { get }
+
     /// Trigger to retry a remote sync.
     ///
     var retryTrigger: PassthroughSubject<Void, Never> { get }

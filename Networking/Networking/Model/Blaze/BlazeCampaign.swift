@@ -12,8 +12,8 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
     /// ID of the campaign
     public let campaignID: Int64
 
-    /// URL of the product in the campaign
-    public let productURL: String
+    /// ID of the product in the campaign
+    public let productID: Int64?
 
     /// Name of the campaign
     public let name: String
@@ -38,7 +38,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
 
     public init(siteID: Int64,
                 campaignID: Int64,
-                productURL: String,
+                productID: Int64?,
                 name: String,
                 uiStatus: String,
                 contentImageURL: String?,
@@ -48,7 +48,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
                 budgetCents: Double) {
         self.siteID = siteID
         self.campaignID = campaignID
-        self.productURL = productURL
+        self.productID = productID
         self.name = name
         self.uiStatus = uiStatus
         self.contentImageURL = contentImageURL
@@ -70,7 +70,13 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
         name = try container.decode(String.self, forKey: .name)
         uiStatus = try container.decode(String.self, forKey: .uiStatus)
         budgetCents = try container.decode(Double.self, forKey: .budgetCents)
-        productURL = try container.decode(String.self, forKey: .targetUrl)
+
+        let targetUrn = try container.decode(String.self, forKey: .targetUrn)
+        /// Extracts the product ID from the `target_urn` response.
+        /// The response looks like the following: `urn:wpcom:post:1:134`
+        /// The product ID is the last number following the colon in the response (`134`).
+        /// If the product ID cannot be extracted, it returns null instead.
+        productID = Int64(String(targetUrn.split(separator: ":").last ?? ""))
 
         let content = try container.decode(ContentConfig.self, forKey: .contentConfig)
         contentImageURL = content.imageURL
@@ -109,7 +115,7 @@ private extension BlazeCampaign {
     enum CodingKeys: String, CodingKey {
         case campaignId
         case name
-        case targetUrl
+        case targetUrn
         case uiStatus
         case contentConfig
         case campaignStats

@@ -1,1 +1,1 @@
-[ { "id": "mobile", "name": "Mobile" }, { "id": "desktop", "name": "Desktop" } ]
+{ "devices": [ { "id": "mobile", "name": "Mobile" }, { "id": "desktop", "name": "Desktop" } ] }

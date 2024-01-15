@@ -31,6 +31,11 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published var selectedCampaignURL: URL?
 
+    // When there's multiple products in the site, campaign creation flow should open product selector View first.
+    var shouldShowProductSelectorView: Bool {
+        return productResultsController.numberOfObjects > 1
+    }
+
     private(set) var shouldRedactView: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
@@ -64,15 +69,19 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }()
 
     /// Product ResultsController.
+    /// Fetch limit is set to 2 to check if there's multiple products in the site, without having to fetch all products.
     private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@ ", siteID, ProductStatus.published.rawValue)
+        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@ AND purchasable == %@",
+                                    siteID,
+                                    ProductStatus.published.rawValue,
+                                    NSNumber(value: true))
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
-                                                 fetchLimit: 1,
+                                                 fetchLimit: 2,
                                                  sortOrder: .dateDescending)
     }()
 
-    private var latestPublishedProduct: Product? {
+    var latestPublishedProduct: Product? {
         productResultsController.fetchedObjects.first
     }
 

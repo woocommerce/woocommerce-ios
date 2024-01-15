@@ -14,7 +14,11 @@ struct BlazeTargetLanguageListMapper: Mapper {
         decoder.userInfo = [
             .locale: locale
         ]
-        return try decoder.decode([BlazeTargetLanguage].self, from: response)
+        return try decoder.decode(BlazeTargetLanguageList.self, from: response).languages
+    }
+
+    struct BlazeTargetLanguageList: Decodable {
+        let languages: [BlazeTargetLanguage]
     }
 }
 
@@ -32,7 +36,11 @@ struct BlazeTargetDeviceListMapper: Mapper {
         decoder.userInfo = [
             .locale: locale
         ]
-        return try decoder.decode([BlazeTargetDevice].self, from: response)
+        return try decoder.decode(BlazeTargetDeviceList.self, from: response).devices
+    }
+
+    struct BlazeTargetDeviceList: Decodable {
+        let devices: [BlazeTargetDevice]
     }
 }
 
@@ -47,10 +55,15 @@ struct BlazeTargetTopicListMapper: Mapper {
     ///
     func map(response: Data) throws -> [BlazeTargetTopic] {
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.userInfo = [
             .locale: locale
         ]
-        return try decoder.decode([BlazeTargetTopic].self, from: response)
+        return try decoder.decode(BlazeTargetTopicList.self, from: response).pageTopics
+    }
+
+    struct BlazeTargetTopicList: Decodable {
+        let pageTopics: [BlazeTargetTopic]
     }
 }
 
@@ -63,6 +76,10 @@ struct BlazeTargetLocationListMapper: Mapper {
     func map(response: Data) throws -> [BlazeTargetLocation] {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try decoder.decode([BlazeTargetLocation].self, from: response)
+        return try decoder.decode(BlazeTargetLocationList.self, from: response).locations
+    }
+
+    struct BlazeTargetLocationList: Decodable {
+        let locations: [BlazeTargetLocation]
     }
 }

@@ -475,9 +475,9 @@ final class BlazeStoreTests: XCTestCase {
     func test_synchronizeTargetTopics_overwrites_existing_topics_with_the_given_locale() throws {
         // Given
         let locale = "en"
-        storeTargetTopic(.init(id: "test", description: "Test", locale: locale))
-        storeTargetTopic(.init(id: "test-2", description: "Test 2", locale: "vi"))
-        remote.whenFetchingTargetTopics(thenReturn: .success([.init(id: "IAB1", description: "Arts", locale: locale)]))
+        storeTargetTopic(.init(id: "test", name: "Test", locale: locale))
+        storeTargetTopic(.init(id: "test-2", name: "Test 2", locale: "vi"))
+        remote.whenFetchingTargetTopics(thenReturn: .success([.init(id: "IAB1", name: "Arts", locale: locale)]))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,
                                network: network,
@@ -601,6 +601,54 @@ final class BlazeStoreTests: XCTestCase {
             store.onAction(BlazeAction.fetchForecastedImpressions(siteID: self.sampleSiteID,
                                                                   input: BlazeForecastedImpressionsInput.fake(),
                                                                   onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - Fetching AI suggestions
+
+    func test_fetchAISuggestions_returns_suggestions_when_fetching_successfully() throws {
+        // Given
+        let suggestions = [BlazeAISuggestion(siteName: "Name 1", textSnippet: "Description 1"),
+                           BlazeAISuggestion(siteName: "Name 2", textSnippet: "Description 2")]
+        remote.whenFetchingAISuggestionsResult(thenReturn: .success(suggestions))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchAISuggestions(siteID: self.sampleSiteID,
+                                                          productID: 123,
+                                                          onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let value = try result.get()
+        XCTAssertEqual(value, suggestions)
+    }
+
+    func test_fetchAISuggestions_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingAISuggestionsResult(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchAISuggestions(siteID: self.sampleSiteID,
+                                                          productID: 123,
+                                                          onCompletion: { result in
                 promise(result)
             }))
         }

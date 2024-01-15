@@ -83,8 +83,20 @@ public enum BlazeAction: Action {
     ///
     /// - `siteID`: the site to create Blaze campaign.
     /// - `input`: the input for the forecasted impressions. Has various required and optional parameters.
-    /// - `onCompletion`: invoked when the fect operation finishes.
+    /// - `onCompletion`: invoked when the fetch operation finishes.
     case fetchForecastedImpressions(siteID: Int64,
                                     input: BlazeForecastedImpressionsInput,
                                     onCompletion: (Result<BlazeImpressions, Error>) -> Void)
+
+    /// Fetches AI based suggestions for Blaze campaign tagline and description for given product ID
+    ///
+    /// - siteID: WPCom ID for the site to create the campaign in.
+    /// - productID: ID of the product to create the campaign for.
+    /// - `onCompletion`: invoked when the fetch operation finishes.
+    ///   - `result.success([BlazeAISuggestion])`: list of AI suggestions.
+    ///   - `result.failure(Error)`: error indicates issues fetching info.
+    ///
+    case fetchAISuggestions(siteID: Int64,
+                            productID: Int64,
+                            onCompletion: (Result<[BlazeAISuggestion], Error>) -> Void)
 }

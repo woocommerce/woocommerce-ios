@@ -1,14 +1,14 @@
-[
+{ "page_topics": [
     {
         "id": "IAB1",
-        "description": "Arts & Entertainment"
+        "name": "Arts & Entertainment"
     },
     {
         "id": "IAB2",
-        "description": "Automotive"
+        "name": "Automotive"
     },
     {
         "id": "IAB3",
-        "description": "Business"
+        "name": "Business"
     }
-]
+]}

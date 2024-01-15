@@ -254,7 +254,13 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         }
 
         let analytics = MockAnalyticsProvider()
-        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID, stores: testingStore, analytics: WooAnalytics(analyticsProvider: analytics))
+        let currencySettings = CurrencySettings()
+        currencySettings.currencyCode = .JPY
+        let viewModel = SimplePaymentsAmountViewModel(siteID: sampleSiteID,
+                                                      stores: testingStore,
+                                                      storeCurrencySettings: currencySettings,
+                                                      countryCode: .JP,
+                                                      analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.createSimplePaymentsOrder()
@@ -263,6 +269,8 @@ final class SimplePaymentsAmountViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents, [WooAnalyticsStat.paymentsFlowFailed.rawValue])
         assertEqual(analytics.receivedProperties.first?["source"] as? String, "amount")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["country"] as? String, "JP")
+        assertEqual(analytics.receivedProperties.first?["currency"] as? String, "JPY")
     }
 
     func test_view_model_disable_cancel_button_while_creating_payment_order() {

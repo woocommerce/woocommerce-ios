@@ -11,6 +11,7 @@ final class MockBlazeRemote {
     private var fetchingTargetTopicsResult: Result<[BlazeTargetTopic], Error>?
     private var fetchingTargetLocationsResult: Result<[BlazeTargetLocation], Error>?
     private var fetchingForecastedImpressionsResult: Result<BlazeImpressions, Error>?
+    private var fetchingAISuggestionsResult: Result<[BlazeAISuggestion], Error>?
 
     func whenCreatingCampaign(thenReturn result: Result<Void, Error>) {
         creatingCampaignResult = result
@@ -38,6 +39,10 @@ final class MockBlazeRemote {
 
     func whenFetchingForecastedImpressions(thenReturn result: Result<BlazeImpressions, Error>?) {
         fetchingForecastedImpressionsResult = result
+    }
+
+    func whenFetchingAISuggestionsResult(thenReturn result: Result<[BlazeAISuggestion], Error>?) {
+        fetchingAISuggestionsResult = result
     }
 }
 
@@ -133,6 +138,20 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         switch result {
         case .success(let campaigns):
             return campaigns
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func fetchAISuggestions(siteID: Int64,
+                            productID: Int64) async throws -> [BlazeAISuggestion] {
+        guard let result = fetchingAISuggestionsResult else {
+            XCTFail("Could not find result for fetching AI suggestions.")
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case .success(let suggestions):
+            return suggestions
         case .failure(let error):
             throw error
         }

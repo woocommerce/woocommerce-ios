@@ -152,7 +152,6 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(item.budgetCents, 500)
         XCTAssertEqual(item.totalClicks, 0)
         XCTAssertEqual(item.totalImpressions, 0)
-        XCTAssertEqual(item.productURL, "https://example.com/product/fried-egg-bacon-bagel/")
     }
 
     /// Verifies that loadCampaigns sends the correct parameters.
@@ -315,9 +314,9 @@ final class BlazeRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "IAB1", description: "Arts & Entertainment", locale: "vi"),
-            .init(id: "IAB2", description: "Automotive", locale: "vi"),
-            .init(id: "IAB3", description: "Business", locale: "vi")
+            .init(id: "IAB1", name: "Arts & Entertainment", locale: "vi"),
+            .init(id: "IAB2", name: "Automotive", locale: "vi"),
+            .init(id: "IAB3", name: "Business", locale: "vi")
         ])
     }
 
@@ -449,6 +448,64 @@ final class BlazeRemoteTests: XCTestCase {
                 for: sampleSiteID,
                 with: BlazeForecastedImpressionsInput.fake()
             )
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
+    // MARK: - Fetch AI suggestions
+
+    func test_fetchAISuggestions_returns_parsed_suggestions() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/suggestions"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-ai-suggestions")
+
+        // When
+        let results = try await remote.fetchAISuggestions(siteID: sampleSiteID, productID: 123)
+
+        // Then
+        XCTAssertEqual(results, [
+            .init(siteName: "Classic Fridge!",
+                  textSnippet: "Apartment Sized 7.5 cu. ft. Two Door Refrigerator with Retro Design and Low Energy Consumption. Click for more!"),
+            .init(siteName: "Funky Retro Fridge",
+                  textSnippet: "Epic Black Retro Refrigerator with Chrome handles, low energy consumption and lots of door storage. Buy now!"),
+            .init(siteName: "Cool Vintage Refrigerator",
+                  textSnippet: "Automatic Defrost, Low Energy Consumption, 2L bottle Storage, 1 Year Warranty. Check it out!")
+        ])
+    }
+
+    func test_fetchAISuggestions_sends_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/suggestions"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-ai-suggestions")
+        let sampleProductID: Int64 = 123
+
+        // When
+        _ = try await remote.fetchAISuggestions(siteID: sampleSiteID, productID: sampleProductID)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["urn"] as? String, "urn:wpcom:post:\(sampleSiteID):\(sampleProductID)")
+    }
+
+    func test_fetchAISuggestions_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/suggestions"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchAISuggestions(siteID: sampleSiteID, productID: 123)
 
             // Then
             XCTFail("Request should fail")

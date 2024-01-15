@@ -160,11 +160,26 @@ extension Networking.Announcement {
     }
 }
 
+extension Networking.BlazeAISuggestion {
+    public func copy(
+        siteName: CopiableProp<String> = .copy,
+        textSnippet: CopiableProp<String> = .copy
+    ) -> Networking.BlazeAISuggestion {
+        let siteName = siteName ?? self.siteName
+        let textSnippet = textSnippet ?? self.textSnippet
+
+        return Networking.BlazeAISuggestion(
+            siteName: siteName,
+            textSnippet: textSnippet
+        )
+    }
+}
+
 extension Networking.BlazeCampaign {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         campaignID: CopiableProp<Int64> = .copy,
-        productURL: CopiableProp<String> = .copy,
+        productID: NullableCopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         uiStatus: CopiableProp<String> = .copy,
         contentImageURL: NullableCopiableProp<String> = .copy,
@@ -175,7 +190,7 @@ extension Networking.BlazeCampaign {
     ) -> Networking.BlazeCampaign {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
-        let productURL = productURL ?? self.productURL
+        let productID = productID ?? self.productID
         let name = name ?? self.name
         let uiStatus = uiStatus ?? self.uiStatus
         let contentImageURL = contentImageURL ?? self.contentImageURL
@@ -187,7 +202,7 @@ extension Networking.BlazeCampaign {
         return Networking.BlazeCampaign(
             siteID: siteID,
             campaignID: campaignID,
-            productURL: productURL,
+            productID: productID,
             name: name,
             uiStatus: uiStatus,
             contentImageURL: contentImageURL,
@@ -295,16 +310,16 @@ extension Networking.BlazeTargetOptions {
 extension Networking.BlazeTargetTopic {
     public func copy(
         id: CopiableProp<String> = .copy,
-        description: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
         locale: CopiableProp<String> = .copy
     ) -> Networking.BlazeTargetTopic {
         let id = id ?? self.id
-        let description = description ?? self.description
+        let name = name ?? self.name
         let locale = locale ?? self.locale
 
         return Networking.BlazeTargetTopic(
             id: id,
-            description: description,
+            name: name,
             locale: locale
         )
     }
@@ -3241,17 +3256,14 @@ extension Networking.WooPaymentsAccountDepositSummary {
 extension Networking.WooPaymentsBalance {
     public func copy(
         amount: CopiableProp<Int> = .copy,
-        currency: CopiableProp<String> = .copy,
-        depositsCount: NullableCopiableProp<Int> = .copy
+        currency: CopiableProp<String> = .copy
     ) -> Networking.WooPaymentsBalance {
         let amount = amount ?? self.amount
         let currency = currency ?? self.currency
-        let depositsCount = depositsCount ?? self.depositsCount
 
         return Networking.WooPaymentsBalance(
             amount: amount,
-            currency: currency,
-            depositsCount: depositsCount
+            currency: currency
         )
     }
 }
@@ -3277,16 +3289,13 @@ extension Networking.WooPaymentsCurrencyBalances {
 extension Networking.WooPaymentsCurrencyDeposits {
     public func copy(
         lastPaid: CopiableProp<[WooPaymentsDeposit]> = .copy,
-        nextScheduled: CopiableProp<[WooPaymentsDeposit]> = .copy,
         lastManualDeposits: CopiableProp<[WooPaymentsManualDeposit]> = .copy
     ) -> Networking.WooPaymentsCurrencyDeposits {
         let lastPaid = lastPaid ?? self.lastPaid
-        let nextScheduled = nextScheduled ?? self.nextScheduled
         let lastManualDeposits = lastManualDeposits ?? self.lastManualDeposits
 
         return Networking.WooPaymentsCurrencyDeposits(
             lastPaid: lastPaid,
-            nextScheduled: nextScheduled,
             lastManualDeposits: lastManualDeposits
         )
     }

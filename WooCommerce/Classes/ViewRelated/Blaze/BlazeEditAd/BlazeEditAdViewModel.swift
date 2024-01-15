@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import struct Networking.BlazeAISuggestion
 
 /// View model for `BlazeEditAdView`
 final class BlazeEditAdViewModel: ObservableObject {
@@ -45,14 +46,7 @@ final class BlazeEditAdViewModel: ObservableObject {
     }
     private var descriptionEmptyError: String?
 
-    // AI generation
-    @Published private(set) var generatingByAI = false
-
     var isSaveButtonEnabled: Bool {
-        guard generatingByAI == false else {
-            return false
-        }
-
         guard let editedAdData else {
             return false
         }
@@ -71,18 +65,41 @@ final class BlazeEditAdViewModel: ObservableObject {
                                description: description)
     }
 
+    @Published private var selectedSuggestionIndex: Int?
+    private let suggestions: [BlazeAISuggestion]
+
+    var canSelectPreviousSuggestion: Bool {
+        guard let selectedSuggestionIndex else {
+            return false
+        }
+        return selectedSuggestionIndex > 0
+    }
+
+    var canSelectNextSuggestion: Bool {
+        guard let selectedSuggestionIndex else {
+            return true
+        }
+        return selectedSuggestionIndex < suggestions.count - 1
+    }
+
     private let onSave: (BlazeEditAdData) -> Void
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          adData: BlazeEditAdData,
+         suggestions: [BlazeAISuggestion],
          onSave: @escaping (BlazeEditAdData) -> Void,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
 
         self.adData = adData
-        self.imageState = .success(adData.image)
+        self.suggestions = suggestions
+        if let image = adData.image {
+            self.imageState = .success(image)
+        } else {
+            self.imageState = .empty
+        }
         self.tagline = adData.tagline
         self.description = adData.description
 
@@ -92,6 +109,7 @@ final class BlazeEditAdViewModel: ObservableObject {
         self.descriptionRemainingLength = descriptionMaxLength
 
         watchCharacterLimit()
+        setSelectedSuggestionIfApplicable()
     }
 
     func didTapSave() {
@@ -123,14 +141,42 @@ final class BlazeEditAdViewModel: ObservableObject {
         }
     }
 
-    func didTapRegenerateByAI() {
-        Task {
-            generatingByAI = true
-            tagline = ""
-            description = ""
-            // TODO: Generate tagline and description
-            try? await Task.sleep(nanoseconds: UInt64(1_000_000_000))
-            generatingByAI = false
+    func didTapPrevious() {
+        guard let selectedSuggestionIndex,
+              selectedSuggestionIndex > 0 else {
+            return
+        }
+
+        do {
+            let newIndex = selectedSuggestionIndex - 1
+            try selectSuggestion(at: newIndex)
+            self.selectedSuggestionIndex = newIndex
+        } catch {
+            DDLogError("⛔️ Error selecting Blaze AI suggestion: \(error)")
+        }
+    }
+
+    func didTapNext() {
+        let newIndex = {
+            guard let selectedSuggestionIndex else {
+                // Select first item when no suggestion is selected previously
+                return 0
+            }
+
+
+            guard selectedSuggestionIndex < suggestions.count - 1 else {
+                // No more suggestions available to select
+                return selectedSuggestionIndex
+            }
+
+            return selectedSuggestionIndex + 1
+        }()
+
+        do {
+            try selectSuggestion(at: newIndex)
+            selectedSuggestionIndex = newIndex
+        } catch {
+            DDLogError("⛔️ Error selecting Blaze AI suggestion: \(error)")
         }
     }
 }
@@ -180,6 +226,21 @@ extension BlazeEditAdViewModel {
     }
 }
 
+// MARK: AI suggestion
+private extension BlazeEditAdViewModel {
+    func setSelectedSuggestionIfApplicable() {
+        selectedSuggestionIndex = suggestions.firstIndex(where: { $0.siteName == tagline && $0.textSnippet == description})
+    }
+
+    func selectSuggestion(at index: Int) throws {
+        guard let suggestion = suggestions[safe: index] else {
+            throw AISuggestionError.noMatchingSuggestionFound
+        }
+        tagline = suggestion.siteName
+        description = suggestion.textSnippet
+    }
+}
+
 extension BlazeEditAdViewModel {
     enum Localization {
         enum LengthLimit {
@@ -209,4 +270,8 @@ extension BlazeEditAdViewModel {
             comment: "Edit Blaze Ad screen: Error message if Description field is empty."
         )
     }
+}
+
+private enum AISuggestionError: Error {
+    case noMatchingSuggestionFound
 }

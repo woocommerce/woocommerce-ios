@@ -1142,7 +1142,8 @@ private extension ProductFormViewController {
 
     private func navigateToBlazeCampaignCreation(siteUrl: String, source: BlazeSource) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-            let viewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.productModel.siteID) { [weak self] in
+            let viewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.productModel.siteID,
+                                                               productID: viewModel.productModel.productID) { [weak self] in
                 self?.handlePostCreation()
             }
             let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)

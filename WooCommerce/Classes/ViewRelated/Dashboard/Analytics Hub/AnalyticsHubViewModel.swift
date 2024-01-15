@@ -76,6 +76,10 @@ final class AnalyticsHubViewModel: ObservableObject {
         }
     }
 
+    /// Whether to show the prompt to enable Jetpack Stats
+    ///
+    @Published private(set) var showStatsModulePrompt = false
+
     /// Time Range Selection Type
     ///
     @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
@@ -189,7 +193,16 @@ private extension AnalyticsHubViewModel {
     func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
         async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
 
-        self.siteStats = try? await siteStatsRequest
+        do {
+            self.siteStats = try await siteStatsRequest
+            self.showStatsModulePrompt = false
+        } catch SiteStatsStoreError.statsModuleDisabled {
+            self.showStatsModulePrompt = true
+            self.siteStats = nil
+        } catch {
+            self.showStatsModulePrompt = false
+            self.siteStats = nil
+        }
     }
 
     @MainActor

@@ -19,7 +19,7 @@ enum BlazeCampaignListSource: String {
 /// Hosting controller for `BlazeCampaignListView`
 ///
 final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaignListView> {
-    private lazy var blazeNavigationController = WooNavigationController()
+    private var coordinator: BlazeCampaignCreationCoordinator?
 
     /// View model for the list.
     private let viewModel: BlazeCampaignListViewModel
@@ -34,7 +34,19 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] in
-            self?.navigateToCampaignCreation()
+            guard let self = self, let navigationController = self.navigationController else {
+                return
+            }
+
+            let coordinator = BlazeCampaignCreationCoordinator(
+                siteID: viewModel.siteID,
+                siteURL: viewModel.siteURL,
+                source: .campaignList,
+                navigationController: navigationController,
+                onCampaignCreated: self.handlePostCreation
+            )
+            self.coordinator = coordinator
+            coordinator.start()
         }
     }
 
@@ -54,81 +66,6 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-// MARK: - Navigation related
-private extension BlazeCampaignListHostingController {
-    /// Handles navigation to the different campaign creation views.
-    func navigateToCampaignCreation() {
-        switch viewModel.createCampaignDestination {
-        case .productSelector:
-            navigateToBlazeProductSelector(source: .campaignList)
-        case .campaignForm(let productID):
-            navigateToNativeCampaignCreation(source: .campaignList, productID: productID)
-        case .webviewForm(let productID):
-            navigateToWebCampaignCreation(source: .campaignList, productID: productID)
-        case .noProductAvailable:
-            break // TODO 11685: add error alert.
-        }
-    }
-
-    /// Handles navigation to the webview Blaze creation
-    func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
-                source: source,
-                siteURL: viewModel.siteURL,
-                productID: productID) { [weak self] in
-            self?.handlePostCreation()
-        }
-        let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
-        self.navigationController?.show(webViewController, sender: self)
-        viewModel.didSelectCreateCampaign(source: source)
-    }
-
-    /// Handles navigation to the native Blaze creation
-    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
-        let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
-                                                                               productID: productID,
-                                                                               onCompletion: { })
-        let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
-
-        // This function can be called from product selector, which is handled by BlazeNavigationController.
-        // In this case, we need to show the controller from BlazeNavigationController.
-        // Otherwise, we show it from the current navigation controller.
-        if blazeNavigationController.presentingViewController != nil {
-            blazeNavigationController.show(controller, sender: self)
-        } else {
-            self.navigationController?.show(controller, sender: self)
-        }
-    }
-
-    // View controller for product selector before going to campaign creation form.
-    private var productSelectorViewController: ProductSelectorViewController {
-        let productSelectorViewModel = ProductSelectorViewModel(
-            siteID: viewModel.siteID,
-            purchasableItemsOnly: false,
-            onProductSelectionStateChanged: { [weak self] product in
-                guard let self = self else { return }
-
-                // Navigate to Campaign Creation Form once any type of product is selected.
-                self.navigateToNativeCampaignCreation(source: .campaignList, productID: product.productID)
-            },
-            onCloseButtonTapped: { [weak self] in
-                guard let self = self else { return }
-
-                self.navigationController?.dismiss(animated: true, completion: nil)
-            }
-        )
-        return ProductSelectorViewController(configuration: ProductSelectorView.Configuration.configurationForBlaze,
-                                             source: .blaze,
-                                             viewModel: productSelectorViewModel)
-    }
-
-    /// Handles navigation to the Blaze product selector view
-    func navigateToBlazeProductSelector(source: BlazeSource) {
-        blazeNavigationController.viewControllers = [productSelectorViewController]
-        self.navigationController?.present(blazeNavigationController, animated: true, completion: nil)
     }
 }
 

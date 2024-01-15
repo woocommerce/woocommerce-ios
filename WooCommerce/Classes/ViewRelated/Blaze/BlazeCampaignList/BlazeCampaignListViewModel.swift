@@ -12,15 +12,6 @@ extension BlazeCampaign: Identifiable {
 
 /// View model for `BlazeCampaignListView`
 final class BlazeCampaignListViewModel: ObservableObject {
-    enum CreateCampaignDestination: Equatable {
-        case productSelector
-        case campaignForm(productID: Int64)
-        case webviewForm(productID: Int64?)
-        case noProductAvailable
-    }
-
-    // To determine what to open when tapping "Create". Defaults to missing product error but gets updated later on.
-    @Published private(set) var createCampaignDestination: CreateCampaignDestination = .noProductAvailable
 
     @Published private(set) var campaigns: [BlazeCampaign] = []
     @Published var shouldDisplayPostCampaignCreationTip = false
@@ -64,36 +55,18 @@ final class BlazeCampaignListViewModel: ObservableObject {
         return resultsController
     }()
 
-    /// Product ResultsController.
-    /// Fetch limit is set to 2 to check if there's multiple products in the site, without having to fetch all products.
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@",
-                                    siteID,
-                                    ProductStatus.published.rawValue)
-        return ResultsController<StorageProduct>(storageManager: storageManager,
-                                                 matching: predicate,
-                                                 fetchLimit: 2,
-                                                 sortOrder: .dateDescending)
-    }()
-
-    /// Service to check if a feature flag is enabled.
-    ///
-    private let featureFlagService: FeatureFlagService
-
     init(siteID: Int64,
          siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         configureResultsController()
@@ -163,16 +136,8 @@ private extension BlazeCampaignListViewModel {
         resultsController.onDidResetContent = { [weak self] in
             self?.updateResults()
         }
-        productResultsController.onDidChangeContent = { [weak self] in
-            self?.updateResults()
-        }
-        productResultsController.onDidResetContent = { [weak self] in
-            self?.updateResults()
-        }
-
         do {
             try resultsController.performFetch()
-            try productResultsController.performFetch()
             updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)
@@ -182,33 +147,7 @@ private extension BlazeCampaignListViewModel {
     /// Updates row view models and sync state.
     func updateResults() {
         campaigns = resultsController.fetchedObjects
-        updateCreateCampaignDestination()
         transitionToResultsUpdatedState()
-    }
-}
-
-// MARK: Create campaign navigation
-private extension BlazeCampaignListViewModel {
-    func updateCreateCampaignDestination() {
-        createCampaignDestination = featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation)
-        ? determineDestination()
-        : .webviewForm(productID: productResultsController.fetchedObjects.first?.productID)
-    }
-
-    // Figure out what view should be presented when "Create" button is tapped, depending on the number of eligible products.
-    func determineDestination() -> CreateCampaignDestination {
-        switch productResultsController.fetchedObjects.count {
-        case 0:
-            return .noProductAvailable
-        case 1:
-            guard let product = self.productResultsController.fetchedObjects.first else {
-                // Should not happen since we already checked the count, but just in case.
-                return .noProductAvailable
-            }
-            return .campaignForm(productID: product.productID)
-        default:
-            return .productSelector
-        }
     }
 }
 

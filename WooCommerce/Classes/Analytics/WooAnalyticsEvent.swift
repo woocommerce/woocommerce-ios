@@ -1947,8 +1947,12 @@ extension WooAnalyticsEvent {
         ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
         ///   - remindLater: whether the user will see this onboarding step again
         ///   - countryCode: the country code of the store.
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardPresentOnboardingStepSkipped(reason: String, remindLater: Bool, countryCode: CountryCode) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingStepSkipped(reason: String,
+                                                     remindLater: Bool,
+                                                     countryCode: CountryCode,
+                                                     gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingStepSkipped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,

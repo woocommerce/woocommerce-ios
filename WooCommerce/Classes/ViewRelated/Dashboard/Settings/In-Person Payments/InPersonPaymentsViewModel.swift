@@ -174,6 +174,7 @@ private extension InPersonPaymentsViewModel {
             event: .InPersonPayments.cardPresentOnboardingStepSkipped(
                 reason: state.reasonForAnalytics,
                 remindLater: remindLater,
-                countryCode: countryCode))
+                countryCode: countryCode,
+                gatewayID: state.gatewayID))
     }
 }

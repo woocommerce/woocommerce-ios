@@ -124,7 +124,8 @@ extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
     private func trackSkipTapped() {
         let event = Event.cardPresentOnboardingStepSkipped(reason: analyticReason,
                                                            remindLater: false,
-                                                           countryCode: cardPresentPaymentsConfiguration.countryCode)
+                                                           countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                           gatewayID: plugin.gatewayID)
         analytics.track(event: event)
     }
 

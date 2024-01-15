@@ -95,7 +95,11 @@ final class BlazeEditAdViewModel: ObservableObject {
 
         self.adData = adData
         self.suggestions = suggestions
-        self.imageState = .success(adData.image)
+        if let image = adData.image {
+            self.imageState = .success(image)
+        } else {
+            self.imageState = .empty
+        }
         self.tagline = adData.tagline
         self.description = adData.description
 

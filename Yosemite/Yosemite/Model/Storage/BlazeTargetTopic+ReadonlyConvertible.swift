@@ -8,13 +8,13 @@ extension Storage.BlazeTargetTopic: ReadOnlyConvertible {
     ///
     public func update(with campaign: Yosemite.BlazeTargetTopic) {
         id = campaign.id
-        name = campaign.description
+        name = campaign.name
         locale = campaign.locale
     }
 
     /// Returns a ReadOnly (`Networking.BlazeTargetTopic`) version of the `Storage.BlazeTargetTopic`
     ///
     public func toReadOnly() -> BlazeTargetTopic {
-        .init(id: id, description: name, locale: locale)
+        .init(id: id, name: name, locale: locale)
     }
 }

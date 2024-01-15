@@ -152,7 +152,6 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(item.budgetCents, 500)
         XCTAssertEqual(item.totalClicks, 0)
         XCTAssertEqual(item.totalImpressions, 0)
-        XCTAssertEqual(item.productURL, "https://example.com/product/fried-egg-bacon-bagel/")
     }
 
     /// Verifies that loadCampaigns sends the correct parameters.
@@ -315,9 +314,9 @@ final class BlazeRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(results, [
-            .init(id: "IAB1", description: "Arts & Entertainment", locale: "vi"),
-            .init(id: "IAB2", description: "Automotive", locale: "vi"),
-            .init(id: "IAB3", description: "Business", locale: "vi")
+            .init(id: "IAB1", name: "Arts & Entertainment", locale: "vi"),
+            .init(id: "IAB2", name: "Automotive", locale: "vi"),
+            .init(id: "IAB3", name: "Business", locale: "vi")
         ])
     }
 

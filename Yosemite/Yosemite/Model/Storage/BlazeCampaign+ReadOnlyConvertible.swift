@@ -9,12 +9,17 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
     public func update(with campaign: Yosemite.BlazeCampaign) {
         siteID = campaign.siteID
         campaignID = campaign.campaignID
-        productID = nil // TODO: add a new attribute `productURL` and remove `productID`
+        productID = {
+            guard let id = campaign.productID else {
+                return nil
+            }
+            return NSNumber(value: id)
+        }()
         name = campaign.name
         rawStatus = campaign.uiStatus
         contentClickURL = campaign.contentClickURL
         contentImageURL = campaign.contentImageURL
-        totalBudget = campaign.budgetCents // TODO-11532: update the storage model property name
+        totalBudget = campaign.budgetCents
         totalClicks = campaign.totalClicks
         totalImpressions = campaign.totalImpressions
     }
@@ -24,7 +29,7 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
     public func toReadOnly() -> BlazeCampaign {
         BlazeCampaign(siteID: siteID,
                       campaignID: campaignID,
-                      productURL: "", // TODO-11532: map the new attribute `productURL` here
+                      productID: productID?.int64Value,
                       name: name,
                       uiStatus: rawStatus,
                       contentImageURL: contentImageURL,

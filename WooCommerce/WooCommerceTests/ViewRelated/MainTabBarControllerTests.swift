@@ -58,13 +58,13 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-        assertThat(tabBarController.tabNavigationController(tab: .myStore)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .myStore),
                    isAnInstanceOf: DashboardViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .orders)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .orders),
                    isAnInstanceOf: OrdersRootViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .products)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .products),
                    isAnInstanceOf: ProductsViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .hubMenu)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .hubMenu),
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
@@ -87,13 +87,13 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-        assertThat(tabBarController.tabNavigationController(tab: .myStore)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .myStore),
                    isAnInstanceOf: DashboardViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .orders)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .orders),
                    isAnInstanceOf: OrdersRootViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .products)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .products),
                    isAnInstanceOf: ProductsViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .hubMenu)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .hubMenu),
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
@@ -118,13 +118,13 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-        assertThat(tabBarController.tabNavigationController(tab: .myStore)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .myStore),
                    isAnInstanceOf: DashboardViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .orders)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .orders),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .products)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .products),
                    isAnInstanceOf: ProductsViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .hubMenu)?.topViewController,
+        assertThat(tabBarController.tabRootViewController(tab: .hubMenu),
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
@@ -237,7 +237,7 @@ final class MainTabBarControllerTests: XCTestCase {
             }
         }
 
-        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabNavigationController(tab: .hubMenu))
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabContainerController(tab: .hubMenu) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
 
         // Action
@@ -378,7 +378,7 @@ final class MainTabBarControllerTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
-        let productsNavigationController = try XCTUnwrap(tabBarController.tabNavigationController(tab: .products))
+        let productsNavigationController = try XCTUnwrap(tabBarController.tabContainerController(tab: .products))
         waitUntil {
             productsNavigationController.presentedViewController != nil
         }
@@ -418,7 +418,7 @@ final class MainTabBarControllerTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
-        let productsNavigationController = try XCTUnwrap(tabBarController.tabNavigationController(tab: .products))
+        let productsNavigationController = try XCTUnwrap(tabBarController.tabContainerController(tab: .products))
         waitUntil {
             productsNavigationController.presentedViewController != nil
         }
@@ -461,7 +461,7 @@ final class MainTabBarControllerTests: XCTestCase {
         notice.actionHandler?()
 
         let productsNavigationController = try XCTUnwrap(tabBarController
-                    .tabNavigationController(tab: .products))
+                    .tabContainerController(tab: .products))
         waitUntil {
             productsNavigationController.presentedViewController != nil
         }
@@ -499,14 +499,43 @@ final class MainTabBarControllerTests: XCTestCase {
 
 private extension MainTabBarController {
     var tabRootViewControllers: [UIViewController] {
-        viewControllers?.compactMap { $0 as? UINavigationController }.compactMap { $0.viewControllers.first } ?? []
+        var rootViewControllers = [UIViewController]()
+
+        guard let viewControllers else {
+            return rootViewControllers
+        }
+
+        for viewController in viewControllers {
+            if let navigationController = viewController as? UINavigationController {
+                guard let containedViewController = navigationController.viewControllers.first else {
+                    continue
+                }
+                rootViewControllers.append(containedViewController)
+            } else if let containerController = viewController as? TabContainerController {
+                guard let containedViewController = containerController.wrappedController else {
+                    continue
+                }
+                rootViewControllers.append(containedViewController)
+            }
+        }
+
+        return rootViewControllers
     }
 
-    func tabNavigationController(tab: WooTab) -> UINavigationController? {
-        guard let navigationController = viewControllers?.compactMap({ $0 as? UINavigationController })[tab.visibleIndex()] else {
-            XCTFail("Unexpected access to navigation controller at tab: \(tab)")
+    func tabRootViewController(tab: WooTab) -> UIViewController? {
+        // swiftlint:disable:next empty_enum_arguments
+        guard let viewController = tabRootViewControllers[safe: tab.visibleIndex()] else {
+            XCTFail("Unexpected access to root controller at tab: \(tab)")
             return nil
         }
-        return navigationController
+        return viewController
+    }
+
+    func tabContainerController(tab: WooTab) -> UIViewController? {
+        guard let viewController = viewControllers?[tab.visibleIndex()] else {
+            XCTFail("Unexpected access to container controller at tab: \(tab)")
+            return nil
+        }
+        return viewController
     }
 }

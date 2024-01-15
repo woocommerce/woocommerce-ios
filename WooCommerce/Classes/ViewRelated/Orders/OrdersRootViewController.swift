@@ -110,13 +110,6 @@ final class OrdersRootViewController: UIViewController {
             guard let self = self else { return }
             self.configureStatusResultsController()
         }
-
-        /// Attempts to navigate and open the first Order in the Order List when Split View is enabled,
-        /// only on iPad
-        ///
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            navigateToFirstOrderIfPad()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -176,15 +169,6 @@ final class OrdersRootViewController: UIViewController {
     private func presentOrderCreationFlowWithScannedProduct(_ result: SKUSearchResult) {
         let viewModel = EditableOrderViewModel(siteID: siteID, initialItem: result)
         setupNavigation(viewModel: viewModel)
-    }
-
-    /// On iPad, attempts to navigate to the first Order in the Order List by opening its details
-    ///
-    private func navigateToFirstOrderIfPad() {
-        guard let order = ordersViewController.firstAvailableOrder, UIDevice.current.userInterfaceIdiom == .pad else {
-            return
-        }
-        self.navigateToOrderDetail(order)
     }
 
     /// Coordinates the navigation between the different views involved in Order Creation, Editing, and Details
@@ -308,6 +292,10 @@ final class OrdersRootViewController: UIViewController {
     /// This is to update the order detail in split view
     ///
     private func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int) {
+        guard let splitViewController else {
+            return
+        }
+
         guard viewModels.isNotEmpty else {
             let emptyStateViewController = EmptyStateViewController(style: .basic)
             let config = EmptyStateViewController.Config.simple(
@@ -315,14 +303,16 @@ final class OrdersRootViewController: UIViewController {
                 image: .emptySearchResultsImage
             )
             emptyStateViewController.configure(config)
-            splitViewController?.showDetailViewController(UINavigationController(rootViewController: emptyStateViewController), sender: nil)
+            splitViewController.setViewController(UINavigationController(rootViewController: emptyStateViewController), for: .secondary)
+            splitViewController.show(.secondary)
             return
         }
 
         let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
-        splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
+        splitViewController.setViewController(orderDetailsNavigationController, for: .secondary)
+        splitViewController.show(.secondary)
     }
 }
 

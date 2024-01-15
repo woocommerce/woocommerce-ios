@@ -3,6 +3,7 @@ import struct Yosemite.BlazeTargetLanguage
 
 /// View to select multiple items from a list with an optional search bar.
 struct MultiSelectionList<T: Hashable & Identifiable>: View {
+    private let headerMessage: String?
     private let allOptionsTitle: String?
     private let contents: [T]
     /// Key path to find the content to be displayed
@@ -20,11 +21,19 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
         comment: "Placeholder in the search bar of a multiple selection list"
     )
 
-    init(allOptionsTitle: String? = nil,
+    private let searchResultHeader = NSLocalizedString(
+        "multipleSelectionList.searchResults",
+        value: "Search results",
+        comment: "Header for the search result section on a a multiple selection list"
+    )
+
+    init(headerMessage: String? = nil,
+         allOptionsTitle: String? = nil,
          contents: [T],
          contentKeyPath: KeyPath<T, String>,
          selectedItems: Binding<Set<T>?>,
          onQueryChanged: ((String) -> Void)? = nil) {
+        self.headerMessage = headerMessage
         self.allOptionsTitle = allOptionsTitle
         self.contents = contents
         self.contentKeyPath = contentKeyPath
@@ -39,8 +48,8 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
             }
 
             List {
-                if let allOptionsTitle {
-                    Section {
+                Section {
+                    if let allOptionsTitle, query.isEmpty {
                         HStack {
                             Text(allOptionsTitle)
                             Spacer()
@@ -55,6 +64,10 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                                 selectedItems = Set(contents)
                             }
                         }
+                    }
+                } header: {
+                    if let headerMessage, query.isEmpty {
+                        Text(headerMessage)
                     }
                 }
 
@@ -71,6 +84,9 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                             toggleItem(item)
                         }
                     }
+                } header: {
+                    Text(searchResultHeader)
+                        .renderedIf(query.isNotEmpty)
                 }
             }
             .listStyle(.grouped)

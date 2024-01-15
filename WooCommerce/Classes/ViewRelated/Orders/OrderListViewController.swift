@@ -180,8 +180,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         configureStorePlanBannerPresenter()
-
-        checkSelectedItem()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -198,6 +196,13 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+
+        // Select the first order if we're showing in an open split view (i.e. on iPad in some size classes)
+        guard let splitViewController,
+              !splitViewController.isCollapsed else {
+            return
+        }
+        checkSelectedItem()
     }
 
     override func viewDidLayoutSubviews() {

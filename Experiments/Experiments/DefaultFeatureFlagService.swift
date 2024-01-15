@@ -14,7 +14,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
-            // We have a crash with this feature flag enabled. See https://github.com/woocommerce/woocommerce-ios/issues/10815
             return false
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha

@@ -5,10 +5,15 @@ import struct Yosemite.BlazeTargetLanguage
 struct MultiSelectionList<T: Hashable & Identifiable>: View {
     private let headerMessage: String?
     private let allOptionsTitle: String?
+    private let allOptionsFooter: String?
+    private let itemsSectionHeader: String?
     private let contents: [T]
     /// Key path to find the content to be displayed
     private let contentKeyPath: KeyPath<T, String>
     private let onQueryChanged: ((String) -> Void)?
+
+    /// Automatically checks All option if all items are selected.
+    private let autoSelectAll: Bool
 
     @State private var query: String = ""
     @Binding private var selectedItems: Set<T>?
@@ -29,15 +34,21 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
 
     init(headerMessage: String? = nil,
          allOptionsTitle: String? = nil,
+         allOptionsFooter: String? = nil,
+         itemsSectionHeader: String? = nil,
          contents: [T],
          contentKeyPath: KeyPath<T, String>,
          selectedItems: Binding<Set<T>?>,
+         autoSelectAll: Bool = true,
          onQueryChanged: ((String) -> Void)? = nil) {
         self.headerMessage = headerMessage
         self.allOptionsTitle = allOptionsTitle
+        self.allOptionsFooter = allOptionsFooter
+        self.itemsSectionHeader = itemsSectionHeader
         self.contents = contents
         self.contentKeyPath = contentKeyPath
         self.onQueryChanged = onQueryChanged
+        self.autoSelectAll = autoSelectAll
         self._selectedItems = selectedItems
     }
 
@@ -58,16 +69,16 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            if allItemsSelected {
-                                selectedItems = []
-                            } else {
-                                selectedItems = Set(contents)
-                            }
+                            toggleSelectAll()
                         }
                     }
                 } header: {
                     if let headerMessage, query.isEmpty {
                         Text(headerMessage)
+                    }
+                } footer: {
+                    if let allOptionsFooter {
+                        Text(allOptionsFooter)
                     }
                 }
 
@@ -85,8 +96,11 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                         }
                     }
                 } header: {
-                    Text(searchResultHeader)
-                        .renderedIf(query.isNotEmpty)
+                    if let itemsSectionHeader, contents.isNotEmpty {
+                        Text(itemsSectionHeader)
+                    } else if query.isNotEmpty {
+                        Text(searchResultHeader)
+                    }
                 }
             }
             .listStyle(.grouped)
@@ -100,6 +114,10 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
 // MARK: - Helper methods for selection
 private extension MultiSelectionList {
     var allItemsSelected: Bool {
+        guard autoSelectAll else {
+            return selectedItems == nil
+        }
+
         guard let selectedItems else {
             return true
         }
@@ -111,6 +129,14 @@ private extension MultiSelectionList {
             return true
         }
         return selectedItems.contains(item)
+    }
+
+    func toggleSelectAll() {
+        if allItemsSelected {
+            selectedItems = []
+        } else {
+            selectedItems = nil
+        }
     }
 
     func toggleItem(_ item: T) {

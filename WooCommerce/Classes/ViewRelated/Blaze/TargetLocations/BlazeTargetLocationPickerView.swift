@@ -63,26 +63,21 @@ private extension BlazeTargetLocationPickerView {
     }
 
     var pickerView: some View {
-        List {
-            Section {
-                Text(Localization.everywhere)
-            } footer: {
-                Text(Localization.searchHint)
-            }
-            Section {
-                ForEach(Array(viewModel.selectedLocations ?? [])) { item in
-                    Text(item.name)
-                }
-            }
-        }
-        .listStyle(.grouped)
+        MultiSelectionList(headerMessage: Localization.headerMessage,
+                           allOptionsTitle: Localization.allTitle,
+                           allOptionsFooter: Localization.searchHint,
+                           itemsSectionHeader: Localization.specificLocationHeader,
+                           contents: viewModel.selectedSearchResults,
+                           contentKeyPath: \.name,
+                           selectedItems: $viewModel.selectedLocations,
+                           autoSelectAll: false)
     }
 
     var emptyView: some View {
         VStack(spacing: Layout.contentSpacing) {
             Spacer()
             Image(uiImage: .searchImage)
-            Text(Localization.hintMessage)
+            Text(Localization.searchViewHintMessage)
                 .multilineTextAlignment(.center)
             Spacer()
         }
@@ -125,7 +120,7 @@ private extension BlazeTargetLocationPickerView {
                 .contentShape(Rectangle())
                 .onTapGesture {
                     isSearchMode = false
-                    viewModel.selectItem(item)
+                    viewModel.addOptionFromSearchResult(item)
                 }
             }
             Spacer()
@@ -164,8 +159,8 @@ private extension BlazeTargetLocationPickerView {
             value: "Save",
             comment: "Button to save the selections on the target location picker for campaign creation"
         )
-        static let hintMessage = NSLocalizedString(
-            "blazeTargetLocationPickerView.hintMessage",
+        static let searchViewHintMessage = NSLocalizedString(
+            "blazeTargetLocationPickerView.searchViewHintMessage",
             value: "Start typing country, state or city to see available options",
             comment: "Hint message to enter search query on the target location picker for campaign creation"
         )
@@ -179,15 +174,20 @@ private extension BlazeTargetLocationPickerView {
             value: "No location found.\nPlease try again.",
             comment: "Message indicating no search result on the target location picker for campaign creation"
         )
-        static let everywhere = NSLocalizedString(
-            "blazeTargetLocationPickerView.everywhere",
-            value: "Everywhere",
-            comment: "Option to remove any limit on the target location picker for campaign creation"
-        )
         static let searchHint = NSLocalizedString(
             "blazeTargetLocationPickerView.searchHint",
             value: "Or select specific locations by entering queries in the search box",
             comment: "Suggestion for searching for specific locations on the target location picker for campaign creation"
+        )
+        static let headerMessage = NSLocalizedString(
+            "blazeTargetLocationPickerView.headerMessage",
+            value: "Choose target locations",
+            comment: "Header message on the target location picker for campaign creation"
+        )
+        static let specificLocationHeader = NSLocalizedString(
+            "blazeTargetLocationPickerView.specificLocationHeader",
+            value: "Specific locations",
+            comment: "Header for the Specific Locations section on the target location picker for campaign creation"
         )
     }
 }

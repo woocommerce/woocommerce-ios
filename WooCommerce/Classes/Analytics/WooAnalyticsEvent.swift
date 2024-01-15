@@ -1957,7 +1957,8 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
-                                Keys.remindLater: remindLater
+                                Keys.remindLater: remindLater,
+                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
                               ])
         }
 

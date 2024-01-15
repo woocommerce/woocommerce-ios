@@ -23,12 +23,10 @@ struct BlazeTargetLocationSearchView: View {
 private extension BlazeTargetLocationSearchView {
     @ViewBuilder
     var searchView: some View {
-        if viewModel.searchQuery.isEmpty {
-            emptyView
-        } else if viewModel.fetchInProgress {
+        if viewModel.fetchInProgress {
             loadingView
         } else if viewModel.searchResults.isEmpty {
-            noResultView
+            emptyView
         } else {
             resultList
         }
@@ -48,18 +46,8 @@ private extension BlazeTargetLocationSearchView {
     var emptyView: some View {
         VStack(spacing: Layout.contentSpacing) {
             Spacer()
-            Image(uiImage: .searchImage)
-            Text(Localization.searchViewHintMessage)
-                .multilineTextAlignment(.center)
-            Spacer()
-        }
-    }
-
-    var noResultView: some View {
-        VStack(spacing: Layout.contentSpacing) {
-            Spacer()
-            Image(uiImage: viewModel.searchQuery.count >= 3 ? .searchNoResultImage : .searchImage)
-            Text(viewModel.searchQuery.count >= 3 ? Localization.noResult : Localization.longerQuery)
+            Image(uiImage: viewModel.emptyViewImage)
+            Text(viewModel.emptyViewMessage)
                 .multilineTextAlignment(.center)
             Spacer()
         }
@@ -107,21 +95,6 @@ private extension BlazeTargetLocationSearchView {
             "blazeTargetLocationSearchView.allTitle",
             value: "Everywhere",
             comment: "Title of the row to select all target location for Blaze campaign creation"
-        )
-        static let searchViewHintMessage = NSLocalizedString(
-            "blazeTargetLocationSearchView.searchViewHintMessage",
-            value: "Start typing country, state or city to see available options",
-            comment: "Hint message to enter search query on the target location picker for campaign creation"
-        )
-        static let longerQuery = NSLocalizedString(
-            "blazeTargetLocationSearchView.longerQuery",
-            value: "Please enter at least 3 characters to start searching.",
-            comment: "Message indicating the minimum length for search queries on the target location picker for campaign creation"
-        )
-        static let noResult = NSLocalizedString(
-            "blazeTargetLocationSearchView.noResult",
-            value: "No location found.\nPlease try again.",
-            comment: "Message indicating no search result on the target location picker for campaign creation"
         )
         static let searchHint = NSLocalizedString(
             "blazeTargetLocationSearchView.searchHint",

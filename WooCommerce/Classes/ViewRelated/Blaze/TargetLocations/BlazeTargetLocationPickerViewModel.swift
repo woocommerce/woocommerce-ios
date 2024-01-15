@@ -15,6 +15,24 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
         selectedLocations?.isEmpty == true
     }
 
+    var emptyViewImage: UIImage {
+        if searchQuery.count < Constants.minimumQueryLength {
+            .searchImage
+        } else {
+            .searchNoResultImage
+        }
+    }
+
+    var emptyViewMessage: String {
+        if searchQuery.isEmpty {
+            Localization.searchViewHintMessage
+        } else if searchQuery.count < Constants.minimumQueryLength {
+            Localization.longerQuery
+        } else {
+            Localization.noResult
+        }
+    }
+
     private let siteID: Int64
     private let locale: Locale
     private let stores: StoresManager
@@ -61,7 +79,7 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
 private extension BlazeTargetLocationPickerViewModel {
     func observeSearchQuery() {
         $searchQuery
-            .filter { $0.count >= 3 }
+            .filter { $0.count >= Constants.minimumQueryLength }
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .handleEvents(receiveOutput: { [weak self] _ in
                 self?.fetchInProgress = true
@@ -92,5 +110,30 @@ private extension BlazeTargetLocationPickerViewModel {
                 }
             })
         }
+    }
+}
+
+private extension BlazeTargetLocationPickerViewModel {
+
+    enum Constants {
+        static let minimumQueryLength = 3
+    }
+
+    enum Localization {
+        static let searchViewHintMessage = NSLocalizedString(
+            "blazeTargetLocationPickerViewModel.searchViewHintMessage",
+            value: "Start typing country, state or city to see available options",
+            comment: "Hint message to enter search query on the target location picker for campaign creation"
+        )
+        static let longerQuery = NSLocalizedString(
+            "blazeTargetLocationPickerViewModel.longerQuery",
+            value: "Please enter at least 3 characters to start searching.",
+            comment: "Message indicating the minimum length for search queries on the target location picker for campaign creation"
+        )
+        static let noResult = NSLocalizedString(
+            "blazeTargetLocationPickerViewModel.noResult",
+            value: "No location found.\nPlease try again.",
+            comment: "Message indicating no search result on the target location picker for campaign creation"
+        )
     }
 }

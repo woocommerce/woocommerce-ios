@@ -1,4 +1,7 @@
+import Experiments
 import UIKit
+import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Coordinates navigation into the entry of the Blaze creation flow.
 final class BlazeCampaignCreationCoordinator: Coordinator {
@@ -9,37 +12,67 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         case noProductAvailable
     }
     private lazy var blazeNavigationController = WooNavigationController()
+    private var blazeCreationEntryDestination: CreateCampaignDestination = .noProductAvailable
 
-    let siteID: Int64
-    let siteURL: String
-    let source: BlazeSource
-    let destination: CreateCampaignDestination
+    /// Product ResultsController.
+    /// Fetch limit is set to 2 to check if there's multiple products in the site, without having to fetch all products.
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@",
+                                    siteID,
+                                    ProductStatus.published.rawValue)
+        return ResultsController<StorageProduct>(storageManager: storageManager,
+                                                 matching: predicate,
+                                                 fetchLimit: 2,
+                                                 sortOrder: .dateDescending)
+    }()
+
+    private let siteID: Int64
+    private let siteURL: String
+    private let source: BlazeSource
+    private let storageManager: StorageManagerType
+    private let featureFlagService: FeatureFlagService
     var navigationController: UINavigationController
-    let didSelectCreateCampaign: ((BlazeSource) -> Void)?
-    let onCampaignCreated: () -> Void
+    private let didSelectCreateCampaign: ((BlazeSource) -> Void)?
+    private let onCampaignCreated: () -> Void
 
     init(siteID: Int64,
          siteURL: String,
          source: BlazeSource,
-         destination: CreateCampaignDestination,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          navigationController: UINavigationController,
          didSelectCreateCampaign: ((BlazeSource) -> Void)? = nil,
          onCampaignCreated: @escaping () -> Void) {
         self.siteID = siteID
         self.siteURL = siteURL
         self.source = source
-        self.destination = destination
+        self.storageManager = storageManager
+        self.featureFlagService = featureFlagService
         self.navigationController = navigationController
         self.didSelectCreateCampaign = didSelectCreateCampaign
         self.onCampaignCreated = onCampaignCreated
+
+        configureResultsController()
+    }
+
+    private func configureResultsController() {
+        productResultsController.onDidChangeContent = { [weak self] in
+            self?.updateCreateCampaignDestination()
+        }
+        productResultsController.onDidResetContent = { [weak self] in
+            self?.updateCreateCampaignDestination()
+        }
+
+        do {
+            try productResultsController.performFetch()
+            updateCreateCampaignDestination()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
     }
 
     func start() {
-        navigateToCampaignCreation(destination: destination)
-    }
-
-    func navigateToCampaignCreation(destination: CreateCampaignDestination) {
-        switch destination {
+        switch blazeCreationEntryDestination {
         case .productSelector:
             navigateToBlazeProductSelector(source: source)
         case .campaignForm(let productID):
@@ -48,6 +81,25 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
             navigateToWebCampaignCreation(source: source, productID: productID)
         case .noProductAvailable:
             break // TODO 11685: add error alert.
+        }
+    }
+
+    /// Determine whether to use the existing WebView solution, or go with native Blaze campaign creation.
+    private func updateCreateCampaignDestination() {
+        blazeCreationEntryDestination = featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation)
+        ? determineDestination()
+        : .webViewForm(productID: productResultsController.fetchedObjects.first?.productID)
+    }
+
+    /// For native Blaze campaign creation, determine destination based on number of eligible products available.
+    private func determineDestination() -> CreateCampaignDestination {
+        if productResultsController.fetchedObjects.isEmpty {
+            return .noProductAvailable
+        } else if productResultsController.fetchedObjects.count == 1,
+                  let recentPublishedProduct = productResultsController.fetchedObjects.first {
+            return .campaignForm(productID: recentPublishedProduct.productID)
+        } else {
+            return .productSelector
         }
     }
 

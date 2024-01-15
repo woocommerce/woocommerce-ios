@@ -1924,12 +1924,14 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - reason: the reason why the onboarding is not completed.
         ///   - countryCode: the country code of the store.
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: CountryCode) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: CountryCode, gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.reason: reason
+                                Keys.reason: reason,
+                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
                               ])
         }
 

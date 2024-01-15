@@ -153,14 +153,15 @@ private extension InPersonPaymentsViewModel {
             return
         }
         switch state {
-        case let .completed(pluginState):
+        case .completed:
             ServiceLocator.analytics
-                .track(event: .InPersonPayments.cardPresentOnboardingCompleted(gatewayID: pluginState.preferred.gatewayID))
+                .track(event: .InPersonPayments.cardPresentOnboardingCompleted(gatewayID: state.gatewayID))
         default:
             ServiceLocator.analytics
                 .track(event: .InPersonPayments
                     .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
-                                                       countryCode: countryCode))
+                                                       countryCode: countryCode,
+                                                       gatewayID: state.gatewayID))
         }
     }
 

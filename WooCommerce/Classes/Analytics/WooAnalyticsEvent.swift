@@ -1907,6 +1907,18 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        /// Tracked when the In-Person Payments onboarding completes.
+        ///
+        /// - Parameters:
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///
+        static func cardPresentOnboardingCompleted(gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingCompleted,
+                              properties: [
+                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
+                              ])
+        }
+
         /// Tracked when the In-Person Payments onboarding cannot be completed for some reason.
         ///
         /// - Parameters:

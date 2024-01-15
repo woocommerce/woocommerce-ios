@@ -9,6 +9,7 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
 
     @Published private(set) var isSearching = false
     @Published private(set) var searchResults: [BlazeTargetLocation] = []
+    @Published private(set) var selectedSearchResults: [BlazeTargetLocation] = []
 
     var shouldDisableSaveButton: Bool {
         selectedLocations?.isEmpty == true
@@ -30,17 +31,22 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
         self.stores = stores
         self.onCompletion = onCompletion
 
+        // Updates `selectedSearchResults` to display the selected locations on the specific location section.
+        if let selectedLocations {
+            self.selectedSearchResults = Array(selectedLocations)
+        }
+
         observeSearchQuery()
     }
 
-    func selectItem(_ item: BlazeTargetLocation) {
-        var items = selectedLocations ?? .init()
-        items.insert(item)
-        selectedLocations = items
+    func addOptionFromSearchResult(_ item: BlazeTargetLocation) {
+        var optionSet = Set(selectedSearchResults)
+        optionSet.insert(item)
+        selectedSearchResults = Array(optionSet)
     }
 
     func confirmSelection() {
-        // TODO
+        onCompletion(selectedLocations)
     }
 }
 

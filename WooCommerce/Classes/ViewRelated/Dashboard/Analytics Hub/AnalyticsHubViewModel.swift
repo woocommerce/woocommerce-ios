@@ -64,6 +64,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
+        guard !stores.isAuthenticatedWithoutWPCom else {
+            return false
+        }
+
         switch timeRangeSelectionType {
         case .custom:
             return false

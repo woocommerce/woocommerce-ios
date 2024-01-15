@@ -172,6 +172,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showSessionsCard)
     }
 
+    func test_session_card_is_hidden_for_sites_without_jetpack() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+
+        // Then
+        XCTAssertFalse(vm.showSessionsCard)
+    }
+
     func test_time_range_card_tracks_expected_events() throws {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, analytics: analytics)

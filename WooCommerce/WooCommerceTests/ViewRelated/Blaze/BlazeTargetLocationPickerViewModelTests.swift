@@ -108,7 +108,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 
     // MARK: - Test search states
 
-    func test_fetchInProgress_is_updated_correctly_when_fetching_search_results() async {
+    func test_fetchInProgress_is_updated_correctly_when_fetching_search_results() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
         var fetchingStates: [Bool] = []
@@ -124,6 +124,58 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         // Then
         waitUntil {
             fetchingStates == [false, true, false]
+        }
+    }
+
+    func test_searchResults_is_updated_correctly_after_fetching_locations() {
+        // Given
+        let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
+        let tokyo = BlazeTargetLocation.fake().copy(id: 123, name: "Tokyo")
+
+        // When
+        mockSearchLocationRequest(with: .success([tokyo]))
+        viewModel.searchQuery = "tok"
+
+        // Then
+        waitUntil {
+            viewModel.searchResults == [tokyo]
+        }
+    }
+
+    // MARK: - addOptionFromSearchResult
+
+    func test_addOptionFromSearchResult_updates_selectedSearchResults_and_selectedLocations_correctly() throws {
+        // Given
+        let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, onCompletion: { _ in })
+        let tokyo = BlazeTargetLocation.fake().copy(id: 123, name: "Tokyo")
+
+        // When
+        viewModel.addOptionFromSearchResult(tokyo)
+
+        // Then
+        XCTAssertTrue(viewModel.selectedSearchResults.contains(tokyo))
+        XCTAssertTrue(try XCTUnwrap(viewModel.selectedLocations).contains(tokyo))
+    }
+
+    func test_addOptionFromSearchResult_clears_searchResult() {
+        // Given
+        let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
+        let tokyo = BlazeTargetLocation.fake().copy(id: 123, name: "Tokyo")
+
+        // When
+        mockSearchLocationRequest(with: .success([tokyo]))
+        viewModel.searchQuery = "tok"
+
+        // make sure that the search results are populated from the search response.
+        waitUntil {
+            viewModel.searchResults == [tokyo]
+        }
+
+        viewModel.addOptionFromSearchResult(tokyo)
+
+        // Then
+        waitUntil {
+            viewModel.searchResults.isEmpty
         }
     }
 }

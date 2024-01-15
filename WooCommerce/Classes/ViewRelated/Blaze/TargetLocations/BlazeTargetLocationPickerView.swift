@@ -16,7 +16,8 @@ struct BlazeTargetLocationPickerView: View {
     var body: some View {
         NavigationView {
             BlazeTargetLocationSearchView(viewModel: viewModel)
-                .searchable(text: $viewModel.searchQuery)
+                .searchable(text: $viewModel.searchQuery,
+                            placement: .navigationBarDrawer(displayMode: .always))
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle(Localization.title)
                 .toolbar {

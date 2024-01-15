@@ -59,7 +59,7 @@ private extension BlazeTargetLocationPickerView {
         switch (viewModel.searchQuery.isEmpty, viewModel.isSearching, viewModel.searchResults.isEmpty) {
         case (true, _, _):
             emptyView
-        case (false, true, true):
+        case (_, true, _):
             loadingView
         case (false, false, true):
             noResultView

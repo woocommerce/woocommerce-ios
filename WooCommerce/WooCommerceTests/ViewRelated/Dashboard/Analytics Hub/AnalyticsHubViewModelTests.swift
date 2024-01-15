@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 import WooFoundation
 @testable import WooCommerce
+import enum Networking.DotcomError
 
 final class AnalyticsHubViewModelTests: XCTestCase {
 
@@ -172,6 +173,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showSessionsCard)
     }
 
+    func test_session_card_is_hidden_for_sites_without_jetpack() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+
+        // Then
+        XCTAssertFalse(vm.showSessionsCard)
+    }
+
     func test_time_range_card_tracks_expected_events() throws {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, analytics: analytics)
@@ -207,5 +217,28 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubWaitingTimeLoaded.rawValue))
+    }
+
+    @MainActor
+    func test_retrieving_stats_skips_summary_stats_request_for_sites_without_jetpack() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                XCTFail("Request to retrieve site summary stats should not be dispatched for sites without Jetpack")
+                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.updateData()
     }
 }

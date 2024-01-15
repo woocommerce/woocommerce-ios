@@ -16,6 +16,7 @@ struct InPersonPaymentsStripeAccountOverdue: View {
             supportLink: true,
             learnMore: true,
             analyticReason: analyticReason,
+            plugin: .stripe,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.primaryButtonTitle,
                                                                             analyticReason: analyticReason,
                                                                             action: {

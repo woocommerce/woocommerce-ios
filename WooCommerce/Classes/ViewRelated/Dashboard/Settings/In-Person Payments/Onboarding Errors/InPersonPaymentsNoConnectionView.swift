@@ -15,6 +15,7 @@ struct InPersonPaymentsNoConnection: View {
             supportLink: false,
             learnMore: false,
             analyticReason: analyticReason,
+            plugin: nil,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
                 analyticReason: analyticReason,

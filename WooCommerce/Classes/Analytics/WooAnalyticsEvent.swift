@@ -1897,13 +1897,19 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the "learn more" button in the In-Person Payments onboarding is tapped.
         ///
-        /// - Parameter countryCode: the country code of the store.
+        /// - Parameters:
+        ///   - reason: the reason for viewing the learn more page.
+        ///   - countryCode: the country code of the store.
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardPresentOnboardingLearnMoreTapped(reason: String, countryCode: CountryCode) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingLearnMoreTapped(reason: String,
+                                                         countryCode: CountryCode,
+                                                         gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.reason: reason
+                                Keys.reason: reason,
+                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
                               ])
         }
 

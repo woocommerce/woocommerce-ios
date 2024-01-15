@@ -16,6 +16,7 @@ struct InPersonPaymentsStripeAccountPending: View {
             supportLink: true,
             learnMore: true,
             analyticReason: analyticReason,
+            plugin: .stripe,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.skipButton,
                 analyticReason: analyticReason,

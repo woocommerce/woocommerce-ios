@@ -90,7 +90,8 @@ struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
 private extension InPersonPaymentsPluginNotSetup {
     var learnMoreAnalyticEvent: WooAnalyticsEvent? {
         WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
-                                                                                countryCode: cardPresentConfiguration.countryCode)
+                                                                                countryCode: cardPresentConfiguration.countryCode,
+                                                                                gatewayID: plugin.gatewayID)
     }
 
     private func trackPluginSetupTappedEvent() {

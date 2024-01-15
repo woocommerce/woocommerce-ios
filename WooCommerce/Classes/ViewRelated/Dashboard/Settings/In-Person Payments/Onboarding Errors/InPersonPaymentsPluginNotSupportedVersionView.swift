@@ -17,6 +17,7 @@ struct InPersonPaymentsPluginNotSupportedVersion: View {
             supportLink: false,
             learnMore: true,
             analyticReason: analyticReason,
+            plugin: plugin,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
                 analyticReason: analyticReason,

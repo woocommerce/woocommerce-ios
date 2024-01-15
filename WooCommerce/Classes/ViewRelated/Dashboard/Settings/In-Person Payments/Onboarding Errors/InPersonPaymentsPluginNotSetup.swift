@@ -30,7 +30,9 @@ struct InPersonPaymentsPluginNotSetup: View {
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
                         reason: analyticReason,
-                        countryCode: cardPresentConfiguration.countryCode))
+                        countryCode: cardPresentConfiguration.countryCode,
+                        gatewayID: plugin.gatewayID
+                    ))
                 trackPluginSetupTappedEvent()
             } label: {
                 HStack {

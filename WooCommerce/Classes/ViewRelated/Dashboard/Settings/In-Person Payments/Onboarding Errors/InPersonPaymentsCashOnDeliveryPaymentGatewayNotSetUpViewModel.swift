@@ -130,7 +130,8 @@ extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
 
     private func trackEnableTapped() {
         let event = Event.cardPresentOnboardingCtaTapped(reason: analyticReason,
-                                                         countryCode: cardPresentPaymentsConfiguration.countryCode)
+                                                         countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                         gatewayID: plugin.gatewayID)
         analytics.track(event: event)
     }
 

@@ -21,6 +21,7 @@ struct InPersonPaymentsLiveSiteInTestMode: View {
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
                 analyticReason: analyticReason,
+                plugin: plugin,
                 action: onRefresh
             )
         )

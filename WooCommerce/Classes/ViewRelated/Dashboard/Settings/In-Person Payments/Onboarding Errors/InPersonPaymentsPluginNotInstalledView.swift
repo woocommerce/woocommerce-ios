@@ -19,6 +19,7 @@ struct InPersonPaymentsPluginNotInstalled: View {
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.title,
                 analyticReason: analyticReason,
+                plugin: nil,
                 action: onInstall
             )
         )

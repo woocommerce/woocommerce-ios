@@ -21,6 +21,7 @@ struct InPersonPaymentsPluginNotActivated: View {
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
                 analyticReason: analyticReason,
+                plugin: plugin,
                 action: onActivate
             )
         )

@@ -1962,12 +1962,16 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - reason: the reason why the onboarding step was shown (effectively the name of the step.)
         ///   - countryCode: the country code of the store.
+        ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardPresentOnboardingCtaTapped(reason: String, countryCode: CountryCode) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingCtaTapped(reason: String,
+                                                   countryCode: CountryCode,
+                                                   gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCtaTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.reason: reason
+                                Keys.reason: reason,
+                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
                               ])
         }
 

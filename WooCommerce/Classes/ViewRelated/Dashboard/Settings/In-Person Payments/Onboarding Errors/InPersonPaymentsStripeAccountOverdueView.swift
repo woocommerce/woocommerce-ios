@@ -1,9 +1,12 @@
 import SwiftUI
+import enum Yosemite.CardPresentPaymentsPlugin
 
 struct InPersonPaymentsStripeAccountOverdue: View {
     let analyticReason: String
     let onRefresh: () -> Void
     @State private var presentedSetupURL: URL? = nil
+
+    private let plugin: CardPresentPaymentsPlugin = .stripe
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -16,15 +19,17 @@ struct InPersonPaymentsStripeAccountOverdue: View {
             supportLink: true,
             learnMore: true,
             analyticReason: analyticReason,
-            plugin: .stripe,
+            plugin: plugin,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.primaryButtonTitle,
                                                                             analyticReason: analyticReason,
+                                                                            plugin: plugin,
                                                                             action: {
                                                                                 presentedSetupURL = setupURL
                                                                                 trackPluginSetupTappedEvent()
                                                                             }),
             secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.secondaryButtonTitle,
                                                                                      analyticReason: analyticReason,
+                                                                                     plugin: plugin,
                                                                                      action: onRefresh)
         )
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)

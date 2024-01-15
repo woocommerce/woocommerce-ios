@@ -188,6 +188,20 @@ final class OrdersRootViewController: UIViewController {
             }
         }
 
+        viewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
+            self?.dismiss(animated: true) {
+                self?.navigateToOrderDetail(order) { [weak self] in
+                    guard let self,
+                          let orderDetailsViewController = self.orderDetailsViewController else {
+                        return
+                    }
+                    let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
+                    paymentMethodsViewController.parentController = orderDetailsViewController
+                    orderDetailsViewController.present(paymentMethodsViewController, animated: true)
+                }
+            }
+        }
+
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
             navigationController.present(newOrderNavigationController, animated: true)
@@ -522,7 +536,17 @@ private extension OrdersRootViewController {
             show(orderViewController, sender: self)
         }
         onCompletion?()
+    }
 
+    var orderDetailsViewController: OrderDetailsViewController? {
+        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return navigationController?.topViewController as? OrderDetailsViewController
+        }
+
+        guard let secondaryViewNavigationController = splitViewController?.viewController(for: .secondary) as? UINavigationController else {
+            return nil
+        }
+        return secondaryViewNavigationController.topViewController as? OrderDetailsViewController
     }
 }
 

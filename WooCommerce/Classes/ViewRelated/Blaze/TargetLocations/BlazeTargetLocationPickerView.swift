@@ -165,11 +165,6 @@ private extension BlazeTargetLocationSearchView {
             value: "Everywhere",
             comment: "Title of the row to select all target location for Blaze campaign creation"
         )
-        static let searchBarPlaceholderText = NSLocalizedString(
-            "blazeTargetLocationPickerView.search",
-            value: "Search",
-            comment: "Placeholder in the search bar of the target location picker for campaign creation"
-        )
         static let searchViewHintMessage = NSLocalizedString(
             "blazeTargetLocationPickerView.searchViewHintMessage",
             value: "Start typing country, state or city to see available options",
@@ -187,7 +182,7 @@ private extension BlazeTargetLocationSearchView {
         )
         static let searchHint = NSLocalizedString(
             "blazeTargetLocationPickerView.searchHint",
-            value: "Or add specific locations by entering queries in the search box",
+            value: "Or choose specific locations by typing what you’re looking for in the search box.",
             comment: "Suggestion for searching for specific locations on the target location picker for campaign creation"
         )
         static let headerMessage = NSLocalizedString(

@@ -65,9 +65,9 @@ private extension BlazeTargetLocationPickerView {
     var pickerView: some View {
         List {
             Section {
-                Text("Everywhere")
+                Text(Localization.everywhere)
             } footer: {
-                Text("Or select specific locations by entering queries in the search box")
+                Text(Localization.searchHint)
             }
             Section {
                 ForEach(Array(viewModel.selectedLocations ?? [])) { item in
@@ -178,6 +178,16 @@ private extension BlazeTargetLocationPickerView {
             "blazeTargetLocationPickerView.noResult",
             value: "No location found.\nPlease try again.",
             comment: "Message indicating no search result on the target location picker for campaign creation"
+        )
+        static let everywhere = NSLocalizedString(
+            "blazeTargetLocationPickerView.everywhere",
+            value: "Everywhere",
+            comment: "Option to remove any limit on the target location picker for campaign creation"
+        )
+        static let searchHint = NSLocalizedString(
+            "blazeTargetLocationPickerView.searchHint",
+            value: "Or select specific locations by entering queries in the search box",
+            comment: "Suggestion for searching for specific locations on the target location picker for campaign creation"
         )
     }
 }

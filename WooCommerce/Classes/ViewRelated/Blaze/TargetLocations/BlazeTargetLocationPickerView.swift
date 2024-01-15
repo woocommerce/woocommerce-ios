@@ -5,8 +5,6 @@ struct BlazeTargetLocationPickerView: View {
 
     @ObservedObject private var viewModel: BlazeTargetLocationPickerViewModel
 
-    @FocusState private var isSearchMode
-
     private let onDismiss: () -> Void
 
     init(viewModel: BlazeTargetLocationPickerViewModel,
@@ -17,53 +15,77 @@ struct BlazeTargetLocationPickerView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                SearchHeader(text: $viewModel.searchQuery,
-                             placeholder: Localization.searchBarPlaceholderText,
-                             isFocused: _isSearchMode,
-                             customizations: .init(showsCancelButton: true))
-                if isSearchMode {
-                    searchView
-                } else {
-                    pickerView
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Localization.title)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancelButtonTitle, action: onDismiss)
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.saveButtonTitle) {
-                        viewModel.confirmSelection()
-                        onDismiss()
+            BlazeTargetLocationSearchView(viewModel: viewModel)
+                .searchable(text: $viewModel.searchQuery)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle(Localization.title)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Localization.cancelButtonTitle, action: onDismiss)
                     }
-                    .disabled(viewModel.shouldDisableSaveButton)
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(Localization.saveButtonTitle) {
+                            viewModel.confirmSelection()
+                            onDismiss()
+                        }
+                        .disabled(viewModel.shouldDisableSaveButton)
+                    }
                 }
             }
-        }
-        .navigationViewStyle(.stack)
-        .onChange(of: isSearchMode) { newValue in
-            // clears the search query when search view is dismissed.
-            if newValue == false {
-                viewModel.searchQuery = ""
-            }
-        }
+            .navigationViewStyle(.stack)
     }
 }
 
 private extension BlazeTargetLocationPickerView {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "blazeTargetLocationPickerView.title",
+            value: "Location",
+            comment: "Title of the target language picker view for Blaze campaign creation"
+        )
+        static let cancelButtonTitle = NSLocalizedString(
+            "blazeTargetLocationPickerView.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the target location picker for campaign creation"
+        )
+        static let saveButtonTitle = NSLocalizedString(
+            "blazeTargetLocationPickerView.save",
+            value: "Save",
+            comment: "Button to save the selections on the target location picker for campaign creation"
+        )
+    }
+}
+
+/// View for the search mode of the `BlazeTargetLocationPickerView`
+private struct BlazeTargetLocationSearchView: View {
+    @Environment(\.isSearching) private var isSearching
+    @Environment(\.dismissSearch) private var dismissSearch
+
+    @ObservedObject private var viewModel: BlazeTargetLocationPickerViewModel
+
+    init(viewModel: BlazeTargetLocationPickerViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        if isSearching {
+            searchView
+        } else {
+            pickerView
+        }
+    }
+}
+
+private extension BlazeTargetLocationSearchView {
     @ViewBuilder
     var searchView: some View {
-        switch (viewModel.searchQuery.isEmpty, viewModel.isSearching, viewModel.searchResults.isEmpty) {
-        case (true, _, _):
+        if viewModel.searchQuery.isEmpty {
             emptyView
-        case (_, true, _):
+        } else if viewModel.fetchInProgress {
             loadingView
-        case (false, false, true):
+        } else if viewModel.searchResults.isEmpty {
             noResultView
-        case (false, _, false):
+        } else {
             resultList
         }
     }
@@ -124,24 +146,19 @@ private extension BlazeTargetLocationPickerView {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                isSearchMode = false
                 viewModel.addOptionFromSearchResult(item)
+                dismissSearch()
             }
         }
         .listStyle(.plain)
     }
 }
 
-private extension BlazeTargetLocationPickerView {
+private extension BlazeTargetLocationSearchView {
     enum Layout {
         static let contentSpacing: CGFloat = 16
     }
     enum Localization {
-        static let title = NSLocalizedString(
-            "blazeTargetLocationPickerView.title",
-            value: "Location",
-            comment: "Title of the target language picker view for Blaze campaign creation"
-        )
         static let allTitle = NSLocalizedString(
             "blazeTargetLocationPickerView.allTitle",
             value: "Everywhere",
@@ -151,16 +168,6 @@ private extension BlazeTargetLocationPickerView {
             "blazeTargetLocationPickerView.search",
             value: "Search",
             comment: "Placeholder in the search bar of the target location picker for campaign creation"
-        )
-        static let cancelButtonTitle = NSLocalizedString(
-            "blazeTargetLocationPickerView.cancel",
-            value: "Cancel",
-            comment: "Button to dismiss the target location picker for campaign creation"
-        )
-        static let saveButtonTitle = NSLocalizedString(
-            "blazeTargetLocationPickerView.save",
-            value: "Save",
-            comment: "Button to save the selections on the target location picker for campaign creation"
         )
         static let searchViewHintMessage = NSLocalizedString(
             "blazeTargetLocationPickerView.searchViewHintMessage",

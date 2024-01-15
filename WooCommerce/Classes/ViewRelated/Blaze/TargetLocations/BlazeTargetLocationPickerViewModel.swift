@@ -7,7 +7,7 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
     @Published var selectedLocations: Set<BlazeTargetLocation>?
     @Published var searchQuery: String = ""
 
-    @Published private(set) var isSearching = false
+    @Published private(set) var fetchInProgress = false
     @Published private(set) var searchResults: [BlazeTargetLocation] = []
     @Published private(set) var selectedSearchResults: [BlazeTargetLocation] = []
 
@@ -44,10 +44,13 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
         optionSet.insert(item)
         selectedSearchResults = Array(optionSet)
 
-        // add the new item to the selected list
+        // adds the new item to the selected list
         var selectedItems = selectedLocations ?? []
         selectedItems.insert(item)
         selectedLocations = selectedItems
+
+        // clears search result
+        searchResults = []
     }
 
     func confirmSelection() {
@@ -61,7 +64,7 @@ private extension BlazeTargetLocationPickerViewModel {
             .filter { $0.count >= 3 }
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .handleEvents(receiveOutput: { [weak self] _ in
-                self?.isSearching = true
+                self?.fetchInProgress = true
             })
             .asyncMap { [weak self] query -> [BlazeTargetLocation] in
                 guard let self else {
@@ -71,7 +74,7 @@ private extension BlazeTargetLocationPickerViewModel {
             }
             .receive(on: DispatchQueue.main)
             .handleEvents(receiveOutput: { [weak self] _ in
-                self?.isSearching = false
+                self?.fetchInProgress = false
             })
             .assign(to: &$searchResults)
     }

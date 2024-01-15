@@ -93,4 +93,28 @@ extension XCTestCase {
 
         return receivedValue!
     }
+
+    /// Async/await version of `waitFor`, as `XCTWaiter.wait(for:timeout:)` does not support concurrency in `waitFor`.
+    public func waitForAsync<ValueType>(file: StaticString = #file,
+                                        line: UInt = #line,
+                                        timeout: TimeInterval = 5.0,
+                                        awaiting: @escaping (_ promise: (@escaping (ValueType) -> Void)) async throws -> Void)
+    async rethrows -> ValueType {
+        let exp = expectation(description: "Expect promise to be called.")
+
+        var receivedValue: ValueType? = nil
+        let promise: (ValueType) -> Void = { value in
+            receivedValue = value
+            exp.fulfill()
+        }
+
+        // `awaiting` is executed in a task closure so that the function can return whenever the expectation
+        // is fulfilled before `awaiting` completes.
+        Task { @MainActor in
+            try await awaiting(promise)
+        }
+
+        await fulfillment(of: [exp], timeout: timeout)
+        return receivedValue!
+    }
 }

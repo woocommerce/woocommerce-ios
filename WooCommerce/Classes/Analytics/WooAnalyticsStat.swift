@@ -488,6 +488,10 @@ public enum WooAnalyticsStat: String {
     case taxRateSelectorTaxRateTapped = "tax_rate_selector_tax_rate_tapped"
     case taxRateSelectorEditInAdminTapped = "tax_rate_selector_edit_in_admin_tapped"
 
+    // MARK: Cash Payment Tender View Events
+    //
+    case cashPaymentTenderViewOnMarkOrderAsCompleteButtonTapped = "cash_payment_tender_view_on_mark_order_as_complete_button_tapped"
+
     // MARK: Shipping Labels Events
     //
     case shippingLabelRefundRequested = "shipping_label_refund_requested"

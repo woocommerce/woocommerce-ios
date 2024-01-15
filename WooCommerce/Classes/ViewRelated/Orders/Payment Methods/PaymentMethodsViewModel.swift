@@ -61,7 +61,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     /// Formatted total to charge.
     ///
-    private let formattedTotal: String
+    let formattedTotal: String
 
     /// Transmits notice presentation intents.
     ///
@@ -165,33 +165,20 @@ final class PaymentMethodsViewModel: ObservableObject {
         updateCardPaymentVisibility()
     }
 
-    /// Creates the info text when the merchant selects the cash payment method.
-    ///
-    func payByCashInfo() -> String {
-        Localization.markAsPaidInfo(total: formattedTotal)
-    }
-
-    /// Mark an order as paid and notify if successful.
-    ///
-    func markOrderAsPaid(onSuccess: @escaping () -> Void) {
+    @MainActor
+    func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?) async {
         showLoadingIndicator = true
-        let action = OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { [weak self] error in
-            guard let self = self else { return }
-            self.showLoadingIndicator = false
-
-            if let error = error {
-                self.presentNoticeSubject.send(.error(Localization.markAsPaidError))
-                self.trackFlowFailed()
-                return DDLogError("⛔️ Error updating order: \(error)")
+        do {
+            try await markOrderAsPaid()
+            updateOrderAsynchronously()
+            if let info, info.addNoteWithChangeData {
+                await addPaidByCashNoteToOrder(with: info)
             }
-
-            self.updateOrderAsynchronously()
-
-            onSuccess()
-            self.presentNoticeSubject.send(.completed)
-            self.trackFlowCompleted(method: .cash, cardReaderType: .none)
+            finishOrderPaidByCashFlow()
+        } catch {
+            presentNoticeSubject.send(.error(Localization.markAsPaidError))
+            trackFlowFailed()
         }
-        stores.dispatch(action)
     }
 
     /// Starts the collect payment flow in the provided `rootViewController`
@@ -297,6 +284,38 @@ final class PaymentMethodsViewModel: ObservableObject {
 
 // MARK: Helpers
 private extension PaymentMethodsViewModel {
+    /// Mark an order as paid and notify if successful.
+    ///
+    @MainActor
+    func markOrderAsPaid() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { error in
+                guard let error else {
+                    return continuation.resume(returning: ())
+                }
+                continuation.resume(throwing: error)
+            })
+        }
+    }
+
+    @MainActor
+    func addPaidByCashNoteToOrder(with info: OrderPaidByCashInfo) async {
+        await withCheckedContinuation { continuation in
+            let noteText = String.localizedStringWithFormat(Localization.orderPaidByCashNoteText, info.customerPaidAmount, info.changeGivenAmount)
+            stores.dispatch(OrderNoteAction.addOrderNote(siteID: siteID,
+                                                      orderID: orderID,
+                                                      isCustomerNote: false,
+                                                      note: noteText) { _, _ in
+                continuation.resume(returning: ())
+            })
+        }
+    }
+
+    func finishOrderPaidByCashFlow() {
+        showLoadingIndicator = false
+        presentNoticeSubject.send(.completed)
+        trackFlowCompleted(method: .cash, cardReaderType: .none)
+    }
 
     /// Observes the store CPP state and update publish variables accordingly.
     ///
@@ -421,10 +440,9 @@ private extension PaymentMethodsViewModel {
                                              comment: "Navigation bar title for the Payment Methods screens. " +
                                              "%1$@ is a placeholder for the total amount to collect")
 
-        static func markAsPaidInfo(total: String) -> String {
-            NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",
-                              comment: "Alert info when selecting the cash payment method during payments")
-        }
+        static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
+                                                               value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
+                                                               comment: "Note from the cash tender view.")
     }
 }
 

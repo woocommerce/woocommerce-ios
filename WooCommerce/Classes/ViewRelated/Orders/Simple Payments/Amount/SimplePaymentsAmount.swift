@@ -144,10 +144,6 @@ struct SimplePaymentsAmount: View {
     ///
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    /// Defines if the amount input  text field should be focused. Defaults to `true`
-    ///
-    @State private var focusAmountInput: Bool = true
-
     /// ViewModel to drive the view content
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsAmountViewModel

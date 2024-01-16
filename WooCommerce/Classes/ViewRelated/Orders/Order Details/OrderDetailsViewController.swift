@@ -113,6 +113,24 @@ final class OrderDetailsViewController: UIViewController {
     override var shouldShowOfflineBanner: Bool {
         !isSplitViewInOrdersTabEnabled
     }
+
+    var widthConstraint: NSLayoutConstraint? {
+        didSet {
+            view.layoutIfNeeded()
+        }
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        // Will be deprecated with iOS17, use https://developer.apple.com/documentation/uikit/uitraitchangeobservable
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        // Experiment 3
+        let fraction = (traitCollection.horizontalSizeClass == .compact) ? 1.0 : 0.56
+        widthConstraint = tableView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: fraction)
+
+        // Experiment 4
+        //widthConstraint = tableView.widthAnchor.constraint(equalToConstant: 560)
+    }
 }
 
 // MARK: - TableView Configuration
@@ -127,14 +145,71 @@ private extension OrderDetailsViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .green
         tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
 
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+
+        // 1
+        // Adds a leading constant margin for all sizes, but no the trailing one. View cannot be centered
+        // experiment1_leading_and_trailing_anchor_constants()
+
+        // 2
+        // There are no changes in the width. Zero.
+        //experiment2_width_lessThanOrEqualToConstant()
+
+        // 3
+        // This works, but since uses a multiplier we won't have a fixed width across devices, will also
+        // apply to iPhones, which we do not want.
+        // Don't forget to uncomment the bit from traitCollectionDidChange()
+        // Problem: When going from landscape to portrait, the first view doesn't use the new constraints. Specially noticeable in iPhone.
+        experiment3_widthAnchor_with_multiplier()
+
+        // 4
+        // Same as 2, when using constants doesn't seem to work.
+        //experiment4_widthAnchor_with_constants()
+
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
+    }
+
+    func experiment1_leading_and_trailing_anchor_constants() {
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 100.0),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 100.0),
+            tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+
+    func experiment2_width_lessThanOrEqualToConstant() {
+        NSLayoutConstraint.activate([
+            tableView.widthAnchor.constraint(lessThanOrEqualToConstant: 100),
+            tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+
+    func experiment3_widthAnchor_with_multiplier() {
+        let fraction = (traitCollection.horizontalSizeClass == .compact) ? 1.0 : 0.56
+        let widthConstraint = tableView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: fraction)
+        self.widthConstraint = widthConstraint
+
+        NSLayoutConstraint.activate([
+            widthConstraint,
+            tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+
+    func experiment4_widthAnchor_with_constants() {
+        let widthConstraint = tableView.widthAnchor.constraint(equalToConstant: 450)
+        self.widthConstraint = widthConstraint
+
+        NSLayoutConstraint.activate([
+            widthConstraint,
+            tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
     }
 
     /// Setup: Navigation

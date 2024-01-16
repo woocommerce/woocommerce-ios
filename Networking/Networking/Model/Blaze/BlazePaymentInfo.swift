@@ -101,7 +101,7 @@ public extension BlazePaymentMethod {
         init(lastDigits: String,
              expiring: ExpiringInfo,
              type: String,
-             nickname: String,
+             nickname: String?,
              cardholderName: String) {
             self.lastDigits = lastDigits
             self.expiring = expiring

@@ -100,10 +100,14 @@ struct BlazeCampaignCreationForm: View {
                 .overlay { roundedRectangleBorder }
 
                 // Ad destination
-                detailView(title: Localization.adDestination, content: "https://example.com") {
-                    isShowingAdDestinationScreen = true
+                if viewModel.adDestinationViewModel != nil {
+                    detailView(title: Localization.adDestination,
+                               content: viewModel.finalDestinationURL,
+                               singleLineSubtitle: true) {
+                        isShowingAdDestinationScreen = true
+                    }
+                    .overlay { roundedRectangleBorder }
                 }
-                .overlay { roundedRectangleBorder }
             }
             .padding(.horizontal, Layout.contentPadding)
         }
@@ -129,7 +133,9 @@ struct BlazeCampaignCreationForm: View {
             }
         }
         .sheet(isPresented: $isShowingAdDestinationScreen) {
-            BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
+            if let viewModel = viewModel.adDestinationViewModel {
+                BlazeAdDestinationSettingView(viewModel: viewModel)
+            }
         }
         .sheet(isPresented: $isShowingDevicePicker) {
             BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel) {
@@ -226,7 +232,7 @@ private extension BlazeCampaignCreationForm {
         .padding(.vertical, Layout.contentPadding)
     }
 
-    func detailView(title: String, content: String, action: @escaping () -> Void) -> some View {
+    func detailView(title: String, content: String, singleLineSubtitle: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action, label: {
             HStack {
                 VStack(alignment: .leading, spacing: Layout.detailContentSpacing) {
@@ -235,6 +241,7 @@ private extension BlazeCampaignCreationForm {
                     Text(content)
                         .secondaryBodyStyle()
                         .multilineTextAlignment(.leading)
+                        .if(singleLineSubtitle) { $0.lineLimit(1) }
                 }
                 Spacer()
                 Image(systemName: "chevron.right")

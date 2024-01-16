@@ -98,10 +98,24 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
+    var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
+        // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
+        if let productURL = productURL, let siteURL = siteURL {
+            BlazeAdDestinationSettingViewModel(productURL: productURL, homeURL: siteURL)
+        } else {
+            nil
+        }
+    }
+
+    // For Ad destination purposes
+    private var productURL: String? { product?.permalink }
+    private var siteURL: String? { ServiceLocator.stores.sessionManager.defaultSite?.url }
+
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""
     @Published private(set) var targetTopicText: String = ""
+    @Published private(set) var finalDestinationURL: String = ""
 
     // AI Suggestions
     @Published private(set) var isLoadingAISuggestions: Bool = true
@@ -157,6 +171,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateTargetLanguagesText()
         updateTargetDevicesText()
         updateTargetTopicText()
+        initializeAdFinalDestination()
     }
 
     func didTapEditAd() {
@@ -278,6 +293,13 @@ private extension BlazeCampaignCreationFormViewModel {
                 .sorted()
                 .joined(separator: ", ")
         }()
+    }
+
+    func initializeAdFinalDestination() {
+        // Default to promoting Product URL at the beginning.
+        if let productURL = productURL {
+            finalDestinationURL = productURL
+        }
     }
 }
 

@@ -224,7 +224,7 @@ extension Networking.BlazePaymentInfo {
     public static func fake() -> Networking.BlazePaymentInfo {
         .init(
             savedPaymentMethods: .fake(),
-            add_payment_method: .fake()
+            addPaymentMethod: .fake()
         )
     }
 }

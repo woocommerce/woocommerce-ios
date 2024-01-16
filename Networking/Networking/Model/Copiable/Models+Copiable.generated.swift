@@ -250,14 +250,14 @@ extension Networking.BlazeImpressions {
 extension Networking.BlazePaymentInfo {
     public func copy(
         savedPaymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy,
-        add_payment_method: CopiableProp<BlazeAddPaymentInfo> = .copy
+        addPaymentMethod: CopiableProp<BlazeAddPaymentInfo> = .copy
     ) -> Networking.BlazePaymentInfo {
         let savedPaymentMethods = savedPaymentMethods ?? self.savedPaymentMethods
-        let add_payment_method = add_payment_method ?? self.add_payment_method
+        let addPaymentMethod = addPaymentMethod ?? self.addPaymentMethod
 
         return Networking.BlazePaymentInfo(
             savedPaymentMethods: savedPaymentMethods,
-            add_payment_method: add_payment_method
+            addPaymentMethod: addPaymentMethod
         )
     }
 }

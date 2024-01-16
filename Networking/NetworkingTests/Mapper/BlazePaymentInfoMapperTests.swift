@@ -22,9 +22,9 @@ final class BlazePaymentInfoMapperTests: XCTestCase {
         XCTAssertEqual(method.info.nickname, "")
         XCTAssertEqual(method.info.cardholderName, "John Doe")
 
-        XCTAssertEqual(info.add_payment_method.formUrl, "https://example.com/blaze-pm-add")
-        XCTAssertEqual(info.add_payment_method.successUrl, "https://example.com/blaze-pm-success")
-        XCTAssertEqual(info.add_payment_method.idUrlParameter, "pmid")
+        XCTAssertEqual(info.addPaymentMethod.formUrl, "https://example.com/blaze-pm-add")
+        XCTAssertEqual(info.addPaymentMethod.successUrl, "https://example.com/blaze-pm-success")
+        XCTAssertEqual(info.addPaymentMethod.idUrlParameter, "pmid")
     }
 
 }

@@ -8,11 +8,12 @@ public struct BlazePaymentInfo: Decodable, GeneratedFakeable, GeneratedCopiable 
     public let savedPaymentMethods: [BlazePaymentMethod]
 
     /// Info for adding new payment methods for Blaze campaign creation
-    public let add_payment_method: BlazeAddPaymentInfo
+    public let addPaymentMethod: BlazeAddPaymentInfo
 
-    public init(savedPaymentMethods: [BlazePaymentMethod], add_payment_method: BlazeAddPaymentInfo) {
+    public init(savedPaymentMethods: [BlazePaymentMethod],
+                addPaymentMethod: BlazeAddPaymentInfo) {
         self.savedPaymentMethods = savedPaymentMethods
-        self.add_payment_method = add_payment_method
+        self.addPaymentMethod = addPaymentMethod
     }
 }
 
@@ -55,10 +56,10 @@ public struct BlazePaymentMethod: Decodable, GeneratedFakeable, GeneratedCopiabl
         PaymentMethodType(rawValue: rawType) ?? .unknown
     }
 
-    init(id: String,
-         rawType: String,
-         name: String,
-         info: BlazePaymentMethod.Info) {
+    public init(id: String,
+                rawType: String,
+                name: String,
+                info: BlazePaymentMethod.Info) {
         self.id = id
         self.rawType = rawType
         self.name = name
@@ -98,11 +99,11 @@ public extension BlazePaymentMethod {
         /// Name of the card holder
         public let cardholderName: String
 
-        init(lastDigits: String,
-             expiring: ExpiringInfo,
-             type: String,
-             nickname: String?,
-             cardholderName: String) {
+        public init(lastDigits: String,
+                    expiring: ExpiringInfo,
+                    type: String,
+                    nickname: String?,
+                    cardholderName: String) {
             self.lastDigits = lastDigits
             self.expiring = expiring
             self.type = type

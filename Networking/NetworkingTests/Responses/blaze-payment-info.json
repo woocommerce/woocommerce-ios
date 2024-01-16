@@ -4,7 +4,7 @@
              "id": "payment-method-id",
              "type": "credit_card",
              "name": "Visa **** 4689",
-             "info" {
+             "info": {
                  "last_digits": "4689",
                  "expiring": {
                      "year": 2025,

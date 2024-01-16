@@ -79,6 +79,11 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
 private extension BlazeTargetLocationPickerViewModel {
     func observeSearchQuery() {
         $searchQuery
+            .filter { $0.count < Constants.minimumQueryLength }
+            .map { _ -> [BlazeTargetLocation] in [] } // clears search result if search query is not long enough
+            .assign(to: &$searchResults)
+
+        $searchQuery
             .filter { $0.count >= Constants.minimumQueryLength }
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .handleEvents(receiveOutput: { [weak self] _ in

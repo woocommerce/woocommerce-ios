@@ -98,6 +98,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
+    lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
+        BlazeConfirmPaymentViewModel()
+    }()
+
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""

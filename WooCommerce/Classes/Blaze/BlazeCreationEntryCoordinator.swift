@@ -115,10 +115,10 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         // This function can be called from navigateToBlazeProductSelector(), in which case we need to show the
         // Campaign Creation Form from blazeNavigationController.
         // Otherwise, we show it from the current navigation controller.
-        if self.blazeNavigationController.presentingViewController != nil {
-            self.blazeNavigationController.show(controller, sender: self)
+        if blazeNavigationController.presentingViewController != nil {
+            blazeNavigationController.show(controller, sender: self)
         } else {
-            self.navigationController.show(controller, sender: self)
+            navigationController.show(controller, sender: self)
         }
     }
 
@@ -160,6 +160,6 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         }
 
         blazeNavigationController.viewControllers = [productSelectorViewController]
-        self.navigationController.present(blazeNavigationController, animated: true, completion: nil)
+        navigationController.present(blazeNavigationController, animated: true, completion: nil)
     }
 }

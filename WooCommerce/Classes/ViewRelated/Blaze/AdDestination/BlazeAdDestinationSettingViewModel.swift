@@ -66,6 +66,10 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         )
     }
 
+    var shouldDisableAddParameterButton: Bool {
+        calculateRemainingCharacters() == 0
+    }
+
     init (productURL: String,
           homeURL: String,
           selectedDestinationType: DestinationURLType = .product,

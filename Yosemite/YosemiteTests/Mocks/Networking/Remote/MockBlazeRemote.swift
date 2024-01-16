@@ -12,6 +12,7 @@ final class MockBlazeRemote {
     private var fetchingTargetLocationsResult: Result<[BlazeTargetLocation], Error>?
     private var fetchingForecastedImpressionsResult: Result<BlazeImpressions, Error>?
     private var fetchingAISuggestionsResult: Result<[BlazeAISuggestion], Error>?
+    private var fetchingPaymentInfoResult: Result<BlazePaymentInfo, Error>?
 
     func whenCreatingCampaign(thenReturn result: Result<Void, Error>) {
         creatingCampaignResult = result
@@ -44,9 +45,14 @@ final class MockBlazeRemote {
     func whenFetchingAISuggestionsResult(thenReturn result: Result<[BlazeAISuggestion], Error>?) {
         fetchingAISuggestionsResult = result
     }
+
+    func whenFetchingPaymentInfo(theReturn result: Result<BlazePaymentInfo, Error>) {
+        fetchingPaymentInfoResult = result
+    }
 }
 
 extension MockBlazeRemote: BlazeRemoteProtocol {
+    
     func createCampaign(_ campaign: CreateBlazeCampaign,
                         siteID: Int64) async throws {
         guard let result = creatingCampaignResult else {
@@ -152,6 +158,19 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         switch result {
         case .success(let suggestions):
             return suggestions
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func fetchPaymentInfo(siteID: Int64) async throws -> Networking.BlazePaymentInfo {
+        guard let result = fetchingPaymentInfoResult else {
+            XCTFail("Could not find result for fetching payment info")
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case .success(let info):
+            return info
         case .failure(let error):
             throw error
         }

@@ -81,6 +81,13 @@ struct BlazeAdDestinationSettingView: View {
                     }
                     .foregroundColor(Color(uiColor: .accent))
                 }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.save) {
+                        // todo
+                    }
+                    .foregroundColor(Color(uiColor: .accent))
+                }
             }
             .sheet(isPresented: $isShowingAddParameterView) {
                 BlazeAddParameterView(viewModel: viewModel.blazeAddParameterViewModel)
@@ -162,6 +169,13 @@ private extension BlazeAdDestinationSettingView {
             value: "Cancel",
             comment: "Button to dismiss the Blaze Ad Destination setting screen"
         )
+
+        static let save = NSLocalizedString(
+            "blazeAdDestinationSettingView.save",
+            value: "Save",
+            comment: "Button to save in the Blaze Ad Destination setting screen"
+        )
+
         static let adDestination = NSLocalizedString(
             "blazeAdDestinationSettingView.adDestination",
             value: "Ad Destination",
@@ -184,7 +198,6 @@ private extension BlazeAdDestinationSettingView {
             value: "The site home",
             comment: "Label for the site home destination option in Blaze Ad Destination screen."
         )
-
 
         static let destinationUrlSubtitle = NSLocalizedString(
             "blazeAdDestinationSettingView.destinationUrlSubtitle",

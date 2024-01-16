@@ -10,8 +10,12 @@ struct BlazeAdDestinationSettingView: View {
 
     @State private var isShowingAddParameterView = false
 
-    init(viewModel: BlazeAdDestinationSettingViewModel) {
+    private let onDismiss: () -> Void
+
+    init(viewModel: BlazeAdDestinationSettingViewModel,
+         onDismiss: @escaping () -> Void ) {
         self.viewModel = viewModel
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -84,7 +88,8 @@ struct BlazeAdDestinationSettingView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.save) {
-                        // todo
+                        viewModel.confirmSave()
+                        onDismiss()
                     }
                     .foregroundColor(Color(uiColor: .accent))
                 }
@@ -228,8 +233,10 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                 viewModel: .init(
                     productURL: "https://woo.com/product",
                     homeURL: "https://woo.com/",
-                    finalDestinationURL: "https://woo.com/product/?key1=value1&key2=value2"
-                )
+                    finalDestinationURL: "https://woo.com/product/?key1=value1&key2=value2",
+                    onSave: { _ in }
+                ),
+                onDismiss: {}
             )
 
             // Showing the case where initial selected destination URL is home URL
@@ -237,8 +244,10 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                 viewModel: .init(
                     productURL: "https://woo.com/product",
                     homeURL: "https://woo.com/",
-                    finalDestinationURL: "https://woo.com/?key1=value1&key2=value2"
-                )
+                    finalDestinationURL: "https://woo.com/?key1=value1&key2=value2",
+                    onSave: { _ in }
+                ),
+                onDismiss: {}
             )
         }
     }

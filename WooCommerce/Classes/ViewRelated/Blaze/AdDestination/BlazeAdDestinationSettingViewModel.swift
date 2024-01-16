@@ -71,13 +71,16 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         calculateRemainingCharacters() == 0
     }
 
+    private let onSave: (String) -> Void
+
     init (productURL: String,
           homeURL: String,
-          finalDestinationURL: String
-    ) {
+          finalDestinationURL: String,
+          onSave: @escaping (String) -> Void) {
         self.productURL = productURL
         self.homeURL = homeURL
         self.initialFinalDestinationURL = finalDestinationURL
+        self.onSave = onSave
 
         setStartingDestinationType()
         setStartingParameters()
@@ -92,14 +95,18 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     }
 
     private func setStartingParameters() {
-        if let finalDestinationURL = URL(string: initialFinalDestinationURL) {
-            let urlComponents = URLComponents(url: finalDestinationURL, resolvingAgainstBaseURL: false)
-            parameters = urlComponents?.toBlazeAdURLParameters() ?? []
+        if let finalDestinationURL = URL(string: initialFinalDestinationURL),
+           let urlComponents = URLComponents(url: finalDestinationURL, resolvingAgainstBaseURL: false) {
+            parameters = urlComponents.toBlazeAdURLParameters()
         }
     }
 
     func setDestinationType(as type: DestinationURLType) {
         selectedDestinationType = type
+    }
+
+    func confirmSave() {
+        onSave(buildFinalDestinationURL())
     }
 
     private func buildFinalDestinationURL() -> String {
@@ -111,7 +118,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
             baseURL = homeURL
         }
 
-        return baseURL + parameters.convertToQueryString()
+        return baseURL + "?" +  parameters.convertToQueryString()
     }
 
     func calculateRemainingCharacters() -> Int {

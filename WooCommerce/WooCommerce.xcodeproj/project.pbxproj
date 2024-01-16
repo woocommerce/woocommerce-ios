@@ -2168,6 +2168,8 @@
 		DE0134152A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */; };
 		DE0134172A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */; };
 		DE0134192A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134182A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift */; };
+		DE02ABBA2B56981C008E0AC4 /* BlazeConfirmPaymentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABB92B56981C008E0AC4 /* BlazeConfirmPaymentView.swift */; };
+		DE02ABBC2B56984A008E0AC4 /* BlazeConfirmPaymentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABBB2B56984A008E0AC4 /* BlazeConfirmPaymentViewModel.swift */; };
 		DE0A2EAA281BA083007A8015 /* ProductCategoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EA9281BA083007A8015 /* ProductCategoryList.swift */; };
 		DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */; };
 		DE0A2EAF281BA278007A8015 /* ProductCategorySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */; };
@@ -4834,6 +4836,8 @@
 		DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationView.swift; sourceTree = "<group>"; };
 		DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationViewModel.swift; sourceTree = "<group>"; };
 		DE0134182A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationViewModelTests.swift; sourceTree = "<group>"; };
+		DE02ABB92B56981C008E0AC4 /* BlazeConfirmPaymentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeConfirmPaymentView.swift; sourceTree = "<group>"; };
+		DE02ABBB2B56984A008E0AC4 /* BlazeConfirmPaymentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeConfirmPaymentViewModel.swift; sourceTree = "<group>"; };
 		DE0A2EA9281BA083007A8015 /* ProductCategoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryList.swift; sourceTree = "<group>"; };
 		DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelector.swift; sourceTree = "<group>"; };
 		DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModel.swift; sourceTree = "<group>"; };
@@ -11006,6 +11010,15 @@
 			path = "Stripe Integration Tests";
 			sourceTree = "<group>";
 		};
+		DE02ABB82B569803008E0AC4 /* ConfirmPayment */ = {
+			isa = PBXGroup;
+			children = (
+				DE02ABB92B56981C008E0AC4 /* BlazeConfirmPaymentView.swift */,
+				DE02ABBB2B56984A008E0AC4 /* BlazeConfirmPaymentViewModel.swift */,
+			);
+			path = ConfirmPayment;
+			sourceTree = "<group>";
+		};
 		DE0A2EAB281BA1DB007A8015 /* Selector */ = {
 			isa = PBXGroup;
 			children = (
@@ -11352,6 +11365,7 @@
 		DED91DF72AD78A0C00CDCC53 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
+				DE02ABB82B569803008E0AC4 /* ConfirmPayment */,
 				DE7E5E8D2B4FD8BF002E28D2 /* TargetTopics */,
 				DE7E5E842B4D11BD002E28D2 /* TargetDevices */,
 				DE7E5E7B2B4BB5F7002E28D2 /* TargetLanguages */,
@@ -12933,6 +12947,7 @@
 				CE55F2DA2B28796E005D53D7 /* ProductDiscountViewModel.swift in Sources */,
 				022F2FA8295E7A14003A0A46 /* StoreCreationCountryButton.swift in Sources */,
 				6888A2CA2A66C42C0026F5C0 /* FullFeatureListViewModel.swift in Sources */,
+				DE02ABBC2B56984A008E0AC4 /* BlazeConfirmPaymentViewModel.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
 				CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */,
 				269B46622A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift in Sources */,
@@ -12961,6 +12976,7 @@
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
 				86967D812B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift in Sources */,
 				EE45E2B92A409BA40085F227 /* ProductDescriptionAITooltipUseCase.swift in Sources */,
+				DE02ABBA2B56981C008E0AC4 /* BlazeConfirmPaymentView.swift in Sources */,
 				86967D832B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift in Sources */,
 				456AB0E7283E610500019CFF /* WCShipInstallTableViewCell.swift in Sources */,
 				024A8F1F2A588FA500ABF3EB /* EditableImageView.swift in Sources */,

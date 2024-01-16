@@ -44,6 +44,7 @@ class AuthenticatedState: StoresManagerState {
             FeatureFlagStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             InAppPurchaseStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

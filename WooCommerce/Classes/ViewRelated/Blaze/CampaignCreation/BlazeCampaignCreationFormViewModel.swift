@@ -101,7 +101,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
         if let productURL = productURL, let siteURL = siteURL {
-            BlazeAdDestinationSettingViewModel(productURL: productURL, homeURL: siteURL)
+            BlazeAdDestinationSettingViewModel(productURL: productURL, homeURL: siteURL, finalDestinationURL: finalDestinationURL)
         } else {
             nil
         }

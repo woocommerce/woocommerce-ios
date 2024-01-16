@@ -8,10 +8,11 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     let productURL: String
     let homeURL: String
+    let initialFinalDestinationURL: String
 
-    @Published private(set) var selectedDestinationType: DestinationURLType
+    @Published private(set) var selectedDestinationType: DestinationURLType = .product
 
-    @Published private(set) var parameters: [BlazeAdURLParameter]
+    @Published private(set) var parameters: [BlazeAdURLParameter] = []
 
     // This is used as a flag whether merchant wants to add a new parameter (if nil) or update an existing one (if not)
     var selectedParameter: BlazeAdURLParameter?
@@ -72,12 +73,29 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     init (productURL: String,
           homeURL: String,
-          selectedDestinationType: DestinationURLType = .product,
-          parameters: [BlazeAdURLParameter] = []) {
+          finalDestinationURL: String
+    ) {
         self.productURL = productURL
         self.homeURL = homeURL
-        self.selectedDestinationType = selectedDestinationType
-        self.parameters = parameters
+        self.initialFinalDestinationURL = finalDestinationURL
+
+        setStartingDestinationType()
+        setStartingParameters()
+    }
+
+    private func setStartingDestinationType() {
+        if initialFinalDestinationURL.hasPrefix(productURL) {
+            selectedDestinationType = .product
+        } else {
+            selectedDestinationType = .home
+        }
+    }
+
+    private func setStartingParameters() {
+        if let finalDestinationURL = URL(string: initialFinalDestinationURL) {
+            let urlComponents = URLComponents(url: finalDestinationURL, resolvingAgainstBaseURL: false)
+            parameters = urlComponents?.toBlazeAdURLParameters() ?? []
+        }
     }
 
     func setDestinationType(as type: DestinationURLType) {

@@ -53,6 +53,9 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString
 
+        accessoryType = .none
+        accessoryView = viewModel.accessoryView
+
         // From iOS 15.0, a focus effect will be applied automatically to a selected cell
         // modifying its style (e.g: by adding a border)
         focusEffect = nil

@@ -7,11 +7,11 @@ import Kingfisher
 ///
 final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingController<BlazeCampaignDashboardView> {
     private let viewModel: BlazeCampaignDashboardViewModel
-    private let parentNavigationController: UINavigationController?
+    private let parentNavigationController: UINavigationController
     private lazy var blazeNavigationController = WooNavigationController()
     private var coordinator: BlazeCampaignCreationCoordinator?
 
-    init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController?) {
+    init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController) {
         self.viewModel = viewModel
         self.parentNavigationController = parentNavigationController
 
@@ -22,26 +22,14 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             }
         }
 
-        let navController = self.parentNavigationController ?? UINavigationController()
         let coordinator = BlazeCampaignCreationCoordinator(
             siteID: viewModel.siteID,
             siteURL: viewModel.siteURL,
             source: .myStoreSection,
-            navigationController: navController,
+            navigationController: parentNavigationController,
             onCampaignCreated: self.handlePostCreation
         )
         self.coordinator = coordinator
-
-        if let navController = self.navigationController {
-            let coordinator = BlazeCampaignCreationCoordinator(
-                siteID: viewModel.siteID,
-                siteURL: viewModel.siteURL,
-                source: .myStoreSection,
-                navigationController: navController,
-                onCampaignCreated: self.handlePostCreation
-            )
-            self.coordinator = coordinator
-        }
 
         rootView.createCampaignTapped = { [weak self] in
             guard let self = self else {
@@ -54,7 +42,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             guard let self = self else {
                 return
             }
-            self.parentNavigationController?.dismiss(animated: true) {
+            self.parentNavigationController.dismiss(animated: true) {
                 coordinator.start()
             }
         }
@@ -73,7 +61,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 private extension BlazeCampaignDashboardViewHostingController {
     /// Reloads data and shows campaign list.
     func handlePostCreation() {
-        parentNavigationController?.popViewController(animated: true)
+        parentNavigationController.popViewController(animated: true)
         Task {
             await viewModel.reload()
         }
@@ -88,7 +76,7 @@ private extension BlazeCampaignDashboardViewHostingController {
             viewModel: .init(siteID: viewModel.siteID),
             isPostCreation: isPostCreation
         )
-        parentNavigationController?.show(controller, sender: self)
+        parentNavigationController.show(controller, sender: self)
     }
 }
 

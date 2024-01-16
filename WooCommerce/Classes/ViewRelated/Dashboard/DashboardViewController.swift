@@ -777,9 +777,15 @@ extension DashboardViewController {
         if blazeCampaignHostingController != nil {
             removeBlazeCampaignView()
         }
+
+        guard let navController = navigationController else {
+            DDLogError("🔴 Error: missing navigation controller.")
+            return
+        }
+
         let hostingController = BlazeCampaignDashboardViewHostingController(
             viewModel: viewModel.blazeCampaignDashboardViewModel,
-            parentNavigationController: navigationController
+            parentNavigationController: navController
         )
         guard let campaignView = hostingController.view else {
             return

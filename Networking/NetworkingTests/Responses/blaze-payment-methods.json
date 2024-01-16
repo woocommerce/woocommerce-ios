@@ -1,0 +1,24 @@
+{
+    "saved_payment_methods": [
+        {
+             "id": "payment-method-id",
+             "type": "credit_card",
+             "name": "Visa **** 4689",
+             "info" {
+                 "last_digits": "4689",
+                 "expiring": {
+                     "year": 2025,
+                     "month": 2
+                 },
+                 "type": "Visa",
+                 "nickname": "",
+                 "cardholder_name": "John Doe"
+             }
+         }
+    ],
+    "add_payment_method": {
+        "form_url": "https://example.com/blaze-pm-add",
+        "success_url": "https://example.com/blaze-pm-success",
+        "id_url_parameter": "pmid"
+    }
+}

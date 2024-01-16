@@ -773,6 +773,7 @@
 		D8FBFF2722D529F2006E3336 /* order-stats-v4-month.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF2622D529F2006E3336 /* order-stats-v4-month.json */; };
 		D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF2822D52AFA006E3336 /* order-stats-v4-year.json */; };
 		DE02ABB12B5636FC008E0AC4 /* BlazePaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABB02B5636FC008E0AC4 /* BlazePaymentInfo.swift */; };
+		DE02ABB32B563E61008E0AC4 /* blaze-payment-methods.json in Resources */ = {isa = PBXBuildFile; fileRef = DE02ABB22B563E61008E0AC4 /* blaze-payment-methods.json */; };
 		DE2095BD27956D7900171F1C /* CouponReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BC27956D7900171F1C /* CouponReport.swift */; };
 		DE2095BF279583A100171F1C /* CouponReportListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BE279583A100171F1C /* CouponReportListMapper.swift */; };
 		DE2095C127966EC800171F1C /* coupon-reports.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2095C027966EC800171F1C /* coupon-reports.json */; };
@@ -1829,6 +1830,7 @@
 		D8FBFF2622D529F2006E3336 /* order-stats-v4-month.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-month.json"; sourceTree = "<group>"; };
 		D8FBFF2822D52AFA006E3336 /* order-stats-v4-year.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-year.json"; sourceTree = "<group>"; };
 		DE02ABB02B5636FC008E0AC4 /* BlazePaymentInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazePaymentInfo.swift; sourceTree = "<group>"; };
+		DE02ABB22B563E61008E0AC4 /* blaze-payment-methods.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-payment-methods.json"; sourceTree = "<group>"; };
 		DE2095BC27956D7900171F1C /* CouponReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReport.swift; sourceTree = "<group>"; };
 		DE2095BE279583A100171F1C /* CouponReportListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapper.swift; sourceTree = "<group>"; };
 		DE2095C027966EC800171F1C /* coupon-reports.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-reports.json"; sourceTree = "<group>"; };
@@ -2658,6 +2660,7 @@
 			children = (
 				EE1CB9152B4BCFA800AD24D5 /* blaze-ai-suggestions.json */,
 				8617EDA72B3C0E3800BD9D1B /* blaze-impressions.json */,
+				DE02ABB22B563E61008E0AC4 /* blaze-payment-methods.json */,
 				DEA493702B3997ED00EED015 /* blaze-target-devices.json */,
 				DEA4936E2B3997ED00EED015 /* blaze-target-languages.json */,
 				DEA493712B3997ED00EED015 /* blaze-target-locations.json */,
@@ -3771,6 +3774,7 @@
 				DEA6B1C6296C13FB005AA5E9 /* payment-gateway-list-without-data.json in Resources */,
 				2685C0DE263B5A4200D9EE97 /* add-on-groups.json in Resources */,
 				AEA056E4296DBA6E00948D52 /* products-batch-update.json in Resources */,
+				DE02ABB32B563E61008E0AC4 /* blaze-payment-methods.json in Resources */,
 				DEC51A9B274E3206009F3DF4 /* plugin-inactive.json in Resources */,
 				DEA493732B3997ED00EED015 /* blaze-target-topics.json in Resources */,
 				CCF48B382628AEAE0034EA83 /* shipping-label-account-settings-no-payment-methods.json in Resources */,

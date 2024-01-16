@@ -125,11 +125,14 @@ final class OrderDetailsViewController: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
 
         // Experiment 3
-        let fraction = (traitCollection.horizontalSizeClass == .compact) ? 1.0 : 0.56
-        widthConstraint = tableView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: fraction)
+        //let fraction = (traitCollection.horizontalSizeClass == .compact) ? 1.0 : 0.56
+        //widthConstraint = tableView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: fraction)
 
         // Experiment 4
         //widthConstraint = tableView.widthAnchor.constraint(equalToConstant: 560)
+
+        // Experiment 5
+
     }
 }
 
@@ -166,11 +169,15 @@ private extension OrderDetailsViewController {
         // apply to iPhones, which we do not want.
         // Don't forget to uncomment the bit from traitCollectionDidChange()
         // Problem: When going from landscape to portrait, the first view doesn't use the new constraints. Specially noticeable in iPhone.
-        experiment3_widthAnchor_with_multiplier()
+        //experiment3_widthAnchor_with_multiplier()
 
         // 4
         // Same as 2, when using constants doesn't seem to work.
         //experiment4_widthAnchor_with_constants()
+
+        // 5
+        // Same as 2, but using the stackView. Relies on priority and Xib changes to the trailing/leading constraint priority
+        experiment5_widthAnchor_with_constants()
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
@@ -209,6 +216,14 @@ private extension OrderDetailsViewController {
         NSLayoutConstraint.activate([
             widthConstraint,
             tableView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
+
+    func experiment5_widthAnchor_with_constants() {
+        let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: 450)
+        maxWidthConstraint.priority = .required
+        NSLayoutConstraint.activate([
+            maxWidthConstraint
         ])
     }
 

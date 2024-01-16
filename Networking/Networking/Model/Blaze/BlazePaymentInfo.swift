@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Info for payments when creating Blaze campaigns.
-public struct BlazePaymentInfo: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazePaymentInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// List of saved payment methods for Blaze campaign creation
     public let savedPaymentMethods: [BlazePaymentMethod]
@@ -18,7 +18,7 @@ public struct BlazePaymentInfo: Decodable, GeneratedFakeable, GeneratedCopiable 
 }
 
 /// Details for adding a new payment method for Blaze campaign creation.
-public struct BlazeAddPaymentInfo: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazeAddPaymentInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// URL to be opened for adding payment info
     public let formUrl: String
@@ -37,7 +37,7 @@ public struct BlazeAddPaymentInfo: Decodable, GeneratedFakeable, GeneratedCopiab
 }
 
 /// Details for a payment method to be used for Blaze campaign creation.
-public struct BlazePaymentMethod: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazePaymentMethod: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// ID of the payment method
     public let id: String
@@ -82,7 +82,7 @@ public struct BlazePaymentMethod: Decodable, GeneratedFakeable, GeneratedCopiabl
 public extension BlazePaymentMethod {
 
     /// Detailed info for a payment method to be used for Blaze campaign creation.
-    struct Info: Decodable, GeneratedFakeable, GeneratedCopiable {
+    struct Info: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
         /// Last 4 digits of the card
         public let lastDigits: String
@@ -113,7 +113,7 @@ public extension BlazePaymentMethod {
     }
 
     /// Expiring info of a payment method to be used for Blaze campaign creation
-    struct ExpiringInfo: Decodable, GeneratedFakeable, GeneratedCopiable {
+    struct ExpiringInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
         /// Expiring year of the payment method
         public let year: Int

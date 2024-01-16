@@ -18,7 +18,7 @@ struct AnalyticsCTACard: View {
 
     /// Action for the call to action button
     ///
-    let buttonAction: () -> Void
+    let buttonAction: () async -> Void
 
     /// Whether the call to action button is loading
     ///
@@ -35,9 +35,11 @@ struct AnalyticsCTACard: View {
                 .bodyStyle()
 
             Button {
-                isLoading = true
-                buttonAction()
-                isLoading = false
+                Task { @MainActor in
+                    isLoading = true
+                    await buttonAction()
+                    isLoading = false
+                }
             } label: {
                 Text(buttonLabel)
             }

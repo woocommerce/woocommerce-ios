@@ -113,7 +113,7 @@ struct AnalyticsHubView: View {
                             AnalyticsCTACard(title: Localization.sessionsCTATitle,
                                              message: Localization.sessionsCTAMessage,
                                              buttonLabel: Localization.sessionsCTAButton) {
-                                // no-op
+                                await viewModel.enableJetpackStats()
                             }
                         } else {
                             AnalyticsReportCard(viewModel: viewModel.sessionsCard)

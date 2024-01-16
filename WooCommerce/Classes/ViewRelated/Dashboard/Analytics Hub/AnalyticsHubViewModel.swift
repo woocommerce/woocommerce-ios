@@ -148,6 +148,20 @@ final class AnalyticsHubViewModel: ObservableObject {
     func trackAnalyticsInteraction() {
         usageTracksEventEmitter.interacted()
     }
+
+    /// Enables the Jetpack Status module on the store and requests new stats data
+    ///
+    @MainActor
+    func enableJetpackStats() async {
+        do {
+            try await remoteEnableJetpackStats()
+            await updateData()
+        } catch {
+            // Display error notice to user
+            isJetpackStatsDisabled = true
+            DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
+        }
+    }
 }
 
 // MARK: Networking
@@ -201,7 +215,7 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
-        isJetpackStatsDisabled = false // Reset in case stats were enabled
+        isJetpackStatsDisabled = false // Reset optimistically in case stats were enabled
         async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
 
         do {
@@ -209,8 +223,10 @@ private extension AnalyticsHubViewModel {
         } catch SiteStatsStoreError.statsModuleDisabled {
             self.isJetpackStatsDisabled = true
             self.siteStats = nil
+            DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: Jetpack stats are disabled")
         } catch {
             self.siteStats = nil
+            DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: \(error)")
         }
     }
 
@@ -269,6 +285,23 @@ private extension AnalyticsHubViewModel {
                                                                 latestDateToInclude: latestDateToInclude,
                                                                 saveInStorage: false) { result in
                 continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Makes the remote request to enable the Jetpack Stats module on the site.
+    ///
+    func remoteEnableJetpackStats() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: siteID) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
             }
             stores.dispatch(action)
         }

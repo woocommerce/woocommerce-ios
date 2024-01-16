@@ -17,7 +17,8 @@ struct BlazeTargetLocationPickerView: View {
         NavigationView {
             BlazeTargetLocationSearchView(viewModel: viewModel)
                 .searchable(text: $viewModel.searchQuery,
-                            placement: .navigationBarDrawer(displayMode: .always))
+                            placement: .navigationBarDrawer(displayMode: .always),
+                            prompt: Localization.searchPrompt)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle(Localization.title)
                 .toolbar {
@@ -53,6 +54,11 @@ private extension BlazeTargetLocationPickerView {
             "blazeTargetLocationPickerView.save",
             value: "Save",
             comment: "Button to save the selections on the target location picker for campaign creation"
+        )
+        static let searchPrompt = NSLocalizedString(
+            "blazeTargetLocationPickerView.searchPrompt",
+            value: "Search for locations",
+            comment: "Placeholder on the search bar of the target location picker for campaign creation"
         )
     }
 }

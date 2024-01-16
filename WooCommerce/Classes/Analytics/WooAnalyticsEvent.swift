@@ -1365,7 +1365,7 @@ extension WooAnalyticsEvent {
 
         static let unknownGatewayID = "unknown"
 
-        static func gatewayID(forGatewayID gatewayID: String?) -> String {
+        private static func safeGatewayID(for gatewayID: String?) -> String {
             gatewayID ?? unknownGatewayID
         }
 
@@ -1386,7 +1386,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSelectTypeShown,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
                               ]
             )
         }
@@ -1402,7 +1402,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSelectTypeBuiltInTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
                               ]
             )
         }
@@ -1418,7 +1418,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderSelectTypeBluetoothTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
                               ]
             )
         }
@@ -1433,7 +1433,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .manageCardReadersBuiltInReaderAutoDisconnect,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
                               ]
             )
         }
@@ -1452,7 +1452,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.connectionType: connectionType
                               ]
             )
@@ -1473,7 +1473,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription,
                                 Keys.siteID: siteID,
                                 Keys.connectionType: connectionType
@@ -1497,7 +1497,7 @@ extension WooAnalyticsEvent {
             var properties = [
                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                 Keys.countryCode: countryCode.rawValue,
-                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                 Keys.connectionType: connectionType
             ]
 
@@ -1526,7 +1526,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription,
                                 Keys.siteID: siteID,
                                 Keys.connectionType: connectionType
@@ -1547,7 +1547,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
                               ]
             )
         }
@@ -1568,7 +1568,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
             )
@@ -1590,7 +1590,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
             )
@@ -1615,7 +1615,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue,
                                 Keys.errorDescription: error.localizedDescription
                               ]
@@ -1638,7 +1638,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
             )
@@ -1660,7 +1660,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
             )
@@ -1682,7 +1682,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.softwareUpdateType: updateType.rawValue
                               ]
             )
@@ -1729,7 +1729,7 @@ extension WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.cardReaderModel: cardReaderModel,
                 Keys.countryCode: countryCode.rawValue,
-                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                 Keys.paymentMethodType: paymentMethod?.analyticsValue,
                 Keys.errorDescription: errorDescription,
                 Keys.siteID: String(siteID)
@@ -1754,7 +1754,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                                 Keys.cancellationSource: cancellationSource.rawValue,
                                 Keys.siteID: siteID
                               ]
@@ -1794,7 +1794,7 @@ extension WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                 Keys.countryCode: countryCode.rawValue,
-                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.gatewayID: safeGatewayID(for: forGatewayID),
                 Keys.paymentMethodType: paymentMethod.analyticsValue,
                 Keys.siteID: siteID
             ]
@@ -1827,7 +1827,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+                                Keys.gatewayID: safeGatewayID(for: gatewayID),
                                 Keys.siteID: siteID
                               ])
         }
@@ -1847,7 +1847,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+                                Keys.gatewayID: safeGatewayID(for: gatewayID),
                                 Keys.siteID: siteID
                               ])
         }
@@ -1869,7 +1869,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+                                Keys.gatewayID: safeGatewayID(for: gatewayID),
                                 Keys.siteID: siteID
                               ],
                               error: error)
@@ -1890,7 +1890,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: self.gatewayID(forGatewayID: gatewayID),
+                                Keys.gatewayID: safeGatewayID(for: gatewayID),
                                 Keys.siteID: siteID
                               ])
         }
@@ -1904,12 +1904,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardPresentOnboardingLearnMoreTapped(reason: String,
                                                          countryCode: CountryCode,
-                                                         gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
+                                                         gatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingLearnMoreTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
-                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
                               ])
         }
 
@@ -1918,10 +1918,10 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardPresentOnboardingCompleted(gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingCompleted(gatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCompleted,
                               properties: [
-                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
                               ])
         }
 
@@ -1932,12 +1932,12 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - gatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///
-        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: CountryCode, gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingNotCompleted(reason: String, countryCode: CountryCode, gatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingNotCompleted,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
-                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
                               ])
         }
 
@@ -1952,13 +1952,13 @@ extension WooAnalyticsEvent {
         static func cardPresentOnboardingStepSkipped(reason: String,
                                                      remindLater: Bool,
                                                      countryCode: CountryCode,
-                                                     gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
+                                                     gatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingStepSkipped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
                                 Keys.remindLater: remindLater,
-                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
                               ])
         }
 
@@ -1971,12 +1971,12 @@ extension WooAnalyticsEvent {
         ///
         static func cardPresentOnboardingCtaTapped(reason: String,
                                                    countryCode: CountryCode,
-                                                   gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
+                                                   gatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCtaTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
-                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
                               ])
         }
 
@@ -1991,12 +1991,12 @@ extension WooAnalyticsEvent {
         static func cardPresentOnboardingCtaFailed(reason: String,
                                                    countryCode: CountryCode,
                                                    error: Error? = nil,
-                                                   gatewayID paymentGatewayID: String?) -> WooAnalyticsEvent {
+                                                   gatewayID: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCtaFailed,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.reason: reason,
-                                Keys.gatewayID: gatewayID(forGatewayID: paymentGatewayID)
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
                               ], error: error)
         }
 

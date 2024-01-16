@@ -18,10 +18,15 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
+    /// User is an administrator on the store
+    ///
+    private let userIsAdmin: Bool
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
@@ -29,6 +34,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
         self.siteID = siteID
         self.timeZone = timeZone
+        self.userIsAdmin = userIsAdmin
         self.stores = stores
         self.analytics = analytics
         self.timeRangeSelectionType = selectedType
@@ -64,21 +70,25 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        guard !stores.isAuthenticatedWithoutWPCom else {
+        if stores.isAuthenticatedWithoutWPCom // Non-Jetpack stores don't have sessions stats
+            || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
-        }
-
-        switch timeRangeSelectionType {
-        case .custom:
+        } else if case .custom = timeRangeSelectionType {
             return false
-        default:
+        } else {
             return true
         }
     }
 
-    /// Whether to show the prompt to enable Jetpack Stats
+    /// Whether Jetpack Stats are disabled on the store
     ///
-    @Published private(set) var showStatsModulePrompt = false
+    private var isJetpackStatsDisabled = false
+
+    /// Whether to show the call to action to enable Jetpack Stats
+    ///
+    var showJetpackStatsCTA: Bool {
+        isJetpackStatsDisabled && userIsAdmin
+    }
 
     /// Time Range Selection Type
     ///
@@ -191,16 +201,15 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
+        isJetpackStatsDisabled = false // Reset in case stats were enabled
         async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
 
         do {
             self.siteStats = try await siteStatsRequest
-            self.showStatsModulePrompt = false
         } catch SiteStatsStoreError.statsModuleDisabled {
-            self.showStatsModulePrompt = true
+            self.isJetpackStatsDisabled = true
             self.siteStats = nil
         } catch {
-            self.showStatsModulePrompt = false
             self.siteStats = nil
         }
     }

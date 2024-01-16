@@ -109,7 +109,7 @@ struct AnalyticsHubView: View {
                     Divider()
 
                     Group {
-                        if viewModel.showStatsModulePrompt {
+                        if viewModel.showJetpackStatsCTA {
                             AnalyticsCTACard(title: Localization.sessionsCTATitle,
                                              message: Localization.sessionsCTAMessage,
                                              buttonLabel: Localization.sessionsCTAButton) {

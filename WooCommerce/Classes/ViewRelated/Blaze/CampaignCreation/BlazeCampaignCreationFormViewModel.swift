@@ -51,7 +51,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                   pageTopics: pageTopics?.map { $0.id })
     }
 
-    var budgetSettingViewModel: BlazeBudgetSettingViewModel {
+    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     duration: duration,
@@ -63,7 +63,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
-    }
+    }()
 
     var editAdViewModel: BlazeEditAdViewModel? {
         guard let image else {
@@ -84,33 +84,33 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel {
+    lazy private(set) var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
         BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
             self?.languages = selectedLanguages
             self?.updateTargetLanguagesText()
         }
-    }
+    }()
 
-    var targetDeviceViewModel: BlazeTargetDevicePickerViewModel {
+    lazy private(set) var targetDeviceViewModel: BlazeTargetDevicePickerViewModel = {
         BlazeTargetDevicePickerViewModel(siteID: siteID, selectedDevices: devices) { [weak self] selectedDevices in
             self?.devices = selectedDevices
             self?.updateTargetDevicesText()
         }
-    }
+    }()
 
-    var targetTopicViewModel: BlazeTargetTopicPickerViewModel {
+    lazy private(set) var targetTopicViewModel: BlazeTargetTopicPickerViewModel = {
         BlazeTargetTopicPickerViewModel(siteID: siteID, selectedTopics: pageTopics) { [weak self] topics in
             self?.pageTopics = topics
             self?.updateTargetTopicText()
         }
-    }
+    }()
 
-    var targetLocationViewModel: BlazeTargetLocationPickerViewModel {
+    lazy private(set) var targetLocationViewModel: BlazeTargetLocationPickerViewModel = {
         BlazeTargetLocationPickerViewModel(siteID: siteID, selectedLocations: locations) { [weak self] locations in
             self?.locations = locations
             self?.updateTargetLocationText()
         }
-    }
+    }()
 
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""

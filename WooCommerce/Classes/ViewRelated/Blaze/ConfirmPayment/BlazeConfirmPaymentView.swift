@@ -6,6 +6,8 @@ struct BlazeConfirmPaymentView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
 
+    @State private var externalURL: URL?
+
     private let agreementText: NSAttributedString = {
         let content = String.localizedStringWithFormat(Localization.agreement, Localization.termsOfService, Localization.adPolicy, Localization.learnMore)
         let paragraph = NSMutableParagraphStyle()
@@ -171,6 +173,11 @@ private extension BlazeConfirmPaymentView {
 
             AttributedText(agreementText)
                 .padding(.horizontal, Layout.contentPadding)
+                .environment(\.openURL, OpenURLAction { url in
+                    externalURL = url
+                    return .handled
+                })
+                .safariSheet(url: $externalURL)
         }
         .padding(.vertical, Layout.contentPadding)
         .background(Color(.systemBackground))

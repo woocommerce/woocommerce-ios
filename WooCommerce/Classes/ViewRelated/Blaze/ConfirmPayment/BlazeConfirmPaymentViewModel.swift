@@ -24,7 +24,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     @Published var shouldDisplayPaymentErrorAlert = false
     @Published var shouldDisplayCampaignCreationError = false
 
-    @Published private(set) var isCreatingCampaign = false
+    @Published var isCreatingCampaign = false
 
     init(siteID: Int64,
          campaignInfo: CreateBlazeCampaign,

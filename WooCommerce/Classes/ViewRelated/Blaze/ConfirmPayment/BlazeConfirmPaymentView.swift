@@ -75,6 +75,10 @@ struct BlazeConfirmPaymentView: View {
                 }
             }
         })
+        .sheet(isPresented: $viewModel.isCreatingCampaign) {
+            BlazeCampaignCreationLoadingView()
+                .interactiveDismissDisabled()
+        }
     }
 }
 

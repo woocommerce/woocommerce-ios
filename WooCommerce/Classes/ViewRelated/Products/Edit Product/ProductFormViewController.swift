@@ -1116,7 +1116,7 @@ private extension ProductFormViewController {
             let onCreateCampaignClosure = { [weak self] in
                 guard let self else { return }
                 self.dismiss(animated: true)
-                navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
+                navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .introView)
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
             }
             let onDismissClosure = { [weak self] in
@@ -1136,28 +1136,24 @@ private extension ProductFormViewController {
             present(blazeHostingController, animated: true)
             ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
         } else {
-            navigateToBlazeCampaignCreation(siteUrl: site.url, source: .productDetailPromoteButton)
+            navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .productDetailPromoteButton)
         }
     }
 
-    private func navigateToBlazeCampaignCreation(siteUrl: String, source: BlazeSource) {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-            let viewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.productModel.siteID,
-                                                               productID: viewModel.productModel.productID) { [weak self] in
-                self?.handlePostCreation()
-            }
-            let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
-            navigationController?.show(controller, sender: self)
-        } else {
-            let blazeViewModel = BlazeWebViewModel(siteID: viewModel.productModel.siteID,
-                                                   source: source,
-                                                   siteURL: siteUrl,
-                                                   productID: product.productID) { [weak self] in
-                self?.handlePostCreation()
-            }
-            let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
-            navigationController?.show(webViewController, sender: self)
+    private func navigateToBlazeCampaignCreation(siteID: Int64, siteUrl: String, source: BlazeSource) {
+        guard let navigationController = self.navigationController else {
+            return
         }
+
+        let coordinator = BlazeCampaignCreationCoordinator(
+            siteID: siteID,
+            siteURL: siteUrl,
+            productID: product.productID,
+            source: source,
+            navigationController: navigationController,
+            onCampaignCreated: handlePostCreation
+        )
+        coordinator.start()
     }
 
     func handlePostCreation() {

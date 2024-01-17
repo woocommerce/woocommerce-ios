@@ -157,7 +157,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                     navigateToNativeCampaignCreation(source: source, productID: product.productID)
                 },
                 onCloseButtonTapped: { [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     navigationController.dismiss(animated: true, completion: nil)
                 }

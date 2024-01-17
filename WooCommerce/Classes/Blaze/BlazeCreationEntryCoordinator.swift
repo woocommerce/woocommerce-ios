@@ -116,12 +116,10 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
     /// Handles navigation to the native Blaze creation
     func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
-        let controller = BlazeCampaignCreationFormHostingController(
-            viewModel: .init(siteID: self.siteID,
-                             productID: productID,
-                             onCompletion: self.onCampaignCreated
-                 )
-        )
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: self.siteID,
+                                                           productID: productID,
+                                                           onCompletion: self.onCampaignCreated)
+        let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
 
         // This function can be called from navigateToBlazeProductSelector(), in which case we need to show the
         // Campaign Creation Form from blazeNavigationController.

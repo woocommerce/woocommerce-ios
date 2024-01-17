@@ -456,10 +456,4 @@ private extension BlazeCampaignListViewModelTests {
         }
         storage.saveIfNeeded()
     }
-
-    func insertProduct(_ readOnlyProduct: Product) {
-        let newProduct = storage.insertNewObject(ofType: StorageProduct.self)
-        newProduct.update(with: readOnlyProduct)
-        storage.saveIfNeeded()
-    }
 }

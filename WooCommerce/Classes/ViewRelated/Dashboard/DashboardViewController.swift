@@ -778,7 +778,7 @@ extension DashboardViewController {
             removeBlazeCampaignView()
         }
 
-        guard let navController = navigationController else {
+        guard let navigationController else {
             DDLogError("🔴 Error: missing navigation controller.")
             return
         }

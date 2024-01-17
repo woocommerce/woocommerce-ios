@@ -924,7 +924,7 @@ private extension ProductFormViewController {
                                                                     }
         }
         let listSelectorPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: dataSource)
-        listSelectorPresenter.show(from: self, sourceView: button, arrowDirections: .down)
+        listSelectorPresenter.show(from: self, sourceView: button.titleLabel ?? button, arrowDirections: .down)
     }
 
     func updateMoreDetailsButtonVisibility() {

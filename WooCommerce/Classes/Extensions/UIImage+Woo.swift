@@ -1120,6 +1120,18 @@ extension UIImage {
         UIImage.gridicon(.globe)
     }
 
+    /// Search Image
+    ///
+    static var searchImage: UIImage {
+        UIImage(named: "search")!
+    }
+
+    /// Search No Result Image
+    ///
+    static var searchNoResultImage: UIImage {
+        UIImage(named: "search-no-result")!
+    }
+
     /// Returns a star icon with the given size
     ///
     /// - Parameters:

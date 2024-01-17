@@ -39,7 +39,6 @@ struct BlazeTargetLanguagePickerView: View {
                     })
                 }
             }
-            .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {
@@ -54,10 +53,11 @@ struct BlazeTargetLanguagePickerView: View {
                     .disabled(viewModel.shouldDisableSaveButton)
                 }
             }
-            .task {
-                await viewModel.syncLanguages()
-            }
         }
+        .task {
+            await viewModel.syncLanguages()
+        }
+        .navigationViewStyle(.stack)
     }
 }
 

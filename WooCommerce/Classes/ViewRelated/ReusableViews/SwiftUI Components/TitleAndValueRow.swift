@@ -69,6 +69,7 @@ struct TitleAndValueRow: View {
 
                     if let titleSuffixImage {
                         titleSuffixImage
+                            .foregroundColor(Color(.brand))
                             .padding(.leading, Constants.titleSuffixImageTrailingPadding)
                     }
 

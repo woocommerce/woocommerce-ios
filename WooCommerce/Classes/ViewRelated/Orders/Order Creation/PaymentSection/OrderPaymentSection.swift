@@ -246,7 +246,7 @@ private extension OrderPaymentSection {
     }
 
     var rowsEditImage: Image? {
-        viewModel.showNonEditableIndicators ? nil : Image(systemName: "pencil")
+        viewModel.showNonEditableIndicators ? Image(uiImage: .lockImage) : Image(systemName: "pencil")
     }
 
     var editableRowsSelectionStyle: TitleAndValueRow.SelectionStyle {

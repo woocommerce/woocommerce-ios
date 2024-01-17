@@ -151,7 +151,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
             let productSelectorViewModel = ProductSelectorViewModel(
                 siteID: siteID,
                 onProductSelectionStateChanged: { [weak self] product in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     // Navigate to Campaign Creation Form once any type of product is selected.
                     navigateToNativeCampaignCreation(source: source, productID: product.productID)

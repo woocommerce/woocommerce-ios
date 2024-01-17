@@ -28,20 +28,8 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             }
         }
 
-        let coordinator = BlazeCampaignCreationCoordinator(
-            siteID: viewModel.siteID,
-            siteURL: viewModel.siteURL,
-            source: .myStoreSection,
-            navigationController: parentNavigationController,
-            onCampaignCreated: self.handlePostCreation
-        )
-        self.coordinator = coordinator
-
         rootView.createCampaignTapped = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            coordinator.start()
+            self?.coordinator.start()
         }
 
         rootView.startCampaignFromIntroTapped = { [weak self] productID in

@@ -152,7 +152,6 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(item.budgetCents, 500)
         XCTAssertEqual(item.totalClicks, 0)
         XCTAssertEqual(item.totalImpressions, 0)
-        XCTAssertEqual(item.productURL, "https://example.com/product/fried-egg-bacon-bagel/")
     }
 
     /// Verifies that loadCampaigns sends the correct parameters.
@@ -507,6 +506,56 @@ final class BlazeRemoteTests: XCTestCase {
         do {
             // When
             _ = try await remote.fetchAISuggestions(siteID: sampleSiteID, productID: 123)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
+    // MARK: - Fetch payment info
+
+    func test_fetchPaymentInfo_returns_parsed_info() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/payment-methods"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-payment-info")
+
+        // When
+        let result = try await remote.fetchPaymentInfo(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(result, BlazePaymentInfo(
+            savedPaymentMethods: [
+                .init(id: "payment-method-id",
+                      rawType: "credit_card",
+                      name: "Visa **** 4689",
+                      info: .init(lastDigits: "4689",
+                                  expiring: .init(year: 2025, month: 2),
+                                  type: "Visa",
+                                  nickname: "",
+                                  cardholderName: "John Doe"))
+            ],
+            addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
+                                    successUrl: "https://example.com/blaze-pm-success",
+                                    idUrlParameter: "pmid"))
+        )
+    }
+
+    func test_fetchPaymentInfo_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/payment-methods"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchPaymentInfo(siteID: sampleSiteID)
 
             // Then
             XCTFail("Request should fail")

@@ -112,7 +112,9 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Callback closure when an order is selected
     ///
-    private var switchDetailsHandler: (_ allViewModels: [OrderDetailsViewModel], _ index: Int) -> Void
+    private var switchDetailsHandler: (_ allViewModels: [OrderDetailsViewModel], _
+                                       index: Int, _
+                                       onCompletion: (() -> Void)?) -> Void
 
     /// Currently selected index path in the table view
     ///
@@ -148,7 +150,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int) -> Void) {
+         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, (() -> Void)?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -180,8 +182,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         configureStorePlanBannerPresenter()
-
-        checkSelectedItem()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -198,6 +198,13 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+
+        // Select the first order if we're showing in an open split view (i.e. on iPad in some size classes)
+        guard let splitViewController,
+              !splitViewController.isCollapsed else {
+            return
+        }
+        checkSelectedItem()
     }
 
     override func viewDidLayoutSubviews() {
@@ -524,11 +531,11 @@ private extension OrderListViewController {
                 state != .empty else {
             selectedOrderID = nil
             selectedIndexPath = nil
-            return switchDetailsHandler([], 0)
+            return switchDetailsHandler([], 0, nil)
         }
         selectedOrderID = orderDetailsViewModel.order.orderID
         selectedIndexPath = firstIndexPath
-        switchDetailsHandler([orderDetailsViewModel], 0)
+        switchDetailsHandler([orderDetailsViewModel], 0, nil)
         highlightSelectedRowIfNeeded()
     }
 }
@@ -704,8 +711,8 @@ extension OrderListViewController: UITableViewDelegate {
             // There is no point of having order navigation in the order details view when we have a split screen,
             // because orders can be easily selected in the left view (orders list).
             // Passing just one order (the selected one) disables navigation
-            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex) :
-            switchDetailsHandler([orderDetailsViewModel], 0)
+            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, nil) :
+            switchDetailsHandler([orderDetailsViewModel], 0, nil)
         } else {
             let viewController = OrderDetailsViewController(viewModels: allViewModels, currentIndex: currentIndex)
             navigationController?.pushViewController(viewController, animated: true)

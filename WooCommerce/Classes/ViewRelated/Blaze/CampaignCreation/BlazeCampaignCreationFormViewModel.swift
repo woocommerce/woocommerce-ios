@@ -23,9 +23,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     var onEditAd: (() -> Void)?
 
-    var productImage: URL? {
-        product?.imageURL
-    }
     @Published private(set) var image: MediaPickerImage?
     @Published private(set) var tagline: String = ""
     @Published private(set) var description: String = ""
@@ -51,7 +48,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                   pageTopics: pageTopics?.map { $0.id })
     }
 
-    var budgetSettingViewModel: BlazeBudgetSettingViewModel {
+    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     duration: duration,
@@ -63,13 +60,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
-    }
+    }()
 
-    var editAdViewModel: BlazeEditAdViewModel? {
-        guard let image else {
-            assertionFailure("Product image is not downloaded. Edit ad button should be disabled.")
-            return nil
-        }
+    var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
                                      tagline: tagline,
                                      description: description)
@@ -84,33 +77,33 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel {
+    lazy private(set) var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
         BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
             self?.languages = selectedLanguages
             self?.updateTargetLanguagesText()
         }
-    }
+    }()
 
-    var targetDeviceViewModel: BlazeTargetDevicePickerViewModel {
+    lazy private(set) var targetDeviceViewModel: BlazeTargetDevicePickerViewModel = {
         BlazeTargetDevicePickerViewModel(siteID: siteID, selectedDevices: devices) { [weak self] selectedDevices in
             self?.devices = selectedDevices
             self?.updateTargetDevicesText()
         }
-    }
+    }()
 
-    var targetTopicViewModel: BlazeTargetTopicPickerViewModel {
+    lazy private(set) var targetTopicViewModel: BlazeTargetTopicPickerViewModel = {
         BlazeTargetTopicPickerViewModel(siteID: siteID, selectedTopics: pageTopics) { [weak self] topics in
             self?.pageTopics = topics
             self?.updateTargetTopicText()
         }
-    }
+    }()
 
-    var targetLocationViewModel: BlazeTargetLocationPickerViewModel {
+    lazy private(set) var targetLocationViewModel: BlazeTargetLocationPickerViewModel = {
         BlazeTargetLocationPickerViewModel(siteID: siteID, selectedLocations: locations) { [weak self] locations in
             self?.locations = locations
             self?.updateTargetLocationText()
         }
-    }
+    }()
 
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
@@ -132,8 +125,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
 
+    @Published private var isLoadingProductImage: Bool = true
+
     var canEditAd: Bool {
-        image != nil && !isLoadingAISuggestions
+        !(isLoadingProductImage || isLoadingAISuggestions)
     }
 
     var canConfirmDetails: Bool {
@@ -181,7 +176,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 // MARK: Image download
 extension BlazeCampaignCreationFormViewModel {
     func downloadProductImage() async {
+        isLoadingProductImage = true
         image = await loadProductImage()
+        isLoadingProductImage = false
     }
 }
 

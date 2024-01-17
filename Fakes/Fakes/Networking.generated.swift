@@ -166,6 +166,17 @@ extension Networking.BlazeAISuggestion {
         )
     }
 }
+extension Networking.BlazeAddPaymentInfo {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeAddPaymentInfo {
+        .init(
+            formUrl: .fake(),
+            successUrl: .fake(),
+            idUrlParameter: .fake()
+        )
+    }
+}
 extension Networking.BlazeCampaign {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -173,7 +184,7 @@ extension Networking.BlazeCampaign {
         .init(
             siteID: .fake(),
             campaignID: .fake(),
-            productURL: .fake(),
+            productID: .fake(),
             name: .fake(),
             uiStatus: .fake(),
             contentImageURL: .fake(),
@@ -204,6 +215,51 @@ extension Networking.BlazeImpressions {
         .init(
             totalImpressionsMin: .fake(),
             totalImpressionsMax: .fake()
+        )
+    }
+}
+extension Networking.BlazePaymentInfo {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazePaymentInfo {
+        .init(
+            savedPaymentMethods: .fake(),
+            addPaymentMethod: .fake()
+        )
+    }
+}
+extension Networking.BlazePaymentMethod {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazePaymentMethod {
+        .init(
+            id: .fake(),
+            rawType: .fake(),
+            name: .fake(),
+            info: .fake()
+        )
+    }
+}
+extension Networking.BlazePaymentMethod.ExpiringInfo {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazePaymentMethod.ExpiringInfo {
+        .init(
+            year: .fake(),
+            month: .fake()
+        )
+    }
+}
+extension Networking.BlazePaymentMethod.Info {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazePaymentMethod.Info {
+        .init(
+            lastDigits: .fake(),
+            expiring: .fake(),
+            type: .fake(),
+            nickname: .fake(),
+            cardholderName: .fake()
         )
     }
 }

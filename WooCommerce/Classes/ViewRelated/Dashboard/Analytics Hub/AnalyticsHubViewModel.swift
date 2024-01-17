@@ -64,6 +64,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
+        guard !stores.isAuthenticatedWithoutWPCom else {
+            return false
+        }
+
         switch timeRangeSelectionType {
         case .custom:
             return false
@@ -231,7 +235,7 @@ private extension AnalyticsHubViewModel {
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
-        guard let period = timeRangeSelectionType.period else {
+        guard !stores.isAuthenticatedWithoutWPCom, let period = timeRangeSelectionType.period else {
             return nil
         }
 

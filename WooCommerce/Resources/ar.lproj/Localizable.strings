@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-12-13 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-01-11 13:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -54,7 +54,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ حول قبول المدفوعات باستخدام جهازك المحمول وطلب قارئ البطاقات";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"%1$@ about adding Pay in Person to your checkout" = "%1$@ حول إضافة خيار \"الدفع بشكل شخصي\" إلى إجراءات السداد الخاصة بك";
+"%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ حول قبول المدفوعات باستخدام جهازك المحمول وطلب قارئ البطاقات.";
 
 /* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
 "%1$@ about domains and how to take domain-related actions." = "%1$@ عن النطاقات وكيفية اتخاذ إجراءات مرتبطة بالنطاق.";
@@ -134,12 +134,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "⁦%1$d⁩ من أيام العمل";
-
-/* Singular summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
-"%1$d deposit" = "⁦%1$d⁩ من الودائع";
-
-/* Plural summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
-"%1$d deposits" = "⁦%1$d⁩ من الودائع";
 
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "⁦%1$d⁩ العنصر";
@@ -331,9 +325,6 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
-/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
-"A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "يتيح لك خيار \"الدفع بشكل شخصي\" الموجود في إجراءات السداد الخاصة بك قبول المدفوعات باستخدام البطاقات أو نقدًا عند التحصيل أو التوصيل.";
-
 /* Error message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "A WooCommerce app store subscription with your Apple ID already exists" = "هناك اشتراك في متجر تطبيقات WooCommerce يحمل معرّف Apple الخاص بك بالفعل";
 
@@ -392,9 +383,6 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "استرداد عربة التسوق المهملة";
 
-/* Feature option in the store creation features question. */
-"Ability to scale as my business grows" = "إمكانية التطوير كلما شهدت أعمالي نموًا";
-
 /* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
 "About Tap to Pay" = "نبذة عن ميزة Tap to Pay";
 
@@ -403,10 +391,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "حول التطبيق";
-
-/* Top header text of the store creation profiler question about the challenges.
-   Top header text of the store creation profiler question about the features. */
-"About you" = "نبذة عنك";
 
 /* Title on the add product features screen. */
 "About your product" = "نبذة عن منتجك";
@@ -425,9 +409,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "يمكنك الوصول إلى أسعار الشحن المُخفَّضة. متاح حاليًا مع DHL وUSPS والمزيد يتوافر قريبًا!";
-
-/* Feature option in the store creation features question. */
-"Access to a wide range of plugins and extensions" = "الوصول إلى مجموعة كبيرة من الإضافات والامتدادات";
 
 /* My Store > Settings > Account Settings section
    Navigates to the Account Settings screen
@@ -483,9 +464,6 @@ which should be translated separately and considered part of this sentence. */
    Product Add Category navigation title */
 "Add Category" = "إضافة فئة";
 
-/* Title for the Coupon screen during order creation */
-"Add Coupon" = "إضافة قسيمة";
-
 /* Title text of the button that allows to add a custom amount when creating or editing an order */
 "Add Custom Amount" = "إضافة مبلغ مخصص";
 
@@ -517,8 +495,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "إضافة ملف";
 
-/* Title of the add gift card screen in the order form.
-   Title text of the button that adds shipping line when creating a new order */
+/* Title of the add gift card screen in the order form. */
 "Add Gift Card" = "إضافة بطاقة الهدايا";
 
 /* Action to add new attribute on the Product Attributes screen */
@@ -530,9 +507,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds a note when creating a simple payment
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "إضافة ملحوظة";
-
-/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
-"Add Pay in Person to your checkout" = "إضافة خيار \"الدفع بشكل شخصي\" إلى إجراءات السداد الخاصة بك";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "إضافة صورة";
@@ -553,8 +527,7 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "إضافة المنتجات";
 
-/* Title for the Shipping Line screen during order creation
-   Title text of the button that adds shipping line when creating a new order */
+/* Title for the Shipping Line screen during order creation */
 "Add Shipping" = "إضافة الشحن";
 
 /* Title for the button to add the Shipping Address in Order Details */
@@ -592,7 +565,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner
    Title on the action sheet to select an option for adding new product */
 "Add a product" = "إضافة منتج";
 
@@ -638,8 +610,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for adding customer details manually on the customer search screen */
 "Add details manually" = "إضافة التفاصيل يدويًا";
 
-/* Text for the button to add a discount to a product during order creation
-   Text in the product row card to add a discount to a given product */
+/* Text in the product row card to add a discount to a given product */
 "Add discount" = "إضافة خصم";
 
 /* Footer of text field section in Add Attribute Options screen */
@@ -670,9 +641,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "إضافة رابط المنتج";
-
-/* Title for the Products onboarding banner */
-"Add products to sell" = "إضافة منتجات لبيعها";
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "إضافة المنتجات إلى المجموعة";
@@ -706,9 +674,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the add product name screen. */
 "Add your product name" = "إضافة اسم منتجك";
-
-/* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
-"Adding discount is currently not available. Remove coupons first." = "لا تتوافر إضافة الخصم حاليًا. أزل القسائم أولاً.";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "العنوان";
@@ -845,7 +810,6 @@ which should be translated separately and considered part of this sentence. */
 "American Samoa" = "ساموا الأمريكية";
 
 /* Title above the amount field on the add custom amount view in orders.
-   Title for the discount amount of a product during order creation
    Title of the Amount label on Coupon Details screen */
 "Amount" = "الكمية";
 
@@ -1093,9 +1057,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "عائلة Automattic";
 
-/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
-"Available funds" = "الأموال المتوافرة";
-
 /* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
 "Available funds are deposited automatically, %1$@." = "يتم إيداع الأموال المتوافرة تلقائيًا عند الطلب، %1$@.";
 
@@ -1209,8 +1170,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to create a product manually */
 "Blank" = "فارغ";
 
-/* Title of the Blaze view.
-   Title of the hub menu Blaze button */
+/* Title of the hub menu Blaze button */
 "Blaze" = "التوهج";
 
 /* Title of the Blaze campaign list view */
@@ -1272,9 +1232,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for the total budget of a Blaze campaign */
 "Budget" = "الميزانية";
-
-/* Message for the Products onboarding banner */
-"Build your catalog by adding what you want to sell." = "قم بإنشاء الكتالوج الخاص بك عن طريق إضافة ما ترغب في بيعه.";
 
 /* SEO title feature on the Free Trial Summary Screen */
 "Built-in SEO" = "تحسين محركات البحث مدمج";
@@ -1343,15 +1300,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "المبلغ المحسوب";
-
-/* The string to show on order taxes when they are calculated based on the billing address */
-"Calculated on billing address" = "تم الحساب وفق عنوان الفوترة";
-
-/* The string to show on order taxes when they are calculated based on the shipping address */
-"Calculated on shipping address" = "تم الحساب وفق عنوان الشحن";
-
-/* The string to show on order taxes when they are calculated based on the shop base address */
-"Calculated on shop base address" = "تم الحساب وفق العنوان الأساسي للمتجر";
 
 /* Call phone number button title */
 "Call" = "اتصال";
@@ -1442,7 +1390,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
-   Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
    Cancel the more menu action sheet in Reviews screen.
@@ -1675,9 +1622,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "اختيار مزوِّد الدفع الخاص بك";
 
-/* Subtitle of the store creation profiler question about the challenges. */
-"Choose your concerns or difficulties below. You can select more than one option." = "اختر المخاوف التي تشعر بها أو الصعوبات التي تواجهها أدناه. يمكنك تحديث أكثر من خيار واحد.";
-
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "اختيار طريقة الدفع الخاصة بك";
 
@@ -1768,7 +1712,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee/Discounts Details screen
-   Text for the close button in the Product screen
    Text for the close button in the Shipping Line Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "إغلاق";
@@ -1793,6 +1736,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "تم الطي";
+
+/* SKU label for a product in an order. The variable shows the SKU of the product. */
+"CollapsibleProductRowCardViewModel.skuFormat" = "وحدة SKU: %1$@";
+
+/* Label about product's inventory stock status shown during order creation */
+"CollapsibleProductRowCardViewModel.stockFormat" = "%1$@ متوافر في المخزون";
 
 /* Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "تحصيل المدفوعات";
@@ -1845,9 +1794,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for composite product type. */
 "Composite" = "مركّب";
-
-/* Feature option in the store creation features question. */
-"Comprehensive sales and analytics reports" = "المبيعات الشاملة وتقارير التحليلات";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "تم تحديث التكوين";
@@ -2113,8 +2059,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "البلد الذي تم تصنيع المنتج فيه أو تجميعه";
 
-/* Label for the row showing the cost of coupon in the order
-   Title for the coupon field on the Coupon Details screen during order creation
+/* Title for the coupon field on the Coupon Details screen during order creation
    Title for the Coupon screen during order creation */
 "Coupon" = "قسيمة";
 
@@ -2151,9 +2096,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "القسائم (%1$@)";
-
-/* Title text for the coupons row informational tooltip */
-"Coupons unavailable" = "القسائم غير متوافرة";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "عطل بشكل فوري";
@@ -2224,9 +2166,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Create Order iOS Shortcut */
 "Create order" = "إنشاء طلب";
-
-/* Title of the banner notice in the Orders tab */
-"Create orders!" = "إنشاء طلبات!";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "قم بإنشاء ملصقات الشحن من جهازك!";
@@ -2362,9 +2301,6 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "يحتاج العملاء إلى إدخال هذا الرمز لاستخدام القسيمة.";
 
-/* Feature option in the store creation features question. */
-"Customization options for my store design" = "خيارات التخصيص الخاصة بتصميم متجري";
-
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "تخصيص نطاقك";
 
@@ -2441,9 +2377,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "الدنمارك";
 
-/* Section header for the deposits list in the WooPayments Deposits overview */
-"Deposits" = "الودائع";
-
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "وصف منتجك";
 
@@ -2493,8 +2426,7 @@ which should be translated separately and considered part of this sentence. */
 /* Discount label for payment view
    Text in the product row card when a discount has already been added to a product
    Text in the product row card when a discount has been added to a product
-   Title for the Discount Details screen during order creation
-   Title for the Discount section on the Product Details screen during order creation */
+   Title for the Discount Details screen during order creation */
 "Discount" = "خصم";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
@@ -2503,9 +2435,6 @@ which should be translated separately and considered part of this sentence. */
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
 "Discount Type" = "نوع الخصم";
-
-/* Label for the the row showing the total discount of the order */
-"Discount total" = "إجمالي الخصم";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "الطلبات التي يسري عليها الخصم";
@@ -2545,7 +2474,6 @@ which should be translated separately and considered part of this sentence. */
    Label for the banner Dismiss button
    The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
-   The title of the button to dismiss the Orders top banner
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "رفض";
@@ -2580,6 +2508,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "لا تسمح بذلك";
 
+/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
+"Do you want to add Pay in Person to your web checkout?" = "هل تريد إضافة Pay in Person إلى طرق السداد الخاصة بك على الويب؟";
+
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "هل ترغب في الربط بالقارئ %1$@؟";
 
@@ -2588,9 +2519,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "هل تريد نقل هذا المنتج إلى سلة المهملات؟";
-
-/* Confirm message for navigating to coupons when creating a new order */
-"Do you want to navigate to the Coupons Menu? These changes will be discarded." = "هل تريد الانتقال إلى قائمة القسائم؟ سيتم تجاهل هذه التغييرات.";
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "المستندات";
@@ -2744,9 +2672,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "حدِّد منتجاتك التي تحتوي على أكواد مميزة بسهولة.";
 
-/* Feature option in the store creation features question. */
-"Easy product management and inventory tracking" = "سهولة إدارة المنتجات وتعقّب المخزون";
-
 /* Option in the store creation selling platforms question. */
 "Ebay" = "Ebay";
 
@@ -2761,7 +2686,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit a product category
    Button to edit an order on Order Details screen
-   Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "تحرير";
 
@@ -2900,12 +2824,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "مُفعل";
 
+/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
+"Enabling \"Pay in Person\" lets customers pay you for online orders at delivery via cash or card." = "يؤدي تمكين \"Pay in Person\" إلى السماح للعملاء بالدفع إليك للحصول على الطلبات على الإنترنت عند التسليم نقدًا أو باستخدام البطاقة.";
+
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "تاريخ الانتهاء";
-
-/* Title of the In-Person Payments feedback banner in the Orders tab */
-"Enjoyed your in-person payment?" = "هل استمتعت بميزة المدفوعات الشخصية لديك؟";
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "هل تستمتع بتطبيق WooCommerce؟";
@@ -3346,9 +3270,6 @@ which should be translated separately and considered part of this sentence. */
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "العثور على عنوان متجرك";
 
-/* Challenge option in the store creation challenges question. */
-"Finding customers" = "العثور على العملاء";
-
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "إنهاء الإعداد في مسؤول المخزن";
 
@@ -3375,9 +3296,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label that shows the type of discount selected by a merchant in the discount view */
 "Fixed price discount" = "خصم سعر ثابت";
-
-/* Feature option in the store creation features question. */
-"Flexible and secure payment options" = "خيارات الدفع المرنة والآمنة";
 
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "اتباع التعليمات على الشاشة للدفع";
@@ -3568,9 +3486,7 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
-   Title of the button to give feedback about the Orders features
    Title of the feedback action button on the coupon list screen
-   Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "تقديم الملاحظات";
 
@@ -3582,12 +3498,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
-
-/* Confirm button title for navigating to coupons when creating a new order */
-"Go" = "الانتقال";
-
-/* Button title on the Coupon screen empty statewhen creating a new order that navigates to the Coupons Section */
-"Go to Coupons" = "الانتقال إلى القسائم";
 
 /* Title for the 'Go To Settings' button in the privacy banner */
 "Go to Settings" = "الانتقال إلى الإعدادات";
@@ -3935,9 +3845,6 @@ which should be translated separately and considered part of this sentence. */
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "عمليات الشراء داخل التطبيق";
 
-/* Feature option in the store creation features question. */
-"In-person payment" = "المدفوعات الشخصية";
-
 /* Application's Inactive State */
 "Inactive" = "غير نشط";
 
@@ -4182,8 +4089,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
 "Item weight must be larger than 0" = "يجب أن يزيد وزن العنصر عن 0";
 
-/* Description for Top Performers right column header
-   Title for the items sold column on the products card on the analytics hub screen.
+/* Title for the items sold column on the products card on the analytics hub screen.
    Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "العناصر المباعة";
 
@@ -4338,9 +4244,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "تعرّف على المزيد حول البيانات التي نجمعها حول متجرك وخياراتك للتحكم في مشاركة البيانات هذه.";
 
-/* Button text to view more about payment schedules on the WooPayments Deposits View. */
-"Learn more about when you'll receive your funds" = "معرفة المزيد حول موعد الحصول على أموالك";
-
 /* Country option for a site address. */
 "Lebanon" = "لبنان";
 
@@ -4359,15 +4262,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle on the product name generation screen */
 "Let AI generate captivating titles for you." = "اسمح للذكاء الاصطناعي بإنشاء عناوين جذابة من أجلك.";
-
-/* Title of the In-Person Payments feedback banner in the Orders tab */
-"Let us know how we can help" = "السماح لنا بمعرفة الكيفية التي يمكننا مساعدتك بها";
-
-/* Subtitle of the store creation profiler question about the features. */
-"Let us know what you are looking forward to using in our app." = "دعنا نعرف ما تتطلع إلى استخدامه في تطبيقنا. ";
-
-/* Title of the In-Person Payments feedback banner in the Orders tab */
-"Let us know what you think" = "السماح لنا بمعرفة رأيك";
 
 /* Subtitle of the store creation profiler question about the store selling status. */
 "Let us know where you are in your commerce journey so that we can tailor your Woo experience for you." = "دعنا نعرف الموقع الذي وصلت إليه في رحلتك التجارية حتى نتمكن من تخصيص تجربة Woo الخاصة بك من أجلك.";
@@ -4641,9 +4535,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description of one of the hub menu options */
 "Manage your subscription" = "إدارة اشتراكك";
-
-/* Challenge option in the store creation challenges question. */
-"Managing inventory" = "إدارة المخزون";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "تعديلات يدويّة";
@@ -4971,7 +4862,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
-   Row title for the next deposit in the WooPayments Deposits overview
    The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
@@ -5123,9 +5013,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "لا توجد تباينات مطلوب إنشائها";
-
-/* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
-"No worries! You can always go to Settings in the Menu to send us feedback." = "لا داعي للقلق! يمكنك دومًا الانتقال إلى \"الإعدادات\" ضمن \"القائمة\" لإرسال الملاحظات إلينا.";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -5371,6 +5258,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the 'Orders' tab - used for spotlight indexing on iOS. */
 "Orders" = "الطلبات";
 
+/* Additional message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
+"Orders can still be created manually without enabling this feature." = "لا يزال بالإمكان إنشاء الطلبات يدويًا من دون تمكين هذه الميزة.";
+
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "ترتيب منتجاتك في مجموعات ذات صلة";
 
@@ -5383,9 +5273,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "الحزمة الأصلية";
 
-/* Challenge option in the store creation challenges question.
-   Feature option in the store creation features question.
-   Generic name of non-default discount types
+/* Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
@@ -5554,9 +5442,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "في انتظار المراجعة";
-
-/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
-"Pending funds" = "الأموال المعلّقة";
 
 /* Display label for the product's pending status */
 "Pending review" = "في انتظار المراجعة";
@@ -5993,8 +5878,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing refund" = "معالجة عملية استرداد المبالغ المدفوعة";
 
 /* Product section title
-   Product section title in Review Order screen if there is one product.
-   Title for the Product screen during order creation */
+   Product section title in Review Order screen if there is one product. */
 "Product" = "المنتج";
 
 /* The title on the navigation bar when viewing an order item add-ons
@@ -6066,8 +5950,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "لم يتم العثور على منتج يحمل وحدة SKU \"%@\".";
 
-/* Description for Top Performers left column header
-   Display label for the composite product's component option type
+/* Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Product Total label for payment view
@@ -6189,9 +6072,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "صنّفنا";
-
-/* Content of the In-Person Payments feedback banner in the Orders tab */
-"Rate your first in-person payment experience." = "قيِّم تجربتك الأولى مع ميزة المدفوعات الشخصية.";
 
 /* Third item in the description for Blaze campaign intro view */
 "Reach millions on WordPress and Tumblr sites." = "يمكنك الوصول إلى الملايين على مواقع ووردبريس وTumblr.";
@@ -6352,9 +6232,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "إزالة الرابط";
-
-/* Text for the button to remove a product from the order during order creation */
-"Remove Product from Order" = "إزالة منتج من الطلب";
 
 /* Text for the button to remove a shipping line from the order during order creation */
 "Remove Shipping from Order" = "إزالة الشحن من طلب";
@@ -6924,9 +6801,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "قم بإعداد الحزمة التي ستستخدمها لشحن منتجاتك. سنقوم بحفظها للطلبات المستقبلية.";
 
-/* Challenge option in the store creation challenges question. */
-"Setting up the online store" = "إعداد المتجر على الإنترنت";
-
 /* Settings button in the hub menu
    Settings navigation title
    Title of the hub menu settings button */
@@ -6973,9 +6847,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "مشاركة مع الأصدقاء";
 
-/* Content of the In-Person Payments feedback banner in the Orders tab */
-"Share your own experience or how you collect in-person payments." = "شارك تجربتك الخاصة مع ميزة المدفوعات الشخصية أو كيفية التحصيل من خلالها.";
-
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title
    Title of origin address in shipping label details
@@ -7004,8 +6875,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Date an item was shipped */
 "Shipped %@" = "تم شحن %@";
 
-/* Label for the row showing the cost of shipping in the order
-   Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
+/* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
    Placeholder for the name field on the Shipping Line Details screen during order creation
    Product Shipping Settings navigation title
    Shipping label for payment view
@@ -7036,9 +6906,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "استرداد أموال الشحن";
-
-/* Challenge option in the store creation challenges question. */
-"Shipping and logistics" = "الشحن والإمداد والتموين";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "شركة نقل مخصصة للشحن";
@@ -7386,7 +7253,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Start with a template" = "البدء باستخدام قالب";
 
 /* Subtitle displayed in the simplified prologue screen */
-"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "ابدأ إصدارك التجريبي المجاني لمدة 15 يومًا، لا تلزم بطاقة الائتمان. انضم إلى 3.4 ملايين متجر يحقق ازدهارًا مع Woo، بدءًا من عملية البيع الأولى وحتى ملايين عمليات البيع.";
+"Start with our 14-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "ابدأ إصدارك التجريبي المجاني لمدة 14 يومًا، لا تلزم بطاقة الائتمان. انضم إلى 3.4 ملايين متجر يحقق ازدهارًا مع Woo، بدءًا من عملية البيع الأولى وحتى ملايين عمليات البيع.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "فترة البدء %1$@، فترة الانتهاء %2$@";
@@ -7749,9 +7616,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "فئات الضريبة";
 
-/* Notice in editable order details when the tax rate was added to the order */
-"Tax rate location added automatically" = "تمت إضافة موقع معدل الضرائب تلقائيًا";
-
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "يمكن إدارة معدلات الضرائب لمختلف المواقع ضمن مسؤول متجرك.";
 
@@ -7762,8 +7626,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option */
 "Taxable" = "خاضع للضريبة";
 
-/* Label for the row showing the taxes in the order
-   Line description for tax charged on the whole cart. Only shown when non-zero
+/* Line description for tax charged on the whole cart. Only shown when non-zero
    Taxes label for payment view */
 "Taxes" = "الضرائب";
 
@@ -7775,9 +7638,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* First paragraph of the body for the tax educational dialog */
 "Taxes are calculated by matching your customer’s billing or shipping address, or your shop address to a tax rate location." = "تُحسب الضرائب عن طريق مطابقة الفوترة أو عنوان الشحن الخاصَين بعميلك، أو عنوان متجرك مع موقع معدل الضريبة.";
-
-/* Content of the In-Person Payments feedback banner in the Orders tab */
-"Tell us all about your experience with in-person payments." = "أخبرنا بتجربتك مع ميزة المدفوعات الشخصية.";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "إخبارنا بالمزيد حول %1$@...";
@@ -8051,7 +7911,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "يجب أن يكون طول عنوان الموقع أقل من 64 حرفًا.";
 
-/* Error message shown a URL does not point to an existing site. */
+/* Error message shown a URL does not point to an existing site.
+   Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "الموقع الموجود على هذا العنوان ليس موقع وردبرس. لكي نتصل بالموقع، يجب أن يستخدم وردبرس.";
 
 /* Message shown when site deletion API failed */
@@ -8086,6 +7947,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "يتعذر إنشاء المجموعة.";
+
+/* The error message shown if the app can't show a theme demo. */
+"ThemesPreviewView.errorLoadingThemeDemo" = "يتعذر تقديم العرض التوضيحي لهذا القالب. ترجى تجربة قالب آخر.";
 
 /* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
 "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "توجد متطلبات معلقة لحسابك. يرجى إكمال هذه المتطلبات عن طريق %1$@ للاستمرار في قبول المدفوعات الشخصية.";
@@ -8302,9 +8166,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "To accept payments above this limit, consider purchasing a card reader." = "لقبول المدفوعات أعلى من هذا الحد، فكِّر في شراء قارئ البطاقات.";
 
-/* Description text for the coupons row informational tooltip */
-"To add Coupons, please remove your Product Discounts" = "لإضافة القسائم، ترجى إزالة خصومات المنتجات لديك ";
-
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "لإضافة خصم المنتج، ترجى إزالة كل القسائم من طلبك";
 
@@ -8381,9 +8242,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Tonga" = "تونغا";
 
-/* Header label for Top Performers section of My Store tab. */
-"Top Performers" = "أهم المؤدِّين";
-
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "لم يتم العثور على موضوع من المُعرّف:";
 
@@ -8425,6 +8283,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "رقم التعقب %@";
+
+/* Describes a domain that was transferred from elsewhere to wordpress.com */
+"Transferred Domain" = "النطاق المنقول";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -9339,9 +9200,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Generic error message when In-Person Payments is unavailable */
 "We're sorry, we were unable to verify In-Person Payments for this store." = "عذرًا، يتعذر علينا التحقُّق من المدفوعات الشخصية لهذا المخزن.";
 
-/* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "نعمل على إتاحة إمكانية إنشاء الطلبات من جهازك! يمكنك تجربة ذلك عن طريق الضغط على زر \"+\"";
-
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "أرسلنا إليك رسالة عبر البريد الإلكتروني تتضمن رابط التسجيل لإنشاء حسابك الجديد على ووردبريس.كوم. تحقَّق من بريدك الإلكتروني على هذا الجهاز، وانقر على الرابط الموجود في الرسالة التي تم تلقيها عبر البريد الإلكتروني من ووردبريس.كوم.";
 
@@ -9383,9 +9241,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label about preselected country in the store creation country question. */
 "We’ve preselected your location. Please change it here if it's incorrect." = "حددنا موقعك سابقًا. يرجى تغييره هنا إذا كان غير صحيح.";
-
-/* Title of the store creation profiler question about the challenges. */
-"What challenges you in starting or running an online Store?" = "ما التحديات التي تواجهك عند بدء متجر على الإنترنت أو تشغيله؟";
 
 /* Title of the store creation profiler question about the store category. */
 "What do you plan to sell in your store?" = "ما الذي تنوي بيعه في متجرك؟";
@@ -9429,9 +9284,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the store creation profiler question about the store country. */
 "Where is your business located?" = "أين تقع شركتك؟";
-
-/* Title of the store creation profiler question about the features. */
-"Which features are you most interested in?" = "ما الميزات التي تهتم بها أكثر؟";
 
 /* Title of the store creation profiler question about the store selling status. */
 "Which one of these best describes you?" = "أي من هذه الأشياء تصفك على أفضل نحو؟";
@@ -9809,6 +9661,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "دفع الضرائب";
 
+/* Button to dismiss the alert asking for confirmation to switch store. */
+"appCoordinator.storeReadyAlert.cancelButton" = "إلغاء";
+
+/* Message of the alert to ask confirmation to switch to the newly created store. */
+"appCoordinator.storeReadyAlert.message" = "هل تريد بدء إدارته الآن؟";
+
+/* Button to switch to the new store. */
+"appCoordinator.storeReadyAlert.switchStoreButton" = "تبديل المتجر";
+
+/* Title of the alert to ask confirmation to switch to the newly created store. */
+"appCoordinator.storeReadyAlert.title" = "أصبح متجرك الجديد جاهزًا.";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "تشغيل WooCommerce بسرعة";
 
@@ -9821,8 +9685,215 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "نسخ الرقم";
 
+/* Button to apply the changes on the Blaze campaign duration setting screen */
+"blazeBudgetSettingView.apply" = "تطبيق";
+
+/* Button to dismiss the Blaze budget setting screen */
+"blazeBudgetSettingView.cancel" = "إلغاء";
+
+/* Button to dismiss the Blaze impression info screen */
+"blazeBudgetSettingView.done" = "تم";
+
+/* Label for the campaign duration on the Blaze budget setting screen */
+"blazeBudgetSettingView.duration" = "المدة";
+
+/* Button to edit the campaign duration on the Blaze budget setting screen */
+"blazeBudgetSettingView.edit" = "تحرير";
+
+/* Label for the estimated impressions on the Blaze budget setting screen */
+"blazeBudgetSettingView.estimatedImpressions" = "عدد الأشخاص المتوقع وصولهم يوميًا";
+
+/* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
+"blazeBudgetSettingView.forecastingFailed" = "فشل تقديم الانطباعات. هل تريد إعادة المحاولة؟";
+
+/* Explanation about Blaze campaign impression */
+"blazeBudgetSettingView.impressionInfo" = "تعكس الانطباعات عدد مرات ظهور إعلانك للعملاء المحتملين.\n\nعلى الرغم من تعذر التأكد من الأرقام الدقيقة بسبب تأرجح حركة المرور على الإنترنت وسلوك المستخدمين، فإننا نهدف إلى مطابقة الانطباعات الفعلية على إعلانك قدر المستطاع مع العدد المستهدف.\n\nتذكر أن الانطباعات تدور حول الرؤية وليس الإجراء الذي يتخذه المشاهدون. ";
+
+/* Title of the modal to explain Blaze campaign impressions */
+"blazeBudgetSettingView.impressions" = "الانطباعات";
+
+/* Title of the Blaze campaign duration setting screen */
+"blazeBudgetSettingView.setDuration" = "تعيين المدة";
+
+/* Label of the start date picker on the Blaze campaign duration setting screen */
+"blazeBudgetSettingView.starts" = "يبدأ في";
+
+/* Subtitle of the Blaze budget setting screen */
+"blazeBudgetSettingView.subtitle" = "ما المبلغ الذي تود إنفاقه على حملة الترويج لمنتجك؟";
+
+/* Title of the Blaze budget setting screen */
+"blazeBudgetSettingView.title" = "تعيين ميزانيتك";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingView.totalSpend" = "إجمالي الإنفاق";
+
+/* Button to update the budget on the Blaze budget setting screen */
+"blazeBudgetSettingView.update" = "تحديث";
+
+/* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
+"blazeBudgetSettingViewModel.dailyAmount" = "%1$@ يوميًا";
+
+/* The duration for a Blaze campaign in plural form. Reads like: 10 days */
+"blazeBudgetSettingViewModel.multipleDays" = "⁦%1$d⁩ من الأيام";
+
+/* The duration for a Blaze campaign in singular form. */
+"blazeBudgetSettingViewModel.singleDay" = "⁦%1$d⁩ من الأيام";
+
+/* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
+"blazeBudgetSettingViewModel.totalBudget" = "$%.0f من الدولارات الأمريكية";
+
+/* The total duration for a Blaze campaign in plural form. Reads like: for 10 days */
+"blazeBudgetSettingViewModel.totalDurationMultipleDays" = "لمدة ⁦%1$d⁩ من الأيام";
+
+/* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
+"blazeBudgetSettingViewModel.totalDurationSingleDay" = "لمدة ⁦%1$d⁩ من الأيام";
+
+/* Title of the Ad destination field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.adDestination" = "وجهة الإعلان";
+
+/* Title of the Budget field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.budget" = "الميزانية";
+
+/* Button to confirm ad details on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.confirmDetails" = "تأكيد التفاصيل";
+
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.details" = "تفاصيل";
+
+/* Title of the Devices field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.devices" = "الأجهزة";
+
+/* Button to edit ad details on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.editAd" = "تحرير الإعلان";
+
+/* Title of the Interests field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.interests" = "مجالات الاهتمام";
+
+/* Title of the Language field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.language" = "اللغة";
+
+/* Title of the Location field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.location" = "الموقع";
+
+/* Button to shop on the Blaze ad preview */
+"blazeCampaignCreationForm.shopNow" = "التسوق الآن";
+
+/* Title of the Blaze campaign creation screen */
+"blazeCampaignCreationForm.title" = "معاينة";
+
+/* Blaze campaign budget details with duration in plural form. Reads like: $35, 15 days from Dec 31 */
+"blazeCampaignCreationFormViewModel.budgetMultipleDays" = "%1$@، ⁦%2$d⁩ من الأيام من %3$@";
+
+/* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
+"blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@، ⁦%2$d⁩ من الأيام من %3$@";
+
+/* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
+"blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f من الدولارات الأمريكية";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "إخفاء Blaze";
+
+/* Subtitle for the access a vast audience feature */
+"blazeCreateCampaignIntroView.audienceFeature.subtitle" = "إعلاناتك على ملايين المواقع داخل شبكات ووردبريس.كوم وTumblr.";
+
+/* Title for the access a vast audience feature */
+"blazeCreateCampaignIntroView.audienceFeature.title" = "الوصول إلى عدد ضخم من الجمهور";
+
+/* Create Your Campaign button label */
+"blazeCreateCampaignIntroView.createYourCampaign" = "إنشاء حملتك";
+
+/* Subtitle for the Global reach feature */
+"blazeCreateCampaignIntroView.globalReach.subtitle" = "تقدِّم الأداة التي نطرحها منتجك في المكان الذي يستطيع فيه المتسوقون المهتمون العثور عليه.";
+
+/* Title for the Global reach feature */
+"blazeCreateCampaignIntroView.globalReach.title" = "أصبح الوصول العالمي بسيطًا";
+
+/* Learn how Blaze works button label */
+"blazeCreateCampaignIntroView.learnHowBlazeWorks" = "التعرُّف على كيفية عمل Blaze";
+
+/* Subtitle for the quick start big impact feature */
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "يمكنك تشغيل الإعلانات في غضون دقائق - لا يلزم وجود خبرة أو ميزانية كبيرة، بدءًا من 5 دولارات أمريكية فقط.";
+
+/* Title for the quick start big impact feature */
+"blazeCreateCampaignIntroView.quickStart.title" = "بدء سريع، تأثير أكبر";
+
+/* Subtitle for the Blaze campaign intro view */
+"blazeCreateCampaignIntroView.subtitle" = "تم تصميم الأداة التي نطرحها لتمكين التجار من خلال عمليات إعداد سريعة وبسيطة للحملات الإعلانية لتحقيق أقصى قدر من زيادة حركة المرور.";
+
+/* Title for the Blaze campaign intro view */
+"blazeCreateCampaignIntroView.title" = "تمكين الملايين من مشاهدة منتجاتك";
+
+/* Cancel button in the Blaze Edit Ad screen. */
+"blazeEditAdView.cancel" = "إلغاء";
+
+/* Placeholder for Description text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.description.placeholder" = "نص الوصف الخاص بـ Blaze Ad";
+
+/* Description title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.description.title" = "وصف";
+
+/* Change image button title in the Blaze Edit Ad screen. */
+"blazeEditAdView.image.changeImage" = "تغيير الصورة";
+
+/* Regenerate by AI button title in the Blaze Edit Ad screen. */
+"blazeEditAdView.regenerateByAI" = "إعادة الإنشاء بواسطة الذكاء الاصطناعي";
+
+/* Save button in the Blaze Edit Ad screen. */
+"blazeEditAdView.save" = "حفظ";
+
+/* Placeholder for Tagline text field in the Blaze Edit Ad screen. */
+"blazeEditAdView.tagline.placeholder" = "شعار Blaze Ad";
+
+/* Tagline title text in the Blaze Edit Ad screen. */
+"blazeEditAdView.tagline.title" = "الشعار";
+
+/* Title for the Blaze Edit Ad screen. */
+"blazeEditAdView.title" = "تحرير الإعلان";
+
+/* Edit Blaze Ad screen: Error message if Description field is empty. */
+"blazeEditAdViewModel.description.emptyError" = "يتعذر أن يكون الوصف فارغًا";
+
+/* Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining */
+"blazeEditAdViewModel.lengthLimit.plural" = "يتبقى ⁦%1$d⁩ من الأحرف";
+
+/* Edit Blaze Ad screen: Singular form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 1 character remaining */
+"blazeEditAdViewModel.lengthLimit.singular" = "يتبقى ⁦%1$d⁩ من الأحرف";
+
+/* Edit Blaze Ad screen: Error message if Tagline field is empty. */
+"blazeEditAdViewModel.tagline.emptyError" = "يتعذر أن يكون الشعار فارغًا";
+
+/* Subtitle for the Choose a product step */
+"blazeLearnHowView.chooseProduct.subtitle" = "اختر ما تريد الترويج له باستخدام Blaze.";
+
+/* Title for the Choose a product step */
+"blazeLearnHowView.chooseProduct.title" = "اختيار منتج";
+
+/* Subtitle for Customize Targeting step */
+"blazeLearnHowView.customizeTargeting.subtitle" = "حدد الجمهور حسب الموقع أو الاهتمامات، وشاهد مدى الوصول المحتمل.";
+
+/* Title for Customize Targeting step */
+"blazeLearnHowView.customizeTargeting.title" = "تخصيص المستهدف";
+
+/* Subtitle for Go live step */
+"blazeLearnHowView.goLive.subtitle" = "راقب كيف يبدأ عرضك الترويجي وتتبَّع نجاحه.";
+
+/* Title for Go live step */
+"blazeLearnHowView.goLive.title" = "الانتقال إلى حالة التشغيل";
+
+/* Subtitle for Quick review step */
+"blazeLearnHowView.quickReview.subtitle" = "أرسل إعلانك للحصول إجراء فحص سريع من المشرف.";
+
+/* Title for Quick review step */
+"blazeLearnHowView.quickReview.title" = "مراجعة سريعة";
+
+/* Subtitle for Set Your Budget step */
+"blazeLearnHowView.setYourBudget.subtitle" = "حدد إنفاقك وطول الحملة.";
+
+/* Title for Set Your Budget step */
+"blazeLearnHowView.setYourBudget.title" = "تعيين ميزانيتك";
+
+/* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
+"blazeLearnHowView.title" = "التعرّف على كيفية عمل %1$@";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "إلغاء";
@@ -9848,6 +9919,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "الفحص بحثًا عن قارئ";
+
+/* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "إضافة";
@@ -9909,6 +9983,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "اكتمل التكوين";
 
+/* Accessibility title for the edit button on a custom amount row. */
+"customAmount.edit.button.accessibilityLabel" = "تحرير مبلغ";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "يوم";
 
@@ -9930,6 +10007,9 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "السعر العادي: %1$@ %2$@";
 
+/* Text to show that one time shipping is enabled for this product. */
+"defaultProductFormTableViewModel.shipping.oneTimeShippingEnabled" = "الشحن مرة واحدة: تم التمكين";
+
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "رسوم التسجيل: %1$@";
 
@@ -9939,8 +10019,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the expand chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.show" = "إظهار تفاصيل الوديعة";
 
-/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
-"deposits.currency.overview.depositTable.last.title" = "الأخير";
+/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
+"deposits.currency.overview.availableFunds" = "الأموال المتوافرة";
 
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.canceled.title" = "تم الإلغاء";
@@ -9963,6 +10043,15 @@ which should be translated separately and considered part of this sentence. */
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.unknown.title" = "غير معروف";
 
+/* Section header for the last deposit in the WooPayments Deposits overview */
+"deposits.currency.overview.lastDeposit" = "الوديعة الأخيرة";
+
+/* Button text to view more about payment schedules on the WooPayments Deposits View. */
+"deposits.currency.overview.learnMore" = "معرفة المزيد حول موعد الحصول على أموالك";
+
+/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
+"deposits.currency.overview.pendingFunds" = "الأموال المعلّقة";
+
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "المستند على الجهاز";
 
@@ -9974,6 +10063,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "مبلغ مخصص";
+
+/* The string to show on order taxes when they are calculated based on the billing address */
+"editableOrderViewModel.taxBasedOnSetting.customerBillingAddress" = "تم الحساب وفق عنوان الفوترة.";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"editableOrderViewModel.taxBasedOnSetting.customerShippingAddress" = "تم الحساب وفق عنوان الشحن.";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"editableOrderViewModel.taxBasedOnSetting.shopBaseAddress" = "تم الحساب وفق العنوان الأساسي للمتجر.";
+
+/* Message of the notice when inventory fails to be updatedReads like: 'There was an error updating My Product Name. Please try again.' */
+"errorNoticeMessage.displayErrorNotice.UpdateProductInventoryViewModel" = "حدث خطأ في أثناء تحديث %@. ترجى المحاولة مجددًا.";
+
+/* Title of the notice when inventory fails to be updated. */
+"errorNoticeTitle.displayErrorNotice.UpdateProductInventoryViewModel" = "خطأ في تحديث المخزون ";
 
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "يتطلب منك الشحن إلى البلدان التي تتبع القواعد الجمركية المعمول بها في الاتحاد الأوروبي وصف كل عنصر الآن بوضوح. على سبيل المثال، إذا كنت ترسل ملابس، فيجب عليك تحديد نوع الملابس (مثل: قمصان الرجال وسترات النساء التحتية وسترات الأولاد) لكي يصبح الوصف مقبولاً. وإلا، فإن الشحنات قد تتأجل أو تُعتَرض في الجمارك.";
@@ -9993,6 +10097,12 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
+
+/* Accessibility label to collapse an expandable bottom sheet */
+"expandableBottomSheet.chevron.collapse" = "إخفاء التفاصيل";
+
+/* Accessibility label to expand an expandable bottom sheet */
+"expandableBottomSheet.chevron.expand" = "عرض التفاصيل";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "يستخدم هذا التطبيق تقنية Bluetooth للربط بأجهزة قارئ البطاقة المدعومة.";
@@ -10113,6 +10223,39 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "لا توجد فترة سابقة";
 
+/* Title for the Coupon screen during order creation */
+"order.form.coupon.add.button.title" = "إضافة قسيمة";
+
+/* Cancel button title when showing the coupon list selector */
+"order.form.coupon.cancel.button.title" = "إلغاء";
+
+/* Confirm button title for navigating to coupons when creating a new order */
+"order.form.coupon.empty.goToCoupons.alert.confirm.button.title" = "الانتقال";
+
+/* Confirm message for navigating to coupons when creating a new order */
+"order.form.coupon.empty.goToCoupons.alert.message" = "هل تريد الانتقال إلى قائمة القسائم؟ سيتم تجاهل هذه التغييرات.";
+
+/* Button title on the Coupon screen empty state when adding coupons to a new order. The button navigates to the Coupons Section */
+"order.form.coupon.empty.goToCoupons.button.title" = "الانتقال إلى القسائم";
+
+/* An accessibility label for a More info button, rendered as a question mark icon, which shows coupon information. */
+"order.form.coupon.moreInfo.accessibilityLabel" = "معلومات القسائم";
+
+/* Description text for the coupons row informational tooltip */
+"order.form.coupon.unavailable.tooltip.description" = "لإضافة القسائم، ترجى إزالة خصومات المنتجات لديك ";
+
+/* Title text for the coupons row informational tooltip */
+"order.form.coupon.unavailable.tooltip.title" = "القسائم غير متوافرة";
+
+/* Title text of the button that adds shipping line when creating a new order */
+"order.form.giftCard.add.button.title" = "إضافة بطاقة الهدايا";
+
+/* A 'Learn More' label text, which shows tax information upon being clicked. */
+"order.form.paymentSection.taxes.learnMore" = "تعرف على المزيد.";
+
+/* Title text of the button that adds shipping line when creating a new order */
+"order.form.shipping.add.button.title" = "إضافة الشحن";
+
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "مبالغ مخصصة";
 
@@ -10131,17 +10274,38 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "كيف تريد إضافة مبلغك المخصص؟";
 
+/* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
+"orderForm.payment.collect.button.title" = "تحصيل المدفوعات";
+
 /* The title for a button to dismiss the keyboard on the order creation/editing screen */
 "orderForm.productRow.keyboard.toolbar.done.button.title" = "تم";
 
-/* Label for the row showing the cost of fees in the order */
-"orderPaymentSection.customAmounts" = "مبالغ مخصصة";
+/* Accessibility label for the + button to add product using a form */
+"orderForm.products.add.button.accessibilityLabel" = "إضافة منتج";
 
-/* Title text of the section that shows Payment details when creating a new order */
-"orderPaymentSection.paymentTotals" = "إجماليات المدفوعات";
+/* Accessibility label for the barcode scanning button to add product */
+"orderForm.products.add.scan.button.accessibilityLabel" = "مسح الكود الشريطي ضوئيًا";
+
+/* Label for the row showing the cost of coupon in the order */
+"orderPaymentSection.coupon" = "القسيمة";
+
+/* Label for the row showing the cost of fees in the order */
+"orderPaymentSection.customAmountsTotal" = "مبالغ مخصصة";
+
+/* Label for the the row showing the total discount of the order */
+"orderPaymentSection.discountTotal" = "إجمالي الخصم";
 
 /* Label for the row showing the total cost of products in the order */
-"orderPaymentSection.products" = "المنتجات";
+"orderPaymentSection.productsTotal" = "المنتجات";
+
+/* Label for the row showing the cost of shipping in the order */
+"orderPaymentSection.shippingTotal" = "الشحن";
+
+/* Notice in editable order details when the tax rate was added to the order */
+"orderPaymentSection.taxRateAddedAutomaticallyRowText" = "تمت إضافة موقع معدل الضرائب تلقائيًا";
+
+/* Label for the row showing the taxes in the order */
+"orderPaymentSection.taxes" = "الضرائب";
 
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
@@ -10179,8 +10343,23 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "منتج باشتراك متغير";
 
+/* Dismiss button title in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationView.skip" = "تخطٍّ";
+
+/* Start Survey button title in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationView.startTheSurvey" = "بدء الاستبيان";
+
+/* Subtitle in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationView.subtitle" = "لقد استخدمت ميزتنا المدعومة بالذكاء الاصطناعي لإضافة المنتجات مرات عديدة الآن. نرغب في التعرُّف على أفكارك لتحسين الميزة.";
+
+/* Title in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationView.title" = "إسهاماتك محل تقدير!";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "خطأ في رفع الملف. ترجى المحاولة مجددًا.";
+
+/* Alert message about the missing permission to upload a local file for a downloadable product. */
+"productDownloadListViewController.notice.permissionMissing" = "ليست لديك الصلاحية اللازمة للوصول إلى هذا الملف.";
 
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "نوع الملف المحدد غير مدعوم.";
@@ -10190,6 +10369,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "الترويج باستخدام Blaze";
+
+/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
+"productFormViewController.blazeCelebrationCTA" = "فهمت";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"productFormViewController.blazeCelebrationSubtitle" = "تم إرسال الإعلان للموافقة. سنُرسل إليك رسالة تأكيد عبر البريد الإلكتروني بمجرد الموافقة والتشغيل.";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"productFormViewController.blazeCelebrationTitle" = "كل شيء جاهز!";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "يرجى الانتظار حتى تنتهي كل عمليات الرفع قبل إعادة ترتيب الصور";
@@ -10224,8 +10412,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "رسوم التسجيل";
 
-/* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
-"productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
+/* Cancel button in the product downloadables alert */
+"productSettings.downloadableProductAlertCancel" = "إلغاء";
+
+/* Confirm button in the product downloadables alert */
+"productSettings.downloadableProductAlertConfirm" = "نعم، يمكنك التغيير";
+
+/* Confirm the change to make the product non downloadable */
+"productSettings.downloadableProductAlertHint" = "ستتم إزالة جميع الملفات المرفقة حاليًا بهذا المنتج.";
+
+/* Confirm the change to make the product non downloadable */
+"productSettings.downloadableProductAlertTitle" = "هل تريد بالتأكيد إزالة إمكانية تنزيل الملفات عند شراء المنتج؟";
 
 /* Subtitle for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.subtitle" = "قم بتمكين ذلك لتحصيل رسوم الشحن مرة واحدة في الطلب المبدئي.";
@@ -10340,6 +10537,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "تجربة مجانية";
 
+/* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
+"tap.to.pay.try.payment.refund.reason" = "الاسترداد التلقائي لمدفوعات الإصدار التجريبي لميزة Tap To Pay";
+
+/* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the body of the notice. */
+"tap.to.pay.try.payment.refundNotice.success.message" = "تم استرداد أموال الإصدار التجريبي لميزة Tap To Pay بنجاح.";
+
+/* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
+"tap.to.pay.try.payment.refundNotice.success.title" = "مدفوعات الإصدار التجريبي لميزة Tap To Pay";
+
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
@@ -10360,14 +10566,75 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the suggested theme section on the theme settings screen */
 "themeSettingView.tryOtherLookLabel" = "تجربة مظهر جديد آخر";
 
+/* Text indicating the error state in the themes carousel view */
+"themesCarouselView.error" = "فشل تحميل القوالب.";
+
+/* The content of the message shown at the end of the themes carousel view */
+"themesCarouselView.lastMessageContent" = "يمكنك العثور على قالبك المثالي في متجر قوالب WooCommerce.";
+
+/* The heading of the message shown at the end of the themes carousel view */
+"themesCarouselView.lastMessageHeading" = "هل تبحث عن المزيد؟";
+
+/* Text indicating the loading state in the themes carousel view */
+"themesCarouselView.loading" = "جارٍ رفع القوالب...";
+
+/* Button to reload themes in the themes carousel view */
+"themesCarouselView.retry" = "إعادة المحاولة";
+
+/* Error message for when theme image cannot be loaded on the themes carousel view. %@ is the place holder for 'tap here'. Reads like: Sorry, it seems there is an issue with the template loading. Please tap here for a live demo */
+"themesCarouselView.thumbnailError" = "عفوًا، يبدو أن هناك مشكلة في تحميل القالب. يرجى %@ للحصول على عرض توضيحي فوري";
+
+/* Action to show live demo on the themes carousel view */
+"themesCarouselView.thumbnailError.tapHere" = "النقر هنا";
+
+/* Main heading on the theme carousel screen. */
+"themesPickerView.chooseThemeHeading" = "اختيار قالب";
+
+/* Subtitle on the theme carousel screen. */
+"themesPickerView.chooseThemeSubtitle" = "يمكنك دومًا تغييره لاحقًا ضمن الإعدادات.";
+
+/* Title of the button to skip theme carousel screen. */
+"themesPickerView.skipButtonTitle" = "تخطٍّ";
+
+/* Menu item: desktop
+   Menu item: mobile */
+"themesPreviewView.menuMobile" = "الهاتف المحمول";
+
+/* Menu item: tablet */
+"themesPreviewView.menuTablet" = "جهاز لوحي";
+
+/* Heading for sheet displaying list of pages */
+"themesPreviewView.pagesSheetHeading" = "عرض صفحات المتجر على هذا القالب";
+
+/* Title of the preview screen */
+"themesPreviewView.preview" = "معاينة";
+
+/* The label for the home page of a theme. */
+"themesPreviewViewModel.homepageLabel" = "الصفحة الرئيسية";
+
+/* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Start with Tsubaki */
+"themesPreviewViewModel.startWithThemeButton" = "البدء بـ %1$@";
+
+/* Message to convey that theme installation failed. */
+"themesPreviewViewModel.themeInstallError" = "فشل تثبيت القالب. ترجى المحاولة مجددًا.";
+
+/* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
+"themesPreviewViewModel.useThisThemeButton" = "استخدام %1$@";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "غير معروف";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "عنوان url غير معروف";
 
+/* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
+"updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "تم تحديث الكمية: %@";
+
 /* Cancel button title on the update product inventory view. */
 "updateProductInventoryView.cancelButtonTitle" = "إلغاء";
+
+/* Title of the button that enables managing stock */
+"updateProductInventoryView.manageStockButton.title" = "إدارة المخزون";
 
 /* Navigation bar title of the update product inventory view. */
 "updateProductInventoryView.navigationBarTitle" = "المنتج";
@@ -10383,6 +10650,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Stock quantity button when the user adds a custom quantity. */
 "updateProductInventoryView.quantityButton.updateQuantityButtonTitle" = "تحديث الكمية";
+
+/* Label to show when the stock is not managed */
+"updateProductInventoryView.stockNotManagedLabel" = "لم تتم إدارة المخزون";
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "عرض تفاصيل المنتج";
@@ -10404,6 +10674,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce، woo، المنتجات، التصنيفات، المنتج الجديد، البحث عن المنتجات";
+
+/* Error message that describes an unknown error had occured */
+"wordpress-api.error.unknown" = "حدث خطأ ما، ترجى المحاولة مجددًا في وقت لاحق.";
 
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "جارٍ تحميل الوسائط...";
@@ -10456,9 +10729,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "جزر آلاند";
-
-/* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
-"✨ AI content generator available." = "✨ يتوافر منشئ محتوى الذكاء الاصطناعي.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 واصل القيام بأعمالك!";

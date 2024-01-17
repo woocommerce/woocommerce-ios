@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-12-13 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-01-12 11:49:32+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -52,9 +52,6 @@ which should be translated separately and considered part of this sentence. */
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers" = "Mobil cihazınızla ödeme kabul etme ve kart okuyucu sipariş etme hakkında %1$@";
-
-/* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"%1$@ about adding Pay in Person to your checkout" = "Ödeme sayfanıza Şahsen Ödeme yöntemini ekleme hakkında %1$@";
 
 /* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
 "%1$@ about domains and how to take domain-related actions." = "Alan adları ve alan adlarıyla ilgili işlemlerin nasıl yapılacağı hakkında %1$@.";
@@ -134,12 +131,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "%1$d iş günü ";
-
-/* Singular summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
-"%1$d deposit" = "%1$d depozito";
-
-/* Plural summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
-"%1$d deposits" = "%1$d depozito";
 
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "%1$d ürün";
@@ -331,9 +322,6 @@ which should be translated separately and considered part of this sentence. */
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
-/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
-"A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "Ödeme sayfanızdaki \"Şahsen Öde\" seçeneği, tahsilat veya teslimatta kart veya nakit ödemeleri kabul etmenizi sağlar.";
-
 /* Error message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "A WooCommerce app store subscription with your Apple ID already exists" = "Apple Kimliğinizle bir WooCommerce uygulaması mağaza aboneliği zaten mevcut";
 
@@ -392,9 +380,6 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "Terk edilmiş sepeti kurtarma";
 
-/* Feature option in the store creation features question. */
-"Ability to scale as my business grows" = "İşletmem büyüdükçe ölçeklendirebilme";
-
 /* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
 "About Tap to Pay" = "Tap to Pay Hakkında";
 
@@ -403,10 +388,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Uygulama hakkında";
-
-/* Top header text of the store creation profiler question about the challenges.
-   Top header text of the store creation profiler question about the features. */
-"About you" = "Hakkınızda";
 
 /* Title on the add product features screen. */
 "About your product" = "Ürününüz hakkında";
@@ -425,9 +406,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "İndirimli gönderim ücretlerine erişin. Şu anda DHL ve USPS kullanılabilir, yakında daha fazlası da gelecek!";
-
-/* Feature option in the store creation features question. */
-"Access to a wide range of plugins and extensions" = "Geniş çapta eklenti ve uzantılara erişim sağlayın";
 
 /* My Store > Settings > Account Settings section
    Navigates to the Account Settings screen
@@ -483,9 +461,6 @@ which should be translated separately and considered part of this sentence. */
    Product Add Category navigation title */
 "Add Category" = "Kategori Ekle";
 
-/* Title for the Coupon screen during order creation */
-"Add Coupon" = "Kupon Ekle";
-
 /* Title text of the button that allows to add a custom amount when creating or editing an order */
 "Add Custom Amount" = "Özel Tutar Ekle";
 
@@ -517,8 +492,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Dosya ekle";
 
-/* Title of the add gift card screen in the order form.
-   Title text of the button that adds shipping line when creating a new order */
+/* Title of the add gift card screen in the order form. */
 "Add Gift Card" = "Hediye Kartı Ekle";
 
 /* Action to add new attribute on the Product Attributes screen */
@@ -530,9 +504,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds a note when creating a simple payment
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Not Ekle";
-
-/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
-"Add Pay in Person to your checkout" = "Ödeme sayfanıza Şahsen Ödeme yöntemini ekleyin";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Fotoğraf Ekle";
@@ -553,8 +524,7 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "Ürün Ekle";
 
-/* Title for the Shipping Line screen during order creation
-   Title text of the button that adds shipping line when creating a new order */
+/* Title for the Shipping Line screen during order creation */
 "Add Shipping" = "Gönderim Ekle";
 
 /* Title for the button to add the Shipping Address in Order Details */
@@ -592,7 +562,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner
    Title on the action sheet to select an option for adding new product */
 "Add a product" = "Ürün ekleyin";
 
@@ -638,8 +607,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for adding customer details manually on the customer search screen */
 "Add details manually" = "Ayrıntıları el ile ekle";
 
-/* Text for the button to add a discount to a product during order creation
-   Text in the product row card to add a discount to a given product */
+/* Text in the product row card to add a discount to a given product */
 "Add discount" = "İndirim ekle";
 
 /* Footer of text field section in Add Attribute Options screen */
@@ -670,9 +638,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ürün bağlantısı ekle";
-
-/* Title for the Products onboarding banner */
-"Add products to sell" = "Satılacak ürünleri ekleyin";
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "Gruba ürün ekle";
@@ -706,9 +671,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the add product name screen. */
 "Add your product name" = "Ürün adınızı ekleyin";
-
-/* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
-"Adding discount is currently not available. Remove coupons first." = "İndirim ekleme seçeneği şu anda mevcut değil. Öncelikle kuponları kaldırın.";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Adres";
@@ -845,7 +807,6 @@ which should be translated separately and considered part of this sentence. */
 "American Samoa" = "Amerikan Samoası";
 
 /* Title above the amount field on the add custom amount view in orders.
-   Title for the discount amount of a product during order creation
    Title of the Amount label on Coupon Details screen */
 "Amount" = "Miktar";
 
@@ -1093,9 +1054,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic ailesi";
 
-/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
-"Available funds" = "Mevcut fonlar";
-
 /* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
 "Available funds are deposited automatically, %1$@." = "Mevcut fonlar otomatik olarak (%1$@) yatırılır.";
 
@@ -1209,8 +1167,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to create a product manually */
 "Blank" = "Boş";
 
-/* Title of the Blaze view.
-   Title of the hub menu Blaze button */
+/* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
 /* Title of the Blaze campaign list view */
@@ -1272,9 +1229,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for the total budget of a Blaze campaign */
 "Budget" = "Bütçe";
-
-/* Message for the Products onboarding banner */
-"Build your catalog by adding what you want to sell." = "Satmak istediklerinizi ekleyerek kataloğunuzu oluşturun.";
 
 /* SEO title feature on the Free Trial Summary Screen */
 "Built-in SEO" = "Yerleşik SEO";
@@ -1343,15 +1297,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "Hesaplanan tutar";
-
-/* The string to show on order taxes when they are calculated based on the billing address */
-"Calculated on billing address" = "Fatura adresi üzerinden hesaplanmıştır";
-
-/* The string to show on order taxes when they are calculated based on the shipping address */
-"Calculated on shipping address" = "Gönderim adresi üzerinden hesaplanmıştır";
-
-/* The string to show on order taxes when they are calculated based on the shop base address */
-"Calculated on shop base address" = "Mağaza adresi üzerinden hesaplanmıştır";
 
 /* Call phone number button title */
 "Call" = "Ara";
@@ -1442,7 +1387,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
-   Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
    Cancel the more menu action sheet in Reviews screen.
@@ -1675,9 +1619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "Ödeme Sağlayıcınızı seçin ";
 
-/* Subtitle of the store creation profiler question about the challenges. */
-"Choose your concerns or difficulties below. You can select more than one option." = "Aşağıdan endişelerinizi ve zorlukları seçin. Birden fazla seçeneği seçebilirsiniz.";
-
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "Ödeme yönteminizi seçin";
 
@@ -1768,7 +1709,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee/Discounts Details screen
-   Text for the close button in the Product screen
    Text for the close button in the Shipping Line Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "Kapat";
@@ -1845,9 +1785,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for composite product type. */
 "Composite" = "Birleşik";
-
-/* Feature option in the store creation features question. */
-"Comprehensive sales and analytics reports" = "Kapsamlı satış ve analiz raporları";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Yapılandırma güncellendi";
@@ -2113,8 +2050,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Origin Country row in Customs screen of Shipping Label flow */
 "Country where the product was manufactured or assembled" = "Ürünün üretildiği veya monte edildiği ülke";
 
-/* Label for the row showing the cost of coupon in the order
-   Title for the coupon field on the Coupon Details screen during order creation
+/* Title for the coupon field on the Coupon Details screen during order creation
    Title for the Coupon screen during order creation */
 "Coupon" = "Kupon";
 
@@ -2151,9 +2087,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Kuponlar (%1$@)";
-
-/* Title text for the coupons row informational tooltip */
-"Coupons unavailable" = "Kuponlar kullanılamıyor";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Anında Kilitlenme";
@@ -2224,9 +2157,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Create Order iOS Shortcut */
 "Create order" = "Sipariş oluştur";
-
-/* Title of the banner notice in the Orders tab */
-"Create orders!" = "Sipariş oluşturun!";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Cihazınızdan gönderim etiketleri oluşturun!";
@@ -2362,9 +2292,6 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "Kuponu kullanabilmek için müşterilerin bu kodu girmeleri gerekir.";
 
-/* Feature option in the store creation features question. */
-"Customization options for my store design" = "Mağazamın tasarımı için özelleştirme seçenekleri";
-
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "Alan adınızı özelleştirin";
 
@@ -2441,9 +2368,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "Danimarka";
 
-/* Section header for the deposits list in the WooPayments Deposits overview */
-"Deposits" = "Depozito";
-
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Ürününü tanımla";
 
@@ -2493,8 +2417,7 @@ which should be translated separately and considered part of this sentence. */
 /* Discount label for payment view
    Text in the product row card when a discount has already been added to a product
    Text in the product row card when a discount has been added to a product
-   Title for the Discount Details screen during order creation
-   Title for the Discount section on the Product Details screen during order creation */
+   Title for the Discount Details screen during order creation */
 "Discount" = "İndirim";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
@@ -2503,9 +2426,6 @@ which should be translated separately and considered part of this sentence. */
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
 "Discount Type" = "İndirim Türü";
-
-/* Label for the the row showing the total discount of the order */
-"Discount total" = "İndirim Toplamı";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "İndirimli siparişler";
@@ -2545,7 +2465,6 @@ which should be translated separately and considered part of this sentence. */
    Label for the banner Dismiss button
    The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
-   The title of the button to dismiss the Orders top banner
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Kapat";
@@ -2588,9 +2507,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Bu ürünü Çöp Kutusu'na taşımak istiyor musunuz?";
-
-/* Confirm message for navigating to coupons when creating a new order */
-"Do you want to navigate to the Coupons Menu? These changes will be discarded." = "Kuponlar Menüsüne gitmek ister misiniz? Bu değişiklikler silinecektir.";
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Belgeler";
@@ -2744,9 +2660,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Ürünlerinizi benzersiz kodlarla kolayca tanımlayın";
 
-/* Feature option in the store creation features question. */
-"Easy product management and inventory tracking" = "Kolay ürün yönetimi ve envanter izleme";
-
 /* Option in the store creation selling platforms question. */
 "Ebay" = "Ebay";
 
@@ -2761,7 +2674,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit a product category
    Button to edit an order on Order Details screen
-   Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Düzenle";
 
@@ -2903,9 +2815,6 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "Bitiş tarihi";
-
-/* Title of the In-Person Payments feedback banner in the Orders tab */
-"Enjoyed your in-person payment?" = "Şahsen ödemenizden memnun kaldınız mı?";
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "WooCommerce uygulaması hoşunuza gidiyor mu?";
@@ -3346,9 +3255,6 @@ which should be translated separately and considered part of this sentence. */
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Mağaza adresinizi bulun";
 
-/* Challenge option in the store creation challenges question. */
-"Finding customers" = "Müşterileri bulma";
-
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "Mağaza Yöneticisinde Kurulumu Tamamla";
 
@@ -3375,9 +3281,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label that shows the type of discount selected by a merchant in the discount view */
 "Fixed price discount" = "Sabit fiyat indirimi";
-
-/* Feature option in the store creation features question. */
-"Flexible and secure payment options" = "Esnek ve güvenli ödeme seçenekleri";
 
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "Ödeme yapmak için ekrandaki talimatları takip edin.";
@@ -3568,9 +3471,7 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
-   Title of the button to give feedback about the Orders features
    Title of the feedback action button on the coupon list screen
-   Title of the modal confirmation screen when the In-Person Payments feedback banner is dismissed
    Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Görüşlerinizi paylaşın";
 
@@ -3582,12 +3483,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
-
-/* Confirm button title for navigating to coupons when creating a new order */
-"Go" = "Git";
-
-/* Button title on the Coupon screen empty statewhen creating a new order that navigates to the Coupons Section */
-"Go to Coupons" = "Kuponlara Git";
 
 /* Title for the 'Go To Settings' button in the privacy banner */
 "Go to Settings" = "Ayarlara git";
@@ -3935,9 +3830,6 @@ which should be translated separately and considered part of this sentence. */
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Uygulama içi satın alma işlemleri";
 
-/* Feature option in the store creation features question. */
-"In-person payment" = "Şahsen ödeme";
-
 /* Application's Inactive State */
 "Inactive" = "Etkin değil";
 
@@ -4182,8 +4074,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
 "Item weight must be larger than 0" = "Öğe ağırlığı 0'dan büyük olmalıdır";
 
-/* Description for Top Performers right column header
-   Title for the items sold column on the products card on the analytics hub screen.
+/* Title for the items sold column on the products card on the analytics hub screen.
    Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "Satılan ürünler";
 
@@ -4338,9 +4229,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Mağazanız hakkında topladığımız veriler ve bu verilerin paylaşımını kontrol etme seçenekleriniz hakkında daha fazla bilgi edinin.";
 
-/* Button text to view more about payment schedules on the WooPayments Deposits View. */
-"Learn more about when you'll receive your funds" = "Fonlarınızı ne zaman alacağınız hakkında daha fazla bilgi edinin";
-
 /* Country option for a site address. */
 "Lebanon" = "Lübnan";
 
@@ -4359,15 +4247,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle on the product name generation screen */
 "Let AI generate captivating titles for you." = "Yapay zekanın sizin için etkileyici başlıklar oluşturmasına izin verin.";
-
-/* Title of the In-Person Payments feedback banner in the Orders tab */
-"Let us know how we can help" = "Nasıl yardımcı olabileceğimizi bize söyleyin";
-
-/* Subtitle of the store creation profiler question about the features. */
-"Let us know what you are looking forward to using in our app." = "Uygulamamızda en çok kullanmak istediğiniz özellikler hakkında düşüncelerinizi bizimle paylaşın.";
-
-/* Title of the In-Person Payments feedback banner in the Orders tab */
-"Let us know what you think" = "Ne düşündüğünüzü bize söyleyin";
 
 /* Subtitle of the store creation profiler question about the store selling status. */
 "Let us know where you are in your commerce journey so that we can tailor your Woo experience for you." = "Woo deneyiminizi size göre özelleştirebilmemiz için ticaret yolculuğunuzun neresinde olduğunuzu bize bildirin.";
@@ -4641,9 +4520,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description of one of the hub menu options */
 "Manage your subscription" = "Aboneliğinizi yönetin";
-
-/* Challenge option in the store creation challenges question. */
-"Managing inventory" = "Envanter yönetimi";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Özel saat farkı";
@@ -4971,7 +4847,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
-   Row title for the next deposit in the WooPayments Deposits overview
    The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
@@ -5123,9 +4998,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Oluşturulacak varyasyon yok";
-
-/* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
-"No worries! You can always go to Settings in the Menu to send us feedback." = "Endişe etmeyin: Bize geri bildirim göndermek için her zaman Menüde Ayarlar'a gidebilirsiniz.";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
@@ -5383,9 +5255,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Orijinal paket";
 
-/* Challenge option in the store creation challenges question.
-   Feature option in the store creation features question.
-   Generic name of non-default discount types
+/* Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
@@ -5554,9 +5424,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "İnceleme Bekliyor";
-
-/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
-"Pending funds" = "Bekleyen fonlar";
 
 /* Display label for the product's pending status */
 "Pending review" = "İnceleme bekliyor";
@@ -5993,8 +5860,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing refund" = "Geri ödeme başarısız oldu";
 
 /* Product section title
-   Product section title in Review Order screen if there is one product.
-   Title for the Product screen during order creation */
+   Product section title in Review Order screen if there is one product. */
 "Product" = "Ürün";
 
 /* The title on the navigation bar when viewing an order item add-ons
@@ -6066,8 +5932,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "\"%@\" SKU kodlu ürün bulunamadı.";
 
-/* Description for Top Performers left column header
-   Display label for the composite product's component option type
+/* Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Product Total label for payment view
@@ -6189,9 +6054,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Bizi değerlendirin";
-
-/* Content of the In-Person Payments feedback banner in the Orders tab */
-"Rate your first in-person payment experience." = "İlk şahsen ödeme deneyiminizi puanlayın.";
 
 /* Third item in the description for Blaze campaign intro view */
 "Reach millions on WordPress and Tumblr sites." = "WordPress ve Tumblr sitelerinde milyonlara ulaşın.";
@@ -6352,9 +6214,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "Bağlantıyı Kaldır";
-
-/* Text for the button to remove a product from the order during order creation */
-"Remove Product from Order" = "Ürünü siparişten kaldır";
 
 /* Text for the button to remove a shipping line from the order during order creation */
 "Remove Shipping from Order" = "Gönderiyi Siparişten Kaldır ";
@@ -6924,9 +6783,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Ürünlerinizi göndereceğiniz paket tipini ayarlayın. Gelecekte aldığınız siparişler için bu seçiminizi hatırlayacağız.";
 
-/* Challenge option in the store creation challenges question. */
-"Setting up the online store" = "Çevrimiçi mağaza kurulumu";
-
 /* Settings button in the hub menu
    Settings navigation title
    Title of the hub menu settings button */
@@ -6973,9 +6829,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "Arkadaşlarla paylaş";
 
-/* Content of the In-Person Payments feedback banner in the Orders tab */
-"Share your own experience or how you collect in-person payments." = "Kendi deneyiminizi veya şahsen ödemeleri nasıl aldığınızı paylaşın.";
-
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title
    Title of origin address in shipping label details
@@ -7004,8 +6857,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Date an item was shipped */
 "Shipped %@" = "Sevkiyat tarihi: %@";
 
-/* Label for the row showing the cost of shipping in the order
-   Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
+/* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
    Placeholder for the name field on the Shipping Line Details screen during order creation
    Product Shipping Settings navigation title
    Shipping label for payment view
@@ -7036,9 +6888,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Kargo İadesi";
-
-/* Challenge option in the store creation challenges question. */
-"Shipping and logistics" = "Nakliye ve Lojistik";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Kargo şirketi";
@@ -7384,9 +7233,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the option to create a template product */
 "Start with a template" = "Bir şablonla başlayın";
-
-/* Subtitle displayed in the simplified prologue screen */
-"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "15 günlük ücretsiz denemenizi başlatın. Kredi kartı gerekmez. Woo ile ilk satıştan itibaren milyonlara ulaşarak büyüyen 3,4 milyon mağaza arasına katılın.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "%1$@ başlangıç süreci, %2$@ bitiş süreci";
@@ -7749,9 +7595,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "Vergi sınıfları";
 
-/* Notice in editable order details when the tax rate was added to the order */
-"Tax rate location added automatically" = "Vergi oranı konumu otomatik olarak eklendi";
-
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "Farklı konumlar için vergi oranları, mağazanızın yöneticisinde yönetilebilir.";
 
@@ -7762,8 +7605,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the product's tax status setting option */
 "Taxable" = "Vergilendirilebilir";
 
-/* Label for the row showing the taxes in the order
-   Line description for tax charged on the whole cart. Only shown when non-zero
+/* Line description for tax charged on the whole cart. Only shown when non-zero
    Taxes label for payment view */
 "Taxes" = "Vergiler";
 
@@ -7775,9 +7617,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* First paragraph of the body for the tax educational dialog */
 "Taxes are calculated by matching your customer’s billing or shipping address, or your shop address to a tax rate location." = "Vergiler, müşterinizin fatura veya gönderim adresiyle ya da mağaza adresiniz bir vergi oranı konumuyla eşleşecek şekilde hesaplanır.";
-
-/* Content of the In-Person Payments feedback banner in the Orders tab */
-"Tell us all about your experience with in-person payments." = "Şahsen ödemelerle ilgili deneyimlerinizi bize anlatın.";
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
@@ -8051,7 +7890,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Site adresi 64 karakterden az olmalıdır. ";
 
-/* Error message shown a URL does not point to an existing site. */
+/* Error message shown a URL does not point to an existing site.
+   Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Bu adresteki site bir WordPress sitesi değil. Siteyle bağlantı kurabilmemiz için sitede WordPress kullanılmalıdır.";
 
 /* Message shown when site deletion API failed */
@@ -8302,9 +8142,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "To accept payments above this limit, consider purchasing a card reader." = "Bu sınırın üzerindeki ödemeleri kabul etmek için bir kart okuyucu satın almayı düşünün.";
 
-/* Description text for the coupons row informational tooltip */
-"To add Coupons, please remove your Product Discounts" = "Kupon eklemek için lütfen Ürün İndirimlerinizi kaldırın";
-
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Ürün İndirimi eklemek için lütfen siparişinizdeki tüm Kuponları kaldırın";
 
@@ -8381,9 +8218,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Tonga" = "Tonga";
 
-/* Header label for Top Performers section of My Store tab. */
-"Top Performers" = "En Yüksek Performans Gösterenler";
-
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Kimlik için konu bulunamadı:";
 
@@ -8425,6 +8259,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Takip numarası: %@";
+
+/* Describes a domain that was transferred from elsewhere to wordpress.com */
+"Transferred Domain" = "Aktarılan Alan Adı";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -9339,9 +9176,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Generic error message when In-Person Payments is unavailable */
 "We're sorry, we were unable to verify In-Person Payments for this store." = "Maalesef bu mağaza için Şahsen Ödemeleri doğrulayamadık";
 
-/* Content of the banner notice in the Orders tab */
-"We've been working on making it possible to create orders from your device! You can try this out by tapping on the \"+\" button" = "Cihazınızdan sipariş oluşturmanızı sağlamak için çalışıyoruz! \"+\" düğmesine dokunarak bunu deneyebilirsiniz";
-
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Yeni WordPress.com hesabınızı oluşturmanız için size e-postayla bir kayıt bağlantısı gönderdik. Bu cihazda e-postanızı kontrol edin ve WordPress.com'dan aldığınız e-postadaki bağlantıya dokunun.";
 
@@ -9383,9 +9217,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label about preselected country in the store creation country question. */
 "We’ve preselected your location. Please change it here if it's incorrect." = "Konumunuzu önceden seçtik. Doğru değilse lütfen değiştirin.";
-
-/* Title of the store creation profiler question about the challenges. */
-"What challenges you in starting or running an online Store?" = "Bir çevrimiçi mağaza kurma ve çalıştırmada hangi zorluklarla karşılaşıyorsunuz?";
 
 /* Title of the store creation profiler question about the store category. */
 "What do you plan to sell in your store?" = "Mağazanızda ne satmayı planlıyorsunuz?";
@@ -9429,9 +9260,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the store creation profiler question about the store country. */
 "Where is your business located?" = "İşletmenizin bulunduğu yer neresi?";
-
-/* Title of the store creation profiler question about the features. */
-"Which features are you most interested in?" = "En çok hangi özellikler ilginizi çekiyor?";
 
 /* Title of the store creation profiler question about the store selling status. */
 "Which one of these best describes you?" = "Bunlardan hangisi sizi en iyi şekilde tanımlıyor?";
@@ -9939,9 +9767,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the expand chevron on the Deposit summary */
 "deposits.currency.overview.accessibility.show" = "Depozito ayrıntılarını göster";
 
-/* Row title for the last (previous) deposit in the WooPayments Deposits overview */
-"deposits.currency.overview.depositTable.last.title" = "Son";
-
 /* A status for a deposit, shown in a small badge view */
 "deposits.currency.overview.depositTable.status.canceled.title" = "İptal Edildi";
 
@@ -10134,15 +9959,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title for a button to dismiss the keyboard on the order creation/editing screen */
 "orderForm.productRow.keyboard.toolbar.done.button.title" = "Tamam";
 
-/* Label for the row showing the cost of fees in the order */
-"orderPaymentSection.customAmounts" = "Özel tutarlar";
-
-/* Title text of the section that shows Payment details when creating a new order */
-"orderPaymentSection.paymentTotals" = "Ödeme toplamı";
-
-/* Label for the row showing the total cost of products in the order */
-"orderPaymentSection.products" = "Ürünler";
-
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -10223,9 +10039,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Kayıt Ücreti";
-
-/* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
-"productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
 /* Subtitle for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.subtitle" = "İlk siparişte bir kez kargo ücreti almak için bunu etkinleştirin.";
@@ -10405,6 +10218,9 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, ürünler, kategoriler, yeni ürün, ürün arama";
 
+/* Error message that describes an unknown error had occured */
+"wordpress-api.error.unknown" = "Bir yanlışlık oldu, lütfen daha sonra tekrar deneyin.";
+
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Ortam yükleniyor...";
 
@@ -10456,9 +10272,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "Åland Adaları";
-
-/* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
-"✨ AI content generator available." = "✨ Yapay zeka içerik üreticisi mevcut.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 İşinizi ilerletin!";

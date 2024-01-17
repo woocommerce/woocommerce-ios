@@ -397,21 +397,17 @@ platform :ios do
     ensure_git_status_clean
 
     new_version = options[:version] || UI.input('Version number for the new hotfix?')
-    build_code_hotfix = build_code_hotfix(release_version: new_version)
 
     # Parse the provided version into an AppVersion object
     parsed_version = VERSION_FORMATTER.parse(new_version)
+    build_code_hotfix = BUILD_CODE_FORMATTER.build_code(version: parsed_version)
     previous_version = VERSION_FORMATTER.release_version(VERSION_CALCULATOR.previous_patch_version(version: parsed_version))
 
     # Check versions
     message = <<-MESSAGE
 
-      Current release version: #{release_version_current}
       New hotfix version: #{new_version}
-
-      Current build code: #{build_code_current}
       New build code: #{build_code_hotfix}
-
       Branching from tag: #{previous_version}
 
     MESSAGE
@@ -480,7 +476,7 @@ platform :ios do
   #####################################################################################
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
-    UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if ios_current_branch_is_hotfix
+    UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if release_is_hotfix?
     ensure_git_branch_is_release_branch
 
     # Verify that there's nothing in progress in the working copy
@@ -491,18 +487,8 @@ platform :ios do
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
 
-    UI.message('Checking app strings translation status...')
-    check_translation_progress(
-      glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
-      abort_on_violations: false
-    )
-
-    UI.message('Checking release notes strings translation status...')
-    check_translation_progress(
-      glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-      abort_on_violations: false
-    )
-
+    # Don't check translation coverage in CI
+    check_translation_progress_all unless is_ci
     download_localized_strings_and_metadata_from_glotpress
     lint_localizations
 
@@ -547,6 +533,27 @@ platform :ios do
     create_release_management_pull_request(
       base_branch: DEFAULT_BRANCH,
       title: "Merge #{release_version_current} final to #{DEFAULT_BRANCH}"
+    )
+  end
+
+  lane :check_translation_progress_all do
+    check_translation_progress_strings
+    check_translation_progress_release_notes
+  end
+
+  lane :check_translation_progress_strings do
+    UI.message('Checking app strings translation status...')
+    check_translation_progress(
+      glotpress_url: GLOTPRESS_APP_STRINGS_PROJECT_URL,
+      abort_on_violations: false
+    )
+  end
+
+  lane :check_translation_progress_release_notes do
+    UI.message('Checking release notes strings translation status...')
+    check_translation_progress(
+      glotpress_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
+      abort_on_violations: false
     )
   end
 
@@ -1360,14 +1367,6 @@ def build_code_code_freeze
   BUILD_CODE_FORMATTER.build_code(version: build_code_code_freeze)
 end
 
-# Returns the build code of the app for the code freeze. It is the hotfix version name plus sets the build number to 0
-#
-def build_code_hotfix(release_version:)
-  version = VERSION_FORMATTER.parse(release_version)
-  # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version: version)
-end
-
 # Returns the next build code of the app
 #
 def build_code_next
@@ -1379,6 +1378,13 @@ def build_code_next
   build_code_next = VERSION_CALCULATOR.next_build_number(version: build_code_current)
   # Return the formatted build code
   BUILD_CODE_FORMATTER.build_code(version: build_code_next)
+end
+
+def release_is_hotfix?
+  # Read the current release version from the .xcconfig file and parse it into an AppVersion object
+  current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
+  # Calculate and return whether the release version is a hotfix
+  VERSION_CALCULATOR.release_is_hotfix?(version: current_version)
 end
 
 def commit_version_bump

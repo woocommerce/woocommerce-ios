@@ -98,5 +98,15 @@ public enum BlazeAction: Action {
     ///
     case fetchAISuggestions(siteID: Int64,
                             productID: Int64,
-                              onCompletion: (Result<[BlazeAISuggestion], Error>) -> Void)
+                            onCompletion: (Result<[BlazeAISuggestion], Error>) -> Void)
+
+    /// Fetches payment info for Blaze campaign creation given a site ID.
+    ///
+    /// - siteID: WPCom ID for the site to create the campaign in.
+    /// - `onCompletion`: invoked when the fetch operation finishes.
+    ///   - `result.success(BlazePaymentInfo)`: info for payment methods.
+    ///   - `result.failure(Error)`: error indicates issues fetching info.
+    ///
+    case fetchPaymentInfo(siteID: Int64,
+                          onCompletion: (Result<BlazePaymentInfo, Error>) -> Void)
 }

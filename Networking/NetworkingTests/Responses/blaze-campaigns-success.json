@@ -20,6 +20,7 @@
             "avatar_url": "https://0.gravatar.com/avatar/1?s=96&d=identicon",
             "budget_cents": 500,
             "format": "html5",
+            "target_urn": "urn:wpcom:post:1:134",
             "target_url": "https://example.com/product/fried-egg-bacon-bagel/",
             "user_target_language": "0",
             "user_target_geo": "0",

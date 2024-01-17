@@ -65,6 +65,11 @@ public protocol BlazeRemoteProtocol {
     ///
     func fetchAISuggestions(siteID: Int64,
                             productID: Int64) async throws -> [BlazeAISuggestion]
+
+    /// Fetches payment info for creating Blaze campaigns given a site ID.
+    /// - Parameter siteID: ID of the site to create Blaze campaigns for.
+    ///
+    func fetchPaymentInfo(siteID: Int64) async throws -> BlazePaymentInfo
 }
 
 /// Blaze: Remote Endpoints
@@ -174,6 +179,15 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         let mapper = BlazeAISuggestionListMapper()
         return try await enqueue(request, mapper: mapper)
     }
+
+    /// Fetches payment info for creating Blaze campaigns given a site ID.
+    ///
+    public func fetchPaymentInfo(siteID: Int64) async throws -> BlazePaymentInfo {
+        let path = Paths.paymentInfo(siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
+        let mapper = BlazePaymentInfoMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 private extension BlazeRemote {
@@ -216,6 +230,10 @@ private extension BlazeRemote {
 
         static func aiSuggestions(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1.1/suggestions"
+        }
+
+        static func paymentInfo(siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1.1/payment-methods"
         }
     }
 

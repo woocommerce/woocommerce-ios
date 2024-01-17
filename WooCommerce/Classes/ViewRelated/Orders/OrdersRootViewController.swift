@@ -110,13 +110,6 @@ final class OrdersRootViewController: UIViewController {
             guard let self = self else { return }
             self.configureStatusResultsController()
         }
-
-        /// Attempts to navigate and open the first Order in the Order List when Split View is enabled,
-        /// only on iPad
-        ///
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            navigateToFirstOrderIfPad()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -178,15 +171,6 @@ final class OrdersRootViewController: UIViewController {
         setupNavigation(viewModel: viewModel)
     }
 
-    /// On iPad, attempts to navigate to the first Order in the Order List by opening its details
-    ///
-    private func navigateToFirstOrderIfPad() {
-        guard let order = ordersViewController.firstAvailableOrder, UIDevice.current.userInterfaceIdiom == .pad else {
-            return
-        }
-        self.navigateToOrderDetail(order)
-    }
-
     /// Coordinates the navigation between the different views involved in Order Creation, Editing, and Details
     ///
     private func setupNavigation(viewModel: EditableOrderViewModel) {
@@ -201,6 +185,20 @@ final class OrdersRootViewController: UIViewController {
 
             self.dismiss(animated: true) {
                 self.navigateToOrderDetail(order)
+            }
+        }
+
+        viewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
+            self?.dismiss(animated: true) {
+                self?.navigateToOrderDetail(order) { [weak self] in
+                    guard let self,
+                          let orderDetailsViewController = self.orderDetailsViewController else {
+                        return
+                    }
+                    let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
+                    paymentMethodsViewController.parentController = orderDetailsViewController
+                    orderDetailsViewController.present(paymentMethodsViewController, animated: true)
+                }
             }
         }
 
@@ -307,7 +305,12 @@ final class OrdersRootViewController: UIViewController {
 
     /// This is to update the order detail in split view
     ///
-    private func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int) {
+    private func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int, onCompletion: (() -> Void)? = nil) {
+        guard let splitViewController else {
+            onCompletion?()
+            return
+        }
+
         guard viewModels.isNotEmpty else {
             let emptyStateViewController = EmptyStateViewController(style: .basic)
             let config = EmptyStateViewController.Config.simple(
@@ -315,14 +318,18 @@ final class OrdersRootViewController: UIViewController {
                 image: .emptySearchResultsImage
             )
             emptyStateViewController.configure(config)
-            splitViewController?.showDetailViewController(UINavigationController(rootViewController: emptyStateViewController), sender: nil)
+            splitViewController.setViewController(UINavigationController(rootViewController: emptyStateViewController), for: .secondary)
+            splitViewController.show(.secondary)
+            onCompletion?()
             return
         }
 
         let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
-        splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
+        splitViewController.setViewController(orderDetailsNavigationController, for: .secondary)
+        splitViewController.show(.secondary)
+        onCompletion?()
     }
 }
 
@@ -512,10 +519,11 @@ private extension OrdersRootViewController {
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
-    private func navigateToOrderDetail(_ order: Order) {
+    private func navigateToOrderDetail(_ order: Order, onCompletion: (() -> Void)? = nil) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return handleSwitchingDetails(viewModels: [viewModel], currentIndex: 0)
+            return handleSwitchingDetails(viewModels: [viewModel], currentIndex: 0, onCompletion: onCompletion)
         }
 
         let orderViewController = OrderDetailsViewController(viewModel: viewModel)
@@ -527,8 +535,18 @@ private extension OrdersRootViewController {
         } else {
             show(orderViewController, sender: self)
         }
+        onCompletion?()
+    }
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+    var orderDetailsViewController: OrderDetailsViewController? {
+        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return navigationController?.topViewController as? OrderDetailsViewController
+        }
+
+        guard let secondaryViewNavigationController = splitViewController?.viewController(for: .secondary) as? UINavigationController else {
+            return nil
+        }
+        return secondaryViewNavigationController.topViewController as? OrderDetailsViewController
     }
 }
 

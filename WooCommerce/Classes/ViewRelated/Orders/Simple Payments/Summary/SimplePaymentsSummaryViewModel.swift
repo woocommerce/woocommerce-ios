@@ -107,11 +107,12 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     private let currencyFormatter: CurrencyFormatter
 
+    /// Store country code for analytics.
+    private let countryCode: CountryCode
+
     /// Store Currency Settings
     ///
-    private var currencySettings: CurrencySettings {
-        ServiceLocator.currencySettings
-    }
+    private let currencySettings: CurrencySettings
 
     /// Store ID
     ///
@@ -158,6 +159,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
+         countryCode: CountryCode = SiteAddress().countryCode,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          analyticsFlow: WooAnalyticsEvent.PaymentsFlow.Flow = .simplePayment) {
         self.siteID = siteID
@@ -167,6 +170,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.presentNoticeSubject = presentNoticeSubject
         self.currencyFormatter = currencyFormatter
         self.stores = stores
+        self.countryCode = countryCode
+        self.currencySettings = currencySettings
         self.analytics = analytics
         self.flow = analyticsFlow
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
@@ -250,7 +255,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                 self.navigateToPaymentMethods = true
             case .failure(let error):
                 self.presentNoticeSubject.send(.error(Localization.updateError))
-                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: self.flow, source: .summary))
+                self.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowFailed(flow: self.flow,
+                                                                                              source: .summary,
+                                                                                              country: countryCode,
+                                                                                              currency: currencySettings.currencyCode.rawValue))
                 DDLogError("⛔️ Error updating simple payments order: \(error)")
             }
         }

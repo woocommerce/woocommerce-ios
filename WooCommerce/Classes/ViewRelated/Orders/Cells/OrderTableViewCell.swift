@@ -52,6 +52,13 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString
+
+        accessoryType = .none
+        accessoryView = viewModel.accessoryView
+
+        // From iOS 15.0, a focus effect will be applied automatically to a selected cell
+        // modifying its style (e.g: by adding a border)
+        focusEffect = nil
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -87,6 +94,25 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         super.prepareForReuse()
         paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return
+        }
+        var backgroundConfiguration: UIBackgroundConfiguration
+
+        if #available(iOS 16.0, *) {
+            backgroundConfiguration = defaultBackgroundConfiguration().updated(for: state)
+        } else {
+            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell().updated(for: state)
+        }
+
+        if state.isSelected || state.isHighlighted {
+            backgroundConfiguration.backgroundColor = .wooCommercePurple(.shade0)
+        }
+        self.backgroundConfiguration = backgroundConfiguration
+    }
 }
 
 
@@ -121,36 +147,15 @@ private extension OrderTableViewCell {
 
 private extension OrderTableViewCell {
     func configureBackground() {
-        backgroundColor = .listForeground(modal: false)
-        let backgroundView: UIView = {
-            let view = UIView()
-            view.backgroundColor = .listBackground
-            let separatorHeight: CGFloat = 1
+        var backgroundConfiguration: UIBackgroundConfiguration
 
-            let topSeparatorView = UIView()
-            topSeparatorView.backgroundColor = .border
-            topSeparatorView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(topSeparatorView)
-            NSLayoutConstraint.activate([
-                view.topAnchor.constraint(equalTo: topSeparatorView.topAnchor),
-                view.leadingAnchor.constraint(equalTo: topSeparatorView.leadingAnchor),
-                view.trailingAnchor.constraint(equalTo: topSeparatorView.trailingAnchor),
-                topSeparatorView.heightAnchor.constraint(equalToConstant: separatorHeight)
-            ])
-
-            let bottomSeparatorView = UIView()
-            bottomSeparatorView.backgroundColor = .border
-            bottomSeparatorView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(bottomSeparatorView)
-            NSLayoutConstraint.activate([
-                view.bottomAnchor.constraint(equalTo: bottomSeparatorView.bottomAnchor, constant: separatorHeight/2),
-                view.leadingAnchor.constraint(equalTo: bottomSeparatorView.leadingAnchor),
-                view.trailingAnchor.constraint(equalTo: bottomSeparatorView.trailingAnchor),
-                bottomSeparatorView.heightAnchor.constraint(equalToConstant: separatorHeight/2)
-            ])
-            return view
-        }()
-        selectedBackgroundView = backgroundView
+        if #available(iOS 16.0, *) {
+            backgroundConfiguration = defaultBackgroundConfiguration()
+        } else {
+            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
+        }
+        backgroundConfiguration.backgroundColor = .listBackground
+        self.backgroundConfiguration = backgroundConfiguration
     }
 
     /// Setup: Labels

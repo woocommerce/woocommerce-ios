@@ -10,6 +10,10 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
 
     private(set) var selectedPaymentMethod: BlazePaymentMethod?
 
+    var shouldDisableCampaignCreation: Bool {
+        isFetchingPaymentInfo || selectedPaymentMethod == nil
+    }
+
     let totalAmount: String
 
     @Published private(set) var isFetchingPaymentInfo = false

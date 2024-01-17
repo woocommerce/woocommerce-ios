@@ -45,6 +45,9 @@ struct BlazeConfirmPaymentView: View {
                     } else {
                         cardDetailView
                     }
+
+                    Divider()
+
                 } else {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 }
@@ -60,7 +63,7 @@ struct BlazeConfirmPaymentView: View {
                     // TODO: create campaign
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .disabled(viewModel.isFetchingPaymentInfo)
+                .disabled(viewModel.shouldDisableCampaignCreation)
 
                 AttributedText(agreementText)
             }
@@ -83,9 +86,9 @@ private extension BlazeConfirmPaymentView {
             HStack {
                 Text(Localization.blazeCampaign)
                     .bodyStyle()
-                
+
                 Spacer()
-                
+
                 Text(viewModel.totalAmount)
             }
             .frame(maxWidth: .infinity)

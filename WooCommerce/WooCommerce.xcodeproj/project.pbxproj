@@ -2168,6 +2168,8 @@
 		DE0134152A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */; };
 		DE0134172A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */; };
 		DE0134192A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134182A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift */; };
+		DE02ABAD2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABAC2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift */; };
+		DE02ABAF2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02ABAE2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift */; };
 		DE0A2EAA281BA083007A8015 /* ProductCategoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EA9281BA083007A8015 /* ProductCategoryList.swift */; };
 		DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */; };
 		DE0A2EAF281BA278007A8015 /* ProductCategorySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */; };
@@ -2209,6 +2211,8 @@
 		DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */; };
 		DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */; };
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
+		DE3650662B512889001569A7 /* BlazeTargetLocationPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3650652B512889001569A7 /* BlazeTargetLocationPickerView.swift */; };
+		DE3650682B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3650672B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift */; };
 		DE36E0982A8634FF00B98496 /* StoreNameSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E0972A8634FF00B98496 /* StoreNameSetupView.swift */; };
 		DE36E09A2A86351100B98496 /* StoreNameSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E0992A86351100B98496 /* StoreNameSetupViewModel.swift */; };
 		DE36E09C2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */; };
@@ -4834,6 +4838,8 @@
 		DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationView.swift; sourceTree = "<group>"; };
 		DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationViewModel.swift; sourceTree = "<group>"; };
 		DE0134182A304A72000A6F54 /* ProductSharingMessageGenerationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationViewModelTests.swift; sourceTree = "<group>"; };
+		DE02ABAC2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLocationSearchView.swift; sourceTree = "<group>"; };
+		DE02ABAE2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLocationPickerViewModelTests.swift; sourceTree = "<group>"; };
 		DE0A2EA9281BA083007A8015 /* ProductCategoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryList.swift; sourceTree = "<group>"; };
 		DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelector.swift; sourceTree = "<group>"; };
 		DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModel.swift; sourceTree = "<group>"; };
@@ -4875,6 +4881,8 @@
 		DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModel.swift; sourceTree = "<group>"; };
 		DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModelTests.swift; sourceTree = "<group>"; };
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
+		DE3650652B512889001569A7 /* BlazeTargetLocationPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLocationPickerView.swift; sourceTree = "<group>"; };
+		DE3650672B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetLocationPickerViewModel.swift; sourceTree = "<group>"; };
 		DE36E0972A8634FF00B98496 /* StoreNameSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupView.swift; sourceTree = "<group>"; };
 		DE36E0992A86351100B98496 /* StoreNameSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupViewModel.swift; sourceTree = "<group>"; };
 		DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupViewModelTests.swift; sourceTree = "<group>"; };
@@ -5842,6 +5850,7 @@
 				DE7E5E822B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift */,
 				DE7E5E922B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift */,
 				DE7E5E892B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift */,
+				DE02ABAE2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift */,
 				021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */,
 				DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */,
 				DE5746372B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift */,
@@ -11119,6 +11128,16 @@
 			path = "Native Jetpack Setup";
 			sourceTree = "<group>";
 		};
+		DE3650642B512864001569A7 /* TargetLocations */ = {
+			isa = PBXGroup;
+			children = (
+				DE3650652B512889001569A7 /* BlazeTargetLocationPickerView.swift */,
+				DE02ABAC2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift */,
+				DE3650672B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift */,
+			);
+			path = TargetLocations;
+			sourceTree = "<group>";
+		};
 		DE36E0962A8634DB00B98496 /* StoreName */ = {
 			isa = PBXGroup;
 			children = (
@@ -11352,6 +11371,7 @@
 		DED91DF72AD78A0C00CDCC53 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
+				DE3650642B512864001569A7 /* TargetLocations */,
 				DE7E5E8D2B4FD8BF002E28D2 /* TargetTopics */,
 				DE7E5E842B4D11BD002E28D2 /* TargetDevices */,
 				DE7E5E7B2B4BB5F7002E28D2 /* TargetLanguages */,
@@ -13417,6 +13437,7 @@
 				DE6906E527D7439C00735E3B /* OrdersSplitViewWrapperController.swift in Sources */,
 				AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
+				DE3650682B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift in Sources */,
 				B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */,
 				DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */,
 				68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */,
@@ -13818,6 +13839,7 @@
 				CC53FB3A275697B000C4CA4F /* ProductRowViewModel.swift in Sources */,
 				AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */,
 				DE2FE5812923729A0018040A /* JetpackSetupRequiredViewModel.swift in Sources */,
+				DE3650662B512889001569A7 /* BlazeTargetLocationPickerView.swift in Sources */,
 				020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */,
 				CCA0EF8829CCA89300A44E6F /* CompositeComponentOptionType+UI.swift in Sources */,
 				26E7EE7429365F0700793045 /* TopPerformersView.swift in Sources */,
@@ -14148,6 +14170,7 @@
 				02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */,
 				4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */,
 				DE7E5E7F2B4BC52C002E28D2 /* MultiSelectionList.swift in Sources */,
+				DE02ABAD2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift in Sources */,
 				45BBFBC3274FDA6400213001 /* HubMenuViewController.swift in Sources */,
 				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,
 				B958640A2A657F44002C4C6E /* EnhancedCouponListView.swift in Sources */,
@@ -14562,6 +14585,7 @@
 				02C27BD0282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift in Sources */,
 				2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */,
 				DE61978D289A5326005E4362 /* WooSetupWebViewModelTests.swift in Sources */,
+				DE02ABAF2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift in Sources */,
 				D802548726552E07001B2CC1 /* CardPresentModalNonRetryableErrorTests.swift in Sources */,
 				B9DC770729F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift in Sources */,
 				02BAB02924D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift in Sources */,

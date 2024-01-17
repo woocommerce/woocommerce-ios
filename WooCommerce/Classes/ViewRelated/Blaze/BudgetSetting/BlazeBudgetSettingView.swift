@@ -63,6 +63,9 @@ private extension BlazeBudgetSettingView {
 
             // Total budget amount details
             VStack {
+                Text(Localization.totalSpend)
+                    .subheadlineStyle()
+
                 Text(viewModel.totalAmountText)
                     .bold()
                     .largeTitleStyle()
@@ -71,9 +74,6 @@ private extension BlazeBudgetSettingView {
                     .foregroundColor(Color.secondary)
                     .bold()
                     .largeTitleStyle()
-
-                Text(Localization.totalSpend)
-                    .subheadlineStyle()
             }
 
             // Daily amount slider and estimated impression
@@ -237,7 +237,7 @@ private extension BlazeBudgetSettingView {
     enum Layout {
         static let contentPadding: CGFloat = 16
         static let sectionContentSpacing: CGFloat = 8
-        static let sectionSpacing: CGFloat = 32
+        static let sectionSpacing: CGFloat = 40
     }
 
     enum Localization {

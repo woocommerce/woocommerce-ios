@@ -48,7 +48,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                   pageTopics: pageTopics?.map { $0.id })
     }
 
-    var budgetSettingViewModel: BlazeBudgetSettingViewModel {
+    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     duration: duration,
@@ -60,7 +60,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
-    }
+    }()
 
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
@@ -77,26 +77,33 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel {
+    lazy private(set) var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
         BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
             self?.languages = selectedLanguages
             self?.updateTargetLanguagesText()
         }
-    }
+    }()
 
-    var targetDeviceViewModel: BlazeTargetDevicePickerViewModel {
+    lazy private(set) var targetDeviceViewModel: BlazeTargetDevicePickerViewModel = {
         BlazeTargetDevicePickerViewModel(siteID: siteID, selectedDevices: devices) { [weak self] selectedDevices in
             self?.devices = selectedDevices
             self?.updateTargetDevicesText()
         }
-    }
+    }()
 
-    var targetTopicViewModel: BlazeTargetTopicPickerViewModel {
+    lazy private(set) var targetTopicViewModel: BlazeTargetTopicPickerViewModel = {
         BlazeTargetTopicPickerViewModel(siteID: siteID, selectedTopics: pageTopics) { [weak self] topics in
             self?.pageTopics = topics
             self?.updateTargetTopicText()
         }
-    }
+    }()
+
+    lazy private(set) var targetLocationViewModel: BlazeTargetLocationPickerViewModel = {
+        BlazeTargetLocationPickerViewModel(siteID: siteID, selectedLocations: locations) { [weak self] locations in
+            self?.locations = locations
+            self?.updateTargetLocationText()
+        }
+    }()
 
     var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
@@ -120,6 +127,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""
     @Published private(set) var targetTopicText: String = ""
+    @Published private(set) var targetLocationText: String = ""
     @Published private(set) var finalDestinationURL: String = ""
 
     // AI Suggestions
@@ -176,6 +184,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateTargetLanguagesText()
         updateTargetDevicesText()
         updateTargetTopicText()
+        updateTargetLocationText()
         initializeAdFinalDestination()
     }
 
@@ -300,6 +309,18 @@ private extension BlazeCampaignCreationFormViewModel {
         }()
     }
 
+    func updateTargetLocationText() {
+        targetLocationText = {
+            guard let locations, locations.isEmpty == false else {
+                return Localization.everywhere
+            }
+            return locations
+                .map { $0.name }
+                .sorted()
+                .joined(separator: ", ")
+        }()
+    }
+    
     func initializeAdFinalDestination() {
         // Default to promoting Product URL at the beginning.
         if let productURL = productURL {
@@ -338,6 +359,11 @@ private extension BlazeCampaignCreationFormViewModel {
             "blazeCampaignCreationFormViewModel.all",
             value: "All",
             comment: "Text indicating all targets for a Blaze campaign"
+        )
+        static let everywhere = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.everywhere",
+            value: "Everywhere",
+            comment: "Text indicating all locations for a Blaze campaign"
         )
     }
 }

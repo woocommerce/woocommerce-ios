@@ -35,7 +35,6 @@ struct BlazeTargetDevicePickerView: View {
                     })
                 }
             }
-            .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {
@@ -50,9 +49,10 @@ struct BlazeTargetDevicePickerView: View {
                     .disabled(viewModel.shouldDisableSaveButton)
                 }
             }
-            .task {
-                await viewModel.syncDevices()
-            }
+        }
+        .navigationViewStyle(.stack)
+        .task {
+            await viewModel.syncDevices()
         }
     }
 }

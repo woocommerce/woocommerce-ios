@@ -261,14 +261,6 @@ struct OrderForm: View {
                     completedButton
                         .padding()
                 }
-                .sheet(isPresented: $viewModel.shouldPresentCollectPayment) {
-                    if let collectPaymentViewModel = viewModel.collectPaymentViewModel {
-                        PaymentMethodsHostingView(parentController: rootViewController,
-                                                  viewModel: collectPaymentViewModel)
-                    } else {
-                        EmptyView()
-                    }
-                }
             } expandableContent: {
                 OrderPaymentSection(
                     viewModel: viewModel.paymentDataViewModel,

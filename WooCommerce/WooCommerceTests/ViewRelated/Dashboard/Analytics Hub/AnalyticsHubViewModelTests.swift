@@ -185,7 +185,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     @MainActor
     func test_session_card_and_stats_CTA_are_hidden_for_shop_manager_when_stats_module_disabled() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, userIsAdmin: false, stores: stores)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultRoles: [.shopManager]))
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):

@@ -31,7 +31,6 @@ final class AnalyticsHubViewModel: ObservableObject {
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
-         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -41,8 +40,8 @@ final class AnalyticsHubViewModel: ObservableObject {
 
         self.siteID = siteID
         self.timeZone = timeZone
-        self.userIsAdmin = userIsAdmin
         self.stores = stores
+        self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
         self.noticePresenter = noticePresenter
         self.backendProcessingDelay = backendProcessingDelay

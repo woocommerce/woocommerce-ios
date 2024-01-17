@@ -118,7 +118,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
             baseURL = homeURL
         }
 
-        return baseURL + "?" +  parameters.convertToQueryString()
+        return parameters.isEmpty ? baseURL : baseURL + "?" + parameters.convertToQueryString()
     }
 
     func calculateRemainingCharacters() -> Int {

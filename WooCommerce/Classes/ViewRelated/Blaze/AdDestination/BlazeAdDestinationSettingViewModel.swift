@@ -31,6 +31,10 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         return String(format: Localization.finalDestination, buildFinalDestinationURL())
     }
 
+    var shouldDisableSaveButton: Bool {
+        buildFinalDestinationURL() == initialFinalDestinationURL
+    }
+
     // View model for the add parameter view.
     var blazeAddParameterViewModel: BlazeAddParameterViewModel {
 

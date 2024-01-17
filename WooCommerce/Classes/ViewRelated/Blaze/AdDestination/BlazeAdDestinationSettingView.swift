@@ -83,7 +83,6 @@ struct BlazeAdDestinationSettingView: View {
                     Button(Localization.cancel) {
                         dismiss()
                     }
-                    .foregroundColor(Color(uiColor: .accent))
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
@@ -91,7 +90,7 @@ struct BlazeAdDestinationSettingView: View {
                         viewModel.confirmSave()
                         onDismiss()
                     }
-                    .foregroundColor(Color(uiColor: .accent))
+                    .disabled(viewModel.shouldDisableSaveButton)
                 }
             }
             .sheet(isPresented: $isShowingAddParameterView) {

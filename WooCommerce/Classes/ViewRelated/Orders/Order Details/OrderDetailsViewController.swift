@@ -142,8 +142,10 @@ private extension OrderDetailsViewController {
         stackView.layer.borderWidth = 0.5
         stackView.layer.borderColor = UIColor.border.cgColor
 
-        let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
-        NSLayoutConstraint.activate([maxWidthConstraint])
+        if isSplitViewInOrdersTabEnabled {
+            let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
+            NSLayoutConstraint.activate([maxWidthConstraint])
+        }
     }
 
     /// Setup: Navigation

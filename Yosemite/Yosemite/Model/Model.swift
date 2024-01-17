@@ -16,6 +16,7 @@ public typealias APNSDevice = Networking.APNSDevice
 public typealias BlazeCampaign = Networking.BlazeCampaign
 public typealias BlazeForecastedImpressionsInput = Networking.BlazeForecastedImpressionsInput
 public typealias BlazeImpressions = Networking.BlazeImpressions
+public typealias BlazePaymentInfo = Networking.BlazePaymentInfo
 public typealias BlazeTargetDevice = Networking.BlazeTargetDevice
 public typealias BlazeTargetLanguage = Networking.BlazeTargetLanguage
 public typealias BlazeTargetOptions = Networking.BlazeTargetOptions

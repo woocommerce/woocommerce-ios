@@ -46,7 +46,7 @@ final class MockBlazeRemote {
         fetchingAISuggestionsResult = result
     }
 
-    func whenFetchingPaymentInfo(theReturn result: Result<BlazePaymentInfo, Error>) {
+    func whenFetchingPaymentInfo(thenReturn result: Result<BlazePaymentInfo, Error>) {
         fetchingPaymentInfoResult = result
     }
 }

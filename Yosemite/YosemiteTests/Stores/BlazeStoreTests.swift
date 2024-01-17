@@ -657,6 +657,54 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Fetching payment info
+
+    func test_fetchPaymentInfo_is_successful_when_fetching_successfully() throws {
+        // Given
+        let paymentInfo = BlazePaymentInfo.fake().copy(
+            savedPaymentMethods: [],
+            addPaymentMethod: .init(formUrl: "https://example.com/payment-form",
+                                    successUrl: "https://example.com/payment-success",
+                                    idUrlParameter: "id"))
+        remote.whenFetchingPaymentInfo(thenReturn: .success(paymentInfo))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchPaymentInfo(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let info = try result.get()
+        XCTAssertEqual(info, paymentInfo)
+    }
+
+    func test_fetchPaymentInfo_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingPaymentInfo(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchPaymentInfo(siteID: self.sampleSiteID,
+                                                        onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }
 
 private extension BlazeStoreTests {

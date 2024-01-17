@@ -49,12 +49,12 @@ struct BlazeConfirmPaymentView: View {
                             .padding(.horizontal, Layout.contentPadding)
                     }
 
-                    Divider()
-
                 } else {
                     loadingView
                         .padding(.horizontal, Layout.contentPadding)
                 }
+
+                Divider()
             }
             .padding(.vertical, Layout.contentPadding)
         }

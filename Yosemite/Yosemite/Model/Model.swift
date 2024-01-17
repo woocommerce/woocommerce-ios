@@ -22,6 +22,7 @@ public typealias BlazeTargetLanguage = Networking.BlazeTargetLanguage
 public typealias BlazeTargetOptions = Networking.BlazeTargetOptions
 public typealias BlazeTargetLocation = Networking.BlazeTargetLocation
 public typealias BlazeTargetTopic = Networking.BlazeTargetTopic
+public typealias CreateBlazeCampaign = Networking.CreateBlazeCampaign
 public typealias FallibleCancelable = Hardware.FallibleCancelable
 public typealias CommentStatus = Networking.CommentStatus
 public typealias CompositeComponentOptionType = Networking.CompositeComponentOptionType

@@ -42,7 +42,6 @@ struct OwnerUpgradesView: View {
             .cornerRadius(Layout.cornerRadius)
             .background(Color(.systemGroupedBackground))
             .redacted(reason: isLoading ? .placeholder : [])
-            .shimmering(active: isLoading)
 
             Picker(selection: $paymentFrequency, label: EmptyView()) {
                 ForEach(paymentFrequencies) {
@@ -54,7 +53,6 @@ struct OwnerUpgradesView: View {
             .padding()
             .background(Color(.systemGroupedBackground))
             .redacted(reason: isLoading ? .placeholder : [])
-            .shimmering(active: isLoading)
 
             ScrollView {
                 VStack {
@@ -63,7 +61,6 @@ struct OwnerUpgradesView: View {
                             .disabled(isPurchasing)
                             .listRowSeparator(.hidden)
                             .redacted(reason: isLoading ? .placeholder : [])
-                            .shimmering(active: isLoading)
                             .padding(.bottom, 8)
                     }
                     Button(Localization.allFeaturesListText) {
@@ -72,7 +69,6 @@ struct OwnerUpgradesView: View {
                     .buttonStyle(SecondaryButtonStyle())
                     .disabled(isPurchasing || isLoading)
                     .redacted(reason: isLoading ? .placeholder : [])
-                    .shimmering(active: isLoading)
                     .sheet(isPresented: $showingFullFeatureList) {
                         NavigationView {
                             FullFeatureListView()
@@ -92,7 +88,6 @@ struct OwnerUpgradesView: View {
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
                     .disabled(isLoading)
                     .redacted(reason: isLoading ? .placeholder : [])
-                    .shimmering(active: isLoading)
                 } else {
                     Button(Localization.selectPlanButtonText) {
                         // no-op
@@ -100,7 +95,6 @@ struct OwnerUpgradesView: View {
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
                     .disabled(true)
                     .redacted(reason: isLoading ? .placeholder : [])
-                    .shimmering(active: isLoading)
                 }
             }
             .padding()

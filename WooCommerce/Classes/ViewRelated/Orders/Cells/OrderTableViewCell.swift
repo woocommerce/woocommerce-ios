@@ -154,7 +154,7 @@ private extension OrderTableViewCell {
         } else {
             backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
         }
-        backgroundConfiguration.backgroundColor = .listBackground
+        backgroundConfiguration.backgroundColor = .listForeground(modal: false)
         self.backgroundConfiguration = backgroundConfiguration
     }
 

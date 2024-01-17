@@ -97,8 +97,6 @@ extension ProductsTabProductTableViewCell {
             selectedProductImageOverlayView?.removeFromSuperview()
             selectedProductImageOverlayView = nil
         }
-        let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground(modal: false)
-        backgroundColor = selectedBackgroundColor
     }
 
     func configureAccessoryDeleteButton(onTap: @escaping () -> Void) {
@@ -157,7 +155,7 @@ private extension ProductsTabProductTableViewCell {
 
         //Background when selected
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        selectedBackgroundView?.backgroundColor = Colors.selectedBackgroundColor
 
         // Prevents overflow of selectedBackgroundView above dividers from adjacent cells
         clipsToBounds = true
@@ -240,6 +238,7 @@ private extension ProductsTabProductTableViewCell {
         static let imageBorderColor = UIColor.border
         static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
         static let imageBackgroundColor = UIColor.listForeground(modal: false)
+        static let selectedBackgroundColor = UIColor.productsCellSelectedBackgroundColor
     }
 }
 

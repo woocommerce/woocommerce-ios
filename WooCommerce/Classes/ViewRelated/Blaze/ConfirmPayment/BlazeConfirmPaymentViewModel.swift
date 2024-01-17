@@ -20,7 +20,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     @Published private(set) var cardIcon: UIImage?
     @Published private(set) var cardTypeName: String?
     @Published private(set) var cardName: String?
-    @Published private(set) var fetchError: Error?
+    @Published var shouldDisplayErrorAlert = false
 
     init(siteID: Int64,
          campaignInfo: CreateBlazeCampaign,
@@ -33,7 +33,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
 
     @MainActor
     func updatePaymentInfo() async {
-        fetchError = nil
+        shouldDisplayErrorAlert = false
         isFetchingPaymentInfo = true
         do {
             let info = try await fetchPaymentInfo()
@@ -47,7 +47,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
             }
         } catch {
             DDLogError("⛔️ Error fetching payment info for Blaze campaign creation: \(error)")
-            fetchError = error
+            shouldDisplayErrorAlert = true
         }
         isFetchingPaymentInfo = false
     }

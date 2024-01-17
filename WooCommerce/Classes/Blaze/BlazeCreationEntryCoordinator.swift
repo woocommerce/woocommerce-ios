@@ -162,7 +162,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                     navigationController.dismiss(animated: true, completion: nil)
                 }
             )
-            return ProductSelectorViewController(configuration: ProductSelectorView.Configuration.configurationForBlaze,
+            return ProductSelectorViewController(configuration: .configurationForBlaze,
                                                  source: .blaze,
                                                  viewModel: productSelectorViewModel)
         }()

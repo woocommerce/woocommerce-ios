@@ -142,6 +142,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
 
+    private var didCheckSelectedItemInSplitView: Bool = false
 
     // MARK: - View Lifecycle
 
@@ -198,18 +199,26 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
-
-        // Select the first order if we're showing in an open split view (i.e. on iPad in some size classes)
-        guard let splitViewController,
-              !splitViewController.isCollapsed else {
-            return
-        }
-        checkSelectedItem()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
+
+        // The original implementation is to check the selected item in `viewWillAppear` when split view is enabled,
+        // but `UISplitViewController.isCollapsed` can be `false` in `viewWillAppear` in compact devices on certain iOS versions
+        // like iOS 17.0.1 and 17.1.
+        // To fix this issue, the selected item checking is now called once after the first `viewDidLayoutSubviews` where `isCollapsed` value is
+        // correctly set.
+        if !didCheckSelectedItemInSplitView {
+            didCheckSelectedItemInSplitView = true
+            // Select the first order if we're showing in an open split view (i.e. on iPad in some size classes)
+            guard let splitViewController,
+                  !splitViewController.isCollapsed else {
+                return
+            }
+            checkSelectedItem()
+        }
     }
 
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {

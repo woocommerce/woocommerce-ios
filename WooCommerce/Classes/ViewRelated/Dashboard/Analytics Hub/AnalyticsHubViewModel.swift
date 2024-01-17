@@ -13,6 +13,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let analytics: Analytics
     private let noticePresenter: NoticePresenter
 
+    /// Delay to allow the backend to process enabling the Jetpack Stats module.
+    /// Defaults to 0.5 seconds.
+    private let backendProcessingDelay: UInt64
+
     private var subscriptions = Set<AnyCancellable>()
 
     /// Analytics Usage Tracks Event Emitter
@@ -30,7 +34,8 @@ final class AnalyticsHubViewModel: ObservableObject {
          userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         backendProcessingDelay: UInt64 = 500_000_000) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -40,6 +45,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.noticePresenter = noticePresenter
+        self.backendProcessingDelay = backendProcessingDelay
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -158,10 +164,11 @@ final class AnalyticsHubViewModel: ObservableObject {
     func enableJetpackStats() async {
         do {
             try await remoteEnableJetpackStats()
+            // Wait for backend to enable the module (it is not ready for stats to be requested immediately after a success response)
+            try await Task.sleep(nanoseconds: backendProcessingDelay)
             await updateData()
         } catch {
             noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
-            isJetpackStatsDisabled = true
             DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
         }
     }
@@ -298,11 +305,13 @@ private extension AnalyticsHubViewModel {
     ///
     func remoteEnableJetpackStats() async throws {
         try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: siteID) { result in
+            let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: siteID) { [weak self] result in
                 switch result {
                 case .success:
+                    self?.isJetpackStatsDisabled = false
                     continuation.resume()
                 case let .failure(error):
+                    self?.isJetpackStatsDisabled = true
                     continuation.resume(throwing: error)
                 }
             }

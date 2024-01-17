@@ -319,7 +319,11 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     @MainActor
     func test_enableJetpackStats_hides_call_to_action_after_successfully_enabling_stats() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123,
+                                       statsTimeRange: .today,
+                                       usageTracksEventEmitter: eventEmitter,
+                                       stores: stores,
+                                       backendProcessingDelay: 0)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
             switch action {
             case let .enableJetpackModule(_, _, completion):
@@ -354,7 +358,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        statsTimeRange: .today,
                                        usageTracksEventEmitter: eventEmitter,
                                        stores: stores,
-                                       noticePresenter: noticePresenter)
+                                       noticePresenter: noticePresenter,
+                                       backendProcessingDelay: 0)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
             switch action {
             case let .enableJetpackModule(_, _, completion):

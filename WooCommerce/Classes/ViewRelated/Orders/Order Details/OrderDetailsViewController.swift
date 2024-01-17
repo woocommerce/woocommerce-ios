@@ -144,6 +144,7 @@ private extension OrderDetailsViewController {
 
         if isSplitViewInOrdersTabEnabled {
             let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
+            maxWidthConstraint.priority = .required
             NSLayoutConstraint.activate([maxWidthConstraint])
         }
     }

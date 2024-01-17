@@ -139,7 +139,7 @@ private extension OrderDetailsViewController {
     }
 
     func configureStackView() {
-        stackView.layer.borderWidth = 0.5
+        stackView.layer.borderWidth = Constants.borderWidth
         stackView.layer.borderColor = UIColor.border.cgColor
 
         if isSplitViewInOrdersTabEnabled {
@@ -908,6 +908,7 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let maxWidth = CGFloat(450)
+        static let borderWidth = CGFloat(0.5)
     }
 
     /// Mailing a receipt failed but the SDK didn't return a more specific error

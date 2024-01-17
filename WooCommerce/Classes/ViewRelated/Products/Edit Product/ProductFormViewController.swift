@@ -1141,7 +1141,8 @@ private extension ProductFormViewController {
     }
 
     private func navigateToBlazeCampaignCreation(siteID: Int64, siteUrl: String, source: BlazeSource) {
-        guard let navigationController = self.navigationController else {
+        guard let navigationController else {
+            DDLogError("⛔️ Missing parent controller to show Blaze campaign creation form."
             return
         }
 

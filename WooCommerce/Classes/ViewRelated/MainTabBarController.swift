@@ -386,7 +386,7 @@ extension MainTabBarController {
         case .storeOrder:
             switchToOrdersTab {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-                    (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: note)
+                    ordersTabSplitViewWrapper()?.presentDetails(for: note)
                 } else {
                     (childViewController() as? OrdersRootViewController)?.presentDetails(for: note)
                 }
@@ -450,14 +450,18 @@ extension MainTabBarController {
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            guard let ordersTabController = childViewController() as? TabContainerController,
-                  let ordersSplitViewWrapperController = ordersTabController.wrappedController as? OrdersSplitViewWrapperController else {
-                return assertionFailure("Unexpected orders tab root view controller: \(String(describing: childViewController()))")
-            }
-            ordersSplitViewWrapperController.presentDetails(for: orderID, siteID: siteID)
+            ordersTabSplitViewWrapper()?.presentDetails(for: orderID, siteID: siteID)
         } else {
             (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
         }
+    }
+
+    private static func ordersTabSplitViewWrapper() -> OrdersSplitViewWrapperController? {
+        guard let ordersTabController = childViewController() as? TabContainerController,
+              let ordersSplitViewWrapperController = ordersTabController.wrappedController as? OrdersSplitViewWrapperController else {
+            return nil
+        }
+        return ordersSplitViewWrapperController
     }
 
     static func presentPayments() {

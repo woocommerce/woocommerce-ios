@@ -7,8 +7,8 @@ import protocol Storage.StorageManagerType
 final class BlazeCampaignCreationCoordinator: Coordinator {
     enum CreateCampaignDestination: Equatable {
         case productSelector
-        case campaignForm(productID: Int64)
-        case webViewForm(productID: Int64?)
+        case campaignForm(productID: Int64) // Blaze Campaign form requires a product ID to promote.
+        case webViewForm(productID: Int64?) // Blaze WebView form can optionally take a product ID.
         case noProductAvailable
     }
     private lazy var blazeNavigationController = WooNavigationController()
@@ -28,15 +28,17 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
     private let siteID: Int64
     private let siteURL: String
+    private let productID: Int64?
     private let source: BlazeSource
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
-    var navigationController: UINavigationController
+    let navigationController: UINavigationController
     private let didSelectCreateCampaign: ((BlazeSource) -> Void)?
     private let onCampaignCreated: () -> Void
 
     init(siteID: Int64,
          siteURL: String,
+         productID: Int64? = nil,
          source: BlazeSource,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -45,6 +47,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
          onCampaignCreated: @escaping () -> Void) {
         self.siteID = siteID
         self.siteURL = siteURL
+        self.productID = productID
         self.source = source
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
@@ -86,20 +89,28 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
     /// Determine whether to use the existing WebView solution, or go with native Blaze campaign creation.
     private func updateCreateCampaignDestination() {
-        blazeCreationEntryDestination = featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation)
-        ? determineDestination()
-        : .webViewForm(productID: productResultsController.fetchedObjects.first?.productID)
+        if featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+            blazeCreationEntryDestination = determineDestination()
+        } else {
+            blazeCreationEntryDestination = .webViewForm(productID: productID)
+        }
     }
 
-    /// For native Blaze campaign creation, determine destination based on number of eligible products available.
+    /// For native Blaze campaign creation, determine destination based existence of productID, or if not then
+    /// based on number of eligible products.
     private func determineDestination() -> CreateCampaignDestination {
-        if productResultsController.fetchedObjects.isEmpty {
-            return .noProductAvailable
-        } else if productResultsController.fetchedObjects.count == 1,
-                  let recentPublishedProduct = productResultsController.fetchedObjects.first {
-            return .campaignForm(productID: recentPublishedProduct.productID)
+        if let productID = productID {
+            return .campaignForm(productID: productID)
         } else {
-            return .productSelector
+            let fetchedObjects = productResultsController.fetchedObjects
+            if fetchedObjects.count > 1 {
+                return .productSelector
+            } else if fetchedObjects.count == 1, let firstProduct = fetchedObjects.first {
+                return .campaignForm(productID: firstProduct.productID)
+            }
+            else {
+                return .noProductAvailable
+            }
         }
     }
 
@@ -123,7 +134,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     }
 
     /// Handles navigation to the webview Blaze creation
-    func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
+    func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64?) {
         let webViewModel = BlazeWebViewModel(siteID: siteID,
                                              source: source,
                                              siteURL: siteURL,

@@ -118,7 +118,7 @@ private extension BlazeTargetLocationPickerViewModel {
     }
 }
 
-private extension BlazeTargetLocationPickerViewModel {
+extension BlazeTargetLocationPickerViewModel {
 
     enum Constants {
         static let minimumQueryLength = 3

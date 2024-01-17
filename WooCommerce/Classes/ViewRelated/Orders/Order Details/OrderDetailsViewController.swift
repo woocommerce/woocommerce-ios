@@ -82,6 +82,7 @@ final class OrderDetailsViewController: UIViewController {
         configureNavigationBar()
         configureTopLoaderView()
         configureTableView()
+        configureStackView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()
@@ -133,14 +134,16 @@ private extension OrderDetailsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
 
-        stackView.layer.borderWidth = 1.0
-        stackView.layer.borderColor = .init(red: 0.776, green: 0.776, blue: 0.784, alpha: 1)
+        tableView.dataSource = viewModel.dataSource
+        tableView.accessibilityIdentifier = "order-details-table-view"
+    }
+
+    func configureStackView() {
+        stackView.layer.borderWidth = 0.5
+        stackView.layer.borderColor = UIColor.border.cgColor
 
         let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
         NSLayoutConstraint.activate([maxWidthConstraint])
-
-        tableView.dataSource = viewModel.dataSource
-        tableView.accessibilityIdentifier = "order-details-table-view"
     }
 
     /// Setup: Navigation

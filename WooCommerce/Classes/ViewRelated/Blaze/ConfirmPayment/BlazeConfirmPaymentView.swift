@@ -93,9 +93,9 @@ private extension BlazeConfirmPaymentView {
             HStack {
                 Text(Localization.total)
                     .bold()
-                
+
                 Spacer()
-                
+
                 Text(String.localizedStringWithFormat(Localization.totalAmount, viewModel.totalAmount))
                     .bold()
             }
@@ -188,9 +188,9 @@ private extension BlazeConfirmPaymentView {
         )
         static let totalAmount = NSLocalizedString(
             "blazeConfirmPaymentView.totalAmount",
-            value: "$%.0f USD",
+            value: "%1$@ USD",
             comment: "The formatted total amount for a Blaze campaign, fixed in USD. " +
-            "Reads as $11 USD. Keep %.0f as is."
+            "Reads as $11 USD."
         )
         static let addPaymentMethod = NSLocalizedString(
             "blazeConfirmPaymentView.addPaymentMethod",
@@ -227,11 +227,11 @@ private extension BlazeConfirmPaymentView {
 
 #Preview {
     BlazeConfirmPaymentView(viewModel: BlazeConfirmPaymentViewModel(
-        siteID: 123, 
+        siteID: 123,
         campaignInfo: .init(origin: "test",
                             originVersion: "1.0",
                             paymentMethodID: "pid",
-                            startDate: Date(), 
+                            startDate: Date(),
                             endDate: Date(),
                             timeZone: "US-NY",
                             totalBudget: 35,

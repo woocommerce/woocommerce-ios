@@ -24,7 +24,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         self.siteID = siteID
         self.campaignInfo = campaignInfo
         self.stores = stores
-        self.totalAmount = "$\(campaignInfo.totalBudget)"
+        self.totalAmount = String(format: "$%.0f", campaignInfo.totalBudget)
     }
 
     @MainActor

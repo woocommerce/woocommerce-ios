@@ -147,8 +147,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
     /// Handles navigation to the Blaze product selector view
     func navigateToBlazeProductSelector(source: BlazeSource) {
-        // View controller for product selector before going to campaign creation form.
-        var productSelectorViewController: ProductSelectorViewController {
+        let controller: ProductSelectorViewController = {
             let productSelectorViewModel = ProductSelectorViewModel(
                 siteID: siteID,
                 onProductSelectionStateChanged: { [weak self] product in
@@ -166,9 +165,9 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
             return ProductSelectorViewController(configuration: ProductSelectorView.Configuration.configurationForBlaze,
                                                  source: .blaze,
                                                  viewModel: productSelectorViewModel)
-        }
+        }()
 
-        blazeNavigationController.viewControllers = [productSelectorViewController]
+        blazeNavigationController.viewControllers = [controller]
         navigationController.present(blazeNavigationController, animated: true, completion: nil)
     }
 }

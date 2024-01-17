@@ -34,7 +34,7 @@ struct BlazeConfirmPaymentView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                
+
                 totalAmountView
 
                 Divider()
@@ -66,6 +66,9 @@ struct BlazeConfirmPaymentView: View {
             }
             .padding(Layout.contentPadding)
             .background(Color(.systemBackground))
+        }
+        .task {
+            await viewModel.updatePaymentInfo()
         }
     }
 }

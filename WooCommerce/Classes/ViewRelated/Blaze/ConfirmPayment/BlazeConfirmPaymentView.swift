@@ -44,7 +44,7 @@ struct BlazeConfirmPaymentView: View {
 
                     Spacer()
 
-                    Text("$35")
+                    Text(viewModel.totalAmount)
                 }
                 .frame(maxWidth: .infinity)
 
@@ -54,7 +54,7 @@ struct BlazeConfirmPaymentView: View {
 
                     Spacer()
 
-                    Text("$35 USD")
+                    Text(String.localizedStringWithFormat(Localization.totalAmount, viewModel.totalAmount))
                         .bold()
                 }
                 .bodyStyle()
@@ -139,6 +139,12 @@ private extension BlazeConfirmPaymentView {
             value: "Total",
             comment: "Title of the total amount to be charged in the Payment view in the Blaze campaign creation flow"
         )
+        static let totalAmount = NSLocalizedString(
+            "blazeConfirmPaymentView.totalAmount",
+            value: "$%.0f USD",
+            comment: "The formatted total amount for a Blaze campaign, fixed in USD. " +
+            "Reads as $11 USD. Keep %.0f as is."
+        )
         static let agreement = NSLocalizedString(
             "blazeConfirmPaymentView.agreement",
             value: "By clicking \"Submit campaign\" you agree to the %1$@ and " +
@@ -168,5 +174,21 @@ private extension BlazeConfirmPaymentView {
 }
 
 #Preview {
-    BlazeConfirmPaymentView(viewModel: BlazeConfirmPaymentViewModel())
+    BlazeConfirmPaymentView(viewModel: BlazeConfirmPaymentViewModel(
+        siteID: 123, 
+        campaignInfo: .init(origin: "test",
+                            originVersion: "1.0",
+                            paymentMethodID: "pid",
+                            startDate: Date(), 
+                            endDate: Date(),
+                            timeZone: "US-NY",
+                            totalBudget: 35,
+                            siteName: "iPhone 15",
+                            textSnippet: "Fancy new phone",
+                            targetUrl: "https://example.com",
+                            urlParams: "",
+                            mainImage: .init(url: "https://example.com", mimeType: "png"),
+                            targeting: nil,
+                            targetUrn: "",
+                            type: "product")))
 }

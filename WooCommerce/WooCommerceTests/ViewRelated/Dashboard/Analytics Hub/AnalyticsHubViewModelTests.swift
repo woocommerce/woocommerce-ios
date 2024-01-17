@@ -349,7 +349,12 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     @MainActor
     func test_enableJetpackStats_shows_error_and_call_to_action_after_failing_to_enable_stats() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let noticePresenter = MockNoticePresenter()
+        let vm = AnalyticsHubViewModel(siteID: 123,
+                                       statsTimeRange: .today,
+                                       usageTracksEventEmitter: eventEmitter,
+                                       stores: stores,
+                                       noticePresenter: noticePresenter)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
             switch action {
             case let .enableJetpackModule(_, _, completion):
@@ -361,7 +366,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.enableJetpackStats()
 
         // Then
-        // TODO: Assert that error is shown
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
         XCTAssertTrue(vm.showJetpackStatsCTA)
     }
 }

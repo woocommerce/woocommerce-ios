@@ -11,6 +11,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let stores: StoresManager
     private let timeZone: TimeZone
     private let analytics: Analytics
+    private let noticePresenter: NoticePresenter
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -28,7 +29,8 @@ final class AnalyticsHubViewModel: ObservableObject {
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -37,6 +39,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.userIsAdmin = userIsAdmin
         self.stores = stores
         self.analytics = analytics
+        self.noticePresenter = noticePresenter
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -157,7 +160,7 @@ final class AnalyticsHubViewModel: ObservableObject {
             try await remoteEnableJetpackStats()
             await updateData()
         } catch {
-            // Display error notice to user
+            noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
             isJetpackStatsDisabled = true
             DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
         }
@@ -517,5 +520,8 @@ private extension AnalyticsHubViewModel {
 
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
                                                                comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
+        static let statsCTAError = NSLocalizedString("analyticsHub.jetpackStatsCTA.errorNotice",
+                                                     value: "We couldn't enable Jetpack Stats on your store",
+                                                     comment: "Error shown when Jetpack Stats can't be enabled in the Analytics Hub.")
     }
 }

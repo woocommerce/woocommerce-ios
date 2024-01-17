@@ -450,7 +450,8 @@ extension MainTabBarController {
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            guard let ordersSplitViewWrapperController = (childViewController() as? TabContainerController)?.wrappedController as? OrdersSplitViewWrapperController else {
+            guard let ordersTabController = childViewController() as? TabContainerController,
+                  let ordersSplitViewWrapperController = ordersTabController.wrappedController as? OrdersSplitViewWrapperController else {
                 return assertionFailure("Unexpected orders tab root view controller: \(String(describing: childViewController()))")
             }
             ordersSplitViewWrapperController.presentDetails(for: orderID, siteID: siteID)

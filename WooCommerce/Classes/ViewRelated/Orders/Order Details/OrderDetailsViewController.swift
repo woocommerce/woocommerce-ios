@@ -133,6 +133,9 @@ private extension OrderDetailsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
 
+        stackView.layer.borderWidth = 1.0
+        stackView.layer.borderColor = .init(red: 0.776, green: 0.776, blue: 0.784, alpha: 1)
+
         let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
         NSLayoutConstraint.activate([maxWidthConstraint])
 

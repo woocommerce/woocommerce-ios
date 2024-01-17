@@ -190,18 +190,18 @@ final class MainTabBarController: UITabBarController {
     /// Switches the TabBarController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
-        navigateToTabWithNavigationController(tab, animated: animated) { _ in
+        navigateToTabWithViewController(tab, animated: animated) { _ in
             completion?()
         }
     }
 
-    /// Switches the TabBarController to the specified tab and pops to root of the tab.
+    /// Switches the TabBarController to the specified tab and pops to root of the tab if the root is a `UINavigationController`.
     ///
     /// - Parameters:
     ///   - tab: The tab to switch to.
     ///   - animated: Whether the tab switch is animated.
-    ///   - completion: Invoked when switching to the tab's root screen is complete.
-    func navigateToTabWithNavigationController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
+    ///   - completion: Invoked when switching to the tab's root screen is complete with the root view controller.
+    func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
         dismiss(animated: animated) { [weak self] in
             guard let self else { return }
             selectedIndex = tab.visibleIndex()

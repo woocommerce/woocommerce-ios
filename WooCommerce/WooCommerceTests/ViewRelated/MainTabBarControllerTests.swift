@@ -475,7 +475,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual("product", analyticsProvider.receivedProperties[safe: 1]?["type"] as? String)
     }
 
-    func test_navigateToTabWithNavigationController_returns_UINavigationController_of_the_newly_selected_tab() throws {
+    func test_navigateToTabWithNavigationController_returns_UIViewController_of_the_newly_selected_tab() throws {
         // Given
         stores.updateDefaultStore(storeID: 134)
 
@@ -486,7 +486,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // When
         let navigationController = waitFor { promise in
-            tabBarController.navigateToTabWithNavigationController(.products, animated: false) { navigationController in
+            tabBarController.navigateToTabWithViewController(.products, animated: false) { navigationController in
                 promise(navigationController)
             }
         }

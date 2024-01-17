@@ -33,42 +33,35 @@ struct BlazeConfirmPaymentView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Layout.contentPadding) {
+            VStack(spacing: Layout.contentPadding) {
 
                 totalAmountView
+                    .padding(.horizontal, Layout.contentPadding)
 
                 Divider()
 
                 if !viewModel.isFetchingPaymentInfo {
                     if viewModel.selectedPaymentMethod == nil {
                         addPaymentMethodButton
+                            .padding(.horizontal, Layout.contentPadding)
                     } else {
                         cardDetailView
+                            .padding(.horizontal, Layout.contentPadding)
                     }
 
                     Divider()
 
                 } else {
-                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    loadingView
+                        .padding(.horizontal, Layout.contentPadding)
                 }
             }
-            .padding(Layout.contentPadding)
+            .padding(.vertical, Layout.contentPadding)
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
-            VStack(spacing: Layout.contentPadding) {
-                Divider()
-                Button(Localization.submitButton) {
-                    // TODO: create campaign
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(viewModel.shouldDisableCampaignCreation)
-
-                AttributedText(agreementText)
-            }
-            .padding(Layout.contentPadding)
-            .background(Color(.systemBackground))
+            footerView
         }
         .task {
             await viewModel.updatePaymentInfo()
@@ -149,6 +142,32 @@ private extension BlazeConfirmPaymentView {
             }
         }
     }
+
+    var loadingView: some View {
+        HStack {
+            Text(Localization.loading)
+                .secondaryBodyStyle()
+            Spacer()
+            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+        }
+    }
+
+    var footerView: some View {
+        VStack(spacing: Layout.contentPadding) {
+            Divider()
+            Button(Localization.submitButton) {
+                // TODO: create campaign
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(viewModel.shouldDisableCampaignCreation)
+            .padding(.horizontal, Layout.contentPadding)
+
+            AttributedText(agreementText)
+                .padding(.horizontal, Layout.contentPadding)
+        }
+        .padding(.vertical, Layout.contentPadding)
+        .background(Color(.systemBackground))
+    }
 }
 
 private extension BlazeConfirmPaymentView {
@@ -199,6 +218,11 @@ private extension BlazeConfirmPaymentView {
             "blazeConfirmPaymentView.addPaymentMethod",
             value: "Add a payment method",
             comment: "Button for adding a payment method on the Payment screen in the Blaze campaign creation flow"
+        )
+        static let loading = NSLocalizedString(
+            "blazeConfirmPaymentView.loading",
+            value: "Loading payment methods...",
+            comment: "Text for the loading state on the Payment screen in the Blaze campaign creation flow"
         )
         static let agreement = NSLocalizedString(
             "blazeConfirmPaymentView.agreement",

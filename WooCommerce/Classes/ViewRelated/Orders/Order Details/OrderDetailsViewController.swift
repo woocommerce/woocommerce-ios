@@ -905,7 +905,7 @@ private extension OrderDetailsViewController {
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
-        static let maxWidth = CGFloat(560)
+        static let maxWidth = CGFloat(450)
     }
 
     /// Mailing a receipt failed but the SDK didn't return a more specific error

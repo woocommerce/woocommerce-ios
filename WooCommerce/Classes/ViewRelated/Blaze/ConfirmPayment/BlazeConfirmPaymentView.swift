@@ -135,7 +135,7 @@ private extension BlazeConfirmPaymentView {
             // TODO: open payment method list
         } label: {
             HStack {
-                Text("Add a payment method")
+                Text(Localization.addPaymentMethod)
                 Spacer()
                 Image(systemName: "chevron.right")
                     .secondaryBodyStyle()

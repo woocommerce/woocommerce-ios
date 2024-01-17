@@ -201,13 +201,19 @@ final class MainTabBarController: UITabBarController {
     ///   - tab: The tab to switch to.
     ///   - animated: Whether the tab switch is animated.
     ///   - completion: Invoked when switching to the tab's root screen is complete.
-    func navigateToTabWithNavigationController(_ tab: WooTab, animated: Bool = false, completion: ((UINavigationController) -> Void)? = nil) {
+    func navigateToTabWithNavigationController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
         dismiss(animated: animated) { [weak self] in
-            self?.selectedIndex = tab.visibleIndex()
-            if let navController = self?.selectedViewController as? UINavigationController {
+            guard let self else { return }
+            selectedIndex = tab.visibleIndex()
+            guard let selectedViewController else {
+                return
+            }
+            if let navController = selectedViewController as? UINavigationController {
                 navController.popToRootViewController(animated: animated) {
                     completion?(navController)
                 }
+            } else {
+                completion?(selectedViewController)
             }
         }
     }
@@ -444,7 +450,10 @@ extension MainTabBarController {
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
+            guard let ordersSplitViewWrapperController = (childViewController() as? TabContainerController)?.wrappedController as? OrdersSplitViewWrapperController else {
+                return assertionFailure("Unexpected orders tab root view controller: \(String(describing: childViewController()))")
+            }
+            ordersSplitViewWrapperController.presentDetails(for: orderID, siteID: siteID)
         } else {
             (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
         }

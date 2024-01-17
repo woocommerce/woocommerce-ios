@@ -252,8 +252,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.houseImage)
     }
 
-    func test_hourglass_is_not_nil() {
-        XCTAssertNotNil(UIImage.hourglass)
+    func test_wooHourglass_is_not_nil() {
+        XCTAssertNotNil(UIImage.wooHourglass)
     }
 
     func testHouseOutlinedImageIconIsNotNil() {

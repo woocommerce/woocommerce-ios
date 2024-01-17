@@ -45,11 +45,8 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.startCampaignFromIntroTapped = { [weak self] productID in
-            guard let self = self else {
-                return
-            }
-            self.parentNavigationController.dismiss(animated: true) {
-                coordinator.start()
+            self?.parentNavigationController.dismiss(animated: true) {
+                self?.coordinator.start()
             }
         }
 

@@ -153,7 +153,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         return controller
     }()
 
-    var campaignInfo: CreateBlazeCampaign {
+    private let targetUrn: String
+
+    private var campaignInfo: CreateBlazeCampaign {
         CreateBlazeCampaign(origin: Constants.campaignOrigin,
                             originVersion: UserAgent.bundleShortVersion,
                             paymentMethodID: "", // to-be updated later on the payment screen
@@ -167,8 +169,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             urlParams: "", // TODO: update this
                             mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // TODO: update this
                             targeting: targetOptions,
-                            targetUrn: "",
-                            type: "")
+                            targetUrn: targetUrn,
+                            type: Constants.campaignType)
     }
 
     init(siteID: Int64,
@@ -183,6 +185,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.storage = storage
         self.productImageLoader = productImageLoader
         self.completionHandler = onCompletion
+        self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
         updateBudgetDetails()
         updateTargetLanguagesText()
@@ -335,7 +338,10 @@ private extension BlazeCampaignCreationFormViewModel {
     enum Constants {
         /// origin the of the created campaign, used for analytics.
         static let campaignOrigin = "wc-ios"
+        /// We are supporting product promotion only for now.
+        static let campaignType = "product"
         static let oneDayInSeconds: Double = 86400
+        static let targetUrnFormat = "urn:wpcom:post:%1$@:%2$@"
     }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(

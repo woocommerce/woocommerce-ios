@@ -20,7 +20,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     @Published private(set) var cardIcon: UIImage?
     @Published private(set) var cardTypeName: String?
     @Published private(set) var cardName: String?
-    @Published var shouldDisplayErrorAlert = false
+    @Published var shouldDisplayPaymentErrorAlert = false
 
     init(siteID: Int64,
          campaignInfo: CreateBlazeCampaign,
@@ -33,7 +33,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
 
     @MainActor
     func updatePaymentInfo() async {
-        shouldDisplayErrorAlert = false
+        shouldDisplayPaymentErrorAlert = false
         isFetchingPaymentInfo = true
         do {
             let info = try await fetchPaymentInfo()
@@ -47,9 +47,14 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
             }
         } catch {
             DDLogError("⛔️ Error fetching payment info for Blaze campaign creation: \(error)")
-            shouldDisplayErrorAlert = true
+            shouldDisplayPaymentErrorAlert = true
         }
         isFetchingPaymentInfo = false
+    }
+
+    @MainActor
+    func confirmPaymentDetails() async {
+        // TODO
     }
 }
 
@@ -58,6 +63,15 @@ private extension BlazeConfirmPaymentViewModel {
     func fetchPaymentInfo() async throws -> BlazePaymentInfo {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(BlazeAction.fetchPaymentInfo(siteID: siteID, onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+
+    @MainActor
+    func requestCampaignCreation(details: CreateBlazeCampaign) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(BlazeAction.createCampaign(campaign: details, siteID: siteID, onCompletion: { result in
                 continuation.resume(with: result)
             }))
         }

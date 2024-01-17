@@ -341,7 +341,7 @@ private extension BlazeCampaignCreationFormViewModel {
         /// We are supporting product promotion only for now.
         static let campaignType = "product"
         static let oneDayInSeconds: Double = 86400
-        static let targetUrnFormat = "urn:wpcom:post:%1$@:%2$@"
+        static let targetUrnFormat = "urn:wpcom:post:%d:%d"
     }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(

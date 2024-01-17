@@ -4,6 +4,7 @@ import WooFoundation
 import protocol Storage.StorageManagerType
 import struct Networking.BlazeAISuggestion
 import Photos
+import class Networking.UserAgent
 
 /// View model for `BlazeCampaignCreationForm`
 @MainActor
@@ -106,7 +107,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }()
 
     lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
-        BlazeConfirmPaymentViewModel()
+        BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo)
     }()
 
     @Published private(set) var budgetDetailText: String = ""
@@ -151,6 +152,24 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
         return controller
     }()
+
+    var campaignInfo: CreateBlazeCampaign {
+        CreateBlazeCampaign(origin: Constants.campaignOrigin,
+                            originVersion: UserAgent.bundleShortVersion,
+                            paymentMethodID: "", // to-be updated later on the payment screen
+                            startDate: startDate,
+                            endDate: startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration)),
+                            timeZone: TimeZone.current.identifier,
+                            totalBudget: dailyBudget * Double(duration),
+                            siteName: tagline,
+                            textSnippet: description,
+                            targetUrl: "", // TODO: update this
+                            urlParams: "", // TODO: update this
+                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // TODO: update this
+                            targeting: targetOptions,
+                            targetUrn: "",
+                            type: "")
+    }
 
     init(siteID: Int64,
          productID: Int64,
@@ -313,6 +332,11 @@ extension BlazeCampaignCreationFormViewModel {
 }
 
 private extension BlazeCampaignCreationFormViewModel {
+    enum Constants {
+        /// origin the of the created campaign, used for analytics.
+        static let campaignOrigin = "wc-ios"
+        static let oneDayInSeconds: Double = 86400
+    }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.budgetSingleDay",

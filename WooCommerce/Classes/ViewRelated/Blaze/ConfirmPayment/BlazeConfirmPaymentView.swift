@@ -13,12 +13,12 @@ struct BlazeConfirmPaymentView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                Text("Payment totals")
+                Text(Localization.paymentTotals)
                     .bold()
                     .bodyStyle()
 
                 HStack {
-                    Text("Blaze campaign")
+                    Text(Localization.blazeCampaign)
                         .bodyStyle()
 
                     Spacer()
@@ -28,7 +28,7 @@ struct BlazeConfirmPaymentView: View {
                 .frame(maxWidth: .infinity)
 
                 HStack {
-                    Text("Total")
+                    Text(Localization.total)
                         .bold()
 
                     Spacer()
@@ -62,12 +62,12 @@ struct BlazeConfirmPaymentView: View {
             }
             .padding(Layout.contentPadding)
         }
-        .navigationTitle("Payment")
+        .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: Layout.contentPadding) {
                 Divider()
-                Button("Submit Campaign") {
+                Button(Localization.submitButton) {
                     // TODO
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -88,6 +88,34 @@ private extension BlazeConfirmPaymentView {
 
     enum Layout {
         static let contentPadding: CGFloat = 16
+    }
+
+    enum Localization {
+        static let title = NSLocalizedString(
+            "blazeConfirmPaymentView.title",
+            value: "Payment",
+            comment: "Title of the Payment view in the Blaze campaign creation flow"
+        )
+        static let submitButton = NSLocalizedString(
+            "blazeConfirmPaymentView.submitButton",
+            value: "Submit Campaign",
+            comment: "Action button in the Payment view in the Blaze campaign creation flow"
+        )
+        static let paymentTotals = NSLocalizedString(
+            "blazeConfirmPaymentView.paymentTotals",
+            value: "Payment totals",
+            comment: "Section title in the Payment view in the Blaze campaign creation flow"
+        )
+        static let blazeCampaign = NSLocalizedString(
+            "blazeConfirmPaymentView.blazeCampaign",
+            value: "Blaze campaign",
+            comment: "Item to be charged in the Payment view in the Blaze campaign creation flow"
+        )
+        static let total = NSLocalizedString(
+            "blazeConfirmPaymentView.total",
+            value: "Total",
+            comment: "Title of the total amount to be charged in the Payment view in the Blaze campaign creation flow"
+        )
     }
 }
 

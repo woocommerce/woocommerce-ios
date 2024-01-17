@@ -91,6 +91,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     ///
     private let isAIContent: Bool
 
+    /// The coordinator for creating Blaze campaign
+    ///
+    private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
+
     init(viewModel: ViewModel,
          isAIContent: Bool = false,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -1142,7 +1146,7 @@ private extension ProductFormViewController {
 
     private func navigateToBlazeCampaignCreation(siteID: Int64, siteUrl: String, source: BlazeSource) {
         guard let navigationController else {
-            DDLogError("⛔️ Missing parent controller to show Blaze campaign creation form."
+            DDLogError("⛔️ Missing parent controller to show Blaze campaign creation form.")
             return
         }
 
@@ -1155,6 +1159,7 @@ private extension ProductFormViewController {
             onCampaignCreated: handlePostCreation
         )
         coordinator.start()
+        blazeCampaignCreationCoordinator = coordinator
     }
 
     func handlePostCreation() {

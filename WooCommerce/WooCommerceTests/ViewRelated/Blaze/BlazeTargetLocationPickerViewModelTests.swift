@@ -142,6 +142,25 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         }
     }
 
+    func test_searchResults_is_updated_correctly_after_updating_searchQuery() {
+        // Given
+        let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
+        let tokyo = BlazeTargetLocation.fake().copy(id: 123, name: "Tokyo")
+
+        // When
+        mockSearchLocationRequest(with: .success([tokyo]))
+        viewModel.searchQuery = "tok"
+        waitUntil {
+            viewModel.searchResults == [tokyo]
+        }
+        viewModel.searchQuery = "to"
+
+        // Then
+        waitUntil {
+            viewModel.searchResults == []
+        }
+    }
+
     // MARK: - addOptionFromSearchResult
 
     func test_addOptionFromSearchResult_updates_selectedSearchResults_and_selectedLocations_correctly() throws {

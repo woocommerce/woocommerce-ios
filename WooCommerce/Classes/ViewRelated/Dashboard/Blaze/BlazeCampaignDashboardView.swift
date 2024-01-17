@@ -9,7 +9,13 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
     private let viewModel: BlazeCampaignDashboardViewModel
     private let parentNavigationController: UINavigationController
     private lazy var blazeNavigationController = WooNavigationController()
-    private var coordinator: BlazeCampaignCreationCoordinator?
+    private lazy var coordinator = BlazeCampaignCreationCoordinator(
+            siteID: viewModel.siteID,
+            siteURL: viewModel.siteURL,
+            source: .myStoreSection,
+            navigationController: parentNavigationController,
+            onCampaignCreated: handlePostCreation
+        )
 
     init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController) {
         self.viewModel = viewModel

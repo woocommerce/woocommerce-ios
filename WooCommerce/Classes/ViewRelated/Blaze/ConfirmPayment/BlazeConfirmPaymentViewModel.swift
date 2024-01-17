@@ -20,7 +20,11 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     @Published private(set) var cardIcon: UIImage?
     @Published private(set) var cardTypeName: String?
     @Published private(set) var cardName: String?
+
     @Published var shouldDisplayPaymentErrorAlert = false
+    @Published var shouldDisplayCampaignCreationError = false
+
+    @Published private(set) var isCreatingCampaign = false
 
     init(siteID: Int64,
          campaignInfo: CreateBlazeCampaign,
@@ -54,7 +58,20 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
 
     @MainActor
     func confirmPaymentDetails() async {
-        // TODO
+        guard let selectedPaymentMethod else {
+            DDLogError("⚠️ No payment method found for campaign creation!")
+            return
+        }
+        shouldDisplayCampaignCreationError = false
+        isCreatingCampaign = true
+        do {
+            let updatedDetails = campaignInfo.copy(paymentMethodID: selectedPaymentMethod.id)
+            try await requestCampaignCreation(details: updatedDetails)
+        } catch {
+            DDLogError("⛔️ Error creating Blaze campaign: \(error)")
+            shouldDisplayCampaignCreationError = true
+        }
+        isCreatingCampaign = false
     }
 }
 

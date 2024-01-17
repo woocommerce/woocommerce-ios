@@ -6,6 +6,27 @@ struct BlazeConfirmPaymentView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
 
+    private let agreementText: NSAttributedString = {
+        let content = String.localizedStringWithFormat(Localization.agreement, Localization.termsOfService, Localization.adPolicy, Localization.learnMore)
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .center
+
+        let mutableAttributedText = NSMutableAttributedString(
+            string: content,
+            attributes: [.font: UIFont.caption1,
+                         .foregroundColor: UIColor.secondaryLabel,
+                         .paragraphStyle: paragraph]
+        )
+
+        mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
+                                        linkURL: Constants.termsLink)
+        mutableAttributedText.setAsLink(textToFind: Localization.adPolicy,
+                                        linkURL: Constants.adPolicyLink)
+        mutableAttributedText.setAsLink(textToFind: Localization.learnMore,
+                                        linkURL: Constants.learnMoreLink)
+        return mutableAttributedText
+    }()
+
     init(viewModel: BlazeConfirmPaymentViewModel) {
         self.viewModel = viewModel
     }
@@ -72,11 +93,7 @@ struct BlazeConfirmPaymentView: View {
                 }
                 .buttonStyle(PrimaryButtonStyle())
 
-                Text("By clicking \"Submit campaign\" you agree to the Terms of Service and " +
-                     "Advertising Policy, and authorize your payment method to be charged for " +
-                     "the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work.")
-                .foregroundColor(.secondary)
-                .captionStyle()
+                AttributedText(agreementText)
             }
             .padding(Layout.contentPadding)
             .background(Color(.systemBackground))
@@ -88,6 +105,12 @@ private extension BlazeConfirmPaymentView {
 
     enum Layout {
         static let contentPadding: CGFloat = 16
+    }
+
+    enum Constants {
+        static let termsLink = "https://wordpress.com/tos/"
+        static let adPolicyLink = "https://automattic.com/advertising-policy/"
+        static let learnMoreLink = "https://wordpress.com/support/promote-a-post/"
     }
 
     enum Localization {
@@ -115,6 +138,31 @@ private extension BlazeConfirmPaymentView {
             "blazeConfirmPaymentView.total",
             value: "Total",
             comment: "Title of the total amount to be charged in the Payment view in the Blaze campaign creation flow"
+        )
+        static let agreement = NSLocalizedString(
+            "blazeConfirmPaymentView.agreement",
+            value: "By clicking \"Submit campaign\" you agree to the %1$@ and " +
+            "%2$@, and authorize your payment method to be charged for " +
+            "the budget and duration you chose. %3$@ about how budgets and payments for Promoted Posts work.",
+            comment: "Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: " +
+            "By clicking \"Submit campaign\" you agree to the Terms of Service and " +
+                 "Advertising Policy, and authorize your payment method to be charged for " +
+                 "the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work."
+        )
+        static let termsOfService = NSLocalizedString(
+            "blazeConfirmPaymentView.terms",
+            value: "Terms of Service",
+            comment: "The terms to be agreed upon on the Payment screen in the Blaze campaign creation flow."
+        )
+        static let adPolicy = NSLocalizedString(
+            "blazeConfirmPaymentView.adPolicy",
+            value: "Advertising Policy",
+            comment: "The action to be agreed upon on the Payment screen in the Blaze campaign creation flow."
+        )
+        static let learnMore = NSLocalizedString(
+            "blazeConfirmPaymentView.learnMore",
+            value: "Learn more",
+            comment: "Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow."
         )
     }
 }

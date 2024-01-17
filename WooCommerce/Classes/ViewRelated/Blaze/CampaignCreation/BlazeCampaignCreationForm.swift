@@ -49,6 +49,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingAdDestinationScreen = false
     @State private var isShowingDevicePicker = false
     @State private var isShowingTopicPicker = false
+    @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
@@ -86,8 +87,8 @@ struct BlazeCampaignCreationForm: View {
                     divider
 
                     // Location
-                    detailView(title: Localization.location, content: "All") {
-                        // TODO: open location screen
+                    detailView(title: Localization.location, content: viewModel.targetLocationText) {
+                        isShowingLocationPicker = true
                     }
 
                     divider
@@ -139,6 +140,11 @@ struct BlazeCampaignCreationForm: View {
         .sheet(isPresented: $isShowingTopicPicker) {
             BlazeTargetTopicPickerView(viewModel: viewModel.targetTopicViewModel) {
                 isShowingTopicPicker = false
+            }
+        }
+        .sheet(isPresented: $isShowingLocationPicker) {
+            BlazeTargetLocationPickerView(viewModel: viewModel.targetLocationViewModel) {
+                isShowingLocationPicker = false
             }
         }
         .onChange(of: viewModel.error) { newValue in

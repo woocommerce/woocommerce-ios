@@ -34,51 +34,19 @@ struct BlazeConfirmPaymentView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                Text(Localization.paymentTotals)
-                    .bold()
-                    .bodyStyle()
-
-                HStack {
-                    Text(Localization.blazeCampaign)
-                        .bodyStyle()
-
-                    Spacer()
-
-                    Text(viewModel.totalAmount)
-                }
-                .frame(maxWidth: .infinity)
-
-                HStack {
-                    Text(Localization.total)
-                        .bold()
-
-                    Spacer()
-
-                    Text(String.localizedStringWithFormat(Localization.totalAmount, viewModel.totalAmount))
-                        .bold()
-                }
-                .bodyStyle()
+                
+                totalAmountView
 
                 Divider()
 
-                HStack {
-                    Image("card-brand-visa")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 35 * scale)
-
-                    VStack(alignment: .leading) {
-                        Text("Visa")
-                            .bodyStyle()
-                        Text("Card ending with 2222")
-                            .foregroundColor(.secondary)
-                            .captionStyle()
+                if !viewModel.isFetchingPaymentInfo {
+                    if viewModel.selectedPaymentMethod == nil {
+                        addPaymentMethodButton
+                    } else {
+                        cardDetailView
                     }
-
-                    Spacer()
-
-                    Image(systemName: "chevron.right")
-                        .secondaryBodyStyle()
+                } else {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 }
             }
             .padding(Layout.contentPadding)
@@ -89,14 +57,90 @@ struct BlazeConfirmPaymentView: View {
             VStack(spacing: Layout.contentPadding) {
                 Divider()
                 Button(Localization.submitButton) {
-                    // TODO
+                    // TODO: create campaign
                 }
                 .buttonStyle(PrimaryButtonStyle())
+                .disabled(viewModel.isFetchingPaymentInfo)
 
                 AttributedText(agreementText)
             }
             .padding(Layout.contentPadding)
             .background(Color(.systemBackground))
+        }
+    }
+}
+
+private extension BlazeConfirmPaymentView {
+    var totalAmountView: some View {
+        VStack(alignment: .leading, spacing: Layout.contentPadding) {
+            Text(Localization.paymentTotals)
+                .bold()
+                .bodyStyle()
+
+            HStack {
+                Text(Localization.blazeCampaign)
+                    .bodyStyle()
+                
+                Spacer()
+                
+                Text(viewModel.totalAmount)
+            }
+            .frame(maxWidth: .infinity)
+
+            HStack {
+                Text(Localization.total)
+                    .bold()
+                
+                Spacer()
+                
+                Text(String.localizedStringWithFormat(Localization.totalAmount, viewModel.totalAmount))
+                    .bold()
+            }
+            .bodyStyle()
+        }
+    }
+
+    var cardDetailView: some View {
+        Button {
+            // TODO: show payment method list
+        } label: {
+            if let icon = viewModel.cardIcon {
+                Image(uiImage: icon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 35 * scale)
+            }
+
+            VStack(alignment: .leading) {
+                if let type = viewModel.cardTypeName {
+                    Text(type)
+                        .bodyStyle()
+                }
+
+                if let name = viewModel.cardName {
+                    Text(name)
+                        .foregroundColor(.secondary)
+                        .captionStyle()
+                }
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .secondaryBodyStyle()
+        }
+    }
+
+    var addPaymentMethodButton: some View {
+        Button {
+            // TODO: open payment method list
+        } label: {
+            HStack {
+                Text("Add a payment method")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .secondaryBodyStyle()
+            }
         }
     }
 }
@@ -122,28 +166,33 @@ private extension BlazeConfirmPaymentView {
         static let submitButton = NSLocalizedString(
             "blazeConfirmPaymentView.submitButton",
             value: "Submit Campaign",
-            comment: "Action button in the Payment view in the Blaze campaign creation flow"
+            comment: "Action button on the Payment screen in the Blaze campaign creation flow"
         )
         static let paymentTotals = NSLocalizedString(
             "blazeConfirmPaymentView.paymentTotals",
             value: "Payment totals",
-            comment: "Section title in the Payment view in the Blaze campaign creation flow"
+            comment: "Section title on the Payment screen in the Blaze campaign creation flow"
         )
         static let blazeCampaign = NSLocalizedString(
             "blazeConfirmPaymentView.blazeCampaign",
             value: "Blaze campaign",
-            comment: "Item to be charged in the Payment view in the Blaze campaign creation flow"
+            comment: "Item to be charged on the Payment screen in the Blaze campaign creation flow"
         )
         static let total = NSLocalizedString(
             "blazeConfirmPaymentView.total",
             value: "Total",
-            comment: "Title of the total amount to be charged in the Payment view in the Blaze campaign creation flow"
+            comment: "Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow"
         )
         static let totalAmount = NSLocalizedString(
             "blazeConfirmPaymentView.totalAmount",
             value: "$%.0f USD",
             comment: "The formatted total amount for a Blaze campaign, fixed in USD. " +
             "Reads as $11 USD. Keep %.0f as is."
+        )
+        static let addPaymentMethod = NSLocalizedString(
+            "blazeConfirmPaymentView.addPaymentMethod",
+            value: "Add a payment method",
+            comment: "Button for adding a payment method on the Payment screen in the Blaze campaign creation flow"
         )
         static let agreement = NSLocalizedString(
             "blazeConfirmPaymentView.agreement",

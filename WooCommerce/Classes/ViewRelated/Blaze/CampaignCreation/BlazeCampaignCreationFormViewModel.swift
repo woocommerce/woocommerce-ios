@@ -121,7 +121,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     // For Ad destination purposes
     private var productURL: String? { product?.permalink }
-    private var siteURL: String? { ServiceLocator.stores.sessionManager.defaultSite?.url }
+    private var siteURL: String? { stores.sessionManager.defaultSite?.url }
 
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
@@ -320,7 +320,7 @@ private extension BlazeCampaignCreationFormViewModel {
                 .joined(separator: ", ")
         }()
     }
-    
+
     func initializeAdFinalDestination() {
         // Default to promoting Product URL at the beginning.
         if let productURL = productURL {

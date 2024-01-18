@@ -4,6 +4,7 @@ import WooFoundation
 import protocol Storage.StorageManagerType
 import struct Networking.BlazeAISuggestion
 import Photos
+import class Networking.UserAgent
 
 /// View model for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
@@ -104,6 +105,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }()
 
+    lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
+        BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo)
+    }()
+
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""
@@ -147,6 +152,26 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         return controller
     }()
 
+    private let targetUrn: String
+
+    private var campaignInfo: CreateBlazeCampaign {
+        CreateBlazeCampaign(origin: Constants.campaignOrigin,
+                            originVersion: UserAgent.bundleShortVersion,
+                            paymentMethodID: "", // to-be updated later on the payment screen
+                            startDate: startDate,
+                            endDate: startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration)),
+                            timeZone: TimeZone.current.identifier,
+                            totalBudget: dailyBudget * Double(duration),
+                            siteName: tagline,
+                            textSnippet: description,
+                            targetUrl: "", // TODO: update this
+                            urlParams: "", // TODO: update this
+                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // TODO: update this
+                            targeting: targetOptions,
+                            targetUrn: targetUrn,
+                            type: Constants.campaignType)
+    }
+
     init(siteID: Int64,
          productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -159,6 +184,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.storage = storage
         self.productImageLoader = productImageLoader
         self.completionHandler = onCompletion
+        self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
         updateBudgetDetails()
         updateTargetLanguagesText()
@@ -310,6 +336,14 @@ extension BlazeCampaignCreationFormViewModel {
 }
 
 private extension BlazeCampaignCreationFormViewModel {
+    enum Constants {
+        /// origin the of the created campaign, used for analytics.
+        static let campaignOrigin = "wc-ios"
+        /// We are supporting product promotion only for now.
+        static let campaignType = "product"
+        static let oneDayInSeconds: Double = 86400
+        static let targetUrnFormat = "urn:wpcom:post:%d:%d"
+    }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.budgetSingleDay",

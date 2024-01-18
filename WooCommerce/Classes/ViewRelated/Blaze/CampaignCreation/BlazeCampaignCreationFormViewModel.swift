@@ -107,7 +107,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }()
 
     lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
-        BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo)
+        BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo, onCompletion: { [weak self] in
+            self?.completionHandler()
+        })
     }()
 
     @Published private(set) var budgetDetailText: String = ""

@@ -70,12 +70,12 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         do {
             let updatedDetails = campaignInfo.copy(paymentMethodID: selectedPaymentMethod.id)
             try await requestCampaignCreation(details: updatedDetails)
+            completionHandler()
         } catch {
             DDLogError("⛔️ Error creating Blaze campaign: \(error)")
             shouldDisplayCampaignCreationError = true
         }
         isCreatingCampaign = false
-        completionHandler()
     }
 }
 

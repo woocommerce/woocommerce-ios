@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct BlazePaymentMethodsView: View {
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazePaymentMethodsViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showingAddPaymentWebView: Bool = false
@@ -13,6 +15,24 @@ struct BlazePaymentMethodsView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 0) {
+                    // Header
+                    HStack(spacing: Layout.SecureHeader.hSpacing) {
+                        Image(systemName: "checkmark.shield")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: scale * Layout.SecureHeader.iconWidth, height: scale * Layout.SecureHeader.iconHeight)
+                            .tint(Color(.accent))
+
+                        Text(Localization.transactionsSecure)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+
+                        Spacer()
+                    }
+                    .padding(.horizontal, Layout.SecureHeader.hPadding)
+                    .padding(.vertical, Layout.SecureHeader.vPadding)
+                    .background(Color(.systemBackground))
+
                     // Payment Methods list
                     ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
                         .textCase(.uppercase)
@@ -73,8 +93,6 @@ struct BlazePaymentMethodsView: View {
                 }
             }
             .background(Color(.listBackground))
-            .navigationTitle(Localization.navigationBarTitle)
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancelButton) {
@@ -96,6 +114,9 @@ struct BlazePaymentMethodsView: View {
                     .disabled(!viewModel.isDoneButtonEnabled)
                 }
             }
+            .navigationTitle(Localization.navigationBarTitle)
+            .wooNavigationBarStyle()
+            .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(isPresented: $showingAddPaymentWebView, content: {
             webView
@@ -157,6 +178,11 @@ private extension BlazePaymentMethodsView {
             value: "Done",
             comment: "Done navigation button in the Blaze Payment Method screen"
         )
+        static let transactionsSecure = NSLocalizedString(
+            "blazePaymentMethodsView.transactionsSecure",
+            value: "All transactions are secure and encrypted",
+            comment: "Text to explain that transactions will be secure in Payment Method screen"
+        )
         static let paymentMethodsHeader = NSLocalizedString(
             "blazePaymentMethodsView.paymentMethodsHeader",
             value: "Payment Method Selected",
@@ -216,6 +242,14 @@ private extension BlazePaymentMethodsView {
         static let dividerPadding: CGFloat = 48
         static let controlPadding: CGFloat = 16
         static let spacerHeight: CGFloat = 24
+
+        enum SecureHeader {
+            static let iconWidth: CGFloat = 18
+            static let iconHeight: CGFloat = 20
+            static let hSpacing: CGFloat = 8
+            static let hPadding: CGFloat = 16
+            static let vPadding: CGFloat = 12
+        }
     }
 }
 

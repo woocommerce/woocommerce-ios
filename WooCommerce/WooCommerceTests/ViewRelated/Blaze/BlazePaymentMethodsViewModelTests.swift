@@ -1,8 +1,6 @@
 import Combine
 import XCTest
 import Yosemite
-import protocol Storage.StorageManagerType
-import protocol Storage.StorageType
 @testable import WooCommerce
 
 @MainActor
@@ -17,21 +15,12 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
     private let sampleEmail = "test@example.com"
     private let sampleUsername = "johndoe"
 
-    /// Mock Storage: InMemory
-    private var storageManager: StorageManagerType!
-
-    /// View storage for tests
-    private var storage: StorageType {
-        storageManager.viewStorage
-    }
-
     private var stores: MockStoresManager!
 
     private var subscription: AnyCancellable?
 
     override func setUp() {
         super.setUp()
-        storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true,
                                                                                  isWPCom: true,
                                                                                  displayName: sampleDisplayName,

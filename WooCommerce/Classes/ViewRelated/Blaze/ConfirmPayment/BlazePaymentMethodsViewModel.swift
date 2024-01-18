@@ -3,8 +3,6 @@ import Yosemite
 /// View model for `BlazePaymentMethodsView`.
 ///
 final class BlazePaymentMethodsViewModel: ObservableObject {
-    /// Completion callback
-    ///
     typealias Completion = (_ selectedPaymentMethodID: String) -> Void
     private let onCompletion: Completion
 

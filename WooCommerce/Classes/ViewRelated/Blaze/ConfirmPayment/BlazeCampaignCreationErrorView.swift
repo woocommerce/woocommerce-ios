@@ -5,6 +5,8 @@ struct BlazeCampaignCreationErrorView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    @State private var isShowingSupport = false
+
     private let onTryAgain: () -> Void
     private let onCancel: () -> Void
 
@@ -22,6 +24,7 @@ struct BlazeCampaignCreationErrorView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Layout.errorIconSize * scale)
                     .foregroundColor(Color(uiColor: .error))
+                    .padding(.top, Layout.iconTopPadding)
 
                 Text(Localization.title)
                     .bold()
@@ -39,9 +42,10 @@ struct BlazeCampaignCreationErrorView: View {
                 }
 
                 Button {
-                    // TODO
+                    isShowingSupport = true
                 } label: {
                     Label(Localization.getSupport, systemImage: "questionmark.circle")
+                        .font(.body.weight(.semibold))
                 }
 
                 Spacer()
@@ -51,7 +55,7 @@ struct BlazeCampaignCreationErrorView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: Layout.contentPadding) {
-                Button(Localization.tryAgain,  action: onTryAgain)
+                Button(Localization.tryAgain, action: onTryAgain)
                     .buttonStyle(PrimaryButtonStyle())
 
                 Button(Localization.cancel, action: onCancel)
@@ -60,11 +64,31 @@ struct BlazeCampaignCreationErrorView: View {
             .padding(Layout.contentPadding)
             .background(Color(.systemBackground))
         }
+        .sheet(isPresented: $isShowingSupport) {
+            supportForm
+        }
+    }
+}
+
+private extension BlazeCampaignCreationErrorView {
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(viewModel: SupportFormViewModel())
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(Localization.done) {
+                            isShowingSupport = false
+                        }
+                    }
+                }
+        }
+        .navigationViewStyle(.stack)
     }
 }
 
 private extension BlazeCampaignCreationErrorView {
     enum Layout {
+        static let iconTopPadding: CGFloat = 40
         static let errorIconSize: CGFloat = 56
         static let contentPadding: CGFloat = 16
         static let titlePadding: CGFloat = 32
@@ -106,6 +130,11 @@ private extension BlazeCampaignCreationErrorView {
             "blazeCampaignCreationErrorView.cancel",
             value: "Cancel Campaign",
             comment: "Button to dismiss the flow on the Blaze campaign creation error screen."
+        )
+        static let done = NSLocalizedString(
+            "blazeCampaignCreationErrorView.done",
+            value: "Done",
+            comment: "Button to dismiss the support form from the Blaze campaign creation error screen."
         )
     }
 }

@@ -13,7 +13,8 @@ struct InPersonPaymentsUnavailable: View {
             ),
             supportLink: false,
             learnMore: true,
-            analyticReason: analyticReason
+            analyticReason: analyticReason,
+            plugin: nil
         )
     }
 }

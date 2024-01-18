@@ -427,6 +427,12 @@ public extension UIColor {
             return .secondarySystemGroupedBackground
         }
     }
+
+    /// Products tab list cell selected background color
+    ///
+    static var productsCellSelectedBackgroundColor: UIColor {
+        return UIColor.wooCommercePurple(.shade0)
+    }
 }
 
 

@@ -20,6 +20,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
 
     var paymentMethodsViewModel: BlazePaymentMethodsViewModel? {
         guard let paymentInfo else {
+            DDLogError("⛔️ No payment info available to list in payment methods screen.")
             return nil
         }
         return BlazePaymentMethodsViewModel(siteID: siteID,

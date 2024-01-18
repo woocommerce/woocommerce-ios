@@ -22,11 +22,11 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// WordPress.com Base URL for OAuth
     ///
-    let wpcomBaseURL: String
+    let wpcomBaseURL: URL
 
     /// WordPress.com API Base URL
     ///
-    let wpcomAPIBaseURL: String
+    let wpcomAPIBaseURL: URL
 
     /// The URL of a webpage which has details about What is WordPress.com?.
     ///
@@ -180,8 +180,8 @@ public struct WordPressAuthenticatorConfiguration {
                  wpcomSecret: String,
                  wpcomScheme: String,
                  wpcomTermsOfServiceURL: String,
-                 wpcomBaseURL: String = WordPressComOAuthClient.WordPressComOAuthDefaultBaseUrl,
-                 wpcomAPIBaseURL: String = WordPressComOAuthClient.WordPressComOAuthDefaultApiBaseUrl,
+                 wpcomBaseURL: URL = WordPressComOAuthClient.WordPressComOAuthDefaultBaseURL,
+                 wpcomAPIBaseURL: URL = WordPressComOAuthClient.WordPressComOAuthDefaultApiBaseURL,
                  whatIsWPComURL: String? = nil,
                  googleLoginClientId: String,
                  googleLoginServerClientId: String,

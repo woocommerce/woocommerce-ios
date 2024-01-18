@@ -79,6 +79,18 @@ struct BlazeConfirmPaymentView: View {
             BlazeCampaignCreationLoadingView()
                 .interactiveDismissDisabled()
         }
+        .sheet(isPresented: $viewModel.shouldDisplayCampaignCreationError) {
+            BlazeCampaignCreationErrorView(onTryAgain: {
+                viewModel.shouldDisplayCampaignCreationError = false
+                Task {
+                    await viewModel.submitCampaign()
+                }
+            }, onCancel: {
+                viewModel.shouldDisplayCampaignCreationError = false
+                // TODO: trigger cancel
+            })
+            .interactiveDismissDisabled()
+        }
     }
 }
 

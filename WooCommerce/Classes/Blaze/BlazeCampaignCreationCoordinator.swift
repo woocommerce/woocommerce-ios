@@ -115,7 +115,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     }
 
     /// Handles navigation to the native Blaze creation
-    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
+    private func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
                                                            productID: productID,
                                                            onCompletion: onCampaignCreated)
@@ -132,7 +132,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     }
 
     /// Handles navigation to the webview Blaze creation
-    func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64?) {
+    private func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64?) {
         let webViewModel = BlazeWebViewModel(siteID: siteID,
                                              source: source,
                                              siteURL: siteURL,
@@ -146,7 +146,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     }
 
     /// Handles navigation to the Blaze product selector view
-    func navigateToBlazeProductSelector(source: BlazeSource) {
+    private func navigateToBlazeProductSelector(source: BlazeSource) {
         let controller: ProductSelectorViewController = {
             let productSelectorViewModel = ProductSelectorViewModel(
                 siteID: siteID,

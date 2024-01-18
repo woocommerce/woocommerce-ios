@@ -73,7 +73,7 @@ private extension BlazeConfirmPaymentView {
     var totalAmountView: some View {
         VStack(alignment: .leading, spacing: Layout.contentPadding) {
             Text(Localization.paymentTotals)
-                .bold()
+                .fontWeight(.semibold)
                 .bodyStyle()
 
             HStack {
@@ -107,7 +107,7 @@ private extension BlazeConfirmPaymentView {
                 Image(uiImage: icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 35 * scale)
+                    .frame(width: Layout.cardIconWidth * scale)
             }
 
             VStack(alignment: .leading) {
@@ -174,6 +174,7 @@ private extension BlazeConfirmPaymentView {
 
     enum Layout {
         static let contentPadding: CGFloat = 16
+        static let cardIconWidth: CGFloat = 35
     }
 
     enum Constants {

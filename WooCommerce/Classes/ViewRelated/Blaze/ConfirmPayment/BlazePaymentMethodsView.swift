@@ -169,7 +169,7 @@ private extension BlazePaymentMethodsView {
             value: "Payment Method",
             comment: "Navigation bar title in the Blaze Payment Method screen")
         static let cancelButton = NSLocalizedString(
-            "blazePaymentMethodsView.edit",
+            "blazePaymentMethodsView.cancelButton",
             value: "Cancel",
             comment: "Title of the button to dismiss the Blaze payment method list screen"
         )

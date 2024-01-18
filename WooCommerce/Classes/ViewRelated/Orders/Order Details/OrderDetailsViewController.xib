@@ -40,9 +40,9 @@
             <constraints>
                 <constraint firstItem="d22-mg-5dQ" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="5ZE-aa-z8W"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="d22-mg-5dQ" secondAttribute="bottom" id="5Zf-no-qjl"/>
-                <constraint firstAttribute="trailing" secondItem="d22-mg-5dQ" secondAttribute="trailing" priority="750" id="5np-Rf-otN"/>
-                <constraint firstItem="d22-mg-5dQ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" priority="750" id="Vck-kK-YlT"/>
-                <constraint firstItem="d22-mg-5dQ" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Z7Q-Q0-SKe"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="d22-mg-5dQ" secondAttribute="trailing" priority="750" id="5np-Rf-otN"/>
+                <constraint firstItem="d22-mg-5dQ" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" priority="750" id="Vck-kK-YlT"/>
+                <constraint firstItem="d22-mg-5dQ" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="Z7Q-Q0-SKe"/>
             </constraints>
             <point key="canvasLocation" x="139" y="140"/>
         </view>

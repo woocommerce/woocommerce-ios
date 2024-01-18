@@ -122,6 +122,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
         // When
         mockCampaignCreation(with: .success(Void()))
+        await viewModel.updatePaymentInfo()
         await viewModel.confirmPaymentDetails()
 
         // Then
@@ -135,6 +136,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
         // When
         mockCampaignCreation(with: .failure(NSError(domain: "test", code: 500)))
+        await viewModel.updatePaymentInfo()
         await viewModel.confirmPaymentDetails()
 
         // Then
@@ -155,8 +157,18 @@ private extension BlazeConfirmPaymentViewModelTests {
     }
 
     func mockCampaignCreation(with result: Result<Void, Error>) {
+        let paymentMethod = BlazePaymentMethod(id: "test-id",
+                                               rawType: "credit-card",
+                                               name: "Card ending in 7284",
+                                               info: .init(lastDigits: "7284",
+                                                           expiring: .fake(),
+                                                           type: "Mastercard",
+                                                           nickname: nil,
+                                                           cardholderName: "Jane Doe"))
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
+            case let .fetchPaymentInfo(_, onCompletion):
+                onCompletion(.success(.fake().copy(savedPaymentMethods: [paymentMethod])))
             case let .createCampaign(_, _, onCompletion):
                 onCompletion(result)
             default:

@@ -161,6 +161,8 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @MainActor
     func enableJetpackStats() async {
+        analytics.track(event: .AnalyticsHub.jetpackStatsCTATapped())
+
         do {
             try await remoteEnableJetpackStats()
             // Wait for backend to enable the module (it is not ready for stats to be requested immediately after a success response)
@@ -232,6 +234,9 @@ private extension AnalyticsHubViewModel {
         } catch SiteStatsStoreError.statsModuleDisabled {
             self.isJetpackStatsDisabled = true
             self.siteStats = nil
+            if showJetpackStatsCTA {
+                analytics.track(event: .AnalyticsHub.jetpackStatsCTAShown())
+            }
             DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: Jetpack stats are disabled")
         } catch {
             self.siteStats = nil
@@ -308,9 +313,11 @@ private extension AnalyticsHubViewModel {
                 switch result {
                 case .success:
                     self?.isJetpackStatsDisabled = false
+                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsSuccess())
                     continuation.resume()
                 case let .failure(error):
                     self?.isJetpackStatsDisabled = true
+                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsFailed(error: error))
                     continuation.resume(throwing: error)
                 }
             }

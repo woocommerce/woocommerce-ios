@@ -375,4 +375,78 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
         XCTAssertTrue(vm.showJetpackStatsCTA)
     }
+
+    func test_it_tracks_expected_jetpack_stats_CTA_success_events() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, analytics: analytics)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
+            switch action {
+            case let .enableJetpackModule(_, _, completion):
+                completion(.success(()))
+            }
+        }
+
+        // When
+        await vm.updateData()
+        await vm.enableJetpackStats()
+
+        // Then
+        let expectedEvents: [WooAnalyticsStat] = [
+            .analyticsHubEnableJetpackStatsShown,
+            .analyticsHubEnableJetpackStatsTapped,
+            .analyticsHubEnableJetpackStatsSuccess
+        ]
+        for event in expectedEvents {
+            XCTAssert(analyticsProvider.receivedEvents.contains(event.rawValue), "Did not receive expected event: \(event.rawValue)")
+        }
+    }
+
+    func test_it_tracks_expected_jetpack_stats_CTA_failure_events() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, analytics: analytics)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
+            switch action {
+            case let .enableJetpackModule(_, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 1)))
+            }
+        }
+
+        // When
+        await vm.updateData()
+        await vm.enableJetpackStats()
+
+        // Then
+        let expectedEvents: [WooAnalyticsStat] = [
+            .analyticsHubEnableJetpackStatsShown,
+            .analyticsHubEnableJetpackStatsTapped,
+            .analyticsHubEnableJetpackStatsFailed
+        ]
+        for event in expectedEvents {
+            XCTAssert(analyticsProvider.receivedEvents.contains(event.rawValue), "Did not receive expected event: \(event.rawValue)")
+        }
+    }
 }

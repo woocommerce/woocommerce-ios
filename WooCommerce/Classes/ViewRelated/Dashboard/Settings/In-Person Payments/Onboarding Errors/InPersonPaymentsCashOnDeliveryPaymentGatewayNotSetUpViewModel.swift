@@ -41,6 +41,8 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
     // MARK: - Configuration properties
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
+    private let plugin: CardPresentPaymentsPlugin
+
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
     }
@@ -54,6 +56,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: Obser
          completion: @escaping () -> Void) {
         self.dependencies = dependencies
         self.cardPresentPaymentsConfiguration = configuration
+        self.plugin = plugin
         self.learnMoreURL = plugin.cashOnDeliveryLearnMoreURL
         self.analyticReason = analyticReason
         self.completion = completion
@@ -114,19 +117,22 @@ extension InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel {
 
     var learnMoreEvent: WooAnalyticsEvent {
         Event.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
-                                                   countryCode: cardPresentPaymentsConfiguration.countryCode)
+                                                   countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                   gatewayID: plugin.gatewayID)
     }
 
     private func trackSkipTapped() {
         let event = Event.cardPresentOnboardingStepSkipped(reason: analyticReason,
                                                            remindLater: false,
-                                                           countryCode: cardPresentPaymentsConfiguration.countryCode)
+                                                           countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                           gatewayID: plugin.gatewayID)
         analytics.track(event: event)
     }
 
     private func trackEnableTapped() {
         let event = Event.cardPresentOnboardingCtaTapped(reason: analyticReason,
-                                                         countryCode: cardPresentPaymentsConfiguration.countryCode)
+                                                         countryCode: cardPresentPaymentsConfiguration.countryCode,
+                                                         gatewayID: plugin.gatewayID)
         analytics.track(event: event)
     }
 

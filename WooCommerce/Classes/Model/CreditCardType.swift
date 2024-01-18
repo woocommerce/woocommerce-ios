@@ -27,26 +27,7 @@ extension CreditCardType {
 
     /// Icon name to be used for the card icon UIImage
     var iconName: String {
-        switch self {
-        case .visa:
-            return iconName(suffix: "visa")
-        case .amex:
-            return iconName(suffix: "amex")
-        case .mastercard:
-            return iconName(suffix: "mastercard")
-        case .discover:
-            return iconName(suffix: "discover")
-        case .interac:
-            return iconName(suffix: "interac")
-        case .jcb:
-            return iconName(suffix: "jcb")
-        case .diners:
-            return iconName(suffix: "diners")
-        case .unionpay:
-            return iconName(suffix: "unionpay")
-        default:
-            return iconName(suffix: "unknown")
-        }
+        iconName(suffix: rawValue)
     }
 
     private func iconName(suffix: String) -> String {

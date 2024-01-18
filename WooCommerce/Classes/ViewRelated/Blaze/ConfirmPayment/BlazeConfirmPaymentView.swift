@@ -98,7 +98,7 @@ private extension BlazeConfirmPaymentView {
     var totalAmountView: some View {
         VStack(alignment: .leading, spacing: Layout.contentPadding) {
             Text(Localization.paymentTotals)
-                .bold()
+                .fontWeight(.semibold)
                 .bodyStyle()
 
             HStack {
@@ -132,7 +132,7 @@ private extension BlazeConfirmPaymentView {
                 Image(uiImage: icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 35 * scale)
+                    .frame(width: Layout.cardIconWidth * scale)
             }
 
             VStack(alignment: .leading) {
@@ -206,6 +206,7 @@ private extension BlazeConfirmPaymentView {
 
     enum Layout {
         static let contentPadding: CGFloat = 16
+        static let cardIconWidth: CGFloat = 35
     }
 
     enum Constants {
@@ -258,7 +259,7 @@ private extension BlazeConfirmPaymentView {
         )
         static let agreement = NSLocalizedString(
             "blazeConfirmPaymentView.agreement",
-            value: "By clicking \"Submit campaign\" you agree to the %1$@ and " +
+            value: "By clicking \"Submit Campaign\" you agree to the %1$@ and " +
             "%2$@, and authorize your payment method to be charged for " +
             "the budget and duration you chose. %3$@ about how budgets and payments for Promoted Posts work.",
             comment: "Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: " +

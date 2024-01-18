@@ -139,14 +139,15 @@ private extension OrderDetailsViewController {
     }
 
     func configureStackView() {
+        guard isSplitViewInOrdersTabEnabled else {
+            return
+        }
         stackView.layer.borderWidth = Constants.borderWidth
         stackView.layer.borderColor = UIColor.border.cgColor
 
-        if isSplitViewInOrdersTabEnabled {
-            let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
-            maxWidthConstraint.priority = .required
-            NSLayoutConstraint.activate([maxWidthConstraint])
-        }
+        let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
+        maxWidthConstraint.priority = .required
+        NSLayoutConstraint.activate([maxWidthConstraint])
     }
 
     /// Setup: Navigation

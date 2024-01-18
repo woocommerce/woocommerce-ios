@@ -79,6 +79,9 @@ struct BlazeConfirmPaymentView: View {
             BlazeCampaignCreationLoadingView()
                 .interactiveDismissDisabled()
         }
+        .sheet(isPresented: $viewModel.showAddPaymentSheet) {
+            BlazePaymentMethodsView(viewModel: viewModel.paymentMethodsViewModel!)
+        }
     }
 }
 
@@ -114,7 +117,7 @@ private extension BlazeConfirmPaymentView {
 
     var cardDetailView: some View {
         Button {
-            // TODO: show payment method list
+            viewModel.showAddPaymentSheet = true
         } label: {
             if let icon = viewModel.cardIcon {
                 Image(uiImage: icon)
@@ -145,7 +148,7 @@ private extension BlazeConfirmPaymentView {
 
     var addPaymentMethodButton: some View {
         Button {
-            // TODO: open payment method list
+            viewModel.showAddPaymentSheet = true
         } label: {
             HStack {
                 Text(Localization.addPaymentMethod)

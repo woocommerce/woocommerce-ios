@@ -10,9 +10,23 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     private let completionHandler: () -> Void
 
     private(set) var selectedPaymentMethod: BlazePaymentMethod?
+    @Published var showAddPaymentSheet: Bool = false
+
+    private var paymentInfo: BlazePaymentInfo?
 
     var shouldDisableCampaignCreation: Bool {
         isFetchingPaymentInfo || selectedPaymentMethod == nil
+    }
+
+    var paymentMethodsViewModel: BlazePaymentMethodsViewModel? {
+        guard let paymentInfo else {
+            return nil
+        }
+        return BlazePaymentMethodsViewModel(siteID: siteID,
+                                            paymentInfo: paymentInfo,
+                                            selectedPaymentMethodID: selectedPaymentMethod?.id, completion: { [weak self] paymentID in
+            self?.setSelectedPaymentMethod(id: paymentID)
+        })
     }
 
     let totalAmount: String
@@ -44,13 +58,9 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         isFetchingPaymentInfo = true
         do {
             let info = try await fetchPaymentInfo()
-            selectedPaymentMethod = info.savedPaymentMethods.first
-            if let selectedPaymentMethod {
-                let rawCardType = selectedPaymentMethod.info.type
-                let cardType = CreditCardType(rawType: rawCardType)
-                cardIcon = cardType.icon
-                cardTypeName = selectedPaymentMethod.info.type
-                cardName = selectedPaymentMethod.name
+            paymentInfo = info
+            if let firstPaymentMethod = info.savedPaymentMethods.first {
+                setSelectedPaymentMethod(id: firstPaymentMethod.id)
             }
         } catch {
             DDLogError("⛔️ Error fetching payment info for Blaze campaign creation: \(error)")
@@ -96,5 +106,17 @@ private extension BlazeConfirmPaymentViewModel {
                 continuation.resume(with: result)
             }))
         }
+    }
+
+    func setSelectedPaymentMethod(id paymentMethodID: String) {
+        guard let paymentMethod = paymentInfo?.savedPaymentMethods.first(where: { $0.id == paymentMethodID }) else {
+            return
+        }
+        selectedPaymentMethod = paymentMethod
+        let rawCardType = paymentMethod.info.type
+        let cardType = CreditCardType(rawType: rawCardType)
+        cardIcon = cardType.icon
+        cardTypeName = paymentMethod.info.type
+        cardName = paymentMethod.name
     }
 }

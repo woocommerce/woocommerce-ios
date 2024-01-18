@@ -68,13 +68,17 @@ struct BlazeConfirmPaymentView: View {
         .task {
             await viewModel.updatePaymentInfo()
         }
-        .alert(Text(Localization.errorMessage), isPresented: $viewModel.shouldDisplayErrorAlert, actions: {
+        .alert(Text(Localization.errorMessage), isPresented: $viewModel.shouldDisplayPaymentErrorAlert, actions: {
             Button(Localization.tryAgain) {
                 Task {
                     await viewModel.updatePaymentInfo()
                 }
             }
         })
+        .sheet(isPresented: $viewModel.isCreatingCampaign) {
+            BlazeCampaignCreationLoadingView()
+                .interactiveDismissDisabled()
+        }
     }
 }
 
@@ -165,7 +169,9 @@ private extension BlazeConfirmPaymentView {
         VStack(spacing: Layout.contentPadding) {
             Divider()
             Button(Localization.submitButton) {
-                // TODO: create campaign
+                Task {
+                    await viewModel.submitCampaign()
+                }
             }
             .buttonStyle(PrimaryButtonStyle())
             .disabled(viewModel.shouldDisableCampaignCreation)
@@ -294,5 +300,5 @@ private extension BlazeConfirmPaymentView {
                             mainImage: .init(url: "https://example.com", mimeType: "png"),
                             targeting: nil,
                             targetUrn: "",
-                            type: "product")))
+                            type: "product")) {})
 }

@@ -153,14 +153,15 @@ private extension InPersonPaymentsViewModel {
             return
         }
         switch state {
-        case .completed, .enabled:
+        case .completed:
             ServiceLocator.analytics
-                .track(.cardPresentOnboardingCompleted)
+                .track(event: .InPersonPayments.cardPresentOnboardingCompleted(gatewayID: state.gatewayID))
         default:
             ServiceLocator.analytics
                 .track(event: .InPersonPayments
                     .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
-                                                       countryCode: countryCode))
+                                                       countryCode: countryCode,
+                                                       gatewayID: state.gatewayID))
         }
     }
 
@@ -173,6 +174,7 @@ private extension InPersonPaymentsViewModel {
             event: .InPersonPayments.cardPresentOnboardingStepSkipped(
                 reason: state.reasonForAnalytics,
                 remindLater: remindLater,
-                countryCode: countryCode))
+                countryCode: countryCode,
+                gatewayID: state.gatewayID))
     }
 }

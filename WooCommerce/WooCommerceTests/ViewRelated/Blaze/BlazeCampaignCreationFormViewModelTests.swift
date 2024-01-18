@@ -125,7 +125,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canEditAd)
     }
 
-    func test_ad_cannot_be_edited_until_image_is_downloaded() async throws {
+    func test_ad_can_be_edited_while_image_is_downloaded() async throws {
         // Given
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
@@ -137,12 +137,15 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            onCompletion: {})
-        // Load suggestions and ensure that ad cannot be edited
-        await viewModel.loadAISuggestions()
-        XCTAssertFalse(viewModel.canEditAd)
 
         // When
-        await viewModel.downloadProductImage()
+        await viewModel.loadAISuggestions()
+        XCTAssertTrue(viewModel.canEditAd)
+
+        // Start downloading the product image without waiting for it to finish.
+        Task {
+            await viewModel.downloadProductImage()
+        }
 
         // Then
         XCTAssertTrue(viewModel.canEditAd)

@@ -8,15 +8,14 @@ struct StoreInfoHomescreenWidget: View {
     let entry: StoreInfoEntry
 
     var body: some View {
-
-            switch entry {
-            case .notConnected:
-                NotLoggedInView()
-            case .error:
-                UnableToFetchView()
-            case .data(let data):
-                StoreInfoView(entryData: data)
-            }
+        switch entry {
+        case .notConnected:
+            NotLoggedInView()
+        case .error:
+            UnableToFetchView()
+        case .data(let data):
+            StoreInfoView(entryData: data)
+        }
     }
 }
 
@@ -35,7 +34,6 @@ private struct StoreInfoView: View {
 
     var body: some View {
         ZStack {
-
             // Background
             Color(.brand)
 

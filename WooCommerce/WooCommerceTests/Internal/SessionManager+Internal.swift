@@ -21,6 +21,8 @@ extension SessionManager {
                                isWPCom: Bool = true,
                                defaultRoles: [User.Role] = [.administrator],
                                displayName: String? = nil,
+                               email: String? = nil,
+                               username: String? = nil,
                                defaultSite: Site? = nil,
                                defaultStoreUUID: String? = nil) -> SessionManager {
         let manager = SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
@@ -35,8 +37,8 @@ extension SessionManager {
         if let displayName {
             manager.defaultAccount = Account(userID: 123,
                                              displayName: displayName,
-                                             email: "",
-                                             username: credentials.username,
+                                             email: email ?? "",
+                                             username: username ?? credentials.username,
                                              gravatarUrl: nil)
         }
 

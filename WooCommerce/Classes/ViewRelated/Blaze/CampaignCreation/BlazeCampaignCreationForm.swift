@@ -359,6 +359,6 @@ private extension BlazeCampaignCreationForm {
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123) {})
+        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}, onCancel: {}))
     }
 }

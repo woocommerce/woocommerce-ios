@@ -87,7 +87,7 @@ struct BlazeConfirmPaymentView: View {
                 }
             }, onCancel: {
                 viewModel.shouldDisplayCampaignCreationError = false
-                // TODO: trigger cancel
+                viewModel.cancelCampaignCreation()
             })
             .interactiveDismissDisabled()
         }
@@ -312,5 +312,7 @@ private extension BlazeConfirmPaymentView {
                             mainImage: .init(url: "https://example.com", mimeType: "png"),
                             targeting: nil,
                             targetUrn: "",
-                            type: "product")) {})
+                            type: "product"),
+        onCompletion: {},
+        onCancel: {}))
 }

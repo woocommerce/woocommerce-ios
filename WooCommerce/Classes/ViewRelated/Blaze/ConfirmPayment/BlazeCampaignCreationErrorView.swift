@@ -5,6 +5,15 @@ struct BlazeCampaignCreationErrorView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    private let onTryAgain: () -> Void
+    private let onCancel: () -> Void
+
+    init(onTryAgain: @escaping () -> Void,
+         onCancel: @escaping () -> Void) {
+        self.onTryAgain = onTryAgain
+        self.onCancel = onCancel
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.titlePadding) {
@@ -42,15 +51,11 @@ struct BlazeCampaignCreationErrorView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: Layout.contentPadding) {
-                Button(Localization.tryAgain) {
-                    // TODO
-                }
-                .buttonStyle(PrimaryButtonStyle())
+                Button(Localization.tryAgain,  action: onTryAgain)
+                    .buttonStyle(PrimaryButtonStyle())
 
-                Button(Localization.cancel) {
-                    // TODO
-                }
-                .buttonStyle(SecondaryButtonStyle())
+                Button(Localization.cancel, action: onCancel)
+                 .buttonStyle(SecondaryButtonStyle())
             }
             .padding(Layout.contentPadding)
             .background(Color(.systemBackground))
@@ -106,5 +111,5 @@ private extension BlazeCampaignCreationErrorView {
 }
 
 #Preview {
-    BlazeCampaignCreationErrorView()
+    BlazeCampaignCreationErrorView(onTryAgain: {}, onCancel: {})
 }

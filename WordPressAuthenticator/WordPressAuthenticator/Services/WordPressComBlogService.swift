@@ -10,7 +10,7 @@ class WordPressComBlogService {
     private var anonymousAPI: WordPressComRestApi {
         let userAgent = WordPressAuthenticator.shared.configuration.userAgent
         let baseUrl = WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL
-        return WordPressComRestApi(oAuthToken: nil, userAgent: userAgent, baseUrlString: baseUrl)
+        return WordPressComRestApi(oAuthToken: nil, userAgent: userAgent, baseURL: baseUrl)
     }
 
     /// Retrieves the WordPressComSiteInfo instance associated to a WordPress.com Site Address.

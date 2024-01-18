@@ -6,10 +6,12 @@ import WordPressKit
     private let client: WordPressComOAuthClient
 
     @objc required public init(client: String, secret: String) {
-        self.client = WordPressComOAuthClient(clientID: client,
-                                         secret: secret,
-                                         wordPressComBaseUrl: WordPressAuthenticator.shared.configuration.wpcomBaseURL,
-                                         wordPressComApiBaseUrl: WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL)
+        self.client = WordPressComOAuthClient(
+            clientID: client,
+            secret: secret,
+            wordPressComBaseURL: WordPressAuthenticator.shared.configuration.wpcomBaseURL,
+            wordPressComApiBaseURL: WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL
+        )
     }
 
     public func authenticate(

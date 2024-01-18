@@ -18,21 +18,21 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// WordPress.com Terms of Service URL
     ///
-    let wpcomTermsOfServiceURL: String
+    let wpcomTermsOfServiceURL: URL
 
     /// WordPress.com Base URL for OAuth
     ///
-    let wpcomBaseURL: String
+    let wpcomBaseURL: URL
 
     /// WordPress.com API Base URL
     ///
-    let wpcomAPIBaseURL: String
+    let wpcomAPIBaseURL: URL
 
     /// The URL of a webpage which has details about What is WordPress.com?.
     ///
     /// Displayed in the WordPress.com login page. The button/link will not be displayed if this value is nil.
     ///
-    let whatIsWPComURL: String?
+    let whatIsWPComURL: URL?
 
     /// GoogleLogin Client ID
     ///
@@ -179,10 +179,10 @@ public struct WordPressAuthenticatorConfiguration {
     public init (wpcomClientId: String,
                  wpcomSecret: String,
                  wpcomScheme: String,
-                 wpcomTermsOfServiceURL: String,
-                 wpcomBaseURL: String = WordPressComOAuthClient.WordPressComOAuthDefaultBaseUrl,
-                 wpcomAPIBaseURL: String = WordPressComOAuthClient.WordPressComOAuthDefaultApiBaseUrl,
-                 whatIsWPComURL: String? = nil,
+                 wpcomTermsOfServiceURL: URL,
+                 wpcomBaseURL: URL = WordPressComOAuthClient.WordPressComOAuthDefaultBaseURL,
+                 wpcomAPIBaseURL: URL = WordPressComOAuthClient.WordPressComOAuthDefaultApiBaseURL,
+                 whatIsWPComURL: URL? = nil,
                  googleLoginClientId: String,
                  googleLoginServerClientId: String,
                  googleLoginScheme: String,

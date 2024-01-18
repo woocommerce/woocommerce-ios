@@ -320,11 +320,10 @@ private extension GetStartedViewController {
 
     @IBAction func whatIsWPComButtonTapped(_ sender: UIButton) {
         tracker.track(click: .whatIsWPCom)
-        guard let whatIsWPCom = configuration.whatIsWPComURL,
-              let url = URL(string: whatIsWPCom) else {
+        guard let whatIsWPCom = configuration.whatIsWPComURL else {
             return
         }
-        UIApplication.shared.open(url)
+        UIApplication.shared.open(whatIsWPCom)
     }
 
     // MARK: - Hidden Password Field Action
@@ -860,12 +859,7 @@ private extension GetStartedViewController {
     @objc func termsTapped() {
         tracker.track(click: .termsOfService)
 
-        guard let url = URL(string: configuration.wpcomTermsOfServiceURL) else {
-            WPAuthenticatorLogError("GetStartedViewController: wpcomTermsOfServiceURL unavailable.")
-            return
-        }
-
-        UIApplication.shared.open(url)
+        UIApplication.shared.open(configuration.wpcomTermsOfServiceURL)
     }
 }
 

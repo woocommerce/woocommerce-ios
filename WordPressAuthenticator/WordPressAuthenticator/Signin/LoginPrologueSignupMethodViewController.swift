@@ -67,11 +67,8 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
                     WordPressAuthenticator.track(.signupTermsButtonTapped)
                 })
             }
-            guard let url = URL(string: WordPressAuthenticator.shared.configuration.wpcomTermsOfServiceURL) else {
-                return
-            }
 
-            let safariViewController = SFSafariViewController(url: url)
+            let safariViewController = SFSafariViewController(url: WordPressAuthenticator.shared.configuration.wpcomTermsOfServiceURL)
             safariViewController.modalPresentationStyle = .pageSheet
             self?.present(safariViewController, animated: true, completion: nil)
         }

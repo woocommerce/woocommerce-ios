@@ -31,7 +31,7 @@ public class WordPressComAccountService {
                  failure: @escaping (Error) -> Void) {
         let loggedAPI  = WordPressComRestApi(oAuthToken: wpcomAuthToken,
                                              userAgent: configuration.userAgent,
-                                             baseUrlString: configuration.wpcomAPIBaseURL)
+                                             baseURL: configuration.wpcomAPIBaseURL)
         let remote = AccountServiceRemoteREST(wordPressComRestApi: loggedAPI)
 
         remote.connectToSocialService(serviceName,
@@ -83,7 +83,7 @@ public class WordPressComAccountService {
     private var anonymousAPI: WordPressComRestApi {
         return WordPressComRestApi(oAuthToken: nil,
                                    userAgent: configuration.userAgent,
-                                   baseUrlString: configuration.wpcomAPIBaseURL)
+                                   baseURL: configuration.wpcomAPIBaseURL)
     }
 
     /// Returns the current WordPressAuthenticatorConfiguration Instance.

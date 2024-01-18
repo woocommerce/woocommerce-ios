@@ -8,7 +8,7 @@ extension WordPressAuthenticator {
                 wpcomClientId: "a",
                 wpcomSecret: "b",
                 wpcomScheme: "c",
-                wpcomTermsOfServiceURL: "d",
+                wpcomTermsOfServiceURL: URL(string: "https://w.org")!,
                 googleLoginClientId: "e",
                 googleLoginServerClientId: "f",
                 googleLoginScheme: "g",

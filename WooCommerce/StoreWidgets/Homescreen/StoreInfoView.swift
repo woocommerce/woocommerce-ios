@@ -36,6 +36,9 @@ private struct StoreInfoView: View {
     var body: some View {
         ZStack {
 
+            // Background
+            Color(.brand)
+
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                 VStack(alignment: .leading, spacing: Layout.cardSpacing) {
                     // Store Name
@@ -144,6 +147,9 @@ private struct AccessibilityStatsCard: View {
 private struct NotLoggedInView: View {
     var body: some View {
         ZStack {
+            // Background
+            Color(.brand)
+
             VStack {
                 Image(uiImage: .wooLogoWhite)
                     .resizable()
@@ -168,6 +174,9 @@ private struct NotLoggedInView: View {
 private struct UnableToFetchView: View {
     var body: some View {
         ZStack {
+            // Background
+            Color(.brand)
+
             VStack {
                 Image(uiImage: .wooLogoWhite)
                     .resizable()

@@ -540,6 +540,27 @@ private extension OrderListViewController {
     }
 }
 
+extension OrderListViewController {
+    /// Adds ability to select any order
+    /// Used when opening an order with deep link
+    func selectOrder(for orderID: Int64) {
+        // check if already selected
+        guard selectedOrderID != orderID else {
+            return
+        }
+        for identifier in dataSource.snapshot().itemIdentifiers {
+            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+               detailsViewModel.order.orderID == orderID,
+               let indexPath = dataSource.indexPath(for: identifier) {
+                selectedOrderID = orderID
+                selectedIndexPath = indexPath
+                switchDetailsHandler([detailsViewModel], 0, nil)
+                highlightSelectedRowIfNeeded()
+                return
+            }
+        }
+    }
+}
 
 // MARK: - Placeholders & Ghostable Table
 //

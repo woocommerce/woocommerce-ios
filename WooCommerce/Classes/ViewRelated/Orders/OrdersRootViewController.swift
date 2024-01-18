@@ -152,9 +152,15 @@ final class OrdersRootViewController: UIViewController {
         presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
     }
 
+    func selectOrder(for orderID: Int64) {
+        ordersViewController.selectOrder(for: orderID)
+    }
+
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
         let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
         navigationController?.pushViewController(loaderViewController, animated: true)
+
+        selectOrder(for: orderID)
     }
 
     /// Presents the Order Creation flow.

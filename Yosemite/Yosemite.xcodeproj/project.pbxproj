@@ -377,6 +377,10 @@
 		CE5F9A7A22B2D455001755E8 /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F9A7922B2D455001755E8 /* Array+Helpers.swift */; };
 		CECC504023675DF4004540EA /* RefundStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC503F23675DF4004540EA /* RefundStoreTests.swift */; };
 		CEE9188C29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */; };
+		CEF2DD992B56BEC500A3DD0B /* JetpackModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD982B56BEC500A3DD0B /* JetpackModule.swift */; };
+		CEF2DDA12B572D6F00A3DD0B /* JetpackSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DDA02B572D6F00A3DD0B /* JetpackSettingsStore.swift */; };
+		CEF2DDA32B572E4A00A3DD0B /* JetpackSettingsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DDA22B572E4A00A3DD0B /* JetpackSettingsAction.swift */; };
+		CEF2DDA72B57305500A3DD0B /* JetpackSettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DDA62B57305500A3DD0B /* JetpackSettingsStoreTests.swift */; };
 		D4CBAE5C26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CBAE5B26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift */; };
 		D4CBAE6026D440FA00BBE6D1 /* MockAnnouncementsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CBAE5F26D440FA00BBE6D1 /* MockAnnouncementsRemote.swift */; };
 		D4CBAE6226D4460900BBE6D1 /* AnnouncementsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CBAE6126D4460800BBE6D1 /* AnnouncementsStore.swift */; };
@@ -858,6 +862,10 @@
 		CE5F9A7922B2D455001755E8 /* Array+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
 		CECC503F23675DF4004540EA /* RefundStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundStoreTests.swift; sourceTree = "<group>"; };
 		CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		CEF2DD982B56BEC500A3DD0B /* JetpackModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackModule.swift; sourceTree = "<group>"; };
+		CEF2DDA02B572D6F00A3DD0B /* JetpackSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSettingsStore.swift; sourceTree = "<group>"; };
+		CEF2DDA22B572E4A00A3DD0B /* JetpackSettingsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSettingsAction.swift; sourceTree = "<group>"; };
+		CEF2DDA62B57305500A3DD0B /* JetpackSettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSettingsStoreTests.swift; sourceTree = "<group>"; };
 		D4CBAE5B26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsStoreTests.swift; sourceTree = "<group>"; };
 		D4CBAE5F26D440FA00BBE6D1 /* MockAnnouncementsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnnouncementsRemote.swift; sourceTree = "<group>"; };
 		D4CBAE6126D4460800BBE6D1 /* AnnouncementsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsStore.swift; sourceTree = "<group>"; };
@@ -1059,6 +1067,7 @@
 				03F3AFE628097D6400E328BE /* CardPresentPaymentsPlugin.swift */,
 				E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */,
 				B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */,
+				CEF2DD982B56BEC500A3DD0B /* JetpackModule.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -1531,6 +1540,7 @@
 				45E462132684C92D00011BF2 /* DataStore.swift */,
 				45151A9027B158A10080845F /* InboxNotesStore.swift */,
 				E16C59BA28F9393E007D55BB /* InAppPurchaseStore.swift */,
+				CEF2DDA02B572D6F00A3DD0B /* JetpackSettingsStore.swift */,
 				0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */,
 				7471401221877A8B009A11CC /* NotificationStore.swift */,
 				022F00BD24725BAF008CD97F /* NotificationCountStore.swift */,
@@ -1595,6 +1605,7 @@
 				03FBDA29263296C400ACE257 /* CouponStoreTests.swift */,
 				45E462152684D9C000011BF2 /* DataStoreTests.swift */,
 				45182D2227B55F9C00B4C05C /* InboxNotesStoreTests.swift */,
+				CEF2DDA62B57305500A3DD0B /* JetpackSettingsStoreTests.swift */,
 				03EB99912907EBB300F06A39 /* JustInTimeMessageStoreTests.swift */,
 				748525AB218A45360036DF75 /* NotificationStoreTests.swift */,
 				74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */,
@@ -1797,6 +1808,7 @@
 				45E462112684C7A400011BF2 /* DataAction.swift */,
 				45151A8E27B156E40080845F /* InboxNotesAction.swift */,
 				E16C59BC28F9394F007D55BB /* InAppPurchaseAction.swift */,
+				CEF2DDA22B572E4A00A3DD0B /* JetpackSettingsAction.swift */,
 				03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */,
 				02FF056223DE9C490058E6E7 /* MediaAction.swift */,
 				7471401021877668009A11CC /* NotificationAction.swift */,
@@ -2200,6 +2212,7 @@
 				45E462142684C92D00011BF2 /* DataStore.swift in Sources */,
 				02FF055423D983F30058E6E7 /* MediaExport.swift in Sources */,
 				74643EE1221F567E00EDC51A /* ShipmentAction.swift in Sources */,
+				CEF2DDA12B572D6F00A3DD0B /* JetpackSettingsStore.swift in Sources */,
 				02FF054E23D983F30058E6E7 /* MediaImageExporter.swift in Sources */,
 				2685C117263C98CF00D9EE97 /* AddOnGroupStore.swift in Sources */,
 				B9C0C1082A3C666A00DF84EA /* ProductVariationStorageManager.swift in Sources */,
@@ -2239,6 +2252,7 @@
 				45739F372437680F00480C95 /* ProductSettings.swift in Sources */,
 				247CE88725833F1200F9D9D1 /* MockObjectGraph.swift in Sources */,
 				741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */,
+				CEF2DDA32B572E4A00A3DD0B /* JetpackSettingsAction.swift in Sources */,
 				021940E4291E8A660090354E /* SiteAction.swift in Sources */,
 				02291735270BE18C00449FA0 /* ProductReviewFromNoteParcel.swift in Sources */,
 				74B260212188B5F30041793A /* Note+ReadOnlyType.swift in Sources */,
@@ -2285,6 +2299,7 @@
 				933A27352222352500C2143A /* Logging.swift in Sources */,
 				261CF1ED255B37B40090D8D3 /* PaymentGatewayAction.swift in Sources */,
 				74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */,
+				CEF2DD992B56BEC500A3DD0B /* JetpackModule.swift in Sources */,
 				02137907270AC5A0006430F7 /* MockReceiptActionHandler.swift in Sources */,
 				74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */,
 				D88E234525AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift in Sources */,
@@ -2530,6 +2545,7 @@
 				5758EB3324DC9631009ED8A6 /* InAppFeedbackCardVisibilityUseCaseTests.swift in Sources */,
 				B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */,
 				B5BC736E20D1AB3600B5B6FA /* Constants.swift in Sources */,
+				CEF2DDA72B57305500A3DD0B /* JetpackSettingsStoreTests.swift in Sources */,
 				02FF055D23D9846A0058E6E7 /* FileManager+URLTests.swift in Sources */,
 				748525AC218A45360036DF75 /* NotificationStoreTests.swift in Sources */,
 				26E5A09225A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift in Sources */,

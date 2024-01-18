@@ -71,7 +71,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     }
 
     @MainActor
-    func confirmPaymentDetails() async {
+    func submitCampaign() async {
         guard let selectedPaymentMethod else {
             DDLogError("⚠️ No payment method found for campaign creation!")
             return
@@ -81,12 +81,12 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         do {
             let updatedDetails = campaignInfo.copy(paymentMethodID: selectedPaymentMethod.id)
             try await requestCampaignCreation(details: updatedDetails)
+            completionHandler()
         } catch {
             DDLogError("⛔️ Error creating Blaze campaign: \(error)")
             shouldDisplayCampaignCreationError = true
         }
         isCreatingCampaign = false
-        completionHandler()
     }
 }
 

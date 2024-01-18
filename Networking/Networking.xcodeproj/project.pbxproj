@@ -715,6 +715,10 @@
 		CEE02EEB2B34811400162F63 /* DecodingError+CodingPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE02EEA2B34811400162F63 /* DecodingError+CodingPathTests.swift */; };
 		CEE9187D29F7D636004B23FF /* OrderGiftCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */; };
 		CEE9188129F7DC23004B23FF /* order-with-gift-cards.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE9188029F7DC23004B23FF /* order-with-gift-cards.json */; };
+		CEF2DD8C2B559C6E00A3DD0B /* jetpack-settings-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF2DD8B2B559C6E00A3DD0B /* jetpack-settings-success.json */; };
+		CEF2DD9B2B56D9D600A3DD0B /* JetpackSettingsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD9A2B56D9D600A3DD0B /* JetpackSettingsRemote.swift */; };
+		CEF2DD9D2B56E04F00A3DD0B /* jetpack-settings-invalid-module.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF2DD9C2B56E04F00A3DD0B /* jetpack-settings-invalid-module.json */; };
+		CEF2DD9F2B56E09E00A3DD0B /* JetpackSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD9E2B56E09E00A3DD0B /* JetpackSettingsRemoteTests.swift */; };
 		CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAA233E911A00BED485 /* order-fully-refunded.json */; };
 		CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */; };
 		CEF88DAF233E9F7E00BED485 /* order-details-partially-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */; };
@@ -1774,6 +1778,10 @@
 		CEE02EEA2B34811400162F63 /* DecodingError+CodingPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DecodingError+CodingPathTests.swift"; sourceTree = "<group>"; };
 		CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderGiftCard.swift; sourceTree = "<group>"; };
 		CEE9188029F7DC23004B23FF /* order-with-gift-cards.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-gift-cards.json"; sourceTree = "<group>"; };
+		CEF2DD8B2B559C6E00A3DD0B /* jetpack-settings-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "jetpack-settings-success.json"; sourceTree = "<group>"; };
+		CEF2DD9A2B56D9D600A3DD0B /* JetpackSettingsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSettingsRemote.swift; sourceTree = "<group>"; };
+		CEF2DD9C2B56E04F00A3DD0B /* jetpack-settings-invalid-module.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "jetpack-settings-invalid-module.json"; sourceTree = "<group>"; };
+		CEF2DD9E2B56E09E00A3DD0B /* JetpackSettingsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSettingsRemoteTests.swift; sourceTree = "<group>"; };
 		CEF88DAA233E911A00BED485 /* order-fully-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-fully-refunded.json"; sourceTree = "<group>"; };
 		CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensed.swift; sourceTree = "<group>"; };
 		CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-details-partially-refunded.json"; sourceTree = "<group>"; };
@@ -2325,6 +2333,7 @@
 				4513382127A8409000AE5E78 /* InboxNotesRemoteTests.swift */,
 				E13BAD5228F8625600217769 /* InAppPurchasesRemoteTests.swift */,
 				263659DD2A2694A000607A0D /* IPLocationRemoteTests.swift */,
+				CEF2DD9E2B56E09E00A3DD0B /* JetpackSettingsRemoteTests.swift */,
 				03EB99892906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift */,
 				020D07BF23D8587700FD9580 /* MediaRemoteTests.swift */,
 				B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */,
@@ -2481,6 +2490,7 @@
 				E18152BD28F85B5B0011A0EC /* InAppPurchasesRemote.swift */,
 				4513381F27A8227F00AE5E78 /* InboxNotesRemote.swift */,
 				263659DB2A264A3E00607A0D /* IPLocationRemote.swift */,
+				CEF2DD9A2B56D9D600A3DD0B /* JetpackSettingsRemote.swift */,
 				03EB99872906A78400F06A39 /* JustInTimeMessagesRemote.swift */,
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
@@ -2749,6 +2759,8 @@
 				DE50295F28C609A300551736 /* jetpack-connected-user.json */,
 				DE34051A28BDF12C00CF0D97 /* jetpack-connection-url.json */,
 				DE50296228C609DE00551736 /* jetpack-user-not-connected.json */,
+				CEF2DD8B2B559C6E00A3DD0B /* jetpack-settings-success.json */,
+				CEF2DD9C2B56E04F00A3DD0B /* jetpack-settings-invalid-module.json */,
 				02B41A91296BEB3000FE3311 /* load-site-current-plan-success.json */,
 				02B41A93296C04BC00FE3311 /* load-site-plans-no-current-plan.json */,
 				26B15E432A269F79000C35E4 /* ip-location.json */,
@@ -3811,6 +3823,7 @@
 				31054728262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json in Resources */,
 				DE42F9612967C88400D514C2 /* report-orders-total.json in Resources */,
 				31A451CC27863A2E00FE81AA /* stripe-account-rejected-fraud.json in Resources */,
+				CEF2DD8C2B559C6E00A3DD0B /* jetpack-settings-success.json in Resources */,
 				02AAFCD42A13517800F05E60 /* dotcom-plugins.json in Resources */,
 				31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */,
 				D865CE69278CA245002C8520 /* stripe-payment-intent-unknown-status.json in Resources */,
@@ -3951,6 +3964,7 @@
 				EE84D62B2B0B46E7008EA80A /* product-variation-subscription-incomplete.json in Resources */,
 				029B86902A6FBBE000E944D1 /* wcpay-account-null-isLive.json in Resources */,
 				02AED9D82AA03F3F006DC460 /* order-with-all-addon-types.json in Resources */,
+				CEF2DD9D2B56E04F00A3DD0B /* jetpack-settings-invalid-module.json in Resources */,
 				DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
 				31054710262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json in Resources */,
@@ -4401,6 +4415,7 @@
 				DE34051528BDEB1900CF0D97 /* WordPressOrgNetwork.swift in Sources */,
 				3192F224260D34C40067FEF9 /* WCPayAccountStatusEnum.swift in Sources */,
 				EEFAA57B295D7793003583BE /* AuthenticatedDotcomRequest.swift in Sources */,
+				CEF2DD9B2B56D9D600A3DD0B /* JetpackSettingsRemote.swift in Sources */,
 				D8FBFF2022D52553006E3336 /* OrderStatsV4Totals.swift in Sources */,
 				02C254B925637BA000A04423 /* OrderShippingLabelListMapper.swift in Sources */,
 				261CF1B8255AE62D0090D8D3 /* PaymentGatewayRemote.swift in Sources */,
@@ -4688,6 +4703,7 @@
 				4513382627A96DB700AE5E78 /* InboxNoteMapperTests.swift in Sources */,
 				7412A8EE21B6E335005D182A /* ReportOrderMapperTests.swift in Sources */,
 				AED8AEBC272A997500663FCC /* IgnoringResponseMapperTests.swift in Sources */,
+				CEF2DD9F2B56E09E00A3DD0B /* JetpackSettingsRemoteTests.swift in Sources */,
 				74CF0A8C22414D7800DB993F /* ProductMapperTests.swift in Sources */,
 				45152815257A83DD0076B03C /* ProductAttributesRemoteTests.swift in Sources */,
 				0286981629ED315000853B88 /* GenerativeContentRemoteTests.swift in Sources */,

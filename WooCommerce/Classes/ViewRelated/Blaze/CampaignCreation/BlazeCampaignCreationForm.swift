@@ -115,7 +115,7 @@ struct BlazeCampaignCreationForm: View {
                 Button {
                     // TODO: track tap
                 } label: {
-                    NavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel)) {
+                    LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel)) {
                         Text(Localization.confirmDetails)
                     }
                 }

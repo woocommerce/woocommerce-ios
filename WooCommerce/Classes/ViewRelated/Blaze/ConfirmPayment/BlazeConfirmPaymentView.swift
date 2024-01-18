@@ -6,6 +6,8 @@ struct BlazeConfirmPaymentView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
 
+    @State private var externalURL: URL?
+
     private let agreementText: NSAttributedString = {
         let content = String.localizedStringWithFormat(Localization.agreement, Localization.termsOfService, Localization.adPolicy, Localization.learnMore)
         let paragraph = NSMutableParagraphStyle()
@@ -66,6 +68,13 @@ struct BlazeConfirmPaymentView: View {
         .task {
             await viewModel.updatePaymentInfo()
         }
+        .alert(Text(Localization.errorMessage), isPresented: $viewModel.shouldDisplayErrorAlert, actions: {
+            Button(Localization.tryAgain) {
+                Task {
+                    await viewModel.updatePaymentInfo()
+                }
+            }
+        })
     }
 }
 
@@ -164,6 +173,11 @@ private extension BlazeConfirmPaymentView {
 
             AttributedText(agreementText)
                 .padding(.horizontal, Layout.contentPadding)
+                .environment(\.openURL, OpenURLAction { url in
+                    externalURL = url
+                    return .handled
+                })
+                .safariSheet(url: $externalURL)
         }
         .padding(.vertical, Layout.contentPadding)
         .background(Color(.systemBackground))
@@ -249,6 +263,16 @@ private extension BlazeConfirmPaymentView {
             "blazeConfirmPaymentView.learnMore",
             value: "Learn more",
             comment: "Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow."
+        )
+        static let errorMessage = NSLocalizedString(
+            "blazeConfirmPaymentView.errorMessage",
+            value: "Error loading your payment methods",
+            comment: "Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow."
+        )
+        static let tryAgain = NSLocalizedString(
+            "blazeConfirmPaymentView.tryAgain",
+            value: "Try Again",
+            comment: "Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow."
         )
     }
 }

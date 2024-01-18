@@ -343,14 +343,22 @@ private extension BlazeStore {
             do {
                 let stubbedResult = BlazePaymentInfo(
                     savedPaymentMethods: [
-                        .init(id: "payment-method-id",
+                        .init(id: "payment-method-id-1",
                               rawType: "credit_card",
                               name: "Visa **** 4689",
                               info: .init(lastDigits: "4689",
                                           expiring: .init(year: 2025, month: 2),
                                           type: "Visa",
                                           nickname: "",
-                                          cardholderName: "John Doe"))
+                                          cardholderName: "John Doe")),
+                        .init(id: "payment-method-id-2",
+                              rawType: "credit_card",
+                              name: "Visa **** 4654",
+                              info: .init(lastDigits: "4654",
+                                          expiring: .init(year: 2026, month: 5),
+                                          type: "Visa",
+                                          nickname: "",
+                                          cardholderName: "Mark Watney"))
                     ],
                     addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
                                             successUrl: "https://example.com/blaze-pm-success",

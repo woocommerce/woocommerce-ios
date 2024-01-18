@@ -60,7 +60,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     }
 
     @MainActor
-    func confirmPaymentDetails() async {
+    func submitCampaign() async {
         guard let selectedPaymentMethod else {
             DDLogError("⚠️ No payment method found for campaign creation!")
             return

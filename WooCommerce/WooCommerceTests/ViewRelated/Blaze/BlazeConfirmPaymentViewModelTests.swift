@@ -103,7 +103,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
                 break
             }
         }
-        await viewModel.confirmPaymentDetails()
+        await viewModel.submitCampaign()
 
         // Then
         XCTAssertFalse(didTriggerCampaignCreation)
@@ -123,7 +123,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         // When
         mockCampaignCreation(with: .success(Void()))
         await viewModel.updatePaymentInfo()
-        await viewModel.confirmPaymentDetails()
+        await viewModel.submitCampaign()
 
         // Then
         XCTAssertEqual(loadingStates, [false, true, false])
@@ -137,7 +137,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         // When
         mockCampaignCreation(with: .failure(NSError(domain: "test", code: 500)))
         await viewModel.updatePaymentInfo()
-        await viewModel.confirmPaymentDetails()
+        await viewModel.submitCampaign()
 
         // Then
         XCTAssertTrue(viewModel.shouldDisplayCampaignCreationError)
@@ -153,7 +153,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         // When
         mockCampaignCreation(with: .success(Void()))
         await viewModel.updatePaymentInfo()
-        await viewModel.confirmPaymentDetails()
+        await viewModel.submitCampaign()
 
         // Then
         XCTAssertTrue(completionHandlerTriggered)

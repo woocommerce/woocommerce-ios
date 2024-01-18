@@ -170,7 +170,7 @@ private extension BlazeConfirmPaymentView {
             Divider()
             Button(Localization.submitButton) {
                 Task {
-                    await viewModel.confirmPaymentDetails()
+                    await viewModel.submitCampaign()
                 }
             }
             .buttonStyle(PrimaryButtonStyle())

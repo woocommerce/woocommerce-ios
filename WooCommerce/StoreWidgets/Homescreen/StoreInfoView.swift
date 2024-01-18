@@ -8,14 +8,15 @@ struct StoreInfoHomescreenWidget: View {
     let entry: StoreInfoEntry
 
     var body: some View {
-        switch entry {
-        case .notConnected:
-            NotLoggedInView()
-        case .error:
-            UnableToFetchView()
-        case .data(let data):
-            StoreInfoView(entryData: data)
-        }
+
+            switch entry {
+            case .notConnected:
+                NotLoggedInView()
+            case .error:
+                UnableToFetchView()
+            case .data(let data):
+                StoreInfoView(entryData: data)
+            }
     }
 }
 
@@ -34,8 +35,6 @@ private struct StoreInfoView: View {
 
     var body: some View {
         ZStack {
-            // Background
-            Color(.brand)
 
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                 VStack(alignment: .leading, spacing: Layout.cardSpacing) {
@@ -59,6 +58,7 @@ private struct StoreInfoView: View {
                 }
             }
             .padding(.horizontal)
+            .widgetBackground(backgroundView: Color(.brand))
         }
     }
 }
@@ -144,9 +144,6 @@ private struct AccessibilityStatsCard: View {
 private struct NotLoggedInView: View {
     var body: some View {
         ZStack {
-            // Background
-            Color(.brand)
-
             VStack {
                 Image(uiImage: .wooLogoWhite)
                     .resizable()
@@ -164,15 +161,13 @@ private struct NotLoggedInView: View {
             }
             .padding(.vertical, Layout.cardVerticalPadding)
         }
+        .widgetBackground(backgroundView: Color(.clear))
     }
 }
 
 private struct UnableToFetchView: View {
     var body: some View {
         ZStack {
-            // Background
-            Color(.brand)
-
             VStack {
                 Image(uiImage: .wooLogoWhite)
                     .resizable()
@@ -187,6 +182,7 @@ private struct UnableToFetchView: View {
             }
             .padding(.vertical, Layout.cardVerticalPadding)
         }
+        .widgetBackground(backgroundView: Color(.brand))
     }
 }
 

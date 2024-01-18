@@ -109,8 +109,8 @@ private extension BlazePaymentMethodsViewModel {
 // MARK: - Methods for rendering a SwiftUI Preview
 //
 extension BlazePaymentMethodsViewModel {
-    static func samplePaymentInfo() -> BlazePaymentInfo {
-        BlazePaymentInfo(savedPaymentMethods: samplePaymentMethods(), addPaymentMethod: BlazeAddPaymentInfo(formUrl: "https://example.com/blaze-pm-add",
+    static func samplePaymentInfo(paymentMethods: [BlazePaymentMethod] = samplePaymentMethods()) -> BlazePaymentInfo {
+        BlazePaymentInfo(savedPaymentMethods: paymentMethods, addPaymentMethod: BlazeAddPaymentInfo(formUrl: "https://example.com/blaze-pm-add",
                                                                                                             successUrl: "https://example.com/blaze-pm-success",
                                                                                                             idUrlParameter: "pmid"))
     }

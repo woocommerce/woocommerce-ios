@@ -224,7 +224,7 @@ private extension BlazePaymentMethodsView {
             comment: "Notice that will be displayed after adding a new Blaze payment method")
         static let pleaseAddPaymentMethodMessage = NSLocalizedString(
             "blazePaymentMethodsView.pleaseAddPaymentMethodMessage",
-            value: "Please, add a new payment method",
+            value: "Please add a new payment method",
             comment: "Message that will be displayed if there are no Blaze payment methods.")
         static let errorMessage = NSLocalizedString(
             "blazePaymentMethodsView.errorMessage",
@@ -263,7 +263,14 @@ struct BlazePaymentMethodsView_Previews: PreviewProvider {
         })
 
         BlazePaymentMethodsView(viewModel: viewModel)
-            .colorScheme(.light)
-            .previewDisplayName("Light mode")
+
+        let emptyPaymentsViewModel = BlazePaymentMethodsViewModel(siteID: 123,
+                                                     paymentInfo: BlazePaymentMethodsViewModel.samplePaymentInfo(paymentMethods: []),
+                                                     selectedPaymentMethodID: nil,
+                                                     completion: { newPaymentID in
+        })
+
+        BlazePaymentMethodsView(viewModel: emptyPaymentsViewModel)
+            .previewDisplayName("No payment methods")
     }
 }

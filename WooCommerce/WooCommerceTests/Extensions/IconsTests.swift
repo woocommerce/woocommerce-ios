@@ -220,6 +220,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.externalProductImage)
     }
 
+    func test_bigErrorIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.bigErrorIcon)
+    }
+
     func testFilterImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.filterImage)
     }

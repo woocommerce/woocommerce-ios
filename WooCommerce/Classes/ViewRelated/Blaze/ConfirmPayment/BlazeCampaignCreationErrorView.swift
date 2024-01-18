@@ -19,11 +19,10 @@ struct BlazeCampaignCreationErrorView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.titlePadding) {
-                Image(systemName: "exclamationmark.circle")
+                Image(uiImage: .bigErrorIcon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Layout.errorIconSize * scale)
-                    .foregroundColor(Color(uiColor: .error))
                     .padding(.top, Layout.iconTopPadding)
 
                 Text(Localization.title)

@@ -82,6 +82,7 @@ final class OrderDetailsViewController: UIViewController {
         configureNavigationBar()
         configureTopLoaderView()
         configureTableView()
+        configureStackView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()
@@ -135,6 +136,18 @@ private extension OrderDetailsViewController {
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
+    }
+
+    func configureStackView() {
+        guard isSplitViewInOrdersTabEnabled else {
+            return
+        }
+        stackView.layer.borderWidth = Constants.borderWidth
+        stackView.layer.borderColor = UIColor.border.cgColor
+
+        let maxWidthConstraint = stackView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
+        maxWidthConstraint.priority = .required
+        NSLayoutConstraint.activate([maxWidthConstraint])
     }
 
     /// Setup: Navigation
@@ -896,6 +909,8 @@ private extension OrderDetailsViewController {
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
+        static let maxWidth = CGFloat(525)
+        static let borderWidth = CGFloat(0.5)
     }
 
     /// Mailing a receipt failed but the SDK didn't return a more specific error

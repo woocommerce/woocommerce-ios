@@ -6,7 +6,7 @@ public class WordpressAuthenticatorProvider: NSObject {
         return WordPressAuthenticatorConfiguration(wpcomClientId: "23456",
                                                    wpcomSecret: "arfv35dj57l3g2323",
                                                    wpcomScheme: "https",
-                                                   wpcomTermsOfServiceURL: "https://wordpress.com/tos/",
+                                                   wpcomTermsOfServiceURL: URL(string: "https://wordpress.com/tos/")!,
                                                    googleLoginClientId: "",
                                                    googleLoginServerClientId: "",
                                                    googleLoginScheme: "com.googleuserconsent.apps",

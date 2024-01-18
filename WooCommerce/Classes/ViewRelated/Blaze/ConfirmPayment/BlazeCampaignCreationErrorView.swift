@@ -14,25 +14,25 @@ struct BlazeCampaignCreationErrorView: View {
                     .frame(width: Layout.errorIconSize * scale)
                     .foregroundColor(Color(uiColor: .error))
 
-                Text("Error creating campaign")
+                Text(Localization.title)
                     .bold()
                     .largeTitleStyle()
 
                 VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                    Text("Something's not quite right.\nWe couldn't create your campaign.")
+                    Text(Localization.message)
                         .bodyStyle()
 
-                    Text("No payment has been taken.")
+                    Text(Localization.noPaymentTaken)
                         .headlineStyle()
 
-                    Text("Please try again, or contact support for assistance.")
+                    Text(Localization.suggestion)
                         .bodyStyle()
                 }
 
                 Button {
                     // TODO
                 } label: {
-                    Label("Get support", systemImage: "questionmark.circle")
+                    Label(Localization.getSupport, systemImage: "questionmark.circle")
                 }
 
                 Spacer()
@@ -42,12 +42,12 @@ struct BlazeCampaignCreationErrorView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: Layout.contentPadding) {
-                Button("Try Again") {
+                Button(Localization.tryAgain) {
                     // TODO
                 }
                 .buttonStyle(PrimaryButtonStyle())
 
-                Button("Cancel Campaign") {
+                Button(Localization.cancel) {
                     // TODO
                 }
                 .buttonStyle(SecondaryButtonStyle())
@@ -63,6 +63,45 @@ private extension BlazeCampaignCreationErrorView {
         static let errorIconSize: CGFloat = 56
         static let contentPadding: CGFloat = 16
         static let titlePadding: CGFloat = 32
+    }
+
+    enum Localization {
+        static let title = NSLocalizedString(
+            "blazeCampaignCreationErrorView.title",
+            value: "Error creating campaign",
+            comment: "Title of the Blaze campaign creation error screen."
+        )
+        static let message = NSLocalizedString(
+            "blazeCampaignCreationErrorView.message",
+            value: "Something's not quite right.\nWe couldn't create your campaign.",
+            comment: "Message on the Blaze campaign creation error screen. " +
+            "Keep '\n' as-is as it signals a line break."
+        )
+        static let noPaymentTaken = NSLocalizedString(
+            "blazeCampaignCreationErrorView.noPaymentTaken",
+            value: "No payment has been taken.",
+            comment: "Message on the Blaze campaign creation error screen."
+        )
+        static let suggestion = NSLocalizedString(
+            "blazeCampaignCreationErrorView.suggestion",
+            value: "Please try again, or contact support for assistance.",
+            comment: "Suggested message on the Blaze campaign creation error screen."
+        )
+        static let getSupport = NSLocalizedString(
+            "blazeCampaignCreationErrorView.getSupport",
+            value: "Get support",
+            comment: "Button to get support on the Blaze campaign creation error screen."
+        )
+        static let tryAgain = NSLocalizedString(
+            "blazeCampaignCreationErrorView.tryAgain",
+            value: "Try Again",
+            comment: "Button to try again on the Blaze campaign creation error screen."
+        )
+        static let cancel = NSLocalizedString(
+            "blazeCampaignCreationErrorView.cancel",
+            value: "Cancel Campaign",
+            comment: "Button to dismiss the flow on the Blaze campaign creation error screen."
+        )
     }
 }
 

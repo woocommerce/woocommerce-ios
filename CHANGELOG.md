@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 17.0
+Get ready for a smoother checkout and enhanced insights with our latest update! Our cash payment interface now glides in full-screen, letting you effortlessly input custom amounts and note them directly on the order—a handy change calculation is included. Plus, store admins, don't miss out on valuable data; our Analytics Hub now nudges you to activate Jetpack Stats for a complete performance view. Update now for a better, more intuitive WooCommerce experience!
+
 ## 16.9
 We've refined your order management experience! Now, when you choose a registered customer while creating an order, they're automatically linked, streamlining your workflow. Update now for a smoother, more secure handling of your sales!
 

@@ -22,7 +22,8 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
          super.tearDown()
      }
 
-    func test_given_disabled_i3_featureflag_when_no_product_id_supplied_then_navigate_to_webview() {
+    func test_webview_is_presented_when_blazei3NativeCampaignCreation_is_disabled() {
+    }
         // Given
         let navigationController = MockSourceNavigationController()
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)

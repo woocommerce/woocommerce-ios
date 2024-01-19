@@ -23,7 +23,6 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
      }
 
     func test_webview_is_presented_when_blazei3NativeCampaignCreation_is_disabled() {
-    }
         // Given
         let navigationController = MockSourceNavigationController()
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)
@@ -39,7 +38,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         sut.start()
 
         // Then
-        XCTAssertTrue(navigationController.shownViewControllers[0] is AuthenticatedWebViewController)
+        XCTAssertTrue(navigationController.shownViewControllers.first is AuthenticatedWebViewController)
     }
 
     func test_given_enabled_i3_featureflag_when_product_id_supplied_then_navigate_to_creation_form() {
@@ -86,7 +85,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         XCTAssertTrue(navigationController.shownViewControllers[0] is BlazeCampaignCreationFormHostingController)
     }
 
-    func test_given_enabled_i3_featureflag_when_no_product_id_supplied_and_there_are_multiple_eligible_products_then_navigate_to_product_selector() {
+    func test_given_enabled_i3_featureflag_when_no_product_id_supplied_and_there_are_multiple_eligible_products_then_navigate_to_product_selector() throws {
         // Given
         let navigationController = MockSourceNavigationController()
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)

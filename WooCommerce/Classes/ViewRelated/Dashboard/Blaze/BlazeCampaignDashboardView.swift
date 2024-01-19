@@ -52,7 +52,6 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 private extension BlazeCampaignDashboardViewHostingController {
     /// Reloads data and shows campaign list.
     func handlePostCreation() {
-        parentNavigationController.popViewController(animated: true)
         Task {
             await viewModel.reload()
         }
@@ -183,7 +182,7 @@ private extension BlazeCampaignDashboardView {
                 createCampaignTapped?()
             }
         } label: {
-            Text(Localization.createCampaign)
+            Text(Localization.promote)
                 .fontWeight(.semibold)
                 .foregroundColor(.init(uiColor: .accent))
                 .bodyStyle()
@@ -259,8 +258,9 @@ private extension BlazeCampaignDashboardView {
             comment: "Button when tapped will show the Blaze campaign list."
         )
 
-        static let createCampaign = NSLocalizedString(
-            "Create campaign",
+        static let promote = NSLocalizedString(
+            "blazeCampaignDashboardView.promote",
+            value: "Promote",
             comment: "Button when tapped will launch create Blaze campaign flow."
         )
 

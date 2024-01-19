@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Experiments
 import protocol Storage.StorageManagerType
 
 /// Conformance to support listing in SwiftUI
@@ -11,6 +12,7 @@ extension BlazeCampaign: Identifiable {
 
 /// View model for `BlazeCampaignListView`
 final class BlazeCampaignListViewModel: ObservableObject {
+
     @Published private(set) var campaigns: [BlazeCampaign] = []
     @Published var shouldDisplayPostCampaignCreationTip = false
     @Published var shouldShowIntroView = false {
@@ -134,7 +136,6 @@ private extension BlazeCampaignListViewModel {
         resultsController.onDidResetContent = { [weak self] in
             self?.updateResults()
         }
-
         do {
             try resultsController.performFetch()
             updateResults()

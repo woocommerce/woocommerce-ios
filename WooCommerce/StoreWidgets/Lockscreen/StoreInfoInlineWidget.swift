@@ -8,12 +8,15 @@ struct StoreInfoInlineWidget: View {
     let entry: StoreInfoEntry
 
     var body: some View {
-        switch entry {
-        case .data(let data):
-            StoreInfoInlineView(entryData: data)
-        case .notConnected, .error:
-            UnableToFetchView()
+        Group {
+            switch entry {
+            case .data(let data):
+                StoreInfoInlineView(entryData: data)
+            case .notConnected, .error:
+                UnableToFetchView()
+            }
         }
+        .widgetBackground(backgroundView: Color(.clear))
     }
 }
 

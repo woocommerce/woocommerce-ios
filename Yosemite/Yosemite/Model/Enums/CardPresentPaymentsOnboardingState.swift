@@ -1,15 +1,13 @@
 import WooFoundation
 
 /// Represents the possible states for onboarding to In-Person payments
+/// The states are specific to the onboarding UX in the app, and are based on the WooPayments onboarding state and the UI state determined in
+/// `CardPresentPaymentsOnboardingUseCaseProtocol`.
+/// The WooPayments onboarding state comes from the payments backend, and is represented by a different enum `WCPayAccountStatusEnum`.
 public enum CardPresentPaymentOnboardingState: Equatable {
     /// The app is loading the required data to check for the current state
     ///
     case loading
-
-    /// All the requirements are temporarily met and the feature is ready to use.
-    /// While the account is in good standing, additional information might be required if a payment volume threshold is reached
-    ///
-    case enabled
 
     /// All the requirements are met and the feature is ready to use
     ///
@@ -87,8 +85,6 @@ extension CardPresentPaymentOnboardingState {
         switch self {
         case .loading:
             return "loading"
-        case .enabled:
-            return "enabled"
         case .completed:
             return "completed"
         case .selectPlugin:

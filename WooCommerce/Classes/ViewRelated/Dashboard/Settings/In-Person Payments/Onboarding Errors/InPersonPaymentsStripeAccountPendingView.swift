@@ -1,9 +1,12 @@
 import SwiftUI
+import enum Yosemite.CardPresentPaymentsPlugin
 
 struct InPersonPaymentsStripeAccountPending: View {
     let deadline: Date?
     let analyticReason: String
     let onSkip: () -> ()
+
+    private let plugin: CardPresentPaymentsPlugin = .stripe
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -16,9 +19,11 @@ struct InPersonPaymentsStripeAccountPending: View {
             supportLink: true,
             learnMore: true,
             analyticReason: analyticReason,
+            plugin: plugin,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.skipButton,
                 analyticReason: analyticReason,
+                plugin: plugin,
                 action: onSkip
             )
         )

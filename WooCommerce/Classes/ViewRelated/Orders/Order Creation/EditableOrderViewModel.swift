@@ -376,10 +376,6 @@ final class EditableOrderViewModel: ObservableObject {
 
     @Published private(set) var orderTotal: String = ""
 
-    @Published var collectPaymentViewModel: PaymentMethodsViewModel? = nil
-
-    @Published var shouldPresentCollectPayment: Bool = false
-
     /// Saves a shipping line.
     ///
     /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
@@ -795,14 +791,14 @@ final class EditableOrderViewModel: ObservableObject {
     func collectPayment(for order: Order) {
         let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
 
-        self.collectPaymentViewModel = PaymentMethodsViewModel(
+        let collectPaymentViewModel = PaymentMethodsViewModel(
             siteID: siteID,
             orderID: order.orderID,
             paymentLink: order.paymentURL,
             formattedTotal: formattedTotal,
             flow: .orderCreation)
 
-        self.shouldPresentCollectPayment = true
+        onFinishAndCollectPayment(order, collectPaymentViewModel)
     }
 
     /// Action triggered on `Done` button tap in order editing flow.
@@ -816,6 +812,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// For edition it means that the merchant has finished editing the order.
     ///
     var onFinished: (Order) -> Void = { _ in }
+
+    var onFinishAndCollectPayment: (Order, PaymentMethodsViewModel) -> Void = { _, _ in }
 
     /// Updates the order status & tracks its event
     ///
@@ -895,7 +893,6 @@ final class EditableOrderViewModel: ObservableObject {
             guard let self else { return }
             self.collectPayment(for: order)
             self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
-            self.onFinished(order)
         } onFailure: { [weak self] error, usesGiftCard in
             guard let self else { return }
             self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)

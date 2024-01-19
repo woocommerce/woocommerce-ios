@@ -49,6 +49,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingAdDestinationScreen = false
     @State private var isShowingDevicePicker = false
     @State private var isShowingTopicPicker = false
+    @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
@@ -86,8 +87,8 @@ struct BlazeCampaignCreationForm: View {
                     divider
 
                     // Location
-                    detailView(title: Localization.location, content: "All") {
-                        // TODO: open location screen
+                    detailView(title: Localization.location, content: viewModel.targetLocationText) {
+                        isShowingLocationPicker = true
                     }
 
                     divider
@@ -111,10 +112,14 @@ struct BlazeCampaignCreationForm: View {
             VStack(spacing: 0) {
                 Divider()
 
-                Button(Localization.confirmDetails) {
-                    // TODO: handle campaign creation
+                Button {
+                    // TODO: track tap
+                } label: {
+                    LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel)) {
+                        Text(Localization.confirmDetails)
+                    }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
+                .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.contentPadding)
                 .disabled(!viewModel.canConfirmDetails)
             }
@@ -139,6 +144,11 @@ struct BlazeCampaignCreationForm: View {
         .sheet(isPresented: $isShowingTopicPicker) {
             BlazeTargetTopicPickerView(viewModel: viewModel.targetTopicViewModel) {
                 isShowingTopicPicker = false
+            }
+        }
+        .sheet(isPresented: $isShowingLocationPicker) {
+            BlazeTargetLocationPickerView(viewModel: viewModel.targetLocationViewModel) {
+                isShowingLocationPicker = false
             }
         }
         .onChange(of: viewModel.error) { newValue in
@@ -217,6 +227,7 @@ private extension BlazeCampaignCreationForm {
                     .foregroundColor(.accentColor)
             })
             .buttonStyle(.plain)
+            .disabled(!viewModel.canEditAd)
             .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
             .shimmering(active: !viewModel.canEditAd)
         }
@@ -349,6 +360,6 @@ private extension BlazeCampaignCreationForm {
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123) {})
+        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
     }
 }

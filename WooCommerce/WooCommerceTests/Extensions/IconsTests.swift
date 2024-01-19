@@ -220,6 +220,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.externalProductImage)
     }
 
+    func test_bigErrorIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.bigErrorIcon)
+    }
+
     func testFilterImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.filterImage)
     }
@@ -252,8 +256,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.houseImage)
     }
 
-    func test_hourglass_is_not_nil() {
-        XCTAssertNotNil(UIImage.hourglass)
+    func test_wooHourglass_is_not_nil() {
+        XCTAssertNotNil(UIImage.wooHourglass)
     }
 
     func testHouseOutlinedImageIconIsNotNil() {
@@ -599,6 +603,14 @@ final class IconsTests: XCTestCase {
 
     func testStatsAltImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.statsAltImage)
+    }
+
+    func test_search_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.searchImage)
+    }
+
+    func test_searchNoResult_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.searchNoResultImage)
     }
 
     func testTrashImageIconIsNotNil() {

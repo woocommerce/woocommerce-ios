@@ -58,6 +58,17 @@ struct OrderListCellViewModel {
     var statusString: String {
         return orderStatus?.name ?? order.status.rawValue
     }
+
+    /// Accessory view that renders the cell's disclosure indicator
+    ///
+    var accessoryView: UIImageView? {
+        guard let image = UIImage(systemName: "chevron.right") else {
+            return nil
+        }
+        let accessoryView = UIImageView(image: image, highlightedImage: nil)
+        accessoryView.tintColor = .tertiaryLabel
+        return accessoryView
+    }
 }
 
 // MARK: - Constants

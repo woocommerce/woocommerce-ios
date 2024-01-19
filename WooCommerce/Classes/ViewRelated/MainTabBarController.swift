@@ -190,24 +190,30 @@ final class MainTabBarController: UITabBarController {
     /// Switches the TabBarController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
-        navigateToTabWithNavigationController(tab, animated: animated) { _ in
+        navigateToTabWithViewController(tab, animated: animated) { _ in
             completion?()
         }
     }
 
-    /// Switches the TabBarController to the specified tab and pops to root of the tab.
+    /// Switches the TabBarController to the specified tab and pops to root of the tab if the root is a `UINavigationController`.
     ///
     /// - Parameters:
     ///   - tab: The tab to switch to.
     ///   - animated: Whether the tab switch is animated.
-    ///   - completion: Invoked when switching to the tab's root screen is complete.
-    func navigateToTabWithNavigationController(_ tab: WooTab, animated: Bool = false, completion: ((UINavigationController) -> Void)? = nil) {
+    ///   - completion: Invoked when switching to the tab's root screen is complete with the root view controller.
+    func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
         dismiss(animated: animated) { [weak self] in
-            self?.selectedIndex = tab.visibleIndex()
-            if let navController = self?.selectedViewController as? UINavigationController {
+            guard let self else { return }
+            selectedIndex = tab.visibleIndex()
+            guard let selectedViewController else {
+                return
+            }
+            if let navController = selectedViewController as? UINavigationController {
                 navController.popToRootViewController(animated: animated) {
                     completion?(navController)
                 }
+            } else {
+                completion?(selectedViewController)
             }
         }
     }
@@ -380,7 +386,7 @@ extension MainTabBarController {
         case .storeOrder:
             switchToOrdersTab {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-                    (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: note)
+                    ordersTabSplitViewWrapper()?.presentDetails(for: note)
                 } else {
                     (childViewController() as? OrdersRootViewController)?.presentDetails(for: note)
                 }
@@ -444,10 +450,18 @@ extension MainTabBarController {
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            (childViewController() as? OrdersSplitViewWrapperController)?.presentDetails(for: orderID, siteID: siteID)
+            ordersTabSplitViewWrapper()?.presentDetails(for: orderID, siteID: siteID)
         } else {
             (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
         }
+    }
+
+    private static func ordersTabSplitViewWrapper() -> OrdersSplitViewWrapperController? {
+        guard let ordersTabController = childViewController() as? TabContainerController,
+              let ordersSplitViewWrapperController = ordersTabController.wrappedController as? OrdersSplitViewWrapperController else {
+            return nil
+        }
+        return ordersSplitViewWrapperController
     }
 
     static func presentPayments() {

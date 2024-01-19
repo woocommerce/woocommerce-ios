@@ -4,9 +4,9 @@ import WooFoundation
 import protocol Storage.StorageManagerType
 import struct Networking.BlazeAISuggestion
 import Photos
+import class Networking.UserAgent
 
 /// View model for `BlazeCampaignCreationForm`
-@MainActor
 final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     let siteID: Int64
@@ -14,6 +14,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private let stores: StoresManager
     private let productImageLoader: ProductUIImageLoader
     private let completionHandler: () -> Void
+
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .none
@@ -48,7 +49,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                   pageTopics: pageTopics?.map { $0.id })
     }
 
-    var budgetSettingViewModel: BlazeBudgetSettingViewModel {
+    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     duration: duration,
@@ -60,7 +61,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
-    }
+    }()
 
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
@@ -77,31 +78,45 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel {
+    lazy private(set) var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
         BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
             self?.languages = selectedLanguages
             self?.updateTargetLanguagesText()
         }
-    }
+    }()
 
-    var targetDeviceViewModel: BlazeTargetDevicePickerViewModel {
+    lazy private(set) var targetDeviceViewModel: BlazeTargetDevicePickerViewModel = {
         BlazeTargetDevicePickerViewModel(siteID: siteID, selectedDevices: devices) { [weak self] selectedDevices in
             self?.devices = selectedDevices
             self?.updateTargetDevicesText()
         }
-    }
+    }()
 
-    var targetTopicViewModel: BlazeTargetTopicPickerViewModel {
+    lazy private(set) var targetTopicViewModel: BlazeTargetTopicPickerViewModel = {
         BlazeTargetTopicPickerViewModel(siteID: siteID, selectedTopics: pageTopics) { [weak self] topics in
             self?.pageTopics = topics
             self?.updateTargetTopicText()
         }
-    }
+    }()
+
+    lazy private(set) var targetLocationViewModel: BlazeTargetLocationPickerViewModel = {
+        BlazeTargetLocationPickerViewModel(siteID: siteID, selectedLocations: locations) { [weak self] locations in
+            self?.locations = locations
+            self?.updateTargetLocationText()
+        }
+    }()
+
+    lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
+        BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo, onCompletion: { [weak self] in
+            self?.completionHandler()
+        })
+    }()
 
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""
     @Published private(set) var targetTopicText: String = ""
+    @Published private(set) var targetLocationText: String = ""
 
     // AI Suggestions
     @Published private(set) var isLoadingAISuggestions: Bool = true
@@ -120,7 +135,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private var isLoadingProductImage: Bool = true
 
     var canEditAd: Bool {
-        !(isLoadingProductImage || isLoadingAISuggestions)
+        !isLoadingAISuggestions
     }
 
     var canConfirmDetails: Bool {
@@ -140,6 +155,26 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         return controller
     }()
 
+    private let targetUrn: String
+
+    private var campaignInfo: CreateBlazeCampaign {
+        CreateBlazeCampaign(origin: Constants.campaignOrigin,
+                            originVersion: UserAgent.bundleShortVersion,
+                            paymentMethodID: "", // to-be updated later on the payment screen
+                            startDate: startDate,
+                            endDate: startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration)),
+                            timeZone: TimeZone.current.identifier,
+                            totalBudget: dailyBudget * Double(duration),
+                            siteName: tagline,
+                            textSnippet: description,
+                            targetUrl: "", // TODO: update this
+                            urlParams: "", // TODO: update this
+                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // TODO: update this
+                            targeting: targetOptions,
+                            targetUrn: targetUrn,
+                            type: Constants.campaignType)
+    }
+
     init(siteID: Int64,
          productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -152,11 +187,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.storage = storage
         self.productImageLoader = productImageLoader
         self.completionHandler = onCompletion
+        self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
         updateBudgetDetails()
         updateTargetLanguagesText()
         updateTargetDevicesText()
         updateTargetTopicText()
+        updateTargetLocationText()
     }
 
     func didTapEditAd() {
@@ -166,6 +203,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
 // MARK: Image download
 extension BlazeCampaignCreationFormViewModel {
+    @MainActor
     func downloadProductImage() async {
         isLoadingProductImage = true
         image = await loadProductImage()
@@ -188,6 +226,7 @@ private extension BlazeCampaignCreationFormViewModel {
 
 // MARK: - Blaze AI Suggestions
 extension BlazeCampaignCreationFormViewModel {
+    @MainActor
     func loadAISuggestions() async {
         isLoadingAISuggestions = true
         error = nil
@@ -279,6 +318,18 @@ private extension BlazeCampaignCreationFormViewModel {
                 .joined(separator: ", ")
         }()
     }
+
+    func updateTargetLocationText() {
+        targetLocationText = {
+            guard let locations, locations.isEmpty == false else {
+                return Localization.everywhere
+            }
+            return locations
+                .map { $0.name }
+                .sorted()
+                .joined(separator: ", ")
+        }()
+    }
 }
 
 extension BlazeCampaignCreationFormViewModel {
@@ -288,6 +339,14 @@ extension BlazeCampaignCreationFormViewModel {
 }
 
 private extension BlazeCampaignCreationFormViewModel {
+    enum Constants {
+        /// origin the of the created campaign, used for analytics.
+        static let campaignOrigin = "wc-ios"
+        /// We are supporting product promotion only for now.
+        static let campaignType = "product"
+        static let oneDayInSeconds: Double = 86400
+        static let targetUrnFormat = "urn:wpcom:post:%d:%d"
+    }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.budgetSingleDay",
@@ -311,6 +370,11 @@ private extension BlazeCampaignCreationFormViewModel {
             "blazeCampaignCreationFormViewModel.all",
             value: "All",
             comment: "Text indicating all targets for a Blaze campaign"
+        )
+        static let everywhere = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.everywhere",
+            value: "Everywhere",
+            comment: "Text indicating all locations for a Blaze campaign"
         )
     }
 }

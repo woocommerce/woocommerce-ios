@@ -58,6 +58,7 @@ final class BlazeTargetOptionMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.parentLocation?.parentLocation?.id, 228)
         XCTAssertEqual(firstItem.parentLocation?.parentLocation?.parentLocation?.id, 5)
         XCTAssertNil(firstItem.parentLocation?.parentLocation?.parentLocation?.parentLocation)
+        XCTAssertEqual(firstItem.allParentLocationNames, ["Comunidad De Madrid", "Spain", "Europe"])
     }
 }
 

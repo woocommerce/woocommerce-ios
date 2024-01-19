@@ -19,6 +19,7 @@ enum BlazeCampaignListSource: String {
 /// Hosting controller for `BlazeCampaignListView`
 ///
 final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaignListView> {
+    private var coordinator: BlazeCampaignCreationCoordinator?
 
     /// View model for the list.
     private let viewModel: BlazeCampaignListViewModel
@@ -33,14 +34,19 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] in
-            let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
-                                                 source: .campaignList,
-                                                 siteURL: viewModel.siteURL,
-                                                 productID: nil) {
-                self?.handlePostCreation()
+            guard let self = self, let navigationController = self.navigationController else {
+                return
             }
-            let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
-            self?.navigationController?.show(webViewController, sender: self)
+
+            let coordinator = BlazeCampaignCreationCoordinator(
+                siteID: viewModel.siteID,
+                siteURL: viewModel.siteURL,
+                source: .campaignList,
+                navigationController: navigationController,
+                onCampaignCreated: self.handlePostCreation
+            )
+            self.coordinator = coordinator
+            coordinator.start()
         }
     }
 
@@ -52,7 +58,6 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
     }
 
     func handlePostCreation() {
-        navigationController?.popViewController(animated: true)
         viewModel.loadCampaigns()
         viewModel.checkIfPostCreationTipIsNeeded()
     }

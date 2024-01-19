@@ -175,6 +175,24 @@ extension Networking.BlazeAISuggestion {
     }
 }
 
+extension Networking.BlazeAddPaymentInfo {
+    public func copy(
+        formUrl: CopiableProp<String> = .copy,
+        successUrl: CopiableProp<String> = .copy,
+        idUrlParameter: CopiableProp<String> = .copy
+    ) -> Networking.BlazeAddPaymentInfo {
+        let formUrl = formUrl ?? self.formUrl
+        let successUrl = successUrl ?? self.successUrl
+        let idUrlParameter = idUrlParameter ?? self.idUrlParameter
+
+        return Networking.BlazeAddPaymentInfo(
+            formUrl: formUrl,
+            successUrl: successUrl,
+            idUrlParameter: idUrlParameter
+        )
+    }
+}
+
 extension Networking.BlazeCampaign {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -225,6 +243,81 @@ extension Networking.BlazeImpressions {
         return Networking.BlazeImpressions(
             totalImpressionsMin: totalImpressionsMin,
             totalImpressionsMax: totalImpressionsMax
+        )
+    }
+}
+
+extension Networking.BlazePaymentInfo {
+    public func copy(
+        savedPaymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy,
+        addPaymentMethod: CopiableProp<BlazeAddPaymentInfo> = .copy
+    ) -> Networking.BlazePaymentInfo {
+        let savedPaymentMethods = savedPaymentMethods ?? self.savedPaymentMethods
+        let addPaymentMethod = addPaymentMethod ?? self.addPaymentMethod
+
+        return Networking.BlazePaymentInfo(
+            savedPaymentMethods: savedPaymentMethods,
+            addPaymentMethod: addPaymentMethod
+        )
+    }
+}
+
+extension Networking.BlazePaymentMethod {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        rawType: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        info: CopiableProp<BlazePaymentMethod.Info> = .copy
+    ) -> Networking.BlazePaymentMethod {
+        let id = id ?? self.id
+        let rawType = rawType ?? self.rawType
+        let name = name ?? self.name
+        let info = info ?? self.info
+
+        return Networking.BlazePaymentMethod(
+            id: id,
+            rawType: rawType,
+            name: name,
+            info: info
+        )
+    }
+}
+
+extension Networking.BlazePaymentMethod.ExpiringInfo {
+    public func copy(
+        year: CopiableProp<Int> = .copy,
+        month: CopiableProp<Int> = .copy
+    ) -> Networking.BlazePaymentMethod.ExpiringInfo {
+        let year = year ?? self.year
+        let month = month ?? self.month
+
+        return Networking.BlazePaymentMethod.ExpiringInfo(
+            year: year,
+            month: month
+        )
+    }
+}
+
+extension Networking.BlazePaymentMethod.Info {
+    public func copy(
+        lastDigits: CopiableProp<String> = .copy,
+        expiring: CopiableProp<BlazePaymentMethod.ExpiringInfo> = .copy,
+        type: CopiableProp<String> = .copy,
+        nickname: NullableCopiableProp<String> = .copy,
+        cardholderName: CopiableProp<String> = .copy
+    ) -> Networking.BlazePaymentMethod.Info {
+        let lastDigits = lastDigits ?? self.lastDigits
+        let expiring = expiring ?? self.expiring
+        let type = type ?? self.type
+        let nickname = nickname ?? self.nickname
+        let cardholderName = cardholderName ?? self.cardholderName
+
+        return Networking.BlazePaymentMethod.Info(
+            lastDigits: lastDigits,
+            expiring: expiring,
+            type: type,
+            nickname: nickname,
+            cardholderName: cardholderName
         )
     }
 }

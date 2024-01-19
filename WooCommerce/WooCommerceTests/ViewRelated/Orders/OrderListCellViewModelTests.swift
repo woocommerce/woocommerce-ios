@@ -61,4 +61,20 @@ final class OrderListCellViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.status, order.status)
         XCTAssertEqual(viewModel.statusString, order.status.rawValue)
     }
+
+    func test_OrderListCell_accessoryView_uses_chevron_with_tertiaryLabel_tint_as_disclosure_indicator() {
+        // Given
+        let order = MockOrders().sampleOrder()
+        let expectedImage = UIImage(systemName: "chevron.right")
+
+        // When
+        let viewModel = OrderListCellViewModel(order: order, status: nil)
+
+        // Then
+        guard let accessoryView = viewModel.accessoryView else {
+            return XCTFail("Cell does not have an accessory view.")
+        }
+        XCTAssertEqual(accessoryView.image, expectedImage)
+        XCTAssertEqual(accessoryView.tintColor, .tertiaryLabel)
+    }
 }

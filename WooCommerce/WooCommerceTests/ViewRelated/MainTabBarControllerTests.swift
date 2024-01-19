@@ -475,7 +475,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual("product", analyticsProvider.receivedProperties[safe: 1]?["type"] as? String)
     }
 
-    func test_navigateToTabWithNavigationController_returns_UINavigationController_of_the_newly_selected_tab() throws {
+    func test_navigateToTabWithNavigationController_returns_UIViewController_of_the_newly_selected_tab() throws {
         // Given
         stores.updateDefaultStore(storeID: 134)
 
@@ -486,7 +486,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // When
         let navigationController = waitFor { promise in
-            tabBarController.navigateToTabWithNavigationController(.products, animated: false) { navigationController in
+            tabBarController.navigateToTabWithViewController(.products, animated: false) { navigationController in
                 promise(navigationController)
             }
         }
@@ -494,6 +494,81 @@ final class MainTabBarControllerTests: XCTestCase {
         // Then
         XCTAssertEqual(tabBarController.selectedIndex, WooTab.products.visibleIndex())
         XCTAssertEqual(tabBarController.selectedViewController, navigationController)
+    }
+
+    func test_navigateToOrderDetails_for_the_same_store_switches_to_orders_tab_and_opens_order() throws {
+        // Given
+        let siteID: Int64 = 256
+        stores.updateDefaultStore(storeID: siteID)
+
+        let mockFeatureFlagService = MockFeatureFlagService(isSplitViewInOrdersTabOn: true)
+        ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
+
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        TestingAppDelegate.mockTabBarController = tabBarController
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        MainTabBarController.navigateToOrderDetails(with: 155, siteID: siteID)
+        waitUntil {
+            tabBarController.selectedViewController is TabContainerController
+        }
+
+        // Then
+        XCTAssertEqual(tabBarController.selectedIndex, WooTab.orders.visibleIndex())
+        let tabContainerController = try XCTUnwrap(tabBarController.selectedViewController as? TabContainerController)
+        let ordersSplitViewWrapper = try XCTUnwrap(tabContainerController.wrappedController as? OrdersSplitViewWrapperController)
+        let splitViewController = try XCTUnwrap(ordersSplitViewWrapper.children.first as? UISplitViewController)
+        let secondaryViewController = try XCTUnwrap((splitViewController.viewController(for: .secondary) as? UINavigationController)?.topViewController)
+        assertThat(secondaryViewController, isAnInstanceOf: OrderLoaderViewController.self)
+
+        // Resets the tab bar controller mock at the end of the test.
+        TestingAppDelegate.mockTabBarController = nil
+    }
+
+    func test_presentNotificationDetails_for_the_same_store_switches_to_orders_tab_and_opens_order() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(stores)
+
+        let siteID: Int64 = 256
+        stores.updateDefaultStore(storeID: siteID)
+
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            guard case let .synchronizeNotification(_, completion) = action else {
+                return
+            }
+            let note = MockNote().makeOrderNote(metaSiteID: siteID, metaOrderID: 612)
+            completion(note, nil)
+        }
+
+        let mockFeatureFlagService = MockFeatureFlagService(isSplitViewInOrdersTabOn: true)
+        ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
+
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        TestingAppDelegate.mockTabBarController = tabBarController
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        MainTabBarController.presentNotificationDetails(for: 1)
+        waitUntil {
+            tabBarController.selectedViewController is TabContainerController
+        }
+
+        // Then
+        XCTAssertEqual(tabBarController.selectedIndex, WooTab.orders.visibleIndex())
+        let tabContainerController = try XCTUnwrap(tabBarController.selectedViewController as? TabContainerController)
+        let ordersSplitViewWrapper = try XCTUnwrap(tabContainerController.wrappedController as? OrdersSplitViewWrapperController)
+        let splitViewController = try XCTUnwrap(ordersSplitViewWrapper.children.first as? UISplitViewController)
+        let secondaryViewController = try XCTUnwrap((splitViewController.viewController(for: .secondary) as? UINavigationController)?.topViewController)
+        assertThat(secondaryViewController, isAnInstanceOf: OrderLoaderViewController.self)
+
+        // Resets the tab bar controller mock at the end of the test.
+        TestingAppDelegate.mockTabBarController = nil
     }
 }
 

@@ -401,6 +401,12 @@ extension UIImage {
         return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
     }
 
+    /// Big error icon
+    ///
+    static var bigErrorIcon: UIImage {
+        return UIImage(named: "error-big-icon")!
+    }
+
     /// Subscription Product
     ///
     static var subscriptionProductImage: UIImage {

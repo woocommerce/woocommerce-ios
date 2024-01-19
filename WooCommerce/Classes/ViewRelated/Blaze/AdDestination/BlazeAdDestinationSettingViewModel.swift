@@ -86,43 +86,15 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         self.initialFinalDestinationURL = finalDestinationURL
         self.onSave = onSave
 
-        setStartingDestinationType()
-        setStartingParameters()
+        initializeDestinationType()
+        initializeParameters()
     }
-
-    private func setStartingDestinationType() {
-        if initialFinalDestinationURL.hasPrefix(productURL) {
-            selectedDestinationType = .product
-        } else {
-            selectedDestinationType = .home
-        }
-    }
-
-    private func setStartingParameters() {
-        if let finalDestinationURL = URL(string: initialFinalDestinationURL),
-           let urlComponents = URLComponents(url: finalDestinationURL, resolvingAgainstBaseURL: false) {
-            parameters = urlComponents.toBlazeAdURLParameters()
-        }
-    }
-
     func setDestinationType(as type: DestinationURLType) {
         selectedDestinationType = type
     }
 
     func confirmSave() {
         onSave(buildFinalDestinationURL())
-    }
-
-    private func buildFinalDestinationURL() -> String {
-        let baseURL: String
-        switch selectedDestinationType {
-        case .product:
-            baseURL = productURL
-        case .home:
-            baseURL = homeURL
-        }
-
-        return parameters.isEmpty ? baseURL : baseURL + "?" + parameters.convertToQueryString()
     }
 
     func calculateRemainingCharacters() -> Int {
@@ -138,15 +110,44 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     func deleteParameter(at offsets: IndexSet) {
         parameters.remove(atOffsets: offsets)
     }
+}
 
-    private func updateSelectedParameter(newKey: String, newValue: String) {
+private extension BlazeAdDestinationSettingViewModel {
+    func initializeDestinationType() {
+        if initialFinalDestinationURL.hasPrefix(productURL) {
+            selectedDestinationType = .product
+        } else {
+            selectedDestinationType = .home
+        }
+    }
+
+    func initializeParameters() {
+        if let finalDestinationURL = URL(string: initialFinalDestinationURL),
+           let urlComponents = URLComponents(url: finalDestinationURL, resolvingAgainstBaseURL: false) {
+            parameters = urlComponents.toBlazeAdURLParameters()
+        }
+    }
+
+    func updateSelectedParameter(newKey: String, newValue: String) {
         if let index = parameters.firstIndex(where: { $0.id == selectedParameter?.id }) {
             parameters[index] = BlazeAdURLParameter(key: newKey, value: newValue)
         }
     }
 
-    private func clearSelectedParameter() {
+    func clearSelectedParameter() {
         selectedParameter =  nil
+    }
+
+    func buildFinalDestinationURL() -> String {
+        let baseURL: String
+        switch selectedDestinationType {
+        case .product:
+            baseURL = productURL
+        case .home:
+            baseURL = homeURL
+        }
+
+        return parameters.isEmpty ? baseURL : baseURL + "?" + parameters.convertToQueryString()
     }
 }
 

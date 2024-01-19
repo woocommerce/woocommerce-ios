@@ -9,7 +9,11 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     private let stores: StoresManager
     private let completionHandler: () -> Void
 
-    private(set) var selectedPaymentMethod: BlazePaymentMethod?
+    private(set) var selectedPaymentMethod: BlazePaymentMethod? {
+        didSet {
+            displaySelectedPaymentMethodInfo()
+        }
+    }
 
     private var paymentInfo: BlazePaymentInfo?
 
@@ -25,10 +29,10 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         return BlazePaymentMethodsViewModel(siteID: siteID,
                                             paymentInfo: paymentInfo,
                                             selectedPaymentMethodID: selectedPaymentMethod?.id, completion: { paymentID in
-            Task { [weak self] in
+            Task { @MainActor [weak self] in
                 guard let self else { return }
                 await updatePaymentInfo()
-                setSelectedPaymentMethod(id: paymentID)
+                selectedPaymentMethod = paymentMethod(forID: paymentID)
             }
         })
     }
@@ -63,9 +67,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         do {
             let info = try await fetchPaymentInfo()
             paymentInfo = info
-            if let firstPaymentMethod = info.savedPaymentMethods.first {
-                setSelectedPaymentMethod(id: firstPaymentMethod.id)
-            }
+            selectedPaymentMethod = info.savedPaymentMethods.first
         } catch {
             DDLogError("⛔️ Error fetching payment info for Blaze campaign creation: \(error)")
             shouldDisplayPaymentErrorAlert = true
@@ -111,12 +113,21 @@ private extension BlazeConfirmPaymentViewModel {
             }))
         }
     }
+}
 
-    func setSelectedPaymentMethod(id paymentMethodID: String) {
+private extension BlazeConfirmPaymentViewModel {
+    func paymentMethod(forID paymentMethodID: String) -> BlazePaymentMethod? {
         guard let paymentMethod = paymentInfo?.savedPaymentMethods.first(where: { $0.id == paymentMethodID }) else {
+            return nil
+        }
+        return paymentMethod
+    }
+
+    func displaySelectedPaymentMethodInfo() {
+        guard let paymentMethod = selectedPaymentMethod else {
             return
         }
-        selectedPaymentMethod = paymentMethod
+
         let rawCardType = paymentMethod.info.type
         let cardType = CreditCardType(rawType: rawCardType)
         cardIcon = cardType.icon

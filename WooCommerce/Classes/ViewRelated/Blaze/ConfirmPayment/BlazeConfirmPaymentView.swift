@@ -81,7 +81,9 @@ struct BlazeConfirmPaymentView: View {
                 .interactiveDismissDisabled()
         }
         .sheet(isPresented: $showAddPaymentSheet) {
-            BlazePaymentMethodsView(viewModel: viewModel.paymentMethodsViewModel!)
+            if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                BlazePaymentMethodsView(viewModel: paymentMethodsViewModel)
+            }
         }
     }
 }

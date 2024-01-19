@@ -36,6 +36,8 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     private let didSelectCreateCampaign: ((BlazeSource) -> Void)?
     private let onCampaignCreated: () -> Void
 
+    private var bottomSheetPresenter: BottomSheetPresenter?
+
     init(siteID: Int64,
          siteURL: String,
          productID: Int64? = nil,
@@ -121,7 +123,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                                                            onCompletion: { [weak self] in
             self?.onCampaignCreated()
             self?.dismissCampaignCreation {
-                self?.navigateAfterSuccess()
+                self?.showSuccessView()
             }
         })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
@@ -144,7 +146,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                                              productID: productID) { [weak self] in
             self?.onCampaignCreated()
             self?.dismissCampaignCreation {
-                self?.navigateAfterSuccess()
+                self?.showSuccessView()
             }
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
@@ -177,7 +179,10 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         blazeNavigationController.viewControllers = [controller]
         navigationController.present(blazeNavigationController, animated: true, completion: nil)
     }
+}
 
+// MARK: - Completion handler
+private extension BlazeCampaignCreationCoordinator {
     func dismissCampaignCreation(completionHandler: @escaping () -> Void) {
         // For the web flow, simply pop the last view controller
         guard featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) else {
@@ -200,12 +205,45 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         }
     }
 
-    func navigateAfterSuccess() {
-        guard featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) else {
-            // bottom sheet
-            // show campaign list
-            return
-        }
-        // new bottom sheet
+    func showSuccessView() {
+        bottomSheetPresenter = buildBottomSheetPresenter()
+        let controller = CelebrationHostingController(
+            title: Localization.successTitle,
+            subtitle: Localization.successSubtitle,
+            closeButtonTitle: Localization.successCTA,
+            onTappingDone: { [weak self] in
+            self?.bottomSheetPresenter?.dismiss()
+            self?.bottomSheetPresenter = nil
+        })
+        bottomSheetPresenter?.present(controller, from: navigationController)
+    }
+
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
+    }
+}
+
+private extension BlazeCampaignCreationCoordinator {
+    enum Localization {
+        static let successTitle = NSLocalizedString(
+            "blazeCampaignCreationCoordinator.successTitle",
+            value: "Ready to Go!",
+            comment: "Title of the celebration view when a Blaze campaign is successfully created."
+        )
+        static let successSubtitle = NSLocalizedString(
+            "blazeCampaignCreationCoordinator.successSubtitle",
+            value: "We're reviewing your campaign. It'll be live within 24 hours. Exciting times ahead for your sales!",
+            comment: "Subtitle of the celebration view when a Blaze campaign is successfully created."
+        )
+        static let successCTA = NSLocalizedString(
+            "blazeCampaignCreationCoordinator.successCTA",
+            value: "Done",
+            comment: "Button to dismiss the celebration view when a Blaze campaign is successfully created."
+        )
     }
 }

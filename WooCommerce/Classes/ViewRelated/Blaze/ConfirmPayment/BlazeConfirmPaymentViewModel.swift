@@ -9,10 +9,32 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     private let stores: StoresManager
     private let completionHandler: () -> Void
 
-    private(set) var selectedPaymentMethod: BlazePaymentMethod?
+    private(set) var selectedPaymentMethod: BlazePaymentMethod? {
+        didSet {
+            displaySelectedPaymentMethodInfo()
+        }
+    }
+
+    private var paymentInfo: BlazePaymentInfo?
 
     var shouldDisableCampaignCreation: Bool {
         isFetchingPaymentInfo || selectedPaymentMethod == nil
+    }
+
+    var paymentMethodsViewModel: BlazePaymentMethodsViewModel? {
+        guard let paymentInfo else {
+            DDLogError("⛔️ No payment info available to list in payment methods screen.")
+            return nil
+        }
+        return BlazePaymentMethodsViewModel(siteID: siteID,
+                                            paymentInfo: paymentInfo,
+                                            selectedPaymentMethodID: selectedPaymentMethod?.id, completion: { paymentID in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                await updatePaymentInfo()
+                selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID })
+            }
+        })
     }
 
     let totalAmount: String
@@ -44,14 +66,8 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         isFetchingPaymentInfo = true
         do {
             let info = try await fetchPaymentInfo()
+            paymentInfo = info
             selectedPaymentMethod = info.savedPaymentMethods.first
-            if let selectedPaymentMethod {
-                let rawCardType = selectedPaymentMethod.info.type
-                let cardType = CreditCardType(rawType: rawCardType)
-                cardIcon = cardType.icon
-                cardTypeName = selectedPaymentMethod.info.type
-                cardName = selectedPaymentMethod.name
-            }
         } catch {
             DDLogError("⛔️ Error fetching payment info for Blaze campaign creation: \(error)")
             shouldDisplayPaymentErrorAlert = true
@@ -100,5 +116,19 @@ private extension BlazeConfirmPaymentViewModel {
                 continuation.resume(with: result)
             }))
         }
+    }
+}
+
+private extension BlazeConfirmPaymentViewModel {
+    func displaySelectedPaymentMethodInfo() {
+        guard let paymentMethod = selectedPaymentMethod else {
+            return
+        }
+
+        let rawCardType = paymentMethod.info.type
+        let cardType = CreditCardType(rawType: rawCardType)
+        cardIcon = cardType.icon
+        cardTypeName = paymentMethod.info.type
+        cardName = paymentMethod.name
     }
 }

@@ -76,7 +76,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
                                                      stores: stores) { _ in }
 
         // Then
-        XCTAssertEqual(viewModel.addPaymentMethodURL, URL(string: "https://example.com/blaze-pm-add")!)
+        XCTAssertEqual(viewModel.addPaymentMethodURL, try XCTUnwrap(URL(string: "https://example.com/blaze-pm-add")))
     }
 
     // MARK: `fetchPaymentMethodURLPath`

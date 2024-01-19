@@ -32,7 +32,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 await updatePaymentInfo()
-                selectedPaymentMethod = paymentMethod(forID: paymentID)
+                selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID })
             }
         })
     }
@@ -116,13 +116,6 @@ private extension BlazeConfirmPaymentViewModel {
 }
 
 private extension BlazeConfirmPaymentViewModel {
-    func paymentMethod(forID paymentMethodID: String) -> BlazePaymentMethod? {
-        guard let paymentMethod = paymentInfo?.savedPaymentMethods.first(where: { $0.id == paymentMethodID }) else {
-            return nil
-        }
-        return paymentMethod
-    }
-
     func displaySelectedPaymentMethodInfo() {
         guard let paymentMethod = selectedPaymentMethod else {
             return

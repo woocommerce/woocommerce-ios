@@ -25,15 +25,18 @@ struct BlazePaymentMethodsView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 // Add new method button
-                let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
-
-                Button(action: {
-                    showingAddPaymentWebView = true
-                }) {
-                    Text(buttonText)
+                Group {
+                    let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
+                    
+                    Button(action: {
+                        showingAddPaymentWebView = true
+                    }) {
+                        Text(buttonText)
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
                 }
-                .buttonStyle(SecondaryButtonStyle())
                 .padding(Layout.ctaPadding)
+                .background(Color(.systemBackground))
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

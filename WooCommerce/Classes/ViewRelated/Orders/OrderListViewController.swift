@@ -37,6 +37,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
+        self.loadViewIfNeeded()
         let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
             tableView: self.tableView,
             cellProvider: self.makeCellProvider()

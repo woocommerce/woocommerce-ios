@@ -8,12 +8,15 @@ struct StoreInfoCircularWidget: View {
     let entry: StoreInfoEntry
 
     var body: some View {
-        switch entry {
-        case .data(let data):
-            StoreInfoCircularView(entryData: data)
-        case .notConnected, .error:
-            UnableToFetchView()
+        Group {
+            switch entry {
+            case .data(let data):
+                StoreInfoCircularView(entryData: data)
+            case .notConnected, .error:
+                UnableToFetchView()
+            }
         }
+        .widgetBackground(backgroundView: Color(.clear))
     }
 }
 

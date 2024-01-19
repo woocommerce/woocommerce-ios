@@ -401,6 +401,12 @@ extension UIImage {
         return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
     }
 
+    /// Big error icon
+    ///
+    static var bigErrorIcon: UIImage {
+        return UIImage(named: "error-big-icon")!
+    }
+
     /// Subscription Product
     ///
     static var subscriptionProductImage: UIImage {
@@ -483,6 +489,12 @@ extension UIImage {
     static var hourglass: UIImage {
         let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .medium)
         return UIImage(systemName: "hourglass", withConfiguration: config)!
+    }
+
+    /// Hourglass Image from Woo design
+    ///
+    static var wooHourglass: UIImage {
+        UIImage(named: "woo-hourglass")!
     }
 
     /// House Outlined Image

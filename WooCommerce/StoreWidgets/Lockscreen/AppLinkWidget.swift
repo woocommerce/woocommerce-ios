@@ -57,6 +57,7 @@ private struct AppButtonView: View {
                 .scaledToFit()
                 .padding(10)
         }
+        .widgetBackground(backgroundView: Color(.clear))
     }
 }
 

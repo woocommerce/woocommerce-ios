@@ -112,10 +112,14 @@ struct BlazeCampaignCreationForm: View {
             VStack(spacing: 0) {
                 Divider()
 
-                Button(Localization.confirmDetails) {
-                    // TODO: handle campaign creation
+                Button {
+                    // TODO: track tap
+                } label: {
+                    LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel)) {
+                        Text(Localization.confirmDetails)
+                    }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
+                .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.contentPadding)
                 .disabled(!viewModel.canConfirmDetails)
             }
@@ -223,6 +227,7 @@ private extension BlazeCampaignCreationForm {
                     .foregroundColor(.accentColor)
             })
             .buttonStyle(.plain)
+            .disabled(!viewModel.canEditAd)
             .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
             .shimmering(active: !viewModel.canEditAd)
         }
@@ -355,6 +360,6 @@ private extension BlazeCampaignCreationForm {
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123) {})
+        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
     }
 }

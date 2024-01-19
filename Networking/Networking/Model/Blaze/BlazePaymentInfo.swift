@@ -37,7 +37,7 @@ public struct BlazeAddPaymentInfo: Decodable, Equatable, GeneratedFakeable, Gene
 }
 
 /// Details for a payment method to be used for Blaze campaign creation.
-public struct BlazePaymentMethod: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazePaymentMethod: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable, Identifiable {
 
     /// ID of the payment method
     public let id: String

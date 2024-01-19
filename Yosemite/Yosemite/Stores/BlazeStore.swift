@@ -341,21 +341,27 @@ private extension BlazeStore {
     func fetchPaymentInfo(siteID: Int64, onCompletion: @escaping (Result<BlazePaymentInfo, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let stubbedResult = BlazePaymentInfo(
-                    savedPaymentMethods: [
-                        .init(id: "payment-method-id",
-                              rawType: "credit_card",
-                              name: "Visa **** 4689",
-                              info: .init(lastDigits: "4689",
-                                          expiring: .init(year: 2025, month: 2),
-                                          type: "Visa",
-                                          nickname: "",
-                                          cardholderName: "John Doe"))
-                    ],
-                    addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
-                                            successUrl: "https://example.com/blaze-pm-success",
-                                            idUrlParameter: "pmid")
-                )
+                let stubbedResult = {
+                    var methods: [BlazePaymentMethod] = []
+                    let cardNumbers = ["4575", "2343", "6456"]
+
+                    cardNumbers.forEach { cardNumber in
+                        methods.append(BlazePaymentMethod(id: "payment-method-id-\(cardNumber)",
+                                                          rawType: "credit_card",
+                                                          name: "Visa **** \(cardNumber)",
+                                                          info: .init(lastDigits: cardNumber,
+                                                                      expiring: .init(year: 2025, month: 2),
+                                                                      type: "Visa",
+                                                                      nickname: "",
+                                                                      cardholderName: "John Doe")))
+                    }
+                    return BlazePaymentInfo(
+                        savedPaymentMethods: methods,
+                        addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
+                                                successUrl: "https://example.com/blaze-pm-success",
+                                                idUrlParameter: "pmid")
+                    )
+                }()
                 let paymentInfo = try await mockResponse(stubbedResult: stubbedResult) {
                     try await remote.fetchPaymentInfo(siteID: siteID)
                 }
@@ -376,6 +382,8 @@ private extension BlazeStore {
     func mockResponse<T>(stubbedResult: T, onExecution: () async throws -> T) async throws -> T {
         // skips stubbed result for unit tests
         guard Self.isRunningTests else {
+            // mock some wait for the loading state
+            try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
             return stubbedResult
         }
         return try await onExecution()

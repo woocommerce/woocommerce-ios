@@ -452,28 +452,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldRedactView)
     }
 
-    func test_shouldRedactView_is_true_after_reload_finishes_when_only_non_purchasable_product_available() async {
-        // Given
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
-                                              statusKey: (ProductStatus.published.rawValue),
-                                              purchasable: false)
-
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
-
-        mockSynchronizeCampaigns()
-        mockSynchronizeProducts(insertProductToStorage: fakeProduct)
-
-        // When
-        await sut.reload()
-
-        // Then
-        XCTAssertTrue(sut.shouldRedactView)
-    }
-
     // MARK: `shouldShowShowAllCampaignsButton`
 
     func test_shouldShowShowAllCampaignsButton_is_false_while_reloading() async {
@@ -663,41 +641,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.shouldShowIntroView)
-    }
-
-    // MARK: shouldShowProductSelectorView
-    func test_when_there_are_multiple_products_then_shouldShowProductSelectorView_is_true() async {
-        // Given
-        insertProduct(Product.fake().copy(siteID: sampleSiteID,
-                                          productID: 1,
-                                          statusKey: (ProductStatus.published.rawValue),
-                                          purchasable: true))
-        insertProduct(Product.fake().copy(siteID: sampleSiteID,
-                                          productID: 2,
-                                          statusKey: (ProductStatus.published.rawValue),
-                                          purchasable: true))
-
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
-        // When
-        await viewModel.reload()
-
-        // Then
-        XCTAssertTrue(viewModel.shouldShowProductSelectorView)
-    }
-
-    func test_when_there_is_one_product_then_shouldShowProductSelectorView_is_false() async throws {
-        // Given
-        insertProduct(Product.fake().copy(siteID: sampleSiteID,
-                                          productID: 1,
-                                          statusKey: (ProductStatus.published.rawValue)))
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
-        // When
-        await viewModel.reload()
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowProductSelectorView)
     }
 
     // MARK: latestPublishedProduct

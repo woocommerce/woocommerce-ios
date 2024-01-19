@@ -104,7 +104,7 @@ struct BlazeCampaignCreationForm: View {
                 if viewModel.adDestinationViewModel != nil {
                     detailView(title: Localization.adDestination,
                                content: viewModel.finalDestinationURL,
-                               singleLineSubtitle: true) {
+                               isContentSingleLine: true) {
                         isShowingAdDestinationScreen = true
                     }
                     .overlay { roundedRectangleBorder }
@@ -249,7 +249,7 @@ private extension BlazeCampaignCreationForm {
                     Text(content)
                         .secondaryBodyStyle()
                         .multilineTextAlignment(.leading)
-                        .if(singleLineSubtitle) { $0.lineLimit(1) }
+                        .lineLimit(isContentSingleLine ? 1 : nil)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")

@@ -88,7 +88,7 @@ struct BlazeAdDestinationSettingView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.save) {
                         viewModel.confirmSave()
-                        onDismiss()
+                        dismiss()
                     }
                     .disabled(viewModel.shouldDisableSaveButton)
                 }

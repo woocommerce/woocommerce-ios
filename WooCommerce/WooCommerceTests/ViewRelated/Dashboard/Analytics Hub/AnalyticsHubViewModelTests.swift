@@ -182,6 +182,32 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.showSessionsCard)
     }
 
+    @MainActor
+    func test_session_card_and_stats_CTA_are_hidden_for_shop_manager_when_stats_module_disabled() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultRoles: [.shopManager]))
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.updateData()
+
+        // Then
+        XCTAssertFalse(vm.showJetpackStatsCTA)
+        XCTAssertFalse(vm.showSessionsCard)
+    }
+
     func test_time_range_card_tracks_expected_events() throws {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, analytics: analytics)
@@ -240,5 +266,113 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // When
         await vm.updateData()
+    }
+
+    @MainActor
+    func test_showJetpackStatsCTA_true_for_admin_when_stats_module_disabled() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
+            default:
+                break
+            }
+        }
+        XCTAssertFalse(vm.showJetpackStatsCTA)
+
+        // When
+        await vm.updateData()
+
+        // Then
+        XCTAssertTrue(vm.showJetpackStatsCTA)
+    }
+
+    @MainActor
+    func test_showJetpackStatsCTA_false_for_admin_when_stats_request_fails_and_stats_module_enabled() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 1)))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.updateData()
+
+        // Then
+        XCTAssertFalse(vm.showJetpackStatsCTA)
+    }
+
+    @MainActor
+    func test_enableJetpackStats_hides_call_to_action_after_successfully_enabling_stats() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123,
+                                       statsTimeRange: .today,
+                                       usageTracksEventEmitter: eventEmitter,
+                                       stores: stores,
+                                       backendProcessingDelay: 0)
+        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
+            switch action {
+            case let .enableJetpackModule(_, _, completion):
+                completion(.success(()))
+            }
+        }
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.enableJetpackStats()
+
+        // Then
+        XCTAssertFalse(vm.showJetpackStatsCTA)
+    }
+
+    @MainActor
+    func test_enableJetpackStats_shows_error_and_call_to_action_after_failing_to_enable_stats() async {
+        // Given
+        let noticePresenter = MockNoticePresenter()
+        let vm = AnalyticsHubViewModel(siteID: 123,
+                                       statsTimeRange: .today,
+                                       usageTracksEventEmitter: eventEmitter,
+                                       stores: stores,
+                                       noticePresenter: noticePresenter,
+                                       backendProcessingDelay: 0)
+        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
+            switch action {
+            case let .enableJetpackModule(_, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 1)))
+            }
+        }
+
+        // When
+        await vm.enableJetpackStats()
+
+        // Then
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
+        XCTAssertTrue(vm.showJetpackStatsCTA)
     }
 }

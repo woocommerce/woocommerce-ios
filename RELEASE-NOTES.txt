@@ -4,6 +4,7 @@
 -----
 - [*] Payments: cash payment is now in fullscreen and supports entering a different amount paid by the customer with an option to record it in an order note. The calculated change due amount is also shown. [https://github.com/woocommerce/woocommerce-ios/pull/11365]
 - [internal] Analytics Hub: Sessions card (views and conversion rate) is now hidden for non-Jetpack stores, since they don't have those stats. [https://github.com/woocommerce/woocommerce-ios/pull/11694]
+- [*] Analytics Hub: Sessions card now shows a prompt for admins to enable Jetpack Stats if the Jetpack module is disabled. [https://github.com/woocommerce/woocommerce-ios/pull/11708]
 - [***] [internal] Refactor WP.com sign in API requests. [https://github.com/woocommerce/woocommerce-ios/pull/11734]
 
 16.9

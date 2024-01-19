@@ -2037,6 +2037,7 @@
 		CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */; };
 		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
 		CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */; };
+		CEF2DD862B558E3E00A3DD0B /* AnalyticsCTACard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */; };
 		CEF5A28F2A68466E0059CFD3 /* stats_summary_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */; };
 		CEF5A2912A68467C0059CFD3 /* stats_summary_week.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */; };
 		CEF5A2952A68469B0059CFD3 /* stats_summary_month.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A2942A68469B0059CFD3 /* stats_summary_month.json */; };
@@ -4711,6 +4712,7 @@
 		CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagTests.swift; sourceTree = "<group>"; };
 		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 		CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManagerTests.swift; sourceTree = "<group>"; };
+		CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCTACard.swift; sourceTree = "<group>"; };
 		CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_day.json; sourceTree = "<group>"; };
 		CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_week.json; sourceTree = "<group>"; };
 		CEF5A2942A68469B0059CFD3 /* stats_summary_month.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_month.json; sourceTree = "<group>"; };
@@ -7082,6 +7084,7 @@
 				B6A10E9B292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift */,
 				26E7EE6D29300E8100793045 /* AnalyticsProductCard.swift */,
 				26E7EE7129301EBC00793045 /* AnalyticsProductCardViewModel.swift */,
+				CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */,
 				CC41E70B29310C1F008B3FB9 /* AnalyticsLineChart.swift */,
 				CCA1D5FD293F537400B40560 /* DeltaPercentage.swift */,
 			);
@@ -12915,6 +12918,7 @@
 			files = (
 				DEEF8E6629C833C600D47411 /* PaymentSettingsFlowPrioritizedViewModelsProvider.swift in Sources */,
 				02B60DFB2A58809F004C47FF /* View+MediaSourceActionSheet.swift in Sources */,
+				CEF2DD862B558E3E00A3DD0B /* AnalyticsCTACard.swift in Sources */,
 				B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */,
 				B935D35C2A9F44C60067B927 /* WPAdminTaxSettingsURLProvider.swift in Sources */,
 				EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */,

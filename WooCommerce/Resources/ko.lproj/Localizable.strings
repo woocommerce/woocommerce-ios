@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-12 21:44:39+0000 */
+/* Translation-Revision-Date: 2024-01-16 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -9685,6 +9685,69 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "번호 복사";
 
+/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue */
+"blazeAdDestinationSettingVieModel.finalDestination" = "대상: %1$@";
+
+/* Blaze Ad Destination: Plural form for characters limit label. %1$d will be replaced by a number. Read like: 10 characters remaining */
+"blazeAdDestinationSettingVieModel.parameterCharactersLimit.plural" = "%1$d자 남음";
+
+/* Blaze Ad Destination: Singular form for characters limit label. %1$d will be replaced by a number. Read like: 1 character remaining */
+"blazeAdDestinationSettingVieModel.parameterCharactersLimit.singular" = "%1$d자 남음";
+
+/* Title of the Blaze Ad Destination setting screen. */
+"blazeAdDestinationSettingView.adDestination" = "광고 대상";
+
+/* Button to add a new URL parameter in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.addParameterButton" = "파라미터 추가";
+
+/* Button to dismiss the Blaze Ad Destination setting screen */
+"blazeAdDestinationSettingView.cancel" = "취소";
+
+/* Heading for the destination URL section in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.destinationUrlHeading" = "대상 URL";
+
+/* Subtitle for each destination type showing the URL to link to. %1$@ will be replaced by the URL. */
+"blazeAdDestinationSettingView.destinationUrlSubtitle" = "연결 대상: %1$@";
+
+/* Label for the product URL destination option in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.productURLLabel" = "상품 URL";
+
+/* Label for the site home destination option in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.siteHomeLabel" = "사이트 홈";
+
+/* Heading for the URL Parameters section in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.urlParametersHeading" = "URL 파라미터";
+
+/* Button to dismiss the Blaze Add Parameter screen */
+"blazeAddParameterView.cancel" = "취소";
+
+/* Label for the character count error on the Blaze Add Parameter screen. */
+"blazeAddParameterView.characterCountError" = "입력하신 내용이 너무 깁니다. 줄이고 다시 시도하세요.";
+
+/* Title of the Blaze Add Parameter screen in edit mode */
+"blazeAddParameterView.editTitle" = "파라미터 편집";
+
+/* Label for the Key input on the Blaze Add Parameter screen */
+"blazeAddParameterView.keyLabel" = "파라미터 키 입력";
+
+/* Title for the Key input on the Blaze Add Parameter screen */
+"blazeAddParameterView.keyTitle" = "키";
+
+/* Button to save on the Blaze Add Parameter screen */
+"blazeAddParameterView.save" = "저장";
+
+/* Title of the Blaze Add Parameter screen */
+"blazeAddParameterView.title" = "파라미터 추가";
+
+/* Label for the validation error on the Blaze Add Parameter screen. */
+"blazeAddParameterView.validationError" = "유효하지 않은 문자를 파라미터에 입력하셨습니다. 제거하고 다시 시도하세요.";
+
+/* Label for the Value input on the Blaze Add Parameter screen */
+"blazeAddParameterView.valueLabel" = "파라미터 값 입력";
+
+/* Title for the Value input on the Blaze Add Parameter screen */
+"blazeAddParameterView.valueTitle" = "값";
+
 /* Button to apply the changes on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.apply" = "적용";
 
@@ -9766,6 +9829,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "광고 편집";
 
+/* Error message indicating that loading suggestions for tagline and description failed */
+"blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions" = "태그라인 및 설명에 대한 추천 사항을 로드하지 못했습니다.";
+
+/* Button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.errorAlert.retry" = "다시 시도";
+
+/* Title on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.errorAlert.title" = "죄송합니다. 문제가 발생했습니다";
+
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "관심 분야";
 
@@ -9780,6 +9852,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "미리보기";
+
+/* Text indicating all targets for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.all" = "모두";
 
 /* Blaze campaign budget details with duration in plural form. Reads like: $35, 15 days from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetMultipleDays" = "%1$@, %3$@부터 %2$d일";
@@ -9835,11 +9910,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "이미지 변경";
 
-/* Regenerate by AI button title in the Blaze Edit Ad screen. */
-"blazeEditAdView.regenerateByAI" = "AI로 재생성";
-
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "저장";
+
+/* Suggested by AI title in the Blaze Edit Ad screen. */
+"blazeEditAdView.suggestedByAI" = "AI 추천";
 
 /* Placeholder for Tagline text field in the Blaze Edit Ad screen. */
 "blazeEditAdView.tagline.placeholder" = "Blaze 광고 제목";
@@ -9895,6 +9970,60 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "%1$@ 동작 방식 알아보기";
 
+/* Button to dismiss the target device picker for campaign creation */
+"blazeTargetDevicePickerView.cancel" = "취소";
+
+/* Error message when data syncing fails on the target device picker for campaign creation */
+"blazeTargetDevicePickerView.errorMessage" = "대상 기기 동기화 중 오류가 발생했습니다. 다시 시도하세요.";
+
+/* Button to save the selections on the target device picker for campaign creation */
+"blazeTargetDevicePickerView.save" = "저장";
+
+/* Title of the target device picker view for Blaze campaign creation */
+"blazeTargetDevicePickerView.title" = "기기";
+
+/* Button to retry syncing data on the target device picker for campaign creation */
+"blazeTargetDevicePickerView.tryAgain" = "다시 시도";
+
+/* Title of the row to select all target languages for Blaze campaign creation */
+"blazeTargetLanguagePickerView.allTitle" = "모든 언어";
+
+/* Button to dismiss the target language picker for campaign creation */
+"blazeTargetLanguagePickerView.cancel" = "취소";
+
+/* Error message when data syncing fails on the target language picker for campaign creation */
+"blazeTargetLanguagePickerView.errorMessage" = "대상 언어 동기화 중 오류가 발생했습니다. 다시 시도하세요.";
+
+/* Button to save the selections on the target language picker for campaign creation */
+"blazeTargetLanguagePickerView.save" = "저장";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLanguagePickerView.title" = "언어";
+
+/* Button to retry syncing data on the target language picker for campaign creation */
+"blazeTargetLanguagePickerView.tryAgain" = "다시 시도";
+
+/* Title of the row to select all target topics for Blaze campaign creation */
+"blazeTargetTopicPickerView.allTitle" = "모든 주제";
+
+/* Button to dismiss the target topic picker for campaign creation */
+"blazeTargetTopicPickerView.cancel" = "취소";
+
+/* Error message when data syncing fails on the target topic picker for campaign creation */
+"blazeTargetTopicPickerView.errorMessage" = "대상 주제 동기화 중 오류가 발생했습니다. 다시 시도하세요.";
+
+/* Message on the target topic picker view for Blaze campaign creation */
+"blazeTargetTopicPickerView.message" = "적절한 주제 선택";
+
+/* Button to save the selections on the target topic picker for campaign creation */
+"blazeTargetTopicPickerView.save" = "저장";
+
+/* Title of the target topic picker view for Blaze campaign creation */
+"blazeTargetTopicPickerView.title" = "관심 분야";
+
+/* Button to retry syncing data on the target topic picker for campaign creation */
+"blazeTargetTopicPickerView.tryAgain" = "다시 시도";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "취소";
 
@@ -9922,6 +10051,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Accessibility hint for selecting a product in the Add Product screen */
+"configurationForBlaze.productRowAccessibilityHint" = "Blaze 캠페인용 상품을 선택합니다.";
+
+/* Text for the cancel button in the Add Product screen */
+"configurationForBlaze.productSelectorCancel" = "취소";
+
+/* Title for the screen to select product for Blaze campaign */
+"configurationForBlaze.productSelectorTitle" = "홍보 준비 완료";
+
+/* Accessibility hint for selecting a variable product in the Add Product screen */
+"configurationForBlaze.variableProductRowAccessibilityHint" = "상품 변형 목록을 엽니다.";
 
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "추가";
@@ -10220,6 +10361,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "월";
 
+/* Placeholder in the search bar of a multiple selection list */
+"multipleSelectionList.search" = "검색";
+
+/* Header for the search result section on a a multiple selection list */
+"multipleSelectionList.searchResults" = "검색 결과";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "이전 기간 없음";
 
@@ -10343,17 +10490,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "가변 구독 상품";
 
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.skip" = "건너뛰기";
+/* Description in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationView.description" = "잠깐 시간 좀 내주시겠어요? 빠른 피드백으로 AI 도우미 기능 개선을 도와주세요.";
 
 /* Start Survey button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.startTheSurvey" = "설문 조사 시작";
 
-/* Subtitle in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.subtitle" = "지금까지 AI 지원 기능을 활용하여 상품을 여러 번 추가하셨습니다. 개선에 도움이 될 수 있는 의견을 듣고 싶습니다.";
-
 /* Title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.title" = "여러분의 의견을 소중히 생각합니다!";
+
+/* Dismiss button title in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationViewModel.dontShowItAgain" = "다시 표시하지 않음";
+
+/* Dismiss button title in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationViewModel.remindMeLater" = "나중에 다시 알림";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "파일 업로드 중 오류가 발생했습니다. 다시 시도하세요.";

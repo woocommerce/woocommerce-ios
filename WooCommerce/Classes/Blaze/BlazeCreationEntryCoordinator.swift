@@ -121,9 +121,6 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                                                            onCompletion: { [weak self] in
             self?.onCampaignCreated()
             self?.dismissCampaignCreation()
-        },
-                                                           onCancel: { [weak self] in
-            self?.dismissCampaignCreation()
         })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
 

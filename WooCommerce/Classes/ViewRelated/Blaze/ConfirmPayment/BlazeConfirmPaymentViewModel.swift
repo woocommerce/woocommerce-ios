@@ -8,7 +8,6 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     private let campaignInfo: CreateBlazeCampaign
     private let stores: StoresManager
     private let completionHandler: () -> Void
-    private let cancelHandler: () -> Void
 
     private(set) var selectedPaymentMethod: BlazePaymentMethod?
 
@@ -31,13 +30,11 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     init(siteID: Int64,
          campaignInfo: CreateBlazeCampaign,
          stores: StoresManager = ServiceLocator.stores,
-         onCompletion: @escaping () -> Void,
-         onCancel: @escaping () -> Void) {
+         onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.campaignInfo = campaignInfo
         self.stores = stores
         self.completionHandler = onCompletion
-        self.cancelHandler = onCancel
         self.totalAmount = String(format: "$%.0f", campaignInfo.totalBudget)
     }
 
@@ -82,7 +79,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     }
 
     func cancelCampaignCreation() {
-        cancelHandler()
+        // TODO: add tracking
     }
 }
 

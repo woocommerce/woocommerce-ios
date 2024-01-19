@@ -14,7 +14,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private let stores: StoresManager
     private let productImageLoader: ProductUIImageLoader
     private let completionHandler: () -> Void
-    private let cancelHandler: () -> Void
 
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -110,8 +109,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
         BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo, onCompletion: { [weak self] in
             self?.completionHandler()
-        }, onCancel: { [weak self] in
-            self?.cancelHandler()
         })
     }()
 
@@ -183,15 +180,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
     productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
-         onCompletion: @escaping () -> Void,
-         onCancel: @escaping () -> Void) {
+         onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
         self.stores = stores
         self.storage = storage
         self.productImageLoader = productImageLoader
         self.completionHandler = onCompletion
-        self.cancelHandler = onCancel
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
         updateBudgetDetails()

@@ -5,6 +5,7 @@ struct BlazeConfirmPaymentView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
+    @Environment(\.dismiss) private var dismiss
 
     @State private var externalURL: URL?
 
@@ -88,6 +89,7 @@ struct BlazeConfirmPaymentView: View {
             }, onCancel: {
                 viewModel.shouldDisplayCampaignCreationError = false
                 viewModel.cancelCampaignCreation()
+                dismiss()
             })
             .interactiveDismissDisabled()
         }
@@ -313,6 +315,5 @@ private extension BlazeConfirmPaymentView {
                             targeting: nil,
                             targetUrn: "",
                             type: "product"),
-        onCompletion: {},
-        onCancel: {}))
+        onCompletion: {}))
 }

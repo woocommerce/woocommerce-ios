@@ -77,7 +77,7 @@ private extension OrderPaymentSection {
             ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
                 VStack(alignment: .leading, spacing: .zero) {
                     TitleAndValueRow(title: Localization.coupon,
-                                     titleSuffixImage: rowsEditImage,
+                                     titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
                                      value: .content(viewModel.discount),
                                      selectionStyle: editableRowsSelectionStyle) {
                         selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
@@ -95,7 +95,7 @@ private extension OrderPaymentSection {
 
     @ViewBuilder var existingShippingRow: some View {
         TitleAndValueRow(title: Localization.shippingTotal,
-                         titleSuffixImage: rowsEditImage,
+                         titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
                          value: .content(viewModel.shippingTotal),
                          selectionStyle: editableRowsSelectionStyle) {
             shouldShowShippingLineDetails = true

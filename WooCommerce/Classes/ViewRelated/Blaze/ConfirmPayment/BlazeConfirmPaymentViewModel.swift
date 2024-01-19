@@ -10,7 +10,6 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     private let completionHandler: () -> Void
 
     private(set) var selectedPaymentMethod: BlazePaymentMethod?
-    @Published var showAddPaymentSheet: Bool = false
 
     private var paymentInfo: BlazePaymentInfo?
 

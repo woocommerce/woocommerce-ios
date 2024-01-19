@@ -7,6 +7,7 @@ struct BlazeConfirmPaymentView: View {
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
 
     @State private var externalURL: URL?
+    @State private var showAddPaymentSheet: Bool = false
 
     private let agreementText: NSAttributedString = {
         let content = String.localizedStringWithFormat(Localization.agreement, Localization.termsOfService, Localization.adPolicy, Localization.learnMore)
@@ -79,7 +80,7 @@ struct BlazeConfirmPaymentView: View {
             BlazeCampaignCreationLoadingView()
                 .interactiveDismissDisabled()
         }
-        .sheet(isPresented: $viewModel.showAddPaymentSheet) {
+        .sheet(isPresented: $showAddPaymentSheet) {
             BlazePaymentMethodsView(viewModel: viewModel.paymentMethodsViewModel!)
         }
     }
@@ -117,7 +118,7 @@ private extension BlazeConfirmPaymentView {
 
     var cardDetailView: some View {
         Button {
-            viewModel.showAddPaymentSheet = true
+            showAddPaymentSheet = true
         } label: {
             if let icon = viewModel.cardIcon {
                 Image(uiImage: icon)
@@ -148,7 +149,7 @@ private extension BlazeConfirmPaymentView {
 
     var addPaymentMethodButton: some View {
         Button {
-            viewModel.showAddPaymentSheet = true
+            showAddPaymentSheet = true
         } label: {
             HStack {
                 Text(Localization.addPaymentMethod)

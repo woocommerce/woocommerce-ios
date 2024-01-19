@@ -211,6 +211,7 @@ private extension BlazeCampaignCreationCoordinator {
             title: Localization.successTitle,
             subtitle: Localization.successSubtitle,
             closeButtonTitle: Localization.successCTA,
+            image: .blazeSuccessImage,
             onTappingDone: { [weak self] in
             self?.bottomSheetPresenter?.dismiss()
             self?.bottomSheetPresenter = nil

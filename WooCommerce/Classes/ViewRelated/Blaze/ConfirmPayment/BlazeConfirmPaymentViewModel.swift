@@ -24,8 +24,12 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         }
         return BlazePaymentMethodsViewModel(siteID: siteID,
                                             paymentInfo: paymentInfo,
-                                            selectedPaymentMethodID: selectedPaymentMethod?.id, completion: { [weak self] paymentID in
-            self?.setSelectedPaymentMethod(id: paymentID)
+                                            selectedPaymentMethodID: selectedPaymentMethod?.id, completion: { paymentID in
+            Task { [weak self] in
+                guard let self else { return }
+                await updatePaymentInfo()
+                setSelectedPaymentMethod(id: paymentID)
+            }
         })
     }
 

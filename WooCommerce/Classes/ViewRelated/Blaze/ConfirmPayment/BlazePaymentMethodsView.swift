@@ -13,86 +13,28 @@ struct BlazePaymentMethodsView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 0) {
-                    // Header
-                    HStack(spacing: Layout.SecureHeader.hSpacing) {
-                        Image(systemName: "checkmark.shield")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: scale * Layout.SecureHeader.iconWidth, height: scale * Layout.SecureHeader.iconHeight)
-                            .tint(Color(.accent))
+            VStack(spacing: 0) {
+                secureHeader
 
-                        Text(Localization.transactionsSecure)
-                            .foregroundColor(Color(.text))
-                            .subheadlineStyle()
-
-                        Spacer()
-                    }
-                    .padding(.horizontal, Layout.SecureHeader.hPadding)
-                    .padding(.vertical, Layout.SecureHeader.vPadding)
-                    .background(Color(.systemBackground))
-
-                    // Payment Methods list
-                    ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
-                        .textCase(.uppercase)
-                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
-
-                    // Empty state when there are no payments methods
-                    VStack(alignment: .center) {
-                        Spacer()
-                            .frame(height: Layout.spacerHeight)
-                        EmptyState(title: Localization.pleaseAddPaymentMethodMessage, image: .waitingForCustomersImage)
-                    }
+                // Empty state when there are no payments methods
+                noPaymentsView
                     .renderedIf(viewModel.paymentMethods.isEmpty)
 
-                    Divider()
-                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
-
-                    ForEach(viewModel.paymentMethods) { method in
-                        let selected: Bool = {
-                            guard let selectedPaymentMethodID = viewModel.selectedPaymentMethodID else {
-                                return false
-                            }
-                            return method.id == selectedPaymentMethodID
-                        }()
-
-                        SelectableItemRow(title: "\(method.type.rawValue.capitalized) ****\(method.info.lastDigits)",
-                                          subtitle: method.name,
-                                          selected: selected)
-                        .onTapGesture {
-                            viewModel.didSelectPaymentMethod(withID: method.id)
-                        }
-                        .background(Color(.systemBackground))
-
-                        Divider()
-                            .padding(.leading, Layout.dividerPadding)
-                    }
-
-                    ListHeaderView(text: String.localizedStringWithFormat(Localization.paymentMethodsFooter,
-                                                                          viewModel.WPCOMUsername,
-                                                                          viewModel.WPCOMEmail),
-                                   alignment: .left)
+                listView
                     .renderedIf(viewModel.paymentMethods.isNotEmpty)
-
-                    Spacer()
-                        .frame(height: Layout.spacerHeight)
-
-                    Spacer()
-
-                    // Add credit card button
-                    let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
-
-                    Button(action: {
-                        showingAddPaymentWebView = true
-                    }) {
-                        Text(buttonText)
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                    .padding(Layout.controlPadding)
-                }
             }
-            .background(Color(.listBackground))
+            .safeAreaInset(edge: .bottom) {
+                // Add new method button
+                let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
+
+                Button(action: {
+                    showingAddPaymentWebView = true
+                }) {
+                    Text(buttonText)
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding(Layout.ctaPadding)
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancelButton) {
@@ -128,6 +70,88 @@ struct BlazePaymentMethodsView: View {
                 }
             }
         })
+    }
+
+    @ViewBuilder
+    private var secureHeader: some View {
+        HStack(spacing: Layout.SecureHeader.hSpacing) {
+            Image(systemName: "checkmark.shield")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: scale * Layout.SecureHeader.iconWidth, height: scale * Layout.SecureHeader.iconHeight)
+                .foregroundColor(Color(.accent))
+
+            Text(Localization.transactionsSecure)
+                .foregroundColor(Color(.text))
+                .subheadlineStyle()
+
+            Spacer()
+        }
+        .padding(.horizontal, Layout.SecureHeader.hPadding)
+        .padding(.vertical, Layout.SecureHeader.vPadding)
+        .background(Color(.systemBackground))
+    }
+
+    @ViewBuilder
+    private var listView: some View {
+        List {
+            Section {
+                ForEach(viewModel.paymentMethods) { method in
+                    let selected: Bool = {
+                        guard let selectedPaymentMethodID = viewModel.selectedPaymentMethodID else {
+                            return false
+                        }
+                        return method.id == selectedPaymentMethodID
+                    }()
+
+                    HStack {
+                        ZStack {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(Color(.accent))
+                                .renderedIf(selected)
+                        }
+                        .frame(width: Layout.ListView.checkmarkViewWidth)
+
+                        VStack(alignment: .leading, spacing: Layout.ListView.textVSpacing) {
+                            Text("\(method.info.type) ****\(method.info.lastDigits)")
+                                .bodyStyle()
+
+                            Text(method.info.cardholderName)
+                                .foregroundColor(Color(uiColor: .secondaryLabel))
+                                .captionStyle()
+                        }
+
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        viewModel.didSelectPaymentMethod(withID: method.id)
+                    }
+                }
+            } header: {
+                Text(Localization.paymentMethodsHeader)
+                    .textCase(.uppercase)
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+                    .captionStyle()
+            } footer: {
+                Text(String.localizedStringWithFormat(Localization.paymentMethodsFooter,
+                                                      viewModel.WPCOMUsername,
+                                                      viewModel.WPCOMEmail))
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+                .captionStyle()
+            }
+        }
+        .listStyle(.grouped)
+    }
+
+    @ViewBuilder
+    private var noPaymentsView: some View {
+        VStack(alignment: .center) {
+            EmptyState(title: Localization.pleaseAddPaymentMethodMessage, image: .waitingForCustomersImage)
+
+            Spacer()
+        }
+        .padding(.top, Layout.noPaymentsViewTopPadding)
     }
 
     @ViewBuilder
@@ -239,10 +263,6 @@ private extension BlazePaymentMethodsView {
     }
 
     enum Layout {
-        static let dividerPadding: CGFloat = 48
-        static let controlPadding: CGFloat = 16
-        static let spacerHeight: CGFloat = 24
-
         enum SecureHeader {
             static let iconWidth: CGFloat = 18
             static let iconHeight: CGFloat = 20
@@ -250,6 +270,13 @@ private extension BlazePaymentMethodsView {
             static let hPadding: CGFloat = 16
             static let vPadding: CGFloat = 12
         }
+        static let noPaymentsViewTopPadding: CGFloat = 24
+
+        enum ListView {
+            static let checkmarkViewWidth: CGFloat = 32
+            static let textVSpacing: CGFloat = 8
+        }
+        static let ctaPadding: CGFloat = 16
     }
 }
 

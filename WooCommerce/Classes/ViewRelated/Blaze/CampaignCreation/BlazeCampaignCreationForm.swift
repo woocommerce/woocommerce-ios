@@ -240,7 +240,7 @@ private extension BlazeCampaignCreationForm {
         .padding(.vertical, Layout.contentPadding)
     }
 
-    func detailView(title: String, content: String, singleLineSubtitle: Bool = false, action: @escaping () -> Void) -> some View {
+    func detailView(title: String, content: String, isContentSingleLine: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action, label: {
             HStack {
                 VStack(alignment: .leading, spacing: Layout.detailContentSpacing) {

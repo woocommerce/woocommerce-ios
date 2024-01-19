@@ -14,6 +14,7 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
     @Published private var paymentInfo: BlazePaymentInfo?
     @Published private(set) var isFetchingPaymentInfo = false
     @Published var shouldDisplayPaymentErrorAlert = false
+    @Published var notice: Notice?
 
     var paymentMethods: [BlazePaymentMethod] {
         paymentInfo?.savedPaymentMethods ?? []

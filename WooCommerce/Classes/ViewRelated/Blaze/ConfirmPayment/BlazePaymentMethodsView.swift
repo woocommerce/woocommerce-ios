@@ -70,6 +70,7 @@ struct BlazePaymentMethodsView: View {
                 }
             }
         })
+        .notice($viewModel.notice)
     }
 
     @ViewBuilder
@@ -166,8 +167,7 @@ struct BlazePaymentMethodsView: View {
                     Task {
                         await viewModel.syncPaymentInfo()
                     }
-                    let notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
-                    ServiceLocator.noticePresenter.enqueue(notice: notice)
+                    viewModel.notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
                 }
                                      .navigationTitle(Localization.paymentMethodWebViewTitle)
                                      .navigationBarTitleDisplayMode(.inline)

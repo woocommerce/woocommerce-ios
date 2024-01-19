@@ -245,7 +245,7 @@ private extension OrderPaymentSection {
             .renderedIf(viewModel.shouldShowDiscountTotal)
     }
 
-    var rowsEditImage: Image? {
+    var rowsEditImage: Image {
         viewModel.showNonEditableIndicators ? Image(uiImage: .lockImage) : Image(systemName: "pencil")
     }
 

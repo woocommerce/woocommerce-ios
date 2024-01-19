@@ -112,11 +112,9 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
 
         // Then
         // The Product Selector is shown using a WooNavigationController
-        XCTAssertTrue(navigationController.presentedViewControllers[0] is WooNavigationController)
-
         // The Product Selector is the first view controller in the presented WooNavigationController
-        let presentedNavigationController = navigationController.presentedViewControllers[0] as? WooNavigationController
-        let viewController = presentedNavigationController?.viewControllers[0]
+        let presentedNavigationController = try XCTUnwrap(navigationController.presentedViewControllers.first as? WooNavigationController)
+        let viewController = try XCTUnwrap(presentedNavigationController.viewControllers.first)
         XCTAssertTrue(viewController is ProductSelectorViewController)
     }
 }

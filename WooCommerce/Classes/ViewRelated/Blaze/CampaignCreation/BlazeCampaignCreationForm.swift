@@ -135,9 +135,7 @@ struct BlazeCampaignCreationForm: View {
         }
         .sheet(isPresented: $isShowingAdDestinationScreen) {
             if let viewModel = viewModel.adDestinationViewModel {
-                BlazeAdDestinationSettingView(viewModel: viewModel) {
-                    isShowingAdDestinationScreen = false
-                }
+                BlazeAdDestinationSettingView(viewModel: viewModel)
             }
         }
         .sheet(isPresented: $isShowingDevicePicker) {

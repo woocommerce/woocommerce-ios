@@ -10,12 +10,8 @@ struct BlazeAdDestinationSettingView: View {
 
     @State private var isShowingAddParameterView = false
 
-    private let onDismiss: () -> Void
-
-    init(viewModel: BlazeAdDestinationSettingViewModel,
-         onDismiss: @escaping () -> Void ) {
+    init(viewModel: BlazeAdDestinationSettingViewModel) {
         self.viewModel = viewModel
-        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -234,8 +230,7 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                     homeURL: "https://woo.com/",
                     finalDestinationURL: "https://woo.com/product/?key1=value1&key2=value2",
                     onSave: { _ in }
-                ),
-                onDismiss: {}
+                )
             )
 
             // Showing the case where initial selected destination URL is home URL
@@ -245,8 +240,7 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                     homeURL: "https://woo.com/",
                     finalDestinationURL: "https://woo.com/?key1=value1&key2=value2",
                     onSave: { _ in }
-                ),
-                onDismiss: {}
+                )
             )
         }
     }

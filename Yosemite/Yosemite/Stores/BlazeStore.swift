@@ -343,9 +343,10 @@ private extension BlazeStore {
             do {
                 let stubbedResult = {
                     var methods: [BlazePaymentMethod] = []
-                    for i in 1...3 {
-                        let cardNumber = "\(Int.random(in: 1111..<9999))"
-                        methods.append(BlazePaymentMethod(id: "payment-method-id-\(i)",
+                    let cardNumbers = ["4575", "2343", "6456"]
+
+                    cardNumbers.forEach { cardNumber in
+                        methods.append(BlazePaymentMethod(id: "payment-method-id-\(cardNumber)",
                                                           rawType: "credit_card",
                                                           name: "Visa **** \(cardNumber)",
                                                           info: .init(lastDigits: cardNumber,

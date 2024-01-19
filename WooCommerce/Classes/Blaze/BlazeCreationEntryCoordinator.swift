@@ -195,13 +195,18 @@ private extension BlazeCampaignCreationCoordinator {
         if blazeNavigationController.presentingViewController != nil {
             navigationController.dismiss(animated: true, completion: completionHandler)
         } else {
-            let viewControllerStack = navigationController.viewControllers
-            guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFormHostingController }),
-                  let originController = viewControllerStack[safe: index - 1] else {
-                return
+            // Forces any presented controller to be dismissed and wait until completion to continue navigation.
+            // Reason: presenting the bottom sheet will fail if the transition for the previous modal hasn't completed.
+            navigationController.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+                let viewControllerStack = navigationController.viewControllers
+                guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFormHostingController }),
+                      let originController = viewControllerStack[safe: index - 1] else {
+                    return
+                }
+                navigationController.popToViewController(originController, animated: true)
+                completionHandler()
             }
-            navigationController.popToViewController(originController, animated: true)
-            completionHandler()
         }
     }
 

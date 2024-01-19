@@ -77,6 +77,10 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         }
         isCreatingCampaign = false
     }
+
+    func cancelCampaignCreation() {
+        // TODO: add tracking
+    }
 }
 
 private extension BlazeConfirmPaymentViewModel {

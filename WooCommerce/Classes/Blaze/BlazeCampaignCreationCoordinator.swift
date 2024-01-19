@@ -118,7 +118,10 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     private func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
                                                            productID: productID,
-                                                           onCompletion: onCampaignCreated)
+                                                           onCompletion: { [weak self] in
+            self?.onCampaignCreated()
+            self?.dismissCampaignCreation()
+        })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
 
         // This function can be called from navigateToBlazeProductSelector(), in which case we need to show the
@@ -139,6 +142,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                                              productID: productID) { [weak self] in
             guard let self else { return }
             self.onCampaignCreated()
+            self.dismissCampaignCreation()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         navigationController.show(webViewController, sender: self)
@@ -169,5 +173,25 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
         blazeNavigationController.viewControllers = [controller]
         navigationController.present(blazeNavigationController, animated: true, completion: nil)
+    }
+
+    func dismissCampaignCreation() {
+        // For the web flow, simply pop the last view controller
+        guard featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) else {
+            navigationController.popViewController(animated: true)
+            return
+        }
+
+        // Checks if we are presenting or pushing the creation flow to dismiss accordingly.
+        if blazeNavigationController.presentingViewController != nil {
+            navigationController.dismiss(animated: true)
+        } else {
+            let viewControllerStack = navigationController.viewControllers
+            guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFormHostingController }),
+                  let originController = viewControllerStack[safe: index - 1] else {
+                return
+            }
+            navigationController.popToViewController(originController, animated: true)
+        }
     }
 }

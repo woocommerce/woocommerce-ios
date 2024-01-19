@@ -5,6 +5,7 @@ struct BlazeConfirmPaymentView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
+    @Environment(\.dismiss) private var dismiss
 
     @State private var externalURL: URL?
 
@@ -78,6 +79,19 @@ struct BlazeConfirmPaymentView: View {
         .sheet(isPresented: $viewModel.isCreatingCampaign) {
             BlazeCampaignCreationLoadingView()
                 .interactiveDismissDisabled()
+        }
+        .sheet(isPresented: $viewModel.shouldDisplayCampaignCreationError) {
+            BlazeCampaignCreationErrorView(onTryAgain: {
+                viewModel.shouldDisplayCampaignCreationError = false
+                Task {
+                    await viewModel.submitCampaign()
+                }
+            }, onCancel: {
+                viewModel.shouldDisplayCampaignCreationError = false
+                viewModel.cancelCampaignCreation()
+                dismiss()
+            })
+            .interactiveDismissDisabled()
         }
     }
 }
@@ -300,5 +314,6 @@ private extension BlazeConfirmPaymentView {
                             mainImage: .init(url: "https://example.com", mimeType: "png"),
                             targeting: nil,
                             targetUrn: "",
-                            type: "product")) {})
+                            type: "product"),
+        onCompletion: {}))
 }

@@ -120,7 +120,9 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                                                            productID: productID,
                                                            onCompletion: { [weak self] in
             self?.onCampaignCreated()
-            self?.dismissCampaignCreation()
+            self?.dismissCampaignCreation {
+                self?.navigateAfterSuccess()
+            }
         })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
 
@@ -140,9 +142,10 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                                              source: source,
                                              siteURL: siteURL,
                                              productID: productID) { [weak self] in
-            guard let self else { return }
-            self.onCampaignCreated()
-            self.dismissCampaignCreation()
+            self?.onCampaignCreated()
+            self?.dismissCampaignCreation {
+                self?.navigateAfterSuccess()
+            }
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         navigationController.show(webViewController, sender: self)
@@ -175,16 +178,17 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         navigationController.present(blazeNavigationController, animated: true, completion: nil)
     }
 
-    func dismissCampaignCreation() {
+    func dismissCampaignCreation(completionHandler: @escaping () -> Void) {
         // For the web flow, simply pop the last view controller
         guard featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) else {
             navigationController.popViewController(animated: true)
+            completionHandler()
             return
         }
 
         // Checks if we are presenting or pushing the creation flow to dismiss accordingly.
         if blazeNavigationController.presentingViewController != nil {
-            navigationController.dismiss(animated: true)
+            navigationController.dismiss(animated: true, completion: completionHandler)
         } else {
             let viewControllerStack = navigationController.viewControllers
             guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFormHostingController }),
@@ -192,6 +196,16 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                 return
             }
             navigationController.popToViewController(originController, animated: true)
+            completionHandler()
         }
+    }
+
+    func navigateAfterSuccess() {
+        guard featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) else {
+            // bottom sheet
+            // show campaign list
+            return
+        }
+        // new bottom sheet
     }
 }

@@ -21,12 +21,3 @@ extension Array where Element == BlazeAdURLParameter {
         return self.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
     }
 }
-
-/// Convert a URLComponents's query items to BlazeAdURLParameter array.
-extension URLComponents {
-    func toBlazeAdURLParameters() -> [BlazeAdURLParameter] {
-        guard let queryItems = self.queryItems else { return [] }
-        // URLQueryItem's `value` is an optional String, so here we're converting to empty string if needed.
-        return queryItems.map { BlazeAdURLParameter(key: $0.name, value: $0.value ?? "") }
-    }
-}

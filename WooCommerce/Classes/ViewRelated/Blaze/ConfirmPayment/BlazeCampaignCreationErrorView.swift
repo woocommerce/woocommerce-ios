@@ -89,8 +89,8 @@ private extension BlazeCampaignCreationErrorView {
     enum Layout {
         static let iconTopPadding: CGFloat = 40
         static let errorIconSize: CGFloat = 56
-        static let contentPadding: CGFloat = 16
-        static let titlePadding: CGFloat = 32
+        static let contentPadding: CGFloat = 12
+        static let titlePadding: CGFloat = 24
     }
 
     enum Localization {

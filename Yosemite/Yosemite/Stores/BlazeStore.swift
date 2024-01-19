@@ -381,10 +381,10 @@ private extension BlazeStore {
     func mockResponse<T>(stubbedResult: T, onExecution: () async throws -> T) async throws -> T {
         // skips stubbed result for unit tests
         guard Self.isRunningTests else {
+            // mock some wait for the loading state
+            try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
             return stubbedResult
         }
-        // mock some wait for the loading state
-        try await Task.sleep(nanoseconds: 300_000)
         return try await onExecution()
     }
 }

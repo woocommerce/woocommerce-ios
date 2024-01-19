@@ -43,9 +43,6 @@ extension UserDefaults {
         // AI prompt tone
         case aiPromptTone
 
-        // Celebration view after Blaze campaign creation
-        case hasDisplayedTipAfterBlazeCampaignCreation
-
         // Whether the Blaze section on My Store screen has been dismissed
         case hasDismissedBlazeSectionOnMyStore
 

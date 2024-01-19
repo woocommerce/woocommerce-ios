@@ -227,6 +227,7 @@ private extension BlazeCampaignCreationForm {
                     .foregroundColor(.accentColor)
             })
             .buttonStyle(.plain)
+            .disabled(!viewModel.canEditAd)
             .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
             .shimmering(active: !viewModel.canEditAd)
         }

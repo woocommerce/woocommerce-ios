@@ -16,13 +16,13 @@ struct AnalyticsCTACard: View {
     ///
     let buttonLabel: String
 
+    /// Whether the call to action button is loading
+    ///
+    @Binding var isLoading: Bool
+
     /// Action for the call to action button
     ///
     let buttonAction: () async -> Void
-
-    /// Whether the call to action button is loading
-    ///
-    @State private var isLoading: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
@@ -36,9 +36,7 @@ struct AnalyticsCTACard: View {
 
             Button {
                 Task { @MainActor in
-                    isLoading = true
                     await buttonAction()
-                    isLoading = false
                 }
             } label: {
                 Text(buttonLabel)
@@ -59,7 +57,9 @@ private extension AnalyticsCTACard {
 
 #Preview {
     AnalyticsCTACard(title: "SESSIONS",
-                           message: "Enable Jetpack Stats to see your store's session analytics.",
-                           buttonLabel: "Enable Jetpack Stats",
-                           buttonAction: {})
+                     message: "Enable Jetpack Stats to see your store's session analytics.",
+                     buttonLabel: "Enable Jetpack Stats",
+
+                     isLoading: .constant(false),
+                     buttonAction: {})
 }

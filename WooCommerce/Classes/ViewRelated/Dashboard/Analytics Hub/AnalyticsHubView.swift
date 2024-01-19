@@ -58,6 +58,8 @@ struct AnalyticsHubView: View {
 
     @StateObject var viewModel: AnalyticsHubViewModel
 
+    @State private var isEnablingJetpackStats = false
+
     var body: some View {
         RefreshablePlainList(action: {
             viewModel.trackAnalyticsInteraction()
@@ -112,8 +114,11 @@ struct AnalyticsHubView: View {
                         if viewModel.showJetpackStatsCTA {
                             AnalyticsCTACard(title: Localization.sessionsCTATitle,
                                              message: Localization.sessionsCTAMessage,
-                                             buttonLabel: Localization.sessionsCTAButton) {
+                                             buttonLabel: Localization.sessionsCTAButton,
+                                             isLoading: $isEnablingJetpackStats) {
+                                isEnablingJetpackStats = true
                                 await viewModel.enableJetpackStats()
+                                isEnablingJetpackStats = false
                             }
                         } else {
                             AnalyticsReportCard(viewModel: viewModel.sessionsCard)

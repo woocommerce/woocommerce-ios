@@ -13,6 +13,7 @@ struct InPersonPaymentsOnboardingErrorButtonViewModel {
     init(text: String,
          analyticReason: String,
          cardPresentConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
+         plugin: CardPresentPaymentsPlugin?,
          action: @escaping () -> Void) {
         self.text = text
         self.analyticReason = analyticReason
@@ -21,7 +22,9 @@ struct InPersonPaymentsOnboardingErrorButtonViewModel {
             ServiceLocator.analytics.track(
                 event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
                     reason: analyticReason,
-                    countryCode: cardPresentConfiguration.countryCode))
+                    countryCode: cardPresentConfiguration.countryCode,
+                    gatewayID: plugin?.gatewayID
+                ))
             action()
         }
     }

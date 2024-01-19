@@ -116,10 +116,14 @@ struct BlazeCampaignCreationForm: View {
             VStack(spacing: 0) {
                 Divider()
 
-                Button(Localization.confirmDetails) {
-                    // TODO: handle campaign creation
+                Button {
+                    // TODO: track tap
+                } label: {
+                    NavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel)) {
+                        Text(Localization.confirmDetails)
+                    }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
+                .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.contentPadding)
                 .disabled(!viewModel.canConfirmDetails)
             }

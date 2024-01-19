@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+import TestKit
 
 final class JetpackConnectionRemoteTests: XCTestCase {
 

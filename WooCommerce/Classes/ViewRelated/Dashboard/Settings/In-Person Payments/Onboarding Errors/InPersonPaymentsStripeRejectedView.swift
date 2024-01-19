@@ -12,7 +12,8 @@ struct InPersonPaymentsStripeRejected: View {
             ),
             supportLink: true,
             learnMore: true,
-            analyticReason: analyticReason
+            analyticReason: analyticReason,
+            plugin: .stripe
         )
     }
 }

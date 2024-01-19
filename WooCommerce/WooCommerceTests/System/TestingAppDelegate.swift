@@ -3,6 +3,12 @@ import UIKit
 
 @objc(TestingAppDelegate)
 class TestingAppDelegate: AppDelegate {
+    /// Enables mocking of `tabBarController` property in unit tests. It is strongly recommended to reset it back to `nil` after each test case that sets this.
+    static var mockTabBarController: MainTabBarController?
+
+    override var tabBarController: MainTabBarController? {
+        Self.mockTabBarController ?? super.tabBarController
+    }
 
     override func application(_ application: UIApplication,
                               willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {

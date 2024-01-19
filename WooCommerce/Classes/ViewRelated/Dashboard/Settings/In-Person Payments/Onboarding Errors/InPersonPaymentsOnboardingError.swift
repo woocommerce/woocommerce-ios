@@ -8,6 +8,7 @@ struct InPersonPaymentsOnboardingError: View {
     let supportLink: Bool
     let learnMore: Bool
     let analyticReason: String
+    let plugin: CardPresentPaymentsPlugin?
     var buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
     var secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
 
@@ -56,6 +57,7 @@ extension CardPresentPaymentsPlugin {
 private extension InPersonPaymentsOnboardingError {
     var learnMoreAnalyticEvent: WooAnalyticsEvent? {
         WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
-                                                                                countryCode: CardPresentConfigurationLoader().configuration.countryCode)
+                                                                                countryCode: CardPresentConfigurationLoader().configuration.countryCode,
+                                                                                gatewayID: plugin?.gatewayID)
     }
 }

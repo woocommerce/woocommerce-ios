@@ -378,6 +378,8 @@ private extension BlazeStore {
         guard Self.isRunningTests else {
             return stubbedResult
         }
+        // mock some wait for the loading state
+        try await Task.sleep(nanoseconds: 300_000)
         return try await onExecution()
     }
 }

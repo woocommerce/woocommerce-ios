@@ -51,6 +51,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingTopicPicker = false
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
+    @State private var isShowingPaymentInfo = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -114,8 +115,9 @@ struct BlazeCampaignCreationForm: View {
 
                 Button {
                     // TODO: track tap
+                    isShowingPaymentInfo = true
                 } label: {
-                    LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel)) {
+                    LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel), isActive: $isShowingPaymentInfo) {
                         Text(Localization.confirmDetails)
                     }
                 }

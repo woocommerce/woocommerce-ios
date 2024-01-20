@@ -1,5 +1,1 @@
-- [*] Payments: cash payment is now in fullscreen and supports entering a different amount paid by the customer with an option to record it in an order note. The calculated change due amount is also shown. [https://github.com/woocommerce/woocommerce-ios/pull/11365]
-- [internal] Analytics Hub: Sessions card (views and conversion rate) is now hidden for non-Jetpack stores, since they don't have those stats. [https://github.com/woocommerce/woocommerce-ios/pull/11694]
-- [*] Analytics Hub: Sessions card now shows a prompt for admins to enable Jetpack Stats if the Jetpack module is disabled. [https://github.com/woocommerce/woocommerce-ios/pull/11708]
-- [***] [internal] Refactor WP.com sign in API requests. [https://github.com/woocommerce/woocommerce-ios/pull/11734]
-
+Get ready for a smoother checkout and enhanced insights with our latest update! Our cash payment interface now glides in full-screen, letting you effortlessly input custom amounts and note them directly on the order—a handy change calculation is included. Plus, store admins, don't miss out on valuable data; our Analytics Hub now nudges you to activate Jetpack Stats for a complete performance view. Update now for a better, more intuitive WooCommerce experience!

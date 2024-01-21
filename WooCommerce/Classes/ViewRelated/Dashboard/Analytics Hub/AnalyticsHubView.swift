@@ -58,6 +58,8 @@ struct AnalyticsHubView: View {
 
     @StateObject var viewModel: AnalyticsHubViewModel
 
+    @State private var isEnablingJetpackStats = false
+
     var body: some View {
         RefreshablePlainList(action: {
             viewModel.trackAnalyticsInteraction()
@@ -108,9 +110,22 @@ struct AnalyticsHubView: View {
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
 
-                    AnalyticsReportCard(viewModel: viewModel.sessionsCard)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
+                    Group {
+                        if viewModel.showJetpackStatsCTA {
+                            AnalyticsCTACard(title: Localization.sessionsCTATitle,
+                                             message: Localization.sessionsCTAMessage,
+                                             buttonLabel: Localization.sessionsCTAButton,
+                                             isLoading: $isEnablingJetpackStats) {
+                                isEnablingJetpackStats = true
+                                await viewModel.enableJetpackStats()
+                                isEnablingJetpackStats = false
+                            }
+                        } else {
+                            AnalyticsReportCard(viewModel: viewModel.sessionsCard)
+                        }
+                    }
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(uiColor: .listForeground(modal: false)))
 
                     Divider()
                 }
@@ -144,6 +159,17 @@ struct AnalyticsHubView: View {
 private extension AnalyticsHubView {
     struct Localization {
         static let title = NSLocalizedString("Analytics", comment: "Title for the Analytics Hub screen.")
+
+
+        static let sessionsCTATitle = NSLocalizedString("analyticsHub.jetpackStatsCTA.title",
+                                                        value: "SESSIONS",
+                                                        comment: "Title for sessions section in the Analytics Hub")
+        static let sessionsCTAMessage = NSLocalizedString("analyticsHub.jetpackStatsCTA.message",
+                                                          value: "Enable Jetpack Stats to see your store's session analytics.",
+                                                          comment: "Text displayed in the Analytics Hub when the Jetpack Stats module is disabled")
+        static let sessionsCTAButton = NSLocalizedString("analyticsHub.jetpackStatsCTA.buttonLabel",
+                                                         value: "Enable Jetpack Stats",
+                                                         comment: "Label for button to enable Jetpack Stats")
     }
 
     struct Layout {

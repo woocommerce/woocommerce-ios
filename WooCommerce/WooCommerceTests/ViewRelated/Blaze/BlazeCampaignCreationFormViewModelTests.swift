@@ -40,10 +40,18 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .testingInstance)
+        storageManager = MockStorageManager()
         imageLoader = MockProductUIImageLoader()
     }
+
+    override func tearDown() {
+        imageLoader = nil
+        storageManager = nil
+        stores = nil
+        super.tearDown()
+    }
+
 
     // MARK: Initial values
     func test_image_is_empty_initially() async throws {

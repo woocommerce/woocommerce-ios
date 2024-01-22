@@ -11,9 +11,8 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
     private let stores: StoresManager
     private let defaultAccount: Account?
 
-    @Published private var paymentInfo: BlazePaymentInfo?
+    private let paymentInfo: BlazePaymentInfo?
     @Published private(set) var isFetchingPaymentInfo = false
-    @Published var shouldDisplayPaymentErrorAlert = false
     @Published var notice: Notice?
 
     var paymentMethods: [BlazePaymentMethod] {
@@ -45,13 +44,6 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
         paymentInfo?.addPaymentMethod.successUrl
     }
 
-    var isDoneButtonEnabled: Bool {
-        guard !isFetchingPaymentInfo else {
-            return false
-        }
-        return selectedPaymentMethodID != originalSelectedPaymentMethodID
-    }
-
     init(siteID: Int64,
          paymentInfo: BlazePaymentInfo,
          selectedPaymentMethodID: String? = nil,
@@ -68,40 +60,32 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
 
     func didSelectPaymentMethod(withID paymentMethodID: String) {
         selectedPaymentMethodID = paymentMethodID
+        saveSelection()
     }
 
-    @MainActor
-    func syncPaymentInfo() async {
-        shouldDisplayPaymentErrorAlert = false
-        isFetchingPaymentInfo = true
-        do {
-            paymentInfo = try await fetchPaymentInfo()
-        } catch {
-            DDLogError("⛔️ Error fetching payment info for Blaze campaign creation: \(error)")
-            shouldDisplayPaymentErrorAlert = true
+    func didAddNewPaymentMethod(successURL: URL?) {
+        guard let successURL,
+              let urlComponents = URLComponents(url: successURL, resolvingAgainstBaseURL: true),
+              let idUrlParameter = paymentInfo?.addPaymentMethod.idUrlParameter,
+              let newPaymentMethodID = urlComponents.queryItems?.first(where: { $0.name == idUrlParameter })?.value else {
+            DDLogError("⛔️ Failed to get newly added payment method ID from Blaze Add payment web view.")
+            return
         }
-        isFetchingPaymentInfo = false
-    }
 
+        selectedPaymentMethodID = newPaymentMethodID
+        saveSelection()
+    }
+}
+
+// MARK: - Private Helpers
+//
+private extension BlazePaymentMethodsViewModel {
     func saveSelection() {
         guard let selectedPaymentMethodID else {
             DDLogError("⛔️ No payment method selected in Blaze campaign creation")
             return
         }
         onCompletion(selectedPaymentMethodID)
-    }
-}
-
-// MARK: - API Requests
-//
-private extension BlazePaymentMethodsViewModel {
-    @MainActor
-    func fetchPaymentInfo() async throws -> BlazePaymentInfo {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(BlazeAction.fetchPaymentInfo(siteID: siteID, onCompletion: { result in
-                continuation.resume(with: result)
-            }))
-        }
     }
 }
 

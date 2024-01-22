@@ -27,7 +27,6 @@ struct BlazePaymentMethodsView: View {
                 // Add new method button
                 Group {
                     let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
-                    
                     Button(action: {
                         showingAddPaymentWebView = true
                     }) {
@@ -44,20 +43,6 @@ struct BlazePaymentMethodsView: View {
                         dismiss()
                     }
                 }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        viewModel.saveSelection()
-                        dismiss()
-                    }, label: {
-                        if viewModel.isFetchingPaymentInfo {
-                            ProgressView()
-                        } else {
-                            Text(Localization.doneButton)
-                        }
-                    })
-                    .disabled(!viewModel.isDoneButtonEnabled)
-                }
             }
             .navigationTitle(Localization.navigationBarTitle)
             .wooNavigationBarStyle()
@@ -65,13 +50,6 @@ struct BlazePaymentMethodsView: View {
         }
         .sheet(isPresented: $showingAddPaymentWebView, content: {
             webView
-        })
-        .alert(Text(Localization.errorMessage), isPresented: $viewModel.shouldDisplayPaymentErrorAlert, actions: {
-            Button(Localization.tryAgain) {
-                Task {
-                    await viewModel.syncPaymentInfo()
-                }
-            }
         })
         .notice($viewModel.notice)
     }
@@ -165,12 +143,10 @@ struct BlazePaymentMethodsView: View {
             NavigationView {
                 AuthenticatedWebView(isPresented: $showingAddPaymentWebView,
                                      url: addPaymentMethodURL,
-                                     urlToTriggerExit: fetchPaymentMethodURLPath) {
+                                     urlToTriggerExit: fetchPaymentMethodURLPath) { url in
                     showingAddPaymentWebView = false
-                    Task {
-                        await viewModel.syncPaymentInfo()
-                    }
                     viewModel.notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
+                    viewModel.didAddNewPaymentMethod(successURL: url)
                 }
                                      .navigationTitle(Localization.paymentMethodWebViewTitle)
                                      .navigationBarTitleDisplayMode(.inline)
@@ -199,11 +175,6 @@ private extension BlazePaymentMethodsView {
             "blazePaymentMethodsView.cancelButton",
             value: "Cancel",
             comment: "Title of the button to dismiss the Blaze payment method list screen"
-        )
-        static let doneButton = NSLocalizedString(
-            "blazePaymentMethodsView.doneButton",
-            value: "Done",
-            comment: "Done navigation button in the Blaze Payment Method screen"
         )
         static let transactionsSecure = NSLocalizedString(
             "blazePaymentMethodsView.transactionsSecure",
@@ -253,16 +224,6 @@ private extension BlazePaymentMethodsView {
             "blazePaymentMethodsView.pleaseAddPaymentMethodMessage",
             value: "Please add a new payment method",
             comment: "Message that will be displayed if there are no Blaze payment methods.")
-        static let errorMessage = NSLocalizedString(
-            "blazePaymentMethodsView.errorMessage",
-            value: "Error loading your payment methods",
-            comment: "Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow."
-        )
-        static let tryAgain = NSLocalizedString(
-            "blazePaymentMethodsView.tryAgain",
-            value: "Try Again",
-            comment: "Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow."
-        )
     }
 
     enum Layout {

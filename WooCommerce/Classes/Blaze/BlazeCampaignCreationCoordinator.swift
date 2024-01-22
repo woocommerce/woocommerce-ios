@@ -58,7 +58,42 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         configureResultsController()
     }
 
-    private func configureResultsController() {
+    func start() {
+        switch blazeCreationEntryDestination {
+        case .productSelector:
+            navigateToBlazeProductSelector(source: source)
+        case .campaignForm(let productID):
+            navigateToNativeCampaignCreation(source: source, productID: productID)
+        case .webViewForm(let productID):
+            navigateToWebCampaignCreation(source: source, productID: productID)
+        case .noProductAvailable:
+            break // TODO 11685: add error alert.
+        }
+    }
+
+    func dismissCampaignCreation() {
+        // For the web flow, simply pop the last view controller
+        guard featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) else {
+            navigationController.popViewController(animated: true)
+            return
+        }
+
+        // Checks if we are presenting or pushing the creation flow to dismiss accordingly.
+        if blazeNavigationController.presentingViewController != nil {
+            navigationController.dismiss(animated: true)
+        } else {
+            let viewControllerStack = navigationController.viewControllers
+            guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFormHostingController }),
+                  let originController = viewControllerStack[safe: index - 1] else {
+                return
+            }
+            navigationController.popToViewController(originController, animated: true)
+        }
+    }
+}
+
+private extension BlazeCampaignCreationCoordinator {
+    func configureResultsController() {
         productResultsController.onDidChangeContent = { [weak self] in
             self?.updateCreateCampaignDestination()
         }
@@ -74,21 +109,8 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         }
     }
 
-    func start() {
-        switch blazeCreationEntryDestination {
-        case .productSelector:
-            navigateToBlazeProductSelector(source: source)
-        case .campaignForm(let productID):
-            navigateToNativeCampaignCreation(source: source, productID: productID)
-        case .webViewForm(let productID):
-            navigateToWebCampaignCreation(source: source, productID: productID)
-        case .noProductAvailable:
-            break // TODO 11685: add error alert.
-        }
-    }
-
     /// Determine whether to use the existing WebView solution, or go with native Blaze campaign creation.
-    private func updateCreateCampaignDestination() {
+    func updateCreateCampaignDestination() {
         if featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
             blazeCreationEntryDestination = determineDestination()
         } else {
@@ -98,7 +120,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
     /// For native Blaze campaign creation, determine destination based existence of productID, or if not then
     /// based on number of eligible products.
-    private func determineDestination() -> CreateCampaignDestination {
+    func determineDestination() -> CreateCampaignDestination {
         if let productID = productID {
             return .campaignForm(productID: productID)
         } else {
@@ -118,6 +140,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
                                                            productID: productID,
+                                                           storage: storageManager,
                                                            onCompletion: { [weak self] in
             self?.onCampaignCreated()
             self?.dismissCampaignCreation()
@@ -135,7 +158,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     }
 
     /// Handles navigation to the webview Blaze creation
-    func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64?) {
+    private func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64?) {
         let webViewModel = BlazeWebViewModel(siteID: siteID,
                                              source: source,
                                              siteURL: siteURL,
@@ -173,25 +196,5 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
         blazeNavigationController.viewControllers = [controller]
         navigationController.present(blazeNavigationController, animated: true, completion: nil)
-    }
-
-    func dismissCampaignCreation() {
-        // For the web flow, simply pop the last view controller
-        guard featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) else {
-            navigationController.popViewController(animated: true)
-            return
-        }
-
-        // Checks if we are presenting or pushing the creation flow to dismiss accordingly.
-        if blazeNavigationController.presentingViewController != nil {
-            navigationController.dismiss(animated: true)
-        } else {
-            let viewControllerStack = navigationController.viewControllers
-            guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFormHostingController }),
-                  let originController = viewControllerStack[safe: index - 1] else {
-                return
-            }
-            navigationController.popToViewController(originController, animated: true)
-        }
     }
 }

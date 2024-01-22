@@ -21,6 +21,8 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         isFetchingPaymentInfo || selectedPaymentMethod == nil
     }
 
+    @Published var showAddPaymentSheet: Bool = false
+
     var paymentMethodsViewModel: BlazePaymentMethodsViewModel? {
         guard let paymentInfo else {
             DDLogError("⛔️ No payment info available to list in payment methods screen.")
@@ -28,7 +30,8 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         }
         return BlazePaymentMethodsViewModel(siteID: siteID,
                                             paymentInfo: paymentInfo,
-                                            selectedPaymentMethodID: selectedPaymentMethod?.id, completion: { paymentID in
+                                            selectedPaymentMethodID: selectedPaymentMethod?.id,
+                                            completion: { paymentID in
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 await updatePaymentInfo()

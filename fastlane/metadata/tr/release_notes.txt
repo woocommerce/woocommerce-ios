@@ -1,0 +1,1 @@
+Sipariş yönetimi deneyiminizi iyileştirdik! Artık bir sipariş oluştururken kayıtlı bir müşteri seçtiğinizde bu müşteri otomatik olarak bağlayarak iş akışınızı kolaylaştırır. Satışlarınızı daha sorunsuz ve daha güvenli şekilde yönetmek için hemen güncelleyin!

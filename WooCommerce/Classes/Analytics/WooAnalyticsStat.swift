@@ -171,6 +171,10 @@ public enum WooAnalyticsStat: String {
     case analyticsHubDateRangeOptionSelected = "analytics_hub_date_range_option_selected"
     case analyticsHubDateRangeSelectionFailed = "analytics_hub_date_range_selection_failed"
     case analyticsHubWaitingTimeLoaded = "analytics_hub_waiting_time_loaded"
+    case analyticsHubEnableJetpackStatsShown = "analytics_hub_enable_jetpack_stats_shown"
+    case analyticsHubEnableJetpackStatsTapped = "analytics_hub_enable_jetpack_stats_tapped"
+    case analyticsHubEnableJetpackStatsSuccess = "analytics_hub_enable_jetpack_stats_success"
+    case analyticsHubEnableJetpackStatsFailed = "analytics_hub_enable_jetpack_stats_failed"
 
     // MARK: Blaze Events
     //

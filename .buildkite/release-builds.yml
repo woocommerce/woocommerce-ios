@@ -13,7 +13,7 @@ common_params:
 steps:
 
   - label: "🛠 Release Build (App Store Connect)"
-    command: ".buildkite/commands/release-build.sh $BUILDKITE_BETA_RELEASE"
+    command: ".buildkite/commands/release-build.sh ${BUILDKITE_BETA_RELEASE}"
     priority: 1
     env: *common_env
     plugins: *common_plugins

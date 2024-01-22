@@ -56,6 +56,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     // MARK: Initial values
     func test_image_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -69,6 +70,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_tagline_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -82,6 +84,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_description_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -189,6 +192,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sends_correct_product_ID_to_fetch() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         var expectedProductID: Int64?
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             guard let self = self else { return }
@@ -216,6 +221,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_tagline_and_description_upon_success() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         mockAISuggestionsSuccess(sampleAISuggestions)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -235,6 +242,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_error_if_request_fails() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         mockAISuggestionsFailure(MockError())
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -252,6 +261,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_error_if_no_suggestions_available() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         mockAISuggestionsSuccess([])
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,

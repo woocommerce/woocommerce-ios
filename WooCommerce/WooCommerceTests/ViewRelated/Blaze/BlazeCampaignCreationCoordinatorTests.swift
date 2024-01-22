@@ -29,6 +29,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
      override func tearDown() {
          super.tearDown()
          navigationController = nil
+         storageManager = nil
      }
 
     func test_webview_is_presented_when_blazei3NativeCampaignCreation_is_disabled() {

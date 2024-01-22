@@ -51,6 +51,9 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
@@ -61,6 +64,9 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
@@ -71,6 +77,9 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
@@ -187,6 +196,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -202,6 +213,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -219,6 +232,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -234,6 +249,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When

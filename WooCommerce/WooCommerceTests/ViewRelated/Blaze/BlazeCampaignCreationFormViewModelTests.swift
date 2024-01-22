@@ -7,7 +7,6 @@ import protocol Storage.StorageType
 @testable import WooCommerce
 import struct Networking.BlazeAISuggestion
 
-@MainActor
 final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322

@@ -546,6 +546,7 @@ private extension OrderListViewController {
 
 extension OrderListViewController {
     /// Adds ability to select any order
+    @discardableResult
     func selectOrder(for orderID: Int64) -> Bool {
         let itemIdentifiers = dataSource.snapshot().itemIdentifiers
         for identifier in itemIdentifiers {

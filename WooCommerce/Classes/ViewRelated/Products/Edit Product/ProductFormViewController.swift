@@ -48,7 +48,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productUIImageLoader: ProductUIImageLoader
     private let productImageUploader: ProductImageUploaderProtocol
     private var tooltipPresenter: TooltipPresenter?
-    private var productFormBottomSheetPresenter: BottomSheetPresenter?
 
     private let currency: String
 
@@ -1156,28 +1155,10 @@ private extension ProductFormViewController {
             productID: product.productID,
             source: source,
             navigationController: navigationController,
-            onCampaignCreated: handlePostCreation
+            onCampaignCreated: {}
         )
         coordinator.start()
         blazeCampaignCreationCoordinator = coordinator
-    }
-
-    func handlePostCreation() {
-        navigationController?.popViewController(animated: true)
-        showBlazeCampaignCelebrationView()
-    }
-
-    func showBlazeCampaignCelebrationView() {
-        productFormBottomSheetPresenter = buildBottomSheetPresenter()
-        let controller = CelebrationHostingController(
-            title: Localization.Blaze.celebrationTitle,
-            subtitle: Localization.Blaze.celebrationSubtitle,
-            closeButtonTitle: Localization.Blaze.celebrationCTA,
-            onTappingDone: { [weak self] in
-            self?.productFormBottomSheetPresenter?.dismiss()
-            self?.productFormBottomSheetPresenter = nil
-        })
-        productFormBottomSheetPresenter?.present(controller, from: self)
     }
 
     func trackVariationRemoveButtonTapped() {
@@ -2008,21 +1989,6 @@ private extension ProductFormViewController {
 }
 
 
-// MARK: Bottom sheet helpers
-//
-private extension ProductFormViewController {
-    func buildBottomSheetPresenter() -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
-            var sheet = bottomSheet
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .none
-            sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium(), .large()]
-        })
-    }
-}
-
-
 // MARK: Constants
 //
 private enum Localization {
@@ -2052,24 +2018,6 @@ private enum Localization {
                                                comment: "The message for the Write with AI tooltip")
         static let gotIt = NSLocalizedString("Got it",
                                              comment: "Button title that dismisses the Write with AI tooltip")
-    }
-
-    enum Blaze {
-        static let celebrationTitle = NSLocalizedString(
-            "productFormViewController.blazeCelebrationTitle",
-            value: "All set!",
-            comment: "Title of the celebration view when a Blaze campaign is successfully created."
-        )
-        static let celebrationSubtitle = NSLocalizedString(
-            "productFormViewController.blazeCelebrationSubtitle",
-            value: "The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running.",
-            comment: "Subtitle of the celebration view when a Blaze campaign is successfully created."
-        )
-        static let celebrationCTA = NSLocalizedString(
-            "productFormViewController.blazeCelebrationCTA",
-            value: "Got it",
-            comment: "Button to dismiss the celebration view when a Blaze campaign is successfully created."
-        )
     }
 }
 

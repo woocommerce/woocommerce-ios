@@ -12,7 +12,7 @@ struct TitleAndValueRow: View {
     }
 
     private let title: String
-    private let titleSuffixImage: Image?
+    private let titleSuffixImage: (image: Image, color: Color)?
     private let value: Value
     private let valueTextAlignment: TextAlignment
     private let bold: Bool
@@ -38,7 +38,7 @@ struct TitleAndValueRow: View {
     }
 
     init(title: String,
-         titleSuffixImage: Image? = nil,
+         titleSuffixImage: (image: Image, color: Color)? = nil,
          titleWidth: Binding<CGFloat?> = .constant(nil),
          value: Value,
          valueTextAlignment: TextAlignment = .trailing,
@@ -68,7 +68,8 @@ struct TitleAndValueRow: View {
                         .frame(width: titleWidth, alignment: .leading)
 
                     if let titleSuffixImage {
-                        titleSuffixImage
+                        titleSuffixImage.image
+                            .foregroundColor(titleSuffixImage.color)
                             .padding(.leading, Constants.titleSuffixImageTrailingPadding)
                     }
 

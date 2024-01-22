@@ -44,6 +44,8 @@ private extension BlazeCampaignCreationFormHostingController {
 struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
+    @Environment(\.colorScheme) var colorScheme
+
     @State private var isShowingBudgetSetting = false
     @State private var isShowingLanguagePicker = false
     @State private var isShowingAdDestinationScreen = false
@@ -51,6 +53,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingTopicPicker = false
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
+    @State private var isShowingPaymentInfo = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -69,6 +72,7 @@ struct BlazeCampaignCreationForm: View {
                 detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
                     isShowingBudgetSetting = true
                 }
+                .background(Constants.cellColor)
                 .overlay { roundedRectangleBorder }
 
                 VStack(spacing: 0) {
@@ -98,24 +102,32 @@ struct BlazeCampaignCreationForm: View {
                         isShowingTopicPicker = true
                     }
                 }
+                .background(Constants.cellColor)
                 .overlay { roundedRectangleBorder }
 
                 // Ad destination
-                detailView(title: Localization.adDestination, content: "https://example.com") {
-                    isShowingAdDestinationScreen = true
+                if viewModel.adDestinationViewModel != nil {
+                    detailView(title: Localization.adDestination,
+                               content: viewModel.finalDestinationURL,
+                               isContentSingleLine: true) {
+                        isShowingAdDestinationScreen = true
+                    }
+                    .background(Constants.cellColor)
+                    .overlay { roundedRectangleBorder }
                 }
-                .overlay { roundedRectangleBorder }
             }
             .padding(.horizontal, Layout.contentPadding)
         }
+        .background(Constants.backgroundViewColor)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 0) {
                 Divider()
 
                 Button {
                     // TODO: track tap
+                    isShowingPaymentInfo = true
                 } label: {
-                    NavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel)) {
+                    LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel), isActive: $isShowingPaymentInfo) {
                         Text(Localization.confirmDetails)
                     }
                 }
@@ -123,7 +135,7 @@ struct BlazeCampaignCreationForm: View {
                 .padding(Layout.contentPadding)
                 .disabled(!viewModel.canConfirmDetails)
             }
-            .background(Color(uiColor: .systemBackground))
+            .background(Constants.backgroundViewColor)
         }
         .sheet(isPresented: $isShowingBudgetSetting) {
             BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
@@ -134,7 +146,9 @@ struct BlazeCampaignCreationForm: View {
             }
         }
         .sheet(isPresented: $isShowingAdDestinationScreen) {
-            BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
+            if let viewModel = viewModel.adDestinationViewModel {
+                BlazeAdDestinationSettingView(viewModel: viewModel)
+            }
         }
         .sheet(isPresented: $isShowingDevicePicker) {
             BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel) {
@@ -180,11 +194,12 @@ private extension BlazeCampaignCreationForm {
                 // Image
                 Image(uiImage: viewModel.image?.image ?? .blazeProductPlaceholder)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fit)
                     .cornerRadius(Layout.cornerRadius)
 
                 // Tagline
                 Text(viewModel.isLoadingAISuggestions ? "Placeholder tagline" : viewModel.tagline)
+                    .foregroundStyle(.secondary)
                     .captionStyle()
                     .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
                     .shimmering(active: viewModel.isLoadingAISuggestions)
@@ -227,16 +242,19 @@ private extension BlazeCampaignCreationForm {
                     .foregroundColor(.accentColor)
             })
             .buttonStyle(.plain)
+            .disabled(!viewModel.canEditAd)
             .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
             .shimmering(active: !viewModel.canEditAd)
         }
+        .environment(\.colorScheme, .light)
         .padding(Layout.contentPadding)
-        .background(Color(uiColor: .systemGray6))
+        .background(Color(light: .init(uiColor: .systemGray6),
+                          dark: .init(uiColor: .tertiarySystemBackground)))
         .cornerRadius(Layout.cornerRadius)
         .padding(.vertical, Layout.contentPadding)
     }
 
-    func detailView(title: String, content: String, action: @escaping () -> Void) -> some View {
+    func detailView(title: String, content: String, isContentSingleLine: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action, label: {
             HStack {
                 VStack(alignment: .leading, spacing: Layout.detailContentSpacing) {
@@ -245,6 +263,7 @@ private extension BlazeCampaignCreationForm {
                     Text(content)
                         .secondaryBodyStyle()
                         .multilineTextAlignment(.leading)
+                        .lineLimit(isContentSingleLine ? 1 : nil)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
@@ -277,6 +296,13 @@ private extension BlazeCampaignCreationForm {
         static let detailContentSpacing: CGFloat = 4
         static let shadowRadius: CGFloat = 2
         static let shadowYOffset: CGFloat = 2
+    }
+
+    enum Constants {
+        static let backgroundViewColor = Color(light: .init(uiColor: .systemBackground),
+                                               dark: .init(uiColor: .secondarySystemBackground))
+        static let cellColor = Color(light: .init(uiColor: .systemBackground),
+                                     dark: .init(uiColor: .tertiarySystemBackground))
     }
 
     enum Localization {
@@ -359,6 +385,6 @@ private extension BlazeCampaignCreationForm {
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123) {})
+        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
     }
 }

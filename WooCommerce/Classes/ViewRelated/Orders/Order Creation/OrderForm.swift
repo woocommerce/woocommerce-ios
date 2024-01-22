@@ -483,7 +483,7 @@ private struct ProductsSection: View {
                     Spacer()
 
                     Image(uiImage: .lockImage)
-                        .foregroundColor(Color(.brand))
+                        .foregroundColor(Color(.primary))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
                     HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {

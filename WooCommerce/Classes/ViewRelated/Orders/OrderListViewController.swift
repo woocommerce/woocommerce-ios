@@ -560,7 +560,7 @@ extension OrderListViewController {
                 selectedIndexPath = indexPath
                 switchDetailsHandler([detailsViewModel], 0, nil)
                 highlightSelectedRowIfNeeded()
-                return
+                break
             }
         }
     }

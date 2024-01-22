@@ -140,6 +140,7 @@ private extension BlazeCampaignCreationCoordinator {
     func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
                                                            productID: productID,
+                                                           storage: storageManager,
                                                            onCompletion: { [weak self] in
             self?.onCampaignCreated()
             self?.dismissCampaignCreation()

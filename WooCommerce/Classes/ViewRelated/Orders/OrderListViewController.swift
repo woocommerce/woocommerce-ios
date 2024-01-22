@@ -546,13 +546,14 @@ private extension OrderListViewController {
 
 extension OrderListViewController {
     /// Adds ability to select any order
-    func selectOrder(for orderID: Int64) -> Bool {
+    @discardableResult
+    func selectOrder(for orderID: Int64, canSwitchDetails: Bool = true) -> Bool {
         let itemIdentifiers = dataSource.snapshot().itemIdentifiers
         for identifier in itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID,
                let indexPath = dataSource.indexPath(for: identifier) {
-                if selectedOrderID != orderID || selectedIndexPath != indexPath {
+                if canSwitchDetails && (selectedOrderID != orderID || selectedIndexPath != indexPath) {
                     switchDetailsHandler([detailsViewModel], 0, nil)
                 }
                 selectedOrderID = orderID

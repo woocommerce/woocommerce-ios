@@ -70,6 +70,7 @@ private extension JetpackConnectionRemote {
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
         static let jetpackConnectionUser = "/jetpack/v4/connection/data"
         static let plugins = "/wp/v2/plugins"
+        static let jetpackModule = "/jetpack/v4/module"
     }
 
     enum Field: String {

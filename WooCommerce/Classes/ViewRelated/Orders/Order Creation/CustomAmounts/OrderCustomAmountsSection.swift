@@ -40,7 +40,7 @@ struct OrderCustomAmountsSection: View {
                     Spacer()
 
                     Image(uiImage: .lockImage)
-                        .foregroundColor(Color(.brand))
+                        .foregroundColor(Color(.primary))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
                     Button(action: {

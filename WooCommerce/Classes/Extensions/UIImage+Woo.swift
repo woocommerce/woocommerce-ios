@@ -401,6 +401,18 @@ extension UIImage {
         return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
     }
 
+    /// Big error icon
+    ///
+    static var bigErrorIcon: UIImage {
+        return UIImage(named: "error-big-icon")!
+    }
+
+    /// Blaze success image
+    ///
+    static var blazeSuccessImage: UIImage {
+        return UIImage(named: "blaze-success")!
+    }
+
     /// Subscription Product
     ///
     static var subscriptionProductImage: UIImage {
@@ -483,6 +495,12 @@ extension UIImage {
     static var hourglass: UIImage {
         let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .medium)
         return UIImage(systemName: "hourglass", withConfiguration: config)!
+    }
+
+    /// Hourglass Image from Woo design
+    ///
+    static var wooHourglass: UIImage {
+        UIImage(named: "woo-hourglass")!
     }
 
     /// House Outlined Image
@@ -1120,6 +1138,18 @@ extension UIImage {
         UIImage.gridicon(.globe)
     }
 
+    /// Search Image
+    ///
+    static var searchImage: UIImage {
+        UIImage(named: "search")!
+    }
+
+    /// Search No Result Image
+    ///
+    static var searchNoResultImage: UIImage {
+        UIImage(named: "search-no-result")!
+    }
+
     /// Returns a star icon with the given size
     ///
     /// - Parameters:
@@ -1329,7 +1359,7 @@ extension UIImage {
     /// Lock Image
     ///
     static var lockImage: UIImage {
-        UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
+        return UIImage(systemName: "lock.fill")?.withRenderingMode(.alwaysTemplate) ?? UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
     }
 
     /// Sites Image

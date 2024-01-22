@@ -7,7 +7,6 @@ import protocol Storage.StorageType
 @testable import WooCommerce
 import struct Networking.BlazeAISuggestion
 
-@MainActor
 final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322
@@ -41,16 +40,28 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .testingInstance)
+        storageManager = MockStorageManager()
         imageLoader = MockProductUIImageLoader()
     }
+
+    override func tearDown() {
+        imageLoader = nil
+        storageManager = nil
+        stores = nil
+        super.tearDown()
+    }
+
 
     // MARK: Initial values
     func test_image_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
@@ -59,8 +70,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_tagline_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
@@ -69,8 +84,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_description_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
@@ -125,33 +144,10 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canEditAd)
     }
 
-    func test_ad_cannot_be_edited_until_image_is_downloaded() async throws {
-        // Given
-        insertProduct(sampleProduct)
-        mockAISuggestionsSuccess(sampleAISuggestions)
-        mockDownloadImage(sampleImage)
-
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           onCompletion: {})
-        // Load suggestions and ensure that ad cannot be edited
-        await viewModel.loadAISuggestions()
-        XCTAssertFalse(viewModel.canEditAd)
-
-        // When
-        await viewModel.downloadProductImage()
-
-        // Then
-        XCTAssertTrue(viewModel.canEditAd)
-    }
-
     func test_ad_can_be_edited_if_suggestions_failed_to_load() async throws {
         // Given
         insertProduct(sampleProduct)
-        mockDomainSuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError())
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -196,6 +192,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sends_correct_product_ID_to_fetch() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         var expectedProductID: Int64?
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             guard let self = self else { return }
@@ -210,6 +208,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -221,10 +221,14 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_tagline_and_description_upon_success() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         mockAISuggestionsSuccess(sampleAISuggestions)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -238,10 +242,14 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_error_if_request_fails() async throws {
         // Given
-        mockDomainSuggestionsFailure(MockError())
+        insertProduct(sampleProduct)
+
+        mockAISuggestionsFailure(MockError())
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -253,10 +261,14 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_error_if_no_suggestions_available() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         mockAISuggestionsSuccess([])
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -392,7 +404,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
     }
 
-    func mockDomainSuggestionsFailure(_ error: Error) {
+    func mockAISuggestionsFailure(_ error: Error) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchAISuggestions(_, _, completion):

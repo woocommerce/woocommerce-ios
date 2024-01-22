@@ -14,7 +14,7 @@ private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     /// Current store onboarding state.
     ///
-    var state: CardPresentPaymentOnboardingState { get set }
+    var state: CardPresentPaymentOnboardingState { get }
 
     /// Store onboarding state publisher.
     ///
@@ -62,7 +62,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
 
-    @Published var state: CardPresentPaymentOnboardingState = .loading
+    @Published private(set) var state: CardPresentPaymentOnboardingState = .loading
 
     var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {
         $state
@@ -560,7 +560,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
     func trackCardPresentPluginActionFailed(_ error: Error, trigger: PluginFailureTrigger) {
         analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: trigger.rawValue,
                                                                                 countryCode: storeCountryCode,
-                                                                                error: error))
+                                                                                error: error,
+                                                                                gatewayID: preferredPluginLocal?.gatewayID))
     }
 }
 

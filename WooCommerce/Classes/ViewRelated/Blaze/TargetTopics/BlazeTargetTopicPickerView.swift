@@ -39,7 +39,6 @@ struct BlazeTargetTopicPickerView: View {
                     })
                 }
             }
-            .navigationViewStyle(.stack)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {
@@ -54,9 +53,10 @@ struct BlazeTargetTopicPickerView: View {
                     .disabled(viewModel.shouldDisableSaveButton)
                 }
             }
-            .task {
-                await viewModel.syncTopics()
-            }
+        }
+        .navigationViewStyle(.stack)
+        .task {
+            await viewModel.syncTopics()
         }
     }
 }

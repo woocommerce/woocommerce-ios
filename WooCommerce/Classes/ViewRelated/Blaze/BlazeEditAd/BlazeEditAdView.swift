@@ -70,7 +70,7 @@ private extension BlazeEditAdView {
     var imageBlock: some View {
         VStack(alignment: .center, spacing: Layout.childVerticalSpacing) {
             EditableImageView(imageState: viewModel.imageState,
-                              aspectRatio: .fill,
+                              aspectRatio: .fit,
                               emptyContent: {
                 Image(uiImage: .blazeProductPlaceholder)
             })

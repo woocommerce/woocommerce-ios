@@ -37,6 +37,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
+        // Call loadViewIfNeeded to make sure IBOutlets are properly set when used in lazy vars
+        // - for normal app usage the call will not do anything since the views/IBOutlets will be setup before this call
+        // - when used for tests it is important to call it since IBOutlets might be nil in moment of using/creating dataSource
+        self.loadViewIfNeeded()
         let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
             tableView: self.tableView,
             cellProvider: self.makeCellProvider()
@@ -542,6 +546,27 @@ private extension OrderListViewController {
     }
 }
 
+extension OrderListViewController {
+    /// Adds ability to select any order
+    /// Used when opening an order with deep link
+    func selectOrder(for orderID: Int64) {
+        // check if already selected
+        guard selectedOrderID != orderID else {
+            return
+        }
+        for identifier in dataSource.snapshot().itemIdentifiers {
+            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+               detailsViewModel.order.orderID == orderID,
+               let indexPath = dataSource.indexPath(for: identifier) {
+                selectedOrderID = orderID
+                selectedIndexPath = indexPath
+                switchDetailsHandler([detailsViewModel], 0, nil)
+                highlightSelectedRowIfNeeded()
+                break
+            }
+        }
+    }
+}
 
 // MARK: - Placeholders & Ghostable Table
 //

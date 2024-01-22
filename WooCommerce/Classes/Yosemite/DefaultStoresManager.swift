@@ -237,7 +237,7 @@ class DefaultStoresManager: StoresManager {
         applicationPasswordGenerationFailureObserver = nil
 
         let resetAction = CardPresentPaymentAction.reset
-        ServiceLocator.stores.dispatch(resetAction)
+        dispatch(resetAction)
 
         state = DeauthenticatedState()
 

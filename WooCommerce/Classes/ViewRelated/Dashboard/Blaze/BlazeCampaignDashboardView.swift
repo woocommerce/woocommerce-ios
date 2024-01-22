@@ -7,10 +7,17 @@ import Kingfisher
 ///
 final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingController<BlazeCampaignDashboardView> {
     private let viewModel: BlazeCampaignDashboardViewModel
-    private let parentNavigationController: UINavigationController?
+    private let parentNavigationController: UINavigationController
     private lazy var blazeNavigationController = WooNavigationController()
+    private lazy var coordinator = BlazeCampaignCreationCoordinator(
+            siteID: viewModel.siteID,
+            siteURL: viewModel.siteURL,
+            source: .myStoreSection,
+            navigationController: parentNavigationController,
+            onCampaignCreated: handlePostCreation
+        )
 
-    init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController?) {
+    init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController) {
         self.viewModel = viewModel
         self.parentNavigationController = parentNavigationController
 
@@ -22,20 +29,18 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.createCampaignTapped = { [weak self] in
-            self?.navigateToCampaignCreation(source: .myStoreSection)
+            self?.coordinator.start()
         }
 
         rootView.startCampaignFromIntroTapped = { [weak self] productID in
-            // Ensures the intro view is dismissed before navigating to the creation flow
-            self?.parentNavigationController?.dismiss(animated: true) {
-                self?.navigateToCampaignCreation(source: .introView, productID: productID)
+            self?.parentNavigationController.dismiss(animated: true) {
+                self?.coordinator.start()
             }
         }
 
         rootView.showAllCampaignsTapped = { [weak self] in
-            self?.showCampaignList(isPostCreation: false)
+            self?.showCampaignList()
         }
-
     }
 
     @available(*, unavailable)
@@ -45,99 +50,19 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 }
 
 private extension BlazeCampaignDashboardViewHostingController {
-
-    private var productSelectorViewController: ProductSelectorViewController {
-        let productSelectorViewModel = ProductSelectorViewModel(
-            siteID: viewModel.siteID,
-            purchasableItemsOnly: true,
-            onProductSelectionStateChanged: { [weak self] product in
-                guard let self = self else { return }
-
-                // Navigate to Campaign Creation Form once any type of product is selected.
-                self.navigateToNativeCampaignCreation(source: .myStoreSection,
-                                                      productID: product.productID)
-            },
-            onCloseButtonTapped: { [weak self] in
-                guard let self = self else { return }
-
-                blazeNavigationController.dismiss(animated: true, completion: nil)
-            }
-        )
-
-        return ProductSelectorViewController(configuration: ProductSelectorView.Configuration.configurationForBlaze,
-                                             source: .blaze,
-                                             viewModel: productSelectorViewModel)
-    }
-
-    /// Handles navigation to the campaign creation view.
-    func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-            if let productID {
-                navigateToNativeCampaignCreation(source: source, productID: productID)
-            } else if viewModel.shouldShowProductSelectorView {
-                navigateToBlazeProductSelector(source: source)
-            } else if let product = viewModel.latestPublishedProduct {
-                navigateToNativeCampaignCreation(source: source, productID: product.productID)
-            } else {
-                // Navigate to product selector as we don't have a product ID
-                navigateToBlazeProductSelector(source: source)
-            }
-        } else {
-            navigateToWebCampaignCreation(source: source, productID: productID)
-        }
-    }
-
-    /// Handles navigation to the native Blaze creation
-    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
-        let campaignCreationFormViewModel = BlazeCampaignCreationFormViewModel(siteID: viewModel.siteID,
-                                                                               productID: productID,
-                                                                               onCompletion: { })
-        let controller = BlazeCampaignCreationFormHostingController(viewModel: campaignCreationFormViewModel)
-        if blazeNavigationController.presentingViewController != nil {
-            blazeNavigationController.show(controller, sender: self)
-        } else {
-            blazeNavigationController.viewControllers = [controller]
-            parentNavigationController?.present(blazeNavigationController, animated: true)
-        }
-    }
-
-    /// Handles navigation to the Blaze product selector view
-    func navigateToBlazeProductSelector(source: BlazeSource) {
-        blazeNavigationController.viewControllers = [productSelectorViewController]
-        parentNavigationController?.present(blazeNavigationController, animated: true, completion: nil)
-    }
-
-    /// Handles navigation to the webview Blaze creation
-    func navigateToWebCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
-                source: source,
-                siteURL: viewModel.siteURL,
-                productID: productID) { [weak self] in
-            self?.handlePostCreation()
-        }
-        let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
-        parentNavigationController?.show(webViewController, sender: self)
-        viewModel.didSelectCreateCampaign(source: source)
-    }
-
-    /// Reloads data and shows campaign list.
+    /// Reloads data.
     func handlePostCreation() {
-        parentNavigationController?.popViewController(animated: true)
         Task {
             await viewModel.reload()
         }
-        showCampaignList(isPostCreation: true)
     }
 
     /// Navigates to the campaign list.
     /// Parameter isPostCreation: Whether the list is opened after creating a campaign successfully.
     ///
-    func showCampaignList(isPostCreation: Bool) {
-        let controller = BlazeCampaignListHostingController(
-            viewModel: .init(siteID: viewModel.siteID),
-            isPostCreation: isPostCreation
-        )
-        parentNavigationController?.show(controller, sender: self)
+    func showCampaignList() {
+        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID))
+        parentNavigationController.show(controller, sender: self)
     }
 }
 
@@ -253,7 +178,7 @@ private extension BlazeCampaignDashboardView {
                 createCampaignTapped?()
             }
         } label: {
-            Text(Localization.createCampaign)
+            Text(Localization.promote)
                 .fontWeight(.semibold)
                 .foregroundColor(.init(uiColor: .accent))
                 .bodyStyle()
@@ -329,8 +254,9 @@ private extension BlazeCampaignDashboardView {
             comment: "Button when tapped will show the Blaze campaign list."
         )
 
-        static let createCampaign = NSLocalizedString(
-            "Create campaign",
+        static let promote = NSLocalizedString(
+            "blazeCampaignDashboardView.promote",
+            value: "Promote",
             comment: "Button when tapped will launch create Blaze campaign flow."
         )
 

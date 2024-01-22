@@ -72,6 +72,8 @@ public final class BlazeStore: Store {
             fetchForecastedImpressions(siteID: siteID, input: input, onCompletion: onCompletion)
         case let .fetchAISuggestions(siteID, productID, onCompletion):
             fetchAISuggestions(siteID: siteID, productID: productID, onCompletion: onCompletion)
+        case let .fetchPaymentInfo(siteID, onCompletion):
+            fetchPaymentInfo(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -161,10 +163,6 @@ private extension BlazeStore {
     func synchronizeTargetDevices(siteID: Int64, locale: String, onCompletion: @escaping (Result<[BlazeTargetDevice], Error>) -> Void) {
         Task { @MainActor in
             do {
-                let stubbedResult = [
-                    BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale),
-                    BlazeTargetDevice(id: "desktop", name: "Desktop", locale: locale)
-                ]
                 let devices = try await remote.fetchTargetDevices(for: siteID, locale: locale)
                 insertStoredTargetDevicesInBackground(readonlyDevices: devices, locale: locale) {
                     onCompletion(.success(devices))
@@ -337,6 +335,44 @@ private extension BlazeStore {
     }
 }
 
+// MARK: - Fetch payment info
+//
+private extension BlazeStore {
+    func fetchPaymentInfo(siteID: Int64, onCompletion: @escaping (Result<BlazePaymentInfo, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stubbedResult = {
+                    var methods: [BlazePaymentMethod] = []
+                    let cardNumbers = ["4575", "2343", "6456"]
+
+                    cardNumbers.forEach { cardNumber in
+                        methods.append(BlazePaymentMethod(id: "payment-method-id-\(cardNumber)",
+                                                          rawType: "credit_card",
+                                                          name: "Visa **** \(cardNumber)",
+                                                          info: .init(lastDigits: cardNumber,
+                                                                      expiring: .init(year: 2025, month: 2),
+                                                                      type: "Visa",
+                                                                      nickname: "",
+                                                                      cardholderName: "John Doe")))
+                    }
+                    return BlazePaymentInfo(
+                        savedPaymentMethods: methods,
+                        addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
+                                                successUrl: "https://example.com/blaze-pm-success",
+                                                idUrlParameter: "pmid")
+                    )
+                }()
+                let paymentInfo = try await mockResponse(stubbedResult: stubbedResult) {
+                    try await remote.fetchPaymentInfo(siteID: siteID)
+                }
+                onCompletion(.success(paymentInfo))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+}
+
 // MARK: - Helper for mocking response
 private extension BlazeStore {
     static var isRunningTests: Bool {
@@ -346,6 +382,8 @@ private extension BlazeStore {
     func mockResponse<T>(stubbedResult: T, onExecution: () async throws -> T) async throws -> T {
         // skips stubbed result for unit tests
         guard Self.isRunningTests else {
+            // mock some wait for the loading state
+            try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
             return stubbedResult
         }
         return try await onExecution()

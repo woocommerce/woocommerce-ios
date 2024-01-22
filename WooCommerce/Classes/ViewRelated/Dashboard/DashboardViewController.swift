@@ -487,8 +487,12 @@ private extension DashboardViewController {
 
     /// Starts the Add Product flow to showcase the product description AI feature.
     private func startAddProductFlowFromProductDescriptionAIModal() {
-        AppDelegate.shared.tabBarController?.navigateToTabWithNavigationController(.products, animated: true) { [weak self] navigationController in
+        AppDelegate.shared.tabBarController?.navigateToTabWithViewController(.products, animated: true) { [weak self] tabViewController in
             guard let self else { return }
+            guard let navigationController = tabViewController as? UINavigationController else {
+                return assertionFailure("`AddProductCoordinator` currently expects the source to be `UINavigationController`. " +
+                                        "When we support split view in the products tab, update the source to be `UIViewController`")
+            }
             let coordinator = AddProductCoordinator(siteID: self.siteID,
                                                     source: .productDescriptionAIAnnouncementModal,
                                                     sourceView: nil,
@@ -777,6 +781,12 @@ extension DashboardViewController {
         if blazeCampaignHostingController != nil {
             removeBlazeCampaignView()
         }
+
+        guard let navigationController else {
+            DDLogError("🔴 Error: missing navigation controller.")
+            return
+        }
+
         let hostingController = BlazeCampaignDashboardViewHostingController(
             viewModel: viewModel.blazeCampaignDashboardViewModel,
             parentNavigationController: navigationController

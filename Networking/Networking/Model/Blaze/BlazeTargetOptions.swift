@@ -125,4 +125,15 @@ public final class BlazeTargetLocation: NSObject, Decodable, Identifiable, Gener
         self.type = type
         self.parentLocation = parentLocation
     }
+
+    /// Flattened list of parent locations
+    public var allParentLocationNames: [String] {
+        var locations: [BlazeTargetLocation] = []
+        var currentLocation = self
+        while let parent = currentLocation.parentLocation {
+            locations.append(parent)
+            currentLocation = parent
+        }
+        return locations.map { $0.name }
+    }
 }

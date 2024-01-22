@@ -14,6 +14,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private let stores: StoresManager
     private let productImageLoader: ProductUIImageLoader
     private let completionHandler: () -> Void
+
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .none
@@ -154,7 +155,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private var isLoadingProductImage: Bool = true
 
     var canEditAd: Bool {
-        !(isLoadingProductImage || isLoadingAISuggestions)
+        !isLoadingAISuggestions
     }
 
     var canConfirmDetails: Bool {

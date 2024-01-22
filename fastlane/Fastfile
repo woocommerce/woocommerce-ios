@@ -1296,7 +1296,7 @@ def trigger_buildkite_release_build(branch:, beta:)
     buildkite_organization: 'automattic',
     buildkite_pipeline: 'woocommerce-ios',
     branch: branch,
-    environment: { BETA_RELEASE: beta },
+    environment: { BUILDKITE_BETA_RELEASE: beta },
     pipeline_file: 'release-builds.yml'
   )
 end

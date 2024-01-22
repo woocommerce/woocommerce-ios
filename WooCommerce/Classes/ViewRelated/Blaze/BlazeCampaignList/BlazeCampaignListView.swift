@@ -58,7 +58,6 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
     }
 
     func handlePostCreation() {
-        navigationController?.popViewController(animated: true)
         viewModel.loadCampaigns()
         viewModel.checkIfPostCreationTipIsNeeded()
     }

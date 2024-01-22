@@ -127,6 +127,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
             }
         })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
+        controller.hidesBottomBarWhenPushed = true
 
         // This function can be called from navigateToBlazeProductSelector(), in which case we need to show the
         // Campaign Creation Form from blazeNavigationController.

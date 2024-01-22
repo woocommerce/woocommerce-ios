@@ -37,6 +37,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
+        // Call loadViewIfNeeded to make sure IBOutlets are properly set when used in lazy vars
+        // - for normal app usage the call will not do anything since the views/IBOutlets will be setup before this call
+        // - when used for tests it is important to call it since IBOutlets might be nil in moment of using/creating dataSource
+        self.loadViewIfNeeded()
         let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
             tableView: self.tableView,
             cellProvider: self.makeCellProvider()
@@ -142,7 +146,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
 
-
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -198,18 +201,21 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+    }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+
+        // To fix this issue, the selected item checking is now called after `viewDidLayoutSubviews`, where `isCollapsed` value is
+        // correctly set.
+        // This additionally ensures that an order is selected when changing from horizontally compact to regular.
         // Select the first order if we're showing in an open split view (i.e. on iPad in some size classes)
         guard let splitViewController,
               !splitViewController.isCollapsed else {
             return
         }
         checkSelectedItem()
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tableView.updateHeaderHeight()
     }
 
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -540,6 +546,27 @@ private extension OrderListViewController {
     }
 }
 
+extension OrderListViewController {
+    /// Adds ability to select any order
+    /// Used when opening an order with deep link
+    func selectOrder(for orderID: Int64) {
+        // check if already selected
+        guard selectedOrderID != orderID else {
+            return
+        }
+        for identifier in dataSource.snapshot().itemIdentifiers {
+            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+               detailsViewModel.order.orderID == orderID,
+               let indexPath = dataSource.indexPath(for: identifier) {
+                selectedOrderID = orderID
+                selectedIndexPath = indexPath
+                switchDetailsHandler([detailsViewModel], 0, nil)
+                highlightSelectedRowIfNeeded()
+                break
+            }
+        }
+    }
+}
 
 // MARK: - Placeholders & Ghostable Table
 //

@@ -1359,7 +1359,7 @@ extension UIImage {
     /// Lock Image
     ///
     static var lockImage: UIImage {
-        UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
+        return UIImage(systemName: "lock.fill")?.withRenderingMode(.alwaysTemplate) ?? UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
     }
 
     /// Sites Image

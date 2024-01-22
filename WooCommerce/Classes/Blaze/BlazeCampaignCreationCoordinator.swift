@@ -36,6 +36,8 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     private let didSelectCreateCampaign: ((BlazeSource) -> Void)?
     private let onCampaignCreated: () -> Void
 
+    private var bottomSheetPresenter: BottomSheetPresenter?
+
     init(siteID: Int64,
          siteURL: String,
          productID: Int64? = nil,
@@ -58,7 +60,22 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         configureResultsController()
     }
 
-    private func configureResultsController() {
+    func start() {
+        switch blazeCreationEntryDestination {
+        case .productSelector:
+            navigateToBlazeProductSelector(source: source)
+        case .campaignForm(let productID):
+            navigateToNativeCampaignCreation(source: source, productID: productID)
+        case .webViewForm(let productID):
+            navigateToWebCampaignCreation(source: source, productID: productID)
+        case .noProductAvailable:
+            break // TODO 11685: add error alert.
+        }
+    }
+}
+
+private extension BlazeCampaignCreationCoordinator {
+    func configureResultsController() {
         productResultsController.onDidChangeContent = { [weak self] in
             self?.updateCreateCampaignDestination()
         }
@@ -74,21 +91,8 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         }
     }
 
-    func start() {
-        switch blazeCreationEntryDestination {
-        case .productSelector:
-            navigateToBlazeProductSelector(source: source)
-        case .campaignForm(let productID):
-            navigateToNativeCampaignCreation(source: source, productID: productID)
-        case .webViewForm(let productID):
-            navigateToWebCampaignCreation(source: source, productID: productID)
-        case .noProductAvailable:
-            break // TODO 11685: add error alert.
-        }
-    }
-
     /// Determine whether to use the existing WebView solution, or go with native Blaze campaign creation.
-    private func updateCreateCampaignDestination() {
+    func updateCreateCampaignDestination() {
         if featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
             blazeCreationEntryDestination = determineDestination()
         } else {
@@ -98,7 +102,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
     /// For native Blaze campaign creation, determine destination based existence of productID, or if not then
     /// based on number of eligible products.
-    private func determineDestination() -> CreateCampaignDestination {
+    func determineDestination() -> CreateCampaignDestination {
         if let productID = productID {
             return .campaignForm(productID: productID)
         } else {
@@ -118,8 +122,15 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
                                                            productID: productID,
-                                                           onCompletion: onCampaignCreated)
+                                                           storage: storageManager,
+                                                           onCompletion: { [weak self] in
+            self?.onCampaignCreated()
+            self?.dismissCampaignCreation {
+                self?.showSuccessView()
+            }
+        })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
+        controller.hidesBottomBarWhenPushed = true
 
         // This function can be called from navigateToBlazeProductSelector(), in which case we need to show the
         // Campaign Creation Form from blazeNavigationController.
@@ -137,8 +148,10 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
                                              source: source,
                                              siteURL: siteURL,
                                              productID: productID) { [weak self] in
-            guard let self else { return }
-            self.onCampaignCreated()
+            self?.onCampaignCreated()
+            self?.dismissCampaignCreation {
+                self?.showSuccessView()
+            }
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         navigationController.show(webViewController, sender: self)
@@ -169,5 +182,78 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
         blazeNavigationController.viewControllers = [controller]
         navigationController.present(blazeNavigationController, animated: true, completion: nil)
+    }
+}
+
+// MARK: - Completion handler
+private extension BlazeCampaignCreationCoordinator {
+    func dismissCampaignCreation(completionHandler: @escaping () -> Void) {
+        // For the web flow, simply pop the last view controller
+        guard featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) else {
+            navigationController.popViewController(animated: true)
+            completionHandler()
+            return
+        }
+
+        // Checks if we are presenting or pushing the creation flow to dismiss accordingly.
+        if blazeNavigationController.presentingViewController != nil {
+            navigationController.dismiss(animated: true, completion: completionHandler)
+        } else {
+            // Forces any presented controller to be dismissed and wait until completion to continue navigation.
+            // Reason: presenting the bottom sheet will fail if the transition for the previous modal hasn't completed.
+            navigationController.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+                let viewControllerStack = navigationController.viewControllers
+                guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFormHostingController }),
+                      let originController = viewControllerStack[safe: index - 1] else {
+                    return
+                }
+                navigationController.popToViewController(originController, animated: true)
+                completionHandler()
+            }
+        }
+    }
+
+    func showSuccessView() {
+        bottomSheetPresenter = buildBottomSheetPresenter()
+        let controller = CelebrationHostingController(
+            title: Localization.successTitle,
+            subtitle: Localization.successSubtitle,
+            closeButtonTitle: Localization.successCTA,
+            image: .blazeSuccessImage,
+            onTappingDone: { [weak self] in
+            self?.bottomSheetPresenter?.dismiss()
+            self?.bottomSheetPresenter = nil
+        })
+        bottomSheetPresenter?.present(controller, from: navigationController)
+    }
+
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
+    }
+}
+
+private extension BlazeCampaignCreationCoordinator {
+    enum Localization {
+        static let successTitle = NSLocalizedString(
+            "blazeCampaignCreationCoordinator.successTitle",
+            value: "Ready to Go!",
+            comment: "Title of the celebration view when a Blaze campaign is successfully created."
+        )
+        static let successSubtitle = NSLocalizedString(
+            "blazeCampaignCreationCoordinator.successSubtitle",
+            value: "We're reviewing your campaign. It'll be live within 24 hours. Exciting times ahead for your sales!",
+            comment: "Subtitle of the celebration view when a Blaze campaign is successfully created."
+        )
+        static let successCTA = NSLocalizedString(
+            "blazeCampaignCreationCoordinator.successCTA",
+            value: "Done",
+            comment: "Button to dismiss the celebration view when a Blaze campaign is successfully created."
+        )
     }
 }

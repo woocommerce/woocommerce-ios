@@ -42,7 +42,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         viewModel.syncVariations()
 
         // Then
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? ProductVariationAction)
+        let action = try XCTUnwrap(storesManager.receivedActions.first(where: { $0 is ProductVariationAction}) as? ProductVariationAction)
 
         guard case let .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, _) = action else {
             XCTFail("Expected \(action) to be \(ProductVariationAction.self).synchronizeProductVariations.")

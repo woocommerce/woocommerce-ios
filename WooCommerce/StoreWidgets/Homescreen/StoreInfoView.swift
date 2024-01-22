@@ -59,6 +59,7 @@ private struct StoreInfoView: View {
                 }
             }
             .padding(.horizontal)
+            .widgetBackground(backgroundView: Color(.brand))
         }
     }
 }
@@ -164,6 +165,7 @@ private struct NotLoggedInView: View {
             }
             .padding(.vertical, Layout.cardVerticalPadding)
         }
+        .widgetBackground(backgroundView: Color(.clear))
     }
 }
 
@@ -187,6 +189,7 @@ private struct UnableToFetchView: View {
             }
             .padding(.vertical, Layout.cardVerticalPadding)
         }
+        .widgetBackground(backgroundView: Color(.brand))
     }
 }
 

@@ -39,7 +39,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.showAllCampaignsTapped = { [weak self] in
-            self?.showCampaignList(isPostCreation: false)
+            self?.showCampaignList()
         }
     }
 
@@ -50,23 +50,18 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 }
 
 private extension BlazeCampaignDashboardViewHostingController {
-    /// Reloads data and shows campaign list.
+    /// Reloads data.
     func handlePostCreation() {
-        parentNavigationController.popViewController(animated: true)
         Task {
             await viewModel.reload()
         }
-        showCampaignList(isPostCreation: true)
     }
 
     /// Navigates to the campaign list.
     /// Parameter isPostCreation: Whether the list is opened after creating a campaign successfully.
     ///
-    func showCampaignList(isPostCreation: Bool) {
-        let controller = BlazeCampaignListHostingController(
-            viewModel: .init(siteID: viewModel.siteID),
-            isPostCreation: isPostCreation
-        )
+    func showCampaignList() {
+        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID))
         parentNavigationController.show(controller, sender: self)
     }
 }
@@ -183,7 +178,7 @@ private extension BlazeCampaignDashboardView {
                 createCampaignTapped?()
             }
         } label: {
-            Text(Localization.createCampaign)
+            Text(Localization.promote)
                 .fontWeight(.semibold)
                 .foregroundColor(.init(uiColor: .accent))
                 .bodyStyle()
@@ -259,8 +254,9 @@ private extension BlazeCampaignDashboardView {
             comment: "Button when tapped will show the Blaze campaign list."
         )
 
-        static let createCampaign = NSLocalizedString(
-            "Create campaign",
+        static let promote = NSLocalizedString(
+            "blazeCampaignDashboardView.promote",
+            value: "Promote",
             comment: "Button when tapped will launch create Blaze campaign flow."
         )
 

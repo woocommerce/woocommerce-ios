@@ -47,6 +47,8 @@ final class OrdersSplitViewWrapperController: UIViewController {
 
         ordersSplitViewController.setViewController(loaderNavigationController, for: .secondary)
         ordersSplitViewController.show(.secondary)
+
+        ordersViewController.selectOrder(for: orderID)
     }
 
     func presentOrderCreationFlow() {

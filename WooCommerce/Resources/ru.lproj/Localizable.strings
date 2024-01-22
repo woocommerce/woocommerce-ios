@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-11 20:54:33+0000 */
+/* Translation-Revision-Date: 2024-01-16 17:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -9685,6 +9685,69 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "Скопировать номер";
 
+/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue */
+"blazeAdDestinationSettingVieModel.finalDestination" = "Размещение: %1$@";
+
+/* Blaze Ad Destination: Plural form for characters limit label. %1$d will be replaced by a number. Read like: 10 characters remaining */
+"blazeAdDestinationSettingVieModel.parameterCharactersLimit.plural" = "Осталось символов: %1$d";
+
+/* Blaze Ad Destination: Singular form for characters limit label. %1$d will be replaced by a number. Read like: 1 character remaining */
+"blazeAdDestinationSettingVieModel.parameterCharactersLimit.singular" = "Остался %1$d символ";
+
+/* Title of the Blaze Ad Destination setting screen. */
+"blazeAdDestinationSettingView.adDestination" = "Размещение рекламного объявления";
+
+/* Button to add a new URL parameter in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.addParameterButton" = "Добавить параметр";
+
+/* Button to dismiss the Blaze Ad Destination setting screen */
+"blazeAdDestinationSettingView.cancel" = "Отмена";
+
+/* Heading for the destination URL section in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.destinationUrlHeading" = "URL-адрес назначения";
+
+/* Subtitle for each destination type showing the URL to link to. %1$@ will be replaced by the URL. */
+"blazeAdDestinationSettingView.destinationUrlSubtitle" = "Он будет ссылаться на: %1$@";
+
+/* Label for the product URL destination option in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.productURLLabel" = "URL-адрес товара";
+
+/* Label for the site home destination option in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.siteHomeLabel" = "Главная страница сайта";
+
+/* Heading for the URL Parameters section in Blaze Ad Destination screen. */
+"blazeAdDestinationSettingView.urlParametersHeading" = "Параметры URL-адреса";
+
+/* Button to dismiss the Blaze Add Parameter screen */
+"blazeAddParameterView.cancel" = "Отмена";
+
+/* Label for the character count error on the Blaze Add Parameter screen. */
+"blazeAddParameterView.characterCountError" = "Введённый текст превышает ограничение по числу символов. Сократите его и повторите попытку.";
+
+/* Title of the Blaze Add Parameter screen in edit mode */
+"blazeAddParameterView.editTitle" = "Редактировать параметр";
+
+/* Label for the Key input on the Blaze Add Parameter screen */
+"blazeAddParameterView.keyLabel" = "Ввести ключ параметра";
+
+/* Title for the Key input on the Blaze Add Parameter screen */
+"blazeAddParameterView.keyTitle" = "Ключ";
+
+/* Button to save on the Blaze Add Parameter screen */
+"blazeAddParameterView.save" = "Сохранить";
+
+/* Title of the Blaze Add Parameter screen */
+"blazeAddParameterView.title" = "Добавить параметр";
+
+/* Label for the validation error on the Blaze Add Parameter screen. */
+"blazeAddParameterView.validationError" = "В поле параметра введён недопустимый символ. Удалите его и повторите попытку.";
+
+/* Label for the Value input on the Blaze Add Parameter screen */
+"blazeAddParameterView.valueLabel" = "Ввести значение параметра";
+
+/* Title for the Value input on the Blaze Add Parameter screen */
+"blazeAddParameterView.valueTitle" = "Значение";
+
 /* Button to apply the changes on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.apply" = "Применить";
 
@@ -9766,6 +9829,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Редактировать рекламное объявление";
 
+/* Error message indicating that loading suggestions for tagline and description failed */
+"blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions" = "Не удалось загрузить предложенные варианты ключевой фразы и описания";
+
+/* Button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.errorAlert.retry" = "Повторить";
+
+/* Title on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.errorAlert.title" = "Ой! У нас возникла проблема";
+
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Интересы";
 
@@ -9780,6 +9852,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "Предварительный просмотр";
+
+/* Text indicating all targets for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.all" = "Все";
 
 /* Blaze campaign budget details with duration in plural form. Reads like: $35, 15 days from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetMultipleDays" = "%1$@, %2$d дн. с %3$@";
@@ -9835,11 +9910,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "Изменить изображение";
 
-/* Regenerate by AI button title in the Blaze Edit Ad screen. */
-"blazeEditAdView.regenerateByAI" = "Создать повторно при помощи ИИ";
-
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "Сохранить";
+
+/* Suggested by AI title in the Blaze Edit Ad screen. */
+"blazeEditAdView.suggestedByAI" = "Выбрано ИИ";
 
 /* Placeholder for Tagline text field in the Blaze Edit Ad screen. */
 "blazeEditAdView.tagline.placeholder" = "Заголовок рекламного объявления Blaze";
@@ -9895,6 +9970,60 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Как работает %1$@";
 
+/* Button to dismiss the target device picker for campaign creation */
+"blazeTargetDevicePickerView.cancel" = "Отмена";
+
+/* Error message when data syncing fails on the target device picker for campaign creation */
+"blazeTargetDevicePickerView.errorMessage" = "Ошибка синхронизации целевых устройств. Повторите попытку.";
+
+/* Button to save the selections on the target device picker for campaign creation */
+"blazeTargetDevicePickerView.save" = "Сохранить";
+
+/* Title of the target device picker view for Blaze campaign creation */
+"blazeTargetDevicePickerView.title" = "Устройства";
+
+/* Button to retry syncing data on the target device picker for campaign creation */
+"blazeTargetDevicePickerView.tryAgain" = "Повторить попытку";
+
+/* Title of the row to select all target languages for Blaze campaign creation */
+"blazeTargetLanguagePickerView.allTitle" = "Все языки";
+
+/* Button to dismiss the target language picker for campaign creation */
+"blazeTargetLanguagePickerView.cancel" = "Отмена";
+
+/* Error message when data syncing fails on the target language picker for campaign creation */
+"blazeTargetLanguagePickerView.errorMessage" = "Ошибка синхронизации целевых языков. Повторите попытку.";
+
+/* Button to save the selections on the target language picker for campaign creation */
+"blazeTargetLanguagePickerView.save" = "Сохранить";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLanguagePickerView.title" = "Языки";
+
+/* Button to retry syncing data on the target language picker for campaign creation */
+"blazeTargetLanguagePickerView.tryAgain" = "Повторить попытку";
+
+/* Title of the row to select all target topics for Blaze campaign creation */
+"blazeTargetTopicPickerView.allTitle" = "Все темы";
+
+/* Button to dismiss the target topic picker for campaign creation */
+"blazeTargetTopicPickerView.cancel" = "Отмена";
+
+/* Error message when data syncing fails on the target topic picker for campaign creation */
+"blazeTargetTopicPickerView.errorMessage" = "Ошибка синхронизации целевых тем. Повторите попытку.";
+
+/* Message on the target topic picker view for Blaze campaign creation */
+"blazeTargetTopicPickerView.message" = "Выберите актуальные темы";
+
+/* Button to save the selections on the target topic picker for campaign creation */
+"blazeTargetTopicPickerView.save" = "Сохранить";
+
+/* Title of the target topic picker view for Blaze campaign creation */
+"blazeTargetTopicPickerView.title" = "Интересы";
+
+/* Button to retry syncing data on the target topic picker for campaign creation */
+"blazeTargetTopicPickerView.tryAgain" = "Повторить попытку";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
 
@@ -9922,6 +10051,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Accessibility hint for selecting a product in the Add Product screen */
+"configurationForBlaze.productRowAccessibilityHint" = "Отбирает товары для кампании Blaze.";
+
+/* Text for the cancel button in the Add Product screen */
+"configurationForBlaze.productSelectorCancel" = "Отмена";
+
+/* Title for the screen to select product for Blaze campaign */
+"configurationForBlaze.productSelectorTitle" = "Готово к продвижению";
+
+/* Accessibility hint for selecting a variable product in the Add Product screen */
+"configurationForBlaze.variableProductRowAccessibilityHint" = "Открывает список вариантов товара.";
 
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "Добавить";
@@ -10220,6 +10361,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "Месяцы";
 
+/* Placeholder in the search bar of a multiple selection list */
+"multipleSelectionList.search" = "Поиск";
+
+/* Header for the search result section on a a multiple selection list */
+"multipleSelectionList.searchResults" = "Результаты поиска";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "нет предыдущего периода";
 
@@ -10343,17 +10490,20 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Продукт по подписке с вариантами";
 
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.skip" = "Пропустить";
+/* Description in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationView.description" = "Есть свободная минутка? Оставьте краткий отзыв и помогите нам улучшить функции на базе ИИ.";
 
 /* Start Survey button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.startTheSurvey" = "Начать опрос";
 
-/* Subtitle in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.subtitle" = "Вы уже несколько раз воспользовались нашей функцией добавления товаров при помощи ИИ. Мы хотели бы узнать ваши впечатления, чтобы сделать её ещё лучше.";
-
 /* Title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.title" = "Мы высоко ценим ваше мнение!";
+
+/* Dismiss button title in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationViewModel.dontShowItAgain" = "Больше не показывать";
+
+/* Dismiss button title in Product Creation AI survey confirmation view. */
+"productCreationAISurveyConfirmationViewModel.remindMeLater" = "Напомнить позже";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Ошибка загрузки файла. Повторите попытку.";

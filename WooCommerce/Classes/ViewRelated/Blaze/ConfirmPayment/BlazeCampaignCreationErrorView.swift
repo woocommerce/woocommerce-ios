@@ -72,7 +72,7 @@ struct BlazeCampaignCreationErrorView: View {
 private extension BlazeCampaignCreationErrorView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(viewModel: SupportFormViewModel())
+            SupportForm(viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button(Localization.done) {
@@ -91,6 +91,10 @@ private extension BlazeCampaignCreationErrorView {
         static let errorIconSize: CGFloat = 56
         static let contentPadding: CGFloat = 12
         static let titlePadding: CGFloat = 24
+    }
+
+    enum Constants {
+        static let supportTag = "origin:blaze-native-campaign-creation"
     }
 
     enum Localization {

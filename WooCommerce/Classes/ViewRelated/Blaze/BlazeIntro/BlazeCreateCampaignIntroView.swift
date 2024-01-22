@@ -52,11 +52,11 @@ struct BlazeCreateCampaignIntroView: View {
                         Image(uiImage: .blaze)
                             .resizable()
                             .renderingMode(.template)
-                            .foregroundColor(Color(.brand))
+                            .foregroundColor(Color(.accent))
                             .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
 
                         Text("Blaze")
-                            .foregroundColor(Color(.brand))
+                            .foregroundColor(Color(.accent))
                             .fontWeight(.semibold)
                             .headlineStyle()
                     }
@@ -132,7 +132,7 @@ private extension BlazeCreateCampaignIntroView {
                 Image(uiImage: .blaze)
                     .resizable()
                     .renderingMode(.template)
-                    .foregroundColor(Color(.brand))
+                    .foregroundColor(Color(.accent))
                     .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
 
                 Text(feature.title)

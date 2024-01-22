@@ -520,6 +520,7 @@ private extension OrderListViewController {
         }
         let selected = selectOrder(for: orderID)
         if !selected {
+            selectedIndexPath = nil
             switchDetailsHandler([], 0, nil)
         }
     }
@@ -551,6 +552,9 @@ extension OrderListViewController {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID,
                let indexPath = dataSource.indexPath(for: identifier) {
+                if selectedOrderID != orderID || selectedIndexPath != indexPath {
+                    switchDetailsHandler([detailsViewModel], 0, nil)
+                }
                 selectedOrderID = orderID
                 selectedIndexPath = indexPath
                 highlightSelectedRowIfNeeded()

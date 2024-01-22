@@ -112,10 +112,9 @@ struct BlazeCampaignCreationForm: View {
                                isContentSingleLine: true) {
                         isShowingAdDestinationScreen = true
                     }
+                    .background(Constants.cellColor)
                     .overlay { roundedRectangleBorder }
                 }
-                .background(Constants.cellColor)
-                .overlay { roundedRectangleBorder }
             }
             .padding(.horizontal, Layout.contentPadding)
         }

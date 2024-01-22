@@ -34,8 +34,14 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
                                             completion: { paymentID in
             Task { @MainActor [weak self] in
                 guard let self else { return }
-                await updatePaymentInfo()
-                selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID })
+                showAddPaymentSheet = false
+
+                if let paymentIDExisting = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID }) {
+                    selectedPaymentMethod = paymentIDExisting
+                } else {
+                    await updatePaymentInfo()
+                    selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID })
+                }
             }
         })
     }

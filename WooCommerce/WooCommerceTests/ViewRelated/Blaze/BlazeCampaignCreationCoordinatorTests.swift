@@ -52,11 +52,16 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
 
     func test_given_enabled_i3_featureflag_when_product_id_supplied_then_navigate_to_creation_form() {
         // Given
+        insertProduct(.fake().copy(siteID: 1,
+                                   productID: 2,
+                                   statusKey: (ProductStatus.published.rawValue)))
+
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    productID: 2,
                                                    source: .campaignList,
+                                                   storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
                                                    onCampaignCreated: { }

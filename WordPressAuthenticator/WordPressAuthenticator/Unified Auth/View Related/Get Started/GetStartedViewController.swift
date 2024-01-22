@@ -18,19 +18,25 @@ public enum SignInError: Error {
     case invalidWPComPassword(source: SignInSource)
 
     init?(error: Error, source: SignInSource?) {
-        let error = error as NSError
+        // `WordPressComRestApi` currently may return an WordPressComRestApiEndpointError, but it will later be changed
+        // to return `WordPressAPIError<WordPressComRestApiEndpointError>`. We'll handle both cases for now.
+        var restApiError = error as? WordPressComRestApiEndpointError
 
-        switch error.code {
-        case WordPressComRestApiError.unknown.rawValue:
-            let restAPIErrorCode = error.userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
-            if let source = source, restAPIErrorCode == "unknown_user" {
+        if restApiError == nil,
+            let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
+            case let .endpointError(endpointError) = apiError {
+            restApiError = endpointError
+        }
+
+        if let restApiError, restApiError.code == .unknown {
+            if let source = source, restApiError.apiErrorCode == "unknown_user" {
                 self = .invalidWPComEmail(source: source)
             } else {
                 return nil
             }
-        default:
-            return nil
         }
+
+        return nil
     }
 }
 

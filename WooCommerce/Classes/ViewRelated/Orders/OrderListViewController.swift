@@ -37,6 +37,9 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
+        // Call loadViewIfNeeded to make sure IBOutlets are properly set when used in lazy vars
+        // - for normal app usage the call will not do anything since the views/IBOutlets will be setup before this call
+        // - when used for tests it is important to call it since IBOutlets might be nil in moment of using/creating dataSource
         self.loadViewIfNeeded()
         let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
             tableView: self.tableView,

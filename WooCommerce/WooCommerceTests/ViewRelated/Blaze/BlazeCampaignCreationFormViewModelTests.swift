@@ -244,7 +244,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
 
-        mockDomainSuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError())
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,

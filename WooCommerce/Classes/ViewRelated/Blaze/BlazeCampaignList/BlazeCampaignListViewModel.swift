@@ -96,16 +96,6 @@ final class BlazeCampaignListViewModel: ObservableObject {
         }
     }
 
-    /// Called after a Blaze campaign is successfully created.
-    ///
-    func checkIfPostCreationTipIsNeeded() {
-        let hasDisplayed = userDefaults.hasDisplayedTipAfterBlazeCampaignCreation(for: siteID)
-        if !hasDisplayed {
-            shouldDisplayPostCampaignCreationTip = true
-            userDefaults.setBlazePostCreationTipAsDisplayed(for: siteID)
-        }
-    }
-
     func didSelectCampaignDetails(_ campaign: BlazeCampaign) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
 
@@ -199,28 +189,6 @@ extension BlazeCampaignListViewModel {
     func displayIntroViewIfNeeded() {
         if !didShowIntroView {
             shouldShowIntroView = syncState == .empty
-        }
-    }
-}
-
-extension UserDefaults {
-    /// Checks if the Blaze post campaign creation tip has been displayed for a site.
-    ///
-    func hasDisplayedTipAfterBlazeCampaignCreation(for siteID: Int64) -> Bool {
-        let hasDisplayed = self[.hasDisplayedTipAfterBlazeCampaignCreation] as? [String: Bool]
-        let idAsString = "\(siteID)"
-        return hasDisplayed?[idAsString] == true
-    }
-
-    /// Mark the tip after Blaze campaign creation as displayed for a site.
-    ///
-    func setBlazePostCreationTipAsDisplayed(for siteID: Int64) {
-        let idAsString = "\(siteID)"
-        if var hasDisplayed = self[.hasDisplayedTipAfterBlazeCampaignCreation] as? [String: Bool] {
-            hasDisplayed[idAsString] = true
-            self[.hasDisplayedTipAfterBlazeCampaignCreation] = hasDisplayed
-        } else {
-            self[.hasDisplayedTipAfterBlazeCampaignCreation] = [idAsString: true]
         }
     }
 }

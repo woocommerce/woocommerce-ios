@@ -407,6 +407,12 @@ extension UIImage {
         return UIImage(named: "error-big-icon")!
     }
 
+    /// Blaze success image
+    ///
+    static var blazeSuccessImage: UIImage {
+        return UIImage(named: "blaze-success")!
+    }
+
     /// Subscription Product
     ///
     static var subscriptionProductImage: UIImage {

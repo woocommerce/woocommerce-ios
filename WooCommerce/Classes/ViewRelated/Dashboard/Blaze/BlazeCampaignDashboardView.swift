@@ -39,7 +39,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.showAllCampaignsTapped = { [weak self] in
-            self?.showCampaignList(isPostCreation: false)
+            self?.showCampaignList()
         }
     }
 
@@ -50,22 +50,18 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 }
 
 private extension BlazeCampaignDashboardViewHostingController {
-    /// Reloads data and shows campaign list.
+    /// Reloads data.
     func handlePostCreation() {
         Task {
             await viewModel.reload()
         }
-        showCampaignList(isPostCreation: true)
     }
 
     /// Navigates to the campaign list.
     /// Parameter isPostCreation: Whether the list is opened after creating a campaign successfully.
     ///
-    func showCampaignList(isPostCreation: Bool) {
-        let controller = BlazeCampaignListHostingController(
-            viewModel: .init(siteID: viewModel.siteID),
-            isPostCreation: isPostCreation
-        )
+    func showCampaignList() {
+        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID))
         parentNavigationController.show(controller, sender: self)
     }
 }

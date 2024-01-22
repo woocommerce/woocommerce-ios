@@ -506,7 +506,7 @@ private extension OrderListViewController {
         if splitViewController?.isCollapsed == true {
             tableView.deselectRow(at: selectedIndexPath, animated: false)
         } else {
-            tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
+            tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .top)
         }
     }
 
@@ -560,7 +560,6 @@ extension OrderListViewController {
                let indexPath = dataSource.indexPath(for: identifier) {
                 selectedOrderID = orderID
                 selectedIndexPath = indexPath
-                switchDetailsHandler([detailsViewModel], 0, nil)
                 highlightSelectedRowIfNeeded()
                 break
             }

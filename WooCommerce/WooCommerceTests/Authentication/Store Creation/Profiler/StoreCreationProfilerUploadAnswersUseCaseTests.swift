@@ -25,7 +25,8 @@ final class StoreCreationProfilerUploadAnswersUseCaseTests: XCTestCase {
 
         // Then
         let answers = try XCTUnwrap(userDefaults[.storeProfilerAnswers] as? [String: Data])
-        XCTAssertEqual(answers["\(siteID)"], answerEncoded)
+        let receivedSiteID = try XCTUnwrap(answers["\(siteID)"])
+        XCTAssertEqual(receivedSiteID, answerEncoded)
     }
 
     func test_it_uploads_answers_if_stored_answers_available() async throws {

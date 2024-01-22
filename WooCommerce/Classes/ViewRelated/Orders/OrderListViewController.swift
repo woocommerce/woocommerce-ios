@@ -510,21 +510,15 @@ private extension OrderListViewController {
         }
     }
 
-    /// Checks to see if the selected item is still at the same index in the list and resets its state if not.
+    /// Checks to see if there is a selected order ID, and selects its order.
+    /// Otherwise, try to select first item.
     ///
     func checkSelectedItem() {
-        guard let indexPath = selectedIndexPath, let orderID = selectedOrderID else {
-            return selectFirstItemIfPossible()
-        }
-
-        guard let objectID = dataSource.itemIdentifier(for: indexPath),
-            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
-            return selectFirstItemIfPossible()
-        }
-
-        if orderDetailsViewModel.order.orderID != orderID {
+        guard let orderID = selectedOrderID else {
             selectFirstItemIfPossible()
+            return
         }
+        selectOrder(for: orderID)
     }
 
     /// Attempts setting the first item in the list as selected if there's any item at all.
@@ -548,12 +542,7 @@ private extension OrderListViewController {
 
 extension OrderListViewController {
     /// Adds ability to select any order
-    /// Used when opening an order with deep link
     func selectOrder(for orderID: Int64) {
-        // check if already selected
-        guard selectedOrderID != orderID else {
-            return
-        }
         for identifier in dataSource.snapshot().itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID,

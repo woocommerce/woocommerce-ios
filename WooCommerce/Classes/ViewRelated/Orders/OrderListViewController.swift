@@ -146,7 +146,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
 
-
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -202,18 +201,21 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+    }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+
+        // To fix this issue, the selected item checking is now called after `viewDidLayoutSubviews`, where `isCollapsed` value is
+        // correctly set.
+        // This additionally ensures that an order is selected when changing from horizontally compact to regular.
         // Select the first order if we're showing in an open split view (i.e. on iPad in some size classes)
         guard let splitViewController,
               !splitViewController.isCollapsed else {
             return
         }
         checkSelectedItem()
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tableView.updateHeaderHeight()
     }
 
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {

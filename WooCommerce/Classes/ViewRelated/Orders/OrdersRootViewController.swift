@@ -153,7 +153,7 @@ final class OrdersRootViewController: UIViewController {
     }
 
     func selectOrder(for orderID: Int64) {
-        ordersViewController.selectOrder(for: orderID, canSwitchDetails: false)
+        ordersViewController.selectOrder(for: orderID)
     }
 
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {

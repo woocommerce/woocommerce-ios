@@ -158,6 +158,81 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(completionHandlerTriggered)
     }
+
+    // MARK: Add payment
+
+    func test_add_payment_screen_is_dismissed_after_selecting_payment_method() async {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let samplePaymentInfo: BlazePaymentInfo = BlazePaymentMethodsViewModel.samplePaymentInfo()
+        mockPaymentFetch(with: .success(samplePaymentInfo))
+        await viewModel.updatePaymentInfo()
+
+        viewModel.showAddPaymentSheet = true
+
+        // When
+        viewModel.paymentMethodsViewModel?.didSelectPaymentMethod(withID: "payment-method-1")
+
+        // Then
+        waitUntil {
+            viewModel.showAddPaymentSheet == false
+        }
+    }
+
+    func test_payment_info_is_not_fetched_when_existing_payment_method_selected() async {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        viewModel.showAddPaymentSheet = true
+        let samplePaymentInfo: BlazePaymentInfo = BlazePaymentMethodsViewModel.samplePaymentInfo()
+        mockPaymentFetch(with: .success(samplePaymentInfo))
+        await viewModel.updatePaymentInfo()
+        var didTriggerFetchPaymentInfo = false
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchPaymentInfo(_, onCompletion):
+                didTriggerFetchPaymentInfo = true
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.paymentMethodsViewModel?.didSelectPaymentMethod(withID: "payment-method-1")
+
+        // Then
+        waitUntil {
+            didTriggerFetchPaymentInfo == false
+        }
+    }
+
+    func test_payment_info_is_fetched_when_new_payment_method_added() async {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        viewModel.showAddPaymentSheet = true
+        let samplePaymentInfo: BlazePaymentInfo = BlazePaymentMethodsViewModel.samplePaymentInfo()
+        mockPaymentFetch(with: .success(samplePaymentInfo))
+        await viewModel.updatePaymentInfo()
+
+        var didTriggerFetchPaymentInfo = false        // When
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchPaymentInfo(_, onCompletion):
+                didTriggerFetchPaymentInfo = true
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.paymentMethodsViewModel?.didSelectPaymentMethod(withID: "new-payment-method")
+
+        // Then
+        waitUntil {
+            didTriggerFetchPaymentInfo == true
+        }
+    }
 }
 
 private extension BlazeConfirmPaymentViewModelTests {

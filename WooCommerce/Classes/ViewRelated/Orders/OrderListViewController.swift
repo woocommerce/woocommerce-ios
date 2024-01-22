@@ -518,7 +518,10 @@ private extension OrderListViewController {
             selectFirstItemIfPossible()
             return
         }
-        selectOrder(for: orderID)
+        let selected = selectOrder(for: orderID)
+        if !selected {
+            switchDetailsHandler([], 0, nil)
+        }
     }
 
     /// Attempts setting the first item in the list as selected if there's any item at all.
@@ -542,18 +545,19 @@ private extension OrderListViewController {
 
 extension OrderListViewController {
     /// Adds ability to select any order
-    func selectOrder(for orderID: Int64) {
-        for identifier in dataSource.snapshot().itemIdentifiers {
+    func selectOrder(for orderID: Int64) -> Bool {
+        let itemIdentifiers = dataSource.snapshot().itemIdentifiers
+        for identifier in itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID,
                let indexPath = dataSource.indexPath(for: identifier) {
                 selectedOrderID = orderID
                 selectedIndexPath = indexPath
-                switchDetailsHandler([detailsViewModel], 0, nil)
                 highlightSelectedRowIfNeeded()
-                break
+                return true
             }
         }
+        return false
     }
 }
 

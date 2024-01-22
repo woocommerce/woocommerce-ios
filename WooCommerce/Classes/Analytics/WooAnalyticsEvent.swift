@@ -2597,6 +2597,30 @@ extension WooAnalyticsEvent {
                                                                                             Keys.calendar.rawValue: Locale.current.calendar.debugDescription,
                                                                                             Keys.timezone.rawValue: TimeZone.current.debugDescription])
         }
+
+        /// Tracks when the "Enable Jetpack Stats" call to action is shown.
+        ///
+        static func jetpackStatsCTAShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubEnableJetpackStatsShown, properties: [:])
+        }
+
+        /// Tracks when the "Enable Jetpack Stats" call to action is tapped.
+        ///
+        static func jetpackStatsCTATapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubEnableJetpackStatsTapped, properties: [:])
+        }
+
+        /// Tracks when the Jetpack Stats module is successfully enabled remotely.
+        ///
+        static func enableJetpackStatsSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubEnableJetpackStatsSuccess, properties: [:])
+        }
+
+        /// Tracks when the Jetpack Stats module fails to be enabled remotely.
+        ///
+        static func enableJetpackStatsFailed(error: Error?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubEnableJetpackStatsFailed, properties: [:], error: error)
+        }
     }
 }
 

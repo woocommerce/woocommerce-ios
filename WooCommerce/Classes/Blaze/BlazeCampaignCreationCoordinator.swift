@@ -60,7 +60,22 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         configureResultsController()
     }
 
-    private func configureResultsController() {
+    func start() {
+        switch blazeCreationEntryDestination {
+        case .productSelector:
+            navigateToBlazeProductSelector(source: source)
+        case .campaignForm(let productID):
+            navigateToNativeCampaignCreation(source: source, productID: productID)
+        case .webViewForm(let productID):
+            navigateToWebCampaignCreation(source: source, productID: productID)
+        case .noProductAvailable:
+            break // TODO 11685: add error alert.
+        }
+    }
+}
+
+private extension BlazeCampaignCreationCoordinator {
+    func configureResultsController() {
         productResultsController.onDidChangeContent = { [weak self] in
             self?.updateCreateCampaignDestination()
         }
@@ -76,21 +91,8 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         }
     }
 
-    func start() {
-        switch blazeCreationEntryDestination {
-        case .productSelector:
-            navigateToBlazeProductSelector(source: source)
-        case .campaignForm(let productID):
-            navigateToNativeCampaignCreation(source: source, productID: productID)
-        case .webViewForm(let productID):
-            navigateToWebCampaignCreation(source: source, productID: productID)
-        case .noProductAvailable:
-            break // TODO 11685: add error alert.
-        }
-    }
-
     /// Determine whether to use the existing WebView solution, or go with native Blaze campaign creation.
-    private func updateCreateCampaignDestination() {
+    func updateCreateCampaignDestination() {
         if featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
             blazeCreationEntryDestination = determineDestination()
         } else {
@@ -100,7 +102,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
 
     /// For native Blaze campaign creation, determine destination based existence of productID, or if not then
     /// based on number of eligible products.
-    private func determineDestination() -> CreateCampaignDestination {
+    func determineDestination() -> CreateCampaignDestination {
         if let productID = productID {
             return .campaignForm(productID: productID)
         } else {
@@ -120,6 +122,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
                                                            productID: productID,
+                                                           storage: storageManager,
                                                            onCompletion: { [weak self] in
             self?.onCampaignCreated()
             self?.dismissCampaignCreation {

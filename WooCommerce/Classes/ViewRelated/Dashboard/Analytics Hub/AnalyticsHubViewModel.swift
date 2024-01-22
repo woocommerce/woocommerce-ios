@@ -11,6 +11,11 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let stores: StoresManager
     private let timeZone: TimeZone
     private let analytics: Analytics
+    private let noticePresenter: NoticePresenter
+
+    /// Delay to allow the backend to process enabling the Jetpack Stats module.
+    /// Defaults to 0.5 seconds.
+    private let backendProcessingDelay: UInt64
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -18,19 +23,28 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
+    /// User is an administrator on the store
+    ///
+    private let userIsAdmin: Bool
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         backendProcessingDelay: UInt64 = 500_000_000) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
         self.siteID = siteID
         self.timeZone = timeZone
         self.stores = stores
+        self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
+        self.noticePresenter = noticePresenter
+        self.backendProcessingDelay = backendProcessingDelay
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -64,16 +78,24 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        guard !stores.isAuthenticatedWithoutWPCom else {
+        if stores.isAuthenticatedWithoutWPCom // Non-Jetpack stores don't have sessions stats
+            || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
-        }
-
-        switch timeRangeSelectionType {
-        case .custom:
+        } else if case .custom = timeRangeSelectionType {
             return false
-        default:
+        } else {
             return true
         }
+    }
+
+    /// Whether Jetpack Stats are disabled on the store
+    ///
+    private var isJetpackStatsDisabled = false
+
+    /// Whether to show the call to action to enable Jetpack Stats
+    ///
+    var showJetpackStatsCTA: Bool {
+        isJetpackStatsDisabled && userIsAdmin
     }
 
     /// Time Range Selection Type
@@ -134,6 +156,23 @@ final class AnalyticsHubViewModel: ObservableObject {
     func trackAnalyticsInteraction() {
         usageTracksEventEmitter.interacted()
     }
+
+    /// Enables the Jetpack Status module on the store and requests new stats data
+    ///
+    @MainActor
+    func enableJetpackStats() async {
+        analytics.track(event: .AnalyticsHub.jetpackStatsCTATapped())
+
+        do {
+            try await remoteEnableJetpackStats()
+            // Wait for backend to enable the module (it is not ready for stats to be requested immediately after a success response)
+            try await Task.sleep(nanoseconds: backendProcessingDelay)
+            await updateData()
+        } catch {
+            noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
+            DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
+        }
+    }
 }
 
 // MARK: Networking
@@ -187,9 +226,22 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
+        isJetpackStatsDisabled = false // Reset optimistically in case stats were enabled
         async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
 
-        self.siteStats = try? await siteStatsRequest
+        do {
+            self.siteStats = try await siteStatsRequest
+        } catch SiteStatsStoreError.statsModuleDisabled {
+            self.isJetpackStatsDisabled = true
+            self.siteStats = nil
+            if showJetpackStatsCTA {
+                analytics.track(event: .AnalyticsHub.jetpackStatsCTAShown())
+            }
+            DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: Jetpack stats are disabled")
+        } catch {
+            self.siteStats = nil
+            DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: \(error)")
+        }
     }
 
     @MainActor
@@ -247,6 +299,27 @@ private extension AnalyticsHubViewModel {
                                                                 latestDateToInclude: latestDateToInclude,
                                                                 saveInStorage: false) { result in
                 continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Makes the remote request to enable the Jetpack Stats module on the site.
+    ///
+    func remoteEnableJetpackStats() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: siteID) { [weak self] result in
+                switch result {
+                case .success:
+                    self?.isJetpackStatsDisabled = false
+                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsSuccess())
+                    continuation.resume()
+                case let .failure(error):
+                    self?.isJetpackStatsDisabled = true
+                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsFailed(error: error))
+                    continuation.resume(throwing: error)
+                }
             }
             stores.dispatch(action)
         }
@@ -462,5 +535,8 @@ private extension AnalyticsHubViewModel {
 
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
                                                                comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
+        static let statsCTAError = NSLocalizedString("analyticsHub.jetpackStatsCTA.errorNotice",
+                                                     value: "We couldn't enable Jetpack Stats on your store",
+                                                     comment: "Error shown when Jetpack Stats can't be enabled in the Analytics Hub.")
     }
 }

@@ -45,6 +45,8 @@ final class OrdersSplitViewWrapperController: UIViewController {
         let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
         let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
 
+        // added to remove double details presented bug #11752 https://github.com/woocommerce/woocommerce-ios/pull/11753#discussion_r1463020153
+        // - white debugging noticed that ordersViewController.navigationController had multiple orders in the view controllers list
         ordersViewController.navigationController?.popToRootViewController(animated: false)
 
         ordersSplitViewController.setViewController(loaderNavigationController, for: .secondary)

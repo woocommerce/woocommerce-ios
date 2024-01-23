@@ -5,7 +5,6 @@ struct BlazePaymentMethodsView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazePaymentMethodsViewModel
     @Environment(\.dismiss) private var dismiss
-    @State private var showingAddPaymentWebView: Bool = false
 
     init(viewModel: BlazePaymentMethodsViewModel) {
         self.viewModel = viewModel
@@ -28,7 +27,7 @@ struct BlazePaymentMethodsView: View {
                 Group {
                     let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
                     Button(action: {
-                        showingAddPaymentWebView = true
+                        viewModel.showingAddPaymentWebView = true
                     }) {
                         Text(buttonText)
                     }
@@ -48,7 +47,7 @@ struct BlazePaymentMethodsView: View {
             .wooNavigationBarStyle()
             .navigationBarTitleDisplayMode(.inline)
         }
-        .sheet(isPresented: $showingAddPaymentWebView, content: {
+        .sheet(isPresented: $viewModel.showingAddPaymentWebView, content: {
             webView
         })
         .notice($viewModel.notice)
@@ -141,10 +140,10 @@ struct BlazePaymentMethodsView: View {
         if let addPaymentMethodURL = viewModel.addPaymentMethodURL,
            let fetchPaymentMethodURLPath = viewModel.addPaymentSuccessURL {
             NavigationView {
-                AuthenticatedWebView(isPresented: $showingAddPaymentWebView,
+                AuthenticatedWebView(isPresented: $viewModel.showingAddPaymentWebView,
                                      url: addPaymentMethodURL,
                                      urlToTriggerExit: fetchPaymentMethodURLPath) { url in
-                    showingAddPaymentWebView = false
+                    viewModel.showingAddPaymentWebView = false
                     viewModel.notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
                     viewModel.didAddNewPaymentMethod(successURL: url)
                 }
@@ -153,7 +152,7 @@ struct BlazePaymentMethodsView: View {
                                      .toolbar {
                                          ToolbarItem(placement: .confirmationAction) {
                                              Button(action: {
-                                                 showingAddPaymentWebView = false
+                                                 viewModel.showingAddPaymentWebView = false
                                              }, label: {
                                                  Text(Localization.doneButtonAddPayment)
                                              })

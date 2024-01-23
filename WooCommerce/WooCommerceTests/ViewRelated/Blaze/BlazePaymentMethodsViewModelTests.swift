@@ -79,6 +79,29 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addPaymentMethodURL, try XCTUnwrap(URL(string: "https://example.com/blaze-pm-add")))
     }
 
+    // MARK: `showingAddPaymentWebView`
+    func test_showingAddPaymentWebView_is_false_if_saved_payment_methods_not_empty() async throws {
+        // Given
+        let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
+                                                     paymentInfo: samplePaymentInfo, // Non empty saved payments
+                                                     selectedPaymentMethodID: "payment-method-1",
+                                                     stores: stores) { _ in }
+
+        // Then
+        XCTAssertFalse(viewModel.showingAddPaymentWebView)
+    }
+
+    func test_showingAddPaymentWebView_is_true_if_saved_payment_methods_not_empty() async throws {
+        // Given
+        let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
+                                                     paymentInfo: samplePaymentInfo.copy(savedPaymentMethods: []), // No saved payments
+                                                     selectedPaymentMethodID: "payment-method-1",
+                                                     stores: stores) { _ in }
+
+        // Then
+        XCTAssertTrue(viewModel.showingAddPaymentWebView)
+    }
+
     // MARK: `fetchPaymentMethodURLPath`
     func test_fetchPaymentMethodURLPath_returns_successUrl() async throws {
         // Given

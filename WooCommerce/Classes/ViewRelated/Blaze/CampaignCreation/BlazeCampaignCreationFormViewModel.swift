@@ -111,7 +111,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self?.completionHandler()
         })
     }()
-    
+
     var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
         guard let productURL, let siteURL else {
@@ -159,8 +159,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     var canConfirmDetails: Bool {
-        image != nil && tagline.isNotEmpty && description.isNotEmpty
+        tagline.isNotEmpty && description.isNotEmpty
     }
+
+    @Published var isShowingMissingImageErrorAlert: Bool = false
+    @Published var isShowingPaymentInfo: Bool = false
 
     /// ResultController to get the product for the given product ID
     ///
@@ -220,6 +223,34 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     func didTapEditAd() {
         onEditAd?()
     }
+
+    @MainActor
+    func loadAISuggestions() async {
+        isLoadingAISuggestions = true
+        error = nil
+
+        do {
+            suggestions = try await fetchAISuggestions()
+            if let firstSuggestion = suggestions.first {
+                tagline = firstSuggestion.siteName
+                description = firstSuggestion.textSnippet
+            }
+        } catch {
+            DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
+            self.error = .failedToLoadAISuggestions
+        }
+
+        isLoadingAISuggestions = false
+    }
+
+    func didTapConfirmDetails() {
+        guard image != nil else {
+            return isShowingMissingImageErrorAlert = true
+        }
+
+        isShowingPaymentInfo = true
+        // TODO: track tap
+    }
 }
 
 // MARK: Image download
@@ -246,26 +277,6 @@ private extension BlazeCampaignCreationFormViewModel {
 }
 
 // MARK: - Blaze AI Suggestions
-extension BlazeCampaignCreationFormViewModel {
-    @MainActor
-    func loadAISuggestions() async {
-        isLoadingAISuggestions = true
-        error = nil
-
-        do {
-            suggestions = try await fetchAISuggestions()
-            if let firstSuggestion = suggestions.first {
-                tagline = firstSuggestion.siteName
-                description = firstSuggestion.textSnippet
-            }
-        } catch {
-            DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
-            self.error = .failedToLoadAISuggestions
-        }
-
-        isLoadingAISuggestions = false
-    }
-}
 
 private extension BlazeCampaignCreationFormViewModel {
     @MainActor

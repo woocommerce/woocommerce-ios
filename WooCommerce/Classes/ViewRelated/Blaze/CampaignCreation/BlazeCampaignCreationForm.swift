@@ -53,7 +53,6 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingTopicPicker = false
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
-    @State private var isShowingPaymentInfo = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -124,12 +123,9 @@ struct BlazeCampaignCreationForm: View {
                 Divider()
 
                 Button {
-                    // TODO: track tap
-                    isShowingPaymentInfo = true
+                    viewModel.didTapConfirmDetails()
                 } label: {
-                    LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel), isActive: $isShowingPaymentInfo) {
-                        Text(Localization.confirmDetails)
-                    }
+                    Text(Localization.confirmDetails)
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.contentPadding)
@@ -169,9 +165,9 @@ struct BlazeCampaignCreationForm: View {
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }
         .alert(isPresented: $isShowingAISuggestionsErrorAlert, content: {
-            Alert(title: Text(Localization.ErrorAlert.title),
-                  message: Text(Localization.ErrorAlert.ErrorMessage.fetchingAISuggestions),
-                  primaryButton: .default(Text(Localization.ErrorAlert.retry), action: {
+            Alert(title: Text(Localization.AISuggestionsErrorAlert.title),
+                  message: Text(Localization.AISuggestionsErrorAlert.ErrorMessage.fetchingAISuggestions),
+                  primaryButton: .default(Text(Localization.AISuggestionsErrorAlert.retry), action: {
                 Task {
                     await viewModel.loadAISuggestions()
                 }
@@ -183,6 +179,14 @@ struct BlazeCampaignCreationForm: View {
         }
         .task {
             await viewModel.downloadProductImage()
+        }
+        .alert(isPresented: $viewModel.isShowingMissingImageErrorAlert, content: {
+            Alert(title: Text(Localization.NoImageErrorAlert.noImageFound),
+                  dismissButton: .default(Text(Localization.NoImageErrorAlert.ok)))
+        })
+        LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel),
+                           isActive: $viewModel.isShowingPaymentInfo) {
+            EmptyView()
         }
     }
 }
@@ -361,7 +365,7 @@ private extension BlazeCampaignCreationForm {
             value: "Confirm Details",
             comment: "Button to confirm ad details on the Blaze campaign creation screen"
         )
-        enum ErrorAlert {
+        enum AISuggestionsErrorAlert {
             enum ErrorMessage {
                 static let fetchingAISuggestions = NSLocalizedString(
                     "blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions",
@@ -378,6 +382,18 @@ private extension BlazeCampaignCreationForm {
                 "blazeCampaignCreationForm.errorAlert.retry",
                 value: "Retry",
                 comment: "Button on the error alert displayed on the Blaze campaign creation screen"
+            )
+        }
+        enum NoImageErrorAlert {
+            static let noImageFound = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.noImageFound",
+                value: "Please set an image for the Blaze campaign by tapping Edit ad",
+                comment: "Message asking to select an image for the Blaze campaign"
+            )
+            static let ok = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.ok",
+                value: "OK",
+                comment: "Dismiss button on the error alert asking to select a image for the Blaze campaign"
             )
         }
     }

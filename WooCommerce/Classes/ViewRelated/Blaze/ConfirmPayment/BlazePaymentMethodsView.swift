@@ -48,7 +48,9 @@ struct BlazePaymentMethodsView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(isPresented: $viewModel.showingAddPaymentWebView, content: {
-            webView
+            if let viewModel = viewModel.addPaymentWebViewModel {
+                BlazeAddPaymentMethodWebView(viewModel: viewModel)
+            }
         })
         .notice($viewModel.notice)
     }

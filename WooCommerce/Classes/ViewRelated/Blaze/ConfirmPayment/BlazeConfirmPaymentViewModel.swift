@@ -36,8 +36,8 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
                 guard let self else { return }
                 showAddPaymentSheet = false
 
-                if let paymentIDExisting = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID }) {
-                    selectedPaymentMethod = paymentIDExisting
+                if let existingPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID }) {
+                    selectedPaymentMethod = existingPaymentMethod
                 } else {
                     await updatePaymentInfo()
                     selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID })

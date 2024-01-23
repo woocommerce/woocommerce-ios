@@ -81,20 +81,14 @@ public final class SupportFormViewModel: ObservableObject {
         }
     }
 
-    /// Whether identity creation should be handled by the view model.
-    /// This should be enabled if you wish to use `SupportForm` directly from a SwiftUI view.
-    private let shouldHandleIdentity: Bool
-
     init(areas: [Area] = wooSupportAreas(),
          sourceTag: String? = nil,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
-         shouldHandleIdentity: Bool = false,
          analyticsProvider: Analytics = ServiceLocator.analytics) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
-        self.shouldHandleIdentity = shouldHandleIdentity
     }
 
     /// Tracks when the support form is viewed.
@@ -194,10 +188,6 @@ extension SupportFormViewModel {
 // MARK: Private helpers
 private extension SupportFormViewModel {
     func handleZendeskIdentityIfNeeded() {
-        guard shouldHandleIdentity else {
-            return
-        }
-
         guard !zendeskProvider.haveUserIdentity else {
             DDLogDebug("Using existing Zendesk identity")
             return

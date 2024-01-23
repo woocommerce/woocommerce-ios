@@ -70,24 +70,10 @@ final class SupportFormViewModelTests: XCTestCase {
         XCTAssertTrue(zendesk.latestInvokedTags.contains(sourceTag))
     }
 
-    func test_shouldShowIdentityInput_is_false_when_triggering_onViewAppear_with_shouldHandleIdentity_being_false() {
+    func test_shouldShowIdentityInput_is_true_when_triggering_onViewAppear_no_existing_identity() {
         // Given
         let zendesk = MockZendeskManager()
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
-                                             shouldHandleIdentity: false)
-
-        // When
-        viewModel.onViewAppear()
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowIdentityInput)
-    }
-
-    func test_shouldShowIdentityInput_is_true_when_triggering_onViewAppear_with_shouldHandleIdentity_being_true_and_no_identity_is_found() {
-        // Given
-        let zendesk = MockZendeskManager()
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
-                                             shouldHandleIdentity: true)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
 
         // When
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: false)
@@ -99,11 +85,10 @@ final class SupportFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.contactEmailAddress, "test@example.com")
     }
 
-    func test_shouldShowIdentityInput_is_false_when_triggering_onViewAppear_with_shouldHandleIdentity_being_true_and_identity_already_exists() {
+    func test_shouldShowIdentityInput_is_false_when_triggering_onViewAppear_with_existing_identity() {
         // Given
         let zendesk = MockZendeskManager()
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
-                                             shouldHandleIdentity: true)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
 
         // When
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)

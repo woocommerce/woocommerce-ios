@@ -21,45 +21,8 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         hidesBottomBarWhenPushed = true
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        createZendeskIdentity()
-    }
-
-    /// Creates the Zendesk Identity if needed.
-    /// If it fails, it dismisses the view and informs the user.
-    ///
-    func createZendeskIdentity() {
-        // TODO: We should consider refactoring this to present the email alert using SwiftUI.
-        ZendeskProvider.shared.createIdentity(presentIn: self) { [weak self] identityCreated in
-            if !identityCreated {
-                self?.logIdentityErrorAndPopBack()
-            }
-        }
-    }
-
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension SupportFormHostingController {
-
-    /// Informs user about identity error and pop back
-    ///
-    func logIdentityErrorAndPopBack() {
-        let notice = Notice(title: Localization.badIdentityError, feedbackType: .error)
-        noticePresenter.enqueue(notice: notice)
-
-        dismissView()
-        DDLogError("⛔️ Zendesk Identity could not be created.")
-    }
-}
-
-private extension SupportFormHostingController {
-    enum Localization {
-        static let badIdentityError = NSLocalizedString("Sorry, we cannot create support requests right now, please try again later.",
-                                                        comment: "Error message when the app can't create a zendesk identity.")
     }
 }
 
@@ -308,7 +271,7 @@ struct SupportFormProvider: PreviewProvider {
     }
 }
 
-@available(*, deprecated, message: "Please use `SupportForm` directly with `shouldHandleIdentity` for the view model instead.")
+@available(*, deprecated, message: "Please use `SupportForm` directly instead.")
 struct HostedSupportForm: UIViewControllerRepresentable {
     typealias UIViewControllerType = SupportFormHostingController
 

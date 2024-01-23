@@ -73,7 +73,7 @@ private extension BlazeCampaignCreationErrorView {
     var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $isShowingSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag, shouldHandleIdentity: true))
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.done) {

@@ -1,4 +1,5 @@
 import Codegen
+import Alamofire
 import Foundation
 
 /// Protocol for `BlazeRemote` mainly used for mocking.
@@ -86,7 +87,11 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
             .compactMapValues { $0 } // filters out any field with nil value
 
 
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: path,
+                                    parameters: parameters,
+                                    encoding: JSONEncoding.default)
         let mapper = CreateBlazeCampaignMapper()
         try await enqueue(request, mapper: mapper)
     }
@@ -158,8 +163,13 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         dateFormatter.dateFormat = Constants.dateFormat
 
         let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+            .compactMapValues { $0 } // filters out any field with nil value
 
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: path,
+                                    parameters: parameters,
+                                    encoding: JSONEncoding.default)
         let mapper = BlazeImpressionsMapper()
         return try await enqueue(request, mapper: mapper)
     }

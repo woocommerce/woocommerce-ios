@@ -91,7 +91,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showingAddPaymentWebView)
     }
 
-    func test_showingAddPaymentWebView_is_true_if_saved_payment_methods_not_empty() async throws {
+    func test_showingAddPaymentWebView_is_true_if_saved_payment_methods_empty() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
                                                      paymentInfo: samplePaymentInfo.copy(savedPaymentMethods: []), // No saved payments

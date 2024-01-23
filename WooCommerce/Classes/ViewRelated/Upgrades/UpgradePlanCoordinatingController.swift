@@ -44,7 +44,7 @@ final class UpgradePlanCoordinatingController: WooNavigationController {
         guard let upgradeURL = Constants.upgradeURL(siteID: siteID) else { return }
         let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.upgradeNow,
                                                          initialURL: upgradeURL,
-                                                         urlToTriggerExit: Constants.exitTrigger) { [weak self] in
+                                                         urlToTriggerExit: Constants.exitTrigger) { [weak self] _ in
             self?.exitUpgradeFreeTrialFlowAfterUpgrade()
         }
 

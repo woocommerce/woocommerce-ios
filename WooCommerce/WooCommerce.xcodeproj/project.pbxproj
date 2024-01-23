@@ -2467,6 +2467,9 @@
 		EE1905862B57BBE300617C53 /* BlazePaymentMethodsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1905852B57BBE300617C53 /* BlazePaymentMethodsView.swift */; };
 		EE1905882B57BBEC00617C53 /* BlazePaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1905872B57BBEC00617C53 /* BlazePaymentMethodsViewModel.swift */; };
 		EE19058A2B590FF800617C53 /* BlazePaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1905892B590FF800617C53 /* BlazePaymentMethodsViewModelTests.swift */; };
+		EE19058C2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19058B2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift */; };
+		EE19058E2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19058D2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift */; };
+		EE1905902B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19058F2B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift */; };
 		EE28CF852B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE28CF842B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift */; };
 		EE2A57D729E399CC009F61E1 /* CaseIterable+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A57D629E399CC009F61E1 /* CaseIterable+Helpers.swift */; };
 		EE2A57D929E39A9C009F61E1 /* CaseIterable+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A57D829E39A9C009F61E1 /* CaseIterable+HelpersTests.swift */; };
@@ -5151,6 +5154,9 @@
 		EE1905852B57BBE300617C53 /* BlazePaymentMethodsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazePaymentMethodsView.swift; sourceTree = "<group>"; };
 		EE1905872B57BBEC00617C53 /* BlazePaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazePaymentMethodsViewModel.swift; sourceTree = "<group>"; };
 		EE1905892B590FF800617C53 /* BlazePaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazePaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
+		EE19058B2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddPaymentMethodWebView.swift; sourceTree = "<group>"; };
+		EE19058D2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddPaymentMethodWebViewModel.swift; sourceTree = "<group>"; };
+		EE19058F2B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddPaymentMethodWebViewModelTests.swift; sourceTree = "<group>"; };
 		EE28CF842B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCreationAISurveyConfirmationViewModelTests.swift; sourceTree = "<group>"; };
 		EE2A57D629E399CC009F61E1 /* CaseIterable+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+Helpers.swift"; sourceTree = "<group>"; };
 		EE2A57D829E39A9C009F61E1 /* CaseIterable+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+HelpersTests.swift"; sourceTree = "<group>"; };
@@ -5890,6 +5896,7 @@
 				EE1905812B50289100617C53 /* BlazeCampaignCreationFormViewModelTests.swift */,
 				EE1905892B590FF800617C53 /* BlazePaymentMethodsViewModelTests.swift */,
 				86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */,
+				EE19058F2B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -11062,6 +11069,8 @@
 				DE02ABBB2B56984A008E0AC4 /* BlazeConfirmPaymentViewModel.swift */,
 				EE1905852B57BBE300617C53 /* BlazePaymentMethodsView.swift */,
 				EE1905872B57BBEC00617C53 /* BlazePaymentMethodsViewModel.swift */,
+				EE19058B2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift */,
+				EE19058D2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift */,
 			);
 			path = ConfirmPayment;
 			sourceTree = "<group>";
@@ -13522,6 +13531,7 @@
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
 				26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */,
 				02A9BCD42737DE0D00159C79 /* JetpackBenefitsView.swift in Sources */,
+				EE19058E2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift in Sources */,
 				20D5CB512AFCF856009A39C3 /* PaymentsRow.swift in Sources */,
 				E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */,
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
@@ -13641,6 +13651,7 @@
 				02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */,
 				B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */,
 				86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */,
+				EE19058C2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
 				3142663F2645E2AB00500598 /* PaymentSettingsFlowViewModelPresenter.swift in Sources */,
 				DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */,
@@ -14768,6 +14779,7 @@
 				2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */,
 				02AA586628531D0E0068B6F0 /* CloseAccountCoordinatorTests.swift in Sources */,
 				E12AF69B26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift in Sources */,
+				EE1905902B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift in Sources */,
 				D802549B265531D4001B2CC1 /* CardPresentModalConnectingToReaderTests.swift in Sources */,
 				EEBDF7E22A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift in Sources */,
 				4572641B27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift in Sources */,

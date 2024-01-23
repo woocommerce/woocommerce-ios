@@ -105,7 +105,7 @@ struct InboxNoteRow: View {
         NavigationView {
             AuthenticatedWebView(isPresented: .constant(tappedAction != nil),
                                  url: url,
-                                 urlToTriggerExit: nil) {
+                                 urlToTriggerExit: nil) { _ in
 
             }
              .navigationTitle(Localization.inboxWebViewTitle)

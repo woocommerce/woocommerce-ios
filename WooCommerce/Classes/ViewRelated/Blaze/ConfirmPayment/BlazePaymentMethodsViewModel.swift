@@ -19,6 +19,7 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
 
     var addPaymentWebViewModel: BlazeAddPaymentMethodWebViewModel? {
         guard let paymentInfo else {
+            DDLogError("⛔️ No add payment info available to initiate Add payment methods flow.")
             return nil
         }
 

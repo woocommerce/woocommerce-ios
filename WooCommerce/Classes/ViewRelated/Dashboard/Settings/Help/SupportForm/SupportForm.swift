@@ -197,6 +197,8 @@ struct SupportForm: View {
                 isPresented = false
                 onDismiss?()
             }
+        } message: {
+            Text(Localization.supportRequestSentMessage)
         }
         .alert(Localization.IdentityInput.title, isPresented: $viewModel.shouldShowIdentityInput) {
             TextField(Localization.IdentityInput.email, text: $viewModel.contactEmailAddress)
@@ -228,12 +230,12 @@ private extension SupportForm {
         static let message = NSLocalizedString("Message", comment: "Message on the support form")
         static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")
 
-        static let requestSent = NSLocalizedString(
+        static let supportRequestSent = NSLocalizedString(
             "supportForm.supportRequestSent",
             value: "Request Sent!",
             comment: "Title for the alert after the support request is created."
         )
-        static let supportRequestSent = NSLocalizedString(
+        static let supportRequestSentMessage = NSLocalizedString(
             "supportForm.supportRequestSentMessage",
             value: "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.",
             comment: "Message for the alert after the support request is created."

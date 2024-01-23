@@ -83,6 +83,8 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = Constants.dateFormat
         let parameters = try campaign.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+            .compactMapValues { $0 } // filters out any field with nil value
+
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
         let mapper = CreateBlazeCampaignMapper()

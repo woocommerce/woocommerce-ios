@@ -302,6 +302,7 @@ struct SupportFormProvider: PreviewProvider {
     }
 }
 
+@available(*, deprecated, message: "Please use `SupportForm` directly with `shouldHandleIdentity` for the view model instead.")
 struct HostedSupportForm: UIViewControllerRepresentable {
     typealias UIViewControllerType = SupportFormHostingController
 

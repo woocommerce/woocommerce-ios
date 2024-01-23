@@ -15,7 +15,6 @@ struct BlazeAddPaymentMethodWebView: View {
                     AuthenticatedWebView(isPresented: .constant(true),
                                          url: addPaymentMethodURL,
                                          urlToTriggerExit: viewModel.addPaymentSuccessURL) { url in
-                        viewModel.notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
                         viewModel.didAddNewPaymentMethod(successURL: url)
                         dismiss()
                     }
@@ -47,11 +46,6 @@ private extension BlazeAddPaymentMethodWebView {
             "blazeAddPaymentWebView.cancelButton",
             value: "Cancel",
             comment: "Title of the button to dismiss the Blaze Add Payment Method screen"
-        )
-        static let paymentMethodAddedNotice = NSLocalizedString(
-            "blazeAddPaymentWebView.paymentMethodAddedNotice",
-            value: "Payment method added",
-            comment: "Notice that will be displayed after adding a new Blaze payment method"
         )
     }
 }

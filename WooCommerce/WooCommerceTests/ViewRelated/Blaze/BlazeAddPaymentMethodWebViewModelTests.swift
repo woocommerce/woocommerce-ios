@@ -38,4 +38,17 @@ final class BlazeAddPaymentMethodWebViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(selectedPaymentID, "123")
     }
+
+    func test_didAddNewPaymentMethod_sets_notice() async throws {
+        // Given
+        let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID,
+                                                          addPaymentMethodInfo: samplePaymentInfo.addPaymentMethod) { _ in }
+        XCTAssertNil(viewModel.notice)
+
+        let successURL = try XCTUnwrap(URL(string: "\(samplePaymentInfo.addPaymentMethod.successUrl)?\(samplePaymentInfo.addPaymentMethod.idUrlParameter)=123"))
+        viewModel.didAddNewPaymentMethod(successURL: successURL)
+
+        // Then
+        XCTAssertNotNil(viewModel.notice)
+    }
 }

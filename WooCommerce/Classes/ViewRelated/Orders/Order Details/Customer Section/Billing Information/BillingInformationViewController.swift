@@ -48,6 +48,7 @@ final class BillingInformationViewController: UIViewController {
         super.viewDidLoad()
         setupNavigationItem()
         setupMainView()
+        constrainToMaxWidth()
         registerTableViewCells()
         registerTableViewHeaderFooters()
         reloadSections()
@@ -79,6 +80,16 @@ private extension BillingInformationViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+    }
+
+    func constrainToMaxWidth() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return
+        }
+
+        let maxWidthConstraint = tableView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
+        maxWidthConstraint.priority = .required
+        NSLayoutConstraint.activate([maxWidthConstraint])
     }
 
     /// Registers all of the available TableViewCells
@@ -588,5 +599,6 @@ private extension BillingInformationViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let footerHeight = CGFloat(0)
+        static let maxWidth = CGFloat(525)
     }
 }

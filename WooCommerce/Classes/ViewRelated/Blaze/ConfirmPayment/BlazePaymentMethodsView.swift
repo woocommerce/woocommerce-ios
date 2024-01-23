@@ -5,6 +5,7 @@ struct BlazePaymentMethodsView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazePaymentMethodsViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var showingAddPaymentWebView: Bool = false
 
     init(viewModel: BlazePaymentMethodsViewModel) {
         self.viewModel = viewModel
@@ -27,7 +28,7 @@ struct BlazePaymentMethodsView: View {
                 Group {
                     let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
                     Button(action: {
-                        viewModel.showingAddPaymentWebView = true
+                        showingAddPaymentWebView = true
                     }) {
                         Text(buttonText)
                     }
@@ -47,7 +48,7 @@ struct BlazePaymentMethodsView: View {
             .wooNavigationBarStyle()
             .navigationBarTitleDisplayMode(.inline)
         }
-        .sheet(isPresented: $viewModel.showingAddPaymentWebView, content: {
+        .sheet(isPresented: $showingAddPaymentWebView, content: {
             if let viewModel = viewModel.addPaymentWebViewModel {
                 BlazeAddPaymentMethodWebView(viewModel: viewModel)
             }

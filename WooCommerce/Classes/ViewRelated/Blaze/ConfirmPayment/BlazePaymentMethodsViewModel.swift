@@ -12,7 +12,6 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
     private let defaultAccount: Account?
 
     private let paymentInfo: BlazePaymentInfo?
-    @Published var showingAddPaymentWebView: Bool
 
     var paymentMethods: [BlazePaymentMethod] {
         paymentInfo?.savedPaymentMethods ?? []
@@ -56,7 +55,6 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
         self.stores = stores
         self.onCompletion = completion
         self.defaultAccount = stores.sessionManager.defaultAccount
-        self.showingAddPaymentWebView = paymentInfo.savedPaymentMethods.isEmpty
     }
 
     func didSelectPaymentMethod(withID paymentMethodID: String) {

@@ -67,29 +67,6 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.WPCOMEmail, sampleEmail)
     }
 
-    // MARK: `showingAddPaymentWebView`
-    func test_showingAddPaymentWebView_is_false_if_saved_payment_methods_not_empty() async throws {
-        // Given
-        let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
-                                                     paymentInfo: samplePaymentInfo, // Non empty saved payments
-                                                     selectedPaymentMethodID: "payment-method-1",
-                                                     stores: stores) { _ in }
-
-        // Then
-        XCTAssertFalse(viewModel.showingAddPaymentWebView)
-    }
-
-    func test_showingAddPaymentWebView_is_true_if_saved_payment_methods_empty() async throws {
-        // Given
-        let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
-                                                     paymentInfo: samplePaymentInfo.copy(savedPaymentMethods: []), // No saved payments
-                                                     selectedPaymentMethodID: "payment-method-1",
-                                                     stores: stores) { _ in }
-
-        // Then
-        XCTAssertTrue(viewModel.showingAddPaymentWebView)
-    }
-
     // MARK: `didSelectPaymentMethod`
 
     func test_didSelectPaymentMethod_updates_selected_payment_method_id() async throws {

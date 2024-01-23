@@ -27,7 +27,6 @@ struct BlazePaymentMethodsView: View {
                 // Add new method button
                 Group {
                     let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
-                    
                     Button(action: {
                         showingAddPaymentWebView = true
                     }) {
@@ -44,36 +43,16 @@ struct BlazePaymentMethodsView: View {
                         dismiss()
                     }
                 }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        viewModel.saveSelection()
-                        dismiss()
-                    }, label: {
-                        if viewModel.isFetchingPaymentInfo {
-                            ProgressView()
-                        } else {
-                            Text(Localization.doneButton)
-                        }
-                    })
-                    .disabled(!viewModel.isDoneButtonEnabled)
-                }
             }
             .navigationTitle(Localization.navigationBarTitle)
             .wooNavigationBarStyle()
             .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(isPresented: $showingAddPaymentWebView, content: {
-            webView
-        })
-        .alert(Text(Localization.errorMessage), isPresented: $viewModel.shouldDisplayPaymentErrorAlert, actions: {
-            Button(Localization.tryAgain) {
-                Task {
-                    await viewModel.syncPaymentInfo()
-                }
+            if let viewModel = viewModel.addPaymentWebViewModel {
+                BlazeAddPaymentMethodWebView(viewModel: viewModel)
             }
         })
-        .notice($viewModel.notice)
     }
 
     @ViewBuilder
@@ -157,36 +136,6 @@ struct BlazePaymentMethodsView: View {
         }
         .padding(.top, Layout.noPaymentsViewTopPadding)
     }
-
-    @ViewBuilder
-    private var webView: some View {
-        if let addPaymentMethodURL = viewModel.addPaymentMethodURL,
-           let fetchPaymentMethodURLPath = viewModel.addPaymentSuccessURL {
-            NavigationView {
-                AuthenticatedWebView(isPresented: $showingAddPaymentWebView,
-                                     url: addPaymentMethodURL,
-                                     urlToTriggerExit: fetchPaymentMethodURLPath) {
-                    showingAddPaymentWebView = false
-                    Task {
-                        await viewModel.syncPaymentInfo()
-                    }
-                    viewModel.notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
-                }
-                                     .navigationTitle(Localization.paymentMethodWebViewTitle)
-                                     .navigationBarTitleDisplayMode(.inline)
-                                     .toolbar {
-                                         ToolbarItem(placement: .confirmationAction) {
-                                             Button(action: {
-                                                 showingAddPaymentWebView = false
-                                             }, label: {
-                                                 Text(Localization.doneButtonAddPayment)
-                                             })
-                                         }
-                                     }
-            }
-            .wooNavigationBarStyle()
-        }
-    }
 }
 
 private extension BlazePaymentMethodsView {
@@ -199,11 +148,6 @@ private extension BlazePaymentMethodsView {
             "blazePaymentMethodsView.cancelButton",
             value: "Cancel",
             comment: "Title of the button to dismiss the Blaze payment method list screen"
-        )
-        static let doneButton = NSLocalizedString(
-            "blazePaymentMethodsView.doneButton",
-            value: "Done",
-            comment: "Done navigation button in the Blaze Payment Method screen"
         )
         static let transactionsSecure = NSLocalizedString(
             "blazePaymentMethodsView.transactionsSecure",
@@ -220,48 +164,31 @@ private extension BlazePaymentMethodsView {
             value: "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>",
             comment: "Footer for list of payment methods in Payment Method screen."
             + " %1$@ is a placeholder for the WordPress.com username."
-            + " %2$@ is a placeholder for the WordPress.com email address.")
+            + " %2$@ is a placeholder for the WordPress.com email address."
+        )
         static let emailReceipt = NSLocalizedString(
             "blazePaymentMethodsView.emailReceipt",
             value: "Email the label purchase receipts to %1$@ (%2$@) at %3$@",
             comment: "Label for the email receipts toggle in Payment Method screen."
             + " %1$@ is a placeholder for the account display name."
             + " %2$@ is a placeholder for the username."
-            + " %3$@ is a placeholder for the WordPress.com email address.")
+            + " %3$@ is a placeholder for the WordPress.com email address."
+        )
         static let addCreditCardButton = NSLocalizedString(
             "blazePaymentMethodsView.addCreditCardButton",
             value: "Add credit card",
-            comment: "Button title in the Blaze Payment Method screen")
+            comment: "Button title in the Blaze Payment Method screen"
+        )
         static let addAnotherCreditCardButton = NSLocalizedString(
             "blazePaymentMethodsView.addAnotherCreditCardButton",
             value: "Add another credit card",
             comment: "Button title in the Blaze Payment Method" +
-            " screen if there is an existing payment method")
-        static let paymentMethodWebViewTitle = NSLocalizedString(
-            "blazePaymentMethodsView.paymentMethodWebViewTitle",
-            value: "Payment method",
-            comment: "Title of the web view of adding a payment method in Blaze")
-        static let doneButtonAddPayment = NSLocalizedString(
-            "blazePaymentMethodsView.doneButtonAddPayment",
-            value: "Done",
-            comment: "Done navigation button in Blaze add payment web view")
-        static let paymentMethodAddedNotice = NSLocalizedString(
-            "blazePaymentMethodsView.paymentMethodAddedNotice",
-            value: "Payment method added",
-            comment: "Notice that will be displayed after adding a new Blaze payment method")
+            " screen if there is an existing payment method"
+        )
         static let pleaseAddPaymentMethodMessage = NSLocalizedString(
             "blazePaymentMethodsView.pleaseAddPaymentMethodMessage",
             value: "Please add a new payment method",
-            comment: "Message that will be displayed if there are no Blaze payment methods.")
-        static let errorMessage = NSLocalizedString(
-            "blazePaymentMethodsView.errorMessage",
-            value: "Error loading your payment methods",
-            comment: "Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow."
-        )
-        static let tryAgain = NSLocalizedString(
-            "blazePaymentMethodsView.tryAgain",
-            value: "Try Again",
-            comment: "Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow."
+            comment: "Message that will be displayed if there are no Blaze payment methods."
         )
     }
 

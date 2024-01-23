@@ -12,7 +12,6 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
     private let defaultAccount: Account?
 
     private let paymentInfo: BlazePaymentInfo?
-    @Published private(set) var isFetchingPaymentInfo = false
     @Published var notice: Notice?
 
     var paymentMethods: [BlazePaymentMethod] {

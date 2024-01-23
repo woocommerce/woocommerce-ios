@@ -553,7 +553,10 @@ extension OrderListViewController {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID,
                let indexPath = dataSource.indexPath(for: identifier) {
-                if canSwitchDetails && (selectedOrderID != orderID || selectedIndexPath != indexPath) {
+                let orderNotAlreadySelected = selectedOrderID != orderID
+                let indexPathNotAlreadySelected = selectedIndexPath != indexPath
+                let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected
+                if canSwitchDetails && shouldSwitchDetails {
                     switchDetailsHandler([detailsViewModel], 0, nil)
                 }
                 selectedOrderID = orderID

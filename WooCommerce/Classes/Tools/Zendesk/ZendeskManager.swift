@@ -18,6 +18,11 @@ import Experiments
 protocol ZendeskManagerProtocol {
     typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
 
+    /// Creates a Zendesk Identity to be able to submit support request tickets given a username and email address.
+    /// Throws an error if the identity cannot be created.
+    ///
+    func createIdentity(name: String, email: String) async throws
+
     /// Creates a Zendesk Identity to be able to submit support request tickets.
     /// Uses the provided `ViewController` to present an alert for requesting email address when required.
     ///
@@ -33,7 +38,9 @@ protocol ZendeskManagerProtocol {
                               onCompletion: @escaping (Result<Void, Error>) -> Void)
 
     var zendeskEnabled: Bool { get }
-    func userSupportEmail() -> String?
+    var haveUserIdentity: Bool { get }
+
+    func userSupportIdentity() -> (name: String?, emailAddress: String?)
     func showHelpCenter(from controller: UIViewController)
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion)
     func initialize()
@@ -41,6 +48,10 @@ protocol ZendeskManagerProtocol {
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
+    func createIdentity(name: String, email: String) async throws {
+        // no-op
+    }
+
     func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
         // no-op
     }
@@ -54,10 +65,12 @@ struct NoZendeskManager: ZendeskManagerProtocol {
         // no-op
     }
 
-    var zendeskEnabled = false
+    let zendeskEnabled = false
 
-    func userSupportEmail() -> String? {
-        return nil
+    let haveUserIdentity = false
+
+    func userSupportIdentity() -> (name: String?, emailAddress: String?) {
+        return (nil, nil)
     }
 
     func showHelpCenter(from controller: UIViewController) {
@@ -105,7 +118,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     //
     private var userName: String?
     private var userEmail: String?
-    private var haveUserIdentity = false
+    private(set) var haveUserIdentity = false
     private var alertNameField: UITextField?
 
     private weak var presentInController: UIViewController?
@@ -148,36 +161,13 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         ServiceLocator.analytics.track(.supportHelpCenterViewed)
     }
 
-    /// Creates a Zendesk Identity to be able to submit support request tickets.
-    /// Accepts input from the user through the `onInput` closure.
-    /// Returns true if there exists an identity for Zendesk, and false otherwise.
+    /// Creates a Zendesk Identity to be able to submit support request tickets given a username and email address.
+    /// Throws an error if the identity cannot be created.
     ///
     @MainActor
-    func createIdentity(onInput: (String?, String?) async -> (String?, String?)) async throws -> Bool {
-        // If we already have an identity, returns true
-        guard haveUserIdentity == false else {
-            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
-            return true
-        }
-
-        /*
-         1. Attempt to get user information from User Defaults.
-         2. If we don't have the user's information yet, attempt to get it from the account/site.
-         3. Trigger the onInput closure, pre-populating with user information obtained in step 1.
-         4. Create Zendesk identity with user information returned from the onInput closure.
-         */
-
-        if getUserProfile() {
-            return try await createZendeskIdentity()
-        }
-
-        getUserInformationIfAvailable()
-        let (updatedUsername, updatedEmail) = await onInput(userName, userEmail)
-        guard let updatedUsername, let updatedEmail else {
-            return false
-        }
-        userName = updatedUsername
-        userEmail = updatedEmail
+    func createIdentity(name: String, email: String) async throws {
+        userName = name
+        userEmail = email
         saveUserProfile()
         return try await createZendeskIdentity()
     }
@@ -265,9 +255,12 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// Returns the user's Support email address.
     ///
-    func userSupportEmail() -> String? {
-        let _ = getUserProfile()
-        return userEmail
+    func userSupportIdentity() -> (name: String?, emailAddress: String?) {
+        if getUserProfile() {
+            return (userName, userEmail)
+        }
+        getUserInformationIfAvailable()
+        return (userName, userEmail)
     }
 }
 
@@ -276,7 +269,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 private extension ZendeskManager {
 
     @MainActor
-    func createZendeskIdentity() async throws -> Bool {
+    func createZendeskIdentity() async throws {
         return try await withCheckedThrowingContinuation { continuation in
             createZendeskIdentity { [weak self] success in
                 guard let self, success else {
@@ -285,7 +278,7 @@ private extension ZendeskManager {
                 }
                 DDLogDebug("Using User Defaults for Zendesk identity.")
                 haveUserIdentity = true
-                continuation.resume(returning: true)
+                continuation.resume(returning: ())
             }
         }
     }
@@ -558,8 +551,6 @@ extension ZendeskManager: UITextFieldDelegate {
 }
 #endif
 
-extension ZendeskManager {
-    enum ZendeskError: Error {
-        case failedToCreateIdentity
-    }
+enum ZendeskError: Error {
+    case failedToCreateIdentity
 }

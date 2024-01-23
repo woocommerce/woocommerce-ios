@@ -16,7 +16,7 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
 
     init(viewModel: SupportFormViewModel) {
         super.init(rootView: SupportForm(viewModel: viewModel))
-        handleSupportRequestCompletion(viewModel: viewModel)
+        handleSupportRequestDismissal(viewModel: viewModel)
         hidesBottomBarWhenPushed = true
     }
 
@@ -37,9 +37,9 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         }
     }
 
-    /// Registers a completion block on the view model to properly show alerts and notices.
+    /// Registers a dismiss block on the view model to properly dismiss the view.
     ///
-    func handleSupportRequestCompletion(viewModel: SupportFormViewModel) {
+    func handleSupportRequestDismissal(viewModel: SupportFormViewModel) {
         viewModel.onDismiss = { [weak self] in
             self?.dismissView()
         }
@@ -186,13 +186,16 @@ struct SupportForm: View {
         .onAppear {
             viewModel.onViewAppear()
         }
-        .alert(isPresented: $viewModel.shouldShowErrorAlert) {
-            Alert(title: Text(viewModel.errorMessage),
-                  dismissButton: .default(Text(Localization.gotIt)))
+        .alert(viewModel.errorMessage, isPresented: $viewModel.shouldShowErrorAlert) {
+            Button(Localization.gotIt) {
+                viewModel.shouldShowErrorAlert = false
+            }
         }
-        .alert(isPresented: $viewModel.shouldShowSuccessAlert) {
-            Alert(title: Text(Localization.supportRequestSent),
-                  dismissButton: .default(Text(Localization.gotIt), action: viewModel.dismissView))
+        .alert(Localization.supportRequestSent, isPresented: $viewModel.shouldShowSuccessAlert) {
+            Button(Localization.gotIt) {
+                viewModel.shouldShowSuccessAlert = false
+                viewModel.dismissView()
+            }
         }
         .alert(Localization.IdentityInput.title, isPresented: $viewModel.shouldShowIdentityInput) {
             TextField(Localization.IdentityInput.email, text: $viewModel.contactEmailAddress)

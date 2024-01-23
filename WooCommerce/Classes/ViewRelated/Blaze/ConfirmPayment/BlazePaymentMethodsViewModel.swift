@@ -13,7 +13,7 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
 
     private let paymentInfo: BlazePaymentInfo?
     @Published var notice: Notice?
-    @Published var showingAddPaymentWebView: Bool = false
+    @Published var showingAddPaymentWebView: Bool
 
     var paymentMethods: [BlazePaymentMethod] {
         paymentInfo?.savedPaymentMethods ?? []

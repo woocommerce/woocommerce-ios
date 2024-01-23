@@ -57,7 +57,7 @@ final class BlazeRemoteTests: XCTestCase {
                                                   mimeType: "image/png")
         let targeting = BlazeTargetOptions(locations: [29211, 42546],
                                            languages: ["en", "de"],
-                                           devices: ["mobile"],
+                                           devices: nil,
                                            pageTopics: ["IAB3", "IAB4"])
         let campaign = CreateBlazeCampaign.fake().copy(origin: "WooMobile",
                                                        originVersion: "1.0.1",
@@ -99,7 +99,7 @@ final class BlazeRemoteTests: XCTestCase {
         let targetingDict = try XCTUnwrap(request.parameters?["targeting"] as? [String: Any])
         XCTAssertEqual(targetingDict["locations"] as? [Int64], targeting.locations)
         XCTAssertEqual(targetingDict["languages"] as? [String], targeting.languages)
-        XCTAssertEqual(targetingDict["devices"] as? [String], targeting.devices)
+        XCTAssertNil(targetingDict["devices"])
         XCTAssertEqual(targetingDict["page_topics"] as? [String], targeting.pageTopics)
 
         XCTAssertEqual(request.parameters?["target_urn"] as? String, campaign.targetUrn)

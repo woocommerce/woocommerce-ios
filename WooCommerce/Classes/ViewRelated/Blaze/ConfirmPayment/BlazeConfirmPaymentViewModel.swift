@@ -46,6 +46,23 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         })
     }
 
+    var addPaymentWebViewModel: BlazeAddPaymentMethodWebViewModel? {
+        guard let paymentInfo else {
+            DDLogError("⛔️ No add payment info available to initiate Add payment method flow.")
+            return nil
+        }
+
+        return BlazeAddPaymentMethodWebViewModel(siteID: siteID,
+                                                 addPaymentMethodInfo: paymentInfo.addPaymentMethod) { [weak self] newPaymentMethodID in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+
+                await updatePaymentInfo()
+                selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == newPaymentMethodID })
+            }
+        }
+    }
+
     let totalAmount: String
 
     @Published private(set) var isFetchingPaymentInfo = false

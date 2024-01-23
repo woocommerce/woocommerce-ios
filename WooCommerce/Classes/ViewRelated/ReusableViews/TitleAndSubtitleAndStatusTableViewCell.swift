@@ -52,9 +52,8 @@ extension TitleAndSubtitleAndStatusTableViewCell {
 //
 private extension TitleAndSubtitleAndStatusTableViewCell {
     func configureBackground() {
-        backgroundColor = .listForeground(modal: false)
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        applyDefaultBackgroundStyle()
+        applyDefaultSelectedBackgroundStyle()
     }
 
     /// Setup: Labels

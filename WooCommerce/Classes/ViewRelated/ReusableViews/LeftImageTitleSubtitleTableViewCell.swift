@@ -50,10 +50,7 @@ class LeftImageTitleSubtitleTableViewCell: UITableViewCell {
 
     private func configureBackground() {
         applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        applyDefaultSelectedBackgroundStyle()
     }
 }
 

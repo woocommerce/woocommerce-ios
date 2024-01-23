@@ -302,8 +302,7 @@ private extension ImageAndTitleAndTextTableViewCell {
     }
 
     func configureSelectedBackground() {
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        applyDefaultSelectedBackgroundStyle()
     }
 }
 

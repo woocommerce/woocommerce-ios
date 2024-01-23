@@ -22,9 +22,6 @@ class BasicTableViewCell: UITableViewCell {
 private extension BasicTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        applyDefaultSelectedBackgroundStyle()
     }
 }

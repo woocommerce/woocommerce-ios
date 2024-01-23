@@ -18,6 +18,13 @@ extension UITableViewCell {
         backgroundColor = .listForeground(modal: false)
     }
 
+    /// Applies the default selected background color
+    ///
+    func applyDefaultSelectedBackgroundStyle() {
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = .listSelectedBackground
+    }
+
     /// Hides the separator for a cell.
     /// Be careful applying this to a reusable cell where the separator is expected to be shown in some cases.
     ///

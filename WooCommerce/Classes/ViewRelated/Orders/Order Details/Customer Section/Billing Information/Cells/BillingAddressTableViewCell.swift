@@ -74,10 +74,7 @@ private extension BillingAddressTableViewCell {
 
     func configureBackground() {
         applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        applyDefaultSelectedBackgroundStyle()
     }
 
     func configureLabels() {

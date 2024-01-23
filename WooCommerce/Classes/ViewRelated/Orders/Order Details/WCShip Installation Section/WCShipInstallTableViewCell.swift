@@ -28,10 +28,7 @@ final class WCShipInstallTableViewCell: UITableViewCell {
 private extension WCShipInstallTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        applyDefaultSelectedBackgroundStyle()
     }
 
     func configurePlaceholderImageView() {

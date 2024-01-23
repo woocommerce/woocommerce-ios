@@ -34,10 +34,7 @@ class WooBasicTableViewCell: UITableViewCell {
 
     func configureBackground() {
         applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        applyDefaultSelectedBackgroundStyle()
     }
 
     /// Set up the cell selection style

@@ -109,7 +109,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         }
 
         if state.isSelected || state.isHighlighted {
-            backgroundConfiguration.backgroundColor = .wooCommercePurple(.shade0)
+            backgroundConfiguration.backgroundColor = .listSelectedBackground
         }
         self.backgroundConfiguration = backgroundConfiguration
     }

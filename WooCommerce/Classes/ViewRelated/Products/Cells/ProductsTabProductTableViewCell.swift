@@ -151,11 +151,8 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureBackground() {
-        backgroundColor = .listForeground(modal: false)
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = Colors.selectedBackgroundColor
+        applyDefaultBackgroundStyle()
+        applyDefaultSelectedBackgroundStyle()
 
         // Prevents overflow of selectedBackgroundView above dividers from adjacent cells
         clipsToBounds = true

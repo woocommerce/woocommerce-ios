@@ -72,9 +72,8 @@ struct BlazeCampaignCreationErrorView: View {
 private extension BlazeCampaignCreationErrorView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(viewModel: SupportFormViewModel(sourceTag: Constants.supportTag, shouldHandleIdentity: true, onDismiss: {
-                isShowingSupport = false
-            }))
+            SupportForm(isPresented: $isShowingSupport,
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag, shouldHandleIdentity: true))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.done) {

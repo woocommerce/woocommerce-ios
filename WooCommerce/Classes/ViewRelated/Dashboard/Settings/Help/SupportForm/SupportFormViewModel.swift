@@ -54,11 +54,6 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let analyticsProvider: Analytics
 
-    /// Closure to be triggered when the form should be dismissed.
-    /// Assign this closure to get notified when integrated in UIKit.
-    ///
-    var onDismiss: (() -> Void)?
-
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
@@ -94,14 +89,12 @@ public final class SupportFormViewModel: ObservableObject {
          sourceTag: String? = nil,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          shouldHandleIdentity: Bool = false,
-         analyticsProvider: Analytics = ServiceLocator.analytics,
-         onDismiss: (() -> Void)? = nil) {
+         analyticsProvider: Analytics = ServiceLocator.analytics) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
         self.shouldHandleIdentity = shouldHandleIdentity
-        self.onDismiss = onDismiss
     }
 
     /// Tracks when the support form is viewed.
@@ -168,10 +161,6 @@ public final class SupportFormViewModel: ObservableObject {
             self.error = error
             shouldShowErrorAlert = true
         }
-    }
-
-    func dismissView() {
-        onDismiss?()
     }
 }
 

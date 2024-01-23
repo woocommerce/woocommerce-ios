@@ -13,10 +13,11 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         return presenter
     }()
 
-
     init(viewModel: SupportFormViewModel) {
-        super.init(rootView: SupportForm(viewModel: viewModel))
-        handleSupportRequestDismissal(viewModel: viewModel)
+        super.init(rootView: SupportForm(isPresented: .constant(true), viewModel: viewModel))
+        rootView.onDismiss = { [weak self] in
+            self?.dismissView()
+        }
         hidesBottomBarWhenPushed = true
     }
 
@@ -34,14 +35,6 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
             if !identityCreated {
                 self?.logIdentityErrorAndPopBack()
             }
-        }
-    }
-
-    /// Registers a dismiss block on the view model to properly dismiss the view.
-    ///
-    func handleSupportRequestDismissal(viewModel: SupportFormViewModel) {
-        viewModel.onDismiss = { [weak self] in
-            self?.dismissView()
         }
     }
 
@@ -75,9 +68,16 @@ private extension SupportFormHostingController {
 ///
 struct SupportForm: View {
 
+    @Binding var isPresented: Bool
+
     /// Main ViewModel to drive the view.
     ///
     @StateObject var viewModel: SupportFormViewModel
+
+    /// Closure to be triggered when the form should be dismissed.
+    /// Assign this closure to get notified when integrated in UIKit.
+    ///
+    var onDismiss: (() -> Void)?
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -194,18 +194,22 @@ struct SupportForm: View {
         .alert(Localization.supportRequestSent, isPresented: $viewModel.shouldShowSuccessAlert) {
             Button(Localization.gotIt) {
                 viewModel.shouldShowSuccessAlert = false
-                viewModel.dismissView()
+                isPresented = false
+                onDismiss?()
             }
         }
         .alert(Localization.IdentityInput.title, isPresented: $viewModel.shouldShowIdentityInput) {
             TextField(Localization.IdentityInput.email, text: $viewModel.contactEmailAddress)
             TextField(Localization.IdentityInput.name, text: $viewModel.contactName)
-            Button(Localization.IdentityInput.cancel, action: viewModel.dismissView)
-            Button(Localization.IdentityInput.ok, action: {
+            Button(Localization.IdentityInput.cancel) {
+                isPresented = false
+                onDismiss?()
+            }
+            Button(Localization.IdentityInput.ok) {
                 Task {
                     await viewModel.submitIdentityInfo()
                 }
-            })
+            }
             .disabled(viewModel.identitySubmitButtonDisabled)
         }
     }
@@ -291,7 +295,7 @@ struct SupportFormProvider: PreviewProvider {
 
     static var previews: some View {
         NavigationView {
-            SupportForm(viewModel: .init(areas: [
+            SupportForm(isPresented: .constant(true), viewModel: .init(areas: [
                 .init(title: "Mobile Apps", datasource: MockDataSource()),
                 .init(title: "Card Reader / In Person Payments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Payments", datasource: MockDataSource()),

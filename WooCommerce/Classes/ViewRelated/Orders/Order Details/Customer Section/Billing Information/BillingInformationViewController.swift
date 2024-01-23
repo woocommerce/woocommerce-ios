@@ -60,6 +60,8 @@ final class BillingInformationViewController: UIViewController {
 
     private let messageComposerPresenter: MessageComposerPresenter = ServiceLocator.messageComposerPresenter
 
+    private let isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
 }
 
 // MARK: - Interface Initialization
@@ -83,7 +85,7 @@ private extension BillingInformationViewController {
     }
 
     func constrainToMaxWidth() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+        guard isSplitViewInOrdersTabEnabled else {
             return
         }
 
@@ -409,6 +411,11 @@ private extension BillingInformationViewController {
         }
 
         cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction, copyAccessibilityAction]
+
+        guard isSplitViewInOrdersTabEnabled else {
+            return
+        }
+        cell.showSideBorders(fromWidth: Constants.maxWidth)
     }
 
     func setupBillingEmail(cell: WooBasicTableViewCell) {
@@ -441,6 +448,11 @@ private extension BillingInformationViewController {
         }
 
         cell.accessibilityCustomActions = [emailAccessibilityAction, copyEmailAccessibilityAction]
+        
+        guard isSplitViewInOrdersTabEnabled else {
+            return
+        }
+        cell.showSideBorders(fromWidth: Constants.maxWidth)
     }
 }
 

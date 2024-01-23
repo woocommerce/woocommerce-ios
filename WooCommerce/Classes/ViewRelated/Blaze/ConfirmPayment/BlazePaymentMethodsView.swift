@@ -52,7 +52,6 @@ struct BlazePaymentMethodsView: View {
                 BlazeAddPaymentMethodWebView(viewModel: viewModel)
             }
         })
-        .notice($viewModel.notice)
     }
 
     @ViewBuilder

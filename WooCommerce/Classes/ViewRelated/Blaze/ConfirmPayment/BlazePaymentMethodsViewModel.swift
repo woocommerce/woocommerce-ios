@@ -12,7 +12,6 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
     private let defaultAccount: Account?
 
     private let paymentInfo: BlazePaymentInfo?
-    @Published var notice: Notice?
     @Published var showingAddPaymentWebView: Bool
 
     var paymentMethods: [BlazePaymentMethod] {

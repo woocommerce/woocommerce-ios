@@ -19,6 +19,18 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
         paymentInfo?.savedPaymentMethods ?? []
     }
 
+    var addPaymentWebViewModel: BlazeAddPaymentMethodWebViewModel? {
+        guard let paymentInfo else {
+            return nil
+        }
+
+        return BlazeAddPaymentMethodWebViewModel(siteID: siteID,
+                                                 addPaymentMethodInfo: paymentInfo.addPaymentMethod) { [weak self] newPaymentMethodID in
+            guard let self else { return }
+            didSelectPaymentMethod(withID: newPaymentMethodID)
+        }
+    }
+
     @Published private(set) var selectedPaymentMethodID: String?
 
     var userEmail: String {
@@ -31,17 +43,6 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
 
     var WPCOMEmail: String {
         defaultAccount?.email ?? ""
-    }
-
-    var addPaymentMethodURL: URL? {
-        guard let paymentInfo else {
-            return nil
-        }
-        return URL(string: paymentInfo.addPaymentMethod.formUrl)
-    }
-
-    var addPaymentSuccessURL: String? {
-        paymentInfo?.addPaymentMethod.successUrl
     }
 
     init(siteID: Int64,
@@ -61,19 +62,6 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
 
     func didSelectPaymentMethod(withID paymentMethodID: String) {
         selectedPaymentMethodID = paymentMethodID
-        saveSelection()
-    }
-
-    func didAddNewPaymentMethod(successURL: URL?) {
-        guard let successURL,
-              let urlComponents = URLComponents(url: successURL, resolvingAgainstBaseURL: true),
-              let idUrlParameter = paymentInfo?.addPaymentMethod.idUrlParameter,
-              let newPaymentMethodID = urlComponents.queryItems?.first(where: { $0.name == idUrlParameter })?.value else {
-            DDLogError("⛔️ Failed to get newly added payment method ID from Blaze Add payment web view.")
-            return
-        }
-
-        selectedPaymentMethodID = newPaymentMethodID
         saveSelection()
     }
 }

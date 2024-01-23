@@ -136,34 +136,6 @@ struct BlazePaymentMethodsView: View {
         }
         .padding(.top, Layout.noPaymentsViewTopPadding)
     }
-
-    @ViewBuilder
-    private var webView: some View {
-        if let addPaymentMethodURL = viewModel.addPaymentMethodURL,
-           let fetchPaymentMethodURLPath = viewModel.addPaymentSuccessURL {
-            NavigationView {
-                AuthenticatedWebView(isPresented: $viewModel.showingAddPaymentWebView,
-                                     url: addPaymentMethodURL,
-                                     urlToTriggerExit: fetchPaymentMethodURLPath) { url in
-                    viewModel.showingAddPaymentWebView = false
-                    viewModel.notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
-                    viewModel.didAddNewPaymentMethod(successURL: url)
-                }
-                                     .navigationTitle(Localization.paymentMethodWebViewTitle)
-                                     .navigationBarTitleDisplayMode(.inline)
-                                     .toolbar {
-                                         ToolbarItem(placement: .confirmationAction) {
-                                             Button(action: {
-                                                 viewModel.showingAddPaymentWebView = false
-                                             }, label: {
-                                                 Text(Localization.doneButtonAddPayment)
-                                             })
-                                         }
-                                     }
-            }
-            .wooNavigationBarStyle()
-        }
-    }
 }
 
 private extension BlazePaymentMethodsView {
@@ -192,39 +164,32 @@ private extension BlazePaymentMethodsView {
             value: "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>",
             comment: "Footer for list of payment methods in Payment Method screen."
             + " %1$@ is a placeholder for the WordPress.com username."
-            + " %2$@ is a placeholder for the WordPress.com email address.")
+            + " %2$@ is a placeholder for the WordPress.com email address."
+        )
         static let emailReceipt = NSLocalizedString(
             "blazePaymentMethodsView.emailReceipt",
             value: "Email the label purchase receipts to %1$@ (%2$@) at %3$@",
             comment: "Label for the email receipts toggle in Payment Method screen."
             + " %1$@ is a placeholder for the account display name."
             + " %2$@ is a placeholder for the username."
-            + " %3$@ is a placeholder for the WordPress.com email address.")
+            + " %3$@ is a placeholder for the WordPress.com email address."
+        )
         static let addCreditCardButton = NSLocalizedString(
             "blazePaymentMethodsView.addCreditCardButton",
             value: "Add credit card",
-            comment: "Button title in the Blaze Payment Method screen")
+            comment: "Button title in the Blaze Payment Method screen"
+        )
         static let addAnotherCreditCardButton = NSLocalizedString(
             "blazePaymentMethodsView.addAnotherCreditCardButton",
             value: "Add another credit card",
             comment: "Button title in the Blaze Payment Method" +
-            " screen if there is an existing payment method")
-        static let paymentMethodWebViewTitle = NSLocalizedString(
-            "blazePaymentMethodsView.paymentMethodWebViewTitle",
-            value: "Payment method",
-            comment: "Title of the web view of adding a payment method in Blaze")
-        static let doneButtonAddPayment = NSLocalizedString(
-            "blazePaymentMethodsView.doneButtonAddPayment",
-            value: "Done",
-            comment: "Done navigation button in Blaze add payment web view")
-        static let paymentMethodAddedNotice = NSLocalizedString(
-            "blazePaymentMethodsView.paymentMethodAddedNotice",
-            value: "Payment method added",
-            comment: "Notice that will be displayed after adding a new Blaze payment method")
+            " screen if there is an existing payment method"
+        )
         static let pleaseAddPaymentMethodMessage = NSLocalizedString(
             "blazePaymentMethodsView.pleaseAddPaymentMethodMessage",
             value: "Please add a new payment method",
-            comment: "Message that will be displayed if there are no Blaze payment methods.")
+            comment: "Message that will be displayed if there are no Blaze payment methods."
+        )
     }
 
     enum Layout {

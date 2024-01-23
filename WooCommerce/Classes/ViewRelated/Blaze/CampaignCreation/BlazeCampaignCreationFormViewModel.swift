@@ -218,6 +218,14 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateTargetTopicText()
         updateTargetLocationText()
         initializeAdFinalDestination()
+
+        Task {
+            await loadAISuggestions()
+        }
+
+        Task {
+            await downloadProductImage()
+        }
     }
 
     func didTapEditAd() {

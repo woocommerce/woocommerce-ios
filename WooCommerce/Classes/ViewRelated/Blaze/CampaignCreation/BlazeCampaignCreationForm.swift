@@ -174,12 +174,6 @@ struct BlazeCampaignCreationForm: View {
             }),
                   secondaryButton: .cancel())
         })
-        .task {
-            await viewModel.loadAISuggestions()
-        }
-        .task {
-            await viewModel.downloadProductImage()
-        }
         .alert(isPresented: $viewModel.isShowingMissingImageErrorAlert, content: {
             Alert(title: Text(Localization.NoImageErrorAlert.noImageFound),
                   dismissButton: .default(Text(Localization.NoImageErrorAlert.ok)))

@@ -139,7 +139,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var finalDestinationURL: String = ""
 
     // AI Suggestions
-    @Published private(set) var isLoadingAISuggestions: Bool = true
+    @Published private(set) var isLoadingAISuggestions: Bool = false
     private let storage: StorageManagerType
     private var product: Product? {
         guard let product = productsResultsController.fetchedObjects.first else {
@@ -152,7 +152,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
 
-    @Published private var isLoadingProductImage: Bool = true
+    @Published private var isLoadingProductImage: Bool = false
 
     var canEditAd: Bool {
         !isLoadingAISuggestions
@@ -202,7 +202,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-    productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
+         productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
@@ -218,13 +218,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateTargetTopicText()
         updateTargetLocationText()
         initializeAdFinalDestination()
+    }
 
-        Task {
-            await loadAISuggestions()
+    func onAppear() {
+        if suggestions.isEmpty {
+            Task {
+                await loadAISuggestions()
+            }
         }
 
-        Task {
-            await downloadProductImage()
+        if image == nil {
+            Task {
+                await downloadProductImage()
+            }
         }
     }
 

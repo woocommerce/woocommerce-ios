@@ -66,11 +66,13 @@ public final class SupportFormViewModel: ObservableObject {
     init(areas: [Area] = wooSupportAreas(),
          sourceTag: String? = nil,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
-         analyticsProvider: Analytics = ServiceLocator.analytics) {
+         analyticsProvider: Analytics = ServiceLocator.analytics,
+         onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
+        self.onCompletion = onCompletion
     }
 
     /// Tracks when the support form is viewed.

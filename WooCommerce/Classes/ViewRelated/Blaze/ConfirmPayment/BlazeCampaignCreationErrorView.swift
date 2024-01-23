@@ -6,8 +6,6 @@ struct BlazeCampaignCreationErrorView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     @State private var isShowingSupport = false
-    @State private var supportRequestSentNotice: Notice?
-    @State private var shouldShowSupportRequestError = false
 
     private let onTryAgain: () -> Void
     private let onCancel: () -> Void
@@ -68,21 +66,14 @@ struct BlazeCampaignCreationErrorView: View {
         .sheet(isPresented: $isShowingSupport) {
             supportForm
         }
-        .notice($supportRequestSentNotice)
     }
 }
 
 private extension BlazeCampaignCreationErrorView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(viewModel: SupportFormViewModel(sourceTag: Constants.supportTag, onCompletion: { result in
-                switch result {
-                case .success:
-                    isShowingSupport = false
-                    supportRequestSentNotice = Notice(title: Localization.supportRequestSent)
-                case .failure:
-                    shouldShowSupportRequestError = true
-                }
+            SupportForm(viewModel: SupportFormViewModel(sourceTag: Constants.supportTag, shouldHandleIdentity: true, onDismiss: {
+                isShowingSupport = false
             }))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -93,12 +84,6 @@ private extension BlazeCampaignCreationErrorView {
             }
         }
         .navigationViewStyle(.stack)
-        .alert(isPresented: $shouldShowSupportRequestError) {
-            Alert(title: Text(Localization.supportRequestFailed),
-                  dismissButton: .default(Text(Localization.gotIt), action: {
-                shouldShowSupportRequestError = false
-            }))
-        }
     }
 }
 
@@ -155,21 +140,6 @@ private extension BlazeCampaignCreationErrorView {
             "blazeCampaignCreationErrorView.done",
             value: "Done",
             comment: "Button to dismiss the support form from the Blaze campaign creation error screen."
-        )
-        static let supportRequestSent = NSLocalizedString(
-            "blazeCampaignCreationErrorView.supportRequestSent",
-            value: "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.",
-            comment: "Message for the alert after the support request is created from the Blaze campaign creation error screen."
-        )
-        static let supportRequestFailed = NSLocalizedString(
-            "blazeCampaignCreationErrorView.supportRequestFailed",
-            value: "Sorry, we cannot create support requests right now, please try again later.",
-            comment: "Error message when the app can't create a support request from the Blaze campaign creation error screen."
-        )
-        static let gotIt = NSLocalizedString(
-            "blazeCampaignCreationErrorView.gotIt",
-            value: "Got It",
-            comment: "Button to dismiss the alert when the app can't create a support request from the Blaze campaign creation error screen."
         )
     }
 }

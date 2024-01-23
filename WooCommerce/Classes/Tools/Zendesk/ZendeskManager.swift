@@ -149,6 +149,40 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     }
 
     /// Creates a Zendesk Identity to be able to submit support request tickets.
+    /// Accepts input from the user through the `onInput` closure.
+    /// Returns true if there exists an identity for Zendesk, and false otherwise.
+    ///
+    @MainActor
+    func createIdentity(onInput: (String?, String?) async -> (String?, String?)) async throws -> Bool {
+        // If we already have an identity, returns true
+        guard haveUserIdentity == false else {
+            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
+            return true
+        }
+
+        /*
+         1. Attempt to get user information from User Defaults.
+         2. If we don't have the user's information yet, attempt to get it from the account/site.
+         3. Trigger the onInput closure, pre-populating with user information obtained in step 1.
+         4. Create Zendesk identity with user information returned from the onInput closure.
+         */
+
+        if getUserProfile() {
+            return try await createZendeskIdentity()
+        }
+
+        getUserInformationIfAvailable()
+        let (updatedUsername, updatedEmail) = await onInput(userName, userEmail)
+        guard let updatedUsername, let updatedEmail else {
+            return false
+        }
+        userName = updatedUsername
+        userEmail = updatedEmail
+        saveUserProfile()
+        return try await createZendeskIdentity()
+    }
+
+    /// Creates a Zendesk Identity to be able to submit support request tickets.
     /// Uses the provided `ViewController` to present an alert for requesting email address when required.
     ///
     func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
@@ -240,6 +274,21 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 // MARK: - Private Extension
 //
 private extension ZendeskManager {
+
+    @MainActor
+    func createZendeskIdentity() async throws -> Bool {
+        return try await withCheckedThrowingContinuation { continuation in
+            createZendeskIdentity { [weak self] success in
+                guard let self, success else {
+                    DDLogInfo("Creating Zendesk identity failed.")
+                    return continuation.resume(throwing: ZendeskError.failedToCreateIdentity)
+                }
+                DDLogDebug("Using User Defaults for Zendesk identity.")
+                haveUserIdentity = true
+                continuation.resume(returning: true)
+            }
+        }
+    }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
         presentInController = viewController
@@ -508,3 +557,9 @@ extension ZendeskManager: UITextFieldDelegate {
     }
 }
 #endif
+
+extension ZendeskManager {
+    enum ZendeskError: Error {
+        case failedToCreateIdentity
+    }
+}

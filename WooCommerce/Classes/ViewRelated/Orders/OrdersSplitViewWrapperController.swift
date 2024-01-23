@@ -45,6 +45,8 @@ final class OrdersSplitViewWrapperController: UIViewController {
         let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
         let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
 
+        ordersViewController.navigationController?.popToRootViewController(animated: false)
+
         ordersSplitViewController.setViewController(loaderNavigationController, for: .secondary)
         ordersSplitViewController.show(.secondary)
 

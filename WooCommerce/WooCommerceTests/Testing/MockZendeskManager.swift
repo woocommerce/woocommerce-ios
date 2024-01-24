@@ -48,7 +48,7 @@ final class MockZendeskManager: ZendeskManagerProtocol {
     private var stubbedCreateIdentityResult: Result<Void, Error>?
     private var stubbedCreateSupportRequestResult: Result<Void, Error>?
 
-    func userSupportIdentity() -> (name: String?, emailAddress: String?) {
+    func retrieveUserInfoIfAvailable() -> (name: String?, emailAddress: String?) {
         (stubbedName, stubbedEmailAddress)
     }
 

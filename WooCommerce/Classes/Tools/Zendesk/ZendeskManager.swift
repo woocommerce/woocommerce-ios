@@ -40,7 +40,9 @@ protocol ZendeskManagerProtocol {
     var zendeskEnabled: Bool { get }
     var haveUserIdentity: Bool { get }
 
-    func userSupportIdentity() -> (name: String?, emailAddress: String?)
+    /// Returns the user's name and email from saved identity or login credentials.
+    ///
+    func retrieveUserInfoIfAvailable() -> (name: String?, emailAddress: String?)
     func showHelpCenter(from controller: UIViewController)
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion)
     func initialize()
@@ -69,7 +71,7 @@ struct NoZendeskManager: ZendeskManagerProtocol {
 
     let haveUserIdentity = false
 
-    func userSupportIdentity() -> (name: String?, emailAddress: String?) {
+    func retrieveUserInfoIfAvailable() -> (name: String?, emailAddress: String?) {
         return (nil, nil)
     }
 
@@ -253,9 +255,9 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     // MARK: - Helpers
 
-    /// Returns the user's Support email address.
+    /// Returns the user's name and email from saved identity or login credentials.
     ///
-    func userSupportIdentity() -> (name: String?, emailAddress: String?) {
+    func retrieveUserInfoIfAvailable() -> (name: String?, emailAddress: String?) {
         if getUserProfile() {
             return (userName, userEmail)
         }

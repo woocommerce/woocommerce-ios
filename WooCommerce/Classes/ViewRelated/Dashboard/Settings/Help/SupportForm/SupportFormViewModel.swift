@@ -193,7 +193,7 @@ private extension SupportFormViewModel {
             return
         }
 
-        let identity = zendeskProvider.userSupportIdentity()
+        let identity = zendeskProvider.retrieveUserInfoIfAvailable()
         contactName = identity.name ?? ""
         contactEmailAddress = identity.emailAddress ?? ""
         shouldShowIdentityInput = true

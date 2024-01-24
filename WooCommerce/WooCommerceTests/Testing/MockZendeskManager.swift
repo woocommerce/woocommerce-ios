@@ -1,10 +1,12 @@
 
 import Foundation
 import UIKit
+import enum Networking.NetworkError
 
 @testable import WooCommerce
 
 final class MockZendeskManager: ZendeskManagerProtocol {
+
     struct NewRequestIfPossibleInvocation {
         let controller: UIViewController
         let sourceTag: String?
@@ -38,10 +40,28 @@ final class MockZendeskManager: ZendeskManagerProtocol {
         showNewWCPayRequestIfPossible(from: controller, with: nil)
     }
 
-    var zendeskEnabled = false
+    let zendeskEnabled = false
 
-    func userSupportEmail() -> String? {
-        return nil
+    private(set) var haveUserIdentity: Bool = false
+    private var stubbedName: String?
+    private var stubbedEmailAddress: String?
+    private var stubbedCreateIdentityResult: Result<Void, Error>?
+    private var stubbedCreateSupportRequestResult: Result<Void, Error>?
+
+    func retrieveUserInfoIfAvailable() -> (name: String?, emailAddress: String?) {
+        (stubbedName, stubbedEmailAddress)
+    }
+
+    func createIdentity(name: String, email: String) async throws {
+        guard let stubbedCreateIdentityResult else {
+            throw NetworkError.notFound()
+        }
+        switch stubbedCreateIdentityResult {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
     }
 
     func showHelpCenter(from controller: UIViewController) {
@@ -59,6 +79,20 @@ final class MockZendeskManager: ZendeskManagerProtocol {
     func reset() {
         // no-op
     }
+
+    func mockIdentity(name: String?, email: String?, haveUserIdentity: Bool) {
+        stubbedName = name
+        stubbedEmailAddress = email
+        self.haveUserIdentity = haveUserIdentity
+    }
+
+    func whenCreateIdentity(thenReturn result: Result<Void, Error>) {
+        stubbedCreateIdentityResult = result
+    }
+
+    func whenCreateSupportRequest(thenReturn result: Result<Void, Error>) {
+        stubbedCreateSupportRequestResult = result
+    }
 }
 
 extension MockZendeskManager {
@@ -73,5 +107,8 @@ extension MockZendeskManager {
                               description: String,
                               onCompletion: @escaping (Result<Void, Error>) -> Void) {
         latestInvokedTags = tags
+        if let stubbedCreateSupportRequestResult {
+            onCompletion(stubbedCreateSupportRequestResult)
+        }
     }
 }

@@ -273,7 +273,7 @@ private extension ZendeskManager {
         return try await withCheckedThrowingContinuation { continuation in
             createZendeskIdentity { [weak self] success in
                 guard let self, success else {
-                    DDLogInfo("Creating Zendesk identity failed.")
+                    DDLogError("⛔️ Creating Zendesk identity failed.")
                     return continuation.resume(throwing: ZendeskError.failedToCreateIdentity)
                 }
                 DDLogDebug("Using User Defaults for Zendesk identity.")

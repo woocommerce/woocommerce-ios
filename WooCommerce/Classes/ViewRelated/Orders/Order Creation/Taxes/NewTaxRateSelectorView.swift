@@ -98,7 +98,6 @@ struct NewTaxRateSelectorView: View {
                                 ForEach(viewModel.placeholderRowViewModels, id: \.id) { rowViewModel in
                                     TaxRateRow(viewModel: rowViewModel, onSelect: {})
                                         .redacted(reason: .placeholder)
-                                        .shimmering()
                                 }
                             }
                         }

@@ -174,10 +174,13 @@ struct BlazeCampaignCreationForm: View {
             }),
                   secondaryButton: .cancel())
         })
-        .alert(isPresented: $viewModel.isShowingMissingImageErrorAlert, content: {
-            Alert(title: Text(Localization.NoImageErrorAlert.noImageFound),
-                  dismissButton: .default(Text(Localization.NoImageErrorAlert.ok)))
-        })
+        .alert(Localization.NoImageErrorAlert.noImageFound, isPresented: $viewModel.isShowingMissingImageErrorAlert) {
+            Button(Localization.NoImageErrorAlert.cancel, role: .cancel) { }
+
+            Button(Localization.NoImageErrorAlert.addImage) {
+                viewModel.didTapEditAd()
+            }
+        }
         .task {
             await viewModel.onLoad()
         }
@@ -384,13 +387,18 @@ private extension BlazeCampaignCreationForm {
         enum NoImageErrorAlert {
             static let noImageFound = NSLocalizedString(
                 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound",
-                value: "Please set an image for the Blaze campaign by tapping Edit ad",
+                value: "Please add an image for the Blaze campaign",
                 comment: "Message asking to select an image for the Blaze campaign"
             )
-            static let ok = NSLocalizedString(
-                "blazeCampaignCreationForm.noImageErrorAlert.ok",
-                value: "OK",
-                comment: "Dismiss button on the error alert asking to select a image for the Blaze campaign"
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
+            )
+            static let addImage = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.addImage",
+                value: "Add Image",
+                comment: "Button on the alert to add an image for the Blaze campaign"
             )
         }
     }

@@ -95,7 +95,7 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     func onViewAppear() {
         analyticsProvider.track(.supportNewRequestViewed)
-        handleZendeskIdentityIfNeeded()
+        requestZendeskIdentityIfNeeded()
     }
 
     /// Selects an area.
@@ -187,7 +187,7 @@ extension SupportFormViewModel {
 
 // MARK: Private helpers
 private extension SupportFormViewModel {
-    func handleZendeskIdentityIfNeeded() {
+    func requestZendeskIdentityIfNeeded() {
         guard !zendeskProvider.haveUserIdentity else {
             DDLogDebug("Using existing Zendesk identity")
             return

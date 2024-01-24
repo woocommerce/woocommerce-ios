@@ -122,6 +122,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
             }
         }
 
+        mockSynchronizeProducts()
+
         // When
         await sut.reload()
 
@@ -273,6 +275,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeProducts()
 
         // When
         await sut.reload()
@@ -404,6 +407,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeProducts()
 
         // When
         await sut.reload()
@@ -498,7 +502,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
-
+        mockSynchronizeProducts()
         // When
         await sut.reload()
 
@@ -767,6 +771,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeProducts()
 
         // When
         await sut.reload()
@@ -856,6 +861,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeProducts()
 
         // When
         await sut.reload()
@@ -883,6 +889,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeProducts()
+
         await viewModel.reload()
         // confidence check
         XCTAssertEqual(viewModel.state, .showCampaign(campaign: fakeBlazeCampaign))

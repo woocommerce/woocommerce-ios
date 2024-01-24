@@ -69,7 +69,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         case .webViewForm(let productID):
             navigateToWebCampaignCreation(source: source, productID: productID)
         case .noProductAvailable:
-            break // TODO 11685: add error alert.
+            presentNoProductAlert()
         }
     }
 }
@@ -183,6 +183,21 @@ private extension BlazeCampaignCreationCoordinator {
         blazeNavigationController.viewControllers = [controller]
         navigationController.present(blazeNavigationController, animated: true, completion: nil)
     }
+
+    func presentNoProductAlert() {
+        let alert = UIAlertController(title: Localization.NoProductAlert.title,
+                                      message: Localization.NoProductAlert.message,
+                                      preferredStyle: .alert)
+        let createAction = UIAlertAction(title: Localization.NoProductAlert.createProduct, style: .default) { _ in
+            // TODO: start product creation
+        }
+        let cancelAction = UIAlertAction(title: Localization.NoProductAlert.cancel, style: .cancel)
+        alert.addAction(createAction)
+        alert.addAction(cancelAction)
+        navigationController.dismiss(animated: true) { [weak self] in
+            self?.navigationController.present(alert, animated: true)
+        }
+    }
 }
 
 // MARK: - Completion handler
@@ -255,5 +270,27 @@ private extension BlazeCampaignCreationCoordinator {
             value: "Done",
             comment: "Button to dismiss the celebration view when a Blaze campaign is successfully created."
         )
+        enum NoProductAlert {
+            static let title = NSLocalizedString(
+                "blazeCampaignCreationCoordinator.NoProductAlert.title",
+                value: "No product found",
+                comment: "Title of the alert when attempting to start Blaze campaign creation flow without any product in the store"
+            )
+            static let message = NSLocalizedString(
+                "blazeCampaignCreationCoordinator.NoProductAlert.message",
+                value: "You currently don’t have a product available for promotion. Would you like to create a product now?",
+                comment: "Message of the alert when attempting to start Blaze campaign creation flow without any product in the store"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationCoordinator.NoProductAlert.cancel",
+                value: "Cancel",
+                comment: "Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store"
+            )
+            static let createProduct = NSLocalizedString(
+                "blazeCampaignCreationCoordinator.NoProductAlert.createProduct",
+                value: "Create Product",
+                comment: "Button to create a product when attempting to start Blaze campaign creation flow without any product in the store"
+            )
+        }
     }
 }

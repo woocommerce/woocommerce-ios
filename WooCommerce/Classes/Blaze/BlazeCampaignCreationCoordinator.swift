@@ -37,6 +37,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     private let onCampaignCreated: () -> Void
 
     private var bottomSheetPresenter: BottomSheetPresenter?
+    private var addProductCoordinator: AddProductCoordinator?
 
     init(siteID: Int64,
          siteURL: String,
@@ -188,8 +189,8 @@ private extension BlazeCampaignCreationCoordinator {
         let alert = UIAlertController(title: Localization.NoProductAlert.title,
                                       message: Localization.NoProductAlert.message,
                                       preferredStyle: .alert)
-        let createAction = UIAlertAction(title: Localization.NoProductAlert.createProduct, style: .default) { _ in
-            // TODO: start product creation
+        let createAction = UIAlertAction(title: Localization.NoProductAlert.createProduct, style: .default) { [weak self] _ in
+            self?.startProductCreation()
         }
         let cancelAction = UIAlertAction(title: Localization.NoProductAlert.cancel, style: .cancel)
         alert.addAction(createAction)
@@ -197,6 +198,16 @@ private extension BlazeCampaignCreationCoordinator {
         navigationController.dismiss(animated: true) { [weak self] in
             self?.navigationController.present(alert, animated: true)
         }
+    }
+
+    func startProductCreation() {
+        let coordinator = AddProductCoordinator(siteID: siteID,
+                                                source: .blazeCampaignCreation,
+                                                sourceView: nil,
+                                                sourceNavigationController: navigationController,
+                                                isFirstProduct: true)
+        self.addProductCoordinator = coordinator
+        coordinator.start()
     }
 }
 

@@ -164,16 +164,15 @@ struct BlazeCampaignCreationForm: View {
         .onChange(of: viewModel.error) { newValue in
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }
-        .alert(isPresented: $isShowingAISuggestionsErrorAlert, content: {
-            Alert(title: Text(Localization.AISuggestionsErrorAlert.title),
-                  message: Text(Localization.AISuggestionsErrorAlert.ErrorMessage.fetchingAISuggestions),
-                  primaryButton: .default(Text(Localization.AISuggestionsErrorAlert.retry), action: {
+        .alert(Localization.AISuggestionsErrorAlert.fetchingAISuggestions, isPresented: $isShowingAISuggestionsErrorAlert) {
+            Button(Localization.AISuggestionsErrorAlert.cancel, role: .cancel) { }
+
+            Button(Localization.AISuggestionsErrorAlert.retry) {
                 Task {
                     await viewModel.loadAISuggestions()
                 }
-            }),
-                  secondaryButton: .cancel())
-        })
+            }
+        }
         .alert(Localization.NoImageErrorAlert.noImageFound, isPresented: $viewModel.isShowingMissingImageErrorAlert) {
             Button(Localization.NoImageErrorAlert.cancel, role: .cancel) { }
 
@@ -366,20 +365,18 @@ private extension BlazeCampaignCreationForm {
             comment: "Button to confirm ad details on the Blaze campaign creation screen"
         )
         enum AISuggestionsErrorAlert {
-            enum ErrorMessage {
-                static let fetchingAISuggestions = NSLocalizedString(
-                    "blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions",
-                    value: "Failed to load suggestions for tagline and description",
-                    comment: "Error message indicating that loading suggestions for tagline and description failed"
-                )
-            }
-            static let title = NSLocalizedString(
-                "blazeCampaignCreationForm.errorAlert.title",
-                value: "Oops! We've hit a snag",
-                comment: "Title on the error alert displayed on the Blaze campaign creation screen"
+            static let fetchingAISuggestions = NSLocalizedString(
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions",
+                value: "Failed to load suggestions for tagline and description",
+                comment: "Error message indicating that loading suggestions for tagline and description failed"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the error alert displayed on the Blaze campaign creation screen"
             )
             static let retry = NSLocalizedString(
-                "blazeCampaignCreationForm.errorAlert.retry",
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry",
                 value: "Retry",
                 comment: "Button on the error alert displayed on the Blaze campaign creation screen"
             )

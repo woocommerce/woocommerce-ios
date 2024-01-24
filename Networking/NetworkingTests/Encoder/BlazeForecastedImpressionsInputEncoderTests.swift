@@ -19,7 +19,7 @@ final class BlazeForecastedImpressionsInputEncoderTests: XCTestCase {
                                                     endDate: endDate,
                                                     timeZone: timeZone,
                                                     totalBudget: totalBudget,
-                                                    targetings: targetOptions)
+                                                    targeting: targetOptions)
 
         // When
         let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)

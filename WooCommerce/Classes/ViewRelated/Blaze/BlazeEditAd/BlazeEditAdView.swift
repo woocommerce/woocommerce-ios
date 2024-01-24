@@ -94,9 +94,6 @@ private extension BlazeEditAdView {
 
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $viewModel.tagline)
-                    .onChange(of: viewModel.tagline) { newValue in
-                        viewModel.tagline = viewModel.formatTagline(newValue)
-                    }
                     .bodyStyle()
                     .foregroundColor(.secondary)
                     .padding(insets: Layout.textFieldContentInsets)
@@ -118,6 +115,7 @@ private extension BlazeEditAdView {
             )
 
             Text(viewModel.taglineFooterText)
+                .foregroundStyle(viewModel.taglineRemainingLength >= 0 ? .secondary : Color(.error))
                 .footnoteStyle()
         }
     }
@@ -130,9 +128,6 @@ private extension BlazeEditAdView {
 
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $viewModel.description)
-                    .onChange(of: viewModel.description) { newValue in
-                        viewModel.description = viewModel.formatDescription(newValue)
-                    }
                     .bodyStyle()
                     .foregroundColor(.secondary)
                     .padding(insets: Layout.textFieldContentInsets)
@@ -154,6 +149,7 @@ private extension BlazeEditAdView {
             )
 
             Text(viewModel.descriptionFooterText)
+                .foregroundStyle(viewModel.descriptionRemainingLength >= 0 ? .secondary : Color(.error))
                 .footnoteStyle()
         }
     }

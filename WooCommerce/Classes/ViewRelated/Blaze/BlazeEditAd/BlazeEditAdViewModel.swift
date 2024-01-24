@@ -22,7 +22,7 @@ final class BlazeEditAdViewModel: ObservableObject {
         taglineEmptyError ?? taglineLengthLimitLabel
     }
 
-    @Published private var taglineRemainingLength: Int
+    @Published private(set) var taglineRemainingLength: Int
     private var taglineLengthLimitLabel: String {
         let lengthText = String.pluralize(taglineRemainingLength,
                                           singular: Localization.LengthLimit.singular,
@@ -38,7 +38,7 @@ final class BlazeEditAdViewModel: ObservableObject {
         descriptionEmptyError ?? descriptionLengthLimitLabel
     }
 
-    @Published private var descriptionRemainingLength: Int
+    @Published private(set) var descriptionRemainingLength: Int
     private var descriptionLengthLimitLabel: String {
         let lengthText = String.pluralize(descriptionRemainingLength,
                                           singular: Localization.LengthLimit.singular,
@@ -49,7 +49,9 @@ final class BlazeEditAdViewModel: ObservableObject {
     @Published private var descriptionEmptyError: String?
 
     var isSaveButtonEnabled: Bool {
-        guard let editedAdData else {
+        guard let editedAdData,
+                taglineRemainingLength >= 0,
+                descriptionRemainingLength >= 0 else {
             return false
         }
 
@@ -188,11 +190,7 @@ extension BlazeEditAdViewModel {
     private func watchCharacterLimit() {
         $tagline
             .map { text -> Int in
-                if text.count >= Constants.taglineMaxLength {
-                    return 0
-                } else {
-                    return Constants.taglineMaxLength - text.count
-                }
+                Constants.taglineMaxLength - text.count
             }
             .assign(to: &$taglineRemainingLength)
 
@@ -204,11 +202,7 @@ extension BlazeEditAdViewModel {
 
         $description
             .map { text -> Int in
-                if text.count >= Constants.descriptionMaxLength {
-                    return 0
-                } else {
-                    return Constants.descriptionMaxLength - text.count
-                }
+                Constants.descriptionMaxLength - text.count
             }
             .assign(to: &$descriptionRemainingLength)
 
@@ -217,20 +211,6 @@ extension BlazeEditAdViewModel {
                 text.isEmpty ? Localization.descriptionEmpty : nil
             }
             .assign(to: &$descriptionEmptyError)
-    }
-
-    func formatTagline(_ newValue: String) -> String {
-        guard newValue.count > Constants.taglineMaxLength else {
-            return newValue
-        }
-        return String(newValue.prefix(Constants.taglineMaxLength))
-    }
-
-    func formatDescription(_ newValue: String) -> String {
-        guard newValue.count > Constants.descriptionMaxLength else {
-            return newValue
-        }
-        return String(newValue.prefix(Constants.descriptionMaxLength))
     }
 }
 

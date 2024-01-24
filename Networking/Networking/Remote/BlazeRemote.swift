@@ -1,6 +1,6 @@
 import Codegen
-import Alamofire
 import Foundation
+import struct Alamofire.JSONEncoding
 
 /// Protocol for `BlazeRemote` mainly used for mocking.
 ///

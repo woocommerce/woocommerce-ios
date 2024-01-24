@@ -36,6 +36,7 @@ struct NoticeModifier: ViewModifier {
         content
             .overlay(
                 buildNoticeStack()
+                    .padding(.bottom)
                     .animation(.easeInOut, value: notice)
             )
     }

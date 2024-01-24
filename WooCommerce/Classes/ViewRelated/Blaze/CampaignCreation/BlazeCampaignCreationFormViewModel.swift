@@ -49,7 +49,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                   pageTopics: pageTopics?.map { $0.id })
     }
 
-    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
+    /// We need to recreate the view model every time the budget screen is opened to get the updated target options.
+    var budgetSettingViewModel: BlazeBudgetSettingViewModel {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     duration: duration,
@@ -61,7 +62,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
-    }()
+    }
 
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,

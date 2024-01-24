@@ -270,16 +270,3 @@ struct SupportFormProvider: PreviewProvider {
         }
     }
 }
-
-@available(*, deprecated, message: "Please use `SupportForm` directly instead.")
-struct HostedSupportForm: UIViewControllerRepresentable {
-    typealias UIViewControllerType = SupportFormHostingController
-
-    let viewModel: SupportFormViewModel
-
-    func makeUIViewController(context: Context) -> SupportFormHostingController {
-        SupportFormHostingController(viewModel: viewModel)
-    }
-
-    func updateUIViewController(_ uiViewController: SupportFormHostingController, context: Context) { }
-}

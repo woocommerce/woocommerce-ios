@@ -55,8 +55,7 @@ final class BlazeEditAdViewModel: ObservableObject {
     }
 
     private var editedAdData: BlazeEditAdData? {
-        guard let image,
-              tagline.isNotEmpty,
+        guard tagline.isNotEmpty,
               description.isNotEmpty else {
             return nil
         }

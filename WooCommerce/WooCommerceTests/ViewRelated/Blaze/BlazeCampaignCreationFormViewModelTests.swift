@@ -96,11 +96,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.description, "")
     }
 
-    // MARK: On appear
+    // MARK: On load
 
-    func test_on_appear_fetches_AI_suggestions() async throws {
+    func test_onLoad_fetches_AI_suggestions() async throws {
         // Given
         insertProduct(sampleProduct)
+        mockDownloadImage(sampleImage)
         var triggeredFetchAISuggestions = false
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
@@ -119,17 +120,17 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                onCompletion: {})
 
         // When
-        viewModel.onAppear()
+        await viewModel.onLoad()
 
         // Then
-        waitUntil {
-            triggeredFetchAISuggestions == true
-        }
+        XCTAssertTrue(triggeredFetchAISuggestions)
     }
 
-    func test_on_appear_downloads_image() async throws {
+    func test_onLoad_downloads_image() async throws {
         // Given
         insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                productID: sampleProductID,
                                                stores: stores,
@@ -138,12 +139,10 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                onCompletion: {})
 
         // When
-        viewModel.onAppear()
+        await viewModel.onLoad()
 
         // Then
-        waitUntil {
-            self.imageLoader.imageRequestedForProductImage != nil
-        }
+        XCTAssertNotNil(imageLoader.imageRequestedForProductImage)
     }
 
     // MARK: Download product image

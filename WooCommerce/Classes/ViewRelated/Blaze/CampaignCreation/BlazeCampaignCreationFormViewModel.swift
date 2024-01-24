@@ -220,16 +220,18 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         initializeAdFinalDestination()
     }
 
-    func onAppear() {
-        if suggestions.isEmpty {
-            Task {
-                await loadAISuggestions()
+    func onLoad() async {
+        await withTaskGroup(of: Void.self) { group in
+            if suggestions.isEmpty {
+                group.addTask {
+                    await self.loadAISuggestions()
+                }
             }
-        }
 
-        if image == nil {
-            Task {
-                await downloadProductImage()
+            if image == nil {
+                group.addTask {
+                    await self.downloadProductImage()
+                }
             }
         }
     }

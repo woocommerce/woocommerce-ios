@@ -178,8 +178,8 @@ struct BlazeCampaignCreationForm: View {
             Alert(title: Text(Localization.NoImageErrorAlert.noImageFound),
                   dismissButton: .default(Text(Localization.NoImageErrorAlert.ok)))
         })
-        .onAppear() {
-            viewModel.onAppear()
+        .task {
+            await viewModel.onLoad()
         }
         LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel),
                            isActive: $viewModel.isShowingPaymentInfo) {

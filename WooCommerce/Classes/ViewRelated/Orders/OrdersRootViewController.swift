@@ -508,7 +508,7 @@ private extension OrdersRootViewController {
         analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return switchDetailsHandler([viewModel], 0, true, onCompletion)
+            return ordersViewController.showOrderDetails(order)
         }
 
         let orderViewController = OrderDetailsViewController(viewModel: viewModel)

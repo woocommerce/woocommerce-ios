@@ -550,11 +550,15 @@ private extension OrderListViewController {
         switchDetailsHandler([orderDetailsViewModel], 0, false) { [weak self] hasBeenSelected in
             guard let self else { return }
             if hasBeenSelected {
-                selectedOrderID = orderDetailsViewModel.order.orderID
-                selectedIndexPath = indexPath(for: orderDetailsViewModel.order.orderID)
-                highlightSelectedRowIfNeeded()
+                onOrderSelected(id: orderDetailsViewModel.order.orderID)
             }
         }
+    }
+
+    func onOrderSelected(id orderID: Int64) {
+        selectedOrderID = orderID
+        selectedIndexPath = indexPath(for: orderID)
+        highlightSelectedRowIfNeeded()
     }
 
     func indexPath(for orderID: Int64) -> IndexPath? {
@@ -590,6 +594,16 @@ extension OrderListViewController {
             }
         }
         return false
+    }
+
+    func showOrderDetails(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
+        let viewModel = OrderDetailsViewModel(order: order)
+        switchDetailsHandler([viewModel], 0, true) { [weak self] hasBeenSelected in
+            guard let self else { return }
+            if hasBeenSelected {
+                onOrderSelected(id: order.orderID)
+            }
+        }
     }
 }
 

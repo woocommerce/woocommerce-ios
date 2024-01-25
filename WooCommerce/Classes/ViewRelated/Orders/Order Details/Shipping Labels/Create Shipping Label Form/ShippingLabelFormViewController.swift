@@ -38,6 +38,14 @@ final class ShippingLabelFormViewController: UIViewController {
     ///
     var onLabelSave: (() -> Void)?
 
+    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
+    ///
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     /// Init
     ///
     init(order: Order) {
@@ -421,7 +429,7 @@ private extension ShippingLabelFormViewController {
                 [weak self] in
                 self?.viewModel.fetchCountries()
             }
-            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            noticePresenter.enqueue(notice: notice)
             return
         }
         let isPhoneNumberRequired = viewModel.customsFormRequired || type == .origin
@@ -454,7 +462,7 @@ private extension ShippingLabelFormViewController {
                 [weak self] in
                 self?.viewModel.fetchCountries()
             }
-            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            noticePresenter.enqueue(notice: notice)
             return
         }
         let vc = ShippingLabelSuggestedAddressViewController(siteID: viewModel.siteID,
@@ -575,7 +583,7 @@ private extension ShippingLabelFormViewController {
         let message = NSLocalizedString("Error purchasing the label", comment: "Notice displayed when the label purchase fails")
         let notice = Notice(title: message, feedbackType: .error)
 
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 

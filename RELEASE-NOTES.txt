@@ -2,6 +2,7 @@
 
 17.1
 -----
+- [*] Fixed issue loading system status report for sites using faulty themes. [https://github.com/woocommerce/woocommerce-ios/pull/11798]
 
 
 17.0

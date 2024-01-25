@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 import struct Networking.BlazeAISuggestion
 
 /// View model for `BlazeEditAdView`
@@ -92,7 +91,6 @@ final class BlazeEditAdViewModel: ObservableObject {
 
     private let onSave: (BlazeEditAdData) -> Void
     private let analytics: Analytics
-    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          adData: BlazeEditAdData,

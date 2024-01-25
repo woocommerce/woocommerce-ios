@@ -212,6 +212,10 @@ private extension BlazeCampaignDashboardViewModel {
     }
 
     func updateResults() {
+        guard isSiteEligibleForBlaze else {
+            return update(state: .empty)
+        }
+
         if let campaign = blazeCampaignResultsController.fetchedObjects.first {
             update(state: .showCampaign(campaign: campaign))
         } else if let product = latestPublishedProduct {

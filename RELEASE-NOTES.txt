@@ -2,8 +2,8 @@
 
 17.1
 -----
-- [*] Added applyDefaultSelectedBackgroundStyle() and listSelectedBackground for default cell selected background color [https://github.com/woocommerce/woocommerce-ios/pull/11777]
 - [*] Blaze: Hide the Blaze section on the Dashboard screen when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/11797]
+- [*] Added configureDefaultBackgroundConfiguration(), updateDefaultBackgroundConfiguration() and listSelectedBackground for default cell selected background color [https://github.com/woocommerce/woocommerce-ios/pull/11777]
 
 17.0
 -----

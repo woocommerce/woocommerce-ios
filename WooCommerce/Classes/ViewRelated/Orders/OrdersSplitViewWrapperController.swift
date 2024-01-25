@@ -66,7 +66,7 @@ private extension OrdersSplitViewWrapperController {
     }
 
     func isShowingEmptyView() -> Bool {
-        splitViewController?.viewController(for: .secondary) is EmptyStateViewController
+        ordersSplitViewController.viewController(for: .secondary) is EmptyStateViewController
     }
 
     func showSecondaryView(_ viewController: UIViewController) {

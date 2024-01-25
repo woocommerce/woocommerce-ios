@@ -540,7 +540,5 @@ private extension OrdersRootViewController {
             "Retrieves a list of orders that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
         )
-        static let emptyOrderDetails = NSLocalizedString("No order selected",
-                                                         comment: "Message on the detail view of the Orders tab before any order is selected")
     }
 }

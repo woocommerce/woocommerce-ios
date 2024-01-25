@@ -49,8 +49,10 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
-    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let userDefaults: UserDefaults
+
+    private var isSiteEligibleForBlaze = false
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
@@ -102,8 +104,10 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     @MainActor
     func reload() async {
         update(state: .loading)
+        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+
         guard !userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID),
-              await blazeEligibilityChecker.isSiteEligible() else {
+              isSiteEligibleForBlaze else {
             update(state: .empty)
             return
         }

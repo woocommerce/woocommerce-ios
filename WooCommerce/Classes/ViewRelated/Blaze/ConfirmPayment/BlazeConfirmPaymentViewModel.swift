@@ -21,6 +21,8 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         isFetchingPaymentInfo || selectedPaymentMethod == nil
     }
 
+    @Published var showAddPaymentSheet: Bool = false
+
     var paymentMethodsViewModel: BlazePaymentMethodsViewModel? {
         guard let paymentInfo else {
             DDLogError("⛔️ No payment info available to list in payment methods screen.")
@@ -28,13 +30,37 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         }
         return BlazePaymentMethodsViewModel(siteID: siteID,
                                             paymentInfo: paymentInfo,
-                                            selectedPaymentMethodID: selectedPaymentMethod?.id, completion: { paymentID in
+                                            selectedPaymentMethodID: selectedPaymentMethod?.id,
+                                            completion: { paymentID in
             Task { @MainActor [weak self] in
                 guard let self else { return }
-                await updatePaymentInfo()
-                selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID })
+                showAddPaymentSheet = false
+
+                if let existingPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID }) {
+                    selectedPaymentMethod = existingPaymentMethod
+                } else {
+                    await updatePaymentInfo()
+                    selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID })
+                }
             }
         })
+    }
+
+    var addPaymentWebViewModel: BlazeAddPaymentMethodWebViewModel? {
+        guard let paymentInfo else {
+            DDLogError("⛔️ No add payment info available to initiate Add payment method flow.")
+            return nil
+        }
+
+        return BlazeAddPaymentMethodWebViewModel(siteID: siteID,
+                                                 addPaymentMethodInfo: paymentInfo.addPaymentMethod) { [weak self] newPaymentMethodID in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+
+                await updatePaymentInfo()
+                selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == newPaymentMethodID })
+            }
+        }
     }
 
     let totalAmount: String

@@ -76,6 +76,11 @@ public final class SingleOrderScreen: ScreenObject {
     }
 
     public func goBackToOrdersScreen() throws -> OrdersScreen {
+        let orderDetailTableView = app.tables["order-details-table-view"]
+        guard orderDetailTableView.horizontalSizeClass == .compact else {
+            return try OrdersScreen()
+        }
+
         pop()
         return try OrdersScreen()
     }

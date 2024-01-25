@@ -2,7 +2,8 @@
 
 17.1
 -----
-
+- [*] Fixed issue loading system status report for sites using faulty themes. [https://github.com/woocommerce/woocommerce-ios/pull/11798]
+- [*] Blaze: Hide the Blaze section on the Dashboard screen when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/11797]
 
 17.0
 -----

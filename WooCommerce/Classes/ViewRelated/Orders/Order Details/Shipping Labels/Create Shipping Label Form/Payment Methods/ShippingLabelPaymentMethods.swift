@@ -141,7 +141,7 @@ struct ShippingLabelPaymentMethods: View {
         NavigationView {
             AuthenticatedWebView(isPresented: $showingAddPaymentWebView,
                                  url: WooConstants.URLs.addPaymentMethodWCShip.asURL(),
-                                 urlToTriggerExit: viewModel.fetchPaymentMethodURLPath) {
+                                 urlToTriggerExit: viewModel.fetchPaymentMethodURLPath) { _ in
                 showingAddPaymentWebView = false
                 viewModel.syncShippingLabelAccountSettings()
                 ServiceLocator.analytics.track(.shippingLabelPaymentMethodAdded)

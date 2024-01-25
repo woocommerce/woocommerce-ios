@@ -396,6 +396,60 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         XCTAssertTrue(sut.canSelectPreviousSuggestion)
         XCTAssertTrue(sut.canSelectNextSuggestion)
     }
+
+    // MARK: - isTaglineValidated and isDescriptionValidated
+
+    func test_isTaglineValidated_is_updated_correctly_depending_on_tagline_length() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.tagline = ""
+
+        // Then
+        XCTAssertFalse(sut.isTaglineValidated)
+
+        // When
+        sut.tagline = String(repeating: "a", count: BlazeEditAdViewModel.Constants.taglineMaxLength)
+
+        // Then
+        XCTAssertTrue(sut.isTaglineValidated)
+
+        // When
+        sut.tagline = String(repeating: "a", count: BlazeEditAdViewModel.Constants.taglineMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isTaglineValidated)
+    }
+
+    func test_isDescriptionValidated_is_updated_correctly_depending_on_description_length() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.description = ""
+
+        // Then
+        XCTAssertFalse(sut.isDescriptionValidated)
+
+        // When
+        sut.description = String(repeating: "a", count: BlazeEditAdViewModel.Constants.descriptionMaxLength)
+
+        // Then
+        XCTAssertTrue(sut.isDescriptionValidated)
+
+        // When
+        sut.description = String(repeating: "a", count: BlazeEditAdViewModel.Constants.descriptionMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isDescriptionValidated)
+    }
 }
 
 private extension BlazeEditAdViewModelTests {

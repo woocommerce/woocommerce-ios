@@ -115,7 +115,7 @@ private extension BlazeEditAdView {
             )
 
             Text(viewModel.taglineFooterText)
-                .foregroundStyle(viewModel.taglineRemainingLength >= 0 ? .secondary : Color(.error))
+                .foregroundStyle(viewModel.isTaglineValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
     }
@@ -149,7 +149,7 @@ private extension BlazeEditAdView {
             )
 
             Text(viewModel.descriptionFooterText)
-                .foregroundStyle(viewModel.descriptionRemainingLength >= 0 ? .secondary : Color(.error))
+                .foregroundStyle(viewModel.isDescriptionValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
     }

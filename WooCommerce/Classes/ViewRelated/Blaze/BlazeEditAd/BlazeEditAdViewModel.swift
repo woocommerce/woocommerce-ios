@@ -22,7 +22,11 @@ final class BlazeEditAdViewModel: ObservableObject {
         taglineEmptyError ?? taglineLengthLimitLabel
     }
 
-    @Published private(set) var taglineRemainingLength: Int
+    var isTaglineValidated: Bool {
+        tagline.isNotEmpty && tagline.count <= Constants.taglineMaxLength
+    }
+
+    @Published private var taglineRemainingLength: Int
     private var taglineLengthLimitLabel: String {
         let lengthText = String.pluralize(taglineRemainingLength,
                                           singular: Localization.LengthLimit.singular,
@@ -38,7 +42,11 @@ final class BlazeEditAdViewModel: ObservableObject {
         descriptionEmptyError ?? descriptionLengthLimitLabel
     }
 
-    @Published private(set) var descriptionRemainingLength: Int
+    var isDescriptionValidated: Bool {
+        description.isNotEmpty && description.count <= Constants.descriptionMaxLength
+    }
+
+    @Published private var descriptionRemainingLength: Int
     private var descriptionLengthLimitLabel: String {
         let lengthText = String.pluralize(descriptionRemainingLength,
                                           singular: Localization.LengthLimit.singular,

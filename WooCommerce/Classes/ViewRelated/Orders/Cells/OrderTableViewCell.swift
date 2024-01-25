@@ -105,7 +105,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         if #available(iOS 16.0, *) {
             backgroundConfiguration = defaultBackgroundConfiguration().updated(for: state)
         } else {
-            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell().updated(for: state)
+            backgroundConfiguration = UIBackgroundConfiguration.listGroupedCell().updated(for: state)
         }
 
         if state.isSelected || state.isHighlighted {

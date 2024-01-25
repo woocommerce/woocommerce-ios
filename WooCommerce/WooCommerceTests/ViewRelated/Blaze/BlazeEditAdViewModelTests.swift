@@ -162,6 +162,22 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         }
     }
 
+    func test_save_button_is_enabled_when_tagline_is_changed_even_though_image_is_nil() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: nil,
+                                                               tagline: "Sample Tagline",
+                                                               description: "Sample description"),
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.tagline = "Test"
+
+        // Then
+        XCTAssertTrue(sut.isSaveButtonEnabled)
+    }
+
     func test_save_button_is_enabled_when_tagline_is_changed() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
@@ -216,6 +232,22 @@ final class BlazeEditAdViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isSaveButtonEnabled)
+    }
+
+    func test_save_button_is_enabled_when_description_is_changed_even_though_image_is_nil() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: nil,
+                                                               tagline: "Sample Tagline",
+                                                               description: "Sample description"),
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.description = "Test"
+
+        // Then
+        XCTAssertTrue(sut.isSaveButtonEnabled)
     }
 
     // MARK: Can select previous suggestions

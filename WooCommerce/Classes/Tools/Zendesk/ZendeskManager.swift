@@ -18,6 +18,11 @@ import Experiments
 protocol ZendeskManagerProtocol {
     typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
 
+    /// Creates a Zendesk Identity to be able to submit support request tickets given a username and email address.
+    /// Throws an error if the identity cannot be created.
+    ///
+    func createIdentity(name: String, email: String) async throws
+
     /// Creates a Zendesk Identity to be able to submit support request tickets.
     /// Uses the provided `ViewController` to present an alert for requesting email address when required.
     ///
@@ -33,7 +38,11 @@ protocol ZendeskManagerProtocol {
                               onCompletion: @escaping (Result<Void, Error>) -> Void)
 
     var zendeskEnabled: Bool { get }
-    func userSupportEmail() -> String?
+    var haveUserIdentity: Bool { get }
+
+    /// Returns the user's name and email from saved identity or login credentials.
+    ///
+    func retrieveUserInfoIfAvailable() -> (name: String?, emailAddress: String?)
     func showHelpCenter(from controller: UIViewController)
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion)
     func initialize()
@@ -41,6 +50,10 @@ protocol ZendeskManagerProtocol {
 }
 
 struct NoZendeskManager: ZendeskManagerProtocol {
+    func createIdentity(name: String, email: String) async throws {
+        // no-op
+    }
+
     func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
         // no-op
     }
@@ -54,10 +67,12 @@ struct NoZendeskManager: ZendeskManagerProtocol {
         // no-op
     }
 
-    var zendeskEnabled = false
+    let zendeskEnabled = false
 
-    func userSupportEmail() -> String? {
-        return nil
+    let haveUserIdentity = false
+
+    func retrieveUserInfoIfAvailable() -> (name: String?, emailAddress: String?) {
+        return (nil, nil)
     }
 
     func showHelpCenter(from controller: UIViewController) {
@@ -105,7 +120,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     //
     private var userName: String?
     private var userEmail: String?
-    private var haveUserIdentity = false
+    private(set) var haveUserIdentity = false
     private var alertNameField: UITextField?
 
     private weak var presentInController: UIViewController?
@@ -146,6 +161,17 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
         WebviewHelper.launch(WooConstants.URLs.helpCenter.asURL(), with: controller)
 
         ServiceLocator.analytics.track(.supportHelpCenterViewed)
+    }
+
+    /// Creates a Zendesk Identity to be able to submit support request tickets given a username and email address.
+    /// Throws an error if the identity cannot be created.
+    ///
+    @MainActor
+    func createIdentity(name: String, email: String) async throws {
+        userName = name
+        userEmail = email
+        saveUserProfile()
+        return try await createZendeskIdentity()
     }
 
     /// Creates a Zendesk Identity to be able to submit support request tickets.
@@ -229,17 +255,35 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     // MARK: - Helpers
 
-    /// Returns the user's Support email address.
+    /// Returns the user's name and email from saved identity or login credentials.
     ///
-    func userSupportEmail() -> String? {
-        let _ = getUserProfile()
-        return userEmail
+    func retrieveUserInfoIfAvailable() -> (name: String?, emailAddress: String?) {
+        if getUserProfile() {
+            return (userName, userEmail)
+        }
+        getUserInformationIfAvailable()
+        return (userName, userEmail)
     }
 }
 
 // MARK: - Private Extension
 //
 private extension ZendeskManager {
+
+    @MainActor
+    func createZendeskIdentity() async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            createZendeskIdentity { [weak self] success in
+                guard let self, success else {
+                    DDLogError("⛔️ Creating Zendesk identity failed.")
+                    return continuation.resume(throwing: ZendeskError.failedToCreateIdentity)
+                }
+                DDLogDebug("Using User Defaults for Zendesk identity.")
+                haveUserIdentity = true
+                continuation.resume(returning: ())
+            }
+        }
+    }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
         presentInController = viewController
@@ -508,3 +552,7 @@ extension ZendeskManager: UITextFieldDelegate {
     }
 }
 #endif
+
+enum ZendeskError: Error {
+    case failedToCreateIdentity
+}

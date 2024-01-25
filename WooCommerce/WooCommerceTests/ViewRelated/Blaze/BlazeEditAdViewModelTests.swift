@@ -72,6 +72,21 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         XCTAssertEqual(sut.taglineFooterText, BlazeEditAdViewModel.Localization.taglineEmpty)
     }
 
+    func test_tagline_footer_text_shows_error_when_tagline_exceeds_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.tagline = String(repeating: "a", count: BlazeEditAdViewModel.Constants.taglineMaxLength + 1)
+
+        // Then
+        let expectedMessage = String(format: BlazeEditAdViewModel.Localization.taglineLengthExceedsLimit, BlazeEditAdViewModel.Constants.taglineMaxLength)
+        XCTAssertEqual(sut.taglineFooterText, expectedMessage)
+    }
+
     // MARK: Description
 
     func test_description_footer_text_is_plural_when_multiple_characters_remaining() {
@@ -128,6 +143,24 @@ final class BlazeEditAdViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.descriptionFooterText, BlazeEditAdViewModel.Localization.descriptionEmpty)
+    }
+
+    func test_description_footer_text_shows_error_when_description_exceeds_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.description = String(repeating: "a", count: BlazeEditAdViewModel.Constants.descriptionMaxLength + 1)
+
+        // Then
+        let expectedMessage = String(
+            format: BlazeEditAdViewModel.Localization.descriptionLengthExceedsLimit,
+            BlazeEditAdViewModel.Constants.descriptionMaxLength
+        )
+        XCTAssertEqual(sut.descriptionFooterText, expectedMessage)
     }
 
     // MARK: Save button

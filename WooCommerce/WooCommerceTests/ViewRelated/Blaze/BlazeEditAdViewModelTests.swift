@@ -190,6 +190,34 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         XCTAssertTrue(sut.isSaveButtonEnabled)
     }
 
+    func test_save_button_is_disabled_when_tagline_exceeds_character_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.tagline = String(repeating: "a", count: BlazeEditAdViewModel.Constants.taglineMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isSaveButtonEnabled)
+    }
+
+    func test_save_button_is_disabled_when_description_exceeds_character_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.description = String(repeating: "a", count: BlazeEditAdViewModel.Constants.descriptionMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isSaveButtonEnabled)
+    }
+
     // MARK: Can select previous suggestions
 
     func test_canSelectPreviousSuggestion_is_false_initially() {

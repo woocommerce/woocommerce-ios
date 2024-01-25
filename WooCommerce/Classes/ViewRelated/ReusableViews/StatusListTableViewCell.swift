@@ -36,12 +36,17 @@ final class StatusListTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         accessoryType = selected ? .checkmark : .none
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
 private extension StatusListTableViewCell {
     func configureBackground() {
-        applyDefaultSelectedBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func styleCheckmark() {

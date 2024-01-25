@@ -48,6 +48,11 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         // Border color is not automatically updated on trait collection changes and thus manually updated here.
         productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 extension ProductsTabProductTableViewCell: SearchResultCell {
@@ -155,11 +160,6 @@ private extension ProductsTabProductTableViewCell {
 
         // Prevents overflow of selectedBackgroundView above dividers from adjacent cells
         clipsToBounds = true
-    }
-    
-    internal override func updateConfiguration(using state: UICellConfigurationState) {
-        super.updateConfiguration(using: state)
-        updateDefaultBackgroundConfiguration(using: state)
     }
 
     func configureNameLabel() {

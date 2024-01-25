@@ -139,6 +139,11 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         super.prepareForReuse()
         cancellable = nil
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: Updates
@@ -302,7 +307,7 @@ private extension ImageAndTitleAndTextTableViewCell {
     }
 
     func configureSelectedBackground() {
-        applyDefaultSelectedBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 }
 

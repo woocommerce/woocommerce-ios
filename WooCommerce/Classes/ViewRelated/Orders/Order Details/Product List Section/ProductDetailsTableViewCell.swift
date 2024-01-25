@@ -72,13 +72,17 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureAttributesStackView()
         configureAddOnViews()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
 private extension ProductDetailsTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-        applyDefaultSelectedBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureProductImageView() {

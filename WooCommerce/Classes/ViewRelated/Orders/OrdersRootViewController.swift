@@ -18,7 +18,7 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
-        switchDetailsHandler: handleSwitchingDetails
+        switchDetailsHandler: switchDetailsHandler
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -71,17 +71,21 @@ final class OrdersRootViewController: UIViewController {
 
     private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
+    private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
+
     // MARK: View Lifecycle
 
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
+         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(),
+         switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
+        self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
@@ -152,15 +156,19 @@ final class OrdersRootViewController: UIViewController {
         presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
     }
 
-    func selectOrder(for orderID: Int64) {
-        ordersViewController.selectOrder(for: orderID)
+    /// Selects the order given the ID from the order list view if the order exists locally.
+    /// - Parameter orderID: ID of the order to select in the list.
+    /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
+    @discardableResult
+    func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
+        ordersViewController.selectOrderFromListIfPossible(for: orderID)
     }
 
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
         let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
         navigationController?.pushViewController(loaderViewController, animated: true)
 
-        selectOrder(for: orderID)
+        selectOrderFromListIfPossible(for: orderID)
     }
 
     /// Presents the Order Creation flow.
@@ -196,7 +204,7 @@ final class OrdersRootViewController: UIViewController {
 
         viewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
             self?.dismiss(animated: true) {
-                self?.navigateToOrderDetail(order) { [weak self] in
+                self?.navigateToOrderDetail(order) { [weak self] _ in
                     guard let self,
                           let orderDetailsViewController = self.orderDetailsViewController else {
                         return
@@ -307,35 +315,6 @@ final class OrdersRootViewController: UIViewController {
         }, onDismissAction: {
         })
         present(filterOrderListViewController, animated: true, completion: nil)
-    }
-
-    /// This is to update the order detail in split view
-    ///
-    private func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int, onCompletion: (() -> Void)? = nil) {
-        guard let splitViewController else {
-            onCompletion?()
-            return
-        }
-
-        guard viewModels.isNotEmpty else {
-            let emptyStateViewController = EmptyStateViewController(style: .basic)
-            let config = EmptyStateViewController.Config.simple(
-                message: .init(string: Localization.emptyOrderDetails),
-                image: .emptySearchResultsImage
-            )
-            emptyStateViewController.configure(config)
-            splitViewController.setViewController(UINavigationController(rootViewController: emptyStateViewController), for: .secondary)
-            splitViewController.show(.secondary)
-            onCompletion?()
-            return
-        }
-
-        let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
-        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
-
-        splitViewController.setViewController(orderDetailsNavigationController, for: .secondary)
-        splitViewController.show(.secondary)
-        onCompletion?()
     }
 }
 
@@ -525,11 +504,11 @@ private extension OrdersRootViewController {
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
-    private func navigateToOrderDetail(_ order: Order, onCompletion: (() -> Void)? = nil) {
+    private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return handleSwitchingDetails(viewModels: [viewModel], currentIndex: 0, onCompletion: onCompletion)
+            return ordersViewController.showOrderDetails(order)
         }
 
         let orderViewController = OrderDetailsViewController(viewModel: viewModel)
@@ -541,7 +520,7 @@ private extension OrdersRootViewController {
         } else {
             show(orderViewController, sender: self)
         }
-        onCompletion?()
+        onCompletion?(true)
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {
@@ -565,7 +544,5 @@ private extension OrdersRootViewController {
             "Retrieves a list of orders that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
         )
-        static let emptyOrderDetails = NSLocalizedString("No order selected",
-                                                         comment: "Message on the detail view of the Orders tab before any order is selected")
     }
 }

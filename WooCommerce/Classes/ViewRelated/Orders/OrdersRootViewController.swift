@@ -156,15 +156,19 @@ final class OrdersRootViewController: UIViewController {
         presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
     }
 
-    func selectOrder(for orderID: Int64) {
-        ordersViewController.selectOrder(for: orderID)
+    /// Selects the order given the ID from the order list view if the order exists locally.
+    /// - Parameter orderID: ID of the order to select in the list.
+    /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
+    @discardableResult
+    func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
+        ordersViewController.selectOrderFromListIfPossible(for: orderID)
     }
 
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
         let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
         navigationController?.pushViewController(loaderViewController, animated: true)
 
-        selectOrder(for: orderID)
+        selectOrderFromListIfPossible(for: orderID)
     }
 
     /// Presents the Order Creation flow.
@@ -200,7 +204,7 @@ final class OrdersRootViewController: UIViewController {
 
         viewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
             self?.dismiss(animated: true) {
-                self?.navigateToOrderDetail(order) { [weak self] in
+                self?.navigateToOrderDetail(order) { [weak self] _ in
                     guard let self,
                           let orderDetailsViewController = self.orderDetailsViewController else {
                         return
@@ -500,7 +504,7 @@ private extension OrdersRootViewController {
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
-    private func navigateToOrderDetail(_ order: Order, onCompletion: (() -> Void)? = nil) {
+    private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
@@ -516,7 +520,7 @@ private extension OrdersRootViewController {
         } else {
             show(orderViewController, sender: self)
         }
-        onCompletion?()
+        onCompletion?(true)
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {

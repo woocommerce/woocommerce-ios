@@ -42,11 +42,13 @@ final class OrdersSplitViewWrapperController: UIViewController {
     }
 
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
-        let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
-        let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
-        showSecondaryView(loaderNavigationController)
-
-        ordersViewController.selectOrder(for: orderID)
+        // If the order cannot be selected from the order list like when it hasn't been fetched remotely,
+        // `OrderLoaderViewController` is shown instead.
+        guard ordersViewController.selectOrderFromListIfPossible(for: orderID) else {
+            let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
+            let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
+            return showSecondaryView(loaderNavigationController)
+        }
     }
 
     func presentOrderCreationFlow() {
@@ -76,17 +78,20 @@ private extension OrdersSplitViewWrapperController {
 
     /// This is to update the order detail in split view
     ///
-    func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int, isSelectedManually: Bool, onCompletion: (() -> Void)? = nil) {
+    func handleSwitchingDetails(viewModels: [OrderDetailsViewModel],
+                                currentIndex: Int,
+                                isSelectedManually: Bool,
+                                onCompletion: ((_ hasBeenSelected: Bool) -> Void)? = nil) {
         // If the order details is auto-selected (from `viewDidLayoutSubviews`) and the empty view isn't shown,
         // it does not override the secondary view content.
         guard isSelectedManually || isShowingEmptyView() else {
-            onCompletion?()
+            onCompletion?(false)
             return
         }
 
         guard viewModels.isNotEmpty else {
             showEmptyView()
-            onCompletion?()
+            onCompletion?(false)
             return
         }
 
@@ -94,7 +99,7 @@ private extension OrdersSplitViewWrapperController {
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
         showSecondaryView(orderDetailsNavigationController)
-        onCompletion?()
+        onCompletion?(true)
     }
 }
 

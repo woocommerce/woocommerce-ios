@@ -30,12 +30,13 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
     /// so that the user can navigate between order details easily. `index` is the default index of order details to be shown.
     /// `isSelectedManually` indicates whether the order details is selected manually, as the first order can be auto-selected when the split
-    /// view has multiple columns.
-    /// `onCompletion` is called after switching details completes.
+    /// view has multiple columns but only if the empty view is shown.
+    /// `onCompletion` is called after switching details completes, with a boolean that indicates if the order details has been selected.
+    /// When multi-column split view is shown, auto-selection only works if the empty state isn't shown.
     typealias SelectOrderDetails = (_ allViewModels: [OrderDetailsViewModel],
                                     _ index: Int,
                                     _ isSelectedManually: Bool,
-                                    _ onCompletion: (() -> Void)?) -> Void
+                                    _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
 
     weak var delegate: OrderListViewControllerDelegate?
 
@@ -160,7 +161,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, (() -> Void)?) -> Void) {
+         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, ((Bool) -> Void)?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -507,17 +508,17 @@ private extension OrderListViewController {
     /// Removes the selected state otherwise.
     ///
     func highlightSelectedRowIfNeeded() {
-        guard let selectedIndexPath = selectedIndexPath else {
+        guard let selectedOrderID, let orderIndexPath = indexPath(for: selectedOrderID) else {
             return
         }
         if splitViewController?.isCollapsed == true {
-            tableView.deselectRow(at: selectedIndexPath, animated: false)
+            tableView.deselectRow(at: orderIndexPath, animated: false)
         } else {
-            tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
+            tableView.selectRow(at: orderIndexPath, animated: false, scrollPosition: .none)
         }
     }
 
-    /// Checks to see if the selected item is still at the same index in the list and resets its state if not.
+    /// Checks to see if the selected item is still at the same index in the list and resets its state & auto-selects the first item if not.
     ///
     func checkSelectedItem() {
         guard let indexPath = selectedIndexPath, let orderID = selectedOrderID else {
@@ -546,32 +547,53 @@ private extension OrderListViewController {
             selectedIndexPath = nil
             return switchDetailsHandler([], 0, false, nil)
         }
-        selectedOrderID = orderDetailsViewModel.order.orderID
-        selectedIndexPath = firstIndexPath
-        switchDetailsHandler([orderDetailsViewModel], 0, false, nil)
-        highlightSelectedRowIfNeeded()
+        switchDetailsHandler([orderDetailsViewModel], 0, false) { [weak self] hasBeenSelected in
+            guard let self else { return }
+            if hasBeenSelected {
+                selectedOrderID = orderDetailsViewModel.order.orderID
+                selectedIndexPath = indexPath(for: orderDetailsViewModel.order.orderID)
+                highlightSelectedRowIfNeeded()
+            }
+        }
+    }
+
+    func indexPath(for orderID: Int64) -> IndexPath? {
+        for identifier in dataSource.snapshot().itemIdentifiers {
+            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+               detailsViewModel.order.orderID == orderID,
+               let indexPath = dataSource.indexPath(for: identifier) {
+                return indexPath
+            }
+        }
+        return nil
     }
 }
 
 extension OrderListViewController {
     /// Adds ability to select any order
     /// Used when opening an order with deep link
-    func selectOrder(for orderID: Int64) {
+    /// - Parameter orderID: ID of the order to select in the list.
+    /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
+    func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
         // check if already selected
         guard selectedOrderID != orderID else {
-            return
+            return true
         }
         for identifier in dataSource.snapshot().itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
-               detailsViewModel.order.orderID == orderID,
-               let indexPath = dataSource.indexPath(for: identifier) {
-                selectedOrderID = orderID
-                selectedIndexPath = indexPath
-                switchDetailsHandler([detailsViewModel], 0, true, nil)
-                highlightSelectedRowIfNeeded()
-                break
+               detailsViewModel.order.orderID == orderID {
+                switchDetailsHandler([detailsViewModel], 0, true) { [weak self] hasBeenSelected in
+                    guard let self else { return }
+                    if hasBeenSelected {
+                        selectedOrderID = orderID
+                        selectedIndexPath = dataSource.indexPath(for: identifier)
+                        highlightSelectedRowIfNeeded()
+                    }
+                }
+                return true
             }
         }
+        return false
     }
 }
 

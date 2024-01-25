@@ -62,6 +62,24 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldDisableAddParameterButton)
     }
 
+    func test_when_destination_changed_then_final_url_is_updated() {
+        // Given
+        let sut =  BlazeAdDestinationSettingViewModel(
+            productURL: sampleProductURL,
+            homeURL: sampleHomeURL,
+            finalDestinationURL: finalDestinationURL,
+            onSave: { _ in }
+        )
+
+        // When
+        XCTAssertEqual(sut.selectedDestinationType, .product)
+        sut.setDestinationType(as: .home)
+
+        // Then
+        let updatedURL = "\(sampleHomeURL)?\(threeParameters)"
+        XCTAssertEqual(sut.selectedDestinationType, .home)
+        XCTAssertTrue(sut.finalDestinationLabel.contains(updatedURL))
+    }
 
     func test_given_existing_parameters_then_remaining_characters_count_is_correct() {
         // Given

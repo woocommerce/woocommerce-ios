@@ -566,15 +566,17 @@ private extension ShippingLabelFormViewController {
             return
         }
 
-        if let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
-            let viewControllersExcludingSelf = Array(navigationController.viewControllers[0..<indexOfSelf])
-            navigationController.setViewControllers(viewControllersExcludingSelf, animated: false)
-        }
         let printCoordinator = PrintShippingLabelCoordinator(shippingLabels: viewModel.purchasedShippingLabels,
                                                              printType: .print,
                                                              sourceNavigationController: navigationController,
                                                              onCompletion: onLabelSave)
-        printCoordinator.showPrintUI()
+
+        let printViewController = printCoordinator.createPrintViewController()
+
+        if let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
+            let viewControllersExcludingSelf = Array(navigationController.viewControllers[0..<indexOfSelf])
+            navigationController.setViewControllers(viewControllersExcludingSelf + [printViewController], animated: true)
+        }
     }
 
     /// Enqueues the `Label Purchase Error` Notice.

@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import Yosemite
 import protocol Storage.StorageType
+import WordPressAuthenticator
 
 @testable import WooCommerce
 
@@ -26,6 +27,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        WordPressAuthenticator.initializeAuthenticator()
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()

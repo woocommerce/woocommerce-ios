@@ -44,7 +44,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     // MARK: `shouldShowInDashboard`
 
-    func test_shouldShowInDashboard_is_true_by_default() async {
+    func test_shouldShowInDashboard_is_false_by_default() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         insertProduct(.fake().copy(siteID: sampleSiteID,
@@ -57,7 +57,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         // Then
-        XCTAssertTrue(sut.shouldShowInDashboard)
+        XCTAssertFalse(sut.shouldShowInDashboard)
     }
 
     // MARK: Blaze eligibility

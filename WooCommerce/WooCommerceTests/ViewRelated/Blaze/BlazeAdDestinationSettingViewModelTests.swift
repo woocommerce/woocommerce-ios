@@ -4,13 +4,16 @@ import XCTest
 final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
     private let sampleProductURL = "https://woo.com/product/"
     private let sampleHomeURL = "https://woo.com/"
-    private let finalDestinationURL = "https://woo.com/product/?one=a"
     private let threeParameters = "one=a&two=b&three=c"
     private let maxParameterLength = 2096
 
+    var finalDestinationURL: String {
+        "\(sampleProductURL)?\(threeParameters)"
+    }
+
     func test_save_button_disabled_when_first_entering_screen() {
         // Given
-        var sut =  BlazeAdDestinationSettingViewModel(
+        let sut =  BlazeAdDestinationSettingViewModel(
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
             finalDestinationURL: finalDestinationURL,
@@ -22,10 +25,10 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
 
     func test_save_button_enabled_after_initial_value_is_changed() {
         // Given
-        var sut =  BlazeAdDestinationSettingViewModel(
+        let sut =  BlazeAdDestinationSettingViewModel(
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
-            finalDestinationURL: sampleProductURL + "?" + threeParameters,
+            finalDestinationURL: finalDestinationURL,
             onSave: { _ in }
         )
 
@@ -48,7 +51,7 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
             return parameterPrefix
         }
 
-        var sut =  BlazeAdDestinationSettingViewModel(
+        let sut =  BlazeAdDestinationSettingViewModel(
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
             finalDestinationURL: sampleProductURL + "?" + maxLengthQueryString,
@@ -59,12 +62,13 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldDisableAddParameterButton)
     }
 
-    func test_given_existing_parameters_remaining_characters_count_is_correct() {
+
+    func test_given_existing_parameters_then_remaining_characters_count_is_correct() {
         // Given
-        var sut =  BlazeAdDestinationSettingViewModel(
+        let sut =  BlazeAdDestinationSettingViewModel(
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
-            finalDestinationURL: sampleProductURL + "?" + threeParameters,
+            finalDestinationURL: finalDestinationURL,
             onSave: { _ in }
         )
 
@@ -74,10 +78,10 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
 
     func test_given_existing_parameters_when_one_is_deleted_then_parameters_count_is_correct() {
         // Given
-        var sut =  BlazeAdDestinationSettingViewModel(
+        let sut =  BlazeAdDestinationSettingViewModel(
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
-            finalDestinationURL: sampleProductURL + "?" + threeParameters,
+            finalDestinationURL: finalDestinationURL,
             onSave: { _ in }
         )
 

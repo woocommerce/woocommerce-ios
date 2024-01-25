@@ -19,7 +19,7 @@ final class BlazeEditAdViewModel: ObservableObject {
     // Tagline
     @Published var tagline: String = ""
     var taglineFooterText: String {
-        taglineEmptyError ?? taglineLengthLimitLabel
+        tagline.isEmpty ? Localization.taglineEmpty : taglineLengthLimitLabel
     }
 
     var isTaglineValidated: Bool {
@@ -34,12 +34,10 @@ final class BlazeEditAdViewModel: ObservableObject {
         return String(format: lengthText, taglineRemainingLength)
     }
 
-    @Published private var taglineEmptyError: String?
-
     // Description
     @Published var description: String = ""
     var descriptionFooterText: String {
-        descriptionEmptyError ?? descriptionLengthLimitLabel
+        description.isEmpty ? Localization.descriptionEmpty : descriptionLengthLimitLabel
     }
 
     var isDescriptionValidated: Bool {
@@ -53,8 +51,6 @@ final class BlazeEditAdViewModel: ObservableObject {
                                           plural: Localization.LengthLimit.plural)
         return String(format: lengthText, descriptionRemainingLength)
     }
-
-    @Published private var descriptionEmptyError: String?
 
     var isSaveButtonEnabled: Bool {
         guard let editedAdData,
@@ -202,23 +198,11 @@ extension BlazeEditAdViewModel {
             }
             .assign(to: &$taglineRemainingLength)
 
-        $tagline
-            .map { text -> String? in
-                text.isEmpty ? Localization.taglineEmpty : nil
-            }
-            .assign(to: &$taglineEmptyError)
-
         $description
             .map { text -> Int in
                 Constants.descriptionMaxLength - text.count
             }
             .assign(to: &$descriptionRemainingLength)
-
-        $description
-            .map { text -> String? in
-                text.isEmpty ? Localization.descriptionEmpty : nil
-            }
-            .assign(to: &$descriptionEmptyError)
     }
 }
 

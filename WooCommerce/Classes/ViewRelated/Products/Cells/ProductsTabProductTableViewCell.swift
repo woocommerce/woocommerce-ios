@@ -151,11 +151,15 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-        applyDefaultSelectedBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
 
         // Prevents overflow of selectedBackgroundView above dividers from adjacent cells
         clipsToBounds = true
+    }
+    
+    internal override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 
     func configureNameLabel() {

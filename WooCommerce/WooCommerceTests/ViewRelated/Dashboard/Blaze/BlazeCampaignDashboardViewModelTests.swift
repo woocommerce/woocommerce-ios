@@ -760,6 +760,24 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["source"] as? String, "intro_view")
     }
 
+    func test_didTapCreateYourCampaignButtonFromIntroView_tracks_entry_point_tapped() throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        analytics: analytics,
+                                                        blazeEligibilityChecker: checker)
+
+        // When
+        viewModel.didTapCreateYourCampaignButtonFromIntroView()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_tapped"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(properties["source"] as? String, "intro_view")
+    }
+
     func test_didSelectCampaignList_tracks_blazeCampaignListEntryPointSelected_with_the_correct_source() throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)

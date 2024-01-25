@@ -64,11 +64,13 @@ private extension OrdersSplitViewWrapperController {
             image: .emptySearchResultsImage
         )
         emptyStateViewController.configure(config)
-        showSecondaryView(emptyStateViewController)
+        let navigationController = WooNavigationController(rootViewController: emptyStateViewController)
+        showSecondaryView(navigationController)
     }
 
     func isShowingEmptyView() -> Bool {
-        ordersSplitViewController.viewController(for: .secondary) is EmptyStateViewController
+        (ordersSplitViewController.viewController(for: .secondary) as? UINavigationController)?
+            .viewControllers.contains(where: { $0 is EmptyStateViewController }) == true
     }
 
     func showSecondaryView(_ viewController: UIViewController) {

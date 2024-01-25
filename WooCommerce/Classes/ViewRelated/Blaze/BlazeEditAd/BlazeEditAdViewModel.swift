@@ -18,7 +18,13 @@ final class BlazeEditAdViewModel: ObservableObject {
     // Tagline
     @Published var tagline: String = ""
     var taglineFooterText: String {
-        tagline.isEmpty ? Localization.taglineEmpty : taglineLengthLimitLabel
+        if tagline.isEmpty {
+            Localization.taglineEmpty
+        } else if tagline.count > Constants.taglineMaxLength {
+            String.localizedStringWithFormat(Localization.taglineLengthExceedsLimit, Constants.taglineMaxLength)
+        } else {
+            taglineLengthLimitLabel
+        }
     }
 
     var isTaglineValidated: Bool {
@@ -36,7 +42,13 @@ final class BlazeEditAdViewModel: ObservableObject {
     // Description
     @Published var description: String = ""
     var descriptionFooterText: String {
-        description.isEmpty ? Localization.descriptionEmpty : descriptionLengthLimitLabel
+        if description.isEmpty {
+            Localization.descriptionEmpty
+        } else if description.count > Constants.descriptionMaxLength {
+            String.localizedStringWithFormat(Localization.descriptionLengthExceedsLimit, Constants.descriptionMaxLength)
+        } else {
+            descriptionLengthLimitLabel
+        }
     }
 
     var isDescriptionValidated: Bool {
@@ -251,6 +263,16 @@ extension BlazeEditAdViewModel {
             "blazeEditAdViewModel.description.emptyError",
             value: "Description cannot be empty",
             comment: "Edit Blaze Ad screen: Error message if Description field is empty."
+        )
+        static let taglineLengthExceedsLimit = NSLocalizedString(
+            "blazeEditAdViewModel.tagline.lengthExceedsLimit",
+            value: "Tagline cannot exceed %1$d characters",
+            comment: "Edit Blaze Ad screen: Error message if Tagline exceeds the character limit."
+        )
+        static let descriptionLengthExceedsLimit = NSLocalizedString(
+            "blazeEditAdViewModel.description.lengthExceedsLimit",
+            value: "Description cannot exceed %1$d characters",
+            comment: "Edit Blaze Ad screen: Error message if Description exceeds the character limit."
         )
     }
 }

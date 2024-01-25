@@ -514,7 +514,7 @@ private extension OrderListViewController {
         if splitViewController?.isCollapsed == true {
             tableView.deselectRow(at: orderIndexPath, animated: false)
         } else {
-            tableView.selectRow(at: orderIndexPath, animated: false, scrollPosition: .none)
+            tableView.selectRow(at: orderIndexPath, animated: false, scrollPosition: .middle)
         }
     }
 

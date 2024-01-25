@@ -26,6 +26,17 @@ protocol OrderListViewControllerDelegate: AnyObject {
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
 final class OrderListViewController: UIViewController, GhostableViewController {
+    /// Callback closure when an order is selected either manually (by the user) or automatically in multi-column view.
+    /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
+    /// so that the user can navigate between order details easily. `index` is the default index of order details to be shown.
+    /// `isSelectedManually` indicates whether the order details is selected manually, as the first order can be auto-selected when the split
+    /// view has multiple columns but only if the empty view is shown.
+    /// `onCompletion` is called after switching details completes, with a boolean that indicates if the order details has been selected.
+    /// When multi-column split view is shown, auto-selection only works if the empty state isn't shown.
+    typealias SelectOrderDetails = (_ allViewModels: [OrderDetailsViewModel],
+                                    _ index: Int,
+                                    _ isSelectedManually: Bool,
+                                    _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
 
     weak var delegate: OrderListViewControllerDelegate?
 
@@ -115,10 +126,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     private var topBannerView: UIView?
 
     /// Callback closure when an order is selected
-    ///
-    private var switchDetailsHandler: (_ allViewModels: [OrderDetailsViewModel], _
-                                       index: Int, _
-                                       onCompletion: (() -> Void)?) -> Void
+    private let switchDetailsHandler: SelectOrderDetails
 
     /// Currently selected index path in the table view
     ///
@@ -153,7 +161,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, (() -> Void)?) -> Void) {
+         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, ((Bool) -> Void)?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -500,28 +508,30 @@ private extension OrderListViewController {
     /// Removes the selected state otherwise.
     ///
     func highlightSelectedRowIfNeeded() {
-        guard let selectedIndexPath = selectedIndexPath else {
+        guard let selectedOrderID, let orderIndexPath = indexPath(for: selectedOrderID) else {
             return
         }
         if splitViewController?.isCollapsed == true {
-            tableView.deselectRow(at: selectedIndexPath, animated: false)
+            tableView.deselectRow(at: orderIndexPath, animated: false)
         } else {
-            tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .middle)
+            tableView.selectRow(at: orderIndexPath, animated: false, scrollPosition: .none)
         }
     }
 
-    /// Checks to see if there is a selected order ID, and selects its order.
-    /// Otherwise, try to select first item.
+    /// Checks to see if the selected item is still at the same index in the list and resets its state & auto-selects the first item if not.
     ///
     func checkSelectedItem() {
-        guard let orderID = selectedOrderID else {
-            selectFirstItemIfPossible()
-            return
+        guard let indexPath = selectedIndexPath, let orderID = selectedOrderID else {
+            return selectFirstItemIfPossible()
         }
-        let selected = selectOrder(for: orderID, canSwitchDetails: true)
-        if !selected {
-            selectedIndexPath = nil
-            switchDetailsHandler([], 0, nil)
+
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            return selectFirstItemIfPossible()
+        }
+
+        if orderDetailsViewModel.order.orderID != orderID {
+            selectFirstItemIfPossible()
         }
     }
 
@@ -535,37 +545,65 @@ private extension OrderListViewController {
                 state != .empty else {
             selectedOrderID = nil
             selectedIndexPath = nil
-            return switchDetailsHandler([], 0, nil)
+            return switchDetailsHandler([], 0, false, nil)
         }
-        selectedOrderID = orderDetailsViewModel.order.orderID
-        selectedIndexPath = firstIndexPath
-        switchDetailsHandler([orderDetailsViewModel], 0, nil)
+        switchDetailsHandler([orderDetailsViewModel], 0, false) { [weak self] hasBeenSelected in
+            guard let self else { return }
+            if hasBeenSelected {
+                onOrderSelected(id: orderDetailsViewModel.order.orderID)
+            }
+        }
+    }
+
+    func onOrderSelected(id orderID: Int64) {
+        selectedOrderID = orderID
+        selectedIndexPath = indexPath(for: orderID)
         highlightSelectedRowIfNeeded()
+    }
+
+    func indexPath(for orderID: Int64) -> IndexPath? {
+        for identifier in dataSource.snapshot().itemIdentifiers {
+            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+               detailsViewModel.order.orderID == orderID,
+               let indexPath = dataSource.indexPath(for: identifier) {
+                return indexPath
+            }
+        }
+        return nil
     }
 }
 
 extension OrderListViewController {
     /// Adds ability to select any order
-    @discardableResult
-    func selectOrder(for orderID: Int64, canSwitchDetails: Bool) -> Bool {
-        let itemIdentifiers = dataSource.snapshot().itemIdentifiers
-        for identifier in itemIdentifiers {
+    /// Used when opening an order with deep link
+    /// - Parameter orderID: ID of the order to select in the list.
+    /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
+    func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
+        for identifier in dataSource.snapshot().itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
-               detailsViewModel.order.orderID == orderID,
-               let indexPath = dataSource.indexPath(for: identifier) {
-                let orderNotAlreadySelected = selectedOrderID != orderID
-                let indexPathNotAlreadySelected = selectedIndexPath != indexPath
-                let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected
-                if canSwitchDetails && shouldSwitchDetails {
-                    switchDetailsHandler([detailsViewModel], 0, nil)
+               detailsViewModel.order.orderID == orderID {
+                switchDetailsHandler([detailsViewModel], 0, true) { [weak self] hasBeenSelected in
+                    guard let self else { return }
+                    if hasBeenSelected {
+                        selectedOrderID = orderID
+                        selectedIndexPath = dataSource.indexPath(for: identifier)
+                        highlightSelectedRowIfNeeded()
+                    }
                 }
-                selectedOrderID = orderID
-                selectedIndexPath = indexPath
-                highlightSelectedRowIfNeeded()
                 return true
             }
         }
         return false
+    }
+
+    func showOrderDetails(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
+        let viewModel = OrderDetailsViewModel(order: order)
+        switchDetailsHandler([viewModel], 0, true) { [weak self] hasBeenSelected in
+            guard let self else { return }
+            if hasBeenSelected {
+                onOrderSelected(id: order.orderID)
+            }
+        }
     }
 }
 
@@ -739,8 +777,8 @@ extension OrderListViewController: UITableViewDelegate {
             // There is no point of having order navigation in the order details view when we have a split screen,
             // because orders can be easily selected in the left view (orders list).
             // Passing just one order (the selected one) disables navigation
-            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, nil) :
-            switchDetailsHandler([orderDetailsViewModel], 0, nil)
+            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, true, nil) :
+            switchDetailsHandler([orderDetailsViewModel], 0, true, nil)
         } else {
             let viewController = OrderDetailsViewController(viewModels: allViewModels, currentIndex: currentIndex)
             navigationController?.pushViewController(viewController, animated: true)

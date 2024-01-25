@@ -93,6 +93,10 @@ final class BillingAddressTableViewCell: UITableViewCell {
                                     height: bounds.maxY)
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 /// MARK: - Private Methods

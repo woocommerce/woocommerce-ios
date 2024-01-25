@@ -575,10 +575,6 @@ extension OrderListViewController {
     /// - Parameter orderID: ID of the order to select in the list.
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
     func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
-        // check if already selected
-        guard selectedOrderID != orderID else {
-            return true
-        }
         for identifier in dataSource.snapshot().itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID {

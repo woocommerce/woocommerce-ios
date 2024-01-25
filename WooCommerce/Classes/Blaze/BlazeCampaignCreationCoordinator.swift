@@ -206,7 +206,7 @@ private extension BlazeCampaignCreationCoordinator {
                                                 sourceView: nil,
                                                 sourceNavigationController: navigationController,
                                                 isFirstProduct: true)
-        self.addProductCoordinator = coordinator
+        addProductCoordinator = coordinator
         coordinator.start()
     }
 }

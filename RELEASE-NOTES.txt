@@ -2,8 +2,7 @@
 
 17.1
 -----
-- [*] Blaze: Stop showing Blaze in dashboard when site not eligible. [https://github.com/woocommerce/woocommerce-ios/pull/11797]
-
+- [*] Blaze: Hide the Blaze section on the Dashboard screen when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/11797]
 
 17.0
 -----

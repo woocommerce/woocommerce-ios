@@ -618,7 +618,11 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_checkIfIntroViewIsNeeded_sets_shouldShowIntroView_to_false_if_there_exists_at_least_one_campaign() {
         // Given
         let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        blazeEligibilityChecker: checker)
 
         // Confidence check
         XCTAssertFalse(viewModel.shouldShowIntroView)
@@ -633,8 +637,11 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     func test_checkIfIntroViewIsNeeded_sets_shouldShowIntroView_to_true_if_there_is_no_existing_campaign() {
         // Given
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        blazeEligibilityChecker: checker)
         // Confidence check
         XCTAssertFalse(viewModel.shouldShowIntroView)
 
@@ -662,8 +669,11 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                           statusKey: (ProductStatus.published.rawValue),
                                           purchasable: true))
 
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        blazeEligibilityChecker: checker)
         // Then
         let product = try XCTUnwrap(viewModel.latestPublishedProduct)
         XCTAssertEqual(product.productID, 3)
@@ -676,8 +686,11 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                           statusKey: (ProductStatus.draft.rawValue),
                                           purchasable: true))
 
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        blazeEligibilityChecker: checker)
         // Then
         XCTAssertNil(viewModel.latestPublishedProduct)
     }
@@ -688,8 +701,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let testURL = "https://example.com"
         let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 123)
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, siteURL: testURL)
-
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        siteURL: testURL,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        blazeEligibilityChecker: checker)
         // Confidence check
         XCTAssertNil(viewModel.selectedCampaignURL)
 
@@ -704,7 +721,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     func test_blazeEntryPointDisplayed_is_tracked_when_shouldShowIntroView_is_set_to_true() throws {
         // Given
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        analytics: analytics,
+                                                        blazeEligibilityChecker: checker)
 
         // When
         viewModel.shouldShowIntroView = true
@@ -718,7 +740,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     func test_didSelectCampaignList_tracks_blazeCampaignListEntryPointSelected_with_the_correct_source() throws {
         // Given
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        analytics: analytics,
+                                                        blazeEligibilityChecker: checker)
 
         // When
         viewModel.didSelectCampaignList()
@@ -732,7 +759,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     func test_didSelectCampaignDetails_tracks_blazeCampaignDetailSelected_with_the_correct_source() throws {
         // Given
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        analytics: analytics,
+                                                        blazeEligibilityChecker: checker)
 
         // When
         viewModel.didSelectCampaignDetails(.fake())
@@ -746,7 +778,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     func test_didSelectCreateCampaign_tracks_blazeEntryPointTapped() throws {
         // Given
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        analytics: analytics,
+                                                        blazeEligibilityChecker: checker)
 
         // When
         viewModel.didSelectCreateCampaign(source: .introView)

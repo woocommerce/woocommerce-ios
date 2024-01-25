@@ -49,7 +49,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                   pageTopics: pageTopics?.map { $0.id })
     }
 
-    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
+    /// We need to recreate the view model every time the budget screen is opened to get the updated target options.
+    var budgetSettingViewModel: BlazeBudgetSettingViewModel {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     duration: duration,
@@ -61,7 +62,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
-    }()
+    }
 
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
@@ -139,7 +140,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var finalDestinationURL: String = ""
 
     // AI Suggestions
-    @Published private(set) var isLoadingAISuggestions: Bool = true
+    @Published private(set) var isLoadingAISuggestions: Bool = false
     private let storage: StorageManagerType
     private var product: Product? {
         guard let product = productsResultsController.fetchedObjects.first else {
@@ -152,15 +153,18 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
 
-    @Published private var isLoadingProductImage: Bool = true
+    @Published private var isLoadingProductImage: Bool = false
 
     var canEditAd: Bool {
         !isLoadingAISuggestions
     }
 
     var canConfirmDetails: Bool {
-        image != nil && tagline.isNotEmpty && description.isNotEmpty
+        tagline.isNotEmpty && description.isNotEmpty
     }
+
+    @Published var isShowingMissingImageErrorAlert: Bool = false
+    @Published var isShowingPaymentInfo: Bool = false
 
     /// ResultController to get the product for the given product ID
     ///
@@ -199,7 +203,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-    productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
+         productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
@@ -217,8 +221,52 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         initializeAdFinalDestination()
     }
 
+    func onLoad() async {
+        await withTaskGroup(of: Void.self) { group in
+            if suggestions.isEmpty {
+                group.addTask {
+                    await self.loadAISuggestions()
+                }
+            }
+
+            if image == nil {
+                group.addTask {
+                    await self.downloadProductImage()
+                }
+            }
+        }
+    }
+
     func didTapEditAd() {
         onEditAd?()
+    }
+
+    @MainActor
+    func loadAISuggestions() async {
+        isLoadingAISuggestions = true
+        error = nil
+
+        do {
+            suggestions = try await fetchAISuggestions()
+            if let firstSuggestion = suggestions.first {
+                tagline = firstSuggestion.siteName
+                description = firstSuggestion.textSnippet
+            }
+        } catch {
+            DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
+            self.error = .failedToLoadAISuggestions
+        }
+
+        isLoadingAISuggestions = false
+    }
+
+    func didTapConfirmDetails() {
+        guard image != nil else {
+            return isShowingMissingImageErrorAlert = true
+        }
+
+        isShowingPaymentInfo = true
+        // TODO: track tap
     }
 }
 
@@ -246,26 +294,6 @@ private extension BlazeCampaignCreationFormViewModel {
 }
 
 // MARK: - Blaze AI Suggestions
-extension BlazeCampaignCreationFormViewModel {
-    @MainActor
-    func loadAISuggestions() async {
-        isLoadingAISuggestions = true
-        error = nil
-
-        do {
-            suggestions = try await fetchAISuggestions()
-            if let firstSuggestion = suggestions.first {
-                tagline = firstSuggestion.siteName
-                description = firstSuggestion.textSnippet
-            }
-        } catch {
-            DDLogError("⛔️ Error fetching Blaze AI suggestions: \(error)")
-            self.error = .failedToLoadAISuggestions
-        }
-
-        isLoadingAISuggestions = false
-    }
-}
 
 private extension BlazeCampaignCreationFormViewModel {
     @MainActor

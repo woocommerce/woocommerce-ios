@@ -127,6 +127,30 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let viewController = try XCTUnwrap(presentedNavigationController.viewControllers.first)
         XCTAssertTrue(viewController is ProductSelectorViewController)
     }
+
+    func test_error_alert_is_displayed_if_i3_feature_flag_is_enabled_and_no_published_product_is_found() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)
+        insertProduct(.fake().copy(siteID: 1,
+                                   productID: 1,
+                                   statusKey: (ProductStatus.draft.rawValue)))
+
+        let sut = BlazeCampaignCreationCoordinator(siteID: 1,
+                                                   siteURL: "https://woo.com/",
+                                                   source: .campaignList,
+                                                   storageManager: storageManager,
+                                                   featureFlagService: featureFlagService,
+                                                   navigationController: navigationController,
+                                                   onCampaignCreated: { }
+        )
+
+        // When
+        sut.start()
+
+        // Then
+        let presentedController = try XCTUnwrap(sut.navigationController.presentedViewController)
+        XCTAssertTrue(presentedController is UIAlertController)
+    }
 }
 
 private extension BlazeCampaignCreationCoordinatorTests {

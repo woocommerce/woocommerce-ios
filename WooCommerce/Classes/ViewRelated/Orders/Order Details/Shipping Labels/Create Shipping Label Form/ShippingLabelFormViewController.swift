@@ -83,6 +83,15 @@ private extension ShippingLabelFormViewController {
 
     func configureNavigationBar() {
         title = Localization.titleView
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancelButtonTitle,
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(cancelButtonTapped))
+        isModalInPresentation = true
+    }
+
+    @objc func cancelButtonTapped() {
+        presentingViewController?.dismiss(animated: true)
     }
 
     func configureMainView() {
@@ -705,6 +714,10 @@ private extension ShippingLabelFormViewController {
         static let noticeUnableToFetchCountries = NSLocalizedString("Unable to fetch countries.",
                                                                     comment: "Unable to fetch countries action failed in Shipping Label Form")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
+        static let cancelButtonTitle = NSLocalizedString(
+            "shipping.label.navigationBar.cancel.button.title",
+            value: "Cancel",
+            comment: "Cancel button title for the Shipping Label purchase flow, shown in the nav bar")
     }
 
     enum Constants {

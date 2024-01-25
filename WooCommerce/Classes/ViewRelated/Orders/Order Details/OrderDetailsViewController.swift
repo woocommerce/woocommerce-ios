@@ -476,10 +476,11 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            navigationController.popToViewController(self, animated: true)
+            self.dismiss(animated: true)
         }
-        shippingLabelFormVC.hidesBottomBarWhenPushed = true
-        navigationController?.show(shippingLabelFormVC, sender: self)
+
+        let shippingLabelNavigationController = WooNavigationController(rootViewController: shippingLabelFormVC)
+        navigationController?.present(shippingLabelNavigationController, animated: true)
     }
 
     func markOrderCompleteWasPressed() {

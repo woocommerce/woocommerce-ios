@@ -204,7 +204,7 @@ extension Networking.BlazeForecastedImpressionsInput {
             endDate: .fake(),
             timeZone: .fake(),
             totalBudget: .fake(),
-            targetings: .fake()
+            targeting: .fake()
         )
     }
 }

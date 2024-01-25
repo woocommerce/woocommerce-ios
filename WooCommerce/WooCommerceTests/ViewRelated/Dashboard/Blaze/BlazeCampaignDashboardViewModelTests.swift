@@ -103,6 +103,28 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowInDashboard)
     }
 
+    func test_it_hides_from_dashboard_if_a_product_gets_published_while_site_not_eligible_for_blaze() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeProducts()
+
+        mockSynchronizeCampaigns()
+
+        // When
+        await sut.reload()
+
+        insertProduct(.fake().copy(siteID: sampleSiteID,
+                                   statusKey: (ProductStatus.published.rawValue)))
+
+        // Then
+        XCTAssertFalse(sut.shouldShowInDashboard)
+    }
+
     // MARK: Blaze campaigns
 
     func test_it_shows_in_dashboard_if_blaze_campaign_available() async {

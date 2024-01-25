@@ -26,6 +26,16 @@ protocol OrderListViewControllerDelegate: AnyObject {
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
 final class OrderListViewController: UIViewController, GhostableViewController {
+    /// Callback closure when an order is selected either manually (by the user) or automatically in multi-column view.
+    /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
+    /// so that the user can navigate between order details easily. `index` is the default index of order details to be shown.
+    /// `isSelectedManually` indicates whether the order details is selected manually, as the first order can be auto-selected when the split
+    /// view has multiple columns.
+    /// `onCompletion` is called after switching details completes.
+    typealias SelectOrderDetails = (_ allViewModels: [OrderDetailsViewModel],
+                                    _ index: Int,
+                                    _ isSelectedManually: Bool,
+                                    _ onCompletion: (() -> Void)?) -> Void
 
     weak var delegate: OrderListViewControllerDelegate?
 
@@ -115,10 +125,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     private var topBannerView: UIView?
 
     /// Callback closure when an order is selected
-    ///
-    private var switchDetailsHandler: (_ allViewModels: [OrderDetailsViewModel], _
-                                       index: Int, _
-                                       onCompletion: (() -> Void)?) -> Void
+    private let switchDetailsHandler: SelectOrderDetails
 
     /// Currently selected index path in the table view
     ///
@@ -153,7 +160,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, (() -> Void)?) -> Void) {
+         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, (() -> Void)?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -537,11 +544,11 @@ private extension OrderListViewController {
                 state != .empty else {
             selectedOrderID = nil
             selectedIndexPath = nil
-            return switchDetailsHandler([], 0, nil)
+            return switchDetailsHandler([], 0, false, nil)
         }
         selectedOrderID = orderDetailsViewModel.order.orderID
         selectedIndexPath = firstIndexPath
-        switchDetailsHandler([orderDetailsViewModel], 0, nil)
+        switchDetailsHandler([orderDetailsViewModel], 0, false, nil)
         highlightSelectedRowIfNeeded()
     }
 }
@@ -560,7 +567,7 @@ extension OrderListViewController {
                let indexPath = dataSource.indexPath(for: identifier) {
                 selectedOrderID = orderID
                 selectedIndexPath = indexPath
-                switchDetailsHandler([detailsViewModel], 0, nil)
+                switchDetailsHandler([detailsViewModel], 0, true, nil)
                 highlightSelectedRowIfNeeded()
                 break
             }
@@ -738,8 +745,8 @@ extension OrderListViewController: UITableViewDelegate {
             // There is no point of having order navigation in the order details view when we have a split screen,
             // because orders can be easily selected in the left view (orders list).
             // Passing just one order (the selected one) disables navigation
-            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, nil) :
-            switchDetailsHandler([orderDetailsViewModel], 0, nil)
+            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, true, nil) :
+            switchDetailsHandler([orderDetailsViewModel], 0, true, nil)
         } else {
             let viewController = OrderDetailsViewController(viewModels: allViewModels, currentIndex: currentIndex)
             navigationController?.pushViewController(viewController, animated: true)

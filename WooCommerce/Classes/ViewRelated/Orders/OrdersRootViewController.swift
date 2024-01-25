@@ -18,7 +18,7 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
-        switchDetailsHandler: handleSwitchingDetails
+        switchDetailsHandler: switchDetailsHandler
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -71,17 +71,21 @@ final class OrdersRootViewController: UIViewController {
 
     private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
+    private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
+
     // MARK: View Lifecycle
 
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
+         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(),
+         switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
+        self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
@@ -308,35 +312,6 @@ final class OrdersRootViewController: UIViewController {
         })
         present(filterOrderListViewController, animated: true, completion: nil)
     }
-
-    /// This is to update the order detail in split view
-    ///
-    private func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int, onCompletion: (() -> Void)? = nil) {
-        guard let splitViewController else {
-            onCompletion?()
-            return
-        }
-
-        guard viewModels.isNotEmpty else {
-            let emptyStateViewController = EmptyStateViewController(style: .basic)
-            let config = EmptyStateViewController.Config.simple(
-                message: .init(string: Localization.emptyOrderDetails),
-                image: .emptySearchResultsImage
-            )
-            emptyStateViewController.configure(config)
-            splitViewController.setViewController(UINavigationController(rootViewController: emptyStateViewController), for: .secondary)
-            splitViewController.show(.secondary)
-            onCompletion?()
-            return
-        }
-
-        let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
-        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
-
-        splitViewController.setViewController(orderDetailsNavigationController, for: .secondary)
-        splitViewController.show(.secondary)
-        onCompletion?()
-    }
 }
 
 // MARK: - Configuration
@@ -529,7 +504,7 @@ private extension OrdersRootViewController {
         analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return handleSwitchingDetails(viewModels: [viewModel], currentIndex: 0, onCompletion: onCompletion)
+            return switchDetailsHandler([viewModel], 0, true, onCompletion)
         }
 
         let orderViewController = OrderDetailsViewController(viewModel: viewModel)

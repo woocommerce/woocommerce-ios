@@ -7,7 +7,7 @@ final class OrdersSplitViewWrapperController: UIViewController {
     private let siteID: Int64
 
     private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
-    private lazy var ordersViewController = OrdersRootViewController(siteID: siteID)
+    private lazy var ordersViewController = OrdersRootViewController(siteID: siteID, switchDetailsHandler: handleSwitchingDetails)
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -44,9 +44,7 @@ final class OrdersSplitViewWrapperController: UIViewController {
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
         let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
         let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
-
-        ordersSplitViewController.setViewController(loaderNavigationController, for: .secondary)
-        ordersSplitViewController.show(.secondary)
+        showSecondaryView(loaderNavigationController)
 
         ordersViewController.selectOrder(for: orderID)
     }
@@ -57,19 +55,56 @@ final class OrdersSplitViewWrapperController: UIViewController {
 }
 
 private extension OrdersSplitViewWrapperController {
-    func configureSplitView() {
-        let ordersNavigationController = WooTabNavigationController()
-        ordersNavigationController.viewControllers = [ordersViewController]
-
+    func showEmptyView() {
         let emptyStateViewController = EmptyStateViewController(style: .basic)
         let config = EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyOrderDetails),
             image: .emptySearchResultsImage
         )
         emptyStateViewController.configure(config)
+        showSecondaryView(emptyStateViewController)
+    }
 
+    func isShowingEmptyView() -> Bool {
+        splitViewController?.viewController(for: .secondary) is EmptyStateViewController
+    }
+
+    func showSecondaryView(_ viewController: UIViewController) {
+        ordersSplitViewController.setViewController(viewController, for: .secondary)
+        ordersSplitViewController.show(.secondary)
+    }
+
+    /// This is to update the order detail in split view
+    ///
+    func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int, isSelectedManually: Bool, onCompletion: (() -> Void)? = nil) {
+        // If the order details is auto-selected (from `viewDidLayoutSubviews`) and the empty view isn't shown,
+        // it does not override the secondary view content.
+        guard isSelectedManually || isShowingEmptyView() else {
+            onCompletion?()
+            return
+        }
+
+        guard viewModels.isNotEmpty else {
+            showEmptyView()
+            onCompletion?()
+            return
+        }
+
+        let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
+        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
+
+        showSecondaryView(orderDetailsNavigationController)
+        onCompletion?()
+    }
+}
+
+private extension OrdersSplitViewWrapperController {
+    func configureSplitView() {
+        let ordersNavigationController = WooTabNavigationController()
+        ordersNavigationController.viewControllers = [ordersViewController]
         ordersSplitViewController.setViewController(ordersNavigationController, for: .primary)
-        ordersSplitViewController.setViewController(emptyStateViewController, for: .secondary)
+
+        showEmptyView()
     }
 
     func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {

@@ -6,12 +6,15 @@ struct PrintCustomsFormsView: View {
 
     @State private var printingInvoicePath: String?
 
-    init(invoiceURLs: [String], showsSaveForLater: Bool = false) {
+    init(invoiceURLs: [String], showsSaveForLater: Bool = false, hostedDismiss: (() -> Void)? = nil) {
         self.invoiceURLs = invoiceURLs
         self.showsSaveForLater = showsSaveForLater
+        self.hostedDismiss = hostedDismiss
     }
 
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.dismiss) var dismiss
+
+    var hostedDismiss: (() -> Void)?
 
     var body: some View {
         ScrollView {
@@ -81,7 +84,8 @@ struct PrintCustomsFormsView: View {
 
     private var saveForLaterButton: some View {
         Button(action: {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
+            hostedDismiss?()
         }, label: {
             Text(Localization.saveForLaterButton)
         })

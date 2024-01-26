@@ -166,10 +166,14 @@ private extension PrintShippingLabelCoordinator {
             .compactMap { $0.commercialInvoiceURL }
             .filter { $0.isNotEmpty }
         guard urls.isNotEmpty, printType == .print else {
+            onCompletion?()
             return
         }
 
-        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: urls, showsSaveForLater: true)
+        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: urls,
+                                                          showsSaveForLater: true) {
+            self.onCompletion?()
+        }
         let hostingController = UIHostingController(rootView: printCustomsFormsView)
         hostingController.hidesBottomBarWhenPushed = true
 

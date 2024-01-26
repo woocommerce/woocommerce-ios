@@ -526,20 +526,18 @@ private extension OrderListViewController {
         }
     }
 
-    /// Checks to see if the selected item is still at the same index in the list and resets its state & auto-selects the first item if not.
-    ///
+    /// Checks to see if there is a selected order ID, and selects its order.
+    /// Otherwise, try to select first item.
+    /// 
     func checkSelectedItem() {
-        guard let indexPath = selectedIndexPath, let orderID = selectedOrderID else {
-            return selectFirstItemIfPossible()
-        }
-
-        guard let objectID = dataSource.itemIdentifier(for: indexPath),
-            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
-            return selectFirstItemIfPossible()
-        }
-
-        if orderDetailsViewModel.order.orderID != orderID {
+        guard let orderID = selectedOrderID else {
             selectFirstItemIfPossible()
+            return
+        }
+        let selected = selectOrderFromListIfPossible(for: orderID)
+        if !selected {
+            selectedIndexPath = nil
+            switchDetailsHandler([], 0, true, nil)
         }
     }
 
@@ -584,13 +582,15 @@ extension OrderListViewController {
         for identifier in dataSource.snapshot().itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID {
-                switchDetailsHandler([detailsViewModel], 0, true) { [weak self] hasBeenSelected in
-                    guard let self else { return }
-                    if hasBeenSelected {
-                        selectedOrderID = orderID
-                        selectedIndexPath = dataSource.indexPath(for: identifier)
-                        highlightSelectedRowIfNeeded()
-                    }
+                let orderNotAlreadySelected = selectedOrderID != orderID
+                let indexPath = dataSource.indexPath(for: identifier)
+                let indexPathNotAlreadySelected = selectedIndexPath != indexPath
+                let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected
+                if shouldSwitchDetails {
+                    showOrderDetails(detailsViewModel.order)
+                }
+                else {
+                    onOrderSelected(id: orderID)
                 }
                 return true
             }

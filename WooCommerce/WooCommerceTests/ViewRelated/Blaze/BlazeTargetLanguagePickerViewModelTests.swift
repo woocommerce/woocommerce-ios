@@ -203,14 +203,12 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
 
     func test_confirmSelection_tracks_event() throws {
         // Given
-        let english = BlazeTargetLanguage(id: "en", name: "English", locale: "en")
         let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
                                                            storageManager: storageManager,
                                                            analytics: analytics,
                                                            onSelection: { _ in })
 
         // When
-        viewModel.selectedLanguages = Set([english])
         viewModel.confirmSelection()
 
         // Then

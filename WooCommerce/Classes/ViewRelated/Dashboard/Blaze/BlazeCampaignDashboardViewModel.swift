@@ -115,10 +115,11 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         // Load Blaze campaigns
         await synchronizeBlazeCampaigns()
 
-        if blazeCampaignResultsController.fetchedObjects.isEmpty {
-            // Load published product as Blaze campaigns not available
-            await synchronizeFirstPublishedProduct()
-        }
+        // Load all products
+        // In case there are no campaigns, this helps decide whether to show a Product on the Blaze dashboard.
+        // It also helps determine whether the "Promote" button opens to product selector first (if the site has multiple
+        // products) or straight to campaign creation form (if there is only one product).
+        await synchronizePublishedProducts()
 
         updateResults()
     }
@@ -172,11 +173,10 @@ private extension BlazeCampaignDashboardViewModel {
 // MARK: - Products
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
-    func synchronizeFirstPublishedProduct() async {
+    func synchronizePublishedProducts() async {
         await withCheckedContinuation { continuation in
             stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
                                                               pageNumber: Store.Default.firstPageNumber,
-                                                              pageSize: 1,
                                                               stockStatus: nil,
                                                               productStatus: .published,
                                                               productType: nil,

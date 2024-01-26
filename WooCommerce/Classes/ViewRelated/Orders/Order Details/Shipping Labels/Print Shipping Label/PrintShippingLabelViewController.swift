@@ -115,7 +115,7 @@ private extension PrintShippingLabelViewController {
     }
 
     @objc func closeButtonTapped() {
-        onAction?(.saveLabelForLater)
+        saveLabelForLater()
         presentingViewController?.dismiss(animated: true)
     }
 

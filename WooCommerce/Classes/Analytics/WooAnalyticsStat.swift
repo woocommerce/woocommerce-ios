@@ -186,8 +186,9 @@ public enum WooAnalyticsStat: String {
     case blazeFlowError = "blaze_flow_error"
     case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
     case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
-    case blazeIntroDisplayed = "blaze_intro_displayed"
     case blazeViewDismissed = "blaze_view_dismissed"
+    case blazeIntroDisplayed = "blaze_intro_displayed"
+    case blazeIntroLearnMoreTapped = "blaze_intro_learn_more_tapped"
 
     // MARK: Store Onboarding Events
     //

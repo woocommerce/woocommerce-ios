@@ -130,6 +130,10 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         }
     }
 
+    func didTapCreateYourCampaignButtonFromIntroView() {
+        analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
+    }
+
     func didSelectCampaignList() {
         analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
     }

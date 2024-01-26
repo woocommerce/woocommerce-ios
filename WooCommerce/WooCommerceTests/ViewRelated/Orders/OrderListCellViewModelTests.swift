@@ -65,7 +65,7 @@ final class OrderListCellViewModelTests: XCTestCase {
     func test_OrderListCell_accessoryView_uses_chevron_with_tertiaryLabel_tint_as_disclosure_indicator() {
         // Given
         let order = MockOrders().sampleOrder()
-        let expectedImage = UIImage(systemName: "chevron.right")
+        let expectedImage = UIImage(systemName: "chevron.forward")
 
         // When
         let viewModel = OrderListCellViewModel(order: order, status: nil)

@@ -477,6 +477,9 @@ private extension OrderDetailsViewController {
             syncEverything()
             self.dismiss(animated: true)
         }
+        shippingLabelFormVC.onCancel = { [weak self] in
+            self?.dismiss(animated: true)
+        }
 
         let shippingLabelNavigationController = WooNavigationController(rootViewController: shippingLabelFormVC)
         navigationController?.present(shippingLabelNavigationController, animated: true)

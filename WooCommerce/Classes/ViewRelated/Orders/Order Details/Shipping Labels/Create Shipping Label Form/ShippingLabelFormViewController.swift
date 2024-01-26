@@ -38,6 +38,10 @@ final class ShippingLabelFormViewController: UIViewController {
     ///
     var onLabelSave: (() -> Void)?
 
+    /// Assign this closure to be notified when the cancel button is tapped. If appropriate, this should dismiss the view.
+    ///
+    var onCancel: (() -> Void)?
+
     /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
     private lazy var noticePresenter: DefaultNoticePresenter = {
@@ -99,7 +103,7 @@ private extension ShippingLabelFormViewController {
     }
 
     @objc func cancelButtonTapped() {
-        presentingViewController?.dismiss(animated: true)
+        onCancel?()
     }
 
     func configureMainView() {

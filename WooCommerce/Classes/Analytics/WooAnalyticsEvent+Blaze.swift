@@ -4,6 +4,8 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let source = "source"
             static let step = "current_step"
+            static let duration = "duration"
+            static let totalBudget = "total_budget"
         }
 
         /// Tracked when the Blaze entry point is shown to the user.
@@ -97,6 +99,16 @@ extension WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditAdSaveTapped, properties: [:])
             }
         }
+
+        enum Budget {
+            /// Tracked upon tapping "Update" in Blaze set budget screen
+            static func updateTapped(duration: Int, totalBudget: Double) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditBudgetSaveTapped,
+                                  properties: [Key.duration: duration,
+                                               Key.totalBudget: totalBudget])
+            }
+        }
+
     }
 }
 

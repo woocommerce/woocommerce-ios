@@ -193,6 +193,7 @@ public enum WooAnalyticsStat: String {
     case blazeEditAdTapped = "blaze_creation_edit_ad_tapped"
     case blazeEditAdSaveTapped = "blaze_creation_edit_ad_save_tapped"
     case blazeEditAdAISuggestionTapped = "blaze_creation_edit_ad_ai_suggestion_tapped"
+    case blazeEditBudgetSaveTapped = "blaze_creation_edit_budget_save_tapped"
 
     // MARK: Store Onboarding Events
     //

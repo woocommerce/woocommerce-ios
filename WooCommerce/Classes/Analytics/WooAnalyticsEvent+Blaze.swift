@@ -59,14 +59,43 @@ extension WooAnalyticsEvent {
                               properties: [Key.source: source.rawValue])
         }
 
-        /// Tracked when the intro screen for Blaze is displayed.
-        static func blazeIntroDisplayed() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeIntroDisplayed, properties: [:])
-        }
-
         /// Tracked when an entry point to Blaze is dismissed.
         static func blazeViewDismissed(source: BlazeSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeViewDismissed, properties: [Key.source: source.analyticsValue])
+        }
+
+        /// Tracked when the intro screen for Blaze is displayed.
+        static func introDisplayed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeIntroDisplayed, properties: [:])
+        }
+
+        /// Tracked upon tapping "Learn how Blaze works" in Intro screen
+        static func introLearnMoreTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeIntroLearnMoreTapped, properties: [:])
+        }
+
+        enum CreationForm {
+            /// Tracked when Blaze creation form is displayed
+            static func creationFormDisplayed() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCreationFormDisplayed, properties: [:])
+            }
+
+            /// Tracked upon tapping "Edit ad" in Blaze creation form
+            static func editAdTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditAdTapped, properties: [:])
+            }
+        }
+
+        enum EditAd {
+            /// Tracked upon selecting AI suggestion in Edit Ad screen
+            static func aiSuggestionTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditAdAISuggestionTapped, properties: [:])
+            }
+
+            /// Tracked upon tapping "Save" in Edit Ad screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditAdSaveTapped, properties: [:])
+            }
         }
     }
 }

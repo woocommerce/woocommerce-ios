@@ -106,8 +106,8 @@ final class BlazeEditAdViewModel: ObservableObject {
     init(siteID: Int64,
          adData: BlazeEditAdData,
          suggestions: [BlazeAISuggestion],
-         onSave: @escaping (BlazeEditAdData) -> Void,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onSave: @escaping (BlazeEditAdData) -> Void) {
         self.siteID = siteID
 
         self.adData = adData
@@ -130,7 +130,7 @@ final class BlazeEditAdViewModel: ObservableObject {
     }
 
     func didTapSave() {
-        // TODO: 11512 Track Save button tap
+        analytics.track(event: .Blaze.EditAd.saveTapped())
         guard let editedAdData else {
             assertionFailure("Save button shouldn't be enabled when edited ad is nil")
             return
@@ -159,6 +159,8 @@ final class BlazeEditAdViewModel: ObservableObject {
     }
 
     func didTapPrevious() {
+        analytics.track(event: .Blaze.EditAd.aiSuggestionTapped())
+
         guard let selectedSuggestionIndex,
               selectedSuggestionIndex > 0 else {
             return
@@ -174,6 +176,8 @@ final class BlazeEditAdViewModel: ObservableObject {
     }
 
     func didTapNext() {
+        analytics.track(event: .Blaze.EditAd.aiSuggestionTapped())
+
         let newIndex = {
             guard let selectedSuggestionIndex else {
                 // Select first item when no suggestion is selected previously

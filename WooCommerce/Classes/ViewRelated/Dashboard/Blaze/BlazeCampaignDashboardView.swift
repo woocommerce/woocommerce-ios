@@ -131,6 +131,7 @@ struct BlazeCampaignDashboardView: View {
         }
         .sheet(isPresented: $viewModel.shouldShowIntroView) {
             let onCreateCampaignClosure = {
+                viewModel.didTapCreateYourCampaignButtonFromIntroView()
                 viewModel.shouldShowIntroView = false
                 startCampaignFromIntroTapped?(selectedProductID)
             }

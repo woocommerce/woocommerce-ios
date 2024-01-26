@@ -62,7 +62,7 @@ struct OrderListCellViewModel {
     /// Accessory view that renders the cell's disclosure indicator
     ///
     var accessoryView: UIImageView? {
-        guard let image = UIImage(systemName: "chevron.right") else {
+        guard let image = UIImage(systemName: "chevron.forward") else {
             return nil
         }
         let accessoryView = UIImageView(image: image, highlightedImage: nil)

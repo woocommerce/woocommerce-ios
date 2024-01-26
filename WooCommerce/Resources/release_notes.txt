@@ -1,1 +1,5 @@
-Get ready for a smoother checkout and enhanced insights with our latest update! Our cash payment interface now glides in full-screen, letting you effortlessly input custom amounts and note them directly on the order—a handy change calculation is included. Plus, store admins, don't miss out on valuable data; our Analytics Hub now nudges you to activate Jetpack Stats for a complete performance view. Update now for a better, more intuitive WooCommerce experience!
+- [*] Fixed issue loading system status report for sites using faulty themes. [https://github.com/woocommerce/woocommerce-ios/pull/11798]
+- [*] Blaze: Hide the Blaze section on the Dashboard screen when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/11797]
+- [*] Shipping labels: Show the purchase and print flows in modal screens [https://github.com/woocommerce/woocommerce-ios/pull/11815]
+- [***] Orders: side-by-side view for Order List and Order Details on iPad (and large iPhones) [https://github.com/woocommerce/woocommerce-ios/pull/11818]
+

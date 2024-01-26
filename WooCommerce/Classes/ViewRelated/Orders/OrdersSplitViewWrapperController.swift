@@ -97,10 +97,33 @@ private extension OrdersSplitViewWrapperController {
             return
         }
 
-        let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
-        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
+        let orderDetailsViewController = OrderDetailsViewController(
+            viewModels: viewModels,
+            currentIndex: currentIndex,
+            switchDetailsHandler: { [weak self] viewModels, currentIndex, isSelectedManually, completion in
+                self?.handleSwitchingDetails(viewModels: viewModels,
+                                             currentIndex: currentIndex,
+                                             isSelectedManually: isSelectedManually,
+                                             onCompletion: completion)
+            })
 
-        showSecondaryView(orderDetailsNavigationController)
+        // When showing an order with multiple order view models to support quick navigation (up and down arrows),
+        // subsequent order details should replace the top order details view controller to avoid multiple order details
+        // in the navigation stack.
+        guard viewModels.count > 1,
+              let viewModel = viewModels[safe: currentIndex],
+              let secondaryNavigationController = ordersSplitViewController.viewController(for: .secondary) as? UINavigationController,
+              secondaryNavigationController.topViewController is OrderDetailsViewController else {
+            // When showing an order without quick navigation, it simply sets the order details to the secondary view.
+            let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
+            showSecondaryView(orderDetailsNavigationController)
+            onCompletion?(true)
+            return
+        }
+
+        secondaryNavigationController.replaceTopViewController(with: orderDetailsViewController, animated: false)
+        ordersViewController.onOrderSelected(id: viewModel.order.orderID)
+        ordersSplitViewController.show(.secondary)
         onCompletion?(true)
     }
 }

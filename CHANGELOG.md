@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 17.1
+Say goodbye to glitches and hello to smoother management with our latest update! We've squashed a bug that hindered system status reports on certain themes, ensuring your store's health is always at your fingertips. Plus, we've streamlined your dashboard by tucking away the Blaze section for non-WPCom users. Enjoy a seamless shipping label experience with our new modal purchase and print flows. And for our iPad and large iPhone users, multitasking is a breeze with our new side-by-side view of Order List and Order Details. Update now for a more efficient WooCommerce mobile app experience!
+
 ## 17.0
 Get ready for a smoother checkout and enhanced insights with our latest update! Our cash payment interface now glides in full-screen, letting you effortlessly input custom amounts and note them directly on the order—a handy change calculation is included. Plus, store admins, don't miss out on valuable data; our Analytics Hub now nudges you to activate Jetpack Stats for a complete performance view. Update now for a better, more intuitive WooCommerce experience!
 

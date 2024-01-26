@@ -62,15 +62,20 @@ final class OrderDetailsViewController: UIViewController {
 
     private let isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
+    /// Callback closure when a different order is selected like from the quick navigation arrows.
+    private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
+
     // MARK: - View Lifecycle
-    init(viewModels: [OrderDetailsViewModel], currentIndex: Int) {
+    init(viewModels: [OrderDetailsViewModel], currentIndex: Int, switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.viewModels = viewModels
         self.currentIndex = currentIndex
+        self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
+    /// Used for screens that show order details always in a single-column view.
     convenience init(viewModel: OrderDetailsViewModel) {
-        self.init(viewModels: [viewModel], currentIndex: 0)
+        self.init(viewModels: [viewModel], currentIndex: 0, switchDetailsHandler: { _, _, _, _ in })
     }
 
     required init?(coder: NSCoder) {
@@ -164,6 +169,8 @@ private extension OrderDetailsViewController {
         editButton.accessibilityIdentifier = "order-details-edit-button"
         editButton.isEnabled = viewModel.editButtonIsEnabled
         navigationItem.rightBarButtonItems = [editButton] + orderNavigationRightBarButtonItems()
+
+        navigationItem.largeTitleDisplayMode = .never
     }
 
     func orderNavigationRightBarButtonItems() -> [UIBarButtonItem] {
@@ -201,15 +208,12 @@ private extension OrderDetailsViewController {
     }
 
     func loadOrder(with index: Int) {
-        let splitViewNavigationController = splitViewController?.viewControllers.first as? UINavigationController
-        let usingNavigationController = isSplitViewInOrdersTabEnabled ? splitViewNavigationController : navigationController
-
-        guard let usingNavigationController = usingNavigationController else {
+        guard isSplitViewInOrdersTabEnabled else {
+            let viewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: index, switchDetailsHandler: switchDetailsHandler)
+            navigationController?.replaceTopViewController(with: viewController, animated: false)
             return
         }
-
-        let viewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: index)
-        usingNavigationController.replaceTopViewController(with: viewController, animated: false)
+        switchDetailsHandler(viewModels, index, true, nil)
     }
 
     /// Setup: EntityListener

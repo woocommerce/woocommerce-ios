@@ -234,6 +234,14 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         }
     }
 
+    /// Called when an order is shown and the order should be selected in the order list.
+    /// - Parameter orderID: ID of the order to be selected in the order list.
+    func onOrderSelected(id orderID: Int64) {
+        selectedOrderID = orderID
+        selectedIndexPath = indexPath(for: orderID)
+        highlightSelectedRowIfNeeded()
+    }
+
     /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in
@@ -555,12 +563,6 @@ private extension OrderListViewController {
         }
     }
 
-    func onOrderSelected(id orderID: Int64) {
-        selectedOrderID = orderID
-        selectedIndexPath = indexPath(for: orderID)
-        highlightSelectedRowIfNeeded()
-    }
-
     func indexPath(for orderID: Int64) -> IndexPath? {
         for identifier in dataSource.snapshot().itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
@@ -780,7 +782,9 @@ extension OrderListViewController: UITableViewDelegate {
             allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, true, nil) :
             switchDetailsHandler([orderDetailsViewModel], 0, true, nil)
         } else {
-            let viewController = OrderDetailsViewController(viewModels: allViewModels, currentIndex: currentIndex)
+            let viewController = OrderDetailsViewController(viewModels: allViewModels,
+                                                            currentIndex: currentIndex,
+                                                            switchDetailsHandler: { _, _, _, _ in })
             navigationController?.pushViewController(viewController, animated: true)
         }
     }

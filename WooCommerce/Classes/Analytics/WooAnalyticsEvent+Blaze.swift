@@ -121,6 +121,20 @@ extension WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditLanguageSaveTapped, properties: [:])
             }
         }
+
+        enum Device {
+            /// Tracked upon tapping "Save" in Blaze device selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditDeviceSaveTapped, properties: [:])
+            }
+        }
+
+        enum Location {
+            /// Tracked upon tapping "Save" in Blaze location selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditLocationSaveTapped, properties: [:])
+            }
+        }
     }
 }
 

@@ -586,7 +586,7 @@ private extension MainTabBarController {
         if isOrdersSplitViewFeatureFlagOn {
             return OrdersSplitViewWrapperController(siteID: siteID)
         } else {
-            return OrdersRootViewController(siteID: siteID)
+            return OrdersRootViewController(siteID: siteID, switchDetailsHandler: { _, _, _, _ in })
         }
     }
 

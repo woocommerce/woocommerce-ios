@@ -107,6 +107,12 @@ extension WooAnalyticsEvent {
                                   properties: [Key.duration: duration,
                                                Key.totalBudget: totalBudget])
             }
+
+            /// Tracked upon changing duration in Blaze set budget screen
+            static func changedDuration(_ duration: Int) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditBudgetDurationApplied,
+                                  properties: [Key.duration: duration])
+            }
         }
 
     }

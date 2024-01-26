@@ -161,4 +161,24 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["duration"] as? Int, 3)
         XCTAssertEqual(eventProperties["total_budget"] as? Double, 45.0)
     }
+
+    func test_changing_duration_tracks_event_with_correct_properties() throws {
+        // Given
+        let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
+                                                    dailyBudget: 15,
+                                                    duration: 3,
+                                                    startDate: .now,
+                                                    analytics: analytics,
+                                                    onCompletion: { _, _, _ in })
+
+
+        // When
+        viewModel.dayCount = 7
+        viewModel.didTapApplyDuration()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_edit_budget_set_duration_applied"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["duration"] as? Int, 7)
+    }
 }

@@ -83,6 +83,10 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         observeSettings()
     }
 
+    func didTapApplyDuration() {
+        analytics.track(event: .Blaze.Budget.changedDuration(Int(dayCount)))
+    }
+
     func confirmSettings() {
         let days = Int(dayCount)
         analytics.track(event: .Blaze.Budget.updateTapped(duration: days,

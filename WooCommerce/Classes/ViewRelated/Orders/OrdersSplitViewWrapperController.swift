@@ -107,9 +107,10 @@ private extension OrdersSplitViewWrapperController {
                                              onCompletion: completion)
             })
 
-        // When showing an order with multiple order view models to support quick navigation (up and down arrows),
-        // subsequent order details should replace the top order details view controller to avoid multiple order details
-        // in the navigation stack.
+        // When navigating between orders using up and down arrows, each new Order Details screen shown
+        // should replace the topViewController, to avoid having to tap back through several Order Details
+        // screens in the navigation stack. The back button should always go to the Order List.
+        // The up and down arrows are enabled when there is more than one item in `viewModels`.
         guard viewModels.count > 1,
               let viewModel = viewModels[safe: currentIndex],
               let secondaryNavigationController = ordersSplitViewController.viewController(for: .secondary) as? UINavigationController,

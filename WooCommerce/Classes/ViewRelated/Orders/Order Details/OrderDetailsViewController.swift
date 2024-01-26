@@ -443,14 +443,13 @@ private extension OrderDetailsViewController {
             }
             collectPaymentTapped()
         case .reprintShippingLabel(let shippingLabel):
-            guard let navigationController = navigationController else {
-                assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
-                return
-            }
+            let printNavigationController = WooNavigationController()
             let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel],
                                                             printType: .reprint,
-                                                            sourceNavigationController: navigationController)
-            coordinator.showPrintUI()
+                                                            sourceNavigationController: printNavigationController)
+            let printViewController = coordinator.createPrintViewController()
+            printNavigationController.viewControllers = [printViewController]
+            present(printNavigationController, animated: true)
         case .createShippingLabel:
             navigateToCreateShippingLabelForm()
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
@@ -479,11 +478,15 @@ private extension OrderDetailsViewController {
                 }
                 return
             }
-
-            navigationController.popToViewController(self, animated: true)
+            syncEverything()
+            self.dismiss(animated: true)
         }
-        shippingLabelFormVC.hidesBottomBarWhenPushed = true
-        navigationController?.show(shippingLabelFormVC, sender: self)
+        shippingLabelFormVC.onCancel = { [weak self] in
+            self?.dismiss(animated: true)
+        }
+
+        let shippingLabelNavigationController = WooNavigationController(rootViewController: shippingLabelFormVC)
+        navigationController?.present(shippingLabelNavigationController, animated: true)
     }
 
     func markOrderCompleteWasPressed() {

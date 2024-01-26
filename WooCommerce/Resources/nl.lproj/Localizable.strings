@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-16 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-01-20 08:10:24+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -2034,13 +2034,7 @@ which should be translated separately and considered part of this sentence. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Kan geen verbinding maken met de WordPress-site. Er is geen geldige WordPress-site op dit adres. Controleer of je het goede websiteadres (URL) hebt opgegeven.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Kan geen verbinding maken. Vereiste XML-RPC-methoden ontbreken op de server.";
-
-/* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Kan geen verbinding maken. Er is een 403-fout opgetreden tijdens onze poging om het XMLRPC-eindpunt van je site te openen. De app heeft dat nodig om met je site te communiceren. Neem contact op met je host om dit probleem op te lossen.";
-
-/* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
-"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Kan geen verbinding maken. Je host blokkeert POST-aanvragen. De app heeft deze nodig om te communiceren met je site. Neem contact op met je host om dit probleem op te lossen.";
+"Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem." = "Kan geen verbinding maken. Vereiste XML-RPC-methoden ontbreken op de server. Neem contact op met je hostingprovider om het probleem op te lossen.";
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Kon tags niet laden.";
@@ -2148,9 +2142,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Store aanmaken";
-
-/* Button when tapped will launch create Blaze campaign flow. */
-"Create campaign" = "Campagne aanmaken";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Coupon aanmaken";
@@ -4560,12 +4551,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "Alle beoordelingen als gelezen markeren";
-
-/* Alert button when selecting the cash payment method */
-"Mark as Paid" = "Markeren als betaald";
-
-/* Alert title when selecting the cash payment method */
-"Mark as Paid?" = "Markeren als betaald";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Markeer deze bestelling als voltooid en informeer de klant";
@@ -8130,9 +8115,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Dit voegt een nieuwe variatie toe voor elke mogelijke combinatie van variatie-eigenschappen (%d variaties).";
-
-/* Alert info when selecting the cash payment method during payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "Hiermee voltooid u uw bestelling indien u deze van een andere partij dan WooCommerce heeft ontvangen (totaal)";
 
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "Dit heeft niet alleen effect op online bestellingen";

@@ -135,6 +135,14 @@ extension WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditLocationSaveTapped, properties: [:])
             }
         }
+
+
+        enum Interest {
+            /// Tracked upon tapping "Save" in Blaze interests selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditInterestSaveTapped, properties: [:])
+            }
+        }
     }
 }
 

@@ -180,6 +180,9 @@ struct BlazeCampaignCreationForm: View {
                 viewModel.didTapEditAd()
             }
         }
+        .onAppear() {
+            viewModel.onAppear()
+        }
         .task {
             await viewModel.onLoad()
         }

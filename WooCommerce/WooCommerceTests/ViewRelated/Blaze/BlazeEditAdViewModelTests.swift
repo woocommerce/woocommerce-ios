@@ -15,6 +15,21 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
                                        BlazeAISuggestion(siteName: "Third suggested tagline", textSnippet: "Third suggested description")]
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
+
     // MARK: Tagline
     func test_tagline_footer_text_is_plural_when_multiple_characters_remaining() {
         // Given
@@ -514,6 +529,49 @@ final class BlazeEditAdViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isDescriptionValidated)
+    }
+
+    // MARK: Analytics
+    func test_AI_suggestion_arrows_tap_is_tracked() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
+                                                                                       source: .media(media: .fake())),
+                                                               tagline: sampleAISuggestions[1].siteName,
+                                                               description: sampleAISuggestions[1].textSnippet),
+                                       suggestions: sampleAISuggestions,
+                                       analytics: analytics,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapPrevious()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == ("blaze_creation_edit_ad_ai_suggestion_tapped")}.count, 1)
+
+        // When
+        sut.didTapNext()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == ("blaze_creation_edit_ad_ai_suggestion_tapped")}.count, 2)
+    }
+
+    func test_save_button_tap_is_tracked() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
+                                                                                       source: .media(media: .fake())),
+                                                               tagline: sampleAISuggestions[1].siteName,
+                                                               description: sampleAISuggestions[1].textSnippet),
+                                       suggestions: sampleAISuggestions,
+                                       analytics: analytics,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapSave()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_ad_save_tapped"))
     }
 }
 

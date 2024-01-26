@@ -38,20 +38,26 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private var imageLoader: MockProductUIImageLoader!
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         imageLoader = MockProductUIImageLoader()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
         imageLoader = nil
         storageManager = nil
         stores = nil
         super.tearDown()
     }
-
 
     // MARK: Initial values
     func test_image_is_empty_initially() async throws {
@@ -350,6 +356,41 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.description.isEmpty)
         XCTAssertFalse(viewModel.canConfirmDetails)
+    }
+
+    // MARK: Analytics
+    func test_event_is_tracked_on_appear() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // When
+        viewModel.onAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_form_displayed"))
+    }
+
+    func test_event_is_tracked_upon_tapping_edit_ad() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // When
+        viewModel.didTapEditAd()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_ad_tapped"))
     }
 }
 

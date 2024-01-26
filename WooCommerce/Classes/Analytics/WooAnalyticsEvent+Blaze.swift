@@ -73,6 +73,30 @@ extension WooAnalyticsEvent {
         static func introLearnMoreTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeIntroLearnMoreTapped, properties: [:])
         }
+
+        enum CreationForm {
+            /// Tracked when Blaze creation form is displayed
+            static func creationFormDisplayed() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCreationFormDisplayed, properties: [:])
+            }
+
+            /// Tracked upon tapping "Edit ad" in Blaze creation form
+            static func editAdTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditAdTapped, properties: [:])
+            }
+        }
+
+        enum EditAd {
+            /// Tracked upon selecting AI suggestion in Edit Ad screen
+            static func aiSuggestionTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditAdAISuggestionTapped, properties: [:])
+            }
+
+            /// Tracked upon tapping "Save" in Edit Ad screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditAdSaveTapped, properties: [:])
+            }
+        }
     }
 }
 

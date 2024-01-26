@@ -199,17 +199,21 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             type: Constants.campaignType)
     }
 
+    private let analytics: Analytics
+
     init(siteID: Int64,
          productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
         self.stores = stores
         self.storage = storage
         self.productImageLoader = productImageLoader
+        self.analytics = analytics
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
@@ -219,6 +223,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateTargetTopicText()
         updateTargetLocationText()
         initializeAdFinalDestination()
+    }
+
+    func onAppear() {
+        analytics.track(event: .Blaze.CreationForm.creationFormDisplayed())
     }
 
     func onLoad() async {
@@ -238,6 +246,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     func didTapEditAd() {
+        analytics.track(event: .Blaze.CreationForm.editAdTapped())
         onEditAd?()
     }
 

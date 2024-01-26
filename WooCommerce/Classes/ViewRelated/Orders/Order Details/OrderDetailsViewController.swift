@@ -170,7 +170,6 @@ private extension OrderDetailsViewController {
         editButton.isEnabled = viewModel.editButtonIsEnabled
         navigationItem.rightBarButtonItems = [editButton] + orderNavigationRightBarButtonItems()
 
-        // Disables large title.
         navigationItem.largeTitleDisplayMode = .never
     }
 

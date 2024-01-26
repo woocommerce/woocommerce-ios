@@ -115,6 +115,12 @@ extension WooAnalyticsEvent {
             }
         }
 
+        enum Language {
+            /// Tracked upon tapping "Save" in Blaze language selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditLanguageSaveTapped, properties: [:])
+            }
+        }
     }
 }
 

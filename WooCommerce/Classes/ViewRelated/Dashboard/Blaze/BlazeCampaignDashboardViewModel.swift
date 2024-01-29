@@ -21,14 +21,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldShowInDashboard: Bool = false
 
-    @Published var shouldShowIntroView: Bool = false {
-        didSet {
-            if shouldShowIntroView {
-                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
-            }
-        }
-    }
-
     @Published var selectedCampaignURL: URL?
 
     private(set) var shouldRedactView: Bool = true
@@ -122,12 +114,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         await synchronizePublishedProducts()
 
         updateResults()
-    }
-
-    func checkIfIntroViewIsNeeded() {
-        if blazeCampaignResultsController.numberOfObjects == 0 {
-            shouldShowIntroView = true
-        }
     }
 
     func didTapCreateYourCampaignButtonFromIntroView() {

@@ -376,6 +376,25 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_form_displayed"))
     }
 
+    func test_displayed_event_is_tracked_only_once() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // When
+        viewModel.onAppear()
+        viewModel.onAppear()
+
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == "blaze_creation_form_displayed"}.count, 1)
+    }
+
     func test_event_is_tracked_upon_tapping_edit_ad() async throws {
         // Given
         insertProduct(sampleProduct)

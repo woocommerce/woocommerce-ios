@@ -201,6 +201,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     private let analytics: Analytics
 
+    private var didTrackOnAppear = false
+
     init(siteID: Int64,
          productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -226,7 +228,12 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     func onAppear() {
+        // Track displayed event only once
+        guard !didTrackOnAppear else {
+            return
+        }
         analytics.track(event: .Blaze.CreationForm.creationFormDisplayed())
+        didTrackOnAppear = true
     }
 
     func onLoad() async {

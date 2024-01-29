@@ -42,7 +42,7 @@ PODS:
     - WordPressShared (~> 2.0-beta)
     - wpxmlrpc (~> 0.10)
   - WordPressShared (2.1.0)
-  - WordPressUI (1.13.1)
+  - WordPressUI (1.15.0)
   - Wormholy (1.6.6)
   - WPMediaPicker (1.8.1)
   - wpxmlrpc (0.10.0)
@@ -73,7 +73,7 @@ DEPENDENCIES:
   - WordPress-Editor-iOS (~> 1.19.9)
   - WordPressAuthenticator (~> 9.0)
   - WordPressShared (~> 2.1)
-  - WordPressUI (~> 1.13)
+  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, commit `d1acf1e2693ccfdff58bef3e9ced38d3f00abfb0`)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8.1)
   - ZendeskSupportSDK (~> 6.0)
@@ -101,7 +101,6 @@ SPEC REPOS:
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
     - WordPressShared
-    - WordPressUI
     - Wormholy
     - WPMediaPicker
     - wpxmlrpc
@@ -112,6 +111,16 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
+
+EXTERNAL SOURCES:
+  WordPressUI:
+    :commit: d1acf1e2693ccfdff58bef3e9ced38d3f00abfb0
+    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressUI:
+    :commit: d1acf1e2693ccfdff58bef3e9ced38d3f00abfb0
+    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -134,7 +143,7 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: e3c18f1b63222742a565fea3faf1a55a144ce8c4
   WordPressKit: 57712035a44595cf49b0c9f0ad5b8b899a8cbe6a
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
-  WordPressUI: 7304a3a604b8dc582981e723e6d7caa9dd5a9f0e
+  WordPressUI: a491454affda3b0fb812812e637dc5e8f8f6bd06
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
   wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
@@ -146,6 +155,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 8b4feca63e4816db58ab59b47cd31b94477c016a
+PODFILE CHECKSUM: 8c2967317ad3834cf0446af21ae357a4d197be72
 
 COCOAPODS: 1.14.0

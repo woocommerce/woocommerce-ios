@@ -90,8 +90,9 @@ target 'WooCommerce' do
 
   wordpress_shared
 
-  pod 'WordPressUI', '~> 1.13'
+  # pod 'WordPressUI', '~> 1.13'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
+  pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: 'd1acf1e2693ccfdff58bef3e9ced38d3f00abfb0'
 
   aztec
 

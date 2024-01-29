@@ -89,8 +89,9 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     func confirmSettings() {
         let days = Int(dayCount)
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
         analytics.track(event: .Blaze.Budget.updateTapped(duration: days,
-                                                          totalBudget: Double(days) * dailyAmount))
+                                                          totalBudget: totalBudget))
         completionHandler(dailyAmount, days, startDate)
     }
 

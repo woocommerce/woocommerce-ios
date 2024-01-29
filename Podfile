@@ -95,7 +95,9 @@ target 'WooCommerce' do
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.8.1'
+  # pod 'WPMediaPicker', '~> 1.8.1'
+  pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', branch: 'issue/419-allow-camera-use-with-limited-library'
+
 
   # External Libraries
   # ==================

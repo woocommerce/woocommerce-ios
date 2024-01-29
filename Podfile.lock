@@ -44,7 +44,7 @@ PODS:
   - WordPressShared (2.1.0)
   - WordPressUI (1.13.1)
   - Wormholy (1.6.6)
-  - WPMediaPicker (1.8.1)
+  - WPMediaPicker (1.8.11-beta.1)
   - wpxmlrpc (0.10.0)
   - ZendeskCommonUISDK (7.0.0)
   - ZendeskCoreSDK (3.0.0)
@@ -75,7 +75,7 @@ DEPENDENCIES:
   - WordPressShared (~> 2.1)
   - WordPressUI (~> 1.13)
   - Wormholy (~> 1.6.6)
-  - WPMediaPicker (~> 1.8.1)
+  - WPMediaPicker (from `https://github.com/wordpress-mobile/MediaPicker-iOS.git`, branch `issue/419-allow-camera-use-with-limited-library`)
   - ZendeskSupportSDK (~> 6.0)
 
 SPEC REPOS:
@@ -103,7 +103,6 @@ SPEC REPOS:
     - WordPressShared
     - WordPressUI
     - Wormholy
-    - WPMediaPicker
     - wpxmlrpc
     - ZendeskCommonUISDK
     - ZendeskCoreSDK
@@ -112,6 +111,16 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
+
+EXTERNAL SOURCES:
+  WPMediaPicker:
+    :branch: issue/419-allow-camera-use-with-limited-library
+    :git: https://github.com/wordpress-mobile/MediaPicker-iOS.git
+
+CHECKOUT OPTIONS:
+  WPMediaPicker:
+    :commit: 3e27cc72754ed6fdfff48c3dd2e515e347e6dfec
+    :git: https://github.com/wordpress-mobile/MediaPicker-iOS.git
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -136,7 +145,7 @@ SPEC CHECKSUMS:
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
   WordPressUI: 7304a3a604b8dc582981e723e6d7caa9dd5a9f0e
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
-  WPMediaPicker: 9011a0ec1f468c039af7485c244576b4c9889a0f
+  WPMediaPicker: 0495f3f9f4fdaeafba25f8a2cc87942cc054da43
   wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
   ZendeskCommonUISDK: f06dbac6c9e74c3afff75ecdc6bec3832b23258c
   ZendeskCoreSDK: ce6dbb5eb4d61d2d061547a92bd0b0fe98602e9d
@@ -146,6 +155,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 8b4feca63e4816db58ab59b47cd31b94477c016a
+PODFILE CHECKSUM: 67da93b26aba7fe4cf7d4d3c5dbaf01551547026
 
 COCOAPODS: 1.14.0

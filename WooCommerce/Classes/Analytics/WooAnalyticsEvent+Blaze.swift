@@ -173,12 +173,12 @@ extension WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeAddPaymentMethodSuccess, properties: [:])
             }
 
-            /// Tracked upon adding a payment method
+            /// Tracked when campaign creation is successful
             static func campaignCreationSuccess() -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeCampaignCreationSuccess, properties: [:])
             }
 
-            /// Tracked upon campaign creation fails
+            /// Tracked when campaign creation fails
             static func campaignCreationFailed() -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeCampaignCreationFailed, properties: [:])
             }

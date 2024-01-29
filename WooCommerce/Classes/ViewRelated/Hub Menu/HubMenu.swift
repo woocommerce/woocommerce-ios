@@ -192,7 +192,7 @@ private extension HubMenu {
                 case .down:
                     return .chevronDownImage
                 case .leading:
-                    return .chevronImage.imageFlippedForRightToLeftLayoutDirection()
+                    return .chevronImage.withHorizontallyFlippedOrientation()
                 }
             }
         }

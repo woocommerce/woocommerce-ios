@@ -392,6 +392,131 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_ad_tapped"))
     }
+
+    func test_event_is_tracked_upon_tapping_confirm_details_with_AI_suggested_content() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
+        XCTAssertTrue(isAISuggested)
+    }
+
+    func test_event_is_tracked_upon_tapping_confirm_details_with_custom_tagline() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        let editAdViewModel = viewModel.editAdViewModel
+        editAdViewModel.tagline = "Custom tagline"
+        editAdViewModel.didTapSave()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
+        XCTAssertTrue(isAISuggested)
+    }
+
+    func test_event_is_tracked_upon_tapping_confirm_details_with_custom_description() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                            analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        let editAdViewModel = viewModel.editAdViewModel
+        editAdViewModel.description = "Custom description"
+        editAdViewModel.didTapSave()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
+        XCTAssertTrue(isAISuggested)
+    }
+
+    func test_event_is_tracked_upon_tapping_confirm_details_with_custom_tagline_and_description() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        let editAdViewModel = viewModel.editAdViewModel
+        editAdViewModel.tagline = "Custom tagline"
+        editAdViewModel.description = "Custom description"
+        editAdViewModel.didTapSave()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
+        XCTAssertFalse(isAISuggested)
+    }
 }
 
 private extension BlazeCampaignCreationFormViewModelTests {

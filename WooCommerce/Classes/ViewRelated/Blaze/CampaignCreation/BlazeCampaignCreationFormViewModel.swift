@@ -274,8 +274,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             return isShowingMissingImageErrorAlert = true
         }
 
+        let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }
+        let descriptionMatching = suggestions.map { $0.textSnippet }.contains { $0 == description }
+        let isAISuggestedAdContent = taglineMatching || descriptionMatching
+        analytics.track(event: .Blaze.CreationForm.confirmDetailsTapped(isAISuggestedAdContent: isAISuggestedAdContent))
         isShowingPaymentInfo = true
-        // TODO: track tap
     }
 }
 

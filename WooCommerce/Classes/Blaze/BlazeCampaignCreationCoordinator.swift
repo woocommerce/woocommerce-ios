@@ -32,7 +32,10 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     private let source: BlazeSource
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
+    private let analytics: Analytics
+
     let navigationController: UINavigationController
+
     private let didSelectCreateCampaign: ((BlazeSource) -> Void)?
     private let onCampaignCreated: () -> Void
 
@@ -47,6 +50,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          navigationController: UINavigationController,
          didSelectCreateCampaign: ((BlazeSource) -> Void)? = nil,
+         analytics: Analytics = ServiceLocator.analytics,
          onCampaignCreated: @escaping () -> Void) {
         self.siteID = siteID
         self.siteURL = siteURL
@@ -57,11 +61,58 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         self.navigationController = navigationController
         self.didSelectCreateCampaign = didSelectCreateCampaign
         self.onCampaignCreated = onCampaignCreated
+        self.analytics = analytics
 
         configureResultsController()
     }
 
     func start() {
+        let shouldShowIntro: Bool = {
+            switch source {
+            case .myStoreSection, .productDetailPromoteButton:
+                return true
+            case .campaignList, .introView, .productMoreMenu:
+                return false
+            }
+        }()
+
+        if shouldShowIntro {
+            presentIntroScreen { [weak self] in
+                self?.navigationController.dismiss(animated: true) {
+                    self?.startCreationFlow(from: .introView)
+                    self?.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
+                }
+            }
+        } else {
+            startCreationFlow(from: source)
+            if source == .productDetailPromoteButton {
+                analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
+            }
+        }
+    }
+}
+
+private extension BlazeCampaignCreationCoordinator {
+    func presentIntroScreen(onCreateCampaign: @escaping () -> Void) {
+        let onDismissClosure = { [weak self] in
+            guard let self else { return }
+            navigationController.dismiss(animated: true)
+        }
+        let introController: UIViewController = {
+            if featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+                return BlazeCreateCampaignIntroController(onCreateCampaign: onCreateCampaign,
+                                                          onDismiss: onDismissClosure)
+            } else {
+                return BlazeCampaignIntroController(onStartCampaign: onCreateCampaign,
+                                                    onDismiss: onDismissClosure)
+            }
+        }()
+
+        navigationController.present(introController, animated: true)
+        analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
+    }
+
+    func startCreationFlow(from source: BlazeSource) {
         switch blazeCreationEntryDestination {
         case .productSelector:
             navigateToBlazeProductSelector(source: source)
@@ -73,9 +124,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
             presentNoProductAlert()
         }
     }
-}
 
-private extension BlazeCampaignCreationCoordinator {
     func configureResultsController() {
         productResultsController.onDidChangeContent = { [weak self] in
             self?.updateCreateCampaignDestination()

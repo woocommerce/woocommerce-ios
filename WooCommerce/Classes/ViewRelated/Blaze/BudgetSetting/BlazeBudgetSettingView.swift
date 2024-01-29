@@ -215,6 +215,7 @@ private extension BlazeBudgetSettingView {
 
                 // CTA
                 Button(Localization.apply) {
+                    viewModel.didTapApplyDuration()
                     showingDurationSetting = false
                 }
                 .buttonStyle(PrimaryButtonStyle())

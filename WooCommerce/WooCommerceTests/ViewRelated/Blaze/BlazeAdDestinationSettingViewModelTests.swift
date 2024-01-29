@@ -7,6 +7,21 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
     private let threeParameters = "one=a&two=b&three=c"
     private let maxParameterLength = 2096
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analyticsProvider = nil
+        analytics = nil
+        super.tearDown()
+    }
+
     var finalDestinationURL: String {
         "\(sampleProductURL)?\(threeParameters)"
     }
@@ -109,5 +124,24 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.parameters.count, 2)
+    }
+
+    // MARK: Analytics
+
+    func test_confirmSave_tracks_event() throws {
+        // Given
+        let viewModel = BlazeAdDestinationSettingViewModel(
+            productURL: sampleProductURL,
+            homeURL: sampleHomeURL,
+            finalDestinationURL: finalDestinationURL,
+            analytics: analytics,
+            onSave: { _ in }
+        )
+
+        // When
+        viewModel.confirmSave()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_destination_save_tapped"))
     }
 }

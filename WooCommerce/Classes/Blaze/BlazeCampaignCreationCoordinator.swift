@@ -115,9 +115,9 @@ private extension BlazeCampaignCreationCoordinator {
     func startCreationFlow(from source: BlazeSource) {
         switch blazeCreationEntryDestination {
         case .productSelector:
-            navigateToBlazeProductSelector(source: source)
+            navigateToBlazeProductSelector()
         case .campaignForm(let productID):
-            navigateToNativeCampaignCreation(source: source, productID: productID)
+            navigateToNativeCampaignCreation(productID: productID)
         case .webViewForm(let productID):
             navigateToWebCampaignCreation(source: source, productID: productID)
         case .noProductAvailable:
@@ -169,7 +169,7 @@ private extension BlazeCampaignCreationCoordinator {
     }
 
     /// Handles navigation to the native Blaze creation
-    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
+    func navigateToNativeCampaignCreation(productID: Int64) {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
                                                            productID: productID,
                                                            storage: storageManager,
@@ -209,7 +209,7 @@ private extension BlazeCampaignCreationCoordinator {
     }
 
     /// Handles navigation to the Blaze product selector view
-    func navigateToBlazeProductSelector(source: BlazeSource) {
+    func navigateToBlazeProductSelector() {
         let controller: ProductSelectorViewController = {
             let productSelectorViewModel = ProductSelectorViewModel(
                 siteID: siteID,
@@ -217,7 +217,7 @@ private extension BlazeCampaignCreationCoordinator {
                     guard let self else { return }
 
                     // Navigate to Campaign Creation Form once any type of product is selected.
-                    navigateToNativeCampaignCreation(source: source, productID: product.productID)
+                    navigateToNativeCampaignCreation(productID: product.productID)
                 },
                 onCloseButtonTapped: { [weak self] in
                     guard let self else { return }

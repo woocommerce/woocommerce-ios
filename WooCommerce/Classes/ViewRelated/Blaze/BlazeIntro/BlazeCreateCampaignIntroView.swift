@@ -95,7 +95,7 @@ struct BlazeCreateCampaignIntroView: View {
                     .padding(.horizontal, Layout.CTAStack.buttonHPadding)
 
                     Button(Localization.learnHowBlazeWorks) {
-                        viewModel.onLearnHowBlazeWorks()
+                        viewModel.didTapLearnHowBlazeWorks()
                     }
                     .buttonStyle(LinkButtonStyle())
                     .padding(.horizontal, Layout.CTAStack.buttonHPadding)
@@ -111,6 +111,9 @@ struct BlazeCreateCampaignIntroView: View {
                     BlazeLearnHowView(isPresented: $viewModel.showLearnHowSheet)
                 }
             }
+        }
+        .onAppear() {
+            viewModel.onAppear()
         }
     }
 }

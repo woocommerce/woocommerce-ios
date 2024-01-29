@@ -53,7 +53,6 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingTopicPicker = false
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
-    @State private var isShowingPaymentInfo = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -124,12 +123,9 @@ struct BlazeCampaignCreationForm: View {
                 Divider()
 
                 Button {
-                    // TODO: track tap
-                    isShowingPaymentInfo = true
+                    viewModel.didTapConfirmDetails()
                 } label: {
-                    LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel), isActive: $isShowingPaymentInfo) {
-                        Text(Localization.confirmDetails)
-                    }
+                    Text(Localization.confirmDetails)
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.contentPadding)
@@ -168,21 +164,31 @@ struct BlazeCampaignCreationForm: View {
         .onChange(of: viewModel.error) { newValue in
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }
-        .alert(isPresented: $isShowingAISuggestionsErrorAlert, content: {
-            Alert(title: Text(Localization.ErrorAlert.title),
-                  message: Text(Localization.ErrorAlert.ErrorMessage.fetchingAISuggestions),
-                  primaryButton: .default(Text(Localization.ErrorAlert.retry), action: {
+        .alert(Localization.AISuggestionsErrorAlert.fetchingAISuggestions, isPresented: $isShowingAISuggestionsErrorAlert) {
+            Button(Localization.AISuggestionsErrorAlert.cancel, role: .cancel) { }
+
+            Button(Localization.AISuggestionsErrorAlert.retry) {
                 Task {
                     await viewModel.loadAISuggestions()
                 }
-            }),
-                  secondaryButton: .cancel())
-        })
-        .task {
-            await viewModel.loadAISuggestions()
+            }
+        }
+        .alert(Localization.NoImageErrorAlert.noImageFound, isPresented: $viewModel.isShowingMissingImageErrorAlert) {
+            Button(Localization.NoImageErrorAlert.cancel, role: .cancel) { }
+
+            Button(Localization.NoImageErrorAlert.addImage) {
+                viewModel.didTapEditAd()
+            }
+        }
+        .onAppear() {
+            viewModel.onAppear()
         }
         .task {
-            await viewModel.downloadProductImage()
+            await viewModel.onLoad()
+        }
+        LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel),
+                           isActive: $viewModel.isShowingPaymentInfo) {
+            EmptyView()
         }
     }
 }
@@ -361,23 +367,38 @@ private extension BlazeCampaignCreationForm {
             value: "Confirm Details",
             comment: "Button to confirm ad details on the Blaze campaign creation screen"
         )
-        enum ErrorAlert {
-            enum ErrorMessage {
-                static let fetchingAISuggestions = NSLocalizedString(
-                    "blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions",
-                    value: "Failed to load suggestions for tagline and description",
-                    comment: "Error message indicating that loading suggestions for tagline and description failed"
-                )
-            }
-            static let title = NSLocalizedString(
-                "blazeCampaignCreationForm.errorAlert.title",
-                value: "Oops! We've hit a snag",
-                comment: "Title on the error alert displayed on the Blaze campaign creation screen"
+        enum AISuggestionsErrorAlert {
+            static let fetchingAISuggestions = NSLocalizedString(
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions",
+                value: "Failed to load suggestions for tagline and description",
+                comment: "Error message indicating that loading suggestions for tagline and description failed"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the error alert displayed on the Blaze campaign creation screen"
             )
             static let retry = NSLocalizedString(
-                "blazeCampaignCreationForm.errorAlert.retry",
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry",
                 value: "Retry",
                 comment: "Button on the error alert displayed on the Blaze campaign creation screen"
+            )
+        }
+        enum NoImageErrorAlert {
+            static let noImageFound = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.noImageFound",
+                value: "Please add an image for the Blaze campaign",
+                comment: "Message asking to select an image for the Blaze campaign"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
+            )
+            static let addImage = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.addImage",
+                value: "Add Image",
+                comment: "Button on the alert to add an image for the Blaze campaign"
             )
         }
     }

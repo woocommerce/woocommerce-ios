@@ -19,6 +19,8 @@ final class AddProductCoordinator: Coordinator {
         case storeOnboarding
         /// Initiated from the product description AI announcement modal in the dashboard.
         case productDescriptionAIAnnouncementModal
+        /// Initiated from the campaign creation entry point when there is no product in the store.
+        case blazeCampaignCreation
     }
 
     let navigationController: UINavigationController

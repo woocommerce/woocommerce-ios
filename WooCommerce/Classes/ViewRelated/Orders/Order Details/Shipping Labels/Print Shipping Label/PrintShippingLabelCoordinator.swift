@@ -30,10 +30,10 @@ final class PrintShippingLabelCoordinator {
         self.onCompletion = onCompletion
     }
 
-    /// Shows the main screen for printing a shipping label.
+    /// Creates the main viewController for printing a shipping label.
     /// `self` is retained in the action callbacks so that the coordinator has the same life cycle as the main view controller
     /// (`PrintShippingLabelViewController`).
-    func showPrintUI() {
+    func createPrintViewController() -> PrintShippingLabelViewController {
         let printViewController = PrintShippingLabelViewController(shippingLabels: shippingLabels, printType: printType)
 
         printViewController.onAction = { actionType in
@@ -53,9 +53,7 @@ final class PrintShippingLabelCoordinator {
             }
         }
 
-        // Since the print UI could make an API request for printing data, disables the bottom bar (tab bar) to simplify app states.
-        printViewController.hidesBottomBarWhenPushed = true
-        sourceNavigationController.show(printViewController, sender: sourceNavigationController)
+        return printViewController
     }
 }
 
@@ -98,7 +96,7 @@ private extension PrintShippingLabelCoordinator {
         let viewProperties = InProgressViewProperties(title: Localization.inProgressTitle(labelCount: shippingLabels.count),
                                                       message: Localization.inProgressMessage)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-        inProgressViewController.modalPresentationStyle = .overCurrentContext
+        inProgressViewController.modalPresentationStyle = .overFullScreen
         sourceNavigationController.present(inProgressViewController, animated: true, completion: nil)
     }
 
@@ -168,10 +166,14 @@ private extension PrintShippingLabelCoordinator {
             .compactMap { $0.commercialInvoiceURL }
             .filter { $0.isNotEmpty }
         guard urls.isNotEmpty, printType == .print else {
+            onCompletion?()
             return
         }
 
-        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: urls, showsSaveForLater: true)
+        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: urls,
+                                                          showsSaveForLater: true) {
+            self.onCompletion?()
+        }
         let hostingController = UIHostingController(rootView: printCustomsFormsView)
         hostingController.hidesBottomBarWhenPushed = true
 

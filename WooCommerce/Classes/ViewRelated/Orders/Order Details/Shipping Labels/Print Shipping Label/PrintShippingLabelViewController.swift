@@ -107,6 +107,16 @@ private extension PrintShippingLabelViewController {
 private extension PrintShippingLabelViewController {
     func configureNavigationBar() {
         navigationItem.title = Localization.navigationBarTitle(labelCount: viewModel.shippingLabels.count)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.closeButtonTitle,
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(closeButtonTapped))
+        isModalInPresentation = true
+    }
+
+    @objc func closeButtonTapped() {
+        saveLabelForLater()
+        presentingViewController?.dismiss(animated: true)
     }
 
     func configureTableView() {
@@ -392,6 +402,10 @@ private extension PrintShippingLabelViewController {
         static let paperSizeOptionsButtonTitle = NSLocalizedString("See layout and paper sizes options", comment: "Link title to see all paper size options")
         static let printingInstructionsButtonTitle = NSLocalizedString("Don’t know how to print from your device?",
                                                                        comment: "Link title to see instructions for printing a shipping label on an iOS device")
+        static let closeButtonTitle = NSLocalizedString(
+            "print.shipping.label.close.button.title",
+            value: "Close",
+            comment: "Close title for the navigation bar button on the Print Shipping Label view.")
     }
 }
 

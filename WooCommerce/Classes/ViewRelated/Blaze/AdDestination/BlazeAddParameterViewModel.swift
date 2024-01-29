@@ -44,15 +44,17 @@ final class BlazeAddParameterViewModel: ObservableObject {
         validateParameters()
         validateInputLength()
     }
+}
 
+private extension BlazeAddParameterViewModel {
     /// This function validates the URL parameters using String.isValidURL().
-    /// As isValidURL() needs a full URL, we add Constant.baseURLForValidation is added.
-    private func validateParameters() {
+    /// As isValidURL() needs a full URL, we add Constant.baseURLForValidation as prefix.
+    func validateParameters() {
         let url = "\(Constant.baseURLForValidation)\(key)=\(value)"
         hasValidationError = !url.isValidURL()
     }
 
-    private func validateInputLength() {
+    func validateInputLength() {
         let totalInputString = key + "=" + value
         hasCountError = remainingCharacters - totalInputString.count < 0
     }

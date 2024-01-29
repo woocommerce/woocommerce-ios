@@ -17,7 +17,7 @@ final class HelpAndSupportViewController: UIViewController {
     ///
     private var accountEmail: String {
         // A stored Zendesk email address is preferred
-        if let zendeskEmail = ZendeskProvider.shared.userSupportEmail() {
+        if let zendeskEmail = ZendeskProvider.shared.retrieveUserInfoIfAvailable().emailAddress {
             return zendeskEmail
         }
 

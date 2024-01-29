@@ -384,9 +384,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logDescriptionTapped()
                 editProductDescription()
             case .promoteWithBlaze:
-                if !viewModel.shouldShowBlazeIntroView {
-                    ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
-                }
                 displayBlaze()
             default:
                 break
@@ -745,7 +742,7 @@ private extension ProductFormViewController {
         blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
             guard let self else { return }
             self.updateFormTableContent()
-            if self.viewModel.canPromoteWithBlaze() && !self.viewModel.shouldShowBlazeIntroView {
+            if self.viewModel.canPromoteWithBlaze() {
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
             }
         }
@@ -1114,33 +1111,7 @@ private extension ProductFormViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-
-        if viewModel.shouldShowBlazeIntroView {
-            let onCreateCampaignClosure = { [weak self] in
-                guard let self else { return }
-                self.dismiss(animated: true)
-                navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .introView)
-                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
-            }
-            let onDismissClosure = { [weak self] in
-                guard let self = self else { return }
-                self.dismiss(animated: true)
-            }
-            let blazeHostingController: UIViewController = {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-                    return BlazeCreateCampaignIntroController(onCreateCampaign: onCreateCampaignClosure,
-                                                              onDismiss: onDismissClosure)
-                } else {
-                    return BlazeCampaignIntroController(onStartCampaign: onCreateCampaignClosure,
-                                                        onDismiss: onDismissClosure)
-                }
-            }()
-
-            present(blazeHostingController, animated: true)
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
-        } else {
-            navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .productDetailPromoteButton)
-        }
+        navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .productDetailPromoteButton)
     }
 
     private func navigateToBlazeCampaignCreation(siteID: Int64, siteUrl: String, source: BlazeSource) {

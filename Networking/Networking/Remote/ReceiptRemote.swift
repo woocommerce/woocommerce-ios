@@ -9,8 +9,8 @@ public final class ReceiptRemote: Remote {
     ///    - forceRegenerate: whether a new receipt is generated. Defaults to `true`
     ///    - completion: callback with the expected `Receipt` object, or an error.
     ///
-    public func retrieveReceipt(siteID: Int64 = 121710041,
-                                orderID: Int64 = 7002,
+    public func retrieveReceipt(siteID: Int64,
+                                orderID: Int64,
                                 forceRegenerate: Bool = true,
                                 completion: @escaping (Result<Receipt, Error>) -> Void) {
         let path = "orders/\(orderID)/receipt"

@@ -6,7 +6,11 @@ final class ReceiptRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockNetwork()
+    private let network = MockNetwork()
+
+    private let sampleSiteID: Int64 = 12345
+
+    private let sampleOrderID: Int64 = 6789
 
     override func setUp() {
         super.setUp()
@@ -16,12 +20,14 @@ final class ReceiptRemoteTests: XCTestCase {
     func test_retrieveReceipt_when_there_is_data_envelope_then_returns_parsed_data() throws {
         // Given
         let remote = ReceiptRemote(network: network)
+        let endpoint = "orders/\(sampleOrderID)/receipt"
+        let filename = "receipt"
 
         // When
-        network.simulateResponse(requestUrlSuffix: "orders/123/receipt",
-                                 filename: "receipt")
+        network.simulateResponse(requestUrlSuffix: endpoint, filename: filename)
+
         let result = waitFor { promise in
-            remote.retrieveReceipt(siteID: 123, orderID: 123) { result in
+            remote.retrieveReceipt(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }
         }
@@ -35,12 +41,14 @@ final class ReceiptRemoteTests: XCTestCase {
     func test_retrieveReceipt_when_there_is_no_data_envelope_then_returns_parsed_data() throws {
         // Given
         let remote = ReceiptRemote(network: network)
+        let endpoint = "orders/\(sampleOrderID)/receipt"
+        let filename = "receipt-without-data-envelope"
 
         // When
-        network.simulateResponse(requestUrlSuffix: "orders/123/receipt",
-                                 filename: "receipt-without-data-envelope")
+        network.simulateResponse(requestUrlSuffix: endpoint, filename: filename)
+
         let result = waitFor { promise in
-            remote.retrieveReceipt(siteID: 123, orderID: 123) { result in
+            remote.retrieveReceipt(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
                 promise(result)
             }
         }
@@ -56,7 +64,7 @@ final class ReceiptRemoteTests: XCTestCase {
         let remote = ReceiptRemote(network: network)
 
         // When
-        remote.retrieveReceipt { _ in }
+        remote.retrieveReceipt(siteID: sampleSiteID, orderID: sampleOrderID) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -67,9 +75,10 @@ final class ReceiptRemoteTests: XCTestCase {
     func test_retrieveReceipt_when_force_new_set_to_false_then_includes_force_new_parameter_as_false() throws {
         // Given
         let remote = ReceiptRemote(network: network)
+        let forceRegenerate = false
 
         // When
-        remote.retrieveReceipt(forceRegenerate: false) { _ in }
+        remote.retrieveReceipt(siteID: sampleSiteID, orderID: sampleOrderID, forceRegenerate: forceRegenerate) { _ in }
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)

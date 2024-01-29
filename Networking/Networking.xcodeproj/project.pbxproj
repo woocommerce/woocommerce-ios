@@ -399,6 +399,12 @@
 		6888A2C62A650FD00026F5C0 /* iap-transaction-not-handled.json in Resources */ = {isa = PBXBuildFile; fileRef = 6888A2C52A650FD00026F5C0 /* iap-transaction-not-handled.json */; };
 		688908AE28FF920C0081A07E /* customer-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 688908AD28FF920C0081A07E /* customer-2.json */; };
 		68BD37B328D9B8BD00C2A517 /* CustomerRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BD37B228D9B8BD00C2A517 /* CustomerRemoteTests.swift */; };
+		68BFF8FA2B67679700B15FF2 /* ReceiptRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BFF8F92B67679700B15FF2 /* ReceiptRemote.swift */; };
+		68BFF8FC2B6767FA00B15FF2 /* ReceiptMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BFF8FB2B6767FA00B15FF2 /* ReceiptMapper.swift */; };
+		68BFF8FE2B676A9F00B15FF2 /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BFF8FD2B676A9F00B15FF2 /* Receipt.swift */; };
+		68BFF9022B677F1D00B15FF2 /* ReceiptRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BFF9012B677F1D00B15FF2 /* ReceiptRemoteTests.swift */; };
+		68BFF9042B6780AA00B15FF2 /* receipt.json in Resources */ = {isa = PBXBuildFile; fileRef = 68BFF9032B6780AA00B15FF2 /* receipt.json */; };
+		68BFF9062B6785C700B15FF2 /* receipt-without-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = 68BFF9052B6785C700B15FF2 /* receipt-without-data-envelope.json */; };
 		68C87B342862D40E00A99054 /* setting-all-except-countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 68C87B332862D40E00A99054 /* setting-all-except-countries.json */; };
 		68CB800C28D87BC800E169F8 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68CB800B28D87BC800E169F8 /* Customer.swift */; };
 		68CB800E28D8901B00E169F8 /* CustomerMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68CB800D28D8901B00E169F8 /* CustomerMapper.swift */; };
@@ -1454,6 +1460,12 @@
 		6888A2C52A650FD00026F5C0 /* iap-transaction-not-handled.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-transaction-not-handled.json"; sourceTree = "<group>"; };
 		688908AD28FF920C0081A07E /* customer-2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "customer-2.json"; sourceTree = "<group>"; };
 		68BD37B228D9B8BD00C2A517 /* CustomerRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerRemoteTests.swift; sourceTree = "<group>"; };
+		68BFF8F92B67679700B15FF2 /* ReceiptRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRemote.swift; sourceTree = "<group>"; };
+		68BFF8FB2B6767FA00B15FF2 /* ReceiptMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptMapper.swift; sourceTree = "<group>"; };
+		68BFF8FD2B676A9F00B15FF2 /* Receipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
+		68BFF9012B677F1D00B15FF2 /* ReceiptRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRemoteTests.swift; sourceTree = "<group>"; };
+		68BFF9032B6780AA00B15FF2 /* receipt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = receipt.json; sourceTree = "<group>"; };
+		68BFF9052B6785C700B15FF2 /* receipt-without-data-envelope.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "receipt-without-data-envelope.json"; sourceTree = "<group>"; };
 		68C87B332862D40E00A99054 /* setting-all-except-countries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "setting-all-except-countries.json"; sourceTree = "<group>"; };
 		68CB800B28D87BC800E169F8 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
 		68CB800D28D8901B00E169F8 /* CustomerMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerMapper.swift; sourceTree = "<group>"; };
@@ -2347,6 +2359,7 @@
 				26E5A08B25A66FD3000DF8F6 /* ProductAttributeTermRemoteTests.swift */,
 				4599FC6524A633A10056157A /* ProductTagsRemoteTests.swift */,
 				CE71E2382A4C594600DB5376 /* ProductsReportsRemoteTests.swift */,
+				68BFF9012B677F1D00B15FF2 /* ReceiptRemoteTests.swift */,
 				7412A8F121B6E47A005D182A /* ReportRemoteTests.swift */,
 				743E84F9221742E300FAC9D7 /* ShipmentsRemoteTests.swift */,
 				74AB5B5021AF426D00859C12 /* SiteAPIRemoteTests.swift */,
@@ -2505,6 +2518,7 @@
 				CE0A0F1A223989670075ED8D /* ProductsRemote.swift */,
 				CE71E22A2A4C363E00DB5376 /* ProductsReportsRemote.swift */,
 				025CA2C3238EBC4300B05C81 /* ProductShippingClassRemote.swift */,
+				68BFF8F92B67679700B15FF2 /* ReceiptRemote.swift */,
 				CE43066F234B99F50073CBFF /* RefundsRemote.swift */,
 				7412A8E921B6E192005D182A /* ReportRemote.swift */,
 				743E84E922171C5800FAC9D7 /* ShipmentsRemote.swift */,
@@ -2617,6 +2631,7 @@
 				267313302559CC930026F7EF /* PaymentGateway.swift */,
 				314703072670222500EF253A /* PaymentGatewayAccount.swift */,
 				D89A01D326D3F8D8008195BE /* ReaderLocation.swift */,
+				68BFF8FD2B676A9F00B15FF2 /* Receipt.swift */,
 				743E84EB22171F4600FAC9D7 /* ShipmentTracking.swift */,
 				D823D90C2237784A00C90817 /* ShipmentTrackingProvider.swift */,
 				D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */,
@@ -2948,6 +2963,7 @@
 				EE4D51B42ACD331300783D77 /* product-categories-created-without-data.json */,
 				EE4D51B32ACD331300783D77 /* product-categories-created.json */,
 				020EF5EC2A8C8F4F009D2169 /* products-total.json */,
+				68BFF9032B6780AA00B15FF2 /* receipt.json */,
 				CEC4BF90234E40B5008D9195 /* refund-single.json */,
 				CEC4BF92234E7EE0008D9195 /* refunds-all.json */,
 				7412A8EF21B6E415005D182A /* report-orders.json */,
@@ -3085,6 +3101,7 @@
 				684AB6D72AC2E93100106D7C /* order-with-special-character-currency.json */,
 				20D210C22B1780CE0099E517 /* deposits-overview-all.json */,
 				20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */,
+				68BFF9052B6785C700B15FF2 /* receipt-without-data-envelope.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -3176,6 +3193,7 @@
 				311D412D2783C07D00052F64 /* StripeAccountMapper.swift */,
 				3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */,
 				D8EDFE2525EE8A60003D2213 /* ReaderConnectionTokenMapper.swift */,
+				68BFF8FB2B6767FA00B15FF2 /* ReceiptMapper.swift */,
 				3178A49E2703E5CF00A8B4CA /* RemoteReaderLocationMapper.swift */,
 				31054701262E04F700C5C02B /* RemotePaymentIntentMapper.swift */,
 				45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationSuccessMapper.swift */,
@@ -3782,6 +3800,7 @@
 				EE66BB062B29791500518DAF /* theme-activate-success.json in Resources */,
 				CE6B969A2A0BCD09003C4B27 /* order-with-bundled-line-items.json in Resources */,
 				3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */,
+				68BFF9042B6780AA00B15FF2 /* receipt.json in Resources */,
 				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,
 				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,
 				D8FBFF2722D529F2006E3336 /* order-stats-v4-month.json in Resources */,
@@ -4066,6 +4085,7 @@
 				B918DDF12A3C960000E74DE5 /* products-sku-search-variation.json in Resources */,
 				03EB99982907F4AA00F06A39 /* just-in-time-message-list-multiple.json in Resources */,
 				EE80A25029556FBD003591E4 /* coupon-reports-without-data.json in Resources */,
+				68BFF9062B6785C700B15FF2 /* receipt-without-data-envelope.json in Resources */,
 				451A97DE260B59870059D135 /* shipping-label-packages-success.json in Resources */,
 				2676F4D0290B0EC800C7A15B /* product-id-only.json in Resources */,
 				31D27C8F2602B553002EDB1D /* plugins.json in Resources */,
@@ -4194,6 +4214,7 @@
 				74ABA1CF213F1D1600FFAD30 /* TopEarnerStatsItem.swift in Sources */,
 				FE28F6E6268429B6004465C7 /* UserRemote.swift in Sources */,
 				02AD47702A6EB71100E652D6 /* URLRequestConvertible+Path.swift in Sources */,
+				68BFF8FE2B676A9F00B15FF2 /* Receipt.swift in Sources */,
 				7452387421124B7700A973CD /* AnyDecodable.swift in Sources */,
 				DE4D23B829B5F909003A4B5D /* Announcement.swift in Sources */,
 				CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */,
@@ -4301,6 +4322,7 @@
 				DE74F29A27E08F5A0002FE59 /* SiteSettingMapper.swift in Sources */,
 				CC33754E29C884000006A538 /* ProductCompositeComponent.swift in Sources */,
 				450106852399A7CB00E24722 /* TaxClass.swift in Sources */,
+				68BFF8FA2B67679700B15FF2 /* ReceiptRemote.swift in Sources */,
 				CC0786612677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift in Sources */,
 				456930AB264EB85A009ED69D /* ShippingLabelCarriersAndRatesMapper.swift in Sources */,
 				CCF48AD4262864CB0034EA83 /* ShippingLabelAccountSettings.swift in Sources */,
@@ -4445,6 +4467,7 @@
 				4515280D257A7EEC0076B03C /* ProductAttributeListMapper.swift in Sources */,
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
 				31D27C8726028CE9002EDB1D /* SitePluginsMapper.swift in Sources */,
+				68BFF8FC2B6767FA00B15FF2 /* ReceiptMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */,
 				03DCB786262739D200C8953D /* CouponMapper.swift in Sources */,
@@ -4798,6 +4821,7 @@
 				B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */,
 				EE57C138297F9AC900BC31E7 /* ProductVariationsBulkUpdateMapperTests.swift in Sources */,
 				E18152C428F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift in Sources */,
+				68BFF9022B677F1D00B15FF2 /* ReceiptRemoteTests.swift in Sources */,
 				CCE5F39729F00B5200087332 /* SubscriptionsRemoteTests.swift in Sources */,
 				DED91DE72AD64ED500CDCC53 /* BlazeRemoteTests.swift in Sources */,
 				D8A2849A25FBB2E70019A84B /* ProductAttributeTermListMapperTests.swift in Sources */,

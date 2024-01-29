@@ -171,6 +171,13 @@ final class OrdersRootViewController: UIViewController {
         selectOrderFromListIfPossible(for: orderID)
     }
 
+    /// Called when an order is shown externally (outside of `OrderListViewController`) and the order should be
+    /// selected in the order list.
+    /// - Parameter orderID: ID of the order to be selected in the order list.
+    func onOrderSelected(id orderID: Int64) {
+        ordersViewController.onOrderSelected(id: orderID)
+    }
+
     /// Presents the Order Creation flow.
     ///
     @objc func presentOrderCreationFlow() {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-16 11:54:02+0000 */
+/* Translation-Revision-Date: 2024-01-23 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -2034,13 +2034,13 @@ which should be translated separately and considered part of this sentence. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "WordPress サイトに接続できませんでした。有効な WordPress サイトはこのアドレスにありません。入力したサイトアドレス (URL) を確認してください。";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "接続できませんでした。必要な XML-RPC メソッドがサーバーにありません。";
+"Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem." = "接続できませんでした。 必要な XML-RPC メソッドがサーバーにありません。 この問題を解決するには、ホスティングサービスに連絡してください。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。あなたのサイトの XMLRPC エンドポイントにアクセスする際に、403エラーが発生しました。アプリがサイトと通信するためにはアクセスが必要です。ホスティングサービスに連絡して、この問題を解決してください。";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "接続できませんでした。 あなたのサイトの XMLRPC エンドポイントにアクセスする際に、403エラーが発生しました。 アプリがサイトと通信するためにはアクセスが必要です。 この問題を解決するには、ホスティングサービスに連絡してください。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
-"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。ご利用のホスティングサービスは POST 要求をブロックしていますが、アプリはあなたのサイトとの通信に POST 要求を必要としています。ホスティングサービスに連絡して、この問題を解決してください。";
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "接続できませんでした。 ご利用のホスティングサービスは POST 要求をブロックしていますが、アプリはあなたのサイトとの通信に POST 要求を必要としています。 この問題を解決するには、ホスティングサービスに連絡してください。";
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "タグを読み込めませんでした。";
@@ -2148,9 +2148,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "ストアを作成する";
-
-/* Button when tapped will launch create Blaze campaign flow. */
-"Create campaign" = "キャンペーンを作成";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "クーポンを作成";
@@ -4560,12 +4557,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "すべてのレビューを既読としてマークする";
-
-/* Alert button when selecting the cash payment method */
-"Mark as Paid" = "支払い済みとしてマーク";
-
-/* Alert title when selecting the cash payment method */
-"Mark as Paid?" = "支払い済みとしてマークしますか ?";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "この注文に完了のマークを付けてお客様に通知";
@@ -8131,9 +8122,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "この操作を行うと、可能な限りすべてのバリエーション属性の組み合わせ (%d件のバリエーション) につきひとつのバリエーションが作成されます。";
 
-/* Alert info when selecting the cash payment method during payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "WooCommerce 外部で (合計) を受け取った場合は、注文が完了済みとしてマークされます";
-
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "オンラインの注文には影響しません";
 
@@ -9661,6 +9649,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "税金を請求";
 
+/* Label for button to enable Jetpack Stats */
+"analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack 統計を有効化";
+
+/* Error shown when Jetpack Stats can't be enabled in the Analytics Hub. */
+"analyticsHub.jetpackStatsCTA.errorNotice" = "ストアで Jetpack 統計を有効化できませんでした";
+
+/* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
+"analyticsHub.jetpackStatsCTA.message" = "Jetpack 統計を有効化してストアのセッション分析を表示します。";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.jetpackStatsCTA.title" = "セッション";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "キャンセル";
 
@@ -9811,6 +9811,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "%1$d日間";
 
+/* Button to dismiss the flow on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.cancel" = "キャンペーンをキャンセル";
+
+/* Button to dismiss the support form from the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.done" = "完了";
+
+/* Button to get support on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.getSupport" = "サポートを受ける";
+
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationErrorView.message" = "問題が発生しました。\nキャンペーンを作成できませんでした。";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.noPaymentTaken" = "支払いはされていません。";
+
+/* Suggested message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.suggestion" = "もう一度お試しいただくか、ヘルプが必要な場合はサポートにご連絡ください。";
+
+/* Title of the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.title" = "キャンペーン作成エラー";
+
+/* Button to try again on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.tryAgain" = "もう一度試す";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "広告の掲載先";
 
@@ -9862,11 +9887,62 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@、%3$@から%2$d日";
 
+/* Text indicating all locations for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.everywhere" = "すべての場所";
+
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f USD";
 
+/* Message in the Blaze campaign creation loading screen */
+"blazeCampaignCreationLoadingView.Message" = "キャンペーンを作成しています";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Blaze を非表示";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.promote" = "宣伝";
+
+/* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.adPolicy" = "広告ポリシー";
+
+/* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.addPaymentMethod" = "お支払い方法を追加";
+
+/* Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: By clicking \"Submit campaign\" you agree to the Terms of Service and Advertising Policy, and authorize your payment method to be charged for the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work. */
+"blazeConfirmPaymentView.agreement" = "「キャンペーンを送信」をクリックすると、%1$@と%2$@に同意し、選択した予算と期間での支払いの決済方法を許可したと見なされます。宣伝された投稿における予算と支払いの仕組みについて詳しくは%3$@。";
+
+/* Item to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.blazeCampaign" = "Blaze キャンペーン";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.errorMessage" = "お支払い方法の読み込みエラー";
+
+/* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.learnMore" = "さらに詳しく";
+
+/* Text for the loading state on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.loading" = "お支払い方法を読み込んでいます…";
+
+/* Section title on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.paymentTotals" = "支払総額";
+
+/* Action button on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.submitButton" = "キャンペーンを送信";
+
+/* The terms to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.terms" = "利用規約";
+
+/* Title of the Payment view in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.title" = "支払い";
+
+/* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.total" = "合計";
+
+/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
+"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.tryAgain" = "もう一度試す";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "広告は WordPress.com と Tumblr ネットワーク内の何百万ものサイトに表示されます。";
@@ -9970,6 +10046,51 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "%1$@ の説明";
 
+/* Button title in the Blaze Payment Method screen if there is an existing payment method */
+"blazePaymentMethodsView.addAnotherCreditCardButton" = "別のクレジットカードを追加";
+
+/* Button title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.addCreditCardButton" = "クレジットカードを追加";
+
+/* Title of the button to dismiss the Blaze payment method list screen */
+"blazePaymentMethodsView.cancelButton" = "キャンセル";
+
+/* Done navigation button in the Blaze Payment Method screen */
+"blazePaymentMethodsView.doneButton" = "完了";
+
+/* Done navigation button in Blaze add payment web view */
+"blazePaymentMethodsView.doneButtonAddPayment" = "完了";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.emailReceipt" = "ラベルの購入レシートを %1$@ (%2$@) に %3$@ でメール送信します";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.errorMessage" = "決済方法の読み込みエラー";
+
+/* Navigation bar title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.navigationBarTitle" = "決済方法";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazePaymentMethodsView.paymentMethodAddedNotice" = "支払い方法が追加されました";
+
+/* Title of the web view of adding a payment method in Blaze */
+"blazePaymentMethodsView.paymentMethodWebViewTitle" = "決済方法";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.paymentMethodsFooter" = "クレジットカードが次の WordPress.com アカウントから読み込まれました: %1$@ (<%2$@>)";
+
+/* Header for list of payment methods in Payment Method screen */
+"blazePaymentMethodsView.paymentMethodsHeader" = "お支払い方法が選択されました";
+
+/* Message that will be displayed if there are no Blaze payment methods. */
+"blazePaymentMethodsView.pleaseAddPaymentMethodMessage" = "新しい決済方法を追加してください";
+
+/* Text to explain that transactions will be secure in Payment Method screen */
+"blazePaymentMethodsView.transactionsSecure" = "すべてのトランザクションは安全で暗号化されています";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.tryAgain" = "もう一度試す";
+
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "キャンセル";
 
@@ -10002,6 +10123,39 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to retry syncing data on the target language picker for campaign creation */
 "blazeTargetLanguagePickerView.tryAgain" = "もう一度試す";
+
+/* Button to dismiss the target location picker for campaign creation */
+"blazeTargetLocationPickerView.cancel" = "キャンセル";
+
+/* Button to save the selections on the target location picker for campaign creation */
+"blazeTargetLocationPickerView.save" = "保存";
+
+/* Placeholder on the search bar of the target location picker for campaign creation */
+"blazeTargetLocationPickerView.searchPrompt" = "位置情報を検索";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLocationPickerView.title" = "場所";
+
+/* Message indicating the minimum length for search queries on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.longerQuery" = "検索を開始するには、少なくとも3文字入力してください。";
+
+/* Message indicating no search result on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.noResult" = "場所が見つかりませんでした。\nもう一度お試しください。";
+
+/* Hint message to enter search query on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "国、州、都市を入力すると、選択可能なオプションが表示されます";
+
+/* Title of the row to select all target location for Blaze campaign creation */
+"blazeTargetLocationSearchView.allTitle" = "すべての場所";
+
+/* Header message on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.headerMessage" = "対象の場所を選択する";
+
+/* Suggestion for searching for specific locations on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.searchHint" = "または、検索ボックスに探しているものを入力して特定の場所を選択します。";
+
+/* Header for the Specific Locations section on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.specificLocationHeader" = "特定の場所";
 
 /* Title of the row to select all target topics for Blaze campaign creation */
 "blazeTargetTopicPickerView.allTitle" = "すべてのテーマ";
@@ -10048,6 +10202,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Reader をスキャンしています";
+
+/* Title for the toggle that specifies whether to add a note to the order with the change data. */
+"cashPaymentTenderView.addNoteToggle.title" = "トランザクションの詳細を注文メモに記録する";
+
+/* Title for the cancel button. */
+"cashPaymentTenderView.cancelButton" = "キャンセル";
+
+/* Title for the change due text. */
+"cashPaymentTenderView.changeDue" = "変更期限";
+
+/* Title for the amount the customer paid. */
+"cashPaymentTenderView.customerPaid" = "現金を受領しました";
+
+/* Title for the Mark order as complete button. */
+"cashPaymentTenderView.markOrderAsCompleteButton.title" = "注文を完了としてマーク";
+
+/* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
+"cashPaymentTenderView.navigationBarTitle" = "支払い (%1$@) を受け取る";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
@@ -10465,6 +10637,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "password" = "パスワード";
+
+/* Note from the cash tender view. */
+"paymentMethods.orderPaidByCashNoteText.note" = "注文は現金で支払われました。 顧客は %1$@支払いました。 変更期限は%2$@でした。";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "支払い, tap to pay, woocommerce, woo, オフラインでの支払い, オフラインでの支払い, 支払いを受け取る, 支払い, リーダー, カードリーダー, カードリーダーを注文";

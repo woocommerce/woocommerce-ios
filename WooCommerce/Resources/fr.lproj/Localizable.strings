@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-16 15:54:05+0000 */
+/* Translation-Revision-Date: 2024-01-23 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -2034,13 +2034,13 @@ which should be translated separately and considered part of this sentence. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Impossible de se connecter au site WordPress. Aucun site WordPress valide n’est présent à cette adresse. Vérifier l’adresse du site (URL) entrée.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Connexion impossible. Les méthodes XML-RPC obligatoires sont manquantes sur ce serveur.";
+"Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem." = "Connexion impossible. Les méthodes XML-RPC requises ne sont pas présentes sur le serveur. Veuillez contacter votre hébergeur pour résoudre ce problème.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Connexion impossible. Nous avons rencontré une erreur 403 en essayant d'accéder au point de terminaison XMLRPC de votre site. L'application requiert cet élément pour communiquer avec votre site. Contactez votre hôte pour résoudre ce problème.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Connexion impossible. Nous avons rencontré une erreur 403 lors de la tentative d’accès au point de terminaison XML-RPC de votre site. L’application en a besoin pour communiquer avec votre site. Veuillez contacter votre hébergeur pour résoudre ce problème.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
-"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossible de se connecter. Votre hébergeur bloque les requêtes POST et l’app a besoin de cela pour communiquer avec votre site. Contactez votre hébergeur pour résoudre ce problème.";
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Connexion impossible. Votre hébergeur bloque les requêtes POST dont votre application a besoin pour communiquer avec votre site. Veuillez contacter votre hébergeur pour résoudre ce problème.";
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Impossible de charger les étiquettes";
@@ -2148,9 +2148,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Créer une boutique";
-
-/* Button when tapped will launch create Blaze campaign flow. */
-"Create campaign" = "Créer une campagne";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Créer un code promo";
@@ -4560,12 +4557,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "Marquer tous les avis comme lus";
-
-/* Alert button when selecting the cash payment method */
-"Mark as Paid" = "Marquer comme payé";
-
-/* Alert title when selecting the cash payment method */
-"Mark as Paid?" = "Marquer comme payé ?";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Marquer cette commande comme terminée et informer le client";
@@ -8131,9 +8122,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Cette opération créera une variante pour chaque combinaison possible d’attributs de variantes (%d variantes).";
 
-/* Alert info when selecting the cash payment method during payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "Votre commande sera marquée comme terminée si vous avez reçu (total) en dehors de WooCommerce.";
-
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "Cela n’affectera pas les commandes en ligne";
 
@@ -9661,6 +9649,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Facturer les taxes";
 
+/* Label for button to enable Jetpack Stats */
+"analyticsHub.jetpackStatsCTA.buttonLabel" = "Activer Jetpack Stats";
+
+/* Error shown when Jetpack Stats can't be enabled in the Analytics Hub. */
+"analyticsHub.jetpackStatsCTA.errorNotice" = "Nous n’avons pas réussi à activer Jetpack Stats sur votre boutique";
+
+/* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
+"analyticsHub.jetpackStatsCTA.message" = "Activez Jetpack Stats pour voir les statistiques de la session de votre boutique.";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.jetpackStatsCTA.title" = "SESSIONS";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Annuler";
 
@@ -9811,6 +9811,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "pendant %1$d jour";
 
+/* Button to dismiss the flow on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.cancel" = "Annuler la campagne";
+
+/* Button to dismiss the support form from the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.done" = "Terminé";
+
+/* Button to get support on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.getSupport" = "Obtenir de l’aide";
+
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationErrorView.message" = "Quelque chose ne va pas.\nNous n’avons pas réussi à créer votre campagne.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.noPaymentTaken" = "Aucun paiement n’a été effectué.";
+
+/* Suggested message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.suggestion" = "Veuillez réessayer, ou contactez l’assistance pour obtenir de l’aide.";
+
+/* Title of the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.title" = "Erreur lors de la création de la campagne";
+
+/* Button to try again on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.tryAgain" = "Réessayer";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Destination de la publicité";
 
@@ -9862,11 +9887,62 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d jour à partir du %3$@";
 
+/* Text indicating all locations for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.everywhere" = "Partout";
+
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "%.0f $ USD";
 
+/* Message in the Blaze campaign creation loading screen */
+"blazeCampaignCreationLoadingView.Message" = "Création de votre campagne";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Masquer Blaze";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.promote" = "Promouvoir";
+
+/* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.adPolicy" = "Politique en matière de publicité";
+
+/* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.addPaymentMethod" = "Ajouter un moyen de paiement";
+
+/* Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: By clicking \"Submit campaign\" you agree to the Terms of Service and Advertising Policy, and authorize your payment method to be charged for the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work. */
+"blazeConfirmPaymentView.agreement" = "En cliquant sur « Soumettre la campagne », vous acceptez les %1$@ et la %2$@. Vous autorisez également que que le budget et la durée que vous choisissez soient facturés à l’aide de votre mode de paiement. %3$@ sur le fonctionnement des budgets et des paiements pour les articles promus.";
+
+/* Item to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.blazeCampaign" = "Campagne Blaze";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.errorMessage" = "Erreur lors du chargement de vos moyens de paiement";
+
+/* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.learnMore" = "Lire la suite";
+
+/* Text for the loading state on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.loading" = "Chargement des moyens de paiement…";
+
+/* Section title on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.paymentTotals" = "Totaux des paiements";
+
+/* Action button on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.submitButton" = "Envoyer la campagne";
+
+/* The terms to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.terms" = "Conditions d’utilisation";
+
+/* Title of the Payment view in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.title" = "Paiement";
+
+/* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.total" = "Total";
+
+/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
+"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.tryAgain" = "Réessayer";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Vos publicités sur des millions de sites des réseaux WordPress.com et Tumblr.";
@@ -9970,6 +10046,51 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Voir comment fonctionne %1$@";
 
+/* Button title in the Blaze Payment Method screen if there is an existing payment method */
+"blazePaymentMethodsView.addAnotherCreditCardButton" = "Ajouter une autre carte de crédit";
+
+/* Button title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.addCreditCardButton" = "Ajouter une carte de crédit";
+
+/* Title of the button to dismiss the Blaze payment method list screen */
+"blazePaymentMethodsView.cancelButton" = "Annuler";
+
+/* Done navigation button in the Blaze Payment Method screen */
+"blazePaymentMethodsView.doneButton" = "Terminé";
+
+/* Done navigation button in Blaze add payment web view */
+"blazePaymentMethodsView.doneButtonAddPayment" = "Terminé";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.emailReceipt" = "Transmettez par e-mail les reçus d’achat d’étiquette à %1$@ (%2$@) à l’adresse %3$@";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.errorMessage" = "Erreur lors du chargement de vos moyens de paiement";
+
+/* Navigation bar title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.navigationBarTitle" = "Moyen de paiement";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazePaymentMethodsView.paymentMethodAddedNotice" = "Moyen de paiement ajouté";
+
+/* Title of the web view of adding a payment method in Blaze */
+"blazePaymentMethodsView.paymentMethodWebViewTitle" = "Moyen de paiement";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.paymentMethodsFooter" = "Les cartes de crédit sont récupérées à partir du compte WordPress.com suivant : %1$@ <%2$@>";
+
+/* Header for list of payment methods in Payment Method screen */
+"blazePaymentMethodsView.paymentMethodsHeader" = "Moyen de paiement sélectionné";
+
+/* Message that will be displayed if there are no Blaze payment methods. */
+"blazePaymentMethodsView.pleaseAddPaymentMethodMessage" = "Veuillez ajouter un nouveau moyen de paiement";
+
+/* Text to explain that transactions will be secure in Payment Method screen */
+"blazePaymentMethodsView.transactionsSecure" = "Toutes les transactions sont sécurisées et chiffrées";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.tryAgain" = "Réessayer";
+
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "Annuler";
 
@@ -10002,6 +10123,39 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to retry syncing data on the target language picker for campaign creation */
 "blazeTargetLanguagePickerView.tryAgain" = "Réessayer";
+
+/* Button to dismiss the target location picker for campaign creation */
+"blazeTargetLocationPickerView.cancel" = "Annuler";
+
+/* Button to save the selections on the target location picker for campaign creation */
+"blazeTargetLocationPickerView.save" = "Enregistrer";
+
+/* Placeholder on the search bar of the target location picker for campaign creation */
+"blazeTargetLocationPickerView.searchPrompt" = "Rechercher des lieux";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLocationPickerView.title" = "Lieu";
+
+/* Message indicating the minimum length for search queries on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.longerQuery" = "Veuillez saisir au moins trois caractères pour lancer la recherche.";
+
+/* Message indicating no search result on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.noResult" = "Aucun lieu trouvé.\nVeuillez réessayer.";
+
+/* Hint message to enter search query on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Saisir les premières lettres du pays, de l’État\/la région ou de la ville pour voir les options disponibles";
+
+/* Title of the row to select all target location for Blaze campaign creation */
+"blazeTargetLocationSearchView.allTitle" = "Partout";
+
+/* Header message on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.headerMessage" = "Choisir des lieux cibles";
+
+/* Suggestion for searching for specific locations on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.searchHint" = "Ou choisissez des lieux spécifiques en saisissant ce que vous cherchez dans le champ de recherche.";
+
+/* Header for the Specific Locations section on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.specificLocationHeader" = "Lieux spécifiques";
 
 /* Title of the row to select all target topics for Blaze campaign creation */
 "blazeTargetTopicPickerView.allTitle" = "Tous les sujets";
@@ -10048,6 +10202,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Recherche du lecteur";
+
+/* Title for the toggle that specifies whether to add a note to the order with the change data. */
+"cashPaymentTenderView.addNoteToggle.title" = "Enregistrer les détails de la transaction dans la note de commande";
+
+/* Title for the cancel button. */
+"cashPaymentTenderView.cancelButton" = "Annuler";
+
+/* Title for the change due text. */
+"cashPaymentTenderView.changeDue" = "Rendu";
+
+/* Title for the amount the customer paid. */
+"cashPaymentTenderView.customerPaid" = "Espèces reçues";
+
+/* Title for the Mark order as complete button. */
+"cashPaymentTenderView.markOrderAsCompleteButton.title" = "Marquer la commande comme terminée";
+
+/* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
+"cashPaymentTenderView.navigationBarTitle" = "Accepter le paiement (%1$@)";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
@@ -10465,6 +10637,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "password" = "mot de passe";
+
+/* Note from the cash tender view. */
+"paymentMethods.orderPaidByCashNoteText.note" = "La commande a été payée en espèces. Le client a payé %1$@. Le rendu s’élevait à %2$@.";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "paiements, appuyer pour payer, woocommerce, woo, paiements en personne, paiements en personne, percevoir un paiement, paiements, lecteur, lecteur de carte, commander un lecteur de carte";

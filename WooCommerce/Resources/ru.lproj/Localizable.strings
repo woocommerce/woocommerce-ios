@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-16 17:54:03+0000 */
+/* Translation-Revision-Date: 2024-01-23 19:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -2034,13 +2034,13 @@ which should be translated separately and considered part of this sentence. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Не удалось подключиться к сайту WordPress. По указанному адресу нет действующего сайта WordPress. Проверьте адрес сайта (URL-адрес).";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Не удалось подключиться. На сервере отсутствуют необходимые методы XML-RPC.";
+"Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem." = "Не удалось подключиться. На сервере отсутствуют необходимые методы XML-RPC. Пожалуйста, свяжитесь с вашим хостинг-провайдером, чтобы решить эту проблему.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Получена ошибка 403 при подключении к XMLRPC вашего сайта. Обратитесь в тех.поддержку хостинга.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Невозможно подключиться. Получена ошибка 403 при подключении к XMLRPC вашего сайта. Обратитесь в тех.поддержку хостинга.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
-"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Ваш хостинг блокирует POST-запросы XML-RPC, они требуются для обмена информацией с вашим сайтом. Обратитесь в тех. поддержку хостинга.";
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Невозможно подключиться. Ваш хостинг блокирует POST-запросы XML-RPC, они требуются для обмена информацией с вашим сайтом. Обратитесь в тех. поддержку хостинга.";
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Ошибка загрузки меток.";
@@ -2148,9 +2148,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Создание магазина";
-
-/* Button when tapped will launch create Blaze campaign flow. */
-"Create campaign" = "Создать кампанию";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Создание купона";
@@ -4560,12 +4557,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "Отметить все отзывы как прочитанные";
-
-/* Alert button when selecting the cash payment method */
-"Mark as Paid" = "Отметить как оплаченный";
-
-/* Alert title when selecting the cash payment method */
-"Mark as Paid?" = "Отметить как оплаченный?";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Отметить заказ как выполненный и уведомить заказчика";
@@ -8131,9 +8122,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Будет создан вариант для каждой возможной комбинации атрибутов (всего: %d).";
 
-/* Alert info when selecting the cash payment method during payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "Заказ будет отмечен как выполненный, если вы получили (всего) не через WooCommerce";
-
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "Это не затронет онлайн-заказы";
 
@@ -9661,6 +9649,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Удержать налог";
 
+/* Label for button to enable Jetpack Stats */
+"analyticsHub.jetpackStatsCTA.buttonLabel" = "Включить статистику Jetpack";
+
+/* Error shown when Jetpack Stats can't be enabled in the Analytics Hub. */
+"analyticsHub.jetpackStatsCTA.errorNotice" = "Не удалось включить статистику Jetpack в вашем магазине";
+
+/* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
+"analyticsHub.jetpackStatsCTA.message" = "Включите статистику Jetpack, чтобы получить доступ к аналитике сеансов вашего магазина.";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.jetpackStatsCTA.title" = "СЕАНСЫ";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Отмена";
 
@@ -9811,6 +9811,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "на %1$d день";
 
+/* Button to dismiss the flow on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.cancel" = "Отменить кампанию";
+
+/* Button to dismiss the support form from the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.done" = "Готово";
+
+/* Button to get support on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.getSupport" = "Получить поддержку";
+
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationErrorView.message" = "Что-то пошло не так.\nНе удалось создать кампанию.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.noPaymentTaken" = "Средства не списаны.";
+
+/* Suggested message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.suggestion" = "Повторите попытку или обратитесь в службу поддержки.";
+
+/* Title of the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.title" = "Ошибка при создании кампании";
+
+/* Button to try again on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.tryAgain" = "Повторить попытку";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Размещение рекламного объявления";
 
@@ -9862,11 +9887,62 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d день с %3$@";
 
+/* Text indicating all locations for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.everywhere" = "Везде";
+
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f долл. США";
 
+/* Message in the Blaze campaign creation loading screen */
+"blazeCampaignCreationLoadingView.Message" = "Создание кампании";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Скрыть Blaze";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.promote" = "Продвижение";
+
+/* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.adPolicy" = "Политика публикации рекламы";
+
+/* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.addPaymentMethod" = "Добавить способ оплаты";
+
+/* Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: By clicking \"Submit campaign\" you agree to the Terms of Service and Advertising Policy, and authorize your payment method to be charged for the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work. */
+"blazeConfirmPaymentView.agreement" = "Нажимая «Отправить кампанию», вы принимаете %1$@ и %2$@, а также разрешаете использовать указанный способ оплаты для списания средств за выбранные вами бюджет и период. См. %3$@ о том, как действуют бюджеты и платежи за продвигаемые записи.";
+
+/* Item to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.blazeCampaign" = "Кампания Blaze";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.errorMessage" = "Ошибка при загрузке способов оплаты";
+
+/* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.learnMore" = "Подробнее";
+
+/* Text for the loading state on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.loading" = "Загрузка способов оплаты…";
+
+/* Section title on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.paymentTotals" = "Итоговые суммы платежей";
+
+/* Action button on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.submitButton" = "Отправить кампанию";
+
+/* The terms to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.terms" = "Условия предоставления услуг";
+
+/* Title of the Payment view in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.title" = "Оплата";
+
+/* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.total" = "Итого";
+
+/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
+"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.tryAgain" = "Повторить попытку";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Ваша реклама появится на миллионах сайтов в сетях WordPress.com и Tumblr.";
@@ -9970,6 +10046,51 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Как работает %1$@";
 
+/* Button title in the Blaze Payment Method screen if there is an existing payment method */
+"blazePaymentMethodsView.addAnotherCreditCardButton" = "Добавить другую кредитную карту";
+
+/* Button title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.addCreditCardButton" = "Добавить кредитную карту";
+
+/* Title of the button to dismiss the Blaze payment method list screen */
+"blazePaymentMethodsView.cancelButton" = "Отмена";
+
+/* Done navigation button in the Blaze Payment Method screen */
+"blazePaymentMethodsView.doneButton" = "Готово";
+
+/* Done navigation button in Blaze add payment web view */
+"blazePaymentMethodsView.doneButtonAddPayment" = "Готово";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.emailReceipt" = "Отправить квитанции о покупке %1$@ (%2$@) на %3$@";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.errorMessage" = "Ошибка при загрузке способов оплаты";
+
+/* Navigation bar title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.navigationBarTitle" = "Способ оплаты";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazePaymentMethodsView.paymentMethodAddedNotice" = "Способ оплаты добавлен";
+
+/* Title of the web view of adding a payment method in Blaze */
+"blazePaymentMethodsView.paymentMethodWebViewTitle" = "Способ оплаты";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.paymentMethodsFooter" = "Сведения о кредитных картах получены из следующей учётной записи WordPress.com: %1$@ <%2$@>";
+
+/* Header for list of payment methods in Payment Method screen */
+"blazePaymentMethodsView.paymentMethodsHeader" = "Выбранный способ оплаты";
+
+/* Message that will be displayed if there are no Blaze payment methods. */
+"blazePaymentMethodsView.pleaseAddPaymentMethodMessage" = "Добавьте новый способ оплаты";
+
+/* Text to explain that transactions will be secure in Payment Method screen */
+"blazePaymentMethodsView.transactionsSecure" = "Все транзакции зашифрованы и защищены";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.tryAgain" = "Повторить попытку";
+
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "Отмена";
 
@@ -10002,6 +10123,39 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to retry syncing data on the target language picker for campaign creation */
 "blazeTargetLanguagePickerView.tryAgain" = "Повторить попытку";
+
+/* Button to dismiss the target location picker for campaign creation */
+"blazeTargetLocationPickerView.cancel" = "Отмена";
+
+/* Button to save the selections on the target location picker for campaign creation */
+"blazeTargetLocationPickerView.save" = "Сохранить";
+
+/* Placeholder on the search bar of the target location picker for campaign creation */
+"blazeTargetLocationPickerView.searchPrompt" = "Поиск местоположений";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLocationPickerView.title" = "Расположение";
+
+/* Message indicating the minimum length for search queries on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.longerQuery" = "Чтобы начать поиск, введите хотя бы 3 символа.";
+
+/* Message indicating no search result on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.noResult" = "Местоположение не найдено.\nПовторите попытку.";
+
+/* Hint message to enter search query on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Начните набирать название страны, штата или города, чтобы увидеть доступные варианты";
+
+/* Title of the row to select all target location for Blaze campaign creation */
+"blazeTargetLocationSearchView.allTitle" = "Везде";
+
+/* Header message on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.headerMessage" = "Выбор целевых местоположений";
+
+/* Suggestion for searching for specific locations on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.searchHint" = "Или выбирайте конкретные местоположения, вводя название в поле поиска";
+
+/* Header for the Specific Locations section on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.specificLocationHeader" = "Отдельные местоположения";
 
 /* Title of the row to select all target topics for Blaze campaign creation */
 "blazeTargetTopicPickerView.allTitle" = "Все темы";
@@ -10048,6 +10202,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Поиск устройства чтения";
+
+/* Title for the toggle that specifies whether to add a note to the order with the change data. */
+"cashPaymentTenderView.addNoteToggle.title" = "Записывать данные транзакции в примечаниях к заказам";
+
+/* Title for the cancel button. */
+"cashPaymentTenderView.cancelButton" = "Отмена";
+
+/* Title for the change due text. */
+"cashPaymentTenderView.changeDue" = "Сумма сдачи";
+
+/* Title for the amount the customer paid. */
+"cashPaymentTenderView.customerPaid" = "Полученные наличные";
+
+/* Title for the Mark order as complete button. */
+"cashPaymentTenderView.markOrderAsCompleteButton.title" = "Отметить заказ как выполненный";
+
+/* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
+"cashPaymentTenderView.navigationBarTitle" = "Принять оплату (%1$@)";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
@@ -10465,6 +10637,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "password" = "Пароль";
+
+/* Note from the cash tender view. */
+"paymentMethods.orderPaidByCashNoteText.note" = "Заказ оплачен наличными. Клиент уплатил %1$@. Сумма сдачи составила %2$@.";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "платежи, оплата в касание, woocommerce, woo, очные платежи, получение оплаты, платежи, устройство чтения, устройство чтения карт, заказ устройства чтения карт";

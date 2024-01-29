@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-16 11:54:01+0000 */
+/* Translation-Revision-Date: 2024-01-23 17:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -2034,13 +2034,13 @@ which should be translated separately and considered part of this sentence. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Det gick inte att ansluta till WordPress-webbplatsen. Det finns ingen giltig WordPress-webbplats på den här adressen. Kontrollera webbplatsadressen (URL:en) som du angav.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Kunde inte ansluta. XML-RPC-metoder som krävs saknas på servern.";
+"Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem." = "Det gick inte att ansluta. XML-RPC-metoder som krävs saknas på servern. Kontakta ditt webbhotell för att lösa detta problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Kunde inte ansluta. Vi fick felkod 403 när vi försökte ansluta till XMLRPC-ändpunkten för din webbplats. Appen behöver den för att kunna kommunicera med din webbplats. Kontakta din värd för att lösa problemet.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Kunde inte ansluta. Vi fick ett 403-fel när vi försökte komma åt din webbplats XMLRPC-ändpunkt. Appen behöver det för att kunna kommunicera med din webbplats. Kontakta ditt webbhotell för att lösa detta problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
-"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Det gick inte att ansluta. Din webbserver blockerar POST-transaktioner, vilket appen behöver för att kommunicera med webbplatsen. Kontakta webbhotellet för att lösa problemet.";
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Kunde inte ansluta. Ditt webbhotell blockerar POST-förfrågningar och appen behöver det för att kunna kommunicera med din webbplats. Kontakta ditt webbhotell för att lösa detta problem.";
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Det gick inte att ladda etiketterna.";
@@ -2148,9 +2148,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Skapa en butik";
-
-/* Button when tapped will launch create Blaze campaign flow. */
-"Create campaign" = "Skapa kampanj";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Skapa rabattkod";
@@ -4560,12 +4557,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = " Markera alla recensioner som lästa";
-
-/* Alert button when selecting the cash payment method */
-"Mark as Paid" = "Markera som betald";
-
-/* Alert title when selecting the cash payment method */
-"Mark as Paid?" = "Markera som betald?";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Markera denna beställning som slutförd och avisera kunden";
@@ -8131,9 +8122,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Detta kommer skapa en variation för varje möjlig kombination av variationsattribut (%d variationer).";
 
-/* Alert info when selecting the cash payment method during payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "Detta kommer att markera din beställning som slutförd om du har mottagit (totalbelopp) utanför WooCommerce";
-
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "Detta kommer inte att påverka onlinebeställningar";
 
@@ -9661,6 +9649,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Debitera moms";
 
+/* Label for button to enable Jetpack Stats */
+"analyticsHub.jetpackStatsCTA.buttonLabel" = "Aktivera Jetpack Stats";
+
+/* Error shown when Jetpack Stats can't be enabled in the Analytics Hub. */
+"analyticsHub.jetpackStatsCTA.errorNotice" = "Vi kunde inte aktivera Jetpack Stats på din butik";
+
+/* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
+"analyticsHub.jetpackStatsCTA.message" = "Aktivera Jetpack Stats för att se din butiks sessionsanalys.";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.jetpackStatsCTA.title" = "SESSIONER";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Avbryt";
 
@@ -9811,6 +9811,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "för %1$d dag";
 
+/* Button to dismiss the flow on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.cancel" = "Avbryt kampanj";
+
+/* Button to dismiss the support form from the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.done" = "Klart";
+
+/* Button to get support on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.getSupport" = "Skaffa support";
+
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationErrorView.message" = "Något är fel.\nVi kunde inte skapa din kampanj.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.noPaymentTaken" = "Ingen betalning har gjorts.";
+
+/* Suggested message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.suggestion" = "Försök igen eller kontakta support för hjälp.";
+
+/* Title of the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.title" = "Kampanjen kunde inte skapas";
+
+/* Button to try again on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.tryAgain" = "Försök igen";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Annonsdestination";
 
@@ -9862,11 +9887,62 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d dag från %3$@";
 
+/* Text indicating all locations for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.everywhere" = "Överallt";
+
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f USD";
 
+/* Message in the Blaze campaign creation loading screen */
+"blazeCampaignCreationLoadingView.Message" = "Skapar din kampanj";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Dölj Blaze";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.promote" = "Marknadsför";
+
+/* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.adPolicy" = "Annonseringspolicy";
+
+/* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.addPaymentMethod" = "Lägg till en betalningsmetod";
+
+/* Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: By clicking \"Submit campaign\" you agree to the Terms of Service and Advertising Policy, and authorize your payment method to be charged for the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work. */
+"blazeConfirmPaymentView.agreement" = "Genom att klicka på \"Skicka kampanj\" godkänner du %1$@ och %2$@ och samtycker till att din betalningsmetod debiteras för den budget och den varaktighet som du väljer. %3$@ om hur budgetar och betalningar för marknadsförda inlägg fungerar.";
+
+/* Item to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.blazeCampaign" = "Blaze-kampanj";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.errorMessage" = "Det gick inte att läsa in dina betalningsmetoder";
+
+/* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.learnMore" = "Lär dig mer";
+
+/* Text for the loading state on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.loading" = "Laddar in betalningsmetoder …";
+
+/* Section title on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.paymentTotals" = "Betalning totalt";
+
+/* Action button on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.submitButton" = "Skicka kampanj";
+
+/* The terms to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.terms" = "Användarvillkor";
+
+/* Title of the Payment view in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.title" = "Betalning";
+
+/* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.total" = "Totalt";
+
+/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
+"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.tryAgain" = "Försök igen";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Dina annonser på miljontals webbplatser inom WordPress.com- och Tumblr-nätverken.";
@@ -9970,6 +10046,51 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Lär dig hur %1$@ fungerar";
 
+/* Button title in the Blaze Payment Method screen if there is an existing payment method */
+"blazePaymentMethodsView.addAnotherCreditCardButton" = "Lägg till ett annat kreditkort";
+
+/* Button title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.addCreditCardButton" = "Lägg till kreditkort";
+
+/* Title of the button to dismiss the Blaze payment method list screen */
+"blazePaymentMethodsView.cancelButton" = "Avbryt";
+
+/* Done navigation button in the Blaze Payment Method screen */
+"blazePaymentMethodsView.doneButton" = "Klart";
+
+/* Done navigation button in Blaze add payment web view */
+"blazePaymentMethodsView.doneButtonAddPayment" = "Klart";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.emailReceipt" = "E-posta inköpskvitton för etiketten till %1$@ (%2$@) på %3$@";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.errorMessage" = "Det gick inte att läsa in dina betalningsmetoder";
+
+/* Navigation bar title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.navigationBarTitle" = "Betalningsmetod";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazePaymentMethodsView.paymentMethodAddedNotice" = "Betalningsmetod tillagd";
+
+/* Title of the web view of adding a payment method in Blaze */
+"blazePaymentMethodsView.paymentMethodWebViewTitle" = "Betalningsmetod";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.paymentMethodsFooter" = "Kreditkort hämtas från följande WordPress.com-konto: %1$@ <%2$@>";
+
+/* Header for list of payment methods in Payment Method screen */
+"blazePaymentMethodsView.paymentMethodsHeader" = "Betalningsmetod vald";
+
+/* Message that will be displayed if there are no Blaze payment methods. */
+"blazePaymentMethodsView.pleaseAddPaymentMethodMessage" = "Lägg till en ny betalningsmetod";
+
+/* Text to explain that transactions will be secure in Payment Method screen */
+"blazePaymentMethodsView.transactionsSecure" = "Alla transaktioner är säkra och krypterade";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.tryAgain" = "Försök igen";
+
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "Avbryt";
 
@@ -10002,6 +10123,39 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to retry syncing data on the target language picker for campaign creation */
 "blazeTargetLanguagePickerView.tryAgain" = "Försök igen";
+
+/* Button to dismiss the target location picker for campaign creation */
+"blazeTargetLocationPickerView.cancel" = "Avbryt";
+
+/* Button to save the selections on the target location picker for campaign creation */
+"blazeTargetLocationPickerView.save" = "Spara";
+
+/* Placeholder on the search bar of the target location picker for campaign creation */
+"blazeTargetLocationPickerView.searchPrompt" = "Sök efter platser";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLocationPickerView.title" = "Plats";
+
+/* Message indicating the minimum length for search queries on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.longerQuery" = "Ange minst 3 tecken för att börja söka.";
+
+/* Message indicating no search result on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.noResult" = "Ingen plats hittades.\nFörsök igen.";
+
+/* Hint message to enter search query on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Börja skriva land, delstat eller ort för att se tillgängliga alternativ";
+
+/* Title of the row to select all target location for Blaze campaign creation */
+"blazeTargetLocationSearchView.allTitle" = "Överallt";
+
+/* Header message on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.headerMessage" = "Välj målplatser";
+
+/* Suggestion for searching for specific locations on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.searchHint" = "Eller välj specifika platser genom att skriva vad du letar efter i sökrutan.";
+
+/* Header for the Specific Locations section on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.specificLocationHeader" = "Specifika platser";
 
 /* Title of the row to select all target topics for Blaze campaign creation */
 "blazeTargetTopicPickerView.allTitle" = "Alla ämnen";
@@ -10048,6 +10202,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Skannar efter läsare";
+
+/* Title for the toggle that specifies whether to add a note to the order with the change data. */
+"cashPaymentTenderView.addNoteToggle.title" = "Registrera transaktionsinformation i beställningsanteckning";
+
+/* Title for the cancel button. */
+"cashPaymentTenderView.cancelButton" = "Avbryt";
+
+/* Title for the change due text. */
+"cashPaymentTenderView.changeDue" = "Växel";
+
+/* Title for the amount the customer paid. */
+"cashPaymentTenderView.customerPaid" = "Kontanter mottagna";
+
+/* Title for the Mark order as complete button. */
+"cashPaymentTenderView.markOrderAsCompleteButton.title" = "Markera beställningen som slutförd";
+
+/* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
+"cashPaymentTenderView.navigationBarTitle" = "Ta emot betalning (%1$@)";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
@@ -10465,6 +10637,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "password" = "lösenord";
+
+/* Note from the cash tender view. */
+"paymentMethods.orderPaidByCashNoteText.note" = "Beställningen betalades kontant. Kunden betalade %1$@. Växeln var %2$@.";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalningar, tryck för att betala, woocommerce, woo, personliga betalningar, ta emot personliga betalningar, betalningar, läsare, kortläsare, beställ kortläsare";

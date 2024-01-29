@@ -52,7 +52,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     private func configureTopLine() {
@@ -79,6 +79,11 @@ final class OrderTrackingTableViewCell: UITableViewCell {
         self.accessoryView = ellipsisButton
 
         configureActionButtonForVoiceOver()
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 

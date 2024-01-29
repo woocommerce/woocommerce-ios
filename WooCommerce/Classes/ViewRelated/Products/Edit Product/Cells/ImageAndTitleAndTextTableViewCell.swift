@@ -131,7 +131,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureImageView()
         configureContentStackView()
         configureTitleAndTextStackView()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         configureSelectedBackground()
     }
 

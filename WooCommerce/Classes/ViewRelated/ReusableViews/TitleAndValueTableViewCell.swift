@@ -23,10 +23,15 @@ final class TitleAndValueTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         enableMultipleLines()
         apply(style: .default)
         configureStackView()
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 

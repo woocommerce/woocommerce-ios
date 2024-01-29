@@ -44,9 +44,14 @@ final class TextFieldTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         configureTextField()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         applyStyle(style: .headline)
         selectionStyle = .none
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 
     func configure(viewModel: ViewModel) {

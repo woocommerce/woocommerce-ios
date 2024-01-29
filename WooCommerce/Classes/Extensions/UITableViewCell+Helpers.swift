@@ -12,41 +12,32 @@ extension UITableViewCell {
         return classNameWithoutNamespaces
     }
 
-    /// Applies the default background color
-    /// - old approach, please use configureDefaultBackgroundConfiguration()
-    func applyDefaultBackgroundStyle() {
-        backgroundColor = .listForeground(modal: false)
-    }
-
-    /// Applies the default selected background color
-    /// - old approach, please use updateDefaultBackgroundConfiguration() from override func updateConfiguration(using state: UICellConfigurationState)
-    func applyDefaultSelectedBackgroundStyle() {
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listSelectedBackground
-    }
-
-    /// Configures the default background configuration
-    func configureDefaultBackgroundConfiguration() {
+    private func defaultBackgroundConfiguration(style: UITableView.Style = .grouped) -> UIBackgroundConfiguration {
         var backgroundConfiguration: UIBackgroundConfiguration
 
         if #available(iOS 16.0, *) {
             backgroundConfiguration = defaultBackgroundConfiguration()
         } else {
-            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
+            if style == .plain {
+                backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
+            }
+            else {
+                backgroundConfiguration = UIBackgroundConfiguration.listGroupedCell()
+            }
         }
+        return backgroundConfiguration
+    }
+
+    /// Configures the default background configuration
+    func configureDefaultBackgroundConfiguration(style: UITableView.Style = .grouped) {
+        var backgroundConfiguration = defaultBackgroundConfiguration(style: style)
         backgroundConfiguration.backgroundColor = .listForeground(modal: false)
         self.backgroundConfiguration = backgroundConfiguration
     }
 
     /// Updates the default background configuration
-    func updateDefaultBackgroundConfiguration(using state: UICellConfigurationState) {
-        var backgroundConfiguration: UIBackgroundConfiguration
-
-        if #available(iOS 16.0, *) {
-            backgroundConfiguration = defaultBackgroundConfiguration().updated(for: state)
-        } else {
-            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell().updated(for: state)
-        }
+    func updateDefaultBackgroundConfiguration(using state: UICellConfigurationState, style: UITableView.Style = .grouped) {
+        var backgroundConfiguration = defaultBackgroundConfiguration(style: style).updated(for: state)
 
         if state.isSelected || state.isHighlighted {
             backgroundConfiguration.backgroundColor = .listSelectedBackground

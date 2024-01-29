@@ -136,7 +136,7 @@ private extension OrderTableViewCell {
 
 private extension OrderTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Labels

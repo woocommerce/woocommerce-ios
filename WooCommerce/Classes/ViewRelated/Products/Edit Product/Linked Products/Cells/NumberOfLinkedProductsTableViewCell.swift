@@ -6,12 +6,17 @@ final class NumberOfLinkedProductsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         configureLabels()
     }
 
     func configure(content: String) {
         titleLabel.text = content
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 

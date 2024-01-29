@@ -60,6 +60,11 @@ class SwitchTableViewCell: UITableViewCell {
     @IBAction func toggleSwitchWasPressed() {
         onChange?(toggleSwitch.isOn)
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
@@ -68,7 +73,7 @@ class SwitchTableViewCell: UITableViewCell {
 private extension SwitchTableViewCell {
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func setupTextLabels() {

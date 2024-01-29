@@ -52,6 +52,11 @@ final class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
         configureImages()
         configureLabels()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
@@ -62,7 +67,7 @@ private extension NoteDetailsHeaderPlainTableViewCell {
     /// Setup: Cell background
     ///
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Images

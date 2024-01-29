@@ -2,7 +2,7 @@
 
 17.2
 -----
-
+- [*] Orders: the placeholder cells shown in the loading state have the animated redacted content again. [https://github.com/woocommerce/woocommerce-ios/pull/11842]
 
 17.1
 -----

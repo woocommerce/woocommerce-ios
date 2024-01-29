@@ -187,4 +187,8 @@ public enum FeatureFlag: Int {
     /// Enables Blaze native campaign creation.
     ///
     case blazei3NativeCampaignCreation
+
+    /// Enables backend receipt generation for all payment methods
+    ///
+    case backendReceipts
 }

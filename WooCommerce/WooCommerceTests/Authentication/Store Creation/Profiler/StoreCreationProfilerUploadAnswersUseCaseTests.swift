@@ -18,7 +18,6 @@ final class StoreCreationProfilerUploadAnswersUseCaseTests: XCTestCase {
                                           sellingPlatforms: "wordpress",
                                           category: "health_and_beauty",
                                           countryCode: "US")
-        let answerEncoded = try JSONEncoder().encode(answer)
 
         // When
         sut.storeAnswers(answer)

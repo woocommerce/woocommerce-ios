@@ -4,6 +4,9 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let source = "source"
             static let step = "current_step"
+            static let duration = "duration"
+            static let totalBudget = "total_budget"
+            static let isAISuggestedAdContent = "is_ai_suggested_ad_content"
         }
 
         /// Tracked when the Blaze entry point is shown to the user.
@@ -84,6 +87,12 @@ extension WooAnalyticsEvent {
             static func editAdTapped() -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditAdTapped, properties: [:])
             }
+
+            /// Tracked upon tapping "Confirm Details" in Blaze creation form
+            static func confirmDetailsTapped(isAISuggestedAdContent: Bool) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
+                                  properties: [Key.isAISuggestedAdContent: isAISuggestedAdContent])
+            }
         }
 
         enum EditAd {
@@ -95,6 +104,56 @@ extension WooAnalyticsEvent {
             /// Tracked upon tapping "Save" in Edit Ad screen
             static func saveTapped() -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditAdSaveTapped, properties: [:])
+            }
+        }
+
+        enum Budget {
+            /// Tracked upon tapping "Update" in Blaze set budget screen
+            static func updateTapped(duration: Int, totalBudget: Double) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditBudgetSaveTapped,
+                                  properties: [Key.duration: duration,
+                                               Key.totalBudget: totalBudget])
+            }
+
+            /// Tracked upon changing duration in Blaze set budget screen
+            static func changedDuration(_ duration: Int) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditBudgetDurationApplied,
+                                  properties: [Key.duration: duration])
+            }
+        }
+
+        enum Language {
+            /// Tracked upon tapping "Save" in Blaze language selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditLanguageSaveTapped, properties: [:])
+            }
+        }
+
+        enum Device {
+            /// Tracked upon tapping "Save" in Blaze device selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditDeviceSaveTapped, properties: [:])
+            }
+        }
+
+        enum Location {
+            /// Tracked upon tapping "Save" in Blaze location selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditLocationSaveTapped, properties: [:])
+            }
+        }
+
+        enum Interest {
+            /// Tracked upon tapping "Save" in Blaze interests selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditInterestSaveTapped, properties: [:])
+            }
+        }
+
+        enum AdDestination {
+            /// Tracked upon tapping "Save" in Blaze ad destination selection screen
+            static func saveTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeEditDestinationSaveTapped, properties: [:])
             }
         }
     }

@@ -6,6 +6,7 @@ extension WooAnalyticsEvent {
             static let step = "current_step"
             static let duration = "duration"
             static let totalBudget = "total_budget"
+            static let isAISuggestedAdContent = "is_ai_suggested_ad_content"
         }
 
         /// Tracked when the Blaze entry point is shown to the user.
@@ -85,6 +86,12 @@ extension WooAnalyticsEvent {
             /// Tracked upon tapping "Edit ad" in Blaze creation form
             static func editAdTapped() -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditAdTapped, properties: [:])
+            }
+
+            /// Tracked upon tapping "Confirm Details" in Blaze creation form
+            static func confirmDetailsTapped(isAISuggestedAdContent: Bool) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
+                                  properties: [Key.isAISuggestedAdContent: isAISuggestedAdContent])
             }
         }
 

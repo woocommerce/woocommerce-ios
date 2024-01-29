@@ -49,6 +49,31 @@ final class ReceiptRemoteTests: XCTestCase {
         // Then
         assertEqual("https://mywootestingstore.com/wc/file/transient/7e811be40195b17f82604592ed26b694868807", receipt.receiptURL)
         assertEqual("2024-01-27", receipt.expirationDate)
+    }
 
+    func test_retrieveReceipt_when_invoked_then_includes_force_new_parameter_as_true_by_default() throws {
+        // Given
+        let remote = ReceiptRemote(network: network)
+
+        // When
+        remote.retrieveReceipt { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["force_new"] as? String)
+        assertEqual("true", received)
+    }
+
+    func test_retrieveReceipt_when_force_new_set_to_false_then_includes_force_new_parameter_as_false() throws {
+        // Given
+        let remote = ReceiptRemote(network: network)
+
+        // When
+        remote.retrieveReceipt(forceRegenerate: false) { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["force_new"] as? String)
+        assertEqual("false", received)
     }
 }

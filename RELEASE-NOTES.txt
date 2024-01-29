@@ -2,13 +2,12 @@
 
 17.2
 -----
-
+- [*] Added configureDefaultBackgroundConfiguration(), updateDefaultBackgroundConfiguration() and listSelectedBackground for default cell selected background color [https://github.com/woocommerce/woocommerce-ios/pull/11777]
 
 17.1
 -----
 - [*] Fixed issue loading system status report for sites using faulty themes. [https://github.com/woocommerce/woocommerce-ios/pull/11798]
 - [*] Blaze: Hide the Blaze section on the Dashboard screen when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/11797]
-- [*] Added configureDefaultBackgroundConfiguration(), updateDefaultBackgroundConfiguration() and listSelectedBackground for default cell selected background color [https://github.com/woocommerce/woocommerce-ios/pull/11777]
 - [*] Shipping labels: Show the purchase and print flows in modal screens [https://github.com/woocommerce/woocommerce-ios/pull/11815]
 - [***] Orders: side-by-side view for Order List and Order Details on iPad (and large iPhones) [https://github.com/woocommerce/woocommerce-ios/pull/11818]
 

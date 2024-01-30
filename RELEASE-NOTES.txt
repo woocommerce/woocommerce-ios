@@ -4,6 +4,7 @@
 -----
 - [*] Orders: the placeholder cells shown in the loading state have the animated redacted content again. [https://github.com/woocommerce/woocommerce-ios/pull/11842]
 - [*] Fixed arrow directions for RTL locales. [https://github.com/woocommerce/woocommerce-ios/pull/11833]
+- [*] Update Product Creation AI prompt to avoid unexpected response from AI. [https://github.com/woocommerce/woocommerce-ios/pull/11853]
 
 
 17.1

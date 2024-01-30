@@ -8,13 +8,13 @@ import Yosemite
 final class LegacyReceiptViewController: UIViewController {
     @IBOutlet private weak var webView: WKWebView!
 
-    private let viewModel: ReceiptViewModel
+    private let viewModel: LegacyReceiptViewModel
 
     private var emailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
     private var receiptContentSubscription: AnyCancellable?
     private var emailDataSubscription: AnyCancellable?
 
-    init(viewModel: ReceiptViewModel) {
+    init(viewModel: LegacyReceiptViewModel) {
         self.viewModel = viewModel
         super.init(nibName: Self.nibName, bundle: nil)
     }

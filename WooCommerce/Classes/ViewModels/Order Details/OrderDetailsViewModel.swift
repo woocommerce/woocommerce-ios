@@ -467,6 +467,16 @@ extension OrderDetailsViewModel {
             }
             let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
             viewController.present(customFieldsView, animated: true)
+        case .seeReceipt:
+            let action = ReceiptAction.retrieveReceipt(order: order) { result in
+                switch result {
+                case let .success(receipt):
+                    debugPrint("\(receipt)")
+                case let .failure(error):
+                    debugPrint("\(error)")
+                }
+            }
+            ServiceLocator.stores.dispatch(action)
         case .seeLegacyReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))

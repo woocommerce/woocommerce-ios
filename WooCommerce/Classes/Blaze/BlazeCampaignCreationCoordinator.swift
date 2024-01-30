@@ -65,17 +65,13 @@ final class BlazeCampaignCreationCoordinator {
     }
 
     func start(shouldShowIntro: Bool = false) {
-        if shouldShowIntro {
-            presentIntroScreen { [weak self] in
-                self?.navigationController.dismiss(animated: true) {
-                    self?.startCreationFlow(from: .introView)
-                    self?.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
-                }
-            }
-        } else {
-            navigationController.dismiss(animated: true) { [weak self] in
-                self?.startCreationFlow(from: .introView)
-            }
+        guard shouldShowIntro else {
+            startCreationFlow(from: source)
+            return
+        }
+        presentIntroScreen { [weak self] in
+            self?.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
+            self?.startCreationFlow(from: .introView)
         }
     }
 }
@@ -101,15 +97,19 @@ private extension BlazeCampaignCreationCoordinator {
     }
 
     func startCreationFlow(from source: BlazeSource) {
-        switch blazeCreationEntryDestination {
-        case .productSelector:
-            navigateToBlazeProductSelector()
-        case .campaignForm(let productID):
-            navigateToNativeCampaignCreation(productID: productID)
-        case .webViewForm(let productID):
-            navigateToWebCampaignCreation(source: source, productID: productID)
-        case .noProductAvailable:
-            presentNoProductAlert()
+        /// Force dismissing any presented view to avoid issue presenting the creation flow.
+        navigationController.dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+            switch blazeCreationEntryDestination {
+            case .productSelector:
+                navigateToBlazeProductSelector()
+            case .campaignForm(let productID):
+                navigateToNativeCampaignCreation(productID: productID)
+            case .webViewForm(let productID):
+                navigateToWebCampaignCreation(source: source, productID: productID)
+            case .noProductAvailable:
+                presentNoProductAlert()
+            }
         }
     }
 

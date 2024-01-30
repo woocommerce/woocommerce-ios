@@ -22,6 +22,10 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInOrdersTab
 
+    /// Displays the OrderForm side by side with the Product Selector
+    ///
+    case sideBySideViewForOrderForm
+
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically

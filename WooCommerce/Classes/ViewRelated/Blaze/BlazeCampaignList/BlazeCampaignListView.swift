@@ -29,29 +29,33 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] in
-            guard let self = self, let navigationController = self.navigationController else {
-                return
-            }
-
-            let coordinator = BlazeCampaignCreationCoordinator(
-                siteID: viewModel.siteID,
-                siteURL: viewModel.siteURL,
-                source: .campaignList,
-                navigationController: navigationController,
-                onCampaignCreated: self.handlePostCreation
-            )
-            self.coordinator = coordinator
-            coordinator.start()
+            self?.startCampaignCreation()
         }
-    }
-
-    func handlePostCreation() {
-        viewModel.loadCampaigns()
     }
 
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+/// Private helper
+private extension BlazeCampaignListHostingController {
+    func startCampaignCreation() {
+        guard let navigationController else {
+            return
+        }
+        let coordinator = BlazeCampaignCreationCoordinator(
+            siteID: viewModel.siteID,
+            siteURL: viewModel.siteURL,
+            source: .campaignList,
+            navigationController: navigationController,
+            onCampaignCreated: { [weak self] in
+                self?.viewModel.loadCampaigns()
+            }
+        )
+        self.coordinator = coordinator
+        coordinator.start(shouldShowIntro: viewModel.shouldShowIntroView)
     }
 }
 
@@ -111,21 +115,10 @@ struct BlazeCampaignListView: View {
         .sheet(item: $viewModel.selectedCampaignURL) { url in
             detailView(url: url)
         }
-        .sheet(isPresented: $viewModel.shouldShowIntroView) {
-            let onCreateCampaignClosure = {
-                viewModel.shouldShowIntroView = false
+        .onChange(of: viewModel.shouldShowIntroView) { shouldShow in
+            if shouldShow {
                 onCreateCampaign()
-                viewModel.didSelectCreateCampaign(source: .introView)
-            }
-            let onDismissClosure = {
                 viewModel.shouldShowIntroView = false
-            }
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-                BlazeCreateCampaignIntroView(onCreateCampaign: onCreateCampaignClosure,
-                                             onDismiss: onDismissClosure)
-            } else {
-                BlazeCampaignIntroView(onStartCampaign: onCreateCampaignClosure,
-                                       onDismiss: onDismissClosure)
             }
         }
     }

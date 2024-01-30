@@ -73,9 +73,8 @@ final class BlazeCampaignCreationCoordinator {
                 }
             }
         } else {
-            startCreationFlow(from: source)
-            if source == .productDetailPromoteButton {
-                analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
+            navigationController.dismiss(animated: true) { [weak self] in
+                self?.startCreationFlow(from: .introView)
             }
         }
     }

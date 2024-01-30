@@ -104,9 +104,9 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
-    /// Whether the order has a receipt associated.
+    /// Whether the order has a locally-generated receipt associated.
     ///
-    var shouldShowReceipts: Bool = false
+    var shouldShowLegacyReceipts: Bool = false
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -414,8 +414,8 @@ private extension OrderDetailsDataSource {
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as LedgerTableViewCell:
             configurePayment(cell: cell)
-        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeReceipt:
-            configureSeeReceipt(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeLegacyReceipt:
+            configureSeeLegacyReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
@@ -612,9 +612,9 @@ private extension OrderDetailsDataSource {
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
-    private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+    private func configureSeeLegacyReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         cell.setLeftTitleToLinkStyle(true)
-        cell.leftText = Titles.seeReceipt
+        cell.leftText = Titles.seeLegacyReceipt
         cell.rightText = nil
         cell.hideFootnote()
         cell.hideSeparator()
@@ -1222,8 +1222,8 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
-            if shouldShowReceipts {
-                rows.append(.seeReceipt)
+            if shouldShowLegacyReceipts {
+                rows.append(.seeLegacyReceipt)
             }
 
             if isEligibleForRefund {
@@ -1485,7 +1485,7 @@ extension OrderDetailsDataSource {
         static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
-        static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }
 
     enum Icons {
@@ -1635,7 +1635,7 @@ extension OrderDetailsDataSource {
         case billingDetail
         case payment
         case customerPaid
-        case seeReceipt
+        case seeLegacyReceipt
         case refund
         case netAmount
         case subscriptions
@@ -1684,7 +1684,7 @@ extension OrderDetailsDataSource {
                 return LedgerTableViewCell.reuseIdentifier
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
-            case .seeReceipt:
+            case .seeLegacyReceipt:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier

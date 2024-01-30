@@ -3,7 +3,7 @@ import Combine
 import Yosemite
 @testable import WooCommerce
 
-final class ReceiptViewModelTests: XCTestCase {
+final class LegacyReceiptViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -20,7 +20,7 @@ final class ReceiptViewModelTests: XCTestCase {
 
     func test_generateContent_dispatches_ReceiptAction_and_sends_content() {
         // Given
-        let viewModel = ReceiptViewModel(order: .fake(), receipt: .fake(), countryCode: .unknown, stores: stores)
+        let viewModel = LegacyReceiptViewModel(order: .fake(), receipt: .fake(), countryCode: .unknown, stores: stores)
         let mockContent = "A receipt"
         stores.whenReceivingAction(ofType: ReceiptAction.self) { action in
             if case let .generateContent(_, _, onContent) = action {
@@ -43,7 +43,7 @@ final class ReceiptViewModelTests: XCTestCase {
     func test_emailReceiptTapped_after_generateContent_does_not_dispatch_ReceiptAction_and_returns_latest_content() {
         // Given
         let order = Order.fake()
-        let viewModel = ReceiptViewModel(order: order, receipt: .fake(), countryCode: .CA, stores: stores)
+        let viewModel = LegacyReceiptViewModel(order: order, receipt: .fake(), countryCode: .CA, stores: stores)
 
         let mockStoreName = "All the sweets"
         var sessionManager = stores.sessionManager
@@ -78,7 +78,7 @@ final class ReceiptViewModelTests: XCTestCase {
         // Given
         let order = Order.fake()
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = ReceiptViewModel(order: order,
+        let viewModel = LegacyReceiptViewModel(order: order,
                                          receipt: .fake(),
                                          countryCode: .CA,
                                          analytics: WooAnalytics(analyticsProvider: analyticsProvider))

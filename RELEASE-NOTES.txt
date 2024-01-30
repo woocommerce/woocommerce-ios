@@ -3,7 +3,7 @@
 17.2
 -----
 - [*] Fixed arrow directions for RTL locales. [https://github.com/woocommerce/woocommerce-ios/pull/11833]
-
+- [*] Orders in split view: when the store has no orders and then an order is created, the order list is now shown instead of the empty view. [https://github.com/woocommerce/woocommerce-ios/pull/11849]
 
 17.1
 -----

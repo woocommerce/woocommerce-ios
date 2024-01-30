@@ -94,7 +94,15 @@ final class MainTabBarController: UITabBarController {
     // remove when .splitViewInOrdersTab is removed.
     private let ordersNavigationController = WooTabNavigationController()
 
+    private let productsContainerController = TabContainerController()
+
+    /// Unfortunately, we can't use the above container to directly hold a WooTabNavigationController, due to
+    /// a longstanding bug where a black bar equal to the tab bar height is shown when a nav controller
+    /// is shown as an embedded vc in a tab. See link for details, but the solutions don't work here.
+    /// https://stackoverflow.com/questions/28608817/uinavigationcontroller-embedded-in-a-container-view-displays-a-table-view-contr
+    /// remove when .splitViewInProductsTab is removed.
     private let productsNavigationController = WooTabNavigationController()
+
     private let reviewsNavigationController = WooTabNavigationController()
     private let hubMenuNavigationController = WooTabNavigationController()
     private var hubMenuTabCoordinator: HubMenuCoordinator?
@@ -109,6 +117,7 @@ final class MainTabBarController: UITabBarController {
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
     private lazy var isOrdersSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+    private lazy var isProductsSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
 
     init?(coder: NSCoder,
           featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -499,24 +508,27 @@ private extension MainTabBarController {
         viewControllers = {
             var controllers = [UIViewController]()
 
-            let dashboardTabIndex = WooTab.myStore.visibleIndex()
-            controllers.insert(dashboardNavigationController, at: dashboardTabIndex)
-
-            let ordersTabIndex = WooTab.orders.visibleIndex()
-            if isOrdersSplitViewFeatureFlagOn {
-                controllers.insert(ordersContainerController, at: ordersTabIndex)
-            } else {
-                controllers.insert(ordersNavigationController, at: ordersTabIndex)
+            let tabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
+            tabs.forEach { tab in
+                let tabIndex = tab.visibleIndex()
+                let tabViewController = rootTabViewController(tab: tab)
+                controllers.insert(tabViewController, at: tabIndex)
             }
-
-            let productsTabIndex = WooTab.products.visibleIndex()
-            controllers.insert(productsNavigationController, at: productsTabIndex)
-
-            let hubMenuTabIndex = WooTab.hubMenu.visibleIndex()
-            controllers.insert(hubMenuNavigationController, at: hubMenuTabIndex)
-
             return controllers
         }()
+    }
+
+    func rootTabViewController(tab: WooTab) -> UIViewController {
+        switch tab {
+            case .myStore:
+                return dashboardNavigationController
+            case .orders:
+                return isOrdersSplitViewFeatureFlagOn ? ordersContainerController: ordersNavigationController
+            case .products:
+                return isProductsSplitViewFeatureFlagOn ? productsContainerController: productsNavigationController
+            case .hubMenu:
+                return hubMenuNavigationController
+        }
     }
 
     func observeSiteIDForViewControllers() {
@@ -547,8 +559,11 @@ private extension MainTabBarController {
             ordersNavigationController.viewControllers = [ordersViewController]
         }
 
-        let productsViewController = createProductsViewController(siteID: siteID)
-        productsNavigationController.viewControllers = [productsViewController]
+        if isProductsSplitViewFeatureFlagOn {
+            productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: siteID)
+        } else {
+            productsNavigationController.viewControllers = [ProductsViewController(siteID: siteID)]
+        }
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
         if hubMenuTabCoordinator == nil {
@@ -574,10 +589,6 @@ private extension MainTabBarController {
         } else {
             return OrdersRootViewController(siteID: siteID, switchDetailsHandler: { _, _, _, _ in })
         }
-    }
-
-    func createProductsViewController(siteID: Int64) -> UIViewController {
-        ProductsViewController(siteID: siteID)
     }
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {

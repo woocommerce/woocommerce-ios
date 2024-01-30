@@ -350,8 +350,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("categories: Given the list of available categories ```Snacks, Makeup, Clothes```, "
-                                      + "suggest an array of the best matching categories for this product. You can suggest new categories as well."))
+        XCTAssertTrue(prompt.contains("\"categories\":\"Given the list of available categories ```Snacks, Makeup, Clothes```, "
+                                      + "suggest an array of the best matching categories for this product. You can suggest new categories as well.\""))
     }
 
     func test_generateAIProduct_prompt_asks_for_new_categories_if_no_categories_available() async throws {
@@ -376,7 +376,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("categories: suggest an array of the best matching categories for this product."))
+        XCTAssertTrue(prompt.contains("\"categories\":\"Suggest an array of the best matching categories for this product.\""))
     }
 
     func test_generateAIProduct_prompt_has_existing_tags() async throws {
@@ -401,8 +401,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("tags: Given the list of available tags ```Food, Grocery```, "
-                                      + "suggest an array of the best matching tags for this product. You can suggest new tags as well."))
+        XCTAssertTrue(prompt.contains("\"tags\":\"Given the list of available tags ```Food, Grocery```, "
+                                      + "suggest an array of the best matching tags for this product. You can suggest new tags as well.\""))
     }
 
     func test_generateAIProduct_prompt_asks_for_new_tags_if_no_tags_available() async throws {
@@ -426,7 +426,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("tags: suggest an array of the best matching tags for this product."))
+        XCTAssertTrue(prompt.contains("\"tags\":\"Suggest an array of the best matching tags for this product.\""))
     }
 
     func test_generateAIProduct_with_success_returns_AIProduct() async throws {

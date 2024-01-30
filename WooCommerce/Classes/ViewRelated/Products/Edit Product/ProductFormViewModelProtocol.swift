@@ -67,6 +67,9 @@ protocol ProductFormViewModelProtocol {
     /// The product variation ID
     var productionVariationID: Int64? { get }
 
+    /// Whether the "Promote with Blaze" button should show Blaze intro view first or not when tapped.
+    var shouldShowBlazeIntroView: Bool { get }
+
     // Unsaved changes
 
     func hasUnsavedChanges() -> Bool

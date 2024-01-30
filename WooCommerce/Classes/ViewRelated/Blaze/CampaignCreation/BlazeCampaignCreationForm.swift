@@ -272,7 +272,7 @@ private extension BlazeCampaignCreationForm {
                         .lineLimit(isContentSingleLine ? 1 : nil)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .secondaryBodyStyle()
             }
             .padding(.horizontal, Layout.contentPadding)

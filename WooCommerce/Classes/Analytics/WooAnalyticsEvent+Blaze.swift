@@ -156,6 +156,33 @@ extension WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditDestinationSaveTapped, properties: [:])
             }
         }
+
+        enum Payment {
+            /// Tracked upon tapping "Submit Campaign" in confirm payment screen
+            static func submitCampaignTapped() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeSubmitCampaignTapped, properties: [:])
+            }
+
+            /// Tracked upon displaying "Add payment method" web view screen
+            static func addPaymentMethodWebViewDisplayed() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeAddPaymentMethodWebViewDisplayed, properties: [:])
+            }
+
+            /// Tracked upon adding a payment method
+            static func addPaymentMethodSuccess() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeAddPaymentMethodSuccess, properties: [:])
+            }
+
+            /// Tracked when campaign creation is successful
+            static func campaignCreationSuccess() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCampaignCreationSuccess, properties: [:])
+            }
+
+            /// Tracked when campaign creation fails
+            static func campaignCreationFailed() -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCampaignCreationFailed, properties: [:])
+            }
+        }
     }
 }
 

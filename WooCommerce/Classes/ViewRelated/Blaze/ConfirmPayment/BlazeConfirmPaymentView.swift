@@ -89,7 +89,6 @@ struct BlazeConfirmPaymentView: View {
                 }
             }, onCancel: {
                 viewModel.shouldDisplayCampaignCreationError = false
-                viewModel.cancelCampaignCreation()
                 dismiss()
             })
             .interactiveDismissDisabled()
@@ -163,7 +162,7 @@ private extension BlazeConfirmPaymentView {
 
             Spacer()
 
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .secondaryBodyStyle()
         }
     }
@@ -175,7 +174,7 @@ private extension BlazeConfirmPaymentView {
             HStack {
                 Text(Localization.addPaymentMethod)
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .secondaryBodyStyle()
             }
         }

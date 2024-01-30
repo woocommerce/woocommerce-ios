@@ -155,6 +155,13 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
         presentTwoFactorAuthenticationView()
     }
 
+    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        loginFields?.nonceInfo = nonceInfo
+        loginFields?.nonceUserID = userID
+
+        needsMultifactorCode()
+    }
+
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
         let wpcom = WordPressComCredentials(
             authToken: authToken,

@@ -9,7 +9,7 @@ import WooFoundation
 public class ReceiptStore: Store {
     private let receiptPrinterService: PrinterService
     private let fileStorage: FileStorage
-    private lazy var remote: ReceiptRemote = ReceiptRemote(network: network)
+    private let remote: ReceiptRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         storageManager.writerDerivedStorage
@@ -22,6 +22,7 @@ public class ReceiptStore: Store {
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService, fileStorage: FileStorage) {
         self.receiptPrinterService = receiptPrinterService
         self.fileStorage = fileStorage
+        self.remote = ReceiptRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 

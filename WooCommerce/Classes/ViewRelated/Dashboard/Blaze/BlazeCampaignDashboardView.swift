@@ -9,7 +9,13 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
     private let viewModel: BlazeCampaignDashboardViewModel
     private let parentNavigationController: UINavigationController
     private lazy var blazeNavigationController = WooNavigationController()
-    private var coordinator: BlazeCampaignCreationCoordinator?
+    private lazy var coordinator = BlazeCampaignCreationCoordinator(
+            siteID: viewModel.siteID,
+            siteURL: viewModel.siteURL,
+            source: .myStoreSection,
+            navigationController: parentNavigationController,
+            onCampaignCreated: handlePostCreation
+        )
 
     init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController) {
         self.viewModel = viewModel
@@ -23,12 +29,12 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.createCampaignTapped = { [weak self] in
-            self?.startCampaignCreation(productID: nil)
+            self?.coordinator.start()
         }
 
-        rootView.startCampaignFromProductTapped = { [weak self] productID in
+        rootView.startCampaignFromIntroTapped = { [weak self] productID in
             self?.parentNavigationController.dismiss(animated: true) {
-                self?.startCampaignCreation(productID: productID)
+                self?.coordinator.start()
             }
         }
 
@@ -44,19 +50,6 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 }
 
 private extension BlazeCampaignDashboardViewHostingController {
-    func startCampaignCreation(productID: Int64?) {
-        let coordinator = BlazeCampaignCreationCoordinator(
-            siteID: viewModel.siteID,
-            siteURL: viewModel.siteURL,
-            productID: productID,
-            source: .myStoreSection,
-            navigationController: parentNavigationController,
-            onCampaignCreated: handlePostCreation
-        )
-        coordinator.start()
-        self.coordinator = coordinator
-    }
-
     /// Reloads data.
     func handlePostCreation() {
         Task {
@@ -83,9 +76,10 @@ struct BlazeCampaignDashboardView: View {
     var createCampaignTapped: (() -> Void)?
 
     /// Set externally in the hosting controller.
-    var startCampaignFromProductTapped: ((_ productID: Int64) -> Void)?
+    var startCampaignFromIntroTapped: ((_ productID: Int64?) -> Void)?
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
+    @State private var selectedProductID: Int64?
 
     init(viewModel: BlazeCampaignDashboardViewModel) {
         self.viewModel = viewModel
@@ -110,7 +104,8 @@ struct BlazeCampaignDashboardView: View {
             if case .showProduct(let product) = viewModel.state {
                 ProductInfoView(product: product)
                     .onTapGesture {
-                        startCampaignFromProductTapped?(product.productID)
+                        selectedProductID = product.productID
+                        viewModel.shouldShowIntroView = true
                     }
             } else if case .showCampaign(let campaign) = viewModel.state {
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)
@@ -133,6 +128,23 @@ struct BlazeCampaignDashboardView: View {
         .background(Color(uiColor: .listForeground(modal: false)))
         .sheet(item: $viewModel.selectedCampaignURL) { url in
             campaignDetailView(url: url)
+        }
+        .sheet(isPresented: $viewModel.shouldShowIntroView) {
+            let onCreateCampaignClosure = {
+                viewModel.didTapCreateYourCampaignButtonFromIntroView()
+                viewModel.shouldShowIntroView = false
+                startCampaignFromIntroTapped?(selectedProductID)
+            }
+            let onDismissClosure = {
+                viewModel.shouldShowIntroView = false
+            }
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+                BlazeCreateCampaignIntroView(onCreateCampaign: onCreateCampaignClosure,
+                                             onDismiss: onDismissClosure)
+            } else {
+                BlazeCampaignIntroView(onStartCampaign: onCreateCampaignClosure,
+                                       onDismiss: onDismissClosure)
+            }
         }
         .overlay {
             topRightMenu
@@ -162,7 +174,10 @@ private extension BlazeCampaignDashboardView {
 
     var createCampaignButton: some View {
         Button {
-            createCampaignTapped?()
+            viewModel.checkIfIntroViewIsNeeded()
+            if !viewModel.shouldShowIntroView {
+                createCampaignTapped?()
+            }
         } label: {
             Text(Localization.promote)
                 .fontWeight(.semibold)

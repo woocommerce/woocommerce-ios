@@ -129,6 +129,26 @@ struct OrderForm: View {
     @State private var shouldShowShippingLineDetails = false
 
     var body: some View {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+            AdaptiveModalContainer(primaryView: { presentProductSelector in
+                orderFormSummary(presentProductSelector)
+            }, secondaryView: { isShowingProductSelector in
+                if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                    ProductSelectorView(configuration: ProductSelectorView.Configuration.splitViewAddProductToOrder(),
+                                        source: .orderForm(flow: flow),
+                                        isPresented: isShowingProductSelector,
+                                        viewModel: productSelectorViewModel)
+                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                        ConfigurableBundleProductView(viewModel: viewModel)
+                    }
+                }
+            })
+        } else {
+            orderFormSummary(nil)
+        }
+    }
+
+    @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
                 ScrollView {
@@ -719,6 +739,18 @@ private extension ProductSelectorView.Configuration {
             doneButtonTitlePluralFormat: Localization.doneButtonPlural,
             title: Localization.title,
             cancelButtonTitle: Localization.close,
+            productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+            variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+    }
+
+    static func splitViewAddProductToOrder() -> ProductSelectorView.Configuration {
+        ProductSelectorView.Configuration(
+            searchHeaderBackgroundColor: .listBackground,
+            prefersLargeTitle: false,
+            doneButtonTitleSingularFormat: "",
+            doneButtonTitlePluralFormat: "",
+            title: Localization.title,
+            cancelButtonTitle: nil,
             productRowAccessibilityHint: Localization.productRowAccessibilityHint,
             variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
     }

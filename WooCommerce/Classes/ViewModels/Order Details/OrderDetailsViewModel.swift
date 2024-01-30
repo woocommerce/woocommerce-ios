@@ -624,9 +624,9 @@ extension OrderDetailsViewModel {
             switch result {
             case .success(let parameters):
                 self?.receipt = parameters
-                self?.dataSource.shouldShowReceipts = true
+                self?.dataSource.shouldShowLegacyReceipts = true
             case .failure:
-                self?.dataSource.shouldShowReceipts = false
+                self?.dataSource.shouldShowLegacyReceipts = false
             }
             onCompletion?(nil)
         }

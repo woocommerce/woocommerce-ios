@@ -104,9 +104,9 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
-    /// Whether the order has a receipt associated.
+    /// Whether the order has a locally-generated receipt associated.
     ///
-    var shouldShowReceipts: Bool = false
+    var shouldShowLegacyReceipts: Bool = false
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -1222,7 +1222,7 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
-            if shouldShowReceipts {
+            if shouldShowLegacyReceipts {
                 rows.append(.seeReceipt)
             }
 

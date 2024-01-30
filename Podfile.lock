@@ -73,7 +73,7 @@ DEPENDENCIES:
   - WordPress-Editor-iOS (~> 1.19.9)
   - WordPressAuthenticator (~> 9.0)
   - WordPressShared (~> 2.1)
-  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, commit `38da37f2d08d8628d5c065c652a80b1dda77677f`)
+  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, commit `a0248ba6dabaed1d493416fd1273aa6718c76331`)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8.1)
   - ZendeskSupportSDK (~> 6.0)
@@ -114,12 +114,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressUI:
-    :commit: 38da37f2d08d8628d5c065c652a80b1dda77677f
+    :commit: a0248ba6dabaed1d493416fd1273aa6718c76331
     :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 CHECKOUT OPTIONS:
   WordPressUI:
-    :commit: 38da37f2d08d8628d5c065c652a80b1dda77677f
+    :commit: a0248ba6dabaed1d493416fd1273aa6718c76331
     :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 SPEC CHECKSUMS:
@@ -155,6 +155,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: f1a3c646ae31dba245d6b6613b76f806c8589f08
+PODFILE CHECKSUM: 38f7d5d7246e7e947c3a5e2347c1b799c1a1ed4b
 
 COCOAPODS: 1.14.0

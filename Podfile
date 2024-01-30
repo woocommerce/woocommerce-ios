@@ -92,7 +92,7 @@ target 'WooCommerce' do
 
   # pod 'WordPressUI', '~> 1.13'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
-  pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: '38da37f2d08d8628d5c065c652a80b1dda77677f'
+  pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: 'a0248ba6dabaed1d493416fd1273aa6718c76331'
 
   aztec
 

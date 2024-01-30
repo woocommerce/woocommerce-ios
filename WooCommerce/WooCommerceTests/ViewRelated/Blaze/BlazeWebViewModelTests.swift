@@ -34,7 +34,7 @@ final class BlazeWebViewModelTests: XCTestCase {
         userDefaults.setDismissedBlazeSectionOnMyStore(for: sampleSiteID)
 
         let siteURL = "https://example.com"
-        let viewModel = BlazeWebViewModel(siteID: sampleSiteID, 
+        let viewModel = BlazeWebViewModel(siteID: sampleSiteID,
                                           source: .productDetailPromoteButton,
                                           siteURL: siteURL,
                                           productID: nil,

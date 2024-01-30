@@ -29,10 +29,11 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
                     siteURL: viewModel.siteURL,
                     productID: productID,
                     source: .myStoreSection,
+                    shouldShowIntro: viewModel.shouldShowIntroView,
                     navigationController: parentNavigationController,
                     onCampaignCreated: handlePostCreation
                 )
-            coordinator.start(shouldShowIntro: viewModel.shouldShowIntroView)
+            coordinator.start()
             self.coordinator = coordinator
         }
 

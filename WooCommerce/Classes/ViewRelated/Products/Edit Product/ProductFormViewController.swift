@@ -1125,10 +1125,11 @@ private extension ProductFormViewController {
             siteURL: site.url,
             productID: product.productID,
             source: .productDetailPromoteButton,
+            shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
             onCampaignCreated: {}
         )
-        coordinator.start(shouldShowIntro: viewModel.shouldShowBlazeIntroView)
+        coordinator.start()
         blazeCampaignCreationCoordinator = coordinator
     }
 

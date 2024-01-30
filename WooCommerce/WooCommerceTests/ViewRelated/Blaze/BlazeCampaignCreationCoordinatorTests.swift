@@ -38,12 +38,13 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .myStoreSection,
+                                                   shouldShowIntro: true,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
                                                    onCampaignCreated: {})
 
         // When
-        sut.start(shouldShowIntro: true)
+        sut.start()
 
         // Then
         XCTAssertTrue(sut.navigationController.presentedViewController is BlazeCampaignIntroController)
@@ -55,12 +56,13 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .myStoreSection,
+                                                   shouldShowIntro: true,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
                                                    onCampaignCreated: {})
 
         // When
-        sut.start(shouldShowIntro: true)
+        sut.start()
 
         // Then
         XCTAssertTrue(sut.navigationController.presentedViewController is BlazeCreateCampaignIntroController)
@@ -72,6 +74,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
                                                    onCampaignCreated: {})
@@ -94,6 +97,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
                                                    siteURL: "https://woo.com/",
                                                    productID: 2,
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
@@ -118,6 +122,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
@@ -144,6 +149,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
@@ -171,6 +177,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,

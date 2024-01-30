@@ -49,13 +49,14 @@ private extension BlazeCampaignListHostingController {
             siteID: viewModel.siteID,
             siteURL: viewModel.siteURL,
             source: .campaignList,
+            shouldShowIntro: viewModel.shouldShowIntroView,
             navigationController: navigationController,
             onCampaignCreated: { [weak self] in
                 self?.viewModel.loadCampaigns()
             }
         )
         self.coordinator = coordinator
-        coordinator.start(shouldShowIntro: viewModel.shouldShowIntroView)
+        coordinator.start()
     }
 }
 

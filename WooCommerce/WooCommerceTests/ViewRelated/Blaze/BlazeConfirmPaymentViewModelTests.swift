@@ -11,12 +11,19 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     private var subscription: AnyCancellable?
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting())
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
         stores = nil
         super.tearDown()
     }
@@ -236,6 +243,58 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         waitUntil {
             didTriggerFetchPaymentInfo == true
         }
+    }
+
+    // MARK: Analytics
+    func test_event_is_tracked_when_submitting_campaign() async throws {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     stores: stores,
+                                                     analytics: analytics) {}
+        // When
+        mockCampaignCreation(with: .failure(NSError(domain: "test", code: 500)))
+        await viewModel.updatePaymentInfo()
+
+        // When
+        await viewModel.submitCampaign()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_payment_submit_campaign_tapped"))
+    }
+
+    func test_event_is_tracked_when_campaign_creation_successful() async throws {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     stores: stores,
+                                                     analytics: analytics) {}
+        // When
+        mockCampaignCreation(with: .success(Void()))
+        await viewModel.updatePaymentInfo()
+
+        // When
+        await viewModel.submitCampaign()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_creation_success"))
+    }
+
+    func test_event_is_tracked_when_campaign_creation_failed() async throws {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     stores: stores,
+                                                     analytics: analytics) {}
+        // When
+        mockCampaignCreation(with: .failure(NSError(domain: "test", code: 500)))
+        await viewModel.updatePaymentInfo()
+
+        // When
+        await viewModel.submitCampaign()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_creation_failed"))
     }
 }
 

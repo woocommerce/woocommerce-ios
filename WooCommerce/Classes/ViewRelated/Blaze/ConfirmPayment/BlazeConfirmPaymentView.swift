@@ -89,7 +89,6 @@ struct BlazeConfirmPaymentView: View {
                 }
             }, onCancel: {
                 viewModel.shouldDisplayCampaignCreationError = false
-                viewModel.cancelCampaignCreation()
                 dismiss()
             })
             .interactiveDismissDisabled()

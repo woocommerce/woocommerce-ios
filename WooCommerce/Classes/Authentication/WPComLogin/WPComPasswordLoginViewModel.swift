@@ -78,7 +78,7 @@ private extension WPComPasswordLoginViewModel {
         return email
             .lowercased()
             .trimmingCharacters(in: .whitespaces)
-            .md5Hash()
+            .sha256Hash()
     }
 
     func createLoginFields(with nonceInfo: SocialLogin2FANonceInfo? = nil, userID: Int = 0) -> LoginFields {

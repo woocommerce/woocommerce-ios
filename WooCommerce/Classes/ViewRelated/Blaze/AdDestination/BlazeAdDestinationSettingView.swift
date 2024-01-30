@@ -137,7 +137,7 @@ struct BlazeAdDestinationSettingView: View {
             HStack {
                 Text(parameter.key)
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .foregroundColor(.secondary)
                     .padding(.leading, Layout.contentHorizontalSpacing)
             }

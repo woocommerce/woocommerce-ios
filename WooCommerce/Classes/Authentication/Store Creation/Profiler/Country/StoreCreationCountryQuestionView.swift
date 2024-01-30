@@ -21,7 +21,7 @@ struct StoreCreationCountryQuestionView: View {
                         Text(viewModel.selectedCountryCode?.readableCountry ?? Localization.selectCountry)
                             .bodyStyle()
                         Spacer()
-                        Image(systemName: "chevron.right")
+                        Image(systemName: "chevron.forward")
                             .secondaryBodyStyle()
                     }
                 })

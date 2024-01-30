@@ -2,6 +2,7 @@
 
 17.2
 -----
+- [*] Fixed arrow directions for RTL locales. [https://github.com/woocommerce/woocommerce-ios/pull/11833]
 
 
 17.1

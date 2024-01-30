@@ -586,8 +586,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Notification View Events
     //
-    case notificationsSelected = "main_tab_notifications_selected"
-    case notificationsReselected = "main_tab_notifications_reselected"
     case notificationOpened = "notification_open"
     case notificationsListPulledToRefresh = "notifications_list_pulled_to_refresh"
     case notificationsListReadAllTapped = "notifications_list_menu_mark_read_button_tapped"

@@ -21,10 +21,6 @@ enum WooTab {
     ///
     case products
 
-    /// Reviews Tab
-    ///
-    case reviews
-
     /// Hub Menu Tab
     ///
     case hubMenu
@@ -274,8 +270,6 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.ordersSelected)
         case .products:
             ServiceLocator.analytics.track(.productListSelected)
-        case .reviews:
-            ServiceLocator.analytics.track(.notificationsSelected)
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
             break
@@ -292,8 +286,6 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.ordersReselected)
         case .products:
             ServiceLocator.analytics.track(.productListReselected)
-        case .reviews:
-            ServiceLocator.analytics.track(.notificationsReselected)
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
@@ -316,12 +308,6 @@ extension MainTabBarController {
     ///
     static func switchToOrdersTab(completion: (() -> Void)? = nil) {
         navigateTo(.orders, completion: completion)
-    }
-
-    /// Switches to the Reviews tab and pops to the root view controller
-    ///
-    static func switchToReviewsTab(completion: (() -> Void)? = nil) {
-        navigateTo(.reviews, completion: completion)
     }
 
     /// Switches to the Products tab and pops to the root view controller

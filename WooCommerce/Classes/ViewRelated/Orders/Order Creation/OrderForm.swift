@@ -167,7 +167,9 @@ struct OrderForm: View {
 
                             ProductsSection(scroll: scroll,
                                             flow: flow,
-                                            viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                                            presentProductSelector: presentProductSelector,
+                                            viewModel: viewModel,
+                                            navigationButtonID: $navigationButtonID)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
@@ -460,6 +462,8 @@ private struct ProductsSection: View {
 
     let flow: WooAnalyticsEvent.Orders.Flow
 
+    let presentProductSelector: (() -> Void)?
+
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -510,14 +514,25 @@ private struct ProductsSection: View {
                         scanProductButton
                         .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
 
-                        Button(action: {
-                            viewModel.toggleProductSelectorVisibility()
-                        }) {
-                            Image(uiImage: .plusImage)
+                        if let presentProductSelector {
+                            Button(action: {
+                                presentProductSelector()
+                            }) {
+                                Image(uiImage: .plusImage)
+                            }
+                            .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
+                            .id(addProductButton)
+                            .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                        } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                            Button(action: {
+                                viewModel.toggleProductSelectorVisibility()
+                            }) {
+                                Image(uiImage: .plusImage)
+                            }
+                            .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
+                            .id(addProductButton)
+                            .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         }
-                        .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
-                        .id(addProductButton)
-                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     }
                     .scaledToFit()
                     .renderedIf(!viewModel.shouldShowNonEditableIndicators)
@@ -540,12 +555,21 @@ private struct ProductsSection: View {
                 }
 
                 HStack {
-                    Button(OrderForm.Localization.addProducts) {
-                        viewModel.toggleProductSelectorVisibility()
+                    if let presentProductSelector {
+                        Button(OrderForm.Localization.addProducts) {
+                            presentProductSelector()
+                        }
+                        .id(addProductButton)
+                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                        .buttonStyle(PlusButtonStyle())
+                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                        Button(OrderForm.Localization.addProducts) {
+                            viewModel.toggleProductSelectorVisibility()
+                        }
+                        .id(addProductButton)
+                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                        .buttonStyle(PlusButtonStyle())
                     }
-                    .id(addProductButton)
-                    .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
-                    .buttonStyle(PlusButtonStyle())
 
                     scanProductButton
                     .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)

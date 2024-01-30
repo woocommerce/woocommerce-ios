@@ -615,7 +615,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backendReceipts) else {
+        guard featureFlags.isFeatureFlagEnabled(.backendReceipts) else {
             return
         }
         cell.setLeftTitleToLinkStyle(true)
@@ -1235,7 +1235,7 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backendReceipts) {
+            if featureFlags.isFeatureFlagEnabled(.backendReceipts) {
                 rows.append(.seeReceipt)
             }
 

@@ -15,5 +15,5 @@ public enum ReceiptAction: Action {
     case loadReceipt(order: Order, onCompletion: (Result<CardPresentReceiptParameters, Error>) -> Void)
 
     /// Retrieves a receipt from the backend for a given `Order`
-    case retrieveReceipt(order:Order, onCompletion: (Result<Receipt, Error>) -> Void)
+    case retrieveReceipt(order: Order, onCompletion: (Result<Receipt, Error>) -> Void)
 }

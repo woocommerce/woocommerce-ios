@@ -33,7 +33,7 @@ final class BlazeCampaignCreationCoordinator {
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
-    private let navigationController: UINavigationController
+    let navigationController: UINavigationController
     private let didSelectCreateCampaign: ((BlazeSource) -> Void)?
     private let onCampaignCreated: () -> Void
 

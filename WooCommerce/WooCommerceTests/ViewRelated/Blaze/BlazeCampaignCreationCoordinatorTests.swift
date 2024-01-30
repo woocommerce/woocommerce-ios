@@ -32,6 +32,40 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
          storageManager = nil
      }
 
+    func test_legacy_intro_view_is_displayed_when_shouldShowIntro_is_true_and_blazei3NativeCampaignCreation_is_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)
+        let sut = BlazeCampaignCreationCoordinator(siteID: 1,
+                                                   siteURL: "https://woo.com/",
+                                                   source: .myStoreSection,
+                                                   featureFlagService: featureFlagService,
+                                                   navigationController: navigationController,
+                                                   onCampaignCreated: {})
+
+        // When
+        sut.start(shouldShowIntro: true)
+
+        // Then
+        XCTAssertTrue(sut.navigationController.presentedViewController is BlazeCampaignIntroController)
+    }
+
+    func test_new_intro_view_is_displayed_when_shouldShowIntro_is_true_and_blazei3NativeCampaignCreation_is_enabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)
+        let sut = BlazeCampaignCreationCoordinator(siteID: 1,
+                                                   siteURL: "https://woo.com/",
+                                                   source: .myStoreSection,
+                                                   featureFlagService: featureFlagService,
+                                                   navigationController: navigationController,
+                                                   onCampaignCreated: {})
+
+        // When
+        sut.start(shouldShowIntro: true)
+
+        // Then
+        XCTAssertTrue(sut.navigationController.presentedViewController is BlazeCreateCampaignIntroController)
+    }
+
     func test_webview_is_presented_when_blazei3NativeCampaignCreation_is_disabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)
@@ -40,8 +74,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
                                                    source: .campaignList,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
-                                                   onCampaignCreated: { }
-        )
+                                                   onCampaignCreated: {})
 
         // When
         sut.start()

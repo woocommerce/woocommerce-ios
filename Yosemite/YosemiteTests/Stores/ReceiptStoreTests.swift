@@ -463,7 +463,7 @@ final class ReceiptStoreTests: XCTestCase {
         XCTAssertEqual(receiptPrinterService.contentProvided?.orderNote, "This note has a link")
     }
 
-    func test_retrieveReceipt_when_orderID_exists_then_returns_valid_receipt_with_expected_fields() throws {
+    func test_retrieveReceipt_when_orderID_matches_route_then_returns_valid_receipt_with_expected_fields() throws {
         // Given
         let sampleOrderID: Int64 = 123
         let mockOrder = Order.fake().copy(orderID: sampleOrderID)

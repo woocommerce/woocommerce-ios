@@ -639,6 +639,45 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: shouldShowIntroView
+
+    func test_checkIfIntroViewIsNeeded_sets_shouldShowIntroView_to_false_if_there_exists_at_least_one_campaign() {
+        // Given
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        blazeEligibilityChecker: checker)
+
+        // Confidence check
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+
+        // When
+        insertCampaigns([campaign])
+        viewModel.checkIfIntroViewIsNeeded()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    func test_checkIfIntroViewIsNeeded_sets_shouldShowIntroView_to_true_if_there_is_no_existing_campaign() {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        blazeEligibilityChecker: checker)
+        // Confidence check
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+
+        // When
+        viewModel.checkIfIntroViewIsNeeded()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowIntroView)
+    }
+
     // MARK: latestPublishedProduct
 
     func test_latestPublishedProduct_returns_correct_product() throws {
@@ -705,6 +744,25 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     }
 
     // MARK: Analytics
+
+    func test_blazeEntryPointDisplayed_is_tracked_when_shouldShowIntroView_is_set_to_true() throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        analytics: analytics,
+                                                        blazeEligibilityChecker: checker)
+
+        // When
+        viewModel.shouldShowIntroView = true
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_displayed"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "intro_view")
+    }
 
     func test_didTapCreateYourCampaignButtonFromIntroView_tracks_entry_point_tapped() throws {
         // Given

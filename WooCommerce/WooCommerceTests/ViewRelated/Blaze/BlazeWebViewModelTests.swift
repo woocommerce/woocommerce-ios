@@ -34,7 +34,11 @@ final class BlazeWebViewModelTests: XCTestCase {
         userDefaults.setDismissedBlazeSectionOnMyStore(for: sampleSiteID)
 
         let siteURL = "https://example.com"
-        let viewModel = BlazeWebViewModel(siteID: sampleSiteID, source: .productDetailPromoteButton, siteURL: siteURL, productID: nil, userDefaults: userDefaults)
+        let viewModel = BlazeWebViewModel(siteID: sampleSiteID, 
+                                          source: .productDetailPromoteButton,
+                                          siteURL: siteURL,
+                                          productID: nil,
+                                          userDefaults: userDefaults)
 
         // When
         let path = "https://wordpress.com/advertising/example.com?blazepress-widget#step-5"

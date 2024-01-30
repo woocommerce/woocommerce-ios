@@ -4,7 +4,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 
 /// Coordinates navigation into the entry of the Blaze creation flow.
-final class BlazeCampaignCreationCoordinator: Coordinator {
+final class BlazeCampaignCreationCoordinator {
     enum CreateCampaignDestination: Equatable {
         case productSelector
         case campaignForm(productID: Int64) // Blaze Campaign form requires a product ID to promote.
@@ -33,9 +33,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
-
-    let navigationController: UINavigationController
-
+    private let navigationController: UINavigationController
     private let didSelectCreateCampaign: ((BlazeSource) -> Void)?
     private let onCampaignCreated: () -> Void
 
@@ -66,16 +64,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         configureResultsController()
     }
 
-    func start() {
-        let shouldShowIntro: Bool = {
-            switch source {
-            case .myStoreSection, .productDetailPromoteButton:
-                return true
-            case .campaignList, .introView, .productMoreMenu:
-                return false
-            }
-        }()
-
+    func start(shouldShowIntro: Bool = false) {
         if shouldShowIntro {
             presentIntroScreen { [weak self] in
                 self?.navigationController.dismiss(animated: true) {

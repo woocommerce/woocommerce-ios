@@ -15,14 +15,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
 
     @Published private(set) var campaigns: [BlazeCampaign] = []
     @Published var shouldDisplayPostCampaignCreationTip = false
-    @Published var shouldShowIntroView = false {
-        didSet {
-            if shouldShowIntroView {
-                didShowIntroView = true
-                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
-            }
-        }
-    }
+    @Published var shouldShowIntroView = false
     @Published var selectedCampaignURL: URL?
 
     /// Tracks whether the intro view has been presented.
@@ -139,6 +132,13 @@ private extension BlazeCampaignListViewModel {
         campaigns = resultsController.fetchedObjects
         transitionToResultsUpdatedState()
     }
+
+    func displayIntroViewIfNeeded() {
+        if !didShowIntroView {
+            shouldShowIntroView = syncState == .empty
+            didShowIntroView = true
+        }
+    }
 }
 
 extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
@@ -184,12 +184,6 @@ extension BlazeCampaignListViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = campaigns.isNotEmpty ? .results : .empty
-    }
-
-    func displayIntroViewIfNeeded() {
-        if !didShowIntroView {
-            shouldShowIntroView = syncState == .empty
-        }
     }
 }
 

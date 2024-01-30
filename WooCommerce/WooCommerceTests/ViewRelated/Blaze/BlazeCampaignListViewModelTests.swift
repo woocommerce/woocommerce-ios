@@ -373,23 +373,6 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["source"] as? String, "campaign_list")
     }
 
-    func test_blazeEntryPointDisplayed_is_tracked_when_intro_view_is_shown() throws {
-        // Given
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
-
-        // Confidence check
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
-
-        // When
-        viewModel.shouldShowIntroView = true
-
-        // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
-        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_entry_point_displayed"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
-        XCTAssertEqual(eventProperties["source"] as? String, "intro_view")
-    }
-
     func test_didSelectCampaignDetails_tracks_blazeCampaignDetailSelected_with_correct_source() throws {
         // Given
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)

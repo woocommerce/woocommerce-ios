@@ -216,8 +216,6 @@ private extension WooAnalyticsEvent.Blaze.Step {
 extension BlazeSource {
     var analyticsValue: String {
         switch self {
-        case .productMoreMenu:
-            return "product_more_menu"
         case .campaignList:
             return "campaign_list"
         case .myStoreSection:

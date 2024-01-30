@@ -32,16 +32,52 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
          storageManager = nil
      }
 
+    func test_legacy_intro_view_is_displayed_when_shouldShowIntro_is_true_and_blazei3NativeCampaignCreation_is_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)
+        let sut = BlazeCampaignCreationCoordinator(siteID: 1,
+                                                   siteURL: "https://woo.com/",
+                                                   source: .myStoreSection,
+                                                   shouldShowIntro: true,
+                                                   featureFlagService: featureFlagService,
+                                                   navigationController: navigationController,
+                                                   onCampaignCreated: {})
+
+        // When
+        sut.start()
+
+        // Then
+        XCTAssertTrue(sut.navigationController.presentedViewController is BlazeCampaignIntroController)
+    }
+
+    func test_new_intro_view_is_displayed_when_shouldShowIntro_is_true_and_blazei3NativeCampaignCreation_is_enabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)
+        let sut = BlazeCampaignCreationCoordinator(siteID: 1,
+                                                   siteURL: "https://woo.com/",
+                                                   source: .myStoreSection,
+                                                   shouldShowIntro: true,
+                                                   featureFlagService: featureFlagService,
+                                                   navigationController: navigationController,
+                                                   onCampaignCreated: {})
+
+        // When
+        sut.start()
+
+        // Then
+        XCTAssertTrue(sut.navigationController.presentedViewController is BlazeCreateCampaignIntroController)
+    }
+
     func test_webview_is_presented_when_blazei3NativeCampaignCreation_is_disabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
-                                                   onCampaignCreated: { }
-        )
+                                                   onCampaignCreated: {})
 
         // When
         sut.start()
@@ -61,6 +97,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
                                                    siteURL: "https://woo.com/",
                                                    productID: 2,
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
@@ -85,6 +122,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
@@ -111,6 +149,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,
@@ -138,6 +177,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
                                                    siteURL: "https://woo.com/",
                                                    source: .campaignList,
+                                                   shouldShowIntro: false,
                                                    storageManager: storageManager,
                                                    featureFlagService: featureFlagService,
                                                    navigationController: navigationController,

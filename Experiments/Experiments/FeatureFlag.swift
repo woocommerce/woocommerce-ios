@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Enables backend receipt generation for all payment methods
     ///
     case backendReceipts
+
+    /// Displays the Products tab in a split view
+    ///
+    case splitViewInProductsTab
 }

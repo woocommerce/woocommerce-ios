@@ -37,6 +37,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private var currency: String
     private var currencyFormatter: CurrencyFormatter
 
+    private var detectedLanguage: String?
     private var weightUnit: String?
     private var dimensionUnit: String?
     private let shippingValueLocalizer: ShippingValueLocalizer
@@ -286,6 +287,11 @@ private extension ProductDetailPreviewViewModel {
 
     @MainActor
     func identifyLanguage() async throws -> String {
+        if let detectedLanguage,
+           detectedLanguage.isNotEmpty {
+            return detectedLanguage
+        }
+
         do {
             let productInfo = {
                 guard let features = productFeatures,
@@ -302,6 +308,7 @@ private extension ProductDetailPreviewViewModel {
                     continuation.resume(with: result)
                 }))
             }
+            detectedLanguage = language
             return language
         } catch {
             throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)

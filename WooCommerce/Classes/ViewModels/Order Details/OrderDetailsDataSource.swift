@@ -414,6 +414,8 @@ private extension OrderDetailsDataSource {
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as LedgerTableViewCell:
             configurePayment(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeReceipt:
+            configureSeeReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeLegacyReceipt:
             configureSeeLegacyReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
@@ -610,6 +612,17 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.paidByCustomer
         cell.rightText = order.paymentTotal
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
+    }
+
+    private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        guard featureFlags.isFeatureFlagEnabled(.backendReceipts) else {
+            return
+        }
+        cell.setLeftTitleToLinkStyle(true)
+        cell.leftText = Titles.seeReceipt
+        cell.rightText = nil
+        cell.hideFootnote()
+        cell.hideSeparator()
     }
 
     private func configureSeeLegacyReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
@@ -1222,6 +1235,10 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
+            if featureFlags.isFeatureFlagEnabled(.backendReceipts) {
+                rows.append(.seeReceipt)
+            }
+
             if shouldShowLegacyReceipts {
                 rows.append(.seeLegacyReceipt)
             }
@@ -1485,6 +1502,10 @@ extension OrderDetailsDataSource {
         static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
+        static let seeReceipt = NSLocalizedString(
+            "OrderDetailsDataSource.configureSeeReceipt.button.title",
+            value: "[Debug] See Backed Receipt",
+            comment: "Text on the button title to see the order's receipt")
         static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }
 
@@ -1635,6 +1656,7 @@ extension OrderDetailsDataSource {
         case billingDetail
         case payment
         case customerPaid
+        case seeReceipt
         case seeLegacyReceipt
         case refund
         case netAmount
@@ -1683,6 +1705,8 @@ extension OrderDetailsDataSource {
             case .payment:
                 return LedgerTableViewCell.reuseIdentifier
             case .customerPaid:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .seeReceipt:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .seeLegacyReceipt:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier

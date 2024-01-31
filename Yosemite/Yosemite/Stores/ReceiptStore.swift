@@ -9,6 +9,7 @@ import WooFoundation
 public class ReceiptStore: Store {
     private let receiptPrinterService: PrinterService
     private let fileStorage: FileStorage
+    private let remote: ReceiptRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         storageManager.writerDerivedStorage
@@ -21,6 +22,7 @@ public class ReceiptStore: Store {
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService, fileStorage: FileStorage) {
         self.receiptPrinterService = receiptPrinterService
         self.fileStorage = fileStorage
+        self.remote = ReceiptRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -47,12 +49,26 @@ public class ReceiptStore: Store {
             loadReceipt(order: order, onCompletion: onCompletion)
         case .saveReceipt(let order, let info):
             saveReceipt(order: order, parameters: info)
+        case .retrieveReceipt(order: let order, onCompletion: let onCompletion):
+            retrieveReceipt(order: order, onCompletion: onCompletion)
         }
     }
 }
 
 
 private extension ReceiptStore {
+    func retrieveReceipt(order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void) {
+        remote.retrieveReceipt(siteID: order.siteID,
+                               orderID: order.orderID) { result in
+            switch result {
+            case let .success(receipt):
+                onCompletion(.success(receipt))
+            case let .failure(error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
         let content = generateReceiptContent(order: order, parameters: parameters, removingHtml: true)
         receiptPrinterService.printReceipt(content: content, completion: completion)

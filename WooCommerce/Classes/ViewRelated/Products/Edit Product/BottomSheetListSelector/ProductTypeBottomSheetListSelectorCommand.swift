@@ -3,7 +3,8 @@ import Yosemite
 /// Represents the product types available when creating or editing products.
 /// This includes the remote `ProductType`, whether the product type is virtual, and strings/images shown in the bottom sheet.
 ///
-public enum BottomSheetProductType: Hashable {
+public enum BottomSheetProductType: Hashable, Identifiable {
+
     case simple(isVirtual: Bool)
     case grouped
     case affiliate
@@ -12,6 +13,29 @@ public enum BottomSheetProductType: Hashable {
     case variableSubscription
     case custom(String) // in case there are extensions modifying product types
     case blank // used to create a simple product without a template
+
+    // Identifiable conformance
+    public var id: String {
+        switch self {
+        case .simple(let isVirtual):
+            return isVirtual ? "simpleVirtual" : "simple"
+        case .grouped:
+            return "grouped"
+        case .affiliate:
+            return "affiliate"
+        case .variable:
+            return "variable"
+        case .subscription:
+            return "subscription"
+        case .variableSubscription:
+            return "variableSubscription"
+        case .custom(let title):
+            return title
+        case .blank:
+            return "blank"
+        }
+    }
+
 
     /// Remote ProductType
     ///

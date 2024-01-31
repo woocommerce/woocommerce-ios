@@ -310,14 +310,17 @@ private extension ProductDetailPreviewViewModel {
 
     @MainActor
     func generateProduct(language: String,
-                           tone: AIToneVoice) async throws -> Product {
+                         tone: AIToneVoice) async throws -> Product {
         let existingCategories = categoryResultController.fetchedObjects
         let existingTags = tagResultController.fetchedObjects
 
-        let aiProduct = try await generateAIProduct(language: language,
-                                                    tone: tone,
-                                                    existingCategories: existingCategories,
-                                                    existingTags: existingTags)
+        let aiProduct: AIProduct = try await {
+            let generatedProduct = try await generateAIProduct(language: language,
+                                                               tone: tone,
+                                                               existingCategories: existingCategories,
+                                                               existingTags: existingTags)
+            return useGivenNameAndDescriptionIfEmpty(generatedProduct)
+        }()
 
         var categories = [ProductCategory]()
         aiProduct.categories.forEach { aiCategory in
@@ -373,6 +376,18 @@ private extension ProductDetailPreviewViewModel {
                 continuation.resume(with: result)
             }))
         }
+    }
+
+    func useGivenNameAndDescriptionIfEmpty(_ aiProduct: AIProduct) -> AIProduct {
+        var finalAIProduct = aiProduct
+        if aiProduct.name.isEmpty {
+            finalAIProduct = finalAIProduct.copy(name: productName)
+        }
+
+        if aiProduct.description.isEmpty {
+            finalAIProduct = finalAIProduct.copy(description: productFeatures ?? productDescription)
+        }
+        return finalAIProduct
     }
 }
 

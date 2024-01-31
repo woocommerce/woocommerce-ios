@@ -56,7 +56,12 @@ final class ReceiptViewController: UIViewController {
         printController.printInfo = printInfo
         printController.printFormatter = webView.viewPrintFormatter()
 
-        // TODO: Handle error and failure events via completionHandler
-        printController.present(animated: true, completionHandler: nil)
+        printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
+            if let error = error {
+                DDLogError("\(error)")
+            } else if isCompleted {
+                self?.dismiss(animated: true)
+            }
+        })
     }
 }

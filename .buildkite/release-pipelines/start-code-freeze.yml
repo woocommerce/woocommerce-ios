@@ -11,8 +11,5 @@ steps:
       echo '--- :closed_lock_with_key: Access Secrets'
       bundle exec fastlane run configure_apply
 
-      echo '--- :snowflake: Start Code Freeze'
-      bundle exec fastlane start_code_freeze skip_confirm:true
-
       echo '--- :cocoapods: Check for Outdated Pods'
-      bundle exec pod outdated
+      bundle exec pod outdated | buildkite-agent annotate 'Outdated Pods' --style 'info' --context 'outdated-pods'

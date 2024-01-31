@@ -676,6 +676,118 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.fullDescription, "Blue plastic ballpoint pen")
     }
 
+    // MARK: Short description view
+
+    func test_short_description_view_is_shown_if_shortDescription_is_not_empty() async throws {
+        // Given
+        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: "A short description")
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
+    }
+
+    func test_short_description_view_is_hidden_if_shortDescription_empty() async throws {
+        // Given
+        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: "")
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
+    }
+
+    func test_short_description_view_is_hidden_if_shortDescription_nil() async throws {
+        // Given
+        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: nil)
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
+    }
+
+    func test_short_description_view_is_shown_while_generating_AI_details() async throws {
+        // Given
+        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: nil)
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                // Then
+                XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
+                completion(.success(product))
+            case let .identifyLanguage(_, _, _, completion):
+                // Then
+                XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
+                completion(.success("en"))
+            default:
+                break
+            }
+        }
+
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
+    }
+
     // MARK: - Save product
 
     func test_saveProductAsDraft_updates_isSavingProduct_properly() async {

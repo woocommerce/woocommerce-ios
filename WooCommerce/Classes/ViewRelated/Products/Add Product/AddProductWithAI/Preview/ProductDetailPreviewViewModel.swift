@@ -25,6 +25,14 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
 
+    /// Whether short description view should be displayed
+    var shouldShowShortDescriptionView: Bool {
+        if isGeneratingDetails {
+            return true
+        }
+        return productShortDescription?.isNotEmpty ?? false
+    }
+
     private let productFeatures: String?
 
     private let siteID: Int64

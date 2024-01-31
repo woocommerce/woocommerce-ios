@@ -287,18 +287,32 @@ private extension AddProductCoordinator {
     /// Presents an action sheet with the option to start product creation with AI
     ///
     func presentActionSheetWithAI() {
-        let controller = AddProductWithAIActionSheetHostingController(onAIOption: { [weak self] in
-            self?.addProductWithAIBottomSheetPresenter?.dismiss {
-                self?.analytics.track(event: .ProductCreationAI.entryPointTapped())
-                self?.addProductWithAIBottomSheetPresenter = nil
-                self?.startProductCreationWithAI()
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { _ in }
+        let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
+        command.data = [.simple(isVirtual: false),
+                        .simple(isVirtual: true),
+                        isEligibleForWooSubscriptionProducts ? .subscription : nil,
+                        .variable,
+                        isEligibleForWooSubscriptionProducts ? .variableSubscription : nil,
+                        .grouped,
+                        .affiliate].compactMap { $0 }
+
+        let controller = AddProductWithAIActionSheetHostingController(
+            command: command,
+            onAIOption: { [weak self] in
+                self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                    self?.analytics.track(event: .ProductCreationAI.entryPointTapped())
+                    self?.addProductWithAIBottomSheetPresenter = nil
+                    self?.startProductCreationWithAI()
+                }
+            }, 
+            onManualOption: { [weak self] in
+                self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                    self?.addProductWithAIBottomSheetPresenter = nil
+                    self?.presentProductTypeBottomSheet(creationType: .manual)
+                }
             }
-        }, onManualOption: { [weak self] in
-            self?.addProductWithAIBottomSheetPresenter?.dismiss {
-                self?.addProductWithAIBottomSheetPresenter = nil
-                self?.presentProductTypeBottomSheet(creationType: .manual)
-            }
-        })
+        )
 
         addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter()
         addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)

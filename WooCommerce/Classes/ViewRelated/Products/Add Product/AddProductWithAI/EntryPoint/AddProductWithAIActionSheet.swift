@@ -3,10 +3,9 @@ import SwiftUI
 /// Hosting controller for `AddProductWithAIActionSheet`.
 ///
 final class AddProductWithAIActionSheetHostingController: UIHostingController<AddProductWithAIActionSheet> {
-    init(onAIOption: @escaping () -> Void,
+    init(command: ProductTypeBottomSheetListSelectorCommand,
+         onAIOption: @escaping () -> Void,
          onManualOption: @escaping () -> Void) {
-
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { _ in }
 
         let rootView = AddProductWithAIActionSheet(command: command,
                                                    onAIOption: onAIOption,

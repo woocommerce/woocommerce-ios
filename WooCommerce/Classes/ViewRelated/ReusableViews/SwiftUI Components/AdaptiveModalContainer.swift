@@ -1,5 +1,17 @@
 import SwiftUI
 
+/// `AdaptiveModalContainer` shows two views, primary and secondary
+/// In horizontally regular environments, they are shown side-by-side, with the primary on the right (in an LTR system.)
+/// In horizontally compact environments, the primary view is shown. 
+///
+/// In compact environments, the primary view can use the `presentSecondaryView` closure to trigger modal presentation of the secondary view.
+/// This closure is `nil` when the secondary view is shown side-by-side.
+///
+/// Each view is wrapped in its own Navigation Stack
+///
+/// Intended to be presented modally – a close button will be added to the leftmost navigation bar.
+///
+/// This was initially developed for the Order Form and Product Selector to be presented together on iPad.
 struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 

@@ -30,51 +30,92 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     private let siteURL: String
     private let productID: Int64?
     private let source: BlazeSource
+    private let shouldShowIntro: Bool
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
+    private let analytics: Analytics
     let navigationController: UINavigationController
     private let didSelectCreateCampaign: ((BlazeSource) -> Void)?
     private let onCampaignCreated: () -> Void
 
     private var bottomSheetPresenter: BottomSheetPresenter?
+    private var addProductCoordinator: AddProductCoordinator?
 
     init(siteID: Int64,
          siteURL: String,
          productID: Int64? = nil,
          source: BlazeSource,
+         shouldShowIntro: Bool,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          navigationController: UINavigationController,
          didSelectCreateCampaign: ((BlazeSource) -> Void)? = nil,
+         analytics: Analytics = ServiceLocator.analytics,
          onCampaignCreated: @escaping () -> Void) {
         self.siteID = siteID
         self.siteURL = siteURL
         self.productID = productID
         self.source = source
+        self.shouldShowIntro = shouldShowIntro
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.navigationController = navigationController
         self.didSelectCreateCampaign = didSelectCreateCampaign
         self.onCampaignCreated = onCampaignCreated
+        self.analytics = analytics
 
         configureResultsController()
     }
 
     func start() {
-        switch blazeCreationEntryDestination {
-        case .productSelector:
-            navigateToBlazeProductSelector(source: source)
-        case .campaignForm(let productID):
-            navigateToNativeCampaignCreation(source: source, productID: productID)
-        case .webViewForm(let productID):
-            navigateToWebCampaignCreation(source: source, productID: productID)
-        case .noProductAvailable:
-            break // TODO 11685: add error alert.
+        guard shouldShowIntro else {
+            startCreationFlow(from: source)
+            return
+        }
+        presentIntroScreen { [weak self] in
+            self?.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
+            self?.startCreationFlow(from: .introView)
         }
     }
 }
 
 private extension BlazeCampaignCreationCoordinator {
+    func presentIntroScreen(onCreateCampaign: @escaping () -> Void) {
+        let onDismissClosure = { [weak self] in
+            guard let self else { return }
+            navigationController.dismiss(animated: true)
+        }
+        let introController: UIViewController = {
+            if featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
+                return BlazeCreateCampaignIntroController(onCreateCampaign: onCreateCampaign,
+                                                          onDismiss: onDismissClosure)
+            } else {
+                return BlazeCampaignIntroController(onStartCampaign: onCreateCampaign,
+                                                    onDismiss: onDismissClosure)
+            }
+        }()
+
+        navigationController.present(introController, animated: true)
+        analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
+    }
+
+    func startCreationFlow(from source: BlazeSource) {
+        /// Force dismissing any presented view to avoid issue presenting the creation flow.
+        navigationController.dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+            switch blazeCreationEntryDestination {
+            case .productSelector:
+                navigateToBlazeProductSelector()
+            case .campaignForm(let productID):
+                navigateToNativeCampaignCreation(productID: productID)
+            case .webViewForm(let productID):
+                navigateToWebCampaignCreation(source: source, productID: productID)
+            case .noProductAvailable:
+                presentNoProductAlert()
+            }
+        }
+    }
+
     func configureResultsController() {
         productResultsController.onDidChangeContent = { [weak self] in
             self?.updateCreateCampaignDestination()
@@ -119,7 +160,7 @@ private extension BlazeCampaignCreationCoordinator {
     }
 
     /// Handles navigation to the native Blaze creation
-    func navigateToNativeCampaignCreation(source: BlazeSource, productID: Int64) {
+    func navigateToNativeCampaignCreation(productID: Int64) {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
                                                            productID: productID,
                                                            storage: storageManager,
@@ -159,7 +200,7 @@ private extension BlazeCampaignCreationCoordinator {
     }
 
     /// Handles navigation to the Blaze product selector view
-    func navigateToBlazeProductSelector(source: BlazeSource) {
+    func navigateToBlazeProductSelector() {
         let controller: ProductSelectorViewController = {
             let productSelectorViewModel = ProductSelectorViewModel(
                 siteID: siteID,
@@ -167,7 +208,7 @@ private extension BlazeCampaignCreationCoordinator {
                     guard let self else { return }
 
                     // Navigate to Campaign Creation Form once any type of product is selected.
-                    navigateToNativeCampaignCreation(source: source, productID: product.productID)
+                    navigateToNativeCampaignCreation(productID: product.productID)
                 },
                 onCloseButtonTapped: { [weak self] in
                     guard let self else { return }
@@ -182,6 +223,31 @@ private extension BlazeCampaignCreationCoordinator {
 
         blazeNavigationController.viewControllers = [controller]
         navigationController.present(blazeNavigationController, animated: true, completion: nil)
+    }
+
+    func presentNoProductAlert() {
+        let alert = UIAlertController(title: Localization.NoProductAlert.title,
+                                      message: Localization.NoProductAlert.message,
+                                      preferredStyle: .alert)
+        let createAction = UIAlertAction(title: Localization.NoProductAlert.createProduct, style: .default) { [weak self] _ in
+            self?.startProductCreation()
+        }
+        let cancelAction = UIAlertAction(title: Localization.NoProductAlert.cancel, style: .cancel)
+        alert.addAction(createAction)
+        alert.addAction(cancelAction)
+        navigationController.dismiss(animated: true) { [weak self] in
+            self?.navigationController.present(alert, animated: true)
+        }
+    }
+
+    func startProductCreation() {
+        let coordinator = AddProductCoordinator(siteID: siteID,
+                                                source: .blazeCampaignCreation,
+                                                sourceView: nil,
+                                                sourceNavigationController: navigationController,
+                                                isFirstProduct: true)
+        addProductCoordinator = coordinator
+        coordinator.start()
     }
 }
 
@@ -255,5 +321,27 @@ private extension BlazeCampaignCreationCoordinator {
             value: "Done",
             comment: "Button to dismiss the celebration view when a Blaze campaign is successfully created."
         )
+        enum NoProductAlert {
+            static let title = NSLocalizedString(
+                "blazeCampaignCreationCoordinator.NoProductAlert.title",
+                value: "No product found",
+                comment: "Title of the alert when attempting to start Blaze campaign creation flow without any product in the store"
+            )
+            static let message = NSLocalizedString(
+                "blazeCampaignCreationCoordinator.NoProductAlert.message",
+                value: "You currently don’t have a product available for promotion. Would you like to create a product now?",
+                comment: "Message of the alert when attempting to start Blaze campaign creation flow without any product in the store"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationCoordinator.NoProductAlert.cancel",
+                value: "Cancel",
+                comment: "Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store"
+            )
+            static let createProduct = NSLocalizedString(
+                "blazeCampaignCreationCoordinator.NoProductAlert.createProduct",
+                value: "Create Product",
+                comment: "Button to create a product when attempting to start Blaze campaign creation flow without any product in the store"
+            )
+        }
     }
 }

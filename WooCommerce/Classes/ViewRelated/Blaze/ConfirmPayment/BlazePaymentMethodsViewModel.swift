@@ -11,13 +11,23 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
     private let stores: StoresManager
     private let defaultAccount: Account?
 
-    @Published private var paymentInfo: BlazePaymentInfo?
-    @Published private(set) var isFetchingPaymentInfo = false
-    @Published var shouldDisplayPaymentErrorAlert = false
-    @Published var notice: Notice?
+    private let paymentInfo: BlazePaymentInfo?
 
     var paymentMethods: [BlazePaymentMethod] {
         paymentInfo?.savedPaymentMethods ?? []
+    }
+
+    var addPaymentWebViewModel: BlazeAddPaymentMethodWebViewModel? {
+        guard let paymentInfo else {
+            DDLogError("⛔️ No add payment info available to initiate Add payment method flow.")
+            return nil
+        }
+
+        return BlazeAddPaymentMethodWebViewModel(siteID: siteID,
+                                                 addPaymentMethodInfo: paymentInfo.addPaymentMethod) { [weak self] newPaymentMethodID in
+            guard let self else { return }
+            didSelectPaymentMethod(withID: newPaymentMethodID)
+        }
     }
 
     @Published private(set) var selectedPaymentMethodID: String?
@@ -32,24 +42,6 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
 
     var WPCOMEmail: String {
         defaultAccount?.email ?? ""
-    }
-
-    var addPaymentMethodURL: URL? {
-        guard let paymentInfo else {
-            return nil
-        }
-        return URL(string: paymentInfo.addPaymentMethod.formUrl)
-    }
-
-    var addPaymentSuccessURL: String? {
-        paymentInfo?.addPaymentMethod.successUrl
-    }
-
-    var isDoneButtonEnabled: Bool {
-        guard !isFetchingPaymentInfo else {
-            return false
-        }
-        return selectedPaymentMethodID != originalSelectedPaymentMethodID
     }
 
     init(siteID: Int64,
@@ -68,40 +60,19 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
 
     func didSelectPaymentMethod(withID paymentMethodID: String) {
         selectedPaymentMethodID = paymentMethodID
+        saveSelection()
     }
+}
 
-    @MainActor
-    func syncPaymentInfo() async {
-        shouldDisplayPaymentErrorAlert = false
-        isFetchingPaymentInfo = true
-        do {
-            paymentInfo = try await fetchPaymentInfo()
-        } catch {
-            DDLogError("⛔️ Error fetching payment info for Blaze campaign creation: \(error)")
-            shouldDisplayPaymentErrorAlert = true
-        }
-        isFetchingPaymentInfo = false
-    }
-
+// MARK: - Private Helpers
+//
+private extension BlazePaymentMethodsViewModel {
     func saveSelection() {
         guard let selectedPaymentMethodID else {
             DDLogError("⛔️ No payment method selected in Blaze campaign creation")
             return
         }
         onCompletion(selectedPaymentMethodID)
-    }
-}
-
-// MARK: - API Requests
-//
-private extension BlazePaymentMethodsViewModel {
-    @MainActor
-    func fetchPaymentInfo() async throws -> BlazePaymentInfo {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(BlazeAction.fetchPaymentInfo(siteID: siteID, onCompletion: { result in
-                continuation.resume(with: result)
-            }))
-        }
     }
 }
 

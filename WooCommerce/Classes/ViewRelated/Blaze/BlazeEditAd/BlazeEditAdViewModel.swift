@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 import struct Networking.BlazeAISuggestion
 
 /// View model for `BlazeEditAdView`
@@ -19,9 +18,19 @@ final class BlazeEditAdViewModel: ObservableObject {
     // Tagline
     @Published var tagline: String = ""
     var taglineFooterText: String {
-        taglineEmptyError ?? taglineLengthLimitLabel
+        if tagline.isEmpty {
+            Localization.taglineEmpty
+        } else if tagline.count > Constants.taglineMaxLength {
+            String.localizedStringWithFormat(Localization.taglineLengthExceedsLimit, Constants.taglineMaxLength)
+        } else {
+            taglineLengthLimitLabel
+        }
     }
-    private let taglineMaxLength = 32
+
+    var isTaglineValidated: Bool {
+        tagline.isNotEmpty && tagline.count <= Constants.taglineMaxLength
+    }
+
     @Published private var taglineRemainingLength: Int
     private var taglineLengthLimitLabel: String {
         let lengthText = String.pluralize(taglineRemainingLength,
@@ -29,14 +38,23 @@ final class BlazeEditAdViewModel: ObservableObject {
                                           plural: Localization.LengthLimit.plural)
         return String(format: lengthText, taglineRemainingLength)
     }
-    private var taglineEmptyError: String?
 
     // Description
     @Published var description: String = ""
     var descriptionFooterText: String {
-        descriptionEmptyError ?? descriptionLengthLimitLabel
+        if description.isEmpty {
+            Localization.descriptionEmpty
+        } else if description.count > Constants.descriptionMaxLength {
+            String.localizedStringWithFormat(Localization.descriptionLengthExceedsLimit, Constants.descriptionMaxLength)
+        } else {
+            descriptionLengthLimitLabel
+        }
     }
-    private let descriptionMaxLength = 140
+
+    var isDescriptionValidated: Bool {
+        description.isNotEmpty && description.count <= Constants.descriptionMaxLength
+    }
+
     @Published private var descriptionRemainingLength: Int
     private var descriptionLengthLimitLabel: String {
         let lengthText = String.pluralize(descriptionRemainingLength,
@@ -44,10 +62,11 @@ final class BlazeEditAdViewModel: ObservableObject {
                                           plural: Localization.LengthLimit.plural)
         return String(format: lengthText, descriptionRemainingLength)
     }
-    private var descriptionEmptyError: String?
 
     var isSaveButtonEnabled: Bool {
-        guard let editedAdData else {
+        guard let editedAdData,
+                taglineRemainingLength >= 0,
+                descriptionRemainingLength >= 0 else {
             return false
         }
 
@@ -55,8 +74,7 @@ final class BlazeEditAdViewModel: ObservableObject {
     }
 
     private var editedAdData: BlazeEditAdData? {
-        guard let image,
-              tagline.isNotEmpty,
+        guard tagline.isNotEmpty,
               description.isNotEmpty else {
             return nil
         }
@@ -84,13 +102,12 @@ final class BlazeEditAdViewModel: ObservableObject {
 
     private let onSave: (BlazeEditAdData) -> Void
     private let analytics: Analytics
-    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          adData: BlazeEditAdData,
          suggestions: [BlazeAISuggestion],
-         onSave: @escaping (BlazeEditAdData) -> Void,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onSave: @escaping (BlazeEditAdData) -> Void) {
         self.siteID = siteID
 
         self.adData = adData
@@ -105,15 +122,15 @@ final class BlazeEditAdViewModel: ObservableObject {
 
         self.onSave = onSave
         self.analytics = analytics
-        self.taglineRemainingLength = taglineMaxLength
-        self.descriptionRemainingLength = descriptionMaxLength
+        self.taglineRemainingLength = Constants.taglineMaxLength
+        self.descriptionRemainingLength = Constants.descriptionMaxLength
 
         watchCharacterLimit()
         setSelectedSuggestionIfApplicable()
     }
 
     func didTapSave() {
-        // TODO: 11512 Track Save button tap
+        analytics.track(event: .Blaze.EditAd.saveTapped())
         guard let editedAdData else {
             assertionFailure("Save button shouldn't be enabled when edited ad is nil")
             return
@@ -142,6 +159,8 @@ final class BlazeEditAdViewModel: ObservableObject {
     }
 
     func didTapPrevious() {
+        analytics.track(event: .Blaze.EditAd.aiSuggestionTapped())
+
         guard let selectedSuggestionIndex,
               selectedSuggestionIndex > 0 else {
             return
@@ -157,6 +176,8 @@ final class BlazeEditAdViewModel: ObservableObject {
     }
 
     func didTapNext() {
+        analytics.track(event: .Blaze.EditAd.aiSuggestionTapped())
+
         let newIndex = {
             guard let selectedSuggestionIndex else {
                 // Select first item when no suggestion is selected previously
@@ -185,44 +206,16 @@ final class BlazeEditAdViewModel: ObservableObject {
 extension BlazeEditAdViewModel {
     private func watchCharacterLimit() {
         $tagline
-            .removeDuplicates()
-            .sink { [weak self] text in
-                guard let self else { return }
-                if text.count >= self.taglineMaxLength {
-                    self.taglineRemainingLength = 0
-                } else {
-                    self.taglineRemainingLength = self.taglineMaxLength - text.count
-                }
-
-                taglineEmptyError = text.isEmpty ? Localization.taglineEmpty : nil
-            }.store(in: &subscriptions)
+            .map { text -> Int in
+                Constants.taglineMaxLength - text.count
+            }
+            .assign(to: &$taglineRemainingLength)
 
         $description
-            .removeDuplicates()
-            .sink { [weak self] text in
-                guard let self else { return }
-                if text.count >= self.descriptionMaxLength {
-                    self.descriptionRemainingLength = 0
-                } else {
-                    self.descriptionRemainingLength = self.descriptionMaxLength - text.count
-                }
-
-                descriptionEmptyError = text.isEmpty ? Localization.descriptionEmpty : nil
-            }.store(in: &subscriptions)
-    }
-
-    func formatTagline(_ newValue: String) -> String {
-        guard newValue.count > taglineMaxLength else {
-            return newValue
-        }
-        return String(newValue.prefix(taglineMaxLength))
-    }
-
-    func formatDescription(_ newValue: String) -> String {
-        guard newValue.count > descriptionMaxLength else {
-            return newValue
-        }
-        return String(newValue.prefix(descriptionMaxLength))
+            .map { text -> Int in
+                Constants.descriptionMaxLength - text.count
+            }
+            .assign(to: &$descriptionRemainingLength)
     }
 }
 
@@ -242,6 +235,11 @@ private extension BlazeEditAdViewModel {
 }
 
 extension BlazeEditAdViewModel {
+    enum Constants {
+        static let taglineMaxLength = 32
+        static let descriptionMaxLength = 140
+    }
+
     enum Localization {
         enum LengthLimit {
             static let plural = NSLocalizedString(
@@ -268,6 +266,16 @@ extension BlazeEditAdViewModel {
             "blazeEditAdViewModel.description.emptyError",
             value: "Description cannot be empty",
             comment: "Edit Blaze Ad screen: Error message if Description field is empty."
+        )
+        static let taglineLengthExceedsLimit = NSLocalizedString(
+            "blazeEditAdViewModel.tagline.lengthExceedsLimit",
+            value: "Tagline cannot exceed %1$d characters",
+            comment: "Edit Blaze Ad screen: Error message if Tagline exceeds the character limit."
+        )
+        static let descriptionLengthExceedsLimit = NSLocalizedString(
+            "blazeEditAdViewModel.description.lengthExceedsLimit",
+            value: "Description cannot exceed %1$d characters",
+            comment: "Edit Blaze Ad screen: Error message if Description exceeds the character limit."
         )
     }
 }

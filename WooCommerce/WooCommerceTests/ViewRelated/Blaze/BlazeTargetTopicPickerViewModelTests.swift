@@ -19,13 +19,20 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting())
         storageManager = MockStorageManager()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
+        analyticsProvider = nil
+        analytics = nil
         storageManager = nil
         stores = nil
         super.tearDown()
@@ -204,6 +211,23 @@ final class BlazeTargetTopicPickerViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(selectedItems, expectedItems)
+    }
+
+    // MARK: Analytics
+
+    func test_confirmSelection_tracks_event() throws {
+        // Given
+        let viewModel = BlazeTargetTopicPickerViewModel(siteID: sampleSiteID,
+                                                        locale: locale,
+                                                        storageManager: storageManager,
+                                                        analytics: analytics,
+                                                        onSelection: { _ in })
+
+        // When
+        viewModel.confirmSelection()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_interest_save_tapped"))
     }
 }
 

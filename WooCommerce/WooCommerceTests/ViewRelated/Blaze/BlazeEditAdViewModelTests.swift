@@ -15,6 +15,21 @@ final class BlazeEditAdViewModelTests: XCTestCase {
                                        BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
                                        BlazeAISuggestion(siteName: "Third suggested tagline", textSnippet: "Third suggested description")]
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
+
     // MARK: Tagline
     func test_tagline_footer_text_is_plural_when_multiple_characters_remaining() {
         // Given
@@ -70,6 +85,21 @@ final class BlazeEditAdViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.taglineFooterText, BlazeEditAdViewModel.Localization.taglineEmpty)
+    }
+
+    func test_tagline_footer_text_shows_error_when_tagline_exceeds_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.tagline = String(repeating: "a", count: BlazeEditAdViewModel.Constants.taglineMaxLength + 1)
+
+        // Then
+        let expectedMessage = String(format: BlazeEditAdViewModel.Localization.taglineLengthExceedsLimit, BlazeEditAdViewModel.Constants.taglineMaxLength)
+        XCTAssertEqual(sut.taglineFooterText, expectedMessage)
     }
 
     // MARK: Description
@@ -130,6 +160,24 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         XCTAssertEqual(sut.descriptionFooterText, BlazeEditAdViewModel.Localization.descriptionEmpty)
     }
 
+    func test_description_footer_text_shows_error_when_description_exceeds_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.description = String(repeating: "a", count: BlazeEditAdViewModel.Constants.descriptionMaxLength + 1)
+
+        // Then
+        let expectedMessage = String(
+            format: BlazeEditAdViewModel.Localization.descriptionLengthExceedsLimit,
+            BlazeEditAdViewModel.Constants.descriptionMaxLength
+        )
+        XCTAssertEqual(sut.descriptionFooterText, expectedMessage)
+    }
+
     // MARK: Save button
     func test_save_button_is_disabled_when_no_change_made_to_ad_data() {
         // Given
@@ -162,6 +210,22 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         }
     }
 
+    func test_save_button_is_enabled_when_tagline_is_changed_even_though_image_is_nil() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: nil,
+                                                               tagline: "Sample Tagline",
+                                                               description: "Sample description"),
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.tagline = "Test"
+
+        // Then
+        XCTAssertTrue(sut.isSaveButtonEnabled)
+    }
+
     func test_save_button_is_enabled_when_tagline_is_changed() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
@@ -180,6 +244,50 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
                                        adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.description = "Test"
+
+        // Then
+        XCTAssertTrue(sut.isSaveButtonEnabled)
+    }
+
+    func test_save_button_is_disabled_when_tagline_exceeds_character_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.tagline = String(repeating: "a", count: BlazeEditAdViewModel.Constants.taglineMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isSaveButtonEnabled)
+    }
+
+    func test_save_button_is_disabled_when_description_exceeds_character_limit() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.description = String(repeating: "a", count: BlazeEditAdViewModel.Constants.descriptionMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isSaveButtonEnabled)
+    }
+
+    func test_save_button_is_enabled_when_description_is_changed_even_though_image_is_nil() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: nil,
+                                                               tagline: "Sample Tagline",
+                                                               description: "Sample description"),
                                        suggestions: [.fake()],
                                        onSave: { _ in })
 
@@ -367,6 +475,103 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         // Check that suggestion at index 1 is selected by testing button states
         XCTAssertTrue(sut.canSelectPreviousSuggestion)
         XCTAssertTrue(sut.canSelectNextSuggestion)
+    }
+
+    // MARK: - isTaglineValidated and isDescriptionValidated
+
+    func test_isTaglineValidated_is_updated_correctly_depending_on_tagline_length() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.tagline = ""
+
+        // Then
+        XCTAssertFalse(sut.isTaglineValidated)
+
+        // When
+        sut.tagline = String(repeating: "a", count: BlazeEditAdViewModel.Constants.taglineMaxLength)
+
+        // Then
+        XCTAssertTrue(sut.isTaglineValidated)
+
+        // When
+        sut.tagline = String(repeating: "a", count: BlazeEditAdViewModel.Constants.taglineMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isTaglineValidated)
+    }
+
+    func test_isDescriptionValidated_is_updated_correctly_depending_on_description_length() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: sampleAISuggestions,
+                                       onSave: { _ in })
+
+        // When
+        sut.description = ""
+
+        // Then
+        XCTAssertFalse(sut.isDescriptionValidated)
+
+        // When
+        sut.description = String(repeating: "a", count: BlazeEditAdViewModel.Constants.descriptionMaxLength)
+
+        // Then
+        XCTAssertTrue(sut.isDescriptionValidated)
+
+        // When
+        sut.description = String(repeating: "a", count: BlazeEditAdViewModel.Constants.descriptionMaxLength + 1)
+
+        // Then
+        XCTAssertFalse(sut.isDescriptionValidated)
+    }
+
+    // MARK: Analytics
+    func test_AI_suggestion_arrows_tap_is_tracked() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
+                                                                                       source: .media(media: .fake())),
+                                                               tagline: sampleAISuggestions[1].siteName,
+                                                               description: sampleAISuggestions[1].textSnippet),
+                                       suggestions: sampleAISuggestions,
+                                       analytics: analytics,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapPrevious()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == ("blaze_creation_edit_ad_ai_suggestion_tapped")}.count, 1)
+
+        // When
+        sut.didTapNext()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == ("blaze_creation_edit_ad_ai_suggestion_tapped")}.count, 2)
+    }
+
+    func test_save_button_tap_is_tracked() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
+                                                                                       source: .media(media: .fake())),
+                                                               tagline: sampleAISuggestions[1].siteName,
+                                                               description: sampleAISuggestions[1].textSnippet),
+                                       suggestions: sampleAISuggestions,
+                                       analytics: analytics,
+                                       onSave: { _ in })
+
+        // When
+        sut.didTapSave()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_ad_save_tapped"))
     }
 }
 

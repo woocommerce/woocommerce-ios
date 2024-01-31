@@ -47,6 +47,7 @@ struct ProductDetailPreviewView: View {
                     BasicDetailRow(content: viewModel.productShortDescription,
                                    isLoading: viewModel.isGeneratingDetails)
                 }
+                .renderedIf(viewModel.shouldShowShortDescriptionView)
 
                 // Product description
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {

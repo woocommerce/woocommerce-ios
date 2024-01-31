@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-16 11:54:01+0000 */
+/* Translation-Revision-Date: 2024-01-23 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -2034,13 +2034,13 @@ which should be translated separately and considered part of this sentence. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Tidak dapat terhubung ke situs WordPress. Tidak ada situs WordPress yang valid di alamat ini. Periksa alamat situs (URL) yang Anda masukkan.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Tidak dapat terhubung. Metode XML-RPC yang diperlukan tidak ditemukan di server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem." = "Tidak dapat terhubung. Metode XML-RPC yang diperlukan tidak ditemukan di server. Hubungi penyedia hosting Anda untuk mengatasi masalah ini.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Tidak dapat terhubung. Kami menerima error 403 saat mencoba mengakses titik akhir XMLRPC situs Anda. Aplikasi ini memerlukannya agar dapat berkomunikasi dengan situs Anda. Hubungi host Anda untuk mengatasi masalah ini.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Tidak dapat terhubung. Kami menerima error 403 saat mencoba mengakses titik akhir XMLRPC situs Anda. Aplikasi ini memerlukannya agar dapat berkomunikasi dengan situs Anda. Hubungi penyedia hosting Anda untuk mengatasi kendala ini.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
-"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Tidak dapat terhubung. Host Anda memblokir permintaan POST, dan aplikasi memerlukannya untuk berkomunikasi dengan situs Anda. Hubungi host Anda untuk mengatasi masalah ini.";
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Tidak dapat terhubung. Host Anda memblokir permintaan POST, padahal aplikasi memerlukannya untuk berkomunikasi dengan situs Anda. Hubungi penyedia hosting Anda untuk mengatasi kendala ini.";
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Tidak bisa memuat tag.";
@@ -2148,9 +2148,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Buat toko";
-
-/* Button when tapped will launch create Blaze campaign flow. */
-"Create campaign" = "Buat kampanye";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Buat kupon";
@@ -4560,12 +4557,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "Tandai semua ulasan sebagai sudah dibaca.";
-
-/* Alert button when selecting the cash payment method */
-"Mark as Paid" = "Tandai sebagai Dibayar";
-
-/* Alert title when selecting the cash payment method */
-"Mark as Paid?" = "Tandai sebagai Dibayar?";
 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Tandai pesanan ini selesai dan kirim pemberitahuan ke pelanggan";
@@ -8131,9 +8122,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Ini akan membuat variasi untuk setiap kemungkinan kombinasi atribut variasi (%d variasi).";
 
-/* Alert info when selecting the cash payment method during payments */
-"This will mark your order as complete if you received (total) outside of WooCommerce" = "Pesanan akan ditandai sebagai selesai jika Anda telah menerima (total) tanpa melalui WooCommerce";
-
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "Hal ini tidak akan memengaruhi pesanan online.";
 
@@ -9661,6 +9649,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Kenakan Pajak";
 
+/* Label for button to enable Jetpack Stats */
+"analyticsHub.jetpackStatsCTA.buttonLabel" = "Aktifkan Jetpack Stats";
+
+/* Error shown when Jetpack Stats can't be enabled in the Analytics Hub. */
+"analyticsHub.jetpackStatsCTA.errorNotice" = "Kami tidak bisa mengaktifkan Jetpack Stats untuk toko Anda";
+
+/* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
+"analyticsHub.jetpackStatsCTA.message" = "Aktifkan Jetpack Stats untuk melihat data analitik sesi toko Anda.";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.jetpackStatsCTA.title" = "SESI";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Batal";
 
@@ -9811,6 +9811,31 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "selama %1$d hari";
 
+/* Button to dismiss the flow on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.cancel" = "Batalkan Kampanye";
+
+/* Button to dismiss the support form from the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.done" = "Selesai";
+
+/* Button to get support on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.getSupport" = "Dapatkan dukungan";
+
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationErrorView.message" = "Terjadi kesalahan.\nKami tidak bisa membuat kampanye Anda.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.noPaymentTaken" = "Belum ada pembayaran.";
+
+/* Suggested message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.suggestion" = "Silakan coba lagi atau hubungi dukungan untuk mendapatkan bantuan.";
+
+/* Title of the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.title" = "Error saat membuat kampanye";
+
+/* Button to try again on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.tryAgain" = "Coba Lagi";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Tujuan iklan:";
 
@@ -9862,11 +9887,62 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d hari sejak %3$@";
 
+/* Text indicating all locations for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.everywhere" = "Semua lokasi";
+
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f USD";
 
+/* Message in the Blaze campaign creation loading screen */
+"blazeCampaignCreationLoadingView.Message" = "Membuat kampanye";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Sembunyikan Blaze";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.promote" = "Promosikan";
+
+/* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.adPolicy" = "Kebijakan Iklan";
+
+/* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.addPaymentMethod" = "Tambahkan metode pembayaran";
+
+/* Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: By clicking \"Submit campaign\" you agree to the Terms of Service and Advertising Policy, and authorize your payment method to be charged for the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work. */
+"blazeConfirmPaymentView.agreement" = "Dengan mengeklik \"Kirim Kampanye\", Anda menyetujui %1$@ dan %2$@, serta menetapkan metode pembayaran untuk penagihan sesuai anggaran dan durasi yang dipilih. %3$@ tentang cara kerja anggaran dan pembayaran untuk Pos Dipromosikan.";
+
+/* Item to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.blazeCampaign" = "Kampanye Blaze";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.errorMessage" = "Terjadi error saat memuat metode pembayaran Anda";
+
+/* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.learnMore" = "Baca selengkapnya";
+
+/* Text for the loading state on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.loading" = "Memuat metode pembayaran ...";
+
+/* Section title on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.paymentTotals" = "Total pembayaran";
+
+/* Action button on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.submitButton" = "Kirim Kampanye";
+
+/* The terms to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.terms" = "Ketentuan Layanan";
+
+/* Title of the Payment view in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.title" = "Pembayaran";
+
+/* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.total" = "Total";
+
+/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
+"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.tryAgain" = "Coba Lagi";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Jutaan situs dalam jaringan WordPress.com dan Tumblr jadi ruang iklan Anda.";
@@ -9970,6 +10046,51 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Cari tahu cara kerja %1$@";
 
+/* Button title in the Blaze Payment Method screen if there is an existing payment method */
+"blazePaymentMethodsView.addAnotherCreditCardButton" = "Tambahkan kartu kredit lain";
+
+/* Button title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.addCreditCardButton" = "Tambah kartu kredit";
+
+/* Title of the button to dismiss the Blaze payment method list screen */
+"blazePaymentMethodsView.cancelButton" = "Batal";
+
+/* Done navigation button in the Blaze Payment Method screen */
+"blazePaymentMethodsView.doneButton" = "Selesai";
+
+/* Done navigation button in Blaze add payment web view */
+"blazePaymentMethodsView.doneButtonAddPayment" = "Selesai";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.emailReceipt" = "Kirimkan tanda terima pembelian label via email ke %1$@ (%2$@) di %3$@";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.errorMessage" = "Terjadi error saat memuat metode pembayaran Anda";
+
+/* Navigation bar title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.navigationBarTitle" = "Metode Pembayaran";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazePaymentMethodsView.paymentMethodAddedNotice" = "Metode pembayaran ditambahkan";
+
+/* Title of the web view of adding a payment method in Blaze */
+"blazePaymentMethodsView.paymentMethodWebViewTitle" = "Metode pembayaran";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.paymentMethodsFooter" = "Kartu kredit diambil dari akun WordPress.com berikut: %1$@ <%2$@>";
+
+/* Header for list of payment methods in Payment Method screen */
+"blazePaymentMethodsView.paymentMethodsHeader" = "Metode Pembayaran Dipilih";
+
+/* Message that will be displayed if there are no Blaze payment methods. */
+"blazePaymentMethodsView.pleaseAddPaymentMethodMessage" = "Harap tambahkan metode pembayaran baru";
+
+/* Text to explain that transactions will be secure in Payment Method screen */
+"blazePaymentMethodsView.transactionsSecure" = "Semua transaksi aman dan terenkripsi";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazePaymentMethodsView.tryAgain" = "Coba Lagi";
+
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "Batal";
 
@@ -10002,6 +10123,39 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to retry syncing data on the target language picker for campaign creation */
 "blazeTargetLanguagePickerView.tryAgain" = "Coba Lagi";
+
+/* Button to dismiss the target location picker for campaign creation */
+"blazeTargetLocationPickerView.cancel" = "Batal";
+
+/* Button to save the selections on the target location picker for campaign creation */
+"blazeTargetLocationPickerView.save" = "Simpan";
+
+/* Placeholder on the search bar of the target location picker for campaign creation */
+"blazeTargetLocationPickerView.searchPrompt" = "Cari lokasi";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLocationPickerView.title" = "Lokasi";
+
+/* Message indicating the minimum length for search queries on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.longerQuery" = "Masukkan setidaknya 3 karakter untuk memulai pencarian.";
+
+/* Message indicating no search result on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.noResult" = "Lokasi tidak ditemukan.\nCoba lagi.";
+
+/* Hint message to enter search query on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Mulai ketik negara, provinsi, atau kota untuk melihat pilihan yang tersedia";
+
+/* Title of the row to select all target location for Blaze campaign creation */
+"blazeTargetLocationSearchView.allTitle" = "Semua lokasi";
+
+/* Header message on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.headerMessage" = "Pilih lokasi sasaran";
+
+/* Suggestion for searching for specific locations on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.searchHint" = "Atau, pilih lokasi spesifik dengan mengetikkan lokasi yang Anda cari di kotak pencarian.";
+
+/* Header for the Specific Locations section on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.specificLocationHeader" = "Lokasi spesifik";
 
 /* Title of the row to select all target topics for Blaze campaign creation */
 "blazeTargetTopicPickerView.allTitle" = "Semua topik";
@@ -10048,6 +10202,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Memindai pembaca";
+
+/* Title for the toggle that specifies whether to add a note to the order with the change data. */
+"cashPaymentTenderView.addNoteToggle.title" = "Catat detail transaksi dalam catatan pesanan";
+
+/* Title for the cancel button. */
+"cashPaymentTenderView.cancelButton" = "Batal";
+
+/* Title for the change due text. */
+"cashPaymentTenderView.changeDue" = "Kembalian terutang";
+
+/* Title for the amount the customer paid. */
+"cashPaymentTenderView.customerPaid" = "Uang tunai diterima";
+
+/* Title for the Mark order as complete button. */
+"cashPaymentTenderView.markOrderAsCompleteButton.title" = "Tandai Pesanan Selesai";
+
+/* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
+"cashPaymentTenderView.navigationBarTitle" = "Terima Pembayaran (%1$@)";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
@@ -10465,6 +10637,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "password" = "Kata sandi";
+
+/* Note from the cash tender view. */
+"paymentMethods.orderPaidByCashNoteText.note" = "Pesanan dibayar dengan uang tunai. Pelanggan membayar %1$@. Kembalian terutang sebesar %2$@.";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pembayaran, ketuk untuk membayar, woocommerce, woo, pembayaran langsung, pembayaran langsung, terima pembayaran, pembayaran, pembaca, pembaca kartu, pesan pembaca kartu";

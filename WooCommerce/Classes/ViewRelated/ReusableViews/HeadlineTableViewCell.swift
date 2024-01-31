@@ -10,8 +10,13 @@ final class HeadlineTableViewCell: UITableViewCell {
         configureCell()
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     private func configureCell() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         headlineLabel?.accessibilityIdentifier = "headline-label"
         headlineLabel?.applyHeadlineStyle()
         setNeedsLayout()

@@ -24,6 +24,11 @@ final class OrderNoteHeaderTableViewCell: UITableViewCell {
         }
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
 }
 
 // MARK: - Private Methods
@@ -33,7 +38,7 @@ private extension OrderNoteHeaderTableViewCell {
     /// Setup: Cell background
     ///
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Labels

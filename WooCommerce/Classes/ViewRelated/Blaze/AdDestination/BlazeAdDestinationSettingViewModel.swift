@@ -75,15 +75,18 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         calculateRemainingCharacters() == 0
     }
 
+    private let analytics: Analytics
     private let onSave: (String) -> Void
 
     init (productURL: String,
           homeURL: String,
           finalDestinationURL: String,
+          analytics: Analytics = ServiceLocator.analytics,
           onSave: @escaping (String) -> Void) {
         self.productURL = productURL
         self.homeURL = homeURL
         self.initialFinalDestinationURL = finalDestinationURL
+        self.analytics = analytics
         self.onSave = onSave
 
         initializeDestinationType()
@@ -94,6 +97,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     }
 
     func confirmSave() {
+        analytics.track(event: .Blaze.AdDestination.saveTapped())
         onSave(buildFinalDestinationURL())
     }
 

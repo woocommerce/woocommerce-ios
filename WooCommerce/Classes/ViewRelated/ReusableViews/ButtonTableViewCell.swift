@@ -29,6 +29,11 @@ final class ButtonTableViewCell: UITableViewCell {
         apply(style: .default)
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     /// Define this cell's UI attributes.
     ///
     /// - Parameters:
@@ -74,7 +79,7 @@ private extension ButtonTableViewCell {
 
 private extension ButtonTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func apply(style: Style) {

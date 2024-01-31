@@ -1,4 +1,5 @@
 import Foundation
+import class WordPressShared.EmailFormatValidator
 
 /// Data Source for the Support Request
 ///
@@ -53,14 +54,31 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let analyticsProvider: Analytics
 
-    /// Assign this closure to get notified when a support request creation finishes.
-    ///
-    var onCompletion: ((Result<Void, Error>) -> Void)?
-
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
         area == nil || subject.isEmpty || description.isEmpty
+    }
+
+    var identitySubmitButtonDisabled: Bool {
+        !EmailFormatValidator.validate(string: contactEmailAddress)
+    }
+
+    @Published var contactName: String = ""
+    @Published var contactEmailAddress: String = ""
+    @Published var shouldShowIdentityInput = false
+    @Published var shouldShowErrorAlert = false
+    @Published var shouldShowSuccessAlert = false
+
+    private var error: Error?
+
+    var errorMessage: String {
+        switch error {
+        case .some(ZendeskError.failedToCreateIdentity):
+            return Localization.badIdentityError
+        default:
+            return Localization.supportRequestFailed
+        }
     }
 
     init(areas: [Area] = wooSupportAreas(),
@@ -75,8 +93,9 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Tracks when the support form is viewed.
     ///
-    func trackSupportFormViewed() {
+    func onViewAppear() {
         analyticsProvider.track(.supportNewRequestViewed)
+        requestZendeskIdentityIfNeeded()
     }
 
     /// Selects an area.
@@ -104,14 +123,16 @@ public final class SupportFormViewModel: ObservableObject {
                                              description: description) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
-            self.onCompletion?(result)
 
             // Analytics
             switch result {
             case .success:
                 self.analyticsProvider.track(.supportNewRequestCreated)
-            case .failure:
+                self.shouldShowSuccessAlert = true
+            case .failure(let error):
                 self.analyticsProvider.track(.supportNewRequestFailed)
+                self.error = error
+                self.shouldShowErrorAlert = true
             }
         }
     }
@@ -124,6 +145,16 @@ public final class SupportFormViewModel: ObservableObject {
             return area.datasource.tags
         }
         return area.datasource.tags + [sourceTag]
+    }
+
+    @MainActor
+    func submitIdentityInfo() async {
+        do {
+            try await zendeskProvider.createIdentity(name: contactName, email: contactEmailAddress)
+        } catch {
+            self.error = error
+            shouldShowErrorAlert = true
+        }
     }
 }
 
@@ -154,6 +185,21 @@ extension SupportFormViewModel {
     }
 }
 
+// MARK: Private helpers
+private extension SupportFormViewModel {
+    func requestZendeskIdentityIfNeeded() {
+        guard !zendeskProvider.haveUserIdentity else {
+            DDLogDebug("Using existing Zendesk identity")
+            return
+        }
+
+        let identity = zendeskProvider.retrieveUserInfoIfAvailable()
+        contactName = identity.name ?? ""
+        contactEmailAddress = identity.emailAddress ?? ""
+        shouldShowIdentityInput = true
+    }
+}
+
 // MARK: Constants
 private extension SupportFormViewModel {
 
@@ -176,5 +222,15 @@ private extension SupportFormViewModel {
         static let wcPayments = NSLocalizedString("WooCommerce Payments", comment: "Title of the WooCommerce Payments support area option")
         static let wcPlugin = NSLocalizedString("WooCommerce Plugin", comment: "Title of the WooCommerce Plugin support area option")
         static let otherPlugin = NSLocalizedString("Other Extension / Plugin", comment: "Title of the Other Plugin support area option")
+        static let badIdentityError = NSLocalizedString(
+            "supportFormViewModel.badIdentityError",
+            value: "Sorry, we cannot create support requests right now, please try again later.",
+            comment: "Error message when the app can't create a zendesk identity."
+        )
+        static let supportRequestFailed = NSLocalizedString(
+            "supportFormViewModel.supportRequestFailed",
+            value: "Sorry, we cannot create support requests right now, please try again later.",
+            comment: "Error message when the app can't create a support request."
+        )
     }
 }

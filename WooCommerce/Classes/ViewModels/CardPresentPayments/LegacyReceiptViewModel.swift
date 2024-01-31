@@ -3,8 +3,8 @@ import MessageUI
 import Yosemite
 import WooFoundation
 
-/// ViewModel supporting the receipt preview.
-final class ReceiptViewModel {
+/// ViewModel supporting the locally-generated receipt preview.
+final class LegacyReceiptViewModel {
     private let order: Order
     private let receipt: CardPresentReceiptParameters
     private let countryCode: CountryCode

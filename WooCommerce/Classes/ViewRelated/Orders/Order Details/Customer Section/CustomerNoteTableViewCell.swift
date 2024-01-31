@@ -93,13 +93,18 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         onAddTapped = nil
         editButton.accessibilityLabel = nil
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: - Private Methods
 //
 private extension CustomerNoteTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureHeadlineLabel() {

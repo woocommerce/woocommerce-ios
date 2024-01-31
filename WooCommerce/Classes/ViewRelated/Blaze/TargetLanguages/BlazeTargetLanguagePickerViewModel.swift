@@ -18,6 +18,7 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
     private let locale: Locale
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let analytics: Analytics
     private let onSelection: (Set<BlazeTargetLanguage>?) -> Void
 
     var shouldDisableSaveButton: Bool {
@@ -39,12 +40,14 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
          onSelection: @escaping (Set<BlazeTargetLanguage>?) -> Void) {
         self.siteID = siteID
         self.selectedLanguages = selectedLanguages
         self.locale = locale
         self.stores = stores
         self.storageManager = storageManager
+        self.analytics = analytics
         self.onSelection = onSelection
 
         configureResultsController()
@@ -74,6 +77,7 @@ final class BlazeTargetLanguagePickerViewModel: ObservableObject {
     }
 
     func confirmSelection() {
+        analytics.track(event: .Blaze.Language.saveTapped())
         onSelection(selectedLanguages)
     }
 }

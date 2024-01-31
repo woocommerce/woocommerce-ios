@@ -297,11 +297,7 @@ private extension BlazeStore {
                                     onCompletion: @escaping (Result<BlazeImpressions, Error>) -> Void) {
         Task { @MainActor in
             do {
-                // TODO-11540: remove stubbed result when the API is ready.
-                let stubbedResult = BlazeImpressions(totalImpressionsMin: 5000, totalImpressionsMax: 10000)
-                let impressions: BlazeImpressions = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchForecastedImpressions(for: siteID, with: input)
-                })
+                let impressions = try await remote.fetchForecastedImpressions(for: siteID, with: input)
                 onCompletion(.success(impressions))
             } catch {
                 onCompletion(.failure(error))

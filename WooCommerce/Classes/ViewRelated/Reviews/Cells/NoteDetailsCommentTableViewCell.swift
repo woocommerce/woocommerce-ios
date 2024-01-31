@@ -209,6 +209,11 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
         configureStarView()
         configureDefaultAppearance()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
@@ -219,7 +224,7 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Cell background
     ///
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Actions!

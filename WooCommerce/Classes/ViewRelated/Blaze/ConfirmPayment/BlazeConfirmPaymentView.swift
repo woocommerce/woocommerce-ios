@@ -8,7 +8,7 @@ struct BlazeConfirmPaymentView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var externalURL: URL?
-    @State private var showAddPaymentSheet: Bool = false
+    @State private var showingAddPaymentWebView: Bool = false
 
     private let agreementText: NSAttributedString = {
         let content = String.localizedStringWithFormat(Localization.agreement, Localization.termsOfService, Localization.adPolicy, Localization.learnMore)
@@ -89,16 +89,20 @@ struct BlazeConfirmPaymentView: View {
                 }
             }, onCancel: {
                 viewModel.shouldDisplayCampaignCreationError = false
-                viewModel.cancelCampaignCreation()
                 dismiss()
             })
             .interactiveDismissDisabled()
         }
-        .sheet(isPresented: $showAddPaymentSheet) {
+        .sheet(isPresented: $viewModel.showAddPaymentSheet) {
             if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
                 BlazePaymentMethodsView(viewModel: paymentMethodsViewModel)
             }
         }
+        .sheet(isPresented: $showingAddPaymentWebView, content: {
+            if let viewModel = viewModel.addPaymentWebViewModel {
+                BlazeAddPaymentMethodWebView(viewModel: viewModel)
+            }
+        })
     }
 }
 
@@ -134,7 +138,7 @@ private extension BlazeConfirmPaymentView {
 
     var cardDetailView: some View {
         Button {
-            showAddPaymentSheet = true
+            viewModel.showAddPaymentSheet = true
         } label: {
             if let icon = viewModel.cardIcon {
                 Image(uiImage: icon)
@@ -158,19 +162,19 @@ private extension BlazeConfirmPaymentView {
 
             Spacer()
 
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .secondaryBodyStyle()
         }
     }
 
     var addPaymentMethodButton: some View {
         Button {
-            showAddPaymentSheet = true
+            showingAddPaymentWebView = true
         } label: {
             HStack {
                 Text(Localization.addPaymentMethod)
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .secondaryBodyStyle()
             }
         }

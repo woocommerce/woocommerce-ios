@@ -77,6 +77,14 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         return topBanner
     }
 
+    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
+    ///
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     private let viewModel: ShippingLabelAddressFormViewModel
 
     /// Completion callback
@@ -273,7 +281,7 @@ private extension ShippingLabelAddressFormViewController {
     ///
     func displayErrorNotice(title: String) {
         let notice = Notice(title: title, feedbackType: .error, actionTitle: nil, actionHandler: nil)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 

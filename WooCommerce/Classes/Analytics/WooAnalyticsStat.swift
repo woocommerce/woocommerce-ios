@@ -186,8 +186,26 @@ public enum WooAnalyticsStat: String {
     case blazeFlowError = "blaze_flow_error"
     case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
     case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
-    case blazeIntroDisplayed = "blaze_intro_displayed"
     case blazeViewDismissed = "blaze_view_dismissed"
+    case blazeIntroDisplayed = "blaze_intro_displayed"
+    case blazeIntroLearnMoreTapped = "blaze_intro_learn_more_tapped"
+    case blazeCreationFormDisplayed = "blaze_creation_form_displayed"
+    case blazeEditAdTapped = "blaze_creation_edit_ad_tapped"
+    case blazeCreationConfirmDetailsTapped = "blaze_creation_confirm_details_tapped"
+    case blazeEditAdSaveTapped = "blaze_creation_edit_ad_save_tapped"
+    case blazeEditAdAISuggestionTapped = "blaze_creation_edit_ad_ai_suggestion_tapped"
+    case blazeEditBudgetSaveTapped = "blaze_creation_edit_budget_save_tapped"
+    case blazeEditBudgetDurationApplied = "blaze_creation_edit_budget_set_duration_applied"
+    case blazeEditLanguageSaveTapped = "blaze_creation_edit_language_save_tapped"
+    case blazeEditDeviceSaveTapped = "blaze_creation_edit_device_save_tapped"
+    case blazeEditLocationSaveTapped = "blaze_creation_edit_location_save_tapped"
+    case blazeEditInterestSaveTapped = "blaze_creation_edit_interest_save_tapped"
+    case blazeEditDestinationSaveTapped = "blaze_creation_edit_destination_save_tapped"
+    case blazeSubmitCampaignTapped = "blaze_creation_payment_submit_campaign_tapped"
+    case blazeAddPaymentMethodWebViewDisplayed = "blaze_creation_add_payment_method_web_view_displayed"
+    case blazeAddPaymentMethodSuccess = "blaze_creation_add_payment_method_success"
+    case blazeCampaignCreationSuccess = "blaze_campaign_creation_success"
+    case blazeCampaignCreationFailed = "blaze_campaign_creation_failed"
 
     // MARK: Store Onboarding Events
     //
@@ -568,8 +586,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Notification View Events
     //
-    case notificationsSelected = "main_tab_notifications_selected"
-    case notificationsReselected = "main_tab_notifications_reselected"
     case notificationOpened = "notification_open"
     case notificationsListPulledToRefresh = "notifications_list_pulled_to_refresh"
     case notificationsListReadAllTapped = "notifications_list_menu_mark_read_button_tapped"

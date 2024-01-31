@@ -45,8 +45,13 @@ final class TitleAndTextFieldWithImageTableViewCell: UITableViewCell {
         configureTextField()
         configureRightImageView()
         configureContentStackView()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         configureTapGestureRecognizer()
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 
     func configure(viewModel: ViewModel) {

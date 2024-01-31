@@ -17,10 +17,46 @@ final class ReceiptViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureWebView()
+        configureContent()
+        configureNavigation()
     }
 
-    private func configureWebView() {
+    private func configureContent() {
         webView.load(URLRequest(url: URL(string: viewModel.receiptURLString)!))
+    }
+
+    private func configureNavigation() {
+        let shareButton = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"),
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(shareReceipt))
+        let printButton = UIBarButtonItem(image: UIImage(systemName: "printer"),
+                                          style: .plain,
+                                          target: self,
+                                          action: #selector(printReceipt))
+        navigationItem.rightBarButtonItems = [shareButton, printButton]
+    }
+
+    @objc private func shareReceipt() {
+        guard let url = URL(string: viewModel.receiptURLString) else {
+            return
+        }
+        let activityViewController = UIActivityViewController(activityItems: [url],
+                                                applicationActivities: nil)
+        present(activityViewController, animated: true)
+    }
+
+    @objc private func printReceipt() {
+        guard let url = URL(string: viewModel.receiptURLString) else {
+            return
+        }
+        let printController = UIPrintInteractionController.shared
+        let printInfo = UIPrintInfo(dictionary: nil)
+        printInfo.jobName = "Receipt"
+        printController.printInfo = printInfo
+        printController.printFormatter = webView.viewPrintFormatter()
+
+        // TODO: Handle error and failure events via completionHandler
+        printController.present(animated: true, completionHandler: nil)
     }
 }

@@ -649,7 +649,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
 
         // Then
-        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
+        XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
     }
 
     func test_short_description_view_is_hidden_if_shortDescription_empty() async throws {

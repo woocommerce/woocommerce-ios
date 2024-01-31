@@ -11,8 +11,6 @@ steps:
       echo '--- :closed_lock_with_key: Access Secrets'
       bundle exec fastlane run configure_apply
 
-      echo "--- :cocoapods: Setting up Pods"
-      install_cocoapods
-
       echo '--- :cocoapods: Check for Outdated Pods'
+      bundle install
       bundle exec pod outdated | buildkite-agent annotate 'Outdated Pods' --style 'info' --context 'outdated-pods'

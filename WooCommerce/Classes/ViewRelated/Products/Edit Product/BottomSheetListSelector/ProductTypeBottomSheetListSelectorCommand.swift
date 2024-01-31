@@ -30,7 +30,7 @@ public enum BottomSheetProductType: Hashable, Identifiable {
         case .variableSubscription:
             return "variableSubscription"
         case .custom(let title):
-            return title
+            return "custom" + title
         case .blank:
             return "blank"
         }

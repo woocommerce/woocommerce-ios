@@ -628,9 +628,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     // MARK: Short description view
 
-    func test_short_description_view_is_shown_if_shortDescription_is_not_empty() async throws {
+    func test_short_description_view_is_shown_if_shortDescription_is_not_empty() async {
         // Given
-        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: "A short description")
+        let product = AIProduct.fake().copy(shortDescription: "A short description")
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: "Blue plastic ballpoint pen",
@@ -652,9 +652,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
     }
 
-    func test_short_description_view_is_hidden_if_shortDescription_empty() async throws {
+    func test_short_description_view_is_hidden_if_shortDescription_empty() async {
         // Given
-        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: "")
+        let product = AIProduct.fake().copy(shortDescription: "")
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: "Blue plastic ballpoint pen",
@@ -676,9 +676,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
     }
 
-    func test_short_description_view_is_hidden_if_shortDescription_nil() async throws {
+    func test_short_description_view_is_hidden_if_shortDescription_nil() async {
         // Given
-        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: nil)
+        let product = AIProduct.fake().copy(shortDescription: nil)
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: "Blue plastic ballpoint pen",
@@ -700,7 +700,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
     }
 
-    func test_short_description_view_is_shown_while_generating_AI_details() async throws {
+    func test_short_description_view_is_shown_while_generating_AI_details() async {
         // Given
         let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: nil)
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,

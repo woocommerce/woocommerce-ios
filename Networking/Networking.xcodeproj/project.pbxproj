@@ -1007,6 +1007,7 @@
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
 		EE8C202B2B4786D500FE967B /* blaze-create-campaign-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8C202A2B4786D500FE967B /* blaze-create-campaign-success.json */; };
 		EE8C202D2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8C202C2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift */; };
+		EE8D10072B69FE6100CE9F17 /* generate-product-no-description.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8D10062B69FE6100CE9F17 /* generate-product-no-description.json */; };
 		EE8DE432294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */; };
 		EE9826902B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json in Resources */ = {isa = PBXBuildFile; fileRef = EE98268F2B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json */; };
 		EE9826922B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json in Resources */ = {isa = PBXBuildFile; fileRef = EE9826912B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json */; };
@@ -2076,6 +2077,7 @@
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
 		EE8C202A2B4786D500FE967B /* blaze-create-campaign-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-create-campaign-success.json"; sourceTree = "<group>"; };
 		EE8C202C2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBlazeCampaignMapperTests.swift; sourceTree = "<group>"; };
+		EE8D10062B69FE6100CE9F17 /* generate-product-no-description.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-no-description.json"; sourceTree = "<group>"; };
 		EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultApplicationPasswordUseCaseTests.swift; sourceTree = "<group>"; };
 		EE98268F2B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-subscription-sync-renewals-day-month-format.json"; sourceTree = "<group>"; };
 		EE9826912B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-subscription-sync-renewals-day-month-format-int-values.json"; sourceTree = "<group>"; };
@@ -2704,6 +2706,7 @@
 				DEDA8DA42B1839320076BF0F /* theme-list-success.json */,
 				EE28C7D72AC17960004A69F4 /* generate-product-failure.json */,
 				EE28C7D82AC17961004A69F4 /* generate-product-invalid-token.json */,
+				EE8D10062B69FE6100CE9F17 /* generate-product-no-description.json */,
 				EE28C7D92AC17961004A69F4 /* generate-product-success.json */,
 				EEA1E2052AC3036500A37ADD /* generate-product-success-no-shipping-info.json */,
 				EEA1E2072AC3E08600A37ADD /* generate-product-success-no-dimensions-info.json */,
@@ -3922,6 +3925,7 @@
 				74C947862193A6C70024CB60 /* comment-moderate-unapproved.json in Resources */,
 				3105472C262E303400C5C02B /* wcpay-payment-intent-unknown-status.json in Resources */,
 				B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */,
+				EE8D10072B69FE6100CE9F17 /* generate-product-no-description.json in Resources */,
 				3158A4A12729F40F00C3CFA8 /* wcpay-account-live-test.json in Resources */,
 				74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */,
 				7426CA1321AF34A3004E9FFC /* site-api.json in Resources */,

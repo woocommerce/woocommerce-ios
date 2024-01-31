@@ -229,6 +229,7 @@ platform :ios do
 
     push_to_git_remote(tags: false)
 
+    # Update GitHub branch protection and milestone name
     copy_branch_protection(
       repository: GITHUB_REPO,
       from_branch: DEFAULT_BRANCH,
@@ -255,6 +256,9 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
+    # Ensure we use the latest version of the toolkit
+    check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
+
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
@@ -335,6 +339,8 @@ platform :ios do
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
+    ensure_git_branch_is_release_branch
+
     # Check versions
     message = <<-MESSAGE
 
@@ -342,14 +348,6 @@ platform :ios do
       New build code: #{build_code_next}
 
     MESSAGE
-
-    # Check branch
-    unless !options[:base_version].nil? || Fastlane::Helper::GitHelper.checkout_and_pull(release: release_version_current)
-      UI.user_error!("#{message}Release branch for version #{release_version_current} doesn't exist. Abort.")
-    end
-
-    # Check user override
-    override_default_release_branch(options[:base_version]) unless options[:base_version].nil?
 
     UI.important(message)
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
@@ -460,14 +458,14 @@ platform :ios do
   #####################################################################################
   desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
   lane :finalize_hotfix_release do
-    ensure_git_branch_is_release_branch
-
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
+    ensure_git_branch_is_release_branch
+
     hotfix_version = release_version_current
 
-    UI.important("Triggering hotfix build for version: #{hotfix_version}")
+    UI.important("Pushing changes to remote and triggering hotfix build for version: #{version}")
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
@@ -510,10 +508,11 @@ platform :ios do
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
     UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if release_is_hotfix?
-    ensure_git_branch_is_release_branch
 
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
+
+    ensure_git_branch_is_release_branch
 
     UI.important("Finalizing release: #{release_version_current}")
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
@@ -533,7 +532,7 @@ platform :ios do
 
     # Wrap up
     version = release_version_current
-    removebranchprotection(
+    remove_branch_protection(
       repository: GITHUB_REPO,
       branch: "release/#{version}"
     )
@@ -1448,13 +1447,6 @@ def prompt_user_for_app_store_connect_credentials
   # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way
   # to check it so we have to do it anyway.
   ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
-end
-
-def override_default_release_branch(version)
-  success = Fastlane::Helper::GitHelper.checkout_and_pull(release: version)
-  UI.user_error!("Release branch for version #{version} doesn't exist. Abort.") unless success
-
-  UI.message("Checked out branch `#{git_branch}` as requested by user.\n")
 end
 
 # https://buildkite.com/docs/test-analytics/ci-environments

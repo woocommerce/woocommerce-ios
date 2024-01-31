@@ -305,7 +305,7 @@ private extension AddProductCoordinator {
                     self?.addProductWithAIBottomSheetPresenter = nil
                     self?.startProductCreationWithAI()
                 }
-            }, 
+            },
             onManualOption: { [weak self] in
                 self?.addProductWithAIBottomSheetPresenter?.dismiss {
                     self?.addProductWithAIBottomSheetPresenter = nil

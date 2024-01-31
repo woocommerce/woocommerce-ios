@@ -100,6 +100,10 @@ struct AddProductWithAIActionSheet: View {
                 }
 
                 if isShowingManualOptions {
+                    Text(Localization.manualOptionsTitle)
+                        .subheadlineStyle()
+                        .padding(.top, Constants.margin)
+
                     ManualProductTypeOptions(command: command)
                 }
 
@@ -123,6 +127,11 @@ private extension AddProductWithAIActionSheet {
         static let title = NSLocalizedString(
             "Add a product",
             comment: "Title on the action sheet to select an option for adding new product"
+        )
+        static let manualOptionsTitle = NSLocalizedString(
+            "addProductWithAIActionSheet.manualOptionsTitle",
+            value: "Select a product type",
+            comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
         )
         static let aiTitle = NSLocalizedString(
             "Create a product with AI",

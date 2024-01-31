@@ -241,10 +241,10 @@ private extension GenerativeContentRemote {
                 return dict
             }()
 
-            return ["name": "The name of the product, in the ISO language code ```\(language)```",
+            return ["name": "The name of the product, written in the language with ISO code ```\(language)```",
                     "description": "Product description of around 100 words long in a ```\(tone)``` tone, "
-                    + "in the ISO language code ```\(language)```",
-                    "short_description": "Product's short description, in the ISO language code ```\(language)```",
+                    + "written in the language with ISO code ```\(language)```",
+                    "short_description": "Product's short description, written in the language with ISO code ```\(language)```",
                     "virtual": "A boolean value that shows whether the product is virtual or physical",
                     "shipping": shippingPrompt,
                     "price": "Guess the price in \(currencySymbol), do not include the currency symbol, "

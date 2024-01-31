@@ -2362,6 +2362,21 @@ extension Networking.ProductVariationAttribute {
     }
 }
 
+extension Networking.Receipt {
+    public func copy(
+        receiptURL: CopiableProp<String> = .copy,
+        expirationDate: CopiableProp<String> = .copy
+    ) -> Networking.Receipt {
+        let receiptURL = receiptURL ?? self.receiptURL
+        let expirationDate = expirationDate ?? self.expirationDate
+
+        return Networking.Receipt(
+            receiptURL: receiptURL,
+            expirationDate: expirationDate
+        )
+    }
+}
+
 extension Networking.Refund {
     public func copy(
         refundID: CopiableProp<Int64> = .copy,

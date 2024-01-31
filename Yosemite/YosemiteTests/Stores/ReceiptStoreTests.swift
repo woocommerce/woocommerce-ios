@@ -4,7 +4,7 @@ import XCTest
 @testable import Networking
 @testable import Hardware
 
-/// RefundStore Unit Tests
+/// ReceiptStore Unit Tests
 ///
 final class ReceiptStoreTests: XCTestCase {
 

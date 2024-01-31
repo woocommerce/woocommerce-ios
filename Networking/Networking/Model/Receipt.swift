@@ -1,10 +1,11 @@
 import Foundation
+import Codegen
 
-public struct Receipt: Decodable {
+public struct Receipt: Decodable, GeneratedFakeable, GeneratedCopiable {
     public let receiptURL: String
     public let expirationDate: String
 
-    init(receiptURL: String, expirationDate: String) {
+    public init(receiptURL: String, expirationDate: String) {
         self.receiptURL = receiptURL
         self.expirationDate = expirationDate
     }

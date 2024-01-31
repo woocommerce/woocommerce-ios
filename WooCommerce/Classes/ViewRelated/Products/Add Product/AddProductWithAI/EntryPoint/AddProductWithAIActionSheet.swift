@@ -5,7 +5,12 @@ import SwiftUI
 final class AddProductWithAIActionSheetHostingController: UIHostingController<AddProductWithAIActionSheet> {
     init(onAIOption: @escaping () -> Void,
          onManualOption: @escaping () -> Void) {
-        let rootView = AddProductWithAIActionSheet(onAIOption: onAIOption, onManualOption: onManualOption)
+
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { _ in }
+
+        let rootView = AddProductWithAIActionSheet(command: command,
+                                                   onAIOption: onAIOption,
+                                                   onManualOption: onManualOption)
         super.init(rootView: rootView)
     }
 
@@ -21,12 +26,16 @@ struct AddProductWithAIActionSheet: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var legalURL: URL?
+    @State private var isShowingManualOptions: Bool = false
 
+    private let command: ProductTypeBottomSheetListSelectorCommand
     private let onAIOption: () -> Void
     private let onManualOption: () -> Void
 
-    init(onAIOption: @escaping () -> Void,
+    init(command: ProductTypeBottomSheetListSelectorCommand,
+         onAIOption: @escaping () -> Void,
          onManualOption: @escaping () -> Void) {
+        self.command = command
         self.onAIOption = onAIOption
         self.onManualOption = onManualOption
     }
@@ -71,20 +80,28 @@ struct AddProductWithAIActionSheet: View {
                 Divider()
 
                 // Manual option
-                HStack(alignment: .top, spacing: Constants.margin) {
-                    Image(systemName: "plus.circle")
-                        .font(.title3)
-                        .foregroundColor(.secondary)
-                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                        Text(Localization.manualTitle)
-                            .bodyStyle()
-                        Text(Localization.manualDescription)
-                            .subheadlineStyle()
+                if !isShowingManualOptions {
+                    HStack(alignment: .top, spacing: Constants.margin) {
+                        Image(systemName: "plus.circle")
+                            .font(.title3)
+                            .foregroundColor(.secondary)
+                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                            Text(Localization.manualTitle)
+                                .bodyStyle()
+                            Text(Localization.manualDescription)
+                                .subheadlineStyle()
+                        }
+                        Spacer()
                     }
-                    Spacer()
+                    .onTapGesture {
+                        withAnimation {
+                            isShowingManualOptions = true
+                        }
+                    }
                 }
-                .onTapGesture {
-                    onManualOption()
+
+                if isShowingManualOptions {
+                    ManualProductTypeOptions(command: command)
                 }
 
                 Spacer()
@@ -138,6 +155,6 @@ private extension AddProductWithAIActionSheet {
 
 struct AddProductWithAIActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductWithAIActionSheet(onAIOption: {}, onManualOption: {})
+        AddProductWithAIActionSheet(command: .init(selected: nil) { _ in }, onAIOption: {}, onManualOption: {})
     }
 }

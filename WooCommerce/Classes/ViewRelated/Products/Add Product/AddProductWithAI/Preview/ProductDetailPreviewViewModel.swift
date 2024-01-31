@@ -334,7 +334,7 @@ private extension ProductDetailPreviewViewModel {
                                                                tone: tone,
                                                                existingCategories: existingCategories,
                                                                existingTags: existingTags)
-            return useGivenNameAndDescriptionIfEmpty(generatedProduct)
+            return useGivenValueIfNameEmpty(generatedProduct)
         }()
 
         var categories = [ProductCategory]()
@@ -393,16 +393,12 @@ private extension ProductDetailPreviewViewModel {
         }
     }
 
-    func useGivenNameAndDescriptionIfEmpty(_ aiProduct: AIProduct) -> AIProduct {
-        var finalAIProduct = aiProduct
-        if aiProduct.name.isEmpty {
-            finalAIProduct = finalAIProduct.copy(name: productName)
+    func useGivenValueIfNameEmpty(_ aiProduct: AIProduct) -> AIProduct {
+        guard aiProduct.name.isEmpty else {
+            return aiProduct
         }
 
-        if aiProduct.description.isEmpty {
-            finalAIProduct = finalAIProduct.copy(description: productFeatures ?? productDescription)
-        }
-        return finalAIProduct
+        return aiProduct.copy(name: productName)
     }
 }
 

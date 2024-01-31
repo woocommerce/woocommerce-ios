@@ -11,4 +11,11 @@ struct ReceiptViewModel {
     var receiptURLString: String {
         receipt.receiptURL
     }
+
+    var receiptRequest: URLRequest? {
+        guard let url = URL(string: receipt.receiptURL) else {
+            return nil
+        }
+        return URLRequest(url: url)
+    }
 }

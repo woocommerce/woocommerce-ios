@@ -22,7 +22,12 @@ final class ReceiptViewController: UIViewController {
     }
 
     private func configureContent() {
-        webView.load(URLRequest(url: URL(string: viewModel.receiptURLString)!))
+        guard let receipt = viewModel.receiptRequest else {
+            DDLogError("No receipt could be found.")
+            navigationController?.popViewController(animated: true)
+            return
+        }
+        webView.load(receipt)
     }
 
     private func configureNavigation() {
@@ -58,7 +63,7 @@ final class ReceiptViewController: UIViewController {
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error = error {
-                DDLogError("\(error)")
+                DDLogError("Print error: \(error)")
             } else if isCompleted {
                 self?.dismiss(animated: true)
             }

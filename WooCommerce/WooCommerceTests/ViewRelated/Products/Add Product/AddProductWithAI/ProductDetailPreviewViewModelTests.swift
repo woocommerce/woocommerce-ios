@@ -601,6 +601,81 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.tags.map { $0.tagID }, [0, 0])
     }
 
+    func test_generateProductDetails_switches_to_given_productName_if_AIProduct_has_empty_name() async throws {
+        // Given
+        let product = AIProduct.fake().copy(name: "", description: "Test description")
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
+        XCTAssertEqual(generatedProduct.name, "Pen")
+    }
+
+    func test_generateProductDetails_switches_to_given_product_features_if_AIProduct_has_empty_description() async throws {
+        // Given
+        let product = AIProduct.fake().copy(name: "Test name", description: "")
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
+        XCTAssertEqual(generatedProduct.fullDescription, "Ballpoint, Blue ink, ABS plastic")
+    }
+
+    func test_generateProductDetails_switches_to_given_product_description_if_AIProduct_has_empty_description() async throws {
+        // Given
+        let product = AIProduct.fake().copy(name: "Test name", description: "")
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
+        XCTAssertEqual(generatedProduct.fullDescription, "Blue plastic ballpoint pen")
+    }
+
     // MARK: - Save product
 
     func test_saveProductAsDraft_updates_isSavingProduct_properly() async {

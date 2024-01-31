@@ -471,7 +471,9 @@ extension OrderDetailsViewModel {
             let action = ReceiptAction.retrieveReceipt(order: order) { result in
                 switch result {
                 case let .success(receipt):
-                    debugPrint("\(receipt)")
+                    let receiptViewModel = ReceiptViewModel(receipt: receipt)
+                    let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
+                    viewController.navigationController?.pushViewController(receiptViewController, animated: true)
                 case let .failure(error):
                     debugPrint("\(error)")
                 }

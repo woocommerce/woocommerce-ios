@@ -106,7 +106,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order has a locally-generated receipt associated.
     ///
-    var shouldShowLegacyReceipts: Bool = false
+    var orderHasLocalReceipt: Bool = false
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -1235,12 +1235,15 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
-            if featureFlags.isFeatureFlagEnabled(.backendReceipts) {
-                rows.append(.seeReceipt)
-            }
-
-            if shouldShowLegacyReceipts {
+            switch orderHasLocalReceipt {
+            case true:
                 rows.append(.seeLegacyReceipt)
+            case false:
+                ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligible in
+                    if isEligible {
+                        rows.append(.seeReceipt)
+                    }
+                }
             }
 
             if isEligibleForRefund {

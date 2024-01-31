@@ -4,9 +4,12 @@ import SwiftUI
 ///
 struct ManualProductTypeOptions: View {
     private let command: ProductTypeBottomSheetListSelectorCommand
+    private let onOptionSelected: (BottomSheetProductType) -> Void
 
-    init(command: ProductTypeBottomSheetListSelectorCommand) {
+    init(command: ProductTypeBottomSheetListSelectorCommand,
+         onOptionSelected: @escaping (BottomSheetProductType) -> Void) {
         self.command = command
+        self.onOptionSelected = onOptionSelected
     }
 
     var body: some View {
@@ -25,7 +28,7 @@ struct ManualProductTypeOptions: View {
                 Spacer()
             }
             .onTapGesture {
-                // todo
+                onOptionSelected(model)
             }
         }
     }
@@ -39,5 +42,5 @@ private extension ManualProductTypeOptions {
 }
 
 #Preview {
-    ManualProductTypeOptions(command: .init(selected: nil) { _ in })
+    ManualProductTypeOptions(command: .init(selected: nil) { _ in }, onOptionSelected: { _ in })
 }

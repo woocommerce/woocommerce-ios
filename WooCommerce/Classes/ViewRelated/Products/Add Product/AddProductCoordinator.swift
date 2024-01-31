@@ -306,10 +306,14 @@ private extension AddProductCoordinator {
                     self?.startProductCreationWithAI()
                 }
             },
-            onManualOption: { [weak self] in
+            onProductTypeOption: { [weak self] selectedBottomSheetProductType in
                 self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                    self?.analytics.track(event: .ProductCreation
+                        .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
+                                                creationType: .manual))
+
                     self?.addProductWithAIBottomSheetPresenter = nil
-                    self?.presentProductTypeBottomSheet(creationType: .manual)
+                    self?.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
                 }
             }
         )

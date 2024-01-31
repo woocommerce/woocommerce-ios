@@ -5,11 +5,11 @@ import SwiftUI
 final class AddProductWithAIActionSheetHostingController: UIHostingController<AddProductWithAIActionSheet> {
     init(command: ProductTypeBottomSheetListSelectorCommand,
          onAIOption: @escaping () -> Void,
-         onManualOption: @escaping () -> Void) {
+         onProductTypeOption: @escaping (BottomSheetProductType) -> Void) {
 
         let rootView = AddProductWithAIActionSheet(command: command,
                                                    onAIOption: onAIOption,
-                                                   onManualOption: onManualOption)
+                                                   onProductTypeOption: onProductTypeOption)
         super.init(rootView: rootView)
     }
 
@@ -29,14 +29,14 @@ struct AddProductWithAIActionSheet: View {
 
     private let command: ProductTypeBottomSheetListSelectorCommand
     private let onAIOption: () -> Void
-    private let onManualOption: () -> Void
+    private let onProductTypeOption: (BottomSheetProductType) -> Void
 
     init(command: ProductTypeBottomSheetListSelectorCommand,
          onAIOption: @escaping () -> Void,
-         onManualOption: @escaping () -> Void) {
+         onProductTypeOption: @escaping (BottomSheetProductType) -> Void) {
         self.command = command
         self.onAIOption = onAIOption
-        self.onManualOption = onManualOption
+        self.onProductTypeOption = onProductTypeOption
     }
 
     var body: some View {
@@ -104,7 +104,7 @@ struct AddProductWithAIActionSheet: View {
                         .subheadlineStyle()
                         .padding(.top, Constants.margin)
 
-                    ManualProductTypeOptions(command: command)
+                    ManualProductTypeOptions(command: command, onOptionSelected: onProductTypeOption)
                 }
 
                 Spacer()
@@ -163,6 +163,6 @@ private extension AddProductWithAIActionSheet {
 
 struct AddProductWithAIActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductWithAIActionSheet(command: .init(selected: nil) { _ in }, onAIOption: {}, onManualOption: {})
+        AddProductWithAIActionSheet(command: .init(selected: nil) { _ in }, onAIOption: {}, onProductTypeOption: {_ in })
     }
 }

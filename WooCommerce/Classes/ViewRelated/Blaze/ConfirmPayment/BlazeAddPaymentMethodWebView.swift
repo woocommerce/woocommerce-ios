@@ -31,6 +31,9 @@ struct BlazeAddPaymentMethodWebView: View {
             .wooNavigationBarStyle()
             .navigationBarTitleDisplayMode(.inline)
         }
+        .onAppear {
+            viewModel.onAppear()
+        }
         .notice($viewModel.notice)
     }
 }

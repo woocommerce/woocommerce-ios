@@ -1483,6 +1483,7 @@
 		86023FAD2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86023FAC2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift */; };
 		86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */; };
 		8602BC9F2B19AE48001EDF20 /* ProfilerThemesPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */; };
+		860476E12B6A31D500AF0AEB /* ManualProductTypeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860476E02B6A31D500AF0AEB /* ManualProductTypeOptions.swift */; };
 		860B85F12ADE3A0E00E85884 /* BulletPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860B85F02ADE3A0E00E85884 /* BulletPointView.swift */; };
 		863012A72B288F60004EC9DC /* ThemesPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863012A62B288F60004EC9DC /* ThemesPreviewView.swift */; };
 		864213022AE77C730036E5A6 /* UIImage+Resizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864213012AE77C730036E5A6 /* UIImage+Resizing.swift */; };
@@ -4135,6 +4136,7 @@
 		86023FAC2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
 		86023FB02B199F6200A28F07 /* ThemesCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesCarouselView.swift; sourceTree = "<group>"; };
 		8602BC9E2B19AE48001EDF20 /* ProfilerThemesPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilerThemesPickerView.swift; sourceTree = "<group>"; };
+		860476E02B6A31D500AF0AEB /* ManualProductTypeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualProductTypeOptions.swift; sourceTree = "<group>"; };
 		860B85F02ADE3A0E00E85884 /* BulletPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletPointView.swift; sourceTree = "<group>"; };
 		863012A62B288F60004EC9DC /* ThemesPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewView.swift; sourceTree = "<group>"; };
 		864213012AE77C730036E5A6 /* UIImage+Resizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resizing.swift"; sourceTree = "<group>"; };
@@ -6686,6 +6688,7 @@
 				EEBDF7E32A317BBB00EFEF47 /* FirstProductCreated */,
 				02ECD1E324FF5E0B00735BE5 /* AddProductCoordinator.swift */,
 				02ECD1E524FFB4E900735BE5 /* ProductFactory.swift */,
+				860476E02B6A31D500AF0AEB /* ManualProductTypeOptions.swift */,
 			);
 			path = "Add Product";
 			sourceTree = "<group>";
@@ -14282,6 +14285,7 @@
 				B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */,
 				45693189265403A1009ED69D /* ShippingLabelCarriersViewModel.swift in Sources */,
 				0211254125778BDF0075AD2A /* ShippingLabelDetailsViewController.swift in Sources */,
+				860476E12B6A31D500AF0AEB /* ManualProductTypeOptions.swift in Sources */,
 				EE1905842B579B6700617C53 /* BlazeCampaignCreationLoadingView.swift in Sources */,
 				020DD49123239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift in Sources */,
 				EE66BB0E2B29BF2800518DAF /* ThemeInstaller.swift in Sources */,

@@ -47,6 +47,11 @@ final class RefundItemTableViewCell: UITableViewCell {
         super.traitCollectionDidChange(previousTraitCollection)
         applyAccessibilityChanges()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: View Styles Configuration
@@ -64,7 +69,7 @@ private extension RefundItemTableViewCell {
     }
 
     func applyCellBackgroundStyle() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func applyLabelsStyles() {

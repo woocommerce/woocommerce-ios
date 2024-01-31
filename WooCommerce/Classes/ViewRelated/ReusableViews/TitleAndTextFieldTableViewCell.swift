@@ -57,7 +57,7 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         configureTitleLabel()
         configureTextField()
         configureContentStackView()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         configureTapGestureRecognizer()
     }
 
@@ -78,6 +78,11 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
 
     func textFieldBecomeFirstResponder() {
         textField.becomeFirstResponder()
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 

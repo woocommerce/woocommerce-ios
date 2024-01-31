@@ -30,6 +30,10 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResul
         statusLabel.backgroundColor = viewModel.statusBackgroundColor
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: - CellViewModel subtype
@@ -52,9 +56,7 @@ extension TitleAndSubtitleAndStatusTableViewCell {
 //
 private extension TitleAndSubtitleAndStatusTableViewCell {
     func configureBackground() {
-        backgroundColor = .listForeground(modal: false)
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Labels

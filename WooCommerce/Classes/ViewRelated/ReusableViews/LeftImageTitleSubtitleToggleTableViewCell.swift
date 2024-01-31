@@ -64,8 +64,13 @@ class LeftImageTitleSubtitleToggleTableViewCell: UITableViewCell {
         subtitleLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(subtitleTapped)))
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     private func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 }
 

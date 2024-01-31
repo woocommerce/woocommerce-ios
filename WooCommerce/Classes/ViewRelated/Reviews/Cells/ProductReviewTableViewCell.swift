@@ -89,6 +89,11 @@ final class ProductReviewTableViewCell: UITableViewCell {
 
         starRating = viewModel.rating
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
@@ -103,11 +108,7 @@ private extension ProductReviewTableViewCell {
     }
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureSubjectLabel() {

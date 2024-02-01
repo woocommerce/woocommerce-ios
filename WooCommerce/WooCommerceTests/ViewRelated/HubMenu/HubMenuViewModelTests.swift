@@ -5,6 +5,7 @@ import XCTest
 
 final class HubMenuViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 606
+    private let sampleSite = Site.fake().copy(siteID: 606)
 
     func test_viewDidAppear_then_posts_notification() {
         // Given

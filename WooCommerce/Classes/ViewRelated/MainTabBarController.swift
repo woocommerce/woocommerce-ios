@@ -540,10 +540,7 @@ private extension MainTabBarController {
         }
     }
 
-    func updateViewControllers(siteID: Int64?, siteURL: String) {
-        guard let siteID = siteID else {
-            return
-        }
+    func updateViewControllers(siteID: Int64, siteURL: String) {
 
         // Update view model with `siteID` to query correct Orders Status
         viewModel.configureOrdersStatusesListener(for: siteID)

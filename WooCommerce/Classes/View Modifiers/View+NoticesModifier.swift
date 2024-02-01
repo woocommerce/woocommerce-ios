@@ -41,7 +41,7 @@ struct NoticeModifier: ViewModifier {
             )
     }
 
-    enum Constants {
+    private enum Constants {
         static let titleFont: Font = Font(UIFont.boldSystemFont(ofSize: 14.0))
         static let titleColor: Color = Color(.text)
         static let subtitleFont: Font = Font(UIFont.boldSystemFont(ofSize: 14.0))

@@ -202,7 +202,7 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         // shows campaign list for the new Blaze experience.
-        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
+        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID, siteURL: site.url))
         navigationController?.show(controller, sender: self)
         ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
     }

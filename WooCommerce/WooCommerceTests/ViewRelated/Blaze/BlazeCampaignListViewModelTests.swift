@@ -8,6 +8,7 @@ import protocol Storage.StorageType
 final class BlazeCampaignListViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322
+    private let sampleSiteURL = "https://example.com"
 
     private var subscriptions: [AnyCancellable] = []
 
@@ -42,7 +43,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
             }
             invocationCountOfLoadCampaigns += 1
         }
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores)
 
         // Then
         XCTAssertEqual(viewModel.syncState, .empty)
@@ -59,7 +60,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
             }
             invocationCountOfLoadCampaigns += 1
         }
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores)
 
         // When
         viewModel.loadCampaigns()
@@ -69,7 +70,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     }
 
     func test_state_is_syncingFirstPage_upon_loadCampaigns_if_there_is_no_existing_campaign_in_storage() {
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL)
 
         // When
         viewModel.loadCampaigns()
@@ -81,7 +82,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_state_is_results_upon_loadCampaigns_if_there_are_existing_campaigns_in_storage() {
         let existingCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 123)
         insertCampaigns([existingCampaign])
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, storageManager: storageManager)
 
         // When
         viewModel.loadCampaigns()
@@ -103,7 +104,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
             self.insertCampaigns([campaign])
             onCompletion(.success(true))
         }
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores, storageManager: storageManager)
 
         var states = [BlazeCampaignListViewModel.SyncState]()
         viewModel.$syncState
@@ -132,7 +133,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
             syncPageNumber = pageNumber
             onCompletion(.success(false))
         }
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores, storageManager: storageManager)
 
         var states = [BlazeCampaignListViewModel.SyncState]()
         viewModel.$syncState
@@ -168,7 +169,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
             onCompletion(.success(pageNumber == 1 ? true : false))
         }
 
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores, storageManager: storageManager)
 
         var states = [BlazeCampaignListViewModel.SyncState]()
         viewModel.$syncState
@@ -202,7 +203,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
             self.insertCampaigns([campaign])
             onCompletion(.success(true))
         }
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.loadCampaigns()
@@ -220,7 +221,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
             }
             onCompletion(.success(false))
         }
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.loadCampaigns()
@@ -242,7 +243,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
             self.insertCampaigns(items)
             onCompletion(.success(false))
         }
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.loadCampaigns()
@@ -269,7 +270,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
             onCompletion(.success(false))
         }
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores)
 
         // When
         waitFor { promise in
@@ -289,7 +290,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores, storageManager: storageManager)
 
         // Confidence check
         XCTAssertFalse(viewModel.shouldShowIntroView)
@@ -311,7 +312,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_shouldShowIntroView_is_true_only_when_loading_campaigns_for_the_first_time_and_there_are_no_existing_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores, storageManager: storageManager)
 
         // Confidence check
         XCTAssertFalse(viewModel.shouldShowIntroView)
@@ -358,7 +359,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     func test_blazeEntryPointDisplayed_is_tracked_upon_view_appear() throws {
         // Given
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, analytics: analytics)
 
         // Confidence check
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
@@ -375,7 +376,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     func test_didSelectCampaignDetails_tracks_blazeCampaignDetailSelected_with_correct_source() throws {
         // Given
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, analytics: analytics)
 
         // When
         viewModel.didSelectCampaignDetails(.fake())
@@ -389,7 +390,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     func test_didSelectCreateCampaign_tracks_blazeEntryPointTapped() throws {
         // Given
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, analytics: analytics)
 
         // When
         viewModel.didSelectCreateCampaign(source: .introView)

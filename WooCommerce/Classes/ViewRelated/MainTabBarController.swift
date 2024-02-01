@@ -107,7 +107,7 @@ final class MainTabBarController: UITabBarController {
     private let hubMenuNavigationController = WooTabNavigationController()
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
-    private var cancellableSiteID: AnyCancellable?
+    private var cancellableSite: AnyCancellable?
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
@@ -140,7 +140,7 @@ final class MainTabBarController: UITabBarController {
     }
 
     deinit {
-        cancellableSiteID?.cancel()
+        cancellableSite?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -150,7 +150,7 @@ final class MainTabBarController: UITabBarController {
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
         configureTabViewControllers()
-        observeSiteIDForViewControllers()
+        observeSiteForViewControllers()
         observeProductImageUploadStatusUpdates()
 
         startListeningToHubMenuTabBadgeUpdates()
@@ -531,16 +531,16 @@ private extension MainTabBarController {
         }
     }
 
-    func observeSiteIDForViewControllers() {
-        cancellableSiteID = stores.siteID.sink { [weak self] siteID in
-            guard let self = self else {
+    func observeSiteForViewControllers() {
+        cancellableSite = stores.site.sink { [weak self] site in
+            guard let self, let site else {
                 return
             }
-            self.updateViewControllers(siteID: siteID)
+            self.updateViewControllers(siteID: site.siteID, siteURL: site.url)
         }
     }
 
-    func updateViewControllers(siteID: Int64?) {
+    func updateViewControllers(siteID: Int64?, siteURL: String) {
         guard let siteID = siteID else {
             return
         }
@@ -549,7 +549,7 @@ private extension MainTabBarController {
         viewModel.configureOrdersStatusesListener(for: siteID)
 
         // Initialize each tab's root view controller
-        let dashboardViewController = createDashboardViewController(siteID: siteID)
+        let dashboardViewController = createDashboardViewController(siteID: siteID, siteURL: siteURL)
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
         let ordersViewController = createOrdersViewController(siteID: siteID)
@@ -579,8 +579,8 @@ private extension MainTabBarController {
         selectedIndex = WooTab.myStore.visibleIndex()
     }
 
-    func createDashboardViewController(siteID: Int64) -> UIViewController {
-        DashboardViewController(siteID: siteID)
+    func createDashboardViewController(siteID: Int64, siteURL: String) -> UIViewController {
+        DashboardViewController(siteID: siteID, siteURL: siteURL)
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {

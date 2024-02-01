@@ -11,6 +11,7 @@ import WordPressAuthenticator
 @MainActor
 final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 122
+    private let sampleSiteURL = "https://example.com"
 
     private var stores: MockStoresManager!
 
@@ -52,6 +53,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                    purchasable: true))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -66,6 +68,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -87,6 +90,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -107,6 +111,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -132,6 +137,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let blazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -159,6 +165,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -179,6 +186,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -200,6 +208,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -227,6 +236,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                              purchasable: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -251,6 +261,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -294,6 +305,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -320,6 +332,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                               purchasable: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -345,6 +358,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                               statusKey: (ProductStatus.draft.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -367,6 +381,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -391,6 +406,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -426,6 +442,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -448,6 +465,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                               purchasable: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -466,6 +484,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -486,6 +505,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -521,6 +541,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -541,6 +562,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                               statusKey: (ProductStatus.published.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -559,6 +581,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -580,6 +603,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -613,6 +637,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                               statusKey: (ProductStatus.published.rawValue),
                                               purchasable: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
@@ -658,6 +683,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        siteURL: sampleSiteURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         blazeEligibilityChecker: checker)
@@ -675,6 +701,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        siteURL: sampleSiteURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         blazeEligibilityChecker: checker)
@@ -710,6 +737,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        siteURL: sampleSiteURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         analytics: analytics,
@@ -728,6 +756,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        siteURL: sampleSiteURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         analytics: analytics,
@@ -747,6 +776,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        siteURL: sampleSiteURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         analytics: analytics,
@@ -766,6 +796,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        siteURL: sampleSiteURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         analytics: analytics,
@@ -786,6 +817,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   analytics: analytics,
@@ -812,6 +844,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                               purchasable: true)
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   analytics: analytics,
@@ -837,6 +870,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                               statusKey: (ProductStatus.draft.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   analytics: analytics,
@@ -856,6 +890,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   analytics: analytics,
@@ -876,6 +911,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  siteURL: sampleSiteURL,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   analytics: analytics,
@@ -903,6 +939,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        siteURL: sampleSiteURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         blazeEligibilityChecker: checker,

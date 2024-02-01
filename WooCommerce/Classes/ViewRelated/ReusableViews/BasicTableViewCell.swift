@@ -16,15 +16,16 @@ class BasicTableViewCell: UITableViewCell {
         textLabel?.textAlignment = .natural
         accessibilityIdentifier = nil
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
 private extension BasicTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 }

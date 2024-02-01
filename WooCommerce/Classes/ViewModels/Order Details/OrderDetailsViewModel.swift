@@ -468,13 +468,23 @@ extension OrderDetailsViewModel {
             let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
+            let action = ReceiptAction.retrieveReceipt(order: order) { result in
+                switch result {
+                case let .success(receipt):
+                    debugPrint("\(receipt)")
+                case let .failure(error):
+                    debugPrint("\(error)")
+                }
+            }
+            ServiceLocator.stores.dispatch(action)
+        case .seeLegacyReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))
             guard let receipt = receipt else {
                 return
             }
-            let viewModel = ReceiptViewModel(order: order, receipt: receipt, countryCode: countryCode)
-            let receiptViewController = ReceiptViewController(viewModel: viewModel)
+            let viewModel = LegacyReceiptViewModel(order: order, receipt: receipt, countryCode: countryCode)
+            let receiptViewController = LegacyReceiptViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
@@ -624,9 +634,9 @@ extension OrderDetailsViewModel {
             switch result {
             case .success(let parameters):
                 self?.receipt = parameters
-                self?.dataSource.shouldShowReceipts = true
+                self?.dataSource.shouldShowLegacyReceipts = true
             case .failure:
-                self?.dataSource.shouldShowReceipts = false
+                self?.dataSource.shouldShowLegacyReceipts = false
             }
             onCompletion?(nil)
         }

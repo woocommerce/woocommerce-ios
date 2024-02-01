@@ -106,6 +106,7 @@ public typealias ProductDownloadDragAndDrop = Networking.ProductDownloadDragAndD
 public typealias ProductVariation = Networking.ProductVariation
 public typealias ProductVariationAttribute = Networking.ProductVariationAttribute
 public typealias ReaderLocation = Networking.ReaderLocation
+public typealias Receipt = Networking.Receipt
 public typealias Refund = Networking.Refund
 public typealias RemoteFeatureFlag = Networking.RemoteFeatureFlag
 public typealias StatGranularity = Networking.StatGranularity

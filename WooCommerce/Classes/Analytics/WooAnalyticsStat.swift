@@ -201,6 +201,11 @@ public enum WooAnalyticsStat: String {
     case blazeEditLocationSaveTapped = "blaze_creation_edit_location_save_tapped"
     case blazeEditInterestSaveTapped = "blaze_creation_edit_interest_save_tapped"
     case blazeEditDestinationSaveTapped = "blaze_creation_edit_destination_save_tapped"
+    case blazeSubmitCampaignTapped = "blaze_creation_payment_submit_campaign_tapped"
+    case blazeAddPaymentMethodWebViewDisplayed = "blaze_creation_add_payment_method_web_view_displayed"
+    case blazeAddPaymentMethodSuccess = "blaze_creation_add_payment_method_success"
+    case blazeCampaignCreationSuccess = "blaze_campaign_creation_success"
+    case blazeCampaignCreationFailed = "blaze_campaign_creation_failed"
 
     // MARK: Store Onboarding Events
     //
@@ -581,8 +586,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Notification View Events
     //
-    case notificationsSelected = "main_tab_notifications_selected"
-    case notificationsReselected = "main_tab_notifications_reselected"
     case notificationOpened = "notification_open"
     case notificationsListPulledToRefresh = "notifications_list_pulled_to_refresh"
     case notificationsListReadAllTapped = "notifications_list_menu_mark_read_button_tapped"

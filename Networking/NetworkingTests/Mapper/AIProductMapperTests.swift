@@ -91,12 +91,29 @@ final class AIProductMapperTests: XCTestCase {
         XCTAssertEqual(product.shipping.height, "")
         XCTAssertEqual(product.price, "250")
     }
+
+    func test_it_throws_error_when_AI_json_response_does_not_have_valid_description() throws {
+        // Given
+        let data = try retrieveGenerateProductResponseWithoutDescription()
+        let mapper = AIProductMapper(siteID: siteID)
+
+        // When & Then
+        XCTAssertThrowsError(try mapper.map(response: data))
+    }
 }
 
 
 // MARK: - Test Helpers
 ///
 private extension AIProductMapperTests {
+    func retrieveGenerateProductResponseWithoutDescription() throws -> Data {
+        guard let response = Loader.contentsOf("generate-product-no-description") else {
+            throw FileNotFoundError()
+        }
+
+        return response
+    }
+
     func retrieveGenerateProductResponse() throws -> Data {
         guard let response = Loader.contentsOf("generate-product-success") else {
             throw FileNotFoundError()

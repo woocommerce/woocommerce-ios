@@ -448,7 +448,7 @@ private extension BillingInformationViewController {
         }
 
         cell.accessibilityCustomActions = [emailAccessibilityAction, copyEmailAccessibilityAction]
-        
+
         guard isSplitViewInOrdersTabEnabled else {
             return
         }

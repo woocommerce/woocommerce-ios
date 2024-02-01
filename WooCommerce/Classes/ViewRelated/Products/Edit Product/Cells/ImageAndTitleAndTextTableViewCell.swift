@@ -131,13 +131,18 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureImageView()
         configureContentStackView()
         configureTitleAndTextStackView()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         configureSelectedBackground()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         cancellable = nil
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 
@@ -302,8 +307,7 @@ private extension ImageAndTitleAndTextTableViewCell {
     }
 
     func configureSelectedBackground() {
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 }
 

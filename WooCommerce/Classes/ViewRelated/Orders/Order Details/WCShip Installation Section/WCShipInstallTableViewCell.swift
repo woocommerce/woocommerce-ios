@@ -23,15 +23,16 @@ final class WCShipInstallTableViewCell: UITableViewCell {
         self.action.text = action
         placeholderImageView.image = image
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 private extension WCShipInstallTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 
     func configurePlaceholderImageView() {

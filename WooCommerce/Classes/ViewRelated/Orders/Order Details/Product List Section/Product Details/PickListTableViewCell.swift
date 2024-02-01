@@ -96,6 +96,11 @@ final class PickListTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         setupSkuLabel()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
@@ -128,11 +133,7 @@ extension PickListTableViewCell {
 private extension PickListTableViewCell {
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-
-        // Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 
     func setupImageView() {

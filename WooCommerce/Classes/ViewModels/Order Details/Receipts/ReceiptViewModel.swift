@@ -3,7 +3,7 @@ import Yosemite
 /// ViewModel supporting the backed-generated receipt preview.
 final class ReceiptViewModel {
     private let receipt: Receipt
-    private let orderID: Int64
+    private(set) var orderID: Int64
     private let siteName: String?
 
     init(receipt: Receipt, orderID: Int64, siteName: String?) {

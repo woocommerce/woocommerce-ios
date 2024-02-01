@@ -23,7 +23,7 @@ final class ReceiptViewController: UIViewController {
 
     private func configureContent() {
         guard let receipt = viewModel.receiptRequest else {
-            DDLogError("No receipt could be found.")
+            DDLogError("No receipt could be found for orderID \(viewModel.orderID)")
             navigationController?.popViewController(animated: true)
             return
         }
@@ -66,7 +66,7 @@ final class ReceiptViewController: UIViewController {
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error = error {
-                DDLogError("Print error: \(error)")
+                DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
             } else if isCompleted {
                 self?.dismiss(animated: true)
             }

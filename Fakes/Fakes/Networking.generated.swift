@@ -1467,6 +1467,16 @@ extension Networking.ProductVariationAttribute {
         )
     }
 }
+extension Networking.Receipt {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Receipt {
+        .init(
+            receiptURL: .fake(),
+            expirationDate: .fake()
+        )
+    }
+}
 extension Networking.Refund {
     /// Returns a "ready to use" type filled with fake values.
     ///

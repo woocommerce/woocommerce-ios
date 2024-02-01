@@ -24,7 +24,7 @@ workspace 'WooCommerce.xcworkspace'
 ##
 def aztec
   # pod 'WordPress-Editor-iOS', '~> 1.19.9'
-  pod 'WordPress-Editor-iOS', :git => 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', :commit => '4049aa539ff4d0f3ef304a16d002ad3470c03720'
+  pod 'WordPress-Editor-iOS', :git => 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', :commit => '499f9c294e76c2626cb1997f757cb429a07e5225'
 end
 
 def tracks

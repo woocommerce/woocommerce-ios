@@ -14,6 +14,7 @@ import struct Yosemite.Site
 
 final class DashboardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 122
+    private let sampleSiteURL = "https://example.com"
 
     private var analytics: Analytics!
     private var analyticsProvider: MockAnalyticsProvider!
@@ -27,7 +28,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_default_statsVersion_is_v4() {
         // Given
-        let viewModel = DashboardViewModel(siteID: 0)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
@@ -40,7 +41,7 @@ final class DashboardViewModelTests: XCTestCase {
                 completion(.failure(DotcomError.noRestRoute))
             }
         }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores)
         XCTAssertEqual(viewModel.statsVersion, .v4)
 
         // When
@@ -66,7 +67,7 @@ final class DashboardViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores)
         XCTAssertEqual(viewModel.statsVersion, .v4)
 
         // When
@@ -88,7 +89,7 @@ final class DashboardViewModelTests: XCTestCase {
                 completion(storeStatsResult)
             }
         }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores)
         viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
         XCTAssertEqual(viewModel.statsVersion, .v3)
 
@@ -104,7 +105,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
         prepareStoresToShowJustInTimeMessage(.success([message]))
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -150,7 +151,7 @@ final class DashboardViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -167,7 +168,7 @@ final class DashboardViewModelTests: XCTestCase {
         let secondMessage = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id-2",
                                                                    featureClass: "test-feature-class-2")
         prepareStoresToShowJustInTimeMessage(.success([message, secondMessage]))
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, analytics: analytics)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -190,7 +191,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         let secondMessage = Yosemite.JustInTimeMessage.fake().copy(title: "Lower priority JITM")
         prepareStoresToShowJustInTimeMessage(.success([message, secondMessage]))
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, analytics: analytics)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -203,7 +204,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let error = DotcomError.noRestRoute
         prepareStoresToShowJustInTimeMessage(.failure(error))
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, analytics: analytics)
 
         // When
         await viewModel.syncAnnouncements(for: sampleSiteID)
@@ -224,7 +225,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         prepareStoresToShowJustInTimeMessage(.success([]))
 
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, analytics: analytics)
         viewModel.announcementViewModel = JustInTimeMessageViewModel(
             justInTimeMessage: .fake(),
             screenName: "my_store",
@@ -249,7 +250,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
         let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case .getLocalAnnouncementVisibility(_, _):
@@ -277,7 +278,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
         let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .getLocalAnnouncementVisibility(_, completion):
@@ -303,6 +304,7 @@ final class DashboardViewModelTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = false
         let viewModel = DashboardViewModel(siteID: 0,
+                                           siteURL: sampleSiteURL,
                                            stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
@@ -316,6 +318,7 @@ final class DashboardViewModelTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = true
         let viewModel = DashboardViewModel(siteID: 0,
+                                           siteURL: sampleSiteURL,
                                            stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
                                            userDefaults: defaults)
@@ -329,6 +332,7 @@ final class DashboardViewModelTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = true
         let viewModel = DashboardViewModel(siteID: 0,
+                                           siteURL: sampleSiteURL,
                                            stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
@@ -342,6 +346,7 @@ final class DashboardViewModelTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         defaults[.completedAllStoreOnboardingTasks] = false
         let viewModel = DashboardViewModel(siteID: 0,
+                                           siteURL: sampleSiteURL,
                                            stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
@@ -354,6 +359,7 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = DashboardViewModel(siteID: 0,
+                                           siteURL: sampleSiteURL,
                                            stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
@@ -366,6 +372,7 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = DashboardViewModel(siteID: 0,
+                                           siteURL: sampleSiteURL,
                                            stores: stores,
                                            featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                            userDefaults: defaults)
@@ -384,6 +391,7 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = DashboardViewModel(siteID: 0,
+                                     siteURL: sampleSiteURL,
                                      stores: stores,
                                      featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                      userDefaults: defaults)
@@ -407,6 +415,7 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = DashboardViewModel(siteID: 0,
+                                     siteURL: sampleSiteURL,
                                      stores: stores,
                                      featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                      userDefaults: defaults)
@@ -430,6 +439,7 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = DashboardViewModel(siteID: 0,
+                                     siteURL: sampleSiteURL,
                                      stores: stores,
                                      featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                      userDefaults: defaults)
@@ -450,6 +460,7 @@ final class DashboardViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = DashboardViewModel(siteID: 0,
+                                     siteURL: sampleSiteURL,
                                      stores: stores,
                                      featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
                                      userDefaults: defaults)
@@ -467,7 +478,7 @@ final class DashboardViewModelTests: XCTestCase {
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.defaultSite = Site.fake().copy(isPublic: false)
         let stores = MockStoresManager(sessionManager: sessionManager)
-        let viewModel = DashboardViewModel(siteID: 123, stores: stores)
+        let viewModel = DashboardViewModel(siteID: 123, siteURL: sampleSiteURL, stores: stores)
 
         // When
         let siteURLToShare = viewModel.siteURLToShare
@@ -482,7 +493,7 @@ final class DashboardViewModelTests: XCTestCase {
         let expectedURL = "https://example.com"
         sessionManager.defaultSite = Site.fake().copy(url: expectedURL, isPublic: true)
         let stores = MockStoresManager(sessionManager: sessionManager)
-        let viewModel = DashboardViewModel(siteID: 123, stores: stores)
+        let viewModel = DashboardViewModel(siteID: 123, siteURL: sampleSiteURL, stores: stores)
 
         // When
         let siteURLToShare = viewModel.siteURLToShare
@@ -495,7 +506,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -3600)
         let siteGMTOffset = 0.0
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, analytics: analytics)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -515,7 +526,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -5400)
         let siteGMTOffset = 2.50000
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, analytics: analytics)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -535,7 +546,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -7200)
         let siteGMTOffset = -2.0
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0, siteURL: sampleSiteURL, stores: stores, analytics: analytics)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -555,7 +566,7 @@ final class DashboardViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, stores: stores)
 
         // When
         let siteVisitStatsResult: Result<Void, Error> = waitFor { promise in
@@ -579,6 +590,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           siteURL: sampleSiteURL,
                                            storeCreationProfilerUploadAnswersUseCase: usecase)
 
         // When
@@ -593,6 +605,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let themeInstaller = MockThemeInstaller()
         _ = DashboardViewModel(siteID: sampleSiteID,
+                               siteURL: sampleSiteURL,
                                themeInstaller: themeInstaller)
 
         waitUntil {
@@ -607,7 +620,7 @@ final class DashboardViewModelTests: XCTestCase {
     func test_it_tracks_end_of_blaze_campaign_sync_action_when_blaze_campaign_view_reloads() async {
         // Given
         let waitingTimeTracker = AppStartupWaitingTimeTracker()
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, startupWaitingTimeTracker: waitingTimeTracker)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, siteURL: sampleSiteURL, startupWaitingTimeTracker: waitingTimeTracker)
         XCTAssertTrue(waitingTimeTracker.startupActionsPending.contains(.syncBlazeCampaigns))
 
         // Then

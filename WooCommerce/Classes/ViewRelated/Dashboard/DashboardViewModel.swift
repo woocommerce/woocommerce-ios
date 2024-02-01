@@ -17,7 +17,7 @@ final class DashboardViewModel {
 
     let storeOnboardingViewModel: StoreOnboardingViewModel
 
-    private(set) var blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
+    let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 

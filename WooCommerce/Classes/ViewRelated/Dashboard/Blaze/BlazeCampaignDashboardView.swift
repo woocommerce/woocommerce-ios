@@ -307,6 +307,6 @@ private struct ProductInfoView: View {
 
 struct BlazeCampaignDashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignDashboardView(viewModel: .init(siteID: 0))
+        BlazeCampaignDashboardView(viewModel: .init(siteID: 0, siteURL: "https://example.com"))
     }
 }

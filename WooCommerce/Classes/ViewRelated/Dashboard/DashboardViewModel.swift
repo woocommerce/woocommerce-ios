@@ -17,7 +17,7 @@ final class DashboardViewModel {
 
     let storeOnboardingViewModel: StoreOnboardingViewModel
 
-    let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
+    private(set) var blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
@@ -61,7 +61,7 @@ final class DashboardViewModel {
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
-        self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
+        self.blazeCampaignDashboardViewModel = .init(siteID: siteID, siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url ?? "")
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         self.startupWaitingTimeTracker = startupWaitingTimeTracker
@@ -87,6 +87,18 @@ final class DashboardViewModel {
     func reloadBlazeCampaignView() async {
         await blazeCampaignDashboardViewModel.reload()
         startupWaitingTimeTracker.end(action: .syncBlazeCampaigns)
+    }
+
+    func updateBlazeCampaignView(with site: Site) {
+        guard site.siteID != blazeCampaignDashboardViewModel.siteID ||
+                site.url != blazeCampaignDashboardViewModel.siteURL else {
+            return
+        }
+        blazeCampaignDashboardViewModel = BlazeCampaignDashboardViewModel(siteID: site.siteID, siteURL: site.url)
+        setupObserverForBlazeCampaignView()
+        Task {
+            await blazeCampaignDashboardViewModel.reload()
+        }
     }
 
     /// Syncs store stats for dashboard UI.

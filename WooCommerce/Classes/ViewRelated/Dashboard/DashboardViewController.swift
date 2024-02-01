@@ -761,6 +761,14 @@ private extension DashboardViewController {
 // MARK: - Blaze campaign view
 extension DashboardViewController {
     func observeBlazeCampaignViewVisibility() {
+        ServiceLocator.stores.site
+            .compactMap { $0 }
+            .removeDuplicates()
+            .sink { [weak self] site in
+                self?.viewModel.updateBlazeCampaignView(with: site)
+            }
+            .store(in: &subscriptions)
+
         viewModel.$showBlazeCampaignView.removeDuplicates()
             .sink { [weak self] showBlazeCampaignView in
                 guard let self else { return }

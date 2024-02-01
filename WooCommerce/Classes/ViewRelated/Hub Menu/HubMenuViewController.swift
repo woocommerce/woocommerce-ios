@@ -7,10 +7,10 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
-    init(siteID: Int64,
+    init(site: Site,
          navigationController: UINavigationController?,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
-        self.viewModel = HubMenuViewModel(siteID: siteID,
+        self.viewModel = HubMenuViewModel(site: site,
                                           navigationController: navigationController,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker

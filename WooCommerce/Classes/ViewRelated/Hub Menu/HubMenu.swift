@@ -335,17 +335,39 @@ private extension HubMenu {
 
 struct HubMenu_Previews: PreviewProvider {
     static var previews: some View {
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        let site = Site(siteID: 123,
+                        name: "Test",
+                        description: "Site for testing",
+                        url: "https://example.com",
+                        adminURL: "https://example.com/wp-admin",
+                        loginURL: "https://example.com/wp-login.php",
+                        isSiteOwner: true,
+                        frameNonce: "",
+                        plan: "",
+                        isAIAssistantFeatureActive: true,
+                        isJetpackThePluginInstalled: true,
+                        isJetpackConnected: true,
+                        isWooCommerceActive: true,
+                        isWordPressComStore: true,
+                        jetpackConnectionActivePlugins: [],
+                        timezone: "UTC",
+                        gmtOffset: 0,
+                        isPublic: true,
+                        canBlaze: true,
+                        isAdmin: true,
+                        wasEcommerceTrial: false)
+
+        HubMenu(viewModel: .init(site: site, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .environment(\.colorScheme, .light)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(site: site, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .environment(\.colorScheme, .dark)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(site: site, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .previewLayout(.fixed(width: 312, height: 528))
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(site: site, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .previewLayout(.fixed(width: 1024, height: 768))
     }
 }

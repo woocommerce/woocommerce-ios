@@ -5,6 +5,7 @@ import UIKit
 import enum Yosemite.ProductReviewAction
 import enum Yosemite.NotificationAction
 import struct Yosemite.ProductReviewFromNoteParcel
+import struct Yosemite.Site
 import protocol Yosemite.StoresManager
 
 /// Coordinator for the HubMenu tab.
@@ -57,12 +58,12 @@ final class HubMenuCoordinator: Coordinator {
     }
 
     func start() {
-        // No-op: please call `activate(siteID:)` instead when the menu tab is configured.
+        // No-op: please call `activate(site:)` instead when the menu tab is configured.
     }
 
     /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
-    func activate(siteID: Int64) {
-        hubMenuController = HubMenuViewController(siteID: siteID,
+    func activate(site: Site) {
+        hubMenuController = HubMenuViewController(site: site,
                                                   navigationController: navigationController,
                                                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         if let hubMenuController = hubMenuController {

@@ -536,20 +536,20 @@ private extension MainTabBarController {
             guard let self, let site else {
                 return
             }
-            self.updateViewControllers(siteID: site.siteID, siteURL: site.url)
+            self.updateViewControllers(site: site)
         }
     }
 
-    func updateViewControllers(siteID: Int64, siteURL: String) {
+    func updateViewControllers(site: Site) {
 
         // Update view model with `siteID` to query correct Orders Status
-        viewModel.configureOrdersStatusesListener(for: siteID)
+        viewModel.configureOrdersStatusesListener(for: site.siteID)
 
         // Initialize each tab's root view controller
-        let dashboardViewController = createDashboardViewController(siteID: siteID, siteURL: siteURL)
+        let dashboardViewController = createDashboardViewController(siteID: site.siteID, siteURL: site.url)
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
-        let ordersViewController = createOrdersViewController(siteID: siteID)
+        let ordersViewController = createOrdersViewController(siteID: site.siteID)
         if isOrdersSplitViewFeatureFlagOn {
             ordersContainerController.wrappedController = ordersViewController
         } else {
@@ -557,9 +557,9 @@ private extension MainTabBarController {
         }
 
         if isProductsSplitViewFeatureFlagOn {
-            productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: siteID)
+            productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: site.siteID)
         } else {
-            productsNavigationController.viewControllers = [ProductsViewController(siteID: siteID)]
+            productsNavigationController.viewControllers = [ProductsViewController(siteID: site.siteID)]
         }
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
@@ -568,7 +568,7 @@ private extension MainTabBarController {
             self.hubMenuTabCoordinator = hubTabCoordinator
             hubTabCoordinator.start()
         }
-        hubMenuTabCoordinator?.activate(siteID: siteID)
+        hubMenuTabCoordinator?.activate(site: site)
 
         viewModel.loadHubMenuTabBadge()
 

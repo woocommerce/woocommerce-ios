@@ -15,6 +15,7 @@ final class HubMenuCoordinatorTests: XCTestCase {
     private var switchStoreUseCase: MockSwitchStoreUseCase!
 
     private let siteID: Int64 = 1
+    private let sampleSite = Site.fake().copy(siteID: 1)
 
     override func setUp() {
         super.setUp()
@@ -46,7 +47,7 @@ final class HubMenuCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
 
         coordinator.start()
-        coordinator.activate(siteID: siteID)
+        coordinator.activate(site: sampleSite)
 
         XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
 
@@ -67,7 +68,7 @@ final class HubMenuCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
 
         coordinator.start()
-        coordinator.activate(siteID: siteID)
+        coordinator.activate(site: sampleSite)
 
         // When
         pushNotificationsManager.sendForegroundNotification(pushNotification)
@@ -86,7 +87,7 @@ final class HubMenuCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
 
         coordinator.start()
-        coordinator.activate(siteID: siteID)
+        coordinator.activate(site: sampleSite)
 
         assertEmpty(noticePresenter.queuedNotices)
 

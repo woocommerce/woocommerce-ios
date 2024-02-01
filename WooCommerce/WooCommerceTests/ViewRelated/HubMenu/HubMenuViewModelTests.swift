@@ -8,7 +8,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
     func test_viewDidAppear_then_posts_notification() {
         // Given
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        let viewModel = HubMenuViewModel(site: sampleSite, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
         expectation(forNotification: .hubMenuViewDidAppear, object: nil, handler: nil)
 
         // When
@@ -23,7 +23,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(isInboxOn: false)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          featureFlagService: featureFlagService)
 
@@ -53,7 +53,7 @@ final class HubMenuViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          featureFlagService: featureFlagService,
                                          stores: stores)
@@ -84,7 +84,7 @@ final class HubMenuViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          featureFlagService: featureFlagService,
                                          stores: stores)
@@ -98,7 +98,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
     func test_generalElements_does_not_include_blaze_when_default_site_is_not_set() {
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
         viewModel.setupMenuElements()
 
@@ -116,7 +116,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          blazeEligibilityChecker: blazeEligibilityChecker)
@@ -136,7 +136,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          blazeEligibilityChecker: blazeEligibilityChecker)
@@ -159,7 +159,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
@@ -171,11 +171,10 @@ final class HubMenuViewModelTests: XCTestCase {
         let sampleAdminURL = "https://testshop.com/wp-admin/"
         let sessionManager = SessionManager.testingInstance
         let site = Site.fake().copy(adminURL: sampleAdminURL)
-        sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: site,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
@@ -191,7 +190,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
         // Then
@@ -205,11 +204,10 @@ final class HubMenuViewModelTests: XCTestCase {
         let expectedAdminURL = "https://testshop.com/wp-admin"
         let sessionManager = SessionManager.testingInstance
         let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL)
-        sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: site,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
         // Then
@@ -223,11 +221,10 @@ final class HubMenuViewModelTests: XCTestCase {
         let expectedAdminURL = "https://testshop.com/wp-admin"
         let sessionManager = SessionManager.testingInstance
         let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL)
-        sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: site,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
         // Then
@@ -245,7 +242,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
@@ -263,7 +260,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
@@ -277,11 +274,10 @@ final class HubMenuViewModelTests: XCTestCase {
         let sampleAdminURL = ""
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
         let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, isWordPressComStore: true)
-        sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: site,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
@@ -299,7 +295,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
@@ -317,7 +313,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: site.siteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
@@ -332,7 +328,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
         viewModel.setupMenuElements()
@@ -349,7 +345,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+        let viewModel = HubMenuViewModel(site: sampleSite,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
         viewModel.setupMenuElements()

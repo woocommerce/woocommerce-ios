@@ -4,7 +4,7 @@ import SwiftUI
 import Combine
 import Experiments
 import Yosemite
-import Storage
+import struct Storage.GeneralAppSettingsStorage
 
 extension NSNotification.Name {
     /// Posted whenever the hub menu view did appear.
@@ -81,17 +81,17 @@ final class HubMenuViewModel: ObservableObject {
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
                 wooPaymentsDepositService: WooPaymentsDepositService(siteID: siteID,
-                                                                      credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)))
+                                                                     credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)))
     }()
 
-    init(siteID: Int64,
+    init(site: Site,
          navigationController: UINavigationController? = nil,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
-        self.siteID = siteID
+        self.siteID = site.siteID
         self.navigationController = navigationController
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.stores = stores
@@ -102,6 +102,11 @@ final class HubMenuViewModel: ObservableObject {
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
+
+        /// Since we are observing `Site` in `MainTabBarController` to recreate view controllers,
+        /// `observeSiteForUIUpdates` is not sufficient for updating the UI initially.
+        /// Injecting the site from the initializer should fix it.
+        updateUI(with: site)
     }
 
     func viewDidAppear() {
@@ -207,61 +212,50 @@ final class HubMenuViewModel: ObservableObject {
         ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
     }
 
-    private func observeSiteForUIUpdates() {
-        stores.site
-            .compactMap { site -> URL? in
-                guard let urlString = site?.url, let url = URL(string: urlString) else {
-                    return nil
-                }
-                return url
-            }
-            .assign(to: &$storeURL)
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
+    }
+}
 
-        stores.site
-            .compactMap { $0?.name }
-            .assign(to: &$storeTitle)
+// MARK: - Private helpers
+private extension HubMenuViewModel {
 
-        stores.site
-            .compactMap { site -> URL? in
-                guard let urlString = site?.adminURL, let url = URL(string: urlString) else {
-                    return site?.adminURLWithFallback()
-                }
-                return url
-            }
-            .assign(to: &$woocommerceAdminURL)
+    func updateUI(with site: Site) {
+        storeTitle = site.name
 
-        stores.site
-            .map { [weak self] site in
-                guard let self, let site else {
-                    return false
-                }
-                /// If the site is self-hosted and user is authenticated with WPCom,
-                /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
-                /// This should be prevented 💀⛔️
-                guard site.isWordPressComStore || self.stores.isAuthenticatedWithoutWPCom else {
-                    return false
-                }
-                return true
-            }
-            .assign(to: &$shouldAuthenticateAdminPage)
+        if let url = URL(string: site.url) {
+            storeURL = url
+        }
 
-        // Blaze menu.
+        if let adminURL = URL(string: site.adminURL) {
+            woocommerceAdminURL = adminURL
+        } else if let fallbackURL = site.adminURLWithFallback() {
+            woocommerceAdminURL = fallbackURL
+        }
+
+        /// If the site is self-hosted and user is authenticated with WPCom,
+        /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
+        /// This should be prevented 💀⛔️
+        shouldAuthenticateAdminPage = site.isWordPressComStore || stores.isAuthenticatedWithoutWPCom
+
+        Task { @MainActor in
+            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+        }
+    }
+
+    func observeSiteForUIUpdates() {
         stores.site
             .compactMap { $0 }
             .removeDuplicates()
-            .asyncMap { [weak self] site -> Bool in
-                guard let self else {
-                    return false
-                }
-                return await self.blazeEligibilityChecker.isSiteEligible()
+            .sink { [weak self] site in
+                self?.updateUI(with: site)
             }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$isSiteEligibleForBlaze)
+            .store(in: &cancellables)
     }
 
     /// Observe the current site's plan name and assign it to the `planName` published property.
     ///
-    private func observePlanName() {
+    func observePlanName() {
         ServiceLocator.storePlanSynchronizer.planStatePublisher.map { [weak self] planState in
             guard let self else { return "" }
             switch planState {
@@ -274,10 +268,6 @@ final class HubMenuViewModel: ObservableObject {
             }
         }
         .assign(to: &$planName)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
     }
 }
 

@@ -472,8 +472,11 @@ extension OrderDetailsViewModel {
                 guard let self else { return }
                 switch result {
                 case let .success(receipt):
+                    let orderID = self.order.orderID
+                    let siteName = stores.sessionManager.defaultSite?.name
                     let receiptViewModel = ReceiptViewModel(receipt: receipt,
-                                                            orderID: self.order.orderID)
+                                                            orderID: orderID,
+                                                            siteName: siteName)
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
                 case let .failure(error):

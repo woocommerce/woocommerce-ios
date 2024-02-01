@@ -4,10 +4,12 @@ import Yosemite
 final class ReceiptViewModel {
     private let receipt: Receipt
     private let orderID: Int64
+    private let siteName: String?
 
-    init(receipt: Receipt, orderID: Int64) {
+    init(receipt: Receipt, orderID: Int64, siteName: String?) {
         self.receipt = receipt
         self.orderID = orderID
+        self.siteName = siteName
     }
 
     var receiptURLString: String {
@@ -22,14 +24,29 @@ final class ReceiptViewModel {
     }
 
     func formattedReceiptJobName(_ jobName: String) -> String {
-        String.localizedStringWithFormat(Localization.receiptJobName, jobName, String(orderID))
+        if let siteName = siteName, !siteName.isEmpty {
+            return String.localizedStringWithFormat(Localization.receiptJobNameWithStoreName,
+                                                    jobName,
+                                                    String(orderID),
+                                                    siteName)
+        } else {
+            return String.localizedStringWithFormat(Localization.receiptJobName,
+                                                    jobName,
+                                                    String(orderID))
+        }
     }
 }
 
 private extension ReceiptViewModel {
     enum Localization {
+        static let receiptJobNameWithStoreName = NSLocalizedString(
+            "receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName",
+            value: "%1$@: receipt for order #%2$@ on %3$@",
+            comment: "The name of the job that appears in the 'Print Center' when printing a receipt" +
+            "Reads as 'Woo: receipt for order #123 on MyStoreName'")
+
         static let receiptJobName = NSLocalizedString(
-            "receiptViewModel.formattedReceiptJobName",
+            "receiptViewModel.formattedReceiptJobName.receiptJobName",
             value: "%1$@: receipt for order #%2$@",
             comment: "The name of the job that appears in the 'Print Center' when printing a receipt" +
             "Reads as 'Woo: receipt for order #123'")

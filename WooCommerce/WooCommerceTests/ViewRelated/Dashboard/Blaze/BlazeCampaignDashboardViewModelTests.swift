@@ -687,10 +687,11 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {
         // Given
         let testURL = "https://example.com"
+        let site = Site.fake().copy(siteID: sampleSiteID, url: testURL)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: site))
         let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 123)
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                        siteURL: testURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         blazeEligibilityChecker: checker)

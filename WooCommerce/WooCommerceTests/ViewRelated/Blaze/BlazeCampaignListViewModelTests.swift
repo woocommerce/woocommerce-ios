@@ -341,8 +341,10 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {
         // Given
         let testURL = "https://example.com"
+        let site = Site.fake().copy(siteID: sampleSiteID, url: testURL)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: site))
         let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 123)
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: testURL)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
 
         // Confidence check
         XCTAssertNil(viewModel.selectedCampaignURL)

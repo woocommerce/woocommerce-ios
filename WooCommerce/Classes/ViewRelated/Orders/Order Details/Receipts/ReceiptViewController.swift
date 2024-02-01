@@ -56,8 +56,11 @@ final class ReceiptViewController: UIViewController {
             return
         }
         let printController = UIPrintInteractionController.shared
+
         let printInfo = UIPrintInfo(dictionary: nil)
-        printInfo.jobName = "Receipt"
+        let formattedJobName = viewModel.formattedReceiptJobName(printInfo.jobName)
+        printInfo.jobName = formattedJobName
+
         printController.printInfo = printInfo
         printController.printFormatter = webView.viewPrintFormatter()
 

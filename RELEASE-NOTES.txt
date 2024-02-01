@@ -6,7 +6,7 @@
 - [*] Orders: the placeholder cells shown in the loading state have the animated redacted content again. [https://github.com/woocommerce/woocommerce-ios/pull/11842]
 - [*] Fixed arrow directions for RTL locales. [https://github.com/woocommerce/woocommerce-ios/pull/11833]
 - [*] Update Product Creation AI prompt to avoid unexpected response from AI. [https://github.com/woocommerce/woocommerce-ios/pull/11853]
-
+- [*] Fixed incorrect site URL when creating Blaze campaigns after switching stores. [https://github.com/woocommerce/woocommerce-ios/pull/11872]
 - [*] Orders in split view: when the store has no orders and then an order is created, the order list is now shown instead of the empty view. [https://github.com/woocommerce/woocommerce-ios/pull/11849]
 
 17.1

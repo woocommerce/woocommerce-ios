@@ -512,7 +512,10 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+            order: order,
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
+        ))
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
             ordersViewController.showOrderDetails(order)

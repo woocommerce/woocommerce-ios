@@ -779,7 +779,8 @@ extension WooAnalyticsEvent {
                                                       hasCustomerDetails: Bool,
                                                       hasFees: Bool,
                                                       hasShippingMethod: Bool,
-                                                      products: [Product]) -> WooAnalyticsEvent {
+                                                      products: [Product],
+                                                      horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped, properties: [
                 Keys.flow: Flow.creation.rawValue,
                 Keys.orderStatus: status.rawValue,
@@ -788,7 +789,8 @@ extension WooAnalyticsEvent {
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
                 Keys.hasShippingMethod: hasShippingMethod,
-                Keys.productTypes: productTypes(order: order, products: products)
+                Keys.productTypes: productTypes(order: order, products: products),
+                Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
             ])
         }
 

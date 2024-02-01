@@ -27,7 +27,7 @@ struct HubMenu: View {
 
             // Store Section
             Section {
-                Button {
+                ListPressableButton {
                     viewModel.presentSwitchStore()
                 } label: {
                     Row(title: viewModel.storeTitle,
@@ -47,7 +47,7 @@ struct HubMenu: View {
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in
-                    Button {
+                    ListPressableButton {
                         handleTap(menu: menu)
                     } label: {
                         Row(title: menu.title,
@@ -65,7 +65,7 @@ struct HubMenu: View {
             // General Section
             Section(Localization.general) {
                 ForEach(viewModel.generalElements, id: \.id) { menu in
-                    Button {
+                    ListPressableButton {
                         handleTap(menu: menu)
                     } label: {
                         Row(title: menu.title,

@@ -70,7 +70,7 @@ DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.1.0)
-  - WordPress-Editor-iOS (~> 1.19.9)
+  - WordPress-Editor-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `4049aa539ff4d0f3ef304a16d002ad3470c03720`)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `6312d0a91e709a4bae017e04f70e520199928928`)
   - WordPressShared (~> 2.1)
   - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, commit `a0248ba6dabaed1d493416fd1273aa6718c76331`)
@@ -98,7 +98,6 @@ SPEC REPOS:
     - SVProgressHUD
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
-    - WordPress-Editor-iOS
     - WordPressShared
     - Wormholy
     - WPMediaPicker
@@ -112,6 +111,9 @@ SPEC REPOS:
     - ZendeskSupportSDK
 
 EXTERNAL SOURCES:
+  WordPress-Editor-iOS:
+    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
   WordPressAuthenticator:
     :commit: 6312d0a91e709a4bae017e04f70e520199928928
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
@@ -120,6 +122,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 CHECKOUT OPTIONS:
+  WordPress-Editor-iOS:
+    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
   WordPressAuthenticator:
     :commit: 6312d0a91e709a4bae017e04f70e520199928928
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
@@ -160,6 +165,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 956d7b1e1b8ee9b7319118d6153afced7de19966
+PODFILE CHECKSUM: ffecb4c69050b6499e9fb908fc8e160ababf0fe0
 
 COCOAPODS: 1.14.0

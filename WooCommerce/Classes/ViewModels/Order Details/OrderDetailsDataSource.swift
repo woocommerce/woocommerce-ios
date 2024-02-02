@@ -106,7 +106,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order has a locally-generated receipt associated.
     ///
-    var shouldShowLegacyReceipts: Bool = false
+    var orderHasLocalReceipt: Bool = false
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -622,7 +622,6 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.seeReceipt
         cell.rightText = nil
         cell.hideFootnote()
-        cell.hideSeparator()
     }
 
     private func configureSeeLegacyReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
@@ -1235,12 +1234,15 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
-            if featureFlags.isFeatureFlagEnabled(.backendReceipts) {
-                rows.append(.seeReceipt)
-            }
-
-            if shouldShowLegacyReceipts {
+            switch orderHasLocalReceipt {
+            case true:
                 rows.append(.seeLegacyReceipt)
+            case false:
+                isEligibleForBackendReceipt { isEligible in
+                    if isEligible {
+                        rows.append(.seeReceipt)
+                    }
+                }
             }
 
             if isEligibleForRefund {
@@ -1335,6 +1337,15 @@ extension OrderDetailsDataSource {
         }
 
         return refundFound
+    }
+
+    private func isEligibleForBackendReceipt(completion: @escaping (Bool) -> Void) {
+        guard !isEligibleForPayment else {
+            return completion(false)
+        }
+        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in
+            completion(isEligibleForReceipt)
+        }
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {
@@ -1504,7 +1515,7 @@ extension OrderDetailsDataSource {
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString(
             "OrderDetailsDataSource.configureSeeReceipt.button.title",
-            value: "[Debug] See Backed Receipt",
+            value: "See Receipt",
             comment: "Text on the button title to see the order's receipt")
         static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }

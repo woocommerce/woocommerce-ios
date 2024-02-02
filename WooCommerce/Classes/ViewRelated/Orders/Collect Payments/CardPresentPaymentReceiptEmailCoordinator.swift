@@ -65,7 +65,9 @@ extension CardPresentPaymentReceiptEmailCoordinator: MFMailComposeViewController
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         switch result {
         case .cancelled:
-            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: countryCode, cardReaderModel: cardReaderModel))
+            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: countryCode,
+                                                                          cardReaderModel: cardReaderModel,
+                                                                          source: "local"))
         case .sent, .saved:
             analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: countryCode,
                                                                          cardReaderModel: cardReaderModel,

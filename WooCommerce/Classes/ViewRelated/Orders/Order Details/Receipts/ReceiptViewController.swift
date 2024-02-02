@@ -62,6 +62,10 @@ final class ReceiptViewController: UIViewController {
                 ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: nil,
                                                                                             cardReaderModel: nil,
                                                                                             source: "backend"))
+            } else {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: nil,
+                                                                                             cardReaderModel: nil,
+                                                                                             source: "backend"))
             }
         }
         present(activityViewController, animated: true)

@@ -51,6 +51,19 @@ final class ReceiptViewController: UIViewController {
         }
         let activityViewController = UIActivityViewController(activityItems: [url],
                                                 applicationActivities: nil)
+        activityViewController.completionWithItemsHandler = { _, success, _, error in
+            if let error = error {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailFailed(error: error,
+                                                                                           countryCode: nil,
+                                                                                           cardReaderModel: nil,
+                                                                                           source: "backend"))
+            }
+            if success == true {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: nil,
+                                                                                            cardReaderModel: nil,
+                                                                                            source: "backend"))
+            }
+        }
         present(activityViewController, animated: true)
     }
 

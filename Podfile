@@ -96,7 +96,9 @@ target 'WooCommerce' do
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.8.1'
+  # pod 'WPMediaPicker', '~> 1.8.1'
+  pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: '1dfb9cbbfbd60597befc057087f3e22ef571be5d'
+
 
   # External Libraries
   # ==================

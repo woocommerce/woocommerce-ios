@@ -97,9 +97,7 @@ struct AddProductWithAIActionSheet: View {
                             isShowingManualOptions = true
                         }
                     }
-                }
-
-                if isShowingManualOptions {
+                } else {
                     Text(Localization.manualOptionsTitle)
                         .subheadlineStyle()
                         .padding(.top, Constants.margin)

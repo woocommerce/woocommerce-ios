@@ -15,9 +15,9 @@ struct ManualProductTypeOptions: View {
     var body: some View {
         ForEach(productTypes) { productType in
             HStack(alignment: .top, spacing: Constants.margin) {
-                Image(uiImage: productType.actionSheetImage)
+                Image(uiImage: productType.actionSheetImage.withRenderingMode(.alwaysTemplate))
                     .font(.title3)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
 
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                     Text(productType.actionSheetTitle)

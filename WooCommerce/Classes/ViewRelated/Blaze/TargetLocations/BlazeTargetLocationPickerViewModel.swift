@@ -36,17 +36,20 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
     private let siteID: Int64
     private let locale: Locale
     private let stores: StoresManager
+    private let analytics: Analytics
     private let onCompletion: (Set<BlazeTargetLocation>?) -> Void
 
     init(siteID: Int64,
          locale: Locale = .current,
          selectedLocations: Set<BlazeTargetLocation>? = nil,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping (Set<BlazeTargetLocation>?) -> Void) {
         self.selectedLocations = selectedLocations
         self.siteID = siteID
         self.locale = locale
         self.stores = stores
+        self.analytics = analytics
         self.onCompletion = onCompletion
 
         // Updates `selectedSearchResults` to display the selected locations on the specific location section.
@@ -72,6 +75,7 @@ final class BlazeTargetLocationPickerViewModel: ObservableObject {
     }
 
     func confirmSelection() {
+        analytics.track(event: .Blaze.Location.saveTapped())
         onCompletion(selectedLocations)
     }
 }

@@ -23,7 +23,7 @@ final class ReceiptViewController: UIViewController {
 
     private func configureContent() {
         guard let receipt = viewModel.receiptRequest else {
-            DDLogError("No receipt could be found.")
+            DDLogError("No receipt could be found for orderID \(viewModel.orderID)")
             navigationController?.popViewController(animated: true)
             return
         }
@@ -56,14 +56,17 @@ final class ReceiptViewController: UIViewController {
             return
         }
         let printController = UIPrintInteractionController.shared
+
         let printInfo = UIPrintInfo(dictionary: nil)
-        printInfo.jobName = "Receipt"
+        let formattedJobName = viewModel.formattedReceiptJobName(printInfo.jobName)
+        printInfo.jobName = formattedJobName
+
         printController.printInfo = printInfo
         printController.printFormatter = webView.viewPrintFormatter()
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error = error {
-                DDLogError("Print error: \(error)")
+                DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
             } else if isCompleted {
                 self?.dismiss(animated: true)
             }

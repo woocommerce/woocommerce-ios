@@ -28,7 +28,7 @@ struct TaxRateRow: View {
                 .multilineTextAlignment(.trailing)
                 .frame(width: nil, alignment: .trailing)
 
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .font(.body)
                 .font(Font.title.weight(.semibold))
                 .foregroundColor(Color(.textTertiary))

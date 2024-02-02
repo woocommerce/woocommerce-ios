@@ -4,6 +4,20 @@ import XCTest
 
 @MainActor
 final class BlazeBudgetSettingViewModelTests: XCTestCase {
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analyticsProvider = nil
+        analytics = nil
+        super.tearDown()
+    }
 
     func test_confirmSettings_triggers_onCompletion_with_updated_details() {
         // Given
@@ -124,5 +138,47 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         XCTAssertEqual(fetchInput?.totalBudget, 20 * 7)
         XCTAssertEqual(fetchInput?.timeZone, "Europe/London")
         XCTAssertEqual(fetchInput?.targeting, targetOptions)
+    }
+
+    // MARK: Analytics
+
+    func test_confirmSettings_tracks_event_with_correct_properties() throws {
+        // Given
+        let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
+                                                    dailyBudget: 15,
+                                                    duration: 3,
+                                                    startDate: .now,
+                                                    analytics: analytics,
+                                                    onCompletion: { _, _, _ in })
+
+
+        // When
+        viewModel.confirmSettings()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_edit_budget_save_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["duration"] as? Int, 3)
+        XCTAssertEqual(eventProperties["total_budget"] as? Double, 45.0)
+    }
+
+    func test_changing_duration_tracks_event_with_correct_properties() throws {
+        // Given
+        let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
+                                                    dailyBudget: 15,
+                                                    duration: 3,
+                                                    startDate: .now,
+                                                    analytics: analytics,
+                                                    onCompletion: { _, _, _ in })
+
+
+        // When
+        viewModel.dayCount = 7
+        viewModel.didTapApplyDuration()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_edit_budget_set_duration_applied"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["duration"] as? Int, 7)
     }
 }

@@ -1115,45 +1115,17 @@ private extension ProductFormViewController {
             return
         }
 
-        if viewModel.shouldShowBlazeIntroView {
-            let onCreateCampaignClosure = { [weak self] in
-                guard let self else { return }
-                self.dismiss(animated: true)
-                navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .introView)
-                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
-            }
-            let onDismissClosure = { [weak self] in
-                guard let self = self else { return }
-                self.dismiss(animated: true)
-            }
-            let blazeHostingController: UIViewController = {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-                    return BlazeCreateCampaignIntroController(onCreateCampaign: onCreateCampaignClosure,
-                                                              onDismiss: onDismissClosure)
-                } else {
-                    return BlazeCampaignIntroController(onStartCampaign: onCreateCampaignClosure,
-                                                        onDismiss: onDismissClosure)
-                }
-            }()
-
-            present(blazeHostingController, animated: true)
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
-        } else {
-            navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .productDetailPromoteButton)
-        }
-    }
-
-    private func navigateToBlazeCampaignCreation(siteID: Int64, siteUrl: String, source: BlazeSource) {
         guard let navigationController else {
             DDLogError("⛔️ Missing parent controller to show Blaze campaign creation form.")
             return
         }
 
         let coordinator = BlazeCampaignCreationCoordinator(
-            siteID: siteID,
-            siteURL: siteUrl,
+            siteID: site.siteID,
+            siteURL: site.url,
             productID: product.productID,
-            source: source,
+            source: .productDetailPromoteButton,
+            shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
             onCampaignCreated: {}
         )

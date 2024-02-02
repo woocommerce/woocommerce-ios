@@ -384,8 +384,13 @@ private extension OrderDetailsViewController {
     @objc private func editOrder() {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
-        let navController = UINavigationController(rootViewController: viewController)
-        present(navController, animated: true)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+            viewController.modalPresentationStyle = .overFullScreen
+            present(viewController, animated: true)
+        } else {
+            let navController = UINavigationController(rootViewController: viewController)
+            present(navController, animated: true)
+        }
 
         let hasMultipleShippingLines = self.viewModel.order.shippingLines.count > 1
         let hasMultipleFeeLines = self.viewModel.order.fees.count > 1

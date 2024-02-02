@@ -25,6 +25,14 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
 
+    /// Whether short description view should be displayed
+    var shouldShowShortDescriptionView: Bool {
+        if isGeneratingDetails {
+            return true
+        }
+        return productShortDescription?.isNotEmpty ?? false
+    }
+
     private let productFeatures: String?
 
     private let siteID: Int64
@@ -37,6 +45,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private var currency: String
     private var currencyFormatter: CurrencyFormatter
 
+    private var detectedLanguage: String?
     private var weightUnit: String?
     private var dimensionUnit: String?
     private let shippingValueLocalizer: ShippingValueLocalizer
@@ -286,6 +295,11 @@ private extension ProductDetailPreviewViewModel {
 
     @MainActor
     func identifyLanguage() async throws -> String {
+        if let detectedLanguage,
+           detectedLanguage.isNotEmpty {
+            return detectedLanguage
+        }
+
         do {
             let productInfo = {
                 guard let features = productFeatures,
@@ -302,6 +316,7 @@ private extension ProductDetailPreviewViewModel {
                     continuation.resume(with: result)
                 }))
             }
+            detectedLanguage = language
             return language
         } catch {
             throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)
@@ -310,14 +325,17 @@ private extension ProductDetailPreviewViewModel {
 
     @MainActor
     func generateProduct(language: String,
-                           tone: AIToneVoice) async throws -> Product {
+                         tone: AIToneVoice) async throws -> Product {
         let existingCategories = categoryResultController.fetchedObjects
         let existingTags = tagResultController.fetchedObjects
 
-        let aiProduct = try await generateAIProduct(language: language,
-                                                    tone: tone,
-                                                    existingCategories: existingCategories,
-                                                    existingTags: existingTags)
+        let aiProduct: AIProduct = try await {
+            let generatedProduct = try await generateAIProduct(language: language,
+                                                               tone: tone,
+                                                               existingCategories: existingCategories,
+                                                               existingTags: existingTags)
+            return useGivenValueIfNameEmpty(generatedProduct)
+        }()
 
         var categories = [ProductCategory]()
         aiProduct.categories.forEach { aiCategory in
@@ -373,6 +391,14 @@ private extension ProductDetailPreviewViewModel {
                 continuation.resume(with: result)
             }))
         }
+    }
+
+    func useGivenValueIfNameEmpty(_ aiProduct: AIProduct) -> AIProduct {
+        guard aiProduct.name.isEmpty else {
+            return aiProduct
+        }
+
+        return aiProduct.copy(name: productName)
     }
 }
 

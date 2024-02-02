@@ -63,7 +63,7 @@ struct FullFeatureListView: View {
         .navigationBarItems(leading: Button(action: {
             presentationMode.wrappedValue.dismiss()
         }) {
-            Image(systemName: "chevron.left")
+            Image(systemName: "chevron.backward")
         })
         .background(Color(.secondarySystemBackground))
     }

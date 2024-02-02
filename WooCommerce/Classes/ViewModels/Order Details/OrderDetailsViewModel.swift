@@ -468,10 +468,15 @@ extension OrderDetailsViewModel {
             let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
-            let action = ReceiptAction.retrieveReceipt(order: order) { result in
+            let action = ReceiptAction.retrieveReceipt(order: order) { [weak self] result in
+                guard let self else { return }
                 switch result {
                 case let .success(receipt):
-                    let receiptViewModel = ReceiptViewModel(receipt: receipt)
+                    let orderID = self.order.orderID
+                    let siteName = stores.sessionManager.defaultSite?.name
+                    let receiptViewModel = ReceiptViewModel(receipt: receipt,
+                                                            orderID: orderID,
+                                                            siteName: siteName)
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
                 case let .failure(error):

@@ -54,6 +54,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     private let timeZone: TimeZone
     private let targetOptions: BlazeTargetOptions?
     private let stores: StoresManager
+    private let analytics: Analytics
 
     typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
     private let completionHandler: BlazeBudgetSettingCompletionHandler
@@ -67,6 +68,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
          timeZone: TimeZone = .current,
          targetOptions: BlazeTargetOptions? = nil,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
         self.siteID = siteID
         self.dailyAmount = dailyBudget
@@ -75,14 +77,22 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         self.timeZone = timeZone
         self.targetOptions = targetOptions
         self.stores = stores
+        self.analytics = analytics
         self.completionHandler = onCompletion
 
         observeSettings()
     }
 
+    func didTapApplyDuration() {
+        analytics.track(event: .Blaze.Budget.changedDuration(Int(dayCount)))
+    }
+
     func confirmSettings() {
-        // TODO: track confirmation
-        completionHandler(dailyAmount, Int(dayCount), startDate)
+        let days = Int(dayCount)
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
+        analytics.track(event: .Blaze.Budget.updateTapped(duration: days,
+                                                          totalBudget: totalBudget))
+        completionHandler(dailyAmount, days, startDate)
     }
 
     @MainActor

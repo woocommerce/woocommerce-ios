@@ -7,6 +7,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     private let siteID: Int64
     private let campaignInfo: CreateBlazeCampaign
     private let stores: StoresManager
+    private let analytics: Analytics
     private let completionHandler: () -> Void
 
     private(set) var selectedPaymentMethod: BlazePaymentMethod? {
@@ -78,10 +79,12 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     init(siteID: Int64,
          campaignInfo: CreateBlazeCampaign,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.campaignInfo = campaignInfo
         self.stores = stores
+        self.analytics = analytics
         self.completionHandler = onCompletion
         self.totalAmount = String(format: "$%.0f", campaignInfo.totalBudget)
     }
@@ -107,21 +110,21 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
             DDLogError("⚠️ No payment method found for campaign creation!")
             return
         }
+
+        analytics.track(event: .Blaze.Payment.submitCampaignTapped())
         shouldDisplayCampaignCreationError = false
         isCreatingCampaign = true
         do {
             let updatedDetails = campaignInfo.copy(paymentMethodID: selectedPaymentMethod.id)
             try await requestCampaignCreation(details: updatedDetails)
+            analytics.track(event: .Blaze.Payment.campaignCreationSuccess())
             completionHandler()
         } catch {
             DDLogError("⛔️ Error creating Blaze campaign: \(error)")
+            analytics.track(event: .Blaze.Payment.campaignCreationFailed())
             shouldDisplayCampaignCreationError = true
         }
         isCreatingCampaign = false
-    }
-
-    func cancelCampaignCreation() {
-        // TODO: add tracking
     }
 }
 

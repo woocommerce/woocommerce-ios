@@ -32,12 +32,13 @@ class WooBasicTableViewCell: UITableViewCell {
         configureLabel()
     }
 
-    func configureBackground() {
-        applyDefaultBackgroundStyle()
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+    func configureBackground() {
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Set up the cell selection style

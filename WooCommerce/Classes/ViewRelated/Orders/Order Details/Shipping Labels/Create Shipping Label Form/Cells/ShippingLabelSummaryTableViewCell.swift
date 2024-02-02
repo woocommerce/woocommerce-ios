@@ -125,11 +125,16 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
     @objc private func discountViewTapped() {
         onDiscountTouchUp?()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 private extension ShippingLabelSummaryTableViewCell {
     func configureStyle() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         selectionStyle = .none
         discountImage.image = .infoOutlineImage
         separator.backgroundColor = .systemColor(.separator)

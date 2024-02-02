@@ -15,7 +15,9 @@ struct ReceiptActionCoordinator {
             let action = ReceiptAction.print(order: order, parameters: params) { (result) in
                 switch result {
                 case .success:
-                    analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: countryCode, cardReaderModel: cardReaderModel))
+                    analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: countryCode,
+                                                                                 cardReaderModel: cardReaderModel,
+                                                                                 source: "local"))
                 case .cancel:
                     analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: countryCode,
                                                                                   cardReaderModel: cardReaderModel,

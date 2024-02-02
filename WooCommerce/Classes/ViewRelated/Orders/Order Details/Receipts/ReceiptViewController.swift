@@ -87,6 +87,9 @@ final class ReceiptViewController: UIViewController {
             if let error = error {
                 DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
             } else if isCompleted {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: nil,
+                                                                                            cardReaderModel: nil,
+                                                                                            source: "backend"))
                 self?.dismiss(animated: true)
             }
         })

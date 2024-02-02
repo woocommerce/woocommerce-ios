@@ -22,6 +22,10 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInOrdersTab
 
+    /// Displays the OrderForm side by side with the Product Selector
+    ///
+    case sideBySideViewForOrderForm
+
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -187,4 +191,12 @@ public enum FeatureFlag: Int {
     /// Enables Blaze native campaign creation.
     ///
     case blazei3NativeCampaignCreation
+
+    /// Enables backend receipt generation for all payment methods
+    ///
+    case backendReceipts
+
+    /// Displays the Products tab in a split view
+    ///
+    case splitViewInProductsTab
 }

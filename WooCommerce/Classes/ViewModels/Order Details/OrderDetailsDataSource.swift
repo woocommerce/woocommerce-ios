@@ -104,9 +104,9 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
-    /// Whether the order has a receipt associated.
+    /// Whether the order has a locally-generated receipt associated.
     ///
-    var shouldShowReceipts: Bool = false
+    var orderHasLocalReceipt: Bool = false
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -416,6 +416,8 @@ private extension OrderDetailsDataSource {
             configurePayment(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeReceipt:
             configureSeeReceipt(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeLegacyReceipt:
+            configureSeeLegacyReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
@@ -613,8 +615,18 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        guard featureFlags.isFeatureFlagEnabled(.backendReceipts) else {
+            return
+        }
         cell.setLeftTitleToLinkStyle(true)
         cell.leftText = Titles.seeReceipt
+        cell.rightText = nil
+        cell.hideFootnote()
+    }
+
+    private func configureSeeLegacyReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        cell.setLeftTitleToLinkStyle(true)
+        cell.leftText = Titles.seeLegacyReceipt
         cell.rightText = nil
         cell.hideFootnote()
         cell.hideSeparator()
@@ -1222,8 +1234,15 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
-            if shouldShowReceipts {
-                rows.append(.seeReceipt)
+            switch orderHasLocalReceipt {
+            case true:
+                rows.append(.seeLegacyReceipt)
+            case false:
+                isEligibleForBackendReceipt { isEligible in
+                    if isEligible {
+                        rows.append(.seeReceipt)
+                    }
+                }
             }
 
             if isEligibleForRefund {
@@ -1318,6 +1337,15 @@ extension OrderDetailsDataSource {
         }
 
         return refundFound
+    }
+
+    private func isEligibleForBackendReceipt(completion: @escaping (Bool) -> Void) {
+        guard !isEligibleForPayment else {
+            return completion(false)
+        }
+        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in
+            completion(isEligibleForReceipt)
+        }
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {
@@ -1485,7 +1513,11 @@ extension OrderDetailsDataSource {
         static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
-        static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let seeReceipt = NSLocalizedString(
+            "OrderDetailsDataSource.configureSeeReceipt.button.title",
+            value: "See Receipt",
+            comment: "Text on the button title to see the order's receipt")
+        static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }
 
     enum Icons {
@@ -1636,6 +1668,7 @@ extension OrderDetailsDataSource {
         case payment
         case customerPaid
         case seeReceipt
+        case seeLegacyReceipt
         case refund
         case netAmount
         case subscriptions
@@ -1685,6 +1718,8 @@ extension OrderDetailsDataSource {
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .seeReceipt:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .seeLegacyReceipt:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier

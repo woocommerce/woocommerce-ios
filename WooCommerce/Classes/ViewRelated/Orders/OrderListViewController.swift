@@ -288,6 +288,8 @@ private extension OrderListViewController {
             guard let self = self else { return }
             self.dataSource.apply(snapshot)
 
+            transitionToResultsUpdatedState()
+
             if self.isSplitViewInOrdersTabEnabled, self.splitViewController?.isCollapsed == false {
                 self.checkSelectedItem()
             }

@@ -4,8 +4,6 @@ import struct Yosemite.Site
 
 /// Blaze entry points.
 enum BlazeSource {
-    /// From the product more menu.
-    case productMoreMenu
     /// From the Blaze campaign list
     case campaignList
     /// From the Blaze intro view

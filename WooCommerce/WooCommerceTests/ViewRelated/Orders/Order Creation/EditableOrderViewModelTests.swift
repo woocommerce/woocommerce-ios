@@ -2185,10 +2185,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         let actionError = NSError(domain: "Error", code: 0)
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
+            case .synchronizeProducts:
+                return
             case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
                 onCompletion(.failure(actionError))
             default:
-                XCTFail("Expected failure, got success")
+                XCTFail("Unexpected ProductAction received")
             }
         })
 

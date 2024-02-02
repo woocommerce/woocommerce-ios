@@ -5,10 +5,10 @@ import SwiftUI
 struct BlazeAddParameterView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @ObservedObject private var viewModel: BlazeAddParameterViewModel
+    @StateObject private var viewModel: BlazeAddParameterViewModel
 
     init(viewModel: BlazeAddParameterViewModel) {
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {

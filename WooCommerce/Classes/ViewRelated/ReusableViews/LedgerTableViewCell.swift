@@ -58,6 +58,11 @@ final class LedgerTableViewCell: UITableViewCell {
         configureLabels()
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     /// Configure an order payment summary "table"
     ///
     func configure(with viewModel: OrderPaymentDetailsViewModel) {
@@ -206,7 +211,7 @@ private extension LedgerTableViewCell {
     /// Setup: Cell background
     ///
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Labels

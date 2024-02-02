@@ -287,18 +287,36 @@ private extension AddProductCoordinator {
     /// Presents an action sheet with the option to start product creation with AI
     ///
     func presentActionSheetWithAI() {
-        let controller = AddProductWithAIActionSheetHostingController(onAIOption: { [weak self] in
-            self?.addProductWithAIBottomSheetPresenter?.dismiss {
-                self?.analytics.track(event: .ProductCreationAI.entryPointTapped())
-                self?.addProductWithAIBottomSheetPresenter = nil
-                self?.startProductCreationWithAI()
+        let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
+        let productTypes: [BottomSheetProductType] = [
+            .simple(isVirtual: false),
+            .simple(isVirtual: true),
+            isEligibleForWooSubscriptionProducts ? .subscription : nil,
+            .variable,
+            isEligibleForWooSubscriptionProducts ? .variableSubscription : nil,
+            .grouped,
+            .affiliate].compactMap { $0 }
+
+        let controller = AddProductWithAIActionSheetHostingController(
+            productTypes: productTypes,
+            onAIOption: { [weak self] in
+                self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                    self?.analytics.track(event: .ProductCreationAI.entryPointTapped())
+                    self?.addProductWithAIBottomSheetPresenter = nil
+                    self?.startProductCreationWithAI()
+                }
+            },
+            onProductTypeOption: { [weak self] selectedBottomSheetProductType in
+                self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                    self?.analytics.track(event: .ProductCreation
+                        .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
+                                                creationType: .manual))
+
+                    self?.addProductWithAIBottomSheetPresenter = nil
+                    self?.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
+                }
             }
-        }, onManualOption: { [weak self] in
-            self?.addProductWithAIBottomSheetPresenter?.dismiss {
-                self?.addProductWithAIBottomSheetPresenter = nil
-                self?.presentProductTypeBottomSheet(creationType: .manual)
-            }
-        })
+        )
 
         addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter()
         addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)

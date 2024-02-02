@@ -31,6 +31,7 @@ final class BlazeTargetTopicPickerViewModel: ObservableObject {
     private let locale: Locale
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let analytics: Analytics
     private let onSelection: (Set<BlazeTargetTopic>?) -> Void
 
     init(siteID: Int64,
@@ -38,12 +39,14 @@ final class BlazeTargetTopicPickerViewModel: ObservableObject {
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
          onSelection: @escaping (Set<BlazeTargetTopic>?) -> Void) {
         self.siteID = siteID
         self.selectedTopics = selectedTopics
         self.locale = locale
         self.stores = stores
         self.storageManager = storageManager
+        self.analytics = analytics
         self.onSelection = onSelection
 
         configureResultsController()
@@ -73,6 +76,7 @@ final class BlazeTargetTopicPickerViewModel: ObservableObject {
     }
 
     func confirmSelection() {
+        analytics.track(event: .Blaze.Interest.saveTapped())
         onSelection(selectedTopics)
     }
 }

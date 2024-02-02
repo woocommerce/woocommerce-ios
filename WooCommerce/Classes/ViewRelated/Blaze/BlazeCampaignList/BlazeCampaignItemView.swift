@@ -49,7 +49,7 @@ struct BlazeCampaignItemView: View {
                 Spacer()
 
                 // disclosure indicator
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .foregroundColor(.secondary)
                     .font(.headline)
             }

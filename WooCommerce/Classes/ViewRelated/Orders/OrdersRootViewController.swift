@@ -223,9 +223,14 @@ final class OrdersRootViewController: UIViewController {
             }
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
-            navigationController.present(newOrderNavigationController, animated: true)
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            if featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                viewController.modalPresentationStyle = .overFullScreen
+                navigationController.present(viewController, animated: true)
+            } else {
+                let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+                navigationController.present(newOrderNavigationController, animated: true)
+            }
         } else {
             viewController.hidesBottomBarWhenPushed = true
             navigationController.pushViewController(viewController, animated: true)

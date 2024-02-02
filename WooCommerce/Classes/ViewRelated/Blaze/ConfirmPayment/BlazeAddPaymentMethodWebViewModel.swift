@@ -4,6 +4,7 @@ import Yosemite
 ///
 final class BlazeAddPaymentMethodWebViewModel: ObservableObject {
     typealias Completion = (_ newPaymentMethodID: String) -> Void
+    private let analytics: Analytics
     private let onCompletion: Completion
 
     private let siteID: Int64
@@ -21,10 +22,16 @@ final class BlazeAddPaymentMethodWebViewModel: ObservableObject {
 
     init(siteID: Int64,
          addPaymentMethodInfo: BlazeAddPaymentInfo,
+         analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping Completion) {
         self.siteID = siteID
         self.addPaymentMethodInfo = addPaymentMethodInfo
+        self.analytics = analytics
         self.onCompletion = completion
+    }
+
+    func onAppear() {
+        analytics.track(event: .Blaze.Payment.addPaymentMethodWebViewDisplayed())
     }
 
     func didAddNewPaymentMethod(successURL: URL?) {
@@ -37,6 +44,7 @@ final class BlazeAddPaymentMethodWebViewModel: ObservableObject {
             return
         }
 
+        analytics.track(event: .Blaze.Payment.addPaymentMethodSuccess())
         onCompletion(newPaymentMethodID)
     }
 }

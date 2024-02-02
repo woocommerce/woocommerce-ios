@@ -40,6 +40,7 @@ struct ProductDiscountView: View {
                     DiscountLineDetailsView(viewModel: discountDetailsViewModel)
                     HStack {
                         Image(systemName: "arrow.turn.down.right")
+                            .flipsForRightToLeftLayoutDirection(true)
                             .foregroundColor(.secondary)
                         Text(Localization.discountLabel)
                             .foregroundColor(.secondary)

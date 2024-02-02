@@ -4,7 +4,7 @@ import XCTest
 @testable import Networking
 @testable import Hardware
 
-/// RefundStore Unit Tests
+/// ReceiptStore Unit Tests
 ///
 final class ReceiptStoreTests: XCTestCase {
 
@@ -461,6 +461,59 @@ final class ReceiptStoreTests: XCTestCase {
 
         // Then
         XCTAssertEqual(receiptPrinterService.contentProvided?.orderNote, "This note has a link")
+    }
+
+    func test_retrieveReceipt_when_orderID_matches_route_then_returns_valid_receipt_with_expected_fields() throws {
+        // Given
+        let sampleOrderID: Int64 = 123
+        let mockOrder = Order.fake().copy(orderID: sampleOrderID)
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+        let expectedReceiptURL = "https://mywootestingstore.com/wc/file/transient/7e811be40195b17f82604592ed26b694868807"
+        let expectedReceiptExpirationDate = "2024-01-27"
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/receipt", filename: "receipt")
+
+        // When
+        let expectedResult: Result<Receipt, Error> = waitFor { promise in
+            let action = ReceiptAction.retrieveReceipt(order: mockOrder, onCompletion: { result in
+                promise(result)
+            })
+            receiptStore.onAction(action)
+        }
+
+        // Then
+        let expectedReceipt = try expectedResult.get()
+        assertEqual(expectedReceiptURL, expectedReceipt.receiptURL)
+        assertEqual(expectedReceiptExpirationDate, expectedReceipt.expirationDate)
+    }
+
+    func test_retrieveReceipt_when_orderID_does_not_match_route_then_returns_error() throws {
+        // Given
+        let sampleOrderID: Int64 = 987
+        let mockOrder = Order.fake().copy(orderID: sampleOrderID)
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        network.simulateResponse(requestUrlSuffix: "orders/123/receipt", filename: "receipt")
+
+        // When
+        let expectedResult: Result<Receipt, Error> = waitFor { promise in
+            let action = ReceiptAction.retrieveReceipt(order: mockOrder, onCompletion: { result in
+                promise(result)
+            })
+            receiptStore.onAction(action)
+        }
+
+        // Then
+        let expectedError = expectedResult.failure
+        XCTAssertNotNil(expectedError)
     }
 }
 

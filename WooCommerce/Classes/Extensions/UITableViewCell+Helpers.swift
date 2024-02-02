@@ -12,10 +12,37 @@ extension UITableViewCell {
         return classNameWithoutNamespaces
     }
 
-    /// Applies the default background color
-    ///
-    func applyDefaultBackgroundStyle() {
-        backgroundColor = .listForeground(modal: false)
+    private func defaultBackgroundConfiguration(style: UITableView.Style = .grouped) -> UIBackgroundConfiguration {
+        var backgroundConfiguration: UIBackgroundConfiguration
+
+        if #available(iOS 16.0, *) {
+            backgroundConfiguration = defaultBackgroundConfiguration()
+        } else {
+            if style == .plain {
+                backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
+            }
+            else {
+                backgroundConfiguration = UIBackgroundConfiguration.listGroupedCell()
+            }
+        }
+        return backgroundConfiguration
+    }
+
+    /// Configures the default background configuration
+    func configureDefaultBackgroundConfiguration(style: UITableView.Style = .grouped) {
+        var backgroundConfiguration = defaultBackgroundConfiguration(style: style)
+        backgroundConfiguration.backgroundColor = .listForeground(modal: false)
+        self.backgroundConfiguration = backgroundConfiguration
+    }
+
+    /// Updates the default background configuration
+    func updateDefaultBackgroundConfiguration(using state: UICellConfigurationState, style: UITableView.Style = .grouped) {
+        var backgroundConfiguration = defaultBackgroundConfiguration(style: style).updated(for: state)
+
+        if state.isSelected || state.isHighlighted {
+            backgroundConfiguration.backgroundColor = .listSelectedBackground
+        }
+        self.backgroundConfiguration = backgroundConfiguration
     }
 
     /// Hides the separator for a cell.

@@ -372,13 +372,9 @@ platform :ios do
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
 
-    # Create an intermediate branch
-    new_beta_branch_name = "new_beta/#{build_code_current}"
-    Fastlane::Helper::GitHelper.create_branch(new_beta_branch_name)
-
     push_to_git_remote(tags: false)
 
-    trigger_beta_build(branch_to_build: new_beta_branch_name)
+    trigger_beta_build(branch_to_build: "release/#{release_version_current}")
 
     # Create an intermediate branch
     new_intermediate_branch_name = "merge/#{build_code_current}-into-#{DEFAULT_BRANCH}"

@@ -483,7 +483,7 @@ extension OrderDetailsViewModel {
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
                 case let .failure(error):
-                    debugPrint("\(error)")
+                    ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error))
                 }
             }
             ServiceLocator.stores.dispatch(action)

@@ -2229,6 +2229,17 @@ extension WooAnalyticsEvent {
                                      properties: properties.compactMapValues { $0 })
         }
 
+        /// Tracked when the backend-receipt fails to be fetched.
+        ///   - Parameters:
+        ///     - error: the error to be included in the event properties.
+        ///
+        static func receiptFetchFailed(error: Error) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.receiptSource: "backend"
+            ]
+            return WooAnalyticsEvent(statName: .receiptFetchFailed, properties: properties, error: error)
+        }
+
         enum LearnMoreLinkSource {
             case paymentsMenu
             case paymentMethods

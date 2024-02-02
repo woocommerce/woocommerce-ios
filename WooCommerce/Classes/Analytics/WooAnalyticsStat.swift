@@ -564,6 +564,7 @@ public enum WooAnalyticsStat: String {
     case receiptPrintFailed = "receipt_print_failed"
     case receiptPrintCanceled = "receipt_print_canceled"
     case receiptPrintSuccess = "receipt_print_success"
+    case receiptFetchFailed = "receipt_url_fetching_fails"
 
     // MARK: Payment Events
     //

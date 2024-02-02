@@ -129,7 +129,8 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
 
     func trackReceiptPrintCanceled() {
         analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: configuration.countryCode,
-                                                                      cardReaderModel: connectedReaderModel))
+                                                                      cardReaderModel: connectedReaderModel,
+                                                                      source: "local"))
     }
 
     func trackReceiptPrintFailed(error: Error) {

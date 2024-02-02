@@ -1361,6 +1361,7 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceCardCollectPaymentFlow = "milliseconds_since_card_collect_payment_flow"
             static let siteID = "site_id"
             static let connectionType = "connection_type"
+            static let receiptSource = "source"
         }
 
         static let unknownGatewayID = "unknown"
@@ -2093,9 +2094,10 @@ extension WooAnalyticsEvent {
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.
         /// - Parameter countryCode: the country code of the store.
         ///
-        static func receiptViewTapped(countryCode: CountryCode) -> WooAnalyticsEvent {
+        static func receiptViewTapped(countryCode: CountryCode, source: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptViewTapped,
-                              properties: [Keys.countryCode: countryCode.rawValue])
+                              properties: [Keys.countryCode: countryCode.rawValue,
+                                           Keys.receiptSource: source])
         }
 
         /// Tracked when the user taps on the "Email receipt" button after successfully collecting a payment to email a receipt.

@@ -2105,11 +2105,12 @@ extension WooAnalyticsEvent {
         /// - Parameter countryCode: the country code of the store.
         /// - Parameter cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailTapped(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptEmailTapped(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailTapped,
                               properties: [
-                                Keys.countryCode: countryCode.rawValue,
-                                Keys.cardReaderModel: cardReaderModel
+                                Keys.countryCode: countryCode?.rawValue,
+                                Keys.cardReaderModel: cardReaderModel,
+                                Keys.receiptSource: source
                               ].compactMapValues { $0 })
         }
 

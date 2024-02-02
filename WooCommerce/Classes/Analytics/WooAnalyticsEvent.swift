@@ -2096,10 +2096,10 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptViewTapped(countryCode: CountryCode, source: String) -> WooAnalyticsEvent {
+        static func receiptViewTapped(countryCode: CountryCode, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptViewTapped,
                               properties: [Keys.countryCode: countryCode.rawValue,
-                                           Keys.receiptSource: source])
+                                           Keys.receiptSource: source.rawValue])
         }
 
         /// Tracked when the user taps on the "Email receipt" button after successfully collecting a payment to email a receipt.
@@ -2108,12 +2108,12 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptEmailTapped(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
+        static func receiptEmailTapped(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailTapped,
                               properties: [
                                 Keys.countryCode: countryCode?.rawValue,
                                 Keys.cardReaderModel: cardReaderModel,
-                                Keys.receiptSource: source
+                                Keys.receiptSource: source.rawValue
                               ].compactMapValues { $0 })
         }
 
@@ -2124,12 +2124,12 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptEmailFailed(error: Error, countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
+        static func receiptEmailFailed(error: Error, countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailFailed,
                               properties: [
                                 Keys.countryCode: countryCode?.rawValue,
                                 Keys.cardReaderModel: cardReaderModel,
-                                Keys.receiptSource: source
+                                Keys.receiptSource: source.rawValue
                               ].compactMapValues { $0 },
                               error: error)
         }
@@ -2139,12 +2139,12 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
         ///
-        static func receiptEmailCanceled(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
+        static func receiptEmailCanceled(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailCanceled,
                               properties: [
                                 Keys.countryCode: countryCode?.rawValue,
                                 Keys.cardReaderModel: cardReaderModel,
-                                Keys.receiptSource: source
+                                Keys.receiptSource: source.rawValue
                               ].compactMapValues { $0 })
         }
 
@@ -2154,12 +2154,12 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptEmailSuccess(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
+        static func receiptEmailSuccess(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailSuccess,
                               properties: [
                                 Keys.countryCode: countryCode?.rawValue,
                                 Keys.cardReaderModel: cardReaderModel,
-                                Keys.receiptSource: source
+                                Keys.receiptSource: source.rawValue
                               ].compactMapValues { $0 })
         }
 
@@ -2169,11 +2169,11 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the model type of the card reader.
         ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptPrintTapped(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
+        static func receiptPrintTapped(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
                 Keys.countryCode: countryCode?.rawValue,
                 Keys.cardReaderModel: cardReaderModel,
-                Keys.receiptSource: source
+                Keys.receiptSource: source.rawValue
             ]
             return WooAnalyticsEvent(statName: .receiptPrintTapped,
                                      properties: properties.compactMapValues { $0 })
@@ -2186,11 +2186,11 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the country code of the store.
         ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptPrintFailed(error: Error, countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
+        static func receiptPrintFailed(error: Error, countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
                 Keys.countryCode: countryCode?.rawValue,
                 Keys.cardReaderModel: cardReaderModel,
-                Keys.receiptSource: source
+                Keys.receiptSource: source.rawValue
             ]
             return WooAnalyticsEvent(statName: .receiptPrintFailed,
                                      properties: properties.compactMapValues { $0 },
@@ -2203,11 +2203,11 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the country code of the store.
         ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptPrintCanceled(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
+        static func receiptPrintCanceled(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
                 Keys.countryCode: countryCode?.rawValue,
                 Keys.cardReaderModel: cardReaderModel,
-                Keys.receiptSource: source
+                Keys.receiptSource: source.rawValue
             ]
             return WooAnalyticsEvent(statName: .receiptPrintCanceled,
                                      properties: properties.compactMapValues { $0 })
@@ -2219,11 +2219,11 @@ extension WooAnalyticsEvent {
         ///   - cardReaderModel: the country code of the store.
         ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptPrintSuccess(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
+        static func receiptPrintSuccess(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
                 Keys.countryCode: countryCode?.rawValue,
                 Keys.cardReaderModel: cardReaderModel,
-                Keys.receiptSource: source
+                Keys.receiptSource: source.rawValue
             ]
             return WooAnalyticsEvent(statName: .receiptPrintSuccess,
                                      properties: properties.compactMapValues { $0 })
@@ -2235,9 +2235,14 @@ extension WooAnalyticsEvent {
         ///
         static func receiptFetchFailed(error: Error) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
-                Keys.receiptSource: "backend"
+                Keys.receiptSource: ReceiptSource.backend.rawValue
             ]
             return WooAnalyticsEvent(statName: .receiptFetchFailed, properties: properties, error: error)
+        }
+
+        enum ReceiptSource: String {
+            case local
+            case backend
         }
 
         enum LearnMoreLinkSource {

@@ -114,31 +114,31 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
         analytics.track(event: .InPersonPayments
             .receiptEmailTapped(countryCode: configuration.countryCode,
                                 cardReaderModel: connectedReader?.readerType.model ?? "",
-                                source: "local"))
+                                source: .local))
     }
 
     func trackReceiptPrintTapped() {
         analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: configuration.countryCode,
                                                                     cardReaderModel: connectedReaderModel,
-                                                                    source: "local"))
+                                                                    source: .local))
     }
 
     func trackReceiptPrintSuccess() {
         analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: configuration.countryCode,
                                                                      cardReaderModel: connectedReaderModel,
-                                                                     source: "local"))
+                                                                     source: .local))
     }
 
     func trackReceiptPrintCanceled() {
         analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: configuration.countryCode,
                                                                       cardReaderModel: connectedReaderModel,
-                                                                      source: "local"))
+                                                                      source: .local))
     }
 
     func trackReceiptPrintFailed(error: Error) {
         analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error,
                                                                     countryCode: configuration.countryCode,
                                                                     cardReaderModel: connectedReaderModel,
-                                                                    source: "local"))
+                                                                    source: .local))
     }
 }

@@ -71,7 +71,7 @@ final class LegacyReceiptViewModel {
         analytics.track(event: .InPersonPayments
             .receiptEmailTapped(countryCode: countryCode,
                                 cardReaderModel: nil,
-                                source: "local"))
+                                source: .local))
         return content.map { .init(content: $0, order: self.order, storeName: self.stores.sessionManager.defaultSite?.name ?? "") }
             .map { (formData: $0, countryCode: self.countryCode) }
             .eraseToAnyPublisher()

@@ -67,17 +67,17 @@ extension CardPresentPaymentReceiptEmailCoordinator: MFMailComposeViewController
         case .cancelled:
             analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: countryCode,
                                                                           cardReaderModel: cardReaderModel,
-                                                                          source: "local"))
+                                                                          source: .local))
         case .sent, .saved:
             analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: countryCode,
                                                                          cardReaderModel: cardReaderModel,
-                                                                         source: "local"))
+                                                                         source: .local))
         case .failed:
             analytics.track(event: .InPersonPayments
                 .receiptEmailFailed(error: error ?? UnknownEmailError(),
                                     countryCode: countryCode,
                                     cardReaderModel: cardReaderModel,
-                                    source: "local"))
+                                    source: .local))
         @unknown default:
             assertionFailure("MFMailComposeViewController finished with an unknown result type")
         }

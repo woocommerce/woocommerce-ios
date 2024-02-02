@@ -469,7 +469,7 @@ extension OrderDetailsViewModel {
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
-            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: "backend"))
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))
 
             let action = ReceiptAction.retrieveReceipt(order: order) { [weak self] result in
                 guard let self else { return }
@@ -489,7 +489,7 @@ extension OrderDetailsViewModel {
             ServiceLocator.stores.dispatch(action)
         case .seeLegacyReceipt:
             let countryCode = configurationLoader.configuration.countryCode
-            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: "local"))
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .local))
             guard let receipt = receipt else {
                 return
             }

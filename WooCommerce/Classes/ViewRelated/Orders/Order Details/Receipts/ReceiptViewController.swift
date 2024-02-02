@@ -90,10 +90,16 @@ final class ReceiptViewController: UIViewController {
                                                                                             cardReaderModel: nil,
                                                                                             source: "backend"))
                 DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
-            } else if isCompleted {
+            }
+            if isCompleted == true {
                 ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: nil,
                                                                                             cardReaderModel: nil,
                                                                                             source: "backend"))
+                self?.dismiss(animated: true)
+            } else if isCompleted == false {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: nil,
+                                                                                             cardReaderModel: nil,
+                                                                                             source: "backend"))
                 self?.dismiss(animated: true)
             }
         })

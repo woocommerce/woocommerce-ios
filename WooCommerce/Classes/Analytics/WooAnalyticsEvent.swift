@@ -2174,10 +2174,11 @@ extension WooAnalyticsEvent {
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the country code of the store.
         ///
-        static func receiptPrintFailed(error: Error, countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptPrintFailed(error: Error, countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
-                Keys.countryCode: countryCode.rawValue,
-                Keys.cardReaderModel: cardReaderModel
+                Keys.countryCode: countryCode?.rawValue,
+                Keys.cardReaderModel: cardReaderModel,
+                Keys.receiptSource: source
             ]
             return WooAnalyticsEvent(statName: .receiptPrintFailed,
                                      properties: properties.compactMapValues { $0 },

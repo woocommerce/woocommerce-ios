@@ -23,7 +23,10 @@ struct ReceiptActionCoordinator {
                                                                                   cardReaderModel: cardReaderModel,
                                                                                   source: "local"))
                 case .failure(let error):
-                    analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error, countryCode: countryCode, cardReaderModel: cardReaderModel))
+                    analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error,
+                                                                                countryCode: countryCode,
+                                                                                cardReaderModel: cardReaderModel,
+                                                                                source: "local"))
                     DDLogError("⛔️ Failed to print receipt: \(error.localizedDescription)")
                 }
 

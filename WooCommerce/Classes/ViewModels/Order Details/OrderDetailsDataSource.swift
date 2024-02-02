@@ -1239,7 +1239,7 @@ extension OrderDetailsDataSource {
             case true:
                 rows.append(.seeLegacyReceipt)
             case false:
-                ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligible in
+                isEligibleForBackendReceipt { isEligible in
                     if isEligible {
                         rows.append(.seeReceipt)
                     }
@@ -1338,6 +1338,15 @@ extension OrderDetailsDataSource {
         }
 
         return refundFound
+    }
+
+    private func isEligibleForBackendReceipt(completion: @escaping (Bool) -> Void) {
+        guard !isEligibleForPayment else {
+            return completion(false)
+        }
+        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in
+            completion(isEligibleForReceipt)
+        }
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {

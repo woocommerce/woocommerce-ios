@@ -2092,8 +2092,9 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.
-        /// - Parameter countryCode: the country code of the store.
-        /// - Parameter source: whether is a local-generated, or backend-generated receipt.
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptViewTapped(countryCode: CountryCode, source: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptViewTapped,
@@ -2102,8 +2103,10 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the user taps on the "Email receipt" button after successfully collecting a payment to email a receipt.
-        /// - Parameter countryCode: the country code of the store.
-        /// - Parameter cardReaderModel: the model type of the card reader.
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptEmailTapped(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailTapped,
@@ -2119,6 +2122,7 @@ extension WooAnalyticsEvent {
         ///   - error: the error to be included in the event properties.
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
+        ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptEmailFailed(error: Error, countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailFailed,
@@ -2131,8 +2135,9 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the user canceled sending the receipt by email.
-        /// - Parameter countryCode: the country code of the store.
-        /// - Parameter cardReaderModel: the model type of the card reader.
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
         ///
         static func receiptEmailCanceled(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailCanceled,
@@ -2143,7 +2148,10 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the receipt was sent by email.
-        /// - Parameter countryCode: the country code of the store.
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptEmailSuccess(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailSuccess,
@@ -2155,8 +2163,10 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the user tapped on the button to print a receipt.
-        /// - Parameter countryCode: the country code of the store.
-        /// - Parameter source: whether is a local-generated, or backend-generated receipt.
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptPrintTapped(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
@@ -2173,6 +2183,7 @@ extension WooAnalyticsEvent {
         ///   - error: the error to be included in the event properties.
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the country code of the store.
+        ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptPrintFailed(error: Error, countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
@@ -2186,8 +2197,10 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the user canceled printing the receipt.
-        /// - Parameter countryCode: the country code of the store.
-        /// - Parameter cardReaderModel: the country code of the store.
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the country code of the store.
+        ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptPrintCanceled(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
@@ -2200,8 +2213,10 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the receipt was successfully sent to the printer. iOS won't guarantee that the receipt has actually printed.
-        /// - Parameter countryCode: the country code of the store.
-        /// - Parameter cardReaderModel: the country code of the store.
+        /// - Parameters:
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the country code of the store.
+        ///   - source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptPrintSuccess(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [

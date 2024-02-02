@@ -273,11 +273,24 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         updatedQueryItems.append(.init(name: "frame-nonce", value: nonce))
         permalink.queryItems = updatedQueryItems
 
-        let configuration = WebViewControllerConfiguration(url: permalink.url)
-        configuration.secureInteraction = true
-        let webKitVC = WebKitViewController(configuration: configuration)
-        let nc = WooNavigationController(rootViewController: webKitVC)
-        present(nc, animated: true)
+
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        if site.isWordPressComStore {
+            // use AuthenticatedWebViewController so that preview can be seen on Coming Soon sites.
+            let webViewModel = WPComPreviewWebViewModel(previewURL: permalink.url)
+            let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
+            let nc = WooNavigationController(rootViewController: webViewController)
+            present(nc, animated: true)
+        }
+        else {
+            let configuration = WebViewControllerConfiguration(url: permalink.url)
+            configuration.secureInteraction = true
+            let webKitVC = WebKitViewController(configuration: configuration)
+            let nc = WooNavigationController(rootViewController: webKitVC)
+            present(nc, animated: true)
+        }
     }
 
     // MARK: Navigation actions

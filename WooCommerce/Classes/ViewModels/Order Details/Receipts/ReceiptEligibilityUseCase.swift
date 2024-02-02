@@ -43,8 +43,7 @@ final class ReceiptEligibilityUseCase {
 private extension ReceiptEligibilityUseCase {
     enum Constants {
         static let wcPluginName = "WooCommerce"
-        // Minimum version is higher on purpose, temporary value until we actually know the version.
-        static let wcPluginMinimumVersion = "9.0.0"
+        static let wcPluginMinimumVersion = "8.7.0"
         static let wcPluginDevVersion = "8.6.0-dev-7625495467-gf50cc6b"
     }
 }

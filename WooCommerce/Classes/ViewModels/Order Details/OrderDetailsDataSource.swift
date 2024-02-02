@@ -1507,7 +1507,7 @@ extension OrderDetailsDataSource {
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString(
             "OrderDetailsDataSource.configureSeeReceipt.button.title",
-            value: "[Debug] See Backed Receipt",
+            value: "[Debug] See Backend Receipt",
             comment: "Text on the button title to see the order's receipt")
         static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }

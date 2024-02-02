@@ -52,6 +52,9 @@ final class ReceiptViewController: UIViewController {
     }
 
     @objc private func printReceipt() {
+        ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: nil,
+                                                                                   cardReaderModel: nil,
+                                                                                   source: "backend"))
         guard let url = URL(string: viewModel.receiptURLString) else {
             return
         }

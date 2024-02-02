@@ -2093,6 +2093,7 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.
         /// - Parameter countryCode: the country code of the store.
+        /// - Parameter source: whether is a local-generated, or backend-generated receipt.
         ///
         static func receiptViewTapped(countryCode: CountryCode, source: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptViewTapped,
@@ -2152,11 +2153,13 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the user tapped on the button to print a receipt.
         /// - Parameter countryCode: the country code of the store.
+        /// - Parameter source: whether is a local-generated, or backend-generated receipt.
         ///
-        static func receiptPrintTapped(countryCode: CountryCode, cardReaderModel: String?) -> WooAnalyticsEvent {
+        static func receiptPrintTapped(countryCode: CountryCode?, cardReaderModel: String?, source: String) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
-                Keys.countryCode: countryCode.rawValue,
-                Keys.cardReaderModel: cardReaderModel
+                Keys.countryCode: countryCode?.rawValue,
+                Keys.cardReaderModel: cardReaderModel,
+                Keys.receiptSource: source
             ]
             return WooAnalyticsEvent(statName: .receiptPrintTapped,
                                      properties: properties.compactMapValues { $0 })

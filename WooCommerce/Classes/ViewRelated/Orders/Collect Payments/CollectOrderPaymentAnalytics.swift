@@ -118,7 +118,8 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
 
     func trackReceiptPrintTapped() {
         analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: configuration.countryCode,
-                                                                    cardReaderModel: connectedReaderModel))
+                                                                    cardReaderModel: connectedReaderModel,
+                                                                    source: "local"))
     }
 
     func trackReceiptPrintSuccess() {

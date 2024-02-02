@@ -52,20 +52,37 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
+        let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
+        self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil,
+                                                             previousPeriodStats: nil,
+                                                             webReportURL: AnalyticsHubWebReport.getUrl(for: .revenue,
+                                                                                                        timeRange: selectedType,
+                                                                                                        storeAdminURL: storeAdminURL))
+        self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil,
+                                                           previousPeriodStats: nil,
+                                                           webReportURL: AnalyticsHubWebReport.getUrl(for: .orders,
+                                                                                                      timeRange: selectedType,
+                                                                                                      storeAdminURL: storeAdminURL))
+        self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil,
+                                                                         previousPeriodStats: nil,
+                                                                         webReportURL: AnalyticsHubWebReport.getUrl(for: .products,
+                                                                                                                    timeRange: selectedType,
+                                                                                                                    storeAdminURL: storeAdminURL))
+
         bindViewModelsWithData()
     }
 
     /// Revenue Card ViewModel
     ///
-    @Published var revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var revenueCard: AnalyticsReportCardViewModel
 
     /// Orders Card ViewModel
     ///
-    @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var ordersCard: AnalyticsReportCardViewModel
 
     /// Products Stats Card ViewModel
     ///
-    @Published var productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var productsStatsCard: AnalyticsProductsStatsCardViewModel
 
     /// Items Sold Card ViewModel
     ///
@@ -351,9 +368,15 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
-                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats,
+                                                                     previousPeriodStats: previousOrderStats,
+                                                                     webReportURL: analyticsReportURL(for: .revenue))
+                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats,
+                                                                   previousPeriodStats: previousOrderStats,
+                                                                   webReportURL: analyticsReportURL(for: .orders))
+                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats,
+                                                                                 previousPeriodStats: previousOrderStats,
+                                                                                 webReportURL: analyticsReportURL(for: .products))
 
             }.store(in: &subscriptions)
 
@@ -388,7 +411,9 @@ private extension AnalyticsHubViewModel {
             }.store(in: &subscriptions)
     }
 
-    static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+    static func revenueCard(currentPeriodStats: OrderStatsV4?,
+                            previousPeriodStats: OrderStatsV4?,
+                            webReportURL: URL?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
 
         return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
@@ -403,10 +428,13 @@ private extension AnalyticsHubViewModel {
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
-                                            syncErrorMessage: Localization.RevenueCard.noRevenue)
+                                            syncErrorMessage: Localization.RevenueCard.noRevenue,
+                                            reportURL: webReportURL)
     }
 
-    static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+    static func ordersCard(currentPeriodStats: OrderStatsV4?,
+                           previousPeriodStats: OrderStatsV4?,
+                           webReportURL: URL?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
 
         return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
@@ -422,13 +450,15 @@ private extension AnalyticsHubViewModel {
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
-                                            syncErrorMessage: Localization.OrderCard.noOrders)
+                                            syncErrorMessage: Localization.OrderCard.noOrders,
+                                            reportURL: webReportURL)
     }
 
     /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
     ///
     static func productsStatsCard(currentPeriodStats: OrderStatsV4?,
-                                  previousPeriodStats: OrderStatsV4?) -> AnalyticsProductsStatsCardViewModel {
+                                  previousPeriodStats: OrderStatsV4?,
+                                  webReportURL: URL?) -> AnalyticsProductsStatsCardViewModel {
         let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
@@ -436,7 +466,8 @@ private extension AnalyticsHubViewModel {
         return AnalyticsProductsStatsCardViewModel(itemsSold: itemsSold,
                                                    delta: itemsSoldDelta,
                                                    isRedacted: false,
-                                                   showStatsError: showStatsError)
+                                                   showStatsError: showStatsError,
+                                                   reportURL: webReportURL)
     }
 
     /// Helper function to create a `AnalyticsItemsSoldViewModel` from the fetched stats.
@@ -492,6 +523,12 @@ private extension AnalyticsHubViewModel {
             usageTracksEventEmitter.interacted()
             analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
         })
+    }
+
+    /// Gets the URL for the provided analytics report type, based on the currently selected time range
+    ///
+    func analyticsReportURL(for report: AnalyticsHubWebReport.ReportType) -> URL? {
+        return AnalyticsHubWebReport.getUrl(for: report, timeRange: timeRangeSelectionType, storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
     }
 }
 

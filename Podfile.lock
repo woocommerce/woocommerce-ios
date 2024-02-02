@@ -70,8 +70,8 @@ DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.1.0)
-  - WordPress-Aztec-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `4049aa539ff4d0f3ef304a16d002ad3470c03720`)
-  - WordPress-Editor-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `4049aa539ff4d0f3ef304a16d002ad3470c03720`)
+  - WordPress-Aztec-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `950c7bc1bf98326986f10cccb2715ad86976f0fd`)
+  - WordPress-Editor-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `950c7bc1bf98326986f10cccb2715ad86976f0fd`)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `6312d0a91e709a4bae017e04f70e520199928928`)
   - WordPressShared (~> 2.1)
   - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, commit `a0248ba6dabaed1d493416fd1273aa6718c76331`)
@@ -111,10 +111,10 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPress-Aztec-iOS:
-    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :commit: 950c7bc1bf98326986f10cccb2715ad86976f0fd
     :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
   WordPress-Editor-iOS:
-    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :commit: 950c7bc1bf98326986f10cccb2715ad86976f0fd
     :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
   WordPressAuthenticator:
     :commit: 6312d0a91e709a4bae017e04f70e520199928928
@@ -128,10 +128,10 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   WordPress-Aztec-iOS:
-    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :commit: 950c7bc1bf98326986f10cccb2715ad86976f0fd
     :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
   WordPress-Editor-iOS:
-    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :commit: 950c7bc1bf98326986f10cccb2715ad86976f0fd
     :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
   WordPressAuthenticator:
     :commit: 6312d0a91e709a4bae017e04f70e520199928928
@@ -176,6 +176,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: f077dcc460d553950b5bf8664a2f02e4a5577eac
+PODFILE CHECKSUM: c50079091c181e58300147498f7da908f851f899
 
 COCOAPODS: 1.14.0

@@ -1,3 +1,4 @@
+import Experiments
 import UIKit
 import SwiftUI
 import WordPressUI
@@ -10,6 +11,10 @@ import class AutomatticTracks.CrashLogging
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
 final class ProductsViewController: UIViewController, GhostableViewController {
+    enum NavigationContentType {
+        case productForm(product: Product)
+        case other(viewController: UIViewController)
+    }
 
     let viewModel: ProductListViewModel
 
@@ -193,15 +198,25 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var swipeActionsGlanced = false
 
+    private let isSplitViewEnabled: Bool
+    private let navigationControllerToAddProduct: UINavigationController
+    private let navigateToContent: (NavigationContentType) -> Void
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - View Lifecycle
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         navigationControllerToAddProduct: UINavigationController,
+         navigateToContent: @escaping (NavigationContentType) -> Void) {
         self.siteID = siteID
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
+        self.isSplitViewEnabled = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
+        self.navigationControllerToAddProduct = navigationControllerToAddProduct
+        self.navigateToContent = navigateToContent
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTabBarItem()
@@ -331,7 +346,7 @@ private extension ProductsViewController {
     func addProduct(sourceBarButtonItem: UIBarButtonItem? = nil,
                     sourceView: UIView? = nil,
                     isFirstProduct: Bool) {
-        guard let navigationController = navigationController, sourceBarButtonItem != nil || sourceView != nil else {
+        guard sourceBarButtonItem != nil || sourceView != nil else {
             return
         }
 
@@ -341,13 +356,13 @@ private extension ProductsViewController {
             coordinatingController = AddProductCoordinator(siteID: siteID,
                                                            source: source,
                                                            sourceBarButtonItem: sourceBarButtonItem,
-                                                           sourceNavigationController: navigationController,
+                                                           sourceNavigationController: navigationControllerToAddProduct,
                                                            isFirstProduct: isFirstProduct)
         } else if let sourceView = sourceView {
             coordinatingController = AddProductCoordinator(siteID: siteID,
                                                            source: source,
                                                            sourceView: sourceView,
-                                                           sourceNavigationController: navigationController,
+                                                           sourceNavigationController: navigationControllerToAddProduct,
                                                            isFirstProduct: isFirstProduct)
         } else {
             fatalError("No source view for adding a product")
@@ -1025,9 +1040,15 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
-        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack, forceReadOnly: false) { [weak self] viewController in
-            self?.navigationController?.pushViewController(viewController, animated: true)
+        guard isSplitViewEnabled else {
+            ProductDetailsFactory.productDetails(product: product,
+                                                 presentationStyle: .navigationStack,
+                                                 forceReadOnly: false) { [weak self] viewController in
+                self?.navigationController?.pushViewController(viewController, animated: true)
+            }
+            return
         }
+        navigateToContent(.productForm(product: product))
     }
 }
 

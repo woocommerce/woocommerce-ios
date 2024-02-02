@@ -5,9 +5,9 @@ import Yosemite
 ///
 final class ProductsSplitViewWrapperController: UIViewController {
     private let siteID: Int64
-
+    private lazy var coordinator: ProductsSplitViewCoordinator = ProductsSplitViewCoordinator(siteID: siteID,
+                                                                                              splitViewController: productsSplitViewController)
     private lazy var productsSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
-    private lazy var productsViewController = ProductsViewController(siteID: siteID)
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -21,8 +21,8 @@ final class ProductsSplitViewWrapperController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureSplitView()
         configureChildViewController()
+        coordinator.start()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -38,12 +38,6 @@ private extension ProductsSplitViewWrapperController {
 }
 
 private extension ProductsSplitViewWrapperController {
-    func configureSplitView() {
-        let productsNavigationController = WooTabNavigationController()
-        productsNavigationController.viewControllers = [productsViewController]
-        productsSplitViewController.setViewController(productsNavigationController, for: .primary)
-    }
-
     func configureTabBarItem() {
         tabBarItem.title = Localization.tabTitle
         tabBarItem.image = .productImage

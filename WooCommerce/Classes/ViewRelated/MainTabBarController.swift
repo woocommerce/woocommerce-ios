@@ -562,7 +562,9 @@ private extension MainTabBarController {
         if isProductsSplitViewFeatureFlagOn {
             productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: siteID)
         } else {
-            productsNavigationController.viewControllers = [ProductsViewController(siteID: siteID)]
+            productsNavigationController.viewControllers = [ProductsViewController(siteID: siteID,
+                                                                                   navigationControllerToAddProduct: productsNavigationController,
+                                                                                   navigateToContent: { _ in })]
         }
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.

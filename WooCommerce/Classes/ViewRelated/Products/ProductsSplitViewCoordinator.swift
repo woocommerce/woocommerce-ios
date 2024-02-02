@@ -36,6 +36,15 @@ private extension ProductsSplitViewCoordinator {
                 showSecondaryView(viewController, replacesNavigationStack: false)
         }
     }
+
+    func showEmptyView() {
+        let config = EmptyStateViewController.Config.simple(
+            message: .init(string: Localization.emptyViewMessage),
+            image: .emptyProductsTabImage
+        )
+        let emptyStateViewController = EmptyStateViewController(style: .basic, configuration: config)
+        showSecondaryView(emptyStateViewController, replacesNavigationStack: true)
+    }
 }
 
 private extension ProductsSplitViewCoordinator {
@@ -56,5 +65,16 @@ private extension ProductsSplitViewCoordinator {
         splitViewController.setViewController(primaryNavigationController, for: .primary)
 
         splitViewController.setViewController(secondaryNavigationController, for: .secondary)
+        showEmptyView()
+    }
+}
+
+private extension ProductsSplitViewCoordinator {
+    private enum Localization {
+        static let emptyViewMessage = NSLocalizedString(
+            "productsTab.emptySecondaryView.message",
+            value: "No product selected",
+            comment: "Message on the secondary view of the products tab split view before any product is selected."
+        )
     }
 }

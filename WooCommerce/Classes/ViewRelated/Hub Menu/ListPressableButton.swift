@@ -18,34 +18,21 @@ struct ListPressableButton<Label: View>: View {
             action()
         } label: {
             label()
+                .contentShape(Rectangle())
         }
-        .buttonStyle(PressableButtonStyle(onPressed: {
-            pressed = true
-        }, onReleased: {
-            pressed = false
-        }))
+        .buttonStyle(PressableButtonStyle(pressed: $pressed))
         .listRowBackground(pressed ? listRowPressedBackgroundColor : listRowBackgroundColor)
     }
 }
 
-// solution from https://stackoverflow.com/a/71714195
+// solution based from https://stackoverflow.com/a/71714195
 struct PressableButtonStyle: ButtonStyle {
-    let onPressed: () -> Void
-    let onReleased: () -> Void
-    @State private var isPressedWrapper: Bool = false {
-        didSet {
-            // new value is pressed, old value is not pressed -> switching to pressed state
-            if isPressedWrapper && !oldValue {
-                onPressed()
-            }
-            // new value is not pressed, old value is pressed -> switching to unpressed state
-            else if oldValue && !isPressedWrapper {
-                onReleased()
-            }
-        }
-    }
+    @Binding var pressed: Bool
+
     func makeBody(configuration: Self.Configuration) -> some View {
         return configuration.label
-            .onChange(of: configuration.isPressed, perform: { newValue in isPressedWrapper = newValue })
+            .onChange(of: configuration.isPressed, perform: { newValue in
+                pressed = newValue
+            })
     }
 }

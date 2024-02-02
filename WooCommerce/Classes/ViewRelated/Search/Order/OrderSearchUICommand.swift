@@ -80,7 +80,9 @@ final class OrderSearchUICommand: SearchUICommand {
         let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: model))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+            order: model,
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 
     /// Removes the `#` from the start of the search keyword, if present.

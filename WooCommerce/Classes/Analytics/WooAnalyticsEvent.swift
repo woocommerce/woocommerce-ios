@@ -558,14 +558,34 @@ extension WooAnalyticsEvent {
             static let usesGiftCard = "use_gift_card"
             static let taxStatus = "tax_status"
             static let expanded = "expanded"
+            static let horizontalSizeClass = "horizontal_size_class"
         }
 
-        static func orderOpen(order: Order) -> WooAnalyticsEvent {
+        static func ordersSelected(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+            return WooAnalyticsEvent(statName: .ordersSelected,
+                                     properties: [
+                                        Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
+                                     ])
+        }
+
+        static func ordersReselected(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+            return WooAnalyticsEvent(statName: .ordersReselected,
+                                     properties: [
+                                        Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
+                                     ])
+        }
+
+        static func orderOpen(order: Order,
+                              horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             let customFieldsSize = order.customFields.map { $0.value.utf8.count }.reduce(0, +) // Total byte size of custom field values
-            return WooAnalyticsEvent(statName: .orderOpen, properties: ["id": order.orderID,
-                                                                        "status": order.status.rawValue,
-                                                                        "custom_fields_count": Int64(order.customFields.count),
-                                                                        "custom_fields_size": Int64(customFieldsSize)])
+            return WooAnalyticsEvent(statName: .orderOpen, 
+                                     properties: [
+                                        "id": order.orderID,
+                                        "status": order.status.rawValue,
+                                        "custom_fields_count": Int64(order.customFields.count),
+                                        "custom_fields_size": Int64(customFieldsSize),
+                                        Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
+                                     ])
         }
 
         static func orderAddNew() -> WooAnalyticsEvent {
@@ -738,7 +758,8 @@ extension WooAnalyticsEvent {
                                             hasCustomerDetails: Bool,
                                             hasFees: Bool,
                                             hasShippingMethod: Bool,
-                                            products: [Product]) -> WooAnalyticsEvent {
+                                            products: [Product],
+                                            horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
@@ -746,7 +767,8 @@ extension WooAnalyticsEvent {
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
                 Keys.hasShippingMethod: hasShippingMethod,
-                Keys.productTypes: productTypes(order: order, products: products)
+                Keys.productTypes: productTypes(order: order, products: products),
+                Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
             ])
         }
 
@@ -757,7 +779,8 @@ extension WooAnalyticsEvent {
                                                       hasCustomerDetails: Bool,
                                                       hasFees: Bool,
                                                       hasShippingMethod: Bool,
-                                                      products: [Product]) -> WooAnalyticsEvent {
+                                                      products: [Product],
+                                                      horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped, properties: [
                 Keys.flow: Flow.creation.rawValue,
                 Keys.orderStatus: status.rawValue,
@@ -766,7 +789,8 @@ extension WooAnalyticsEvent {
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
                 Keys.hasShippingMethod: hasShippingMethod,
-                Keys.productTypes: productTypes(order: order, products: products)
+                Keys.productTypes: productTypes(order: order, products: products),
+                Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
             ])
         }
 

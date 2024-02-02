@@ -529,7 +529,7 @@ platform :ios do
 
     # Wrap up
     version = release_version_current
-    removebranchprotection(
+    remove_branch_protection(
       repository: GITHUB_REPO,
       branch: "release/#{version}"
     )

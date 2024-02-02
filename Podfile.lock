@@ -70,7 +70,8 @@ DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.1.0)
-  - WordPress-Editor-iOS (~> 1.19.9)
+  - WordPress-Aztec-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `4049aa539ff4d0f3ef304a16d002ad3470c03720`)
+  - WordPress-Editor-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `4049aa539ff4d0f3ef304a16d002ad3470c03720`)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `6312d0a91e709a4bae017e04f70e520199928928`)
   - WordPressShared (~> 2.1)
   - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, commit `a0248ba6dabaed1d493416fd1273aa6718c76331`)
@@ -97,8 +98,6 @@ SPEC REPOS:
     - StripeTerminal
     - SVProgressHUD
     - UIDeviceIdentifier
-    - WordPress-Aztec-iOS
-    - WordPress-Editor-iOS
     - WordPressShared
     - Wormholy
     - wpxmlrpc
@@ -111,6 +110,12 @@ SPEC REPOS:
     - ZendeskSupportSDK
 
 EXTERNAL SOURCES:
+  WordPress-Aztec-iOS:
+    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
+  WordPress-Editor-iOS:
+    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
   WordPressAuthenticator:
     :commit: 6312d0a91e709a4bae017e04f70e520199928928
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
@@ -122,6 +127,12 @@ EXTERNAL SOURCES:
     :git: https://github.com/wordpress-mobile/MediaPicker-iOS.git
 
 CHECKOUT OPTIONS:
+  WordPress-Aztec-iOS:
+    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
+  WordPress-Editor-iOS:
+    :commit: 4049aa539ff4d0f3ef304a16d002ad3470c03720
+    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
   WordPressAuthenticator:
     :commit: 6312d0a91e709a4bae017e04f70e520199928928
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
@@ -165,6 +176,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 38eabe4bae46614b61ebe9f1d9b7b152a0bcf589
+PODFILE CHECKSUM: f077dcc460d553950b5bf8664a2f02e4a5577eac
 
 COCOAPODS: 1.14.0

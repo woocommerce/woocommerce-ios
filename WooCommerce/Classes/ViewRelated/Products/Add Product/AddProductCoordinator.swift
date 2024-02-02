@@ -287,23 +287,18 @@ private extension AddProductCoordinator {
     /// Presents an action sheet with the option to start product creation with AI
     ///
     func presentActionSheetWithAI() {
-        // Make use of ProductTypeBottomSheetListSelectorCommand to build the list of options to be shown inside the
-        // SwiftUI-based AI action sheet.
-        // The `ProductTypeBottomSheetListSelectorCommand`'s `selected` and `onSelection` parameters are intentionally set
-        // to empty, since selection handling is done separately inside `AddProductWithAIActionSheetHostingController`'s
-        // `onProductTypeOption` parameter below.
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { _ in }
         let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
-        command.data = [.simple(isVirtual: false),
-                        .simple(isVirtual: true),
-                        isEligibleForWooSubscriptionProducts ? .subscription : nil,
-                        .variable,
-                        isEligibleForWooSubscriptionProducts ? .variableSubscription : nil,
-                        .grouped,
-                        .affiliate].compactMap { $0 }
+        let productTypes: [BottomSheetProductType] = [
+            .simple(isVirtual: false),
+            .simple(isVirtual: true),
+            isEligibleForWooSubscriptionProducts ? .subscription : nil,
+            .variable,
+            isEligibleForWooSubscriptionProducts ? .variableSubscription : nil,
+            .grouped,
+            .affiliate].compactMap { $0 }
 
         let controller = AddProductWithAIActionSheetHostingController(
-            command: command,
+            productTypes: productTypes,
             onAIOption: { [weak self] in
                 self?.addProductWithAIBottomSheetPresenter?.dismiss {
                     self?.analytics.track(event: .ProductCreationAI.entryPointTapped())

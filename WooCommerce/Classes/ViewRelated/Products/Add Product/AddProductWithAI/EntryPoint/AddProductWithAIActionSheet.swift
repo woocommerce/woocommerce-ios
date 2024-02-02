@@ -3,11 +3,11 @@ import SwiftUI
 /// Hosting controller for `AddProductWithAIActionSheet`.
 ///
 final class AddProductWithAIActionSheetHostingController: UIHostingController<AddProductWithAIActionSheet> {
-    init(command: ProductTypeBottomSheetListSelectorCommand,
+    init(productTypes: [BottomSheetProductType],
          onAIOption: @escaping () -> Void,
          onProductTypeOption: @escaping (BottomSheetProductType) -> Void) {
 
-        let rootView = AddProductWithAIActionSheet(command: command,
+        let rootView = AddProductWithAIActionSheet(productTypes: productTypes,
                                                    onAIOption: onAIOption,
                                                    onProductTypeOption: onProductTypeOption)
         super.init(rootView: rootView)
@@ -27,14 +27,14 @@ struct AddProductWithAIActionSheet: View {
     @State private var legalURL: URL?
     @State private var isShowingManualOptions: Bool = false
 
-    private let command: ProductTypeBottomSheetListSelectorCommand
+    private let productTypes: [BottomSheetProductType]
     private let onAIOption: () -> Void
     private let onProductTypeOption: (BottomSheetProductType) -> Void
 
-    init(command: ProductTypeBottomSheetListSelectorCommand,
+    init(productTypes: [BottomSheetProductType],
          onAIOption: @escaping () -> Void,
          onProductTypeOption: @escaping (BottomSheetProductType) -> Void) {
-        self.command = command
+        self.productTypes = productTypes
         self.onAIOption = onAIOption
         self.onProductTypeOption = onProductTypeOption
     }
@@ -102,7 +102,7 @@ struct AddProductWithAIActionSheet: View {
                         .subheadlineStyle()
                         .padding(.top, Constants.margin)
 
-                    ManualProductTypeOptions(command: command, onOptionSelected: onProductTypeOption)
+                    ManualProductTypeOptions(productTypes: productTypes, onOptionSelected: onProductTypeOption)
                 }
 
                 Spacer()
@@ -161,6 +161,18 @@ private extension AddProductWithAIActionSheet {
 
 struct AddProductWithAIActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductWithAIActionSheet(command: .init(selected: nil) { _ in }, onAIOption: {}, onProductTypeOption: {_ in })
+        AddProductWithAIActionSheet(
+            productTypes: [
+                .simple(isVirtual: false),
+                .simple(isVirtual: true),
+                .subscription,
+                .variable,
+                .variableSubscription,
+                .grouped,
+                .affiliate
+            ],
+            onAIOption: {},
+            onProductTypeOption: {_ in }
+        )
     }
 }

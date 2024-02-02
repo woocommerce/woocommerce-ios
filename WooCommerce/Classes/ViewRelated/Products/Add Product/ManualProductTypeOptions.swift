@@ -3,32 +3,32 @@ import SwiftUI
 /// View to show the manual product type creation options.
 ///
 struct ManualProductTypeOptions: View {
-    private let command: ProductTypeBottomSheetListSelectorCommand
+    private let productTypes: [BottomSheetProductType]
     private let onOptionSelected: (BottomSheetProductType) -> Void
 
-    init(command: ProductTypeBottomSheetListSelectorCommand,
+    init(productTypes: [BottomSheetProductType],
          onOptionSelected: @escaping (BottomSheetProductType) -> Void) {
-        self.command = command
+        self.productTypes = productTypes
         self.onOptionSelected = onOptionSelected
     }
 
     var body: some View {
-        ForEach(command.data) { model in
+        ForEach(productTypes) { productType in
             HStack(alignment: .top, spacing: Constants.margin) {
-                Image(uiImage: model.actionSheetImage)
+                Image(uiImage: productType.actionSheetImage)
                     .font(.title3)
                     .foregroundColor(.secondary)
 
                 VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    Text(model.actionSheetTitle)
+                    Text(productType.actionSheetTitle)
                         .bodyStyle()
-                    Text(model.actionSheetDescription)
+                    Text(productType.actionSheetDescription)
                         .subheadlineStyle()
                 }
                 Spacer()
             }
             .onTapGesture {
-                onOptionSelected(model)
+                onOptionSelected(productType)
             }
         }
     }
@@ -42,5 +42,16 @@ private extension ManualProductTypeOptions {
 }
 
 #Preview {
-    ManualProductTypeOptions(command: .init(selected: nil) { _ in }, onOptionSelected: { _ in })
+    ManualProductTypeOptions(
+        productTypes: [
+            .simple(isVirtual: false),
+            .simple(isVirtual: true),
+            .subscription,
+            .variable,
+            .variableSubscription,
+            .grouped,
+            .affiliate
+        ],
+        onOptionSelected: { _ in }
+    )
 }

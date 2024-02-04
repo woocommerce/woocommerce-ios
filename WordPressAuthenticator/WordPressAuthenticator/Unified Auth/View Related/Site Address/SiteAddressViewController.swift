@@ -481,7 +481,15 @@ private extension SiteAddressViewController {
                         return
                     }
 
-                    return self.displayError(message: Localization.nonExistentSiteError, moveVoiceOverFocus: true)
+                    var message: String?
+
+                    // Use `URLError`'s error message (which usually contains more accuruate description), if the
+                    // error is SSL error.
+                    if let urlError = error as? URLError, urlError.failureURLPeerTrust != nil {
+                        message = urlError.localizedDescription
+                    }
+
+                    return self.displayError(message: message ?? Localization.nonExistentSiteError, moveVoiceOverFocus: true)
                 }
 
                 onCompletion()

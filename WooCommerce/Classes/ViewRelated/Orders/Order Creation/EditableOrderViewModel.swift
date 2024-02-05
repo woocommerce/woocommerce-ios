@@ -83,7 +83,14 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
+        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return false
+        }
+        // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
+        guard !featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return false
+        }
+        return flow == .creation
     }
 
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited

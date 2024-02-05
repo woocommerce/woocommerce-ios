@@ -24,6 +24,7 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         cancellableTask?.cancel()
         cancellableTask = nil
+        imageView.image = nil
     }
 }
 

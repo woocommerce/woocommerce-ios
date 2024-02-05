@@ -9,14 +9,6 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
     var amount: String = ""
     var transactionType: CardPresentTransactionType
 
-    var isEligibleForBackendReceipts: Bool {
-        // TODO: feature flag check is not enough, we need to also confirm is the correct WC version
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backendReceipts) else {
-            return false
-        }
-        return true
-    }
-
     init(transactionType: CardPresentTransactionType) {
         self.transactionType = transactionType
     }
@@ -57,18 +49,13 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
     func success(printReceipt: @escaping () -> Void,
                  emailReceipt: @escaping () -> Void,
                  noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        guard isEligibleForBackendReceipts else {
-            if MFMailComposeViewController.canSendMail() {
-                return CardPresentModalSuccess(printReceipt: printReceipt,
-                                               emailReceipt: emailReceipt,
-                                               noReceiptAction: noReceiptAction)
-            } else {
-                return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
-            }
+        if MFMailComposeViewController.canSendMail() {
+            return CardPresentModalSuccess(printReceipt: printReceipt,
+                                           emailReceipt: emailReceipt,
+                                           noReceiptAction: noReceiptAction)
+        } else {
+            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
         }
-        return CardPresentModalSuccess(printReceipt: printReceipt,
-                                       emailReceipt: emailReceipt,
-                                       noReceiptAction: noReceiptAction)
     }
 
     func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

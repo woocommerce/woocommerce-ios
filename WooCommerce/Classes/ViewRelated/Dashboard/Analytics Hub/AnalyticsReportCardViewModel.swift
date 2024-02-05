@@ -52,6 +52,10 @@ struct AnalyticsReportCardViewModel {
     /// Message to display if there was an error loading the data for the card
     ///
     let syncErrorMessage: String
+
+    /// URL for the corresponding web analytics report
+    ///
+    let reportURL: URL?
 }
 
 extension AnalyticsReportCardViewModel {
@@ -71,7 +75,8 @@ extension AnalyticsReportCardViewModel {
               trailingChartData: [],
               isRedacted: true,
               showSyncError: false,
-              syncErrorMessage: "")
+              syncErrorMessage: "",
+              reportURL: reportURL)
     }
 }
 

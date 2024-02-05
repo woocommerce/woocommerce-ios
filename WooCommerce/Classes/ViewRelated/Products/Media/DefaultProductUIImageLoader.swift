@@ -9,6 +9,11 @@ import Combine
 /// - When updating from an asset to remote Product image, caches the asset image locally to avoid an extra API request
 ///
 final class DefaultProductUIImageLoader: ProductUIImageLoader {
+    enum ImageLoaderError: Error {
+        case invalidURL
+        case unableToLoadImage
+    }
+
     private var imagesByProductImageID: [Int64: UIImage] = [:]
     private let imageService: ImageService
 

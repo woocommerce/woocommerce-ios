@@ -156,9 +156,14 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     case .success(let paymentData):
                         // Handle payment receipt
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-                        self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                 alertProvider: paymentAlertProvider,
-                                                 onCompleted: onCompleted)
+                        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backendReceipts) else {
+                            // Legacy flow:
+                            return self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
+                                                     alertProvider: paymentAlertProvider,
+                                                     onCompleted: onCompleted)
+                        }
+                        // New flow:
+                        self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
                     }
                     onPaymentCompletion()
                 })
@@ -494,10 +499,40 @@ private extension CollectOrderPaymentUseCase {
             onCompleted()
         }
     }
-
-    /// Allow merchants to print or email the payment receipt.
+    /// Allow merchants to print or email backend-generated receipts.
     ///
-    func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters,
+    func presentBackendReceiptAlert(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding, onCompleted: @escaping () -> ()) {
+        alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: {
+            self.paymentOrchestrator.shareOrPrintReceipt(for: self.order, onCompletion: { receipt in
+                let receiptViewModel = ReceiptViewModel(receipt: receipt,
+                                                        orderID: self.order.orderID,
+                                                        siteName: self.stores.sessionManager.defaultSite?.name)
+                let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDismiss: {
+                    onCompleted()
+                })
+                let navigationController = UINavigationController(rootViewController: receiptViewController)
+                self.rootViewController.present(navigationController, animated: true)
+            })
+        }, emailReceipt: {
+            self.paymentOrchestrator.shareOrPrintReceipt(for: self.order, onCompletion: { receipt in
+                let receiptViewModel = ReceiptViewModel(receipt: receipt,
+                                                        orderID: self.order.orderID,
+                                                        siteName: self.stores.sessionManager.defaultSite?.name)
+                let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDismiss: {
+                    onCompleted()
+                })
+                let navigationController = UINavigationController(rootViewController: receiptViewController)
+                self.rootViewController.present(navigationController, animated: true)
+            })
+        }, noReceiptAction: {
+            // Do nothing, confirm the receipt link appears now on OrderDetails
+            onCompleted()
+        }))
+    }
+
+    /// Allow merchants to print or email locally-generated receipts.
+    ///
+    func presentLocalReceiptAlert(receiptParameters: CardPresentReceiptParameters,
                              alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
                              onCompleted: @escaping () -> ()) {
         // Present receipt alert

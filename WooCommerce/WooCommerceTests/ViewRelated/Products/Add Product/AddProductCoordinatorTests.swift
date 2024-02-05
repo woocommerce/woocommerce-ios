@@ -128,7 +128,7 @@ private extension AddProductCoordinatorTests {
         let view = UIView()
         return AddProductCoordinator(siteID: sampleSiteID,
                                      source: source,
-                                     sourceView: view,
+                                     sourceView: .view(view),
                                      sourceNavigationController: navigationController,
                                      storage: storageManager,
                                      addProductWithAIEligibilityChecker: addProductWithAIEligibilityChecker,

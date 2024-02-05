@@ -380,6 +380,9 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs = []
 
         onAllSelectionsCleared?()
+        if syncChangesImmediately {
+            onMultipleSelectionCompleted?(selectedItemsIDs)
+        }
     }
 }
 

@@ -500,29 +500,15 @@ private extension CollectOrderPaymentUseCase {
         }
     }
     /// Allow merchants to print or email backend-generated receipts.
-    ///
+    /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     func presentBackendReceiptAlert(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding, onCompleted: @escaping () -> ()) {
         alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: {
             self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { receipt in
-                let receiptViewModel = ReceiptViewModel(receipt: receipt,
-                                                        orderID: self.order.orderID,
-                                                        siteName: self.stores.sessionManager.defaultSite?.name)
-                let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDismiss: {
-                    onCompleted()
-                })
-                let navigationController = UINavigationController(rootViewController: receiptViewController)
-                self.rootViewController.present(navigationController, animated: true)
+                self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
             })
         }, emailReceipt: {
             self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { receipt in
-                let receiptViewModel = ReceiptViewModel(receipt: receipt,
-                                                        orderID: self.order.orderID,
-                                                        siteName: self.stores.sessionManager.defaultSite?.name)
-                let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDismiss: {
-                    onCompleted()
-                })
-                let navigationController = UINavigationController(rootViewController: receiptViewController)
-                self.rootViewController.present(navigationController, animated: true)
+                self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
             })
         }, noReceiptAction: {
             // Do nothing, confirm the receipt link appears now on OrderDetails
@@ -581,6 +567,22 @@ private extension CollectOrderPaymentUseCase {
     func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {
         stores.dispatch(AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: order.siteID,
                                                                                   cardReaderType: cardReaderType))
+    }
+}
+
+// MARK: Backend receipts presentation
+private extension CollectOrderPaymentUseCase {
+    /// Prepares and presents the backend receipt modally
+    ///
+    func presentBackendReceiptModally(receipt: Receipt, onCompleted: @escaping (() -> Void)) {
+        let receiptViewModel = ReceiptViewModel(receipt: receipt,
+                                                orderID: self.order.orderID,
+                                                siteName: self.stores.sessionManager.defaultSite?.name)
+        let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDismiss: {
+            onCompleted()
+        })
+        let navigationController = UINavigationController(rootViewController: receiptViewController)
+        self.rootViewController.present(navigationController, animated: true)
     }
 }
 

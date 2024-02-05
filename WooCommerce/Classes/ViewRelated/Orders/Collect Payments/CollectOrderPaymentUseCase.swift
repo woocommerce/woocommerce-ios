@@ -503,7 +503,7 @@ private extension CollectOrderPaymentUseCase {
     ///
     func presentBackendReceiptAlert(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding, onCompleted: @escaping () -> ()) {
         alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: {
-            self.paymentOrchestrator.shareOrPrintReceipt(for: self.order, onCompletion: { receipt in
+            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { receipt in
                 let receiptViewModel = ReceiptViewModel(receipt: receipt,
                                                         orderID: self.order.orderID,
                                                         siteName: self.stores.sessionManager.defaultSite?.name)
@@ -514,7 +514,7 @@ private extension CollectOrderPaymentUseCase {
                 self.rootViewController.present(navigationController, animated: true)
             })
         }, emailReceipt: {
-            self.paymentOrchestrator.shareOrPrintReceipt(for: self.order, onCompletion: { receipt in
+            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { receipt in
                 let receiptViewModel = ReceiptViewModel(receipt: receipt,
                                                         orderID: self.order.orderID,
                                                         siteName: self.stores.sessionManager.defaultSite?.name)

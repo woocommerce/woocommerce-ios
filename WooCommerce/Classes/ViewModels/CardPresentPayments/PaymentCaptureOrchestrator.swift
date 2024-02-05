@@ -33,7 +33,7 @@ protocol PaymentCaptureOrchestrating {
 
     func saveReceipt(for order: Order, params: CardPresentReceiptParameters)
 
-    func shareOrPrintReceipt(for order: Order, onCompletion: @escaping (Receipt) -> Void)
+    func presentBackendReceipt(for order: Order, onCompletion: @escaping (Receipt) -> Void)
 }
 
 
@@ -181,17 +181,14 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         stores.dispatch(action)
     }
 
-    func shareOrPrintReceipt(for order: Order, onCompletion: @escaping (Receipt) -> Void) {
+    func presentBackendReceipt(for order: Order, onCompletion: @escaping (Receipt) -> Void) {
         let action = ReceiptAction.retrieveReceipt(order: order) { result in
             switch result {
             case let .success(receipt):
                 onCompletion(receipt)
             case .failure:
-                // TODO: Error handling: This should propagate an error.
-                // Temporary for testing. For sites using non woo-dev version.
-                let fakeReceipt = Receipt(receiptURL: "https://mywootestingstore.mystagingwebsite.com/wc/file/transient/7e820688af25a49c935bd1ea93b7e89c0bd207",
-                                          expirationDate: "2024-02-06")
-                onCompletion(fakeReceipt)
+                // TODO: Error handling. Propagate error.
+                break
             }
         }
         stores.dispatch(action)

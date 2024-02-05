@@ -58,7 +58,6 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
                  emailReceipt: @escaping () -> Void,
                  noReceiptAction: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         guard isEligibleForBackendReceipts else {
-            // Legacy flow:
             if MFMailComposeViewController.canSendMail() {
                 return CardPresentModalSuccess(printReceipt: printReceipt,
                                                emailReceipt: emailReceipt,
@@ -67,7 +66,6 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
                 return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt, noReceiptAction: noReceiptAction)
             }
         }
-        // New flow:
         return CardPresentModalSuccess(printReceipt: printReceipt,
                                        emailReceipt: emailReceipt,
                                        noReceiptAction: noReceiptAction)

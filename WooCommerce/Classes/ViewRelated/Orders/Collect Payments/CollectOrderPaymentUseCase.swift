@@ -157,12 +157,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         // Handle payment receipt
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
                         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backendReceipts) else {
-                            // Legacy flow:
                             return self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
                                                      alertProvider: paymentAlertProvider,
                                                      onCompleted: onCompleted)
                         }
-                        // New flow:
                         self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
                     }
                     onPaymentCompletion()

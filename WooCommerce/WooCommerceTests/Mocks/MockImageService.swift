@@ -24,12 +24,10 @@ final class MockImageService {
 }
 
 extension MockImageService: ImageService {
-
     func retrieveImageFromCache(with url: URL, completion: @escaping ImageCacheRetrievalCompletion) {
         retrieveImageFromCacheCalled = true
         completion(retrieveImageFromCacheCompletionImage)
     }
-
 
     func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?) -> ImageDownloadTask? {
         downloadImageCalled = true

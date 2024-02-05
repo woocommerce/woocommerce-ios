@@ -13,11 +13,12 @@ struct AnalyticsHubWebReport {
     /// Provides the URL for a web analytics report
     /// - Parameters:
     ///   - report: Type of analytics report
-    ///   - period: Time range for the report
+    ///   - timeRange: Time range for the report
     ///   - storeAdminURL: The store's wp-admin URL
+    ///   - timeZone: Timezone used to parse a custom period's start and end date
     ///
     static func getUrl(for report: ReportType,
-                       timeRange: AnalyticsHubTimeRangeSelection.SelectionType?,
+                       timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
                        storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL,
                        timeZone: TimeZone = .siteTimezone) -> URL? {
         guard let storeAdminURL else {
@@ -27,20 +28,18 @@ struct AnalyticsHubWebReport {
         let path = getPath(for: report)
         let defaultReportString = storeAdminURL + "admin.php?page=wc-admin&path=\(path)"
 
-        // Build the web report URL based on the time range
+        // Add the time range to the default report URL
         // Note: the `compare` parameter only applies if the period is also specified
         let period = getPeriod(for: timeRange)
-        switch (timeRange, period) {
-        case let (.custom(startDate, endDate), .some(period)):
+        switch timeRange {
+        case let .custom(startDate, endDate):
             let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
             dateFormatter.timeZone = timeZone
             let after = dateFormatter.string(from: startDate)
             let before = dateFormatter.string(from: endDate)
             return URL(string: defaultReportString + "&period=\(period)&after=\(after)&before=\(before)&compare=previous_period")
-        case let (_, .some(period)):
-            return URL(string: defaultReportString + "&period=\(period)&compare=previous_period")
         default:
-            return URL(string: defaultReportString)
+            return URL(string: defaultReportString + "&period=\(period)&compare=previous_period")
         }
     }
 
@@ -59,7 +58,7 @@ struct AnalyticsHubWebReport {
 
     /// Gets the period parameter for the web report, based on the provided time range
     ///
-    private static func getPeriod(for timeRange: AnalyticsHubTimeRangeSelection.SelectionType?) -> String? {
+    private static func getPeriod(for timeRange: AnalyticsHubTimeRangeSelection.SelectionType) -> String {
         switch timeRange {
         case .custom:
             return "custom"
@@ -83,8 +82,6 @@ struct AnalyticsHubWebReport {
             return "quarter"
         case .yearToDate:
             return "year"
-        default:
-            return nil
         }
     }
 }

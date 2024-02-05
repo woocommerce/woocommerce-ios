@@ -18,7 +18,8 @@ struct AnalyticsHubWebReport {
     ///
     static func getUrl(for report: ReportType,
                        timeRange: AnalyticsHubTimeRangeSelection.SelectionType?,
-                       storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL) -> URL? {
+                       storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL,
+                       timeZone: TimeZone = .siteTimezone) -> URL? {
         guard let storeAdminURL else {
             return nil
         }
@@ -31,8 +32,10 @@ struct AnalyticsHubWebReport {
         let period = getPeriod(for: timeRange)
         switch (timeRange, period) {
         case let (.custom(startDate, endDate), .some(period)):
-            let after = DateFormatter.Defaults.yearMonthDayDateFormatter.string(from: startDate)
-            let before = DateFormatter.Defaults.yearMonthDayDateFormatter.string(from: endDate)
+            let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
+            dateFormatter.timeZone = timeZone
+            let after = dateFormatter.string(from: startDate)
+            let before = dateFormatter.string(from: endDate)
             return URL(string: defaultReportString + "&period=\(period)&after=\(after)&before=\(before)&compare=previous_period")
         case let (_, .some(period)):
             return URL(string: defaultReportString + "&period=\(period)&compare=previous_period")

@@ -39,9 +39,10 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let start = try XCTUnwrap(Date.dateWithISO8601String("2024-01-01T00:00:00Z"))
         let end = try XCTUnwrap(Date.dateWithISO8601String("2024-01-07T00:00:00Z"))
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .custom(start: start, end: end)
+        let timeZone = TimeZone(abbreviation: "GMT") ?? TimeZone.current
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL, timeZone: timeZone)
 
         // Then
         let expectedURL = URL(string: exampleAdminURL + exampleDefaultReport + "&period=custom&after=2024-01-01&before=2024-01-07&compare=previous_period")

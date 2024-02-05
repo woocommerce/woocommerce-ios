@@ -1,7 +1,7 @@
 import UIKit
 @testable import WooCommerce
 
-class MockImageService {
+final class MockImageService {
     private(set) var retrieveImageFromCacheCalled = false
     private var retrieveImageFromCacheCompletionImage: UIImage?
 

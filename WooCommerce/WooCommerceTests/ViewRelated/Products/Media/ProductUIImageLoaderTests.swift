@@ -28,7 +28,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
         super.tearDown()
     }
 
-    func testRequestingImageWithRemoteProductImage() {
+    func testRequestingImageWithRemoteProductImage() async throws {
         let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
         let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoaderProvider: { mockPHAssetImageLoader })
         let productImage = ProductImage(imageID: mockProductImageID,
@@ -38,15 +38,11 @@ final class ProductUIImageLoaderTests: XCTestCase {
                                         name: "woo",
                                         alt: nil)
 
-        let expectation = self.expectation(description: "Wait for image request")
-        _ = imageLoader.requestImage(productImage: productImage) { image in
-            XCTAssertEqual(image, self.testImage)
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        let image = try await imageLoader.requestImage(productImage: productImage)
+        XCTAssertEqual(image, self.testImage)
     }
 
-    func testRequestingImageWithRemoteProductImageFromURLWithSpecialChars() {
+    func testRequestingImageWithRemoteProductImageFromURLWithSpecialChars() async throws {
         let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
         let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoaderProvider: { mockPHAssetImageLoader })
         let productImage = ProductImage(imageID: mockProductImageID,
@@ -56,12 +52,104 @@ final class ProductUIImageLoaderTests: XCTestCase {
                                         name: "woo",
                                         alt: nil)
 
-        let expectation = self.expectation(description: "Wait for image request")
-        _ = imageLoader.requestImage(productImage: productImage) { image in
-            XCTAssertEqual(image, self.testImage)
-            expectation.fulfill()
+        let image = try await imageLoader.requestImage(productImage: productImage)
+        XCTAssertEqual(image, self.testImage)
+    }
+
+    func test_request_image_throws_error_if_product_image_has_invalid_url() async throws {
+        // Given
+        let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
+        let mockImageService = MockImageService()
+        mockImageService.whenRetrieveImageFromCache(thenReturn: nil)
+        mockImageService.whenDownloadImage(thenReturn: UIImage.checkmark)
+        let imageLoader = DefaultProductUIImageLoader(imageService: mockImageService,
+                                                      phAssetImageLoaderProvider: { mockPHAssetImageLoader })
+        let productImage = ProductImage(imageID: mockProductImageID,
+                                        dateCreated: Date(),
+                                        dateModified: Date(),
+                                        src: "invalid_url",
+                                        name: "woo",
+                                        alt: nil)
+
+        // When
+        do {
+            _ = try await imageLoader.requestImage(productImage: productImage)
+        } catch {
+            // Then
+            let error = try XCTUnwrap(error as? DefaultProductUIImageLoader.ImageLoaderError)
+            XCTAssertEqual(error, .invalidURL)
         }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func test_request_image_caches_remote_image() async throws {
+        // Given
+        let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
+        let mockImageService = MockImageService()
+        mockImageService.whenRetrieveImageFromCache(thenReturn: nil)
+        mockImageService.whenDownloadImage(thenReturn: UIImage.checkmark)
+        let imageLoader = DefaultProductUIImageLoader(imageService: mockImageService,
+                                                      phAssetImageLoaderProvider: { mockPHAssetImageLoader })
+        let productImage = ProductImage(imageID: mockProductImageID,
+                                        dateCreated: Date(),
+                                        dateModified: Date(),
+                                        src: imageURL.absoluteString,
+                                        name: "woo",
+                                        alt: nil)
+
+        // When
+        let image = try await imageLoader.requestImage(productImage: productImage)
+
+        // Then
+        XCTAssertTrue(mockImageService.downloadImageCalled)
+        XCTAssertTrue(mockImageService.shouldCacheImageValue)
+    }
+
+    func test_request_image_retrieves_from_cache_if_available() async throws {
+        // Given
+        let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
+        let mockImageService = MockImageService()
+        mockImageService.whenRetrieveImageFromCache(thenReturn: UIImage.checkmark)
+        mockImageService.whenDownloadImage(thenReturn: UIImage.checkmark)
+        let imageLoader = DefaultProductUIImageLoader(imageService: mockImageService,
+                                                      phAssetImageLoaderProvider: { mockPHAssetImageLoader })
+        let productImage = ProductImage(imageID: mockProductImageID,
+                                        dateCreated: Date(),
+                                        dateModified: Date(),
+                                        src: imageURL.absoluteString,
+                                        name: "woo",
+                                        alt: nil)
+
+        // When
+        let image = try await imageLoader.requestImage(productImage: productImage)
+
+        // Then
+        XCTAssertFalse(mockImageService.downloadImageCalled)
+        XCTAssertTrue(mockImageService.retrieveImageFromCacheCalled)
+    }
+
+    func test_request_image_throws_error_if_image_cannot_be_loaded() async throws {
+        // Given
+        let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
+        let mockImageService = MockImageService()
+        mockImageService.whenRetrieveImageFromCache(thenReturn: nil)
+        mockImageService.whenDownloadImage(thenThrow: ImageServiceError.other(error: MockError()))
+        let imageLoader = DefaultProductUIImageLoader(imageService: mockImageService,
+                                                      phAssetImageLoaderProvider: { mockPHAssetImageLoader })
+        let productImage = ProductImage(imageID: mockProductImageID,
+                                        dateCreated: Date(),
+                                        dateModified: Date(),
+                                        src: imageURL.absoluteString,
+                                        name: "woo",
+                                        alt: nil)
+
+        // When
+        do {
+            _ = try await imageLoader.requestImage(productImage: productImage)
+        } catch {
+            // Then
+            let error = try XCTUnwrap(error as? DefaultProductUIImageLoader.ImageLoaderError)
+            XCTAssertEqual(error, .unableToLoadImage)
+        }
     }
 
     func testRequestingImageWithPHAsset() {
@@ -77,3 +165,5 @@ final class ProductUIImageLoaderTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 }
+
+private class MockError: Error {}

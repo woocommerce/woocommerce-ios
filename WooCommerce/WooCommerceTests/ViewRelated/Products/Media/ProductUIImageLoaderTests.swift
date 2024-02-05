@@ -28,7 +28,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
         super.tearDown()
     }
 
-    func testRequestingImageWithRemoteProductImage() async throws {
+    func test_requesting_image_with_remote_product_image() async throws {
         let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
         let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoaderProvider: { mockPHAssetImageLoader })
         let productImage = ProductImage(imageID: mockProductImageID,
@@ -42,7 +42,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
         XCTAssertEqual(image, self.testImage)
     }
 
-    func testRequestingImageWithRemoteProductImageFromURLWithSpecialChars() async throws {
+    func test_requesting_image_with_remote_product_image_from_URL_with_special_chars() async throws {
         let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
         let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoaderProvider: { mockPHAssetImageLoader })
         let productImage = ProductImage(imageID: mockProductImageID,
@@ -152,7 +152,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
         }
     }
 
-    func testRequestingImageWithPHAsset() {
+    func test_requesting_image_with_PHAsset() {
         let asset = PHAsset()
         let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [asset: testImage])
         let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoaderProvider: { mockPHAssetImageLoader })

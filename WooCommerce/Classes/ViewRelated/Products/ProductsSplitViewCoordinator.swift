@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// Coordinates the state of multiple columns (product list and secondary view) based on the secondary view.
 final class ProductsSplitViewCoordinator {
@@ -60,7 +61,7 @@ private extension ProductsSplitViewCoordinator {
                                                            sourceNavigationController: primaryNavigationController,
                                                            isFirstProduct: isFirstProduct,
                                                            navigateToProductForm: { [weak self] viewController in
-            self?.showSecondaryView(viewController: viewController, replacesNavigationStack: replacesNavigationStack)
+            self?.showSecondaryView(viewController: viewController, replacesNavigationStack: true)
         })
         addProductCoordinator.start()
         self.addProductCoordinator = addProductCoordinator

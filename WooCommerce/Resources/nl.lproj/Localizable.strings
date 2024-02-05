@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-20 08:10:24+0000 */
+/* Translation-Revision-Date: 2024-02-02 15:01:59+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -758,9 +758,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alle beoordelingen zijn gemarkeerd als gelezen";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"All set!" = "Helemaal klaar!";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "Alle functies die je nodig hebt, zijn al geïntegreerd";
@@ -2035,6 +2032,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
 "Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem." = "Kan geen verbinding maken. Vereiste XML-RPC-methoden ontbreken op de server. Neem contact op met je hostingprovider om het probleem op te lossen.";
+
+/* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Kan geen verbinding maken. Er is een 403-fout opgetreden tijdens onze poging om het XMLRPC-eindpunt van je site te openen. De app heeft dat nodig om met je site te communiceren. Neem contact op met je hostingprovider om het probleem op te lossen.";
+
+/* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Kan geen verbinding maken. Je host blokkeert POST-aanvragen. De app heeft deze nodig om te communiceren met je site. Neem contact op met je hostingprovider om het probleem op te lossen.";
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Kon tags niet laden.";
@@ -3505,11 +3508,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Aanmelden met Google mislukt.";
 
-/* Confirmation button for the alert after the support request is created. */
-"Got It!" = "Begrepen!";
-
 /* Button title that dismisses the Write with AI tooltip
-   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Ik snap het";
 
@@ -6266,9 +6265,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the report section on the privacy screen */
 "Reports" = "Rapporten";
 
-/* Title for the alert after the support request is created. */
-"Request Sent!" = "Verzoek verstuurd!";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Een terugbetaling aanvragen";
@@ -7156,17 +7152,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "Sorry, de gebruikersnamen moeten ook de letter (a-z) bevatten!";
 
-/* Error message when the app can't create a zendesk identity. */
-"Sorry, we cannot create support requests right now, please try again later." = "Helaas, we kunnen ondersteuningsverzoeken nu niet aanmaken, probeer het later opnieuw.";
-
 /* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
 "Sorry, we could not complete this action, as no active payment was found." = "Excuses, we konden deze actie niet voltooien omdat er geen actieve betaling is gevonden.";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Sorry, we kunnen geen verbinding maken met de lezer. Probeer het nog eens.";
-
-/* Error message when the app can't create a support request. */
-"Sorry, we could not create your support request, please try again later." = "Helaas, we konden je ondersteuningsverzoek niet aanmaken, probeer het later opnieuw.";
 
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "Sorry, we konden Tap to Pay voor iPhone niet opstarten. Controleer je verbinding en probeer het nogmaals.";
@@ -7701,9 +7691,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "De URL heeft geen geldige host.";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "De advertentie is ingediend voor goedkeuring. We sturen je een bevestigingsmail zodra de advertentie is goedgekeurd en wordt verspreid.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Het bedrag wordt niet ondersteund voor Tap to Pay on iPhone. Probeer het met een fysieke lezer of een andere betaalmethode.";
@@ -9588,9 +9575,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error description displayed when plan activation fails after purchasing a plan. */
 "Your subscription is active, but there was an error activating the plan on your store." = "Je abonnement is actief, maar er is een fout opgetreden bij het activeren van het abonnement van je winkel.";
 
-/* Message for the alert after the support request is created. */
-"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Je ondersteuningsverzoek is in goede orde bij ons aangekomen. We zullen zo snel mogelijk via e-mail reageren.";
-
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "Je belastingtarief wordt momenteel berekend op basis van het factuuradres van je klant:";
 
@@ -9639,6 +9623,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Btw rekenen";
+
+/* Label for button to enable Jetpack Stats */
+"analyticsHub.jetpackStatsCTA.buttonLabel" = "Schakel Jetpack-statistieken in";
+
+/* Error shown when Jetpack Stats can't be enabled in the Analytics Hub. */
+"analyticsHub.jetpackStatsCTA.errorNotice" = "We konden Jetpack-statistieken niet inschakelen voor je winkel";
+
+/* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
+"analyticsHub.jetpackStatsCTA.message" = "Schakel Jetpack-statistieken in om de sessie-analyses van je winkel te bekijken.";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.jetpackStatsCTA.title" = "SESSIES";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Annuleren";
@@ -9691,6 +9687,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the product URL destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.productURLLabel" = "De product-URL";
 
+/* Button to save in the Blaze Ad Destination setting screen */
+"blazeAdDestinationSettingView.save" = "Opslaan";
+
 /* Label for the site home destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.siteHomeLabel" = "De startpagina van de site";
 
@@ -9726,6 +9725,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Value input on the Blaze Add Parameter screen */
 "blazeAddParameterView.valueTitle" = "Waarde";
+
+/* Title of the button to dismiss the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.cancelButton" = "Annuleren";
+
+/* Navigation bar title in the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.navigationBarTitle" = "Betaalmethode";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazeAddPaymentWebView.paymentMethodAddedNotice" = "Betaalmethode toegevoegd";
 
 /* Button to apply the changes on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.apply" = "Toepassen";
@@ -9790,8 +9798,63 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "voor %1$d dag";
 
+/* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Annuleren";
+
+/* Button to create a product when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.createProduct" = "Product aanmaken";
+
+/* Message of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.message" = "Je hebt momenteel geen beschikbaar product voor een aanbieding. Wil je nu een product aanmaken?";
+
+/* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.title" = "Geen product gevonden";
+
+/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successCTA" = "Gereed";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successSubtitle" = "We zijn je campagne aan het beoordelen. Deze wordt binnen 24 uur live. Er komen geweldige momenten aan voor jouw omzet!";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successTitle" = "Klaar voor de start!";
+
+/* Button to dismiss the flow on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.cancel" = "Campagne annuleren";
+
+/* Button to dismiss the support form from the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.done" = "Gereed";
+
+/* Button to get support on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.getSupport" = "Vraag om hulp";
+
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationErrorView.message" = "Er klopt iets niet helemaal.\nWe konden je campagne niet maken.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.noPaymentTaken" = "Er is geen betaling uitgevoerd.";
+
+/* Suggested message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.suggestion" = "Probeer het nog eens of neem contact met ons op voor ondersteuning.";
+
+/* Title of the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.title" = "Fout bij maken van campagne";
+
+/* Button to try again on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.tryAgain" = "Probeer opnieuw";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Advertentiebestemming";
+
+/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "Annuleren";
+
+/* Error message indicating that loading suggestions for tagline and description failed */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "Kon geen suggesties laden voor de slogan en beschrijving";
+
+/* Button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Opnieuw proberen";
 
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Budget";
@@ -9808,15 +9871,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Advertentie bewerken";
 
-/* Error message indicating that loading suggestions for tagline and description failed */
-"blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions" = "Kon geen suggesties laden voor de tagline en beschrijving";
-
-/* Button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.retry" = "Opnieuw proberen";
-
-/* Title on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.title" = "Oeps! Er is een fout opgetreden";
-
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Interesses";
 
@@ -9825,6 +9879,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "Locatie";
+
+/* Button on the alert to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.addImage" = "Afbeelding toevoegen";
+
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "Annuleren";
+
+/* Message asking to select an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Voeg een afbeelding toe voor de Blaze-campagne";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Nu winkelen";
@@ -9841,11 +9904,62 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d dag van %3$@";
 
+/* Text indicating all locations for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.everywhere" = "Overal";
+
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$ %.0f USD";
 
+/* Message in the Blaze campaign creation loading screen */
+"blazeCampaignCreationLoadingView.Message" = "Jouw campagne aanmaken";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Blaze verbergen";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.promote" = "Promoten";
+
+/* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.adPolicy" = "Reclamebeleid";
+
+/* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.addPaymentMethod" = "Betalingsmethode toevoegen";
+
+/* Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: By clicking \"Submit campaign\" you agree to the Terms of Service and Advertising Policy, and authorize your payment method to be charged for the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work. */
+"blazeConfirmPaymentView.agreement" = "Door op 'Campagne indienen' te klikken ga je akkoord met de %1$@ en %2$@, en geef je goedkeuring dat er via je betaalmethode kosten in rekening worden gebracht voor het bedrag en de periode die je kiest. %3$@ over hoe budgetten en betalingen voor Gepromote berichten werken.";
+
+/* Item to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.blazeCampaign" = "Blaze-campagne";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.errorMessage" = "Fout bij het laden van je betaalmethodes";
+
+/* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.learnMore" = "Meer informatie";
+
+/* Text for the loading state on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.loading" = "Betaalmethoden laden...";
+
+/* Section title on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.paymentTotals" = "Totale betalingen";
+
+/* Action button on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.submitButton" = "Campagne indienen";
+
+/* The terms to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.terms" = "Servicevoorwaarden";
+
+/* Title of the Payment view in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.title" = "Betaling";
+
+/* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.total" = "Totaal";
+
+/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
+"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.tryAgain" = "Probeer opnieuw";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Je advertenties op miljoenen sites binnen de WordPress.com- en Tumblr-netwerken.";
@@ -9907,6 +10021,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "De omschrijving mag niet leeg zijn";
 
+/* Edit Blaze Ad screen: Error message if Description exceeds the character limit. */
+"blazeEditAdViewModel.description.lengthExceedsLimit" = "Omschrijving mag niet meer dan %1$d tekens bevatten";
+
 /* Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining */
 "blazeEditAdViewModel.lengthLimit.plural" = "%1$d tekens resterend";
 
@@ -9915,6 +10032,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Edit Blaze Ad screen: Error message if Tagline field is empty. */
 "blazeEditAdViewModel.tagline.emptyError" = "De slogan mag niet leeg zijn";
+
+/* Edit Blaze Ad screen: Error message if Tagline exceeds the character limit. */
+"blazeEditAdViewModel.tagline.lengthExceedsLimit" = "Slogan mag niet meer dan %1$d tekens bevatten";
 
 /* Subtitle for the Choose a product step */
 "blazeLearnHowView.chooseProduct.subtitle" = "Kies wat je met Blaze gaat promoten.";
@@ -9949,6 +10069,36 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Leer hoe %1$@ werkt";
 
+/* Button title in the Blaze Payment Method screen if there is an existing payment method */
+"blazePaymentMethodsView.addAnotherCreditCardButton" = "Een andere creditcard toevoegen";
+
+/* Button title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.addCreditCardButton" = "Creditcard toevoegen";
+
+/* Title of the button to dismiss the Blaze payment method list screen */
+"blazePaymentMethodsView.cancelButton" = "Annuleren";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.emailReceipt" = "E-mail de labelaanschafkwitanties naar %1$@ (%2$@) via %3$@";
+
+/* Navigation bar title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.navigationBarTitle" = "Betaalmethode";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.paymentMethodsFooter" = "Creditcards worden opgehaald uit het volgende WordPress.com-account: %1$@ <%2$@>";
+
+/* Header for list of payment methods in Payment Method screen */
+"blazePaymentMethodsView.paymentMethodsHeader" = "Betaalmethode geselecteerd";
+
+/* Message that will be displayed if there are no Blaze payment methods. */
+"blazePaymentMethodsView.pleaseAddPaymentMethodMessage" = "Voeg een nieuwe betaalmethode toe";
+
+/* Text to explain that transactions will be secure in Payment Method screen */
+"blazePaymentMethodsView.transactionsSecure" = "Alle transacties zijn beveiligd en versleuteld";
+
+/* Title of the row to select all target devices for Blaze campaign creation */
+"blazeTargetDevicePickerView.allTitle" = "Alle apparaten";
+
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "Annuleren";
 
@@ -9981,6 +10131,39 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to retry syncing data on the target language picker for campaign creation */
 "blazeTargetLanguagePickerView.tryAgain" = "Probeer opnieuw";
+
+/* Button to dismiss the target location picker for campaign creation */
+"blazeTargetLocationPickerView.cancel" = "Annuleren";
+
+/* Button to save the selections on the target location picker for campaign creation */
+"blazeTargetLocationPickerView.save" = "Opslaan";
+
+/* Placeholder on the search bar of the target location picker for campaign creation */
+"blazeTargetLocationPickerView.searchPrompt" = "Locaties zoeken";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLocationPickerView.title" = "Locatie";
+
+/* Message indicating the minimum length for search queries on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.longerQuery" = "Voer minimaal 3 tekens in om te beginnen met zoeken.";
+
+/* Message indicating no search result on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.noResult" = "Geen locatie gevonden.\nProbeer het opnieuw.";
+
+/* Hint message to enter search query on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Begin met het typen van land, provincie of plaats om de beschikbare opties te bekijken";
+
+/* Title of the row to select all target location for Blaze campaign creation */
+"blazeTargetLocationSearchView.allTitle" = "Overal";
+
+/* Header message on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.headerMessage" = "Kies doellocaties";
+
+/* Suggestion for searching for specific locations on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.searchHint" = "Of kies specifieke locaties door te typen waar je naar zoekt in het zoekveld.";
+
+/* Header for the Specific Locations section on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.specificLocationHeader" = "Specifieke locaties";
 
 /* Title of the row to select all target topics for Blaze campaign creation */
 "blazeTargetTopicPickerView.allTitle" = "Alle onderwerpen";
@@ -10027,6 +10210,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Scannen op lezer";
+
+/* Title for the toggle that specifies whether to add a note to the order with the change data. */
+"cashPaymentTenderView.addNoteToggle.title" = "Noteer transactiedetails in bestelnotitie";
+
+/* Title for the cancel button. */
+"cashPaymentTenderView.cancelButton" = "Annuleren";
+
+/* Title for the change due text. */
+"cashPaymentTenderView.changeDue" = "Wisselgeld";
+
+/* Title for the amount the customer paid. */
+"cashPaymentTenderView.customerPaid" = "Cash ontvangen";
+
+/* Title for the Mark order as complete button. */
+"cashPaymentTenderView.markOrderAsCompleteButton.title" = "Bestelling markeren als voltooid";
+
+/* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
+"cashPaymentTenderView.navigationBarTitle" = "Betaling ontvangen (%1$@)";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
@@ -10439,11 +10640,17 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "password" = "Wachtwoord";
 
+/* Note from the cash tender view. */
+"paymentMethods.orderPaidByCashNoteText.note" = "De bestelling werd met cash betaald. De klant betaalde %1$@. Het wisselgeld was %2$@.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalingen, Tap to Pay, woocommerce, woo, fysieke betalingen, betaling innen, betalingen, lezer, kaartlezer, kaartlezer bestellen";
 
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "abonnement beëindigd";
+
+/* Close title for the navigation bar button on the Print Shipping Label view. */
+"print.shipping.label.close.button.title" = "Sluiten";
 
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "Wij vinden je privacy erg belangrijk en dat is altijd al zo geweest. Wij gebruiken, verwerken en slaan je persoonlijke gegevens op om onze app (en jouw ervaring) op allerlei manieren te optimaliseren. Bepaalde manieren waarop we je gegevens gebruiken zijn essentieel om alles goed te laten werken, andere manieren kan je zelf aanpassen bij instellingen.";
@@ -10492,15 +10699,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promoten met Blaze";
-
-/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationCTA" = "Duidelijk";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationSubtitle" = "De advertentie is ingediend voor goedkeuring. We sturen je een bevestigingsmail zodra de advertentie is goedgekeurd en wordt verspreid.";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationTitle" = "Helemaal klaar!";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Wacht tot alles is geüpload voordat je de volgorde van de afbeeldingen wijzigt.";
@@ -10571,6 +10769,9 @@ which should be translated separately and considered part of this sentence. */
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "gegevens delen";
+
+/* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
+"shipping.label.navigationBar.cancel.button.title" = "Annuleren";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce-statistieken van vandaag";
@@ -10653,6 +10854,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Gratis proefabonnement";
+
+/* Button to dismiss the alert when a support request. */
+"supportForm.gotIt" = "Duidelijk";
+
+/* Button to dismiss the input alert for identity info to be used in the support form */
+"supportForm.identityInput.cancel" = "Annuleren";
+
+/* Placeholder of the email field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.email" = "E-mailadres";
+
+/* Placeholder of the name field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.name" = "Naam";
+
+/* Button to submit details on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.ok" = "OK";
+
+/* Title of the input alert for identity info to be used in the support form */
+"supportForm.identityInput.title" = "Voer je e-mailadres en gebruikersnaam in";
+
+/* Title for the alert after the support request is created. */
+"supportForm.supportRequestSent" = "Verzoek verstuurd!";
+
+/* Message for the alert after the support request is created. */
+"supportForm.supportRequestSentMessage" = "Je ondersteuningsverzoek is in goede orde bij ons aangekomen. We zullen zo snel mogelijk via e-mail reageren.";
+
+/* Error message when the app can't create a zendesk identity. */
+"supportFormViewModel.badIdentityError" = "Helaas, we kunnen ondersteuningsverzoeken nu niet aanmaken, probeer het later opnieuw.";
+
+/* Error message when the app can't create a support request. */
+"supportFormViewModel.supportRequestFailed" = "Helaas, we kunnen ondersteuningsverzoeken nu niet aanmaken, probeer het later opnieuw.";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Tik om te betalen-testbetaling automatisch terugstorten";

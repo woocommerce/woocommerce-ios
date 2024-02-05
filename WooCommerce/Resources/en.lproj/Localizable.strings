@@ -336,9 +336,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "A brief excerpt about your product";
 
-/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
-"A collection of related products" = "A collection of related products";
-
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "A customs form must be printed and included on this international shipment";
 
@@ -351,17 +348,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number field */
 "A phone number is required" = "A phone number is required";
 
-/* Description of the Action sheet option when the user wants to change the Product type to variable product */
-"A product with variations like color or size" = "A product with variations like color or size";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "A unique digital product like services, downloadable books, music or videos";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "A unique physical product that you may have to ship to the customer";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.";
@@ -481,9 +469,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Add a product image";
-
-/* Description of the Action sheet option when the user wants to create a product manually */
-"Add a product manually" = "Add a product manually";
 
 /* Description for the option to create product manually */
 "Add a product manually." = "Add a product manually.";
@@ -690,6 +675,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Charge Taxes";
+
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"addProductWithAIActionSheet.manualOptionsTitle" = "Select a product type";
 
 /* Address section title in the domain contact info form.
    Details section title in the Edit Address Form */
@@ -1225,9 +1213,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "Copy number";
-
-/* Action sheet option when the user wants to create a product manually */
-"Blank" = "Blank";
 
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
@@ -1795,6 +1780,54 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Botswana" = "Botswana";
+
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.description" = "Link a product to an external website";
+
+/* Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.title" = "External product";
+
+/* Description of the Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.description" = "Add a product manually";
+
+/* Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.title" = "Blank";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.description" = "A collection of related products";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.title" = "Grouped product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.description" = "A unique physical product that you may have to ship to the customer";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.title" = "Simple physical product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.description" = "A unique digital product like services, downloadable books, music or videos";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.title" = "Simple virtual product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.description" = "A unique product subscription that enables recurring payments";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.title" = "Simple subscription product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"bottomSheetProductType.variable.description" = "A product with variations like color or size";
+
+/* Action sheet option when the user wants to change the Product type to varible product */
+"bottomSheetProductType.variable.title" = "Variable product";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.description" = "A product subscription with variations";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.title" = "Variable subscription product";
 
 /* Country option for a site address. */
 "Bouvet Island" = "Bouvet Island";
@@ -3971,9 +4004,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text in the store creation loading screen */
 "Extending store's capabilities" = "Extending store's capabilities";
 
-/* Action sheet option when the user wants to change the Product type to external product */
-"External product" = "External product";
-
 /* Display label for affiliate product type. */
 "External/Affiliate" = "External/Affiliate";
 
@@ -4361,9 +4391,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for grouped product type. */
 "Grouped" = "Grouped";
-
-/* Action sheet option when the user wants to change the Product type to grouped product */
-"Grouped product" = "Grouped product";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Grouped products";
@@ -5118,9 +5145,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Limit one per order";
 
-/* Message to show when a request for a WP.com API endpoint is throttled */
-"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
-
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Limit Usage to X Items";
 
@@ -5132,9 +5156,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limited quantity surface materials (cosmetics, cleaning products, paints, etc.)";
-
-/* Description of the Action sheet option when the user wants to change the Product type to external product */
-"Link a product to an external website" = "Link a product to an external website";
 
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "Link Settings";
@@ -6206,6 +6227,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Custom Amount";
 
+/* Text on the button title to see the order's receipt */
+"OrderDetailsDataSource.configureSeeReceipt.button.title" = "See Receipt";
+
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Ordered List";
 
@@ -6984,18 +7008,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "Product with SKU \"%@\" not found.";
 
-/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.description" = "A unique product subscription that enables recurring payments";
-
-/* Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.title" = "Simple subscription product";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.description" = "A product subscription with variations";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.title" = "Variable subscription product";
-
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Got a minute? Help us improve our AI-assisted features with your quick feedback.";
 
@@ -7102,6 +7114,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "One time shipping";
+
+/* Title of the Products tab — plural form of Product */
+"productsTab.tabTitle" = "Products";
 
 /* No comment provided by engineer. */
 "Promote on TikTok" = "Promote on TikTok";
@@ -7233,6 +7248,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Receipt from %1$@";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
+"receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: receipt for order #%2$@";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
+"receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: receipt for order #%2$@ on %3$@";
 
 /* No comment provided by engineer. */
 "Recurring payments'" = "Recurring payments'";
@@ -8151,12 +8172,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for simple product type. */
 "Simple" = "Simple";
-
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "Simple physical product";
-
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "Simple virtual product";
 
 /* Country option for a site address. */
 "Singapore" = "Singapore";
@@ -10288,9 +10303,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for variable product type. */
 "Variable" = "Variable";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
-"Variable product" = "Variable product";
-
 /* Display label for variable subscription product type. */
 "Variable Subscription" = "Variable Subscription";
 
@@ -10762,6 +10774,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message that describes an unknown error had occured */
 "wordpress-api.error.unknown" = "Something went wrong, please try again later.";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"wordpresskit.api.message.endpoint_throttled" = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
 
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Loading media...";

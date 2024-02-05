@@ -296,8 +296,22 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
-                                                 onVariationSelectionStateChanged: onVariationSelectionStateChanged,
-                                                 onSelectionsCleared: onSelectedVariationsCleared)
+                                                 onVariationSelectionStateChanged: { [weak self] productVariation, product in
+            guard let self else { return }
+            onVariationSelectionStateChanged?(productVariation, product)
+
+            if syncChangesImmediately {
+                onMultipleSelectionCompleted?(selectedItemsIDs)
+            }
+        },
+                                                 onSelectionsCleared: { [weak self] in
+            guard let self else { return }
+            onSelectedVariationsCleared?()
+
+            if syncChangesImmediately {
+                onMultipleSelectionCompleted?(selectedItemsIDs)
+            }
+        })
     }
 
     /// Clears the current search term and filters to display the full product list.

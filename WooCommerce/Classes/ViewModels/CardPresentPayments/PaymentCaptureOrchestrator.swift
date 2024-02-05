@@ -188,6 +188,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 onCompletion(receipt)
             case .failure:
                 // TODO: Error handling. Propagate error.
+                DDLogError("Unable to retrieve receipt for site \(order.siteID) - order \(order.orderID)")
                 break
             }
         }

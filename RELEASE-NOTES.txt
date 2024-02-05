@@ -2,7 +2,7 @@
 
 17.3
 -----
-
+- [***] Products: Cache product images to reduce network requests. [https://github.com/woocommerce/woocommerce-ios/pull/11902]
 
 17.2
 -----

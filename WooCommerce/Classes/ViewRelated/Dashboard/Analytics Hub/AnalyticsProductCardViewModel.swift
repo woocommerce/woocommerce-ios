@@ -81,6 +81,7 @@ extension AnalyticsProductCard {
         self.deltaTextColor = statsViewModel.delta.direction.deltaTextColor
         self.isStatsRedacted = statsViewModel.isRedacted
         self.showStatsError = statsViewModel.showStatsError
+        self.reportURL = statsViewModel.reportURL
 
         // Top performers list
         self.itemsSoldData = itemsViewModel.itemsSoldData

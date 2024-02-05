@@ -102,5 +102,19 @@ extension AnalyticsReportCard {
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage
+        self.reportViewModel = {
+            guard let reportURL = viewModel.reportURL else {
+                return nil
+            }
+            return WebViewSheetViewModel(url: reportURL, navigationTitle: Localization.reportTitle, authenticated: true)
+        }()
+    }
+}
+
+private extension AnalyticsReportCard {
+    enum Localization {
+        static let reportTitle = NSLocalizedString("analyticsHub.reportCard.reportTitle",
+                                                   value: "Analytics Report",
+                                                   comment: "Title for the webview displaying a web analytics report")
     }
 }

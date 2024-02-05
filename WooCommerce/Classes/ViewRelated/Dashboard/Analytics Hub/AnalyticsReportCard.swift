@@ -20,6 +20,9 @@ struct AnalyticsReportCard: View {
     let trailingChartData: [Double]
     let trailingChartColor: UIColor?
 
+    let reportViewModel: WebViewSheetViewModel?
+    @State private var showingWebReport: Bool = false
+
     let isRedacted: Bool
 
     let showSyncError: Bool
@@ -97,13 +100,33 @@ struct AnalyticsReportCard: View {
             }
 
             if showSyncError {
-               Text(syncErrorMessage)
-                   .foregroundColor(Color(.text))
-                   .subheadlineStyle()
-                   .frame(maxWidth: .infinity, alignment: .leading)
-           }
+                Text(syncErrorMessage)
+                    .foregroundColor(Color(.text))
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            if reportViewModel != nil {
+                VStack(spacing: Layout.cardPadding) {
+                    Divider()
+                    Button {
+                        showingWebReport = true
+                    } label: {
+                        Text(Localization.seeReport)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        DisclosureIndicator()
+                    }
+                }
+            }
         }
         .padding(Layout.cardPadding)
+        .sheet(isPresented: $showingWebReport) {
+            if let reportViewModel {
+                WebViewSheet(viewModel: reportViewModel) {
+                    showingWebReport = false
+                }
+            }
+        }
     }
 }
 
@@ -117,6 +140,12 @@ private extension AnalyticsReportCard {
         static let chartHeight: CGFloat = 32
         static let chartWidth: CGFloat = 72
         static let chartAspectRatio: CGFloat = 2.25
+    }
+
+    enum Localization {
+        static let seeReport = NSLocalizedString("analyticsHub.reportCard.webReport",
+                                                 value: "See Report",
+                                                 comment: "Button label to show an analytics report in the Analytics Hub")
     }
 }
 
@@ -138,6 +167,7 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .textInverted,
                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
                             trailingChartColor: .withColorStudio(.red, shade: .shade40),
+                            reportViewModel: WebViewSheetViewModel(url: URL(string: "https://example.com/")!, navigationTitle: "", authenticated: false),
                             isRedacted: false,
                             showSyncError: false,
                             syncErrorMessage: "")
@@ -158,6 +188,7 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .text,
                             trailingChartData: [],
                             trailingChartColor: .withColorStudio(.gray, shade: .shade30),
+                            reportViewModel: WebViewSheetViewModel(url: URL(string: "https://example.com/")!, navigationTitle: "", authenticated: false),
                             isRedacted: false,
                             showSyncError: true,
                             syncErrorMessage: "Error loading revenue analytics")
@@ -179,6 +210,7 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: nil,
                             trailingChartData: [],
                             trailingChartColor: nil,
+                            reportViewModel: nil,
                             isRedacted: false,
                             showSyncError: true,
                             syncErrorMessage: "")

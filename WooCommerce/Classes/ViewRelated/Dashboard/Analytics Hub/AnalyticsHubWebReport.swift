@@ -25,22 +25,25 @@ struct AnalyticsHubWebReport {
             return nil
         }
 
-        let path = getPath(for: report)
-        let defaultReportString = storeAdminURL + "admin.php?page=wc-admin&path=\(path)"
+        var reportURLComponents = URLComponents(string: storeAdminURL + "admin.php")
+        var reportQueryParams = [
+            "page": "wc-admin",
+            "path": getPath(for: report),
+            "period": getPeriod(for: timeRange),
+            "compare": "previous_period"
+        ]
 
-        // Add the time range to the default report URL
-        // Note: the `compare` parameter only applies if the period is also specified
-        let period = getPeriod(for: timeRange)
-        switch timeRange {
-        case let .custom(startDate, endDate):
+        if case let .custom(startDate, endDate) = timeRange {
             let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
             dateFormatter.timeZone = timeZone
-            let after = dateFormatter.string(from: startDate)
-            let before = dateFormatter.string(from: endDate)
-            return URL(string: defaultReportString + "&period=\(period)&after=\(after)&before=\(before)&compare=previous_period")
-        default:
-            return URL(string: defaultReportString + "&period=\(period)&compare=previous_period")
+            reportQueryParams["after"] = dateFormatter.string(from: startDate)
+            reportQueryParams["before"] = dateFormatter.string(from: endDate)
         }
+
+        reportURLComponents?.queryItems = reportQueryParams.map { (key, value) in
+            URLQueryItem(name: key, value: value)
+        }
+        return reportURLComponents?.url
     }
 
     /// Gets the path parameter for the web report, based on the provided report type
@@ -48,11 +51,11 @@ struct AnalyticsHubWebReport {
     private static func getPath(for reportType: ReportType) -> String {
         switch reportType {
         case .revenue:
-            return "%2Fanalytics%2Frevenue"
+            return "/analytics/revenue"
         case .orders:
-            return "%2Fanalytics%2Forders"
+            return "/analytics/orders"
         case .products:
-            return "%2Fanalytics%2Fproducts"
+            return "/analytics/products"
         }
     }
 

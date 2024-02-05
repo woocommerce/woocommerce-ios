@@ -6,40 +6,60 @@ final class AnalyticsHubWebReportTests: XCTestCase {
 
     let exampleAdminURL = "https://example.com/wp-admin/"
 
-    func test_getURL_returns_expected_absolute_URL_string() {
+    func test_getURL_returns_expected_report_URL() throws {
+        // Given
+        let reportURL = try XCTUnwrap(AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: .today, storeAdminURL: exampleAdminURL))
+
+        // Then
+        let expectedURL = try XCTUnwrap(URL(string: exampleAdminURL +
+                                            "admin.php?page=wc-admin&path=%2Fanalytics%2Frevenue&period=today&compare=previous_period"))
+
+        let expectedComponents = URLComponents(url: expectedURL, resolvingAgainstBaseURL: false)
+        let reportComponents = URLComponents(url: reportURL, resolvingAgainstBaseURL: false)
+
+        let expectedQueryItems = Set(try XCTUnwrap(expectedComponents?.queryItems))
+        let reportQueryItems = Set(try XCTUnwrap(reportComponents?.queryItems))
+
+        assertEqual(expectedComponents?.scheme, reportComponents?.scheme)
+        assertEqual(expectedComponents?.host, reportComponents?.host)
+        assertEqual(expectedComponents?.path, reportComponents?.path)
+        assertEqual(expectedQueryItems, reportQueryItems)
+    }
+
+    func test_getUrl_returns_URL_containing_expected_revenue_report_path() throws {
         // Given
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: .today, storeAdminURL: exampleAdminURL)
 
-        // Then
-        let expectedURL = exampleAdminURL + "admin.php?page=wc-admin&path=%2Fanalytics%2Frevenue&period=today&compare=previous_period"
-        assertEqual(expectedURL, try XCTUnwrap(reportURL).absoluteString)
-    }
-
-    func test_getUrl_returns_URL_containing_expected_revenue_report_path() {
-        // Given
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: .today, storeAdminURL: exampleAdminURL)
+        // When
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
 
         // Then
-        let expectedURLString = "&path=%2Fanalytics%2Frevenue"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let expectedQueryItem = URLQueryItem(name: "path", value: "/analytics/revenue")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_orders_report_path() {
+    func test_getUrl_returns_URL_containing_expected_orders_report_path() throws {
         // Given
         let reportURL = AnalyticsHubWebReport.getUrl(for: .orders, timeRange: .today, storeAdminURL: exampleAdminURL)
 
+        // When
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+
         // Then
-        let expectedURLString = "&path=%2Fanalytics%2Forders"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let expectedQueryItem = URLQueryItem(name: "path", value: "/analytics/orders")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_products_report_path() {
+    func test_getUrl_returns_URL_containing_expected_products_report_path() throws {
         // Given
         let reportURL = AnalyticsHubWebReport.getUrl(for: .products, timeRange: .today, storeAdminURL: exampleAdminURL)
 
+        // When
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+
         // Then
-        let expectedURLString = "&path=%2Fanalytics%2Fproducts"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let expectedQueryItem = URLQueryItem(name: "path", value: "/analytics/products")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
     func test_getUrl_returns_URL_containing_expected_query_parameters_for_custom_time_range() throws {
@@ -53,11 +73,18 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL, timeZone: timeZone)
 
         // Then
-        let expectedURLString = "&period=custom&after=2024-01-01&before=2024-01-07&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItems = [
+            URLQueryItem(name: "period", value: "custom"),
+            URLQueryItem(name: "after", value: "2024-01-01"),
+            URLQueryItem(name: "compare", value: "previous_period")
+        ]
+        for expectedQueryItem in expectedQueryItems {
+            XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
+        }
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_today_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_today_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .today
 
@@ -65,11 +92,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=today&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "today")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_yesterday_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_yesterday_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .yesterday
 
@@ -77,11 +105,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=yesterday&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "yesterday")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_last_week_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_last_week_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .lastWeek
 
@@ -89,11 +118,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=last_week&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "last_week")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_last_month_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_last_month_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .lastMonth
 
@@ -101,11 +131,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=last_month&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "last_month")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_last_quarter_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_last_quarter_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .lastQuarter
 
@@ -113,11 +144,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=last_quarter&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "last_quarter")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_last_year_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_last_year_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .lastYear
 
@@ -125,11 +157,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=last_year&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "last_year")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_week_to_date_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_week_to_date_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .weekToDate
 
@@ -137,11 +170,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=week&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "week")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_month_to_date_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_month_to_date_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .monthToDate
 
@@ -149,11 +183,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=month&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "month")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_quarter_to_date_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_quarter_to_date_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .quarterToDate
 
@@ -161,11 +196,12 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=quarter&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "quarter")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
-    func test_getUrl_returns_URL_containing_expected_query_parameters_for_year_to_date_time_range() {
+    func test_getUrl_returns_URL_containing_expected_period_for_year_to_date_time_range() throws {
         // Given
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .yearToDate
 
@@ -173,8 +209,9 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
-        let expectedURLString = "&period=year&compare=previous_period"
-        XCTAssertTrue(try XCTUnwrap(reportURL).absoluteString.contains(expectedURLString))
+        let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
+        let expectedQueryItem = URLQueryItem(name: "period", value: "year")
+        XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
 
 }

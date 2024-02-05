@@ -156,12 +156,18 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     case .success(let paymentData):
                         // Handle payment receipt
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-                        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backendReceipts) else {
-                            return self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                     alertProvider: paymentAlertProvider,
-                                                     onCompleted: onCompleted)
+
+                        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { [weak self] isEligible in
+                            guard let self = self else { return }
+                            switch isEligible {
+                            case true:
+                                self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
+                            case false:
+                                self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
+                                                         alertProvider: paymentAlertProvider,
+                                                         onCompleted: onCompleted)
+                            }
                         }
-                        self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
                     }
                     onPaymentCompletion()
                 })

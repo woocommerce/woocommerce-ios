@@ -552,19 +552,21 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
         storage.saveIfNeeded()
     }
-
-    final class MockError: Error { }
 }
+
+private final class MockError: Error { }
 
 private class MockProductUIImageLoader: ProductUIImageLoader {
     var imageRequestedForProductImage: Yosemite.ProductImage?
     var requestImageStubbedResponse: UIImage?
-    func requestImage(productImage: Yosemite.ProductImage, completion: @escaping (UIImage) -> Void) -> Cancellable? {
+
+    func requestImage(productImage: ProductImage) async throws -> UIImage {
         imageRequestedForProductImage = productImage
         if let requestImageStubbedResponse {
-            completion(requestImageStubbedResponse)
+            return requestImageStubbedResponse
+        } else {
+            throw MockError()
         }
-        return nil
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {

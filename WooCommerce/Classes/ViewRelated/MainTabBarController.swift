@@ -276,7 +276,8 @@ private extension MainTabBarController {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardSelected)
         case .orders:
-            ServiceLocator.analytics.track(.ordersSelected)
+            ServiceLocator.analytics.track(
+                event: .Orders.ordersSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .products:
             ServiceLocator.analytics.track(.productListSelected)
         case .hubMenu:
@@ -292,7 +293,8 @@ private extension MainTabBarController {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardReselected)
         case .orders:
-            ServiceLocator.analytics.track(.ordersReselected)
+            ServiceLocator.analytics.track(
+                event: .Orders.ordersReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .products:
             ServiceLocator.analytics.track(.productListReselected)
         case .hubMenu:
@@ -563,7 +565,6 @@ private extension MainTabBarController {
             productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: siteID)
         } else {
             productsNavigationController.viewControllers = [ProductsViewController(siteID: siteID,
-                                                                                   navigationControllerToAddProduct: productsNavigationController,
                                                                                    navigateToContent: { _ in })]
         }
 

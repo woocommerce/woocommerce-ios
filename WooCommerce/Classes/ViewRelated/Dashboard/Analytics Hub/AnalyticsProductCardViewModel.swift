@@ -20,6 +20,10 @@ struct AnalyticsProductsStatsCardViewModel {
     /// Indicates if there was an error loading stats part of the card.
     ///
     let showStatsError: Bool
+
+    /// URL for the corresponding web analytics report
+    ///
+    let reportURL: URL?
 }
 
 /// Analytics Hub Items Sold ViewModel.
@@ -49,7 +53,8 @@ extension AnalyticsProductsStatsCardViewModel {
         .init(itemsSold: "1000",
               delta: DeltaPercentage(string: "0%", direction: .zero),
               isRedacted: true,
-              showStatsError: false)
+              showStatsError: false,
+              reportURL: reportURL)
     }
 }
 

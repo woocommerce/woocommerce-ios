@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-23 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-01-30 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -758,9 +758,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "すべての既読レビュー";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"All set!" = "設定が完了しました。";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "必要なすべての機能がすでに組み込まれています";
@@ -3511,11 +3508,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google の登録に失敗しました。";
 
-/* Confirmation button for the alert after the support request is created. */
-"Got It!" = "承知しました !";
-
 /* Button title that dismisses the Write with AI tooltip
-   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "理解しました";
 
@@ -6272,9 +6265,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the report section on the privacy screen */
 "Reports" = "レポート";
 
-/* Title for the alert after the support request is created. */
-"Request Sent!" = "リクエストを送信しました。";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "返金をリクエスト";
@@ -7162,17 +7152,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "ユーザー名には半角小文字 (a-z) を必ず含めてください。";
 
-/* Error message when the app can't create a zendesk identity. */
-"Sorry, we cannot create support requests right now, please try again later." = "申し訳ありません。現在、サポートリクエストを作成できません。しばらくしてからもう一度お試しください。";
-
 /* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
 "Sorry, we could not complete this action, as no active payment was found." = "申し訳ございませんが、有効な支払いが見つからなかったため、このアクションを完了できませんでした。";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Reader に接続できませんでした。 もう一度お試しください。";
-
-/* Error message when the app can't create a support request. */
-"Sorry, we could not create your support request, please try again later." = "申し訳ありません。サポートリクエストを作成できませんでした。しばらくしてからもう一度お試しください。";
 
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "iPhone で Tap to Pay を開始できません。 接続を確認して、もう一度お試しください。";
@@ -7707,9 +7691,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "この URL には有効なホストがありません。";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "広告は承認を得るために送信されました。 承認されて掲載されると、確認メールが送信されます。";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone ではその金額に対応していません。ハードウェアリーダーか、別の支払い方法をお試しください。";
@@ -9594,9 +9575,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error description displayed when plan activation fails after purchasing a plan. */
 "Your subscription is active, but there was an error activating the plan on your store." = "ご利用中のプランは有効になっていますが、ストアでプランの有効化の際にエラーが発生しました。";
 
-/* Message for the alert after the support request is created. */
-"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "サポートリクエストを受信しました。 できるだけ早くメールで返信いたします。";
-
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "現在、税率は顧客の請求先住所に基づいて計算されています。";
 
@@ -9712,6 +9690,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the product URL destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.productURLLabel" = "商品 URL";
 
+/* Button to save in the Blaze Ad Destination setting screen */
+"blazeAdDestinationSettingView.save" = "保存";
+
 /* Label for the site home destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.siteHomeLabel" = "サイトホーム";
 
@@ -9747,6 +9728,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Value input on the Blaze Add Parameter screen */
 "blazeAddParameterView.valueTitle" = "値";
+
+/* Title of the button to dismiss the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.cancelButton" = "キャンセル";
+
+/* Navigation bar title in the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.navigationBarTitle" = "決済方法";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazeAddPaymentWebView.paymentMethodAddedNotice" = "支払い方法が追加されました";
 
 /* Button to apply the changes on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.apply" = "適用";
@@ -9811,6 +9801,27 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "%1$d日間";
 
+/* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "キャンセル";
+
+/* Button to create a product when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.createProduct" = "商品を作成";
+
+/* Message of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.message" = "現在プロモーションに利用できる商品はありません。 今すぐ商品を作成してみませんか ?";
+
+/* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.title" = "商品が見つかりません";
+
+/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successCTA" = "完了";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successSubtitle" = "キャンペーンを確認しています。 24時間以内に開始します。 販売の楽しい時期がやってきます !";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successTitle" = "準備完了 !";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "キャンペーンをキャンセル";
 
@@ -9839,6 +9850,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "広告の掲載先";
 
+/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "キャンセル";
+
+/* Error message indicating that loading suggestions for tagline and description failed */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "キャッチフレーズと説明の提案を読み込めませんでした";
+
+/* Button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "再試行";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "予算";
 
@@ -9854,15 +9874,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "広告を編集";
 
-/* Error message indicating that loading suggestions for tagline and description failed */
-"blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions" = "キャッチフレーズと説明の提案を読み込めませんでした";
-
-/* Button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.retry" = "再試行";
-
-/* Title on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.title" = "申し訳ございません。 問題が発生しました";
-
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "興味";
 
@@ -9871,6 +9882,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "場所";
+
+/* Button on the alert to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.addImage" = "画像を追加";
+
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "キャンセル";
+
+/* Message asking to select an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Blaze キャンペーンの画像を追加してください";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "今すぐ購入";
@@ -10004,6 +10024,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "説明を空にすることはできません";
 
+/* Edit Blaze Ad screen: Error message if Description exceeds the character limit. */
+"blazeEditAdViewModel.description.lengthExceedsLimit" = "説明は%1$d文字以下にしてください";
+
 /* Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining */
 "blazeEditAdViewModel.lengthLimit.plural" = "残り%1$d文字です";
 
@@ -10012,6 +10035,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Edit Blaze Ad screen: Error message if Tagline field is empty. */
 "blazeEditAdViewModel.tagline.emptyError" = "キャッチフレーズを空にすることはできません";
+
+/* Edit Blaze Ad screen: Error message if Tagline exceeds the character limit. */
+"blazeEditAdViewModel.tagline.lengthExceedsLimit" = "キャッチフレーズは%1$d文字以下にしてください";
 
 /* Subtitle for the Choose a product step */
 "blazeLearnHowView.chooseProduct.subtitle" = "Blaze で宣伝するものを選択します。";
@@ -10055,26 +10081,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button to dismiss the Blaze payment method list screen */
 "blazePaymentMethodsView.cancelButton" = "キャンセル";
 
-/* Done navigation button in the Blaze Payment Method screen */
-"blazePaymentMethodsView.doneButton" = "完了";
-
-/* Done navigation button in Blaze add payment web view */
-"blazePaymentMethodsView.doneButtonAddPayment" = "完了";
-
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "ラベルの購入レシートを %1$@ (%2$@) に %3$@ でメール送信します";
 
-/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
-"blazePaymentMethodsView.errorMessage" = "決済方法の読み込みエラー";
-
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "決済方法";
-
-/* Notice that will be displayed after adding a new Blaze payment method */
-"blazePaymentMethodsView.paymentMethodAddedNotice" = "支払い方法が追加されました";
-
-/* Title of the web view of adding a payment method in Blaze */
-"blazePaymentMethodsView.paymentMethodWebViewTitle" = "決済方法";
 
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.paymentMethodsFooter" = "クレジットカードが次の WordPress.com アカウントから読み込まれました: %1$@ (<%2$@>)";
@@ -10088,8 +10099,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "すべてのトランザクションは安全で暗号化されています";
 
-/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
-"blazePaymentMethodsView.tryAgain" = "もう一度試す";
+/* Title of the row to select all target devices for Blaze campaign creation */
+"blazeTargetDevicePickerView.allTitle" = "すべての端末";
 
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "キャンセル";
@@ -10647,6 +10658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "プランが終了しました";
 
+/* Close title for the navigation bar button on the Print Shipping Label view. */
+"print.shipping.label.close.button.title" = "閉じる";
+
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "当社はユーザーのプライバシーを常に重要視しています。 アプリ (そしてアプリの操作性) を最適化するために、個人データをさまざまな形で使用、保存、処理しています。 個人データの使用用途の一部は、アプリが機能するために必須のものです。それ以外の用途については設定でカスタマイズできます。";
 
@@ -10694,15 +10708,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze を使って宣伝する";
-
-/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationCTA" = "OK";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationSubtitle" = "広告は承認を得るために送信されました。 承認されて掲載されると、確認メールが送信されます。";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationTitle" = "準備完了 ! ";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "画像の順序を変更するには、すべてのアップロードが完了するまでお待ちください。";
@@ -10779,6 +10784,9 @@ which should be translated separately and considered part of this sentence. */
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "詳細情報を共有する";
+
+/* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
+"shipping.label.navigationBar.cancel.button.title" = "キャンセル";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce Stats Today";
@@ -10861,6 +10869,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "無料お試し";
+
+/* Button to dismiss the alert when a support request. */
+"supportForm.gotIt" = "了解";
+
+/* Button to dismiss the input alert for identity info to be used in the support form */
+"supportForm.identityInput.cancel" = "キャンセル";
+
+/* Placeholder of the email field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.email" = "メールアドレス";
+
+/* Placeholder of the name field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.name" = "名前";
+
+/* Button to submit details on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.ok" = "OK";
+
+/* Title of the input alert for identity info to be used in the support form */
+"supportForm.identityInput.title" = "メールアドレスとユーザー名を入力してください";
+
+/* Title for the alert after the support request is created. */
+"supportForm.supportRequestSent" = "リクエストを送信しました。";
+
+/* Message for the alert after the support request is created. */
+"supportForm.supportRequestSentMessage" = "サポートリクエストを受信しました。 できるだけ早くメールで返信いたします。";
+
+/* Error message when the app can't create a zendesk identity. */
+"supportFormViewModel.badIdentityError" = "申し訳ありません。現在、サポートリクエストを作成できません。しばらくしてからもう一度お試しください。";
+
+/* Error message when the app can't create a support request. */
+"supportFormViewModel.supportRequestFailed" = "申し訳ありません。現在、サポートリクエストを作成できません。しばらくしてからもう一度お試しください。";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Tap To Pay のお試し支払いの自動返金";

@@ -1801,26 +1801,30 @@ private extension EditableOrderViewModel {
     ///
     func trackCreateButtonTapped() {
         let hasCustomerDetails = customerDataViewModel.isDataAvailable
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(order: orderSynchronizer.order,
-                                                                                status: orderSynchronizer.order.status,
-                                                                                productCount: orderSynchronizer.order.items.count,
-                                                                                customAmountsCount: orderSynchronizer.order.fees.count,
-                                                                                hasCustomerDetails: hasCustomerDetails,
-                                                                                hasFees: orderSynchronizer.order.fees.isNotEmpty,
-                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-                                                                                products: Array(allProducts)))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(
+            order: orderSynchronizer.order,
+            status: orderSynchronizer.order.status,
+            productCount: orderSynchronizer.order.items.count,
+            customAmountsCount: orderSynchronizer.order.fees.count,
+            hasCustomerDetails: hasCustomerDetails,
+            hasFees: orderSynchronizer.order.fees.isNotEmpty,
+            hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+            products: Array(allProducts), 
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 
     func trackCollectPaymentTapped() {
         let hasCustomerDetails = customerDataViewModel.isDataAvailable
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationCollectPaymentTapped(order: orderSynchronizer.order,
-                                                                                          status: orderSynchronizer.order.status,
-                                                                                          productCount: orderSynchronizer.order.items.count,
-                                                                                          customAmountsCount: orderSynchronizer.order.fees.count,
-                                                                                          hasCustomerDetails: hasCustomerDetails,
-                                                                                          hasFees: orderSynchronizer.order.fees.isNotEmpty,
-                                                                                          hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-                                                                                          products: Array(allProducts)))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationCollectPaymentTapped(
+            order: orderSynchronizer.order,
+            status: orderSynchronizer.order.status,
+            productCount: orderSynchronizer.order.items.count,
+            customAmountsCount: orderSynchronizer.order.fees.count,
+            hasCustomerDetails: hasCustomerDetails,
+            hasFees: orderSynchronizer.order.fees.isNotEmpty,
+            hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+            products: Array(allProducts),
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 
     /// Tracks an order creation success

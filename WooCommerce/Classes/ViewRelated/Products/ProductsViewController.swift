@@ -13,7 +13,7 @@ import class AutomatticTracks.CrashLogging
 final class ProductsViewController: UIViewController, GhostableViewController {
     enum NavigationContentType {
         case productForm(product: Product)
-        case other(viewController: UIViewController)
+        case addProduct(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool)
     }
 
     let viewModel: ProductListViewModel
@@ -199,7 +199,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private var swipeActionsGlanced = false
 
     private let isSplitViewEnabled: Bool
-    private let navigationControllerToAddProduct: UINavigationController
     private let navigateToContent: (NavigationContentType) -> Void
 
     deinit {
@@ -210,12 +209,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     init(siteID: Int64,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         navigationControllerToAddProduct: UINavigationController,
          navigateToContent: @escaping (NavigationContentType) -> Void) {
         self.siteID = siteID
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         self.isSplitViewEnabled = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
-        self.navigationControllerToAddProduct = navigationControllerToAddProduct
         self.navigateToContent = navigateToContent
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
@@ -346,30 +343,37 @@ private extension ProductsViewController {
     func addProduct(sourceBarButtonItem: UIBarButtonItem? = nil,
                     sourceView: UIView? = nil,
                     isFirstProduct: Bool) {
-        guard sourceBarButtonItem != nil || sourceView != nil else {
+        let sourceView: AddProductCoordinator.SourceView? = {
+            if let sourceBarButtonItem = sourceBarButtonItem {
+                return .barButtonItem(sourceBarButtonItem)
+            } else if let sourceView = sourceView {
+                return .view(sourceView)
+            } else {
+                assertionFailure("No source view for adding a product")
+                return nil
+            }
+        }()
+        guard let sourceView else {
+            return
+        }
+        guard isSplitViewEnabled else {
+            guard let navigationController else {
+                return
+            }
+
+            let source: AddProductCoordinator.Source = .productsTab
+            let coordinatingController = AddProductCoordinator(siteID: siteID,
+                                                               source: source,
+                                                               sourceView: sourceView,
+                                                               sourceNavigationController: navigationController,
+                                                               isFirstProduct: isFirstProduct)
+
+            coordinatingController.start()
+            self.addProductCoordinator = coordinatingController
             return
         }
 
-        let coordinatingController: AddProductCoordinator
-        let source: AddProductCoordinator.Source = .productsTab
-        if let sourceBarButtonItem = sourceBarButtonItem {
-            coordinatingController = AddProductCoordinator(siteID: siteID,
-                                                           source: source,
-                                                           sourceBarButtonItem: sourceBarButtonItem,
-                                                           sourceNavigationController: navigationControllerToAddProduct,
-                                                           isFirstProduct: isFirstProduct)
-        } else if let sourceView = sourceView {
-            coordinatingController = AddProductCoordinator(siteID: siteID,
-                                                           source: source,
-                                                           sourceView: sourceView,
-                                                           sourceNavigationController: navigationControllerToAddProduct,
-                                                           isFirstProduct: isFirstProduct)
-        } else {
-            fatalError("No source view for adding a product")
-        }
-
-        coordinatingController.start()
-        self.addProductCoordinator = coordinatingController
+        navigateToContent(.addProduct(sourceView: sourceView, isFirstProduct: isFirstProduct))
     }
 }
 

@@ -40,6 +40,7 @@ struct AnalyticsProductCard: View {
     /// URL for the products analytics web report
     ///
     let reportViewModel: WPAdminWebViewModel?
+    @State private var showingWebReport: Bool = false
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -86,8 +87,30 @@ struct AnalyticsProductCard: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, Layout.columnSpacing)
             }
+
+            if reportViewModel != nil {
+                VStack(spacing: Layout.cardPadding) {
+                    Divider()
+                    Button {
+                        showingWebReport = true
+                    } label: {
+                        Text(Localization.seeReport)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        DisclosureIndicator()
+                    }
+                }
+            }
         }
         .padding(Layout.cardPadding)
+        .sheet(isPresented: $showingWebReport) {
+            if let reportViewModel {
+                WooNavigationSheet(viewModel: .init(navigationTitle: reportViewModel.title, done: {
+                    showingWebReport = false
+                })) {
+                    AuthenticatedWebView(isPresented: $showingWebReport, viewModel: reportViewModel)
+                }
+            }
+        }
     }
 }
 
@@ -100,6 +123,9 @@ private extension AnalyticsProductCard {
                                                   comment: "Text displayed when there is an error loading product stats data.")
         static let noItemsSold = NSLocalizedString("Unable to load product items sold analytics",
                                                    comment: "Text displayed when there is an error loading items sold stats data.")
+        static let seeReport = NSLocalizedString("analyticsHub.reportCard.webReport",
+                                                 value: "See Report",
+                                                 comment: "Button label to show an analytics report in the Analytics Hub")
     }
 
     enum Layout {

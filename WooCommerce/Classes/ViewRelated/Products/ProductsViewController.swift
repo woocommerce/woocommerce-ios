@@ -998,11 +998,13 @@ extension ProductsViewController: UITableViewDelegate {
         estimatedRowHeights[indexPath] = cell.frame.height
 
         // Restore cell selection state
-        let product = resultsController.object(at: indexPath)
-        if self.viewModel.productIsSelected(product) {
-            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-        } else {
-            tableView.deselectRow(at: indexPath, animated: false)
+        if tableView.isEditing {
+            let product = resultsController.object(at: indexPath)
+            if self.viewModel.productIsSelected(product) {
+                tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            } else {
+                tableView.deselectRow(at: indexPath, animated: false)
+            }
         }
     }
 

@@ -106,29 +106,11 @@ struct AnalyticsReportCard: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            if reportViewModel != nil {
-                VStack(spacing: Layout.cardPadding) {
-                    Divider()
-                    Button {
-                        showingWebReport = true
-                    } label: {
-                        Text(Localization.seeReport)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        DisclosureIndicator()
-                    }
-                }
+            if let reportViewModel {
+                AnalyticsHubReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
             }
         }
         .padding(Layout.cardPadding)
-        .sheet(isPresented: $showingWebReport) {
-            if let reportViewModel {
-                WooNavigationSheet(viewModel: .init(navigationTitle: reportViewModel.title, done: {
-                    showingWebReport = false
-                })) {
-                    AuthenticatedWebView(isPresented: $showingWebReport, viewModel: reportViewModel)
-                }
-            }
-        }
     }
 }
 
@@ -142,12 +124,6 @@ private extension AnalyticsReportCard {
         static let chartHeight: CGFloat = 32
         static let chartWidth: CGFloat = 72
         static let chartAspectRatio: CGFloat = 2.25
-    }
-
-    enum Localization {
-        static let seeReport = NSLocalizedString("analyticsHub.reportCard.webReport",
-                                                 value: "See Report",
-                                                 comment: "Button label to show an analytics report in the Analytics Hub")
     }
 }
 

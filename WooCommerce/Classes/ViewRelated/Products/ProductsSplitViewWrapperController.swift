@@ -7,7 +7,8 @@ final class ProductsSplitViewWrapperController: UIViewController {
     private let siteID: Int64
     private lazy var coordinator: ProductsSplitViewCoordinator = ProductsSplitViewCoordinator(siteID: siteID,
                                                                                               splitViewController: productsSplitViewController)
-    private lazy var productsSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
+    private lazy var productsSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView,
+                                                                          didExpandHandler: handleDidExpand)
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -34,6 +35,9 @@ private extension ProductsSplitViewWrapperController {
     func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {
         // TODO: update the collapsing logic
         .secondary
+    }
+
+    func handleDidExpand(splitViewController: UISplitViewController) {
     }
 }
 

@@ -2,7 +2,7 @@ import XCTest
 import TestKit
 @testable import WooCommerce
 
-final class AnalyticsHubWebReportTests: XCTestCase {
+final class AnalyticsWebReportTests: XCTestCase {
 
     let exampleAdminURL = "https://example.com/wp-admin/"
 

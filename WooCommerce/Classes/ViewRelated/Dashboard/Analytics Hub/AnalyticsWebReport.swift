@@ -4,7 +4,7 @@ import Foundation
 struct AnalyticsWebReport {
 
     /// Supported types of analytics reports
-    enum ReportType {
+    enum ReportType: String {
         case revenue
         case orders
         case products

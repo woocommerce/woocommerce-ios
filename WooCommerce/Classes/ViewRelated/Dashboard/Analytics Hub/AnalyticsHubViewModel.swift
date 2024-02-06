@@ -412,7 +412,7 @@ private extension AnalyticsHubViewModel {
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?,
                             previousPeriodStats: OrderStatsV4?,
-                            webReportViewModel: WPAdminWebViewModel?) -> AnalyticsReportCardViewModel {
+                            webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
 
         return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
@@ -428,12 +428,12 @@ private extension AnalyticsHubViewModel {
                                             isRedacted: false,
                                             showSyncError: showSyncError,
                                             syncErrorMessage: Localization.RevenueCard.noRevenue,
-                                            reportWebSheetViewModel: webReportViewModel)
+                                            reportViewModel: webReportViewModel)
     }
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?,
                            previousPeriodStats: OrderStatsV4?,
-                           webReportViewModel: WPAdminWebViewModel?) -> AnalyticsReportCardViewModel {
+                           webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
 
         return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
@@ -450,14 +450,14 @@ private extension AnalyticsHubViewModel {
                                             isRedacted: false,
                                             showSyncError: showSyncError,
                                             syncErrorMessage: Localization.OrderCard.noOrders,
-                                            reportWebSheetViewModel: webReportViewModel)
+                                            reportViewModel: webReportViewModel)
     }
 
     /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
     ///
     static func productsStatsCard(currentPeriodStats: OrderStatsV4?,
                                   previousPeriodStats: OrderStatsV4?,
-                                  webReportViewModel: WPAdminWebViewModel?) -> AnalyticsProductsStatsCardViewModel {
+                                  webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsProductsStatsCardViewModel {
         let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
@@ -466,7 +466,7 @@ private extension AnalyticsHubViewModel {
                                                    delta: itemsSoldDelta,
                                                    isRedacted: false,
                                                    showStatsError: showStatsError,
-                                                   reportWebSheetViewModel: webReportViewModel)
+                                                   reportViewModel: webReportViewModel)
     }
 
     /// Helper function to create a `AnalyticsItemsSoldViewModel` from the fetched stats.
@@ -524,17 +524,17 @@ private extension AnalyticsHubViewModel {
         })
     }
 
-    /// Gets the webview view model to show a web analytics report, based on the provided report type and currently selected time range
+    /// Gets the view model to show a web analytics report, based on the provided report type and currently selected time range
     ///
-    func webReportVM(for report: AnalyticsWebReport.ReportType) -> WPAdminWebViewModel? {
+    func webReportVM(for report: AnalyticsWebReport.ReportType) -> AnalyticsReportLinkViewModel? {
         return AnalyticsHubViewModel.webReportVM(for: report, timeRange: timeRangeSelectionType, storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
     }
 
-    /// Gets the webview view model to show a web analytics report, based on the provided report type, time range, and store admin URL
+    /// Gets the view model to show a web analytics report, based on the provided report type, time range, and store admin URL
     ///
     static func webReportVM(for report: AnalyticsWebReport.ReportType,
                             timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
-                            storeAdminURL: String?) -> WPAdminWebViewModel? {
+                            storeAdminURL: String?) -> AnalyticsReportLinkViewModel? {
         guard let url = AnalyticsWebReport.getUrl(for: report, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
             return nil
         }
@@ -548,7 +548,7 @@ private extension AnalyticsHubViewModel {
                 return Localization.ProductCard.reportTitle
             }
         }()
-        return WPAdminWebViewModel(title: title, initialURL: url)
+        return AnalyticsReportLinkViewModel(reportType: report, period: timeRange, webViewTitle: title, reportURL: url)
     }
 }
 

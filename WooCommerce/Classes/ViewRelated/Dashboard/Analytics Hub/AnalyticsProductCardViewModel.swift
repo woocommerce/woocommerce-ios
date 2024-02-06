@@ -21,9 +21,9 @@ struct AnalyticsProductsStatsCardViewModel {
     ///
     let showStatsError: Bool
 
-    /// WebViewSheetViewModel for the web analytics report
+    /// View model for the web analytics report link
     ///
-    let reportWebSheetViewModel: WPAdminWebViewModel?
+    let reportViewModel: AnalyticsReportLinkViewModel?
 }
 
 /// Analytics Hub Items Sold ViewModel.
@@ -54,7 +54,7 @@ extension AnalyticsProductsStatsCardViewModel {
               delta: DeltaPercentage(string: "0%", direction: .zero),
               isRedacted: true,
               showStatsError: false,
-              reportWebSheetViewModel: reportWebSheetViewModel)
+              reportViewModel: reportViewModel)
     }
 }
 
@@ -81,7 +81,7 @@ extension AnalyticsProductCard {
         self.deltaTextColor = statsViewModel.delta.direction.deltaTextColor
         self.isStatsRedacted = statsViewModel.isRedacted
         self.showStatsError = statsViewModel.showStatsError
-        self.reportViewModel = statsViewModel.reportWebSheetViewModel
+        self.reportViewModel = statsViewModel.reportViewModel
 
         // Top performers list
         self.itemsSoldData = itemsViewModel.itemsSoldData

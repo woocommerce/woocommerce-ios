@@ -2593,6 +2593,9 @@ extension WooAnalyticsEvent {
             case option
             case calendar
             case timezone
+            case report
+            case period
+            case compare
         }
 
         /// Tracks when the "See more" button is tapped in My Store, to open the Analytics Hub.
@@ -2644,6 +2647,17 @@ extension WooAnalyticsEvent {
         ///
         static func enableJetpackStatsFailed(error: Error?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .analyticsHubEnableJetpackStatsFailed, properties: [:], error: error)
+        }
+
+        /// Tracks when the link to view a full analytics report is tapped on a card in the Analytics Hub.
+        ///
+        static func viewFullReportTapped(for report: AnalyticsWebReport.ReportType,
+                                         period: AnalyticsHubTimeRangeSelection.SelectionType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubViewFullReportTapped, properties: [
+                Keys.report.rawValue: report.rawValue,
+                Keys.period.rawValue: period.tracksIdentifier,
+                Keys.compare.rawValue: "previous_period" // For now this is the only compare option in the app
+            ])
         }
     }
 }

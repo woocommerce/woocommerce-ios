@@ -20,7 +20,7 @@ struct AnalyticsReportCard: View {
     let trailingChartData: [Double]
     let trailingChartColor: UIColor?
 
-    let reportViewModel: WPAdminWebViewModel?
+    let reportViewModel: AnalyticsReportLinkViewModel?
     @State private var showingWebReport: Bool = false
 
     let isRedacted: Bool
@@ -150,7 +150,10 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .textInverted,
                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
                             trailingChartColor: .withColorStudio(.red, shade: .shade40),
-                            reportViewModel: WPAdminWebViewModel(title: "", initialURL: URL(string: "https://woo.com/")!),
+                            reportViewModel: .init(reportType: .revenue, 
+                                                   period: .today,
+                                                   webViewTitle: "Revenue Report",
+                                                   reportURL: URL(string: "https://woo.com")!),
                             isRedacted: false,
                             showSyncError: false,
                             syncErrorMessage: "")
@@ -171,7 +174,10 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .text,
                             trailingChartData: [],
                             trailingChartColor: .withColorStudio(.gray, shade: .shade30),
-                            reportViewModel: WPAdminWebViewModel(title: "", initialURL: URL(string: "https://example.com/")!),
+                            reportViewModel: .init(reportType: .revenue,
+                                                   period: .today,
+                                                   webViewTitle: "Revenue Report",
+                                                   reportURL: URL(string: "https://woo.com")!),
                             isRedacted: false,
                             showSyncError: true,
                             syncErrorMessage: "Error loading revenue analytics")

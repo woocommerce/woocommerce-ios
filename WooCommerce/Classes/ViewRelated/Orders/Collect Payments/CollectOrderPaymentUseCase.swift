@@ -510,9 +510,15 @@ private extension CollectOrderPaymentUseCase {
         // Handles receipt presentation for both print and email actions
         let receiptPresentationCompletionAction: () -> Void = { [weak self] in
             guard let self else { return }
-            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] receipt in
+            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] result in
                 guard let self else { return }
-                self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
+                switch result {
+                case let .success(receipt):
+                    self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
+                case let .failure(error):
+                    DDLogError("Failed to present receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
+                    onCompleted()
+                }
             })
         }
         // Presents receipt alert

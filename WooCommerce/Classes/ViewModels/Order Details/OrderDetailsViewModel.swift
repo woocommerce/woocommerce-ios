@@ -807,16 +807,15 @@ private extension OrderDetailsViewModel {
     func displayReceiptRetrievalErrorNotice(for order: Order,
                                             with error: Error?,
                                             in viewController: UIViewController) {
-        
         let noticePresenter = DefaultNoticePresenter()
         let notice = Notice(title: Localization.failedReceiptRetrievalNoticeText,
                             feedbackType: .error)
         noticePresenter.presentingViewController = viewController
         noticePresenter.enqueue(notice: notice)
 
-        DDLogError("Failed to retrieve receipt for: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
+        DDLogError("Failed to retrieve receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
     }
-    
+
     enum Localization {
         static let failedReceiptRetrievalNoticeText = NSLocalizedString(
             "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice",

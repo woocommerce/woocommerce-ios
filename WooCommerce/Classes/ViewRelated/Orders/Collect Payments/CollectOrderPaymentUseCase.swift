@@ -509,16 +509,18 @@ private extension CollectOrderPaymentUseCase {
     func presentBackendReceiptAlert(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding, onCompleted: @escaping () -> ()) {
         // Present receipt alert
         alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { receipt in
+            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] receipt in
+                guard let self else { return }
                 self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
             })
 
         }, emailReceipt: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { receipt in
+            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] receipt in
+                guard let self else { return }
                 self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
             })
 

@@ -95,7 +95,7 @@ struct ProductSelectorView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results)
+                .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results || viewModel.selectionDisabled)
                 .renderedIf(configuration.multipleSelectionEnabled)
 
                 Spacer()

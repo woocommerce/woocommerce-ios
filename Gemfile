@@ -27,4 +27,4 @@ gem 'rubocop-rake', '~> 0.6'
 gem 'xcode-install'
 gem 'xcpretty-travis-formatter'
 
-gem 'danger-dangermattic', git: 'https://github.com/Automattic/dangermattic'
+gem 'danger-dangermattic', git: 'https://github.com/Automattic/dangermattic', ref: 'iangmaia/common-utils'

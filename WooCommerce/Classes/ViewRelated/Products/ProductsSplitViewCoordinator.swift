@@ -13,10 +13,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     @Published private var contentTypes: [SecondaryViewContentType] = []
     private var selectedProduct: AnyPublisher<Product?, Never> {
         $contentTypes.map { contentTypes -> Product? in
-            guard let contentType = contentTypes.last else {
-                return nil
-            }
-            guard case let .productForm(product) = contentType else {
+            guard let contentType = contentTypes.last, case let .productForm(product) = contentType else {
                 return nil
             }
             return product

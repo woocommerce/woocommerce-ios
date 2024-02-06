@@ -588,13 +588,13 @@ private extension CollectOrderPaymentUseCase {
     ///
     func presentBackendReceiptModally(receipt: Receipt, onCompleted: @escaping (() -> Void)) {
         let receiptViewModel = ReceiptViewModel(receipt: receipt,
-                                                orderID: self.order.orderID,
-                                                siteName: self.stores.sessionManager.defaultSite?.name)
+                                                orderID: order.orderID,
+                                                siteName: stores.sessionManager.defaultSite?.name)
         let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDismiss: {
             onCompleted()
         })
         let navigationController = UINavigationController(rootViewController: receiptViewController)
-        self.rootViewController.present(navigationController, animated: true)
+        rootViewController.present(navigationController, animated: true)
     }
 }
 

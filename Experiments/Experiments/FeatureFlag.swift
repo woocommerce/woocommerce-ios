@@ -199,4 +199,8 @@ public enum FeatureFlag: Int {
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab
+
+    /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
+    ///
+    case useURLSessionInWordPressKit
 }

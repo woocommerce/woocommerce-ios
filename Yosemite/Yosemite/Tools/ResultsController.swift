@@ -211,6 +211,17 @@ public class ResultsController<T: ResultsControllerMutableType> {
         return readOnlySections ?? []
     }
 
+    /// Returns an optional index path of the first matching object.
+    /// - Parameter objectMatching: Specifies the matching criteria.
+    /// - Returns: An optional index path of the first object that matches the given criteria.
+    public func indexPath(forObjectMatching objectMatching: (T) -> Bool) -> IndexPath? {
+        guard let fetchedObjects = controller.fetchedObjects,
+              let object = fetchedObjects.first(where: { objectMatching($0) }) else {
+            return nil
+        }
+        return controller.indexPath(forObject: object)
+    }
+
     /// Refreshes all of the Fetched Objects, so that the new criteria is met.
     ///
     private func refreshFetchedObjects(predicate: NSPredicate?) {

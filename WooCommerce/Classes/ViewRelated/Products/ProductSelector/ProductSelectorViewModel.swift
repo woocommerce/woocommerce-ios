@@ -197,6 +197,8 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onConfigureProductRow: ((_ product: Product) -> Void)?
 
+    @Published var syncChangesImmediately: Bool
+
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
@@ -209,6 +211,7 @@ final class ProductSelectorViewModel: ObservableObject {
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex,
          pageSize: Int = PaginationTracker.Defaults.pageSize,
+         syncChangesImmediately: Bool = false,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -229,6 +232,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.purchasableItemsOnly = purchasableItemsOnly
         self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
+        self.syncChangesImmediately = syncChangesImmediately
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
@@ -261,6 +265,10 @@ final class ProductSelectorViewModel: ObservableObject {
         } else {
             onProductSelectionStateChanged?(selectedProduct)
         }
+
+        if syncChangesImmediately {
+            onMultipleSelectionCompleted?(selectedItemsIDs)
+        }
     }
 
     /// Adds a product or variation ID to the product selector from an external source (e.g. bundle configuration form for bundle products).
@@ -288,8 +296,22 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
-                                                 onVariationSelectionStateChanged: onVariationSelectionStateChanged,
-                                                 onSelectionsCleared: onSelectedVariationsCleared)
+                                                 onVariationSelectionStateChanged: { [weak self] productVariation, product in
+            guard let self else { return }
+            onVariationSelectionStateChanged?(productVariation, product)
+
+            if syncChangesImmediately {
+                onMultipleSelectionCompleted?(selectedItemsIDs)
+            }
+        },
+                                                 onSelectionsCleared: { [weak self] in
+            guard let self else { return }
+            onSelectedVariationsCleared?()
+
+            if syncChangesImmediately {
+                onMultipleSelectionCompleted?(selectedItemsIDs)
+            }
+        })
     }
 
     /// Clears the current search term and filters to display the full product list.
@@ -358,6 +380,9 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs = []
 
         onAllSelectionsCleared?()
+        if syncChangesImmediately {
+            onMultipleSelectionCompleted?(selectedItemsIDs)
+        }
     }
 }
 

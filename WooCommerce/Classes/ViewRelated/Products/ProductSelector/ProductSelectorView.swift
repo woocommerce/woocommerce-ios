@@ -60,6 +60,8 @@ struct ProductSelectorView: View {
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
+    @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
@@ -138,7 +140,7 @@ struct ProductSelectorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
-                    .renderedIf(configuration.multipleSelectionEnabled)
+                    .renderedIf(configuration.multipleSelectionEnabled && !viewModel.syncChangesImmediately)
 
                     if let variationListViewModel = variationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelector(
@@ -188,6 +190,7 @@ struct ProductSelectorView: View {
         }
         .onAppear {
             viewModel.onLoadTrigger.send()
+            viewModel.syncChangesImmediately = presentationStyle == .sideBySide
         }
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {

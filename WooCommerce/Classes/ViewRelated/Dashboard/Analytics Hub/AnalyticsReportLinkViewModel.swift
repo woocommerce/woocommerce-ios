@@ -26,6 +26,6 @@ final class AnalyticsReportLinkViewModel: WPAdminWebViewModel {
     /// Action to take when the report webview is opened
     ///
     func onWebViewOpen() {
-        // no-op
+        analytics.track(event: .AnalyticsHub.viewFullReportTapped(for: reportType, period: period))
     }
 }

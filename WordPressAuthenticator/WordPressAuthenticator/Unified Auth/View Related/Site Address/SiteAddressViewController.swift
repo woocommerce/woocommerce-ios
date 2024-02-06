@@ -483,7 +483,7 @@ private extension SiteAddressViewController {
 
                     var message: String?
 
-                    // Use `URLError`'s error message (which usually contains more accuruate description), if the
+                    // Use `URLError`'s error message (which usually contains more accurate description), if the
                     // error is SSL error.
                     if let urlError = error as? URLError, urlError.failureURLPeerTrust != nil {
                         message = urlError.localizedDescription

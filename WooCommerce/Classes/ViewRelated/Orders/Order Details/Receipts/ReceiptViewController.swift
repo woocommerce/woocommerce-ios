@@ -5,17 +5,17 @@ final class ReceiptViewController: UIViewController {
     @IBOutlet private weak var webView: WKWebView!
     private let viewModel: ReceiptViewModel
     
-    var onDismiss: (() -> Void)?
+    var onDisappear: (() -> Void)?
 
-    init(viewModel: ReceiptViewModel, onDismiss: (() -> Void)? = nil) {
+    init(viewModel: ReceiptViewModel, onDisappear: (() -> Void)? = nil) {
         self.viewModel = viewModel
-        self.onDismiss = onDismiss
+        self.onDisappear = onDisappear
         super.init(nibName: "LegacyReceiptViewController", bundle: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        onDismiss?()
+        onDisappear?()
     }
 
     required init?(coder: NSCoder) {

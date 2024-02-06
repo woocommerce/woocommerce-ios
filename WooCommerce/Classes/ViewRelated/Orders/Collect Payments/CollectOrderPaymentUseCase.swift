@@ -592,7 +592,7 @@ private extension CollectOrderPaymentUseCase {
         let receiptViewModel = ReceiptViewModel(receipt: receipt,
                                                 orderID: order.orderID,
                                                 siteName: stores.sessionManager.defaultSite?.name)
-        let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDismiss: {
+        let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDisappear: {
             onCompleted()
         })
         let navigationController = UINavigationController(rootViewController: receiptViewController)

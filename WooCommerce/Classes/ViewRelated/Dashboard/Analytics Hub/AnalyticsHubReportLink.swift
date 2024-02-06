@@ -5,15 +5,13 @@ struct AnalyticsHubReportLink: View {
     let reportViewModel: WPAdminWebViewModel
 
     var body: some View {
-        VStack(spacing: Layout.spacing) {
-            Divider()
-            Button {
-                showingWebReport = true
-            } label: {
-                Text(Localization.seeReport)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                DisclosureIndicator()
-            }
+        Button {
+            showingWebReport = true
+        } label: {
+            Text(Localization.seeReport)
+                .bodyStyle()
+                .frame(maxWidth: .infinity, alignment: .leading)
+            DisclosureIndicator()
         }
         .sheet(isPresented: $showingWebReport) {
             WooNavigationSheet(viewModel: .init(navigationTitle: reportViewModel.title, done: {
@@ -32,13 +30,9 @@ private extension AnalyticsHubReportLink {
                                                  value: "See Report",
                                                  comment: "Button label to show an analytics report in the Analytics Hub")
     }
-
-    enum Layout {
-        static let spacing: CGFloat = 16
-    }
 }
 
 #Preview {
-    AnalyticsHubReportLink(showingWebReport: .constant(true), reportViewModel: .init(initialURL: URL(string: "https://example.com/")!))
+    AnalyticsHubReportLink(showingWebReport: .constant(false), reportViewModel: .init(initialURL: URL(string: "https://woo.com/")!))
         .previewLayout(.sizeThatFits)
 }

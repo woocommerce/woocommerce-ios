@@ -107,7 +107,11 @@ struct AnalyticsReportCard: View {
             }
 
             if let reportViewModel {
-                AnalyticsHubReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                VStack(spacing: Layout.cardPadding) {
+                    Divider()
+                        .padding(.horizontal, Layout.dividerPadding)
+                    AnalyticsHubReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                }
             }
         }
         .padding(Layout.cardPadding)
@@ -124,6 +128,7 @@ private extension AnalyticsReportCard {
         static let chartHeight: CGFloat = 32
         static let chartWidth: CGFloat = 72
         static let chartAspectRatio: CGFloat = 2.25
+        static let dividerPadding: CGFloat = -16
     }
 }
 
@@ -145,7 +150,7 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .textInverted,
                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
                             trailingChartColor: .withColorStudio(.red, shade: .shade40),
-                            reportViewModel: WPAdminWebViewModel(title: "", initialURL: URL(string: "https://example.com/")!),
+                            reportViewModel: WPAdminWebViewModel(title: "", initialURL: URL(string: "https://woo.com/")!),
                             isRedacted: false,
                             showSyncError: false,
                             syncErrorMessage: "")

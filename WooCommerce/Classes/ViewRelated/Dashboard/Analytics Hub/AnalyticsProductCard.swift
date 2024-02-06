@@ -78,18 +78,22 @@ struct AnalyticsProductCard: View {
                               valueTitle: Localization.itemsSold,
                               rows: itemsSoldData,
                               isRedacted: isItemsSoldRedacted)
-                .padding(.top, Layout.columnSpacing)
+                .padding(.vertical, Layout.columnSpacing)
 
             if showItemsSoldError {
                 Text(Localization.noItemsSold)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.top, Layout.columnSpacing)
+                    .padding(.vertical, Layout.columnSpacing)
             }
 
             if let reportViewModel {
-                AnalyticsHubReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                VStack(spacing: Layout.cardPadding) {
+                    Divider()
+                        .padding(.horizontal, Layout.dividerPadding)
+                    AnalyticsHubReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                }
             }
         }
         .padding(Layout.cardPadding)
@@ -111,6 +115,7 @@ private extension AnalyticsProductCard {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
         static let columnSpacing: CGFloat = 10
+        static let dividerPadding: CGFloat = -16
     }
 }
 
@@ -133,7 +138,7 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              ],
                              isItemsSoldRedacted: false,
                              showItemsSoldError: false,
-                             reportViewModel: nil)
+                             reportViewModel: .init(title: "Products Report", initialURL: URL(string: "https://woo.com/")!))
             .previewLayout(.sizeThatFits)
 
         AnalyticsProductCard(itemsSold: "-",
@@ -145,7 +150,7 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              itemsSoldData: [],
                              isItemsSoldRedacted: false,
                              showItemsSoldError: true,
-                             reportViewModel: nil)
+                             reportViewModel: .init(title: "Products Report", initialURL: URL(string: "https://woo.com/")!))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

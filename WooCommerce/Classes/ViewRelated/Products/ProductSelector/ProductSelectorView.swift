@@ -228,6 +228,8 @@ struct ProductSelectorView: View {
                     isShowingVariationList.toggle()
                     self.variationListViewModel = variationListViewModel
                 }
+                .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+                .disabled(viewModel.selectionDisabled)
 
                 DisclosureIndicator()
             }
@@ -267,6 +269,8 @@ struct ProductSelectorView: View {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
                 }
             }
+            .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+            .disabled(viewModel.selectionDisabled)
         }
     }
 }

@@ -46,6 +46,8 @@ struct ProductVariationSelector: View {
                                        viewModel: rowViewModel)
                                 .accessibilityHint(Localization.productRowAccessibilityHint)
                                 .padding(Constants.defaultPadding)
+                                .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+                                .disabled(viewModel.selectionDisabled)
                                 .onTapGesture {
                                     viewModel.changeSelectionStateForVariation(with: rowViewModel.productOrVariationID)
                                 }

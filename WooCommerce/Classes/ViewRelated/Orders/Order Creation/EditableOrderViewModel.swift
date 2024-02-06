@@ -1739,6 +1739,7 @@ private extension EditableOrderViewModel {
                     stores: stores,
                     toggleAllVariationsOnSelection: false,
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
+                    orderSyncState: orderSynchronizer.statePublisher,
                     onProductSelectionStateChanged: { [weak self] product in
                         guard let self = self else { return }
                         self.changeSelectionStateForProduct(product)
@@ -1809,7 +1810,7 @@ private extension EditableOrderViewModel {
             hasCustomerDetails: hasCustomerDetails,
             hasFees: orderSynchronizer.order.fees.isNotEmpty,
             hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-            products: Array(allProducts), 
+            products: Array(allProducts),
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 

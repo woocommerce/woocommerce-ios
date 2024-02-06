@@ -44,6 +44,16 @@ final class ProductsSplitViewCoordinator: NSObject {
     /// Called when the split view is ready to be shown, like after the split view is added to the view hierarchy.
     func start() {
         configureSplitView()
+        autoSelectProductOnInitialDataLoad()
+    }
+
+    /// Called when the split view transitions from collapsed to expanded mode.
+    func didExpand() {
+        // Auto-selects the first product if there is no content to be shown.
+        if contentTypes.isEmpty {
+            showEmptyView()
+            productsViewController.selectFirstProductIfAvailable()
+        }
     }
 }
 
@@ -117,6 +127,18 @@ private extension ProductsSplitViewCoordinator {
 
         primaryNavigationController.delegate = self
         secondaryNavigationController.delegate = self
+    }
+
+    func autoSelectProductOnInitialDataLoad() {
+        Publishers.CombineLatest(selectedProduct, productsViewController.onDataReloaded)
+            .first()
+            .sink { [weak self] selectedProduct, onDataReloaded in
+                guard let self else { return }
+                if selectedProduct == nil && !splitViewController.isCollapsed {
+                    productsViewController.selectFirstProductIfAvailable()
+                }
+            }
+            .store(in: &subscriptions)
     }
 }
 

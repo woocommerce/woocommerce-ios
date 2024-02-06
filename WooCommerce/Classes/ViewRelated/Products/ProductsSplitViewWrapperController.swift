@@ -38,6 +38,7 @@ private extension ProductsSplitViewWrapperController {
     }
 
     func handleDidExpand(splitViewController: UISplitViewController) {
+        coordinator.didExpand()
     }
 }
 

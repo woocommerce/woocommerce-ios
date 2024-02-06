@@ -278,6 +278,14 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     override var shouldShowOfflineBanner: Bool {
         return true
     }
+
+    /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
+    func selectFirstProductIfAvailable() {
+        guard let firstProduct = resultsController.fetchedObjects.first else {
+            return
+        }
+        didSelectProduct(product: firstProduct)
+    }
 }
 
 // MARK: - Navigation Bar Actions

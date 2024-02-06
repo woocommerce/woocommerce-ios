@@ -575,6 +575,10 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProducts.removeAll(where: { $0.productID == item.productID })
         }
 
+        if syncChangesImmediately {
+            productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
+        }
+
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 

@@ -37,6 +37,9 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         configureDetailsLabel()
         configureProductImageView()
         configureBottomBorderView()
+        // From iOS 15.0, a focus effect will be applied automatically to a selected cell
+        // modifying its style (e.g: by adding a border)
+        focusEffect = nil
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -239,7 +242,6 @@ private extension ProductsTabProductTableViewCell {
         static let imageBorderColor = UIColor.border
         static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
         static let imageBackgroundColor = UIColor.listForeground(modal: false)
-        static let selectedBackgroundColor = UIColor.productsCellSelectedBackgroundColor
     }
 }
 

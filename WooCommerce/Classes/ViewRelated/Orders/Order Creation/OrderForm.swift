@@ -35,8 +35,6 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        rootView.rootViewController = self
-
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             // Set presentation delegate to track the user dismiss flow event
             if let navigationController = navigationController {
@@ -107,16 +105,13 @@ struct OrderFormPresentationWrapper: View {
 
     let flow: WooAnalyticsEvent.Orders.Flow
 
-    var rootViewController: UIViewController?
-
     @ObservedObject var viewModel: EditableOrderViewModel
 
     var body: some View {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
             AdaptiveModalContainer(primaryView: { presentProductSelector in
                 OrderForm(dismissHandler: dismissHandler,
-                          flow: flow, 
-                          rootViewController: rootViewController,
+                          flow: flow,
                           viewModel: viewModel,
                           presentProductSelector: presentProductSelector)
             }, secondaryView: { isShowingProductSelector in
@@ -131,7 +126,7 @@ struct OrderFormPresentationWrapper: View {
                 }
             })
         } else {
-            OrderForm(dismissHandler: dismissHandler, flow: flow, rootViewController: rootViewController, viewModel: viewModel, presentProductSelector: nil)
+            OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
     }
 }
@@ -144,8 +139,6 @@ struct OrderForm: View {
     var dismissHandler: (() -> Void) = {}
 
     let flow: WooAnalyticsEvent.Orders.Flow
-
-    var rootViewController: UIViewController?
 
     @ObservedObject var viewModel: EditableOrderViewModel
 

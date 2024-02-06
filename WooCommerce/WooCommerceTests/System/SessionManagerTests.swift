@@ -6,7 +6,7 @@ import KeychainAccess
 
 /// SessionManager Unit Tests
 ///
-class SessionManagerTests: XCTestCase {
+final class SessionManagerTests: XCTestCase {
 
     /// Sample Application Password
     ///
@@ -402,6 +402,24 @@ class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertNil(defaults[.expectedStoreNamePendingStoreSwitch])
+    }
+
+    /// Verifies that image cache is cleared upon reset
+    ///
+    func test_image_cache_is_cleared_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let mockCache = MockImageCache(name: "Testing")
+        let sut = SessionManager(defaults: defaults,
+                                 keychainServiceName: Settings.keychainServiceName,
+                                 imageCache: mockCache)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertTrue(mockCache.clearCacheCalled)
     }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain

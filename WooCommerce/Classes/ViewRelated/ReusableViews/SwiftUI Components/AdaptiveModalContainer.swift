@@ -106,21 +106,3 @@ extension EnvironmentValues {
         set { self[AdaptiveModalContainerPresentationStyleKey.self] = newValue }
     }
 }
-
-
-class AdaptiveModalContainerPresentationContext: ObservableObject, Equatable {
-    static func == (lhs: AdaptiveModalContainerPresentationContext, rhs: AdaptiveModalContainerPresentationContext) -> Bool {
-        return lhs.presentationStyle == rhs.presentationStyle
-    }
-
-    @Published var presentationStyle: PresentationStyle
-
-    init(presentationStyle: PresentationStyle) {
-        self.presentationStyle = presentationStyle
-    }
-
-    enum PresentationStyle: Equatable {
-        case sideBySide
-        case modalOnModal
-    }
-}

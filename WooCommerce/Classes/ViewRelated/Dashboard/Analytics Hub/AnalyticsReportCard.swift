@@ -20,7 +20,7 @@ struct AnalyticsReportCard: View {
     let trailingChartData: [Double]
     let trailingChartColor: UIColor?
 
-    let reportViewModel: WebViewSheetViewModel?
+    let reportViewModel: WPAdminWebViewModel?
     @State private var showingWebReport: Bool = false
 
     let isRedacted: Bool
@@ -122,8 +122,10 @@ struct AnalyticsReportCard: View {
         .padding(Layout.cardPadding)
         .sheet(isPresented: $showingWebReport) {
             if let reportViewModel {
-                WebViewSheet(viewModel: reportViewModel) {
+                WooNavigationSheet(viewModel: .init(navigationTitle: reportViewModel.title, done: {
                     showingWebReport = false
+                })) {
+                    AuthenticatedWebView(isPresented: $showingWebReport, viewModel: reportViewModel)
                 }
             }
         }
@@ -167,7 +169,7 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .textInverted,
                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
                             trailingChartColor: .withColorStudio(.red, shade: .shade40),
-                            reportViewModel: WebViewSheetViewModel(url: URL(string: "https://example.com/")!, navigationTitle: "", authenticated: false),
+                            reportViewModel: WPAdminWebViewModel(title: "", initialURL: URL(string: "https://example.com/")!),
                             isRedacted: false,
                             showSyncError: false,
                             syncErrorMessage: "")
@@ -188,7 +190,7 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .text,
                             trailingChartData: [],
                             trailingChartColor: .withColorStudio(.gray, shade: .shade30),
-                            reportViewModel: WebViewSheetViewModel(url: URL(string: "https://example.com/")!, navigationTitle: "", authenticated: false),
+                            reportViewModel: WPAdminWebViewModel(title: "", initialURL: URL(string: "https://example.com/")!),
                             isRedacted: false,
                             showSyncError: true,
                             syncErrorMessage: "Error loading revenue analytics")

@@ -23,7 +23,7 @@ struct AnalyticsProductsStatsCardViewModel {
 
     /// WebViewSheetViewModel for the web analytics report
     ///
-    let reportWebSheetViewModel: WebViewSheetViewModel?
+    let reportWebSheetViewModel: WPAdminWebViewModel?
 }
 
 /// Analytics Hub Items Sold ViewModel.

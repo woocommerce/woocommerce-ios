@@ -55,7 +55,7 @@ struct AnalyticsReportCardViewModel {
 
     /// WebViewSheetViewModel for the web analytics report
     ///
-    let reportWebSheetViewModel: WebViewSheetViewModel?
+    let reportWebSheetViewModel: WPAdminWebViewModel?
 }
 
 extension AnalyticsReportCardViewModel {

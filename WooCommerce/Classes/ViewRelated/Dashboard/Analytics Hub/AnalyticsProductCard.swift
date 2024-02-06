@@ -39,7 +39,7 @@ struct AnalyticsProductCard: View {
 
     /// URL for the products analytics web report
     ///
-    let reportViewModel: WebViewSheetViewModel?
+    let reportViewModel: WPAdminWebViewModel?
 
     var body: some View {
         VStack(alignment: .leading) {

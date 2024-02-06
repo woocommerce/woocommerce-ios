@@ -526,16 +526,16 @@ private extension AnalyticsHubViewModel {
 
     /// Gets the webview view model to show a web analytics report, based on the provided report type and currently selected time range
     ///
-    func webReportVM(for report: AnalyticsHubWebReport.ReportType) -> WPAdminWebViewModel? {
+    func webReportVM(for report: AnalyticsWebReport.ReportType) -> WPAdminWebViewModel? {
         return AnalyticsHubViewModel.webReportVM(for: report, timeRange: timeRangeSelectionType, storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
     }
 
     /// Gets the webview view model to show a web analytics report, based on the provided report type, time range, and store admin URL
     ///
-    static func webReportVM(for report: AnalyticsHubWebReport.ReportType,
+    static func webReportVM(for report: AnalyticsWebReport.ReportType,
                             timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
                             storeAdminURL: String?) -> WPAdminWebViewModel? {
-        guard let url = AnalyticsHubWebReport.getUrl(for: report, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
+        guard let url = AnalyticsWebReport.getUrl(for: report, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
             return nil
         }
         let title = {

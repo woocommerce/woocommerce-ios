@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AnalyticsHubReportLink: View {
+struct AnalyticsReportLink: View {
     @Binding var showingWebReport: Bool
     let reportViewModel: WPAdminWebViewModel
 
@@ -24,7 +24,7 @@ struct AnalyticsHubReportLink: View {
 }
 
 // MARK: Constants
-private extension AnalyticsHubReportLink {
+private extension AnalyticsReportLink {
     enum Localization {
         static let seeReport = NSLocalizedString("analyticsHub.reportCard.webReport",
                                                  value: "See Report",
@@ -33,6 +33,6 @@ private extension AnalyticsHubReportLink {
 }
 
 #Preview {
-    AnalyticsHubReportLink(showingWebReport: .constant(false), reportViewModel: .init(initialURL: URL(string: "https://woo.com/")!))
+    AnalyticsReportLink(showingWebReport: .constant(false), reportViewModel: .init(initialURL: URL(string: "https://woo.com/")!))
         .previewLayout(.sizeThatFits)
 }

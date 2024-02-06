@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents analytics reports the app can link to on the store's web admin
-struct AnalyticsHubWebReport {
+struct AnalyticsWebReport {
 
     /// Supported types of analytics reports
     enum ReportType {

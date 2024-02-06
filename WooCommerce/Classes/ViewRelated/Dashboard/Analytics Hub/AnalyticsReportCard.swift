@@ -110,7 +110,7 @@ struct AnalyticsReportCard: View {
                 VStack(spacing: Layout.cardPadding) {
                     Divider()
                         .padding(.horizontal, Layout.dividerPadding)
-                    AnalyticsHubReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                    AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
                 }
             }
         }

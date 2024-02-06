@@ -2,10 +2,13 @@ import SwiftUI
 
 struct AnalyticsReportLink: View {
     @Binding var showingWebReport: Bool
-    let reportViewModel: WPAdminWebViewModel
+
+    /// View model for the report webview
+    let reportViewModel: AnalyticsReportLinkViewModel
 
     var body: some View {
         Button {
+            reportViewModel.onWebViewOpen()
             showingWebReport = true
         } label: {
             Text(Localization.seeReport)
@@ -33,6 +36,10 @@ private extension AnalyticsReportLink {
 }
 
 #Preview {
-    AnalyticsReportLink(showingWebReport: .constant(false), reportViewModel: .init(initialURL: URL(string: "https://woo.com/")!))
+    AnalyticsReportLink(showingWebReport: .constant(false),
+                        reportViewModel: .init(reportType: .revenue,
+                                               period: .today,
+                                               webViewTitle: "Revenue Report",
+                                               reportURL: URL(string: "https://woo.com/")!))
         .previewLayout(.sizeThatFits)
 }

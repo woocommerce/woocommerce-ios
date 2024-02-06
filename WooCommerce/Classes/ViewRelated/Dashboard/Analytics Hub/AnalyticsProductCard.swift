@@ -39,7 +39,7 @@ struct AnalyticsProductCard: View {
 
     /// URL for the products analytics web report
     ///
-    let reportViewModel: WPAdminWebViewModel?
+    let reportViewModel: AnalyticsReportLinkViewModel?
     @State private var showingWebReport: Bool = false
 
     var body: some View {
@@ -138,7 +138,10 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              ],
                              isItemsSoldRedacted: false,
                              showItemsSoldError: false,
-                             reportViewModel: .init(title: "Products Report", initialURL: URL(string: "https://woo.com/")!))
+                             reportViewModel: .init(reportType: .products,
+                                                    period: .today,
+                                                    webViewTitle: "Products Report",
+                                                    reportURL: URL(string: "https://woo.com")!))
             .previewLayout(.sizeThatFits)
 
         AnalyticsProductCard(itemsSold: "-",
@@ -150,7 +153,10 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              itemsSoldData: [],
                              isItemsSoldRedacted: false,
                              showItemsSoldError: true,
-                             reportViewModel: .init(title: "Products Report", initialURL: URL(string: "https://woo.com/")!))
+                             reportViewModel: .init(reportType: .products,
+                                                    period: .today,
+                                                    webViewTitle: "Products Report",
+                                                    reportURL: URL(string: "https://woo.com")!))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

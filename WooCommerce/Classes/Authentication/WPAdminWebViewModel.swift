@@ -3,7 +3,7 @@ import WebKit
 
 /// A view model for authenticated web view for a wp-admin URL in self-hosted sites when WPCOM login is enabled as a Jetpack feature at
 /// `/wp-admin/admin.php?page=jetpack#/settings`.
-final class WPAdminWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
+class WPAdminWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
     /// Set in `AuthenticatedWebViewController`.
     var reloadWebview: () -> Void = {}
 

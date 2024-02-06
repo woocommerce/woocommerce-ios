@@ -53,9 +53,9 @@ struct AnalyticsReportCardViewModel {
     ///
     let syncErrorMessage: String
 
-    /// WebViewSheetViewModel for the web analytics report
+    /// View model for the web analytics report link
     ///
-    let reportWebSheetViewModel: WPAdminWebViewModel?
+    let reportViewModel: AnalyticsReportLinkViewModel?
 }
 
 extension AnalyticsReportCardViewModel {
@@ -76,7 +76,7 @@ extension AnalyticsReportCardViewModel {
               isRedacted: true,
               showSyncError: false,
               syncErrorMessage: "",
-              reportWebSheetViewModel: reportWebSheetViewModel)
+              reportViewModel: reportViewModel)
     }
 }
 
@@ -102,6 +102,6 @@ extension AnalyticsReportCard {
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage
-        self.reportViewModel = viewModel.reportWebSheetViewModel
+        self.reportViewModel = viewModel.reportViewModel
     }
 }

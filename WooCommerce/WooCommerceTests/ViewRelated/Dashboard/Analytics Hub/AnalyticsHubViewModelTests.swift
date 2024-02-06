@@ -463,9 +463,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        stores: stores)
 
         // When
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportWebSheetViewModel?.initialURL)
-        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportWebSheetViewModel?.initialURL)
-        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportWebSheetViewModel?.initialURL)
+        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
+        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportViewModel?.initialURL)
+        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportViewModel?.initialURL)
 
         let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
         let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
@@ -520,9 +520,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportWebSheetViewModel?.initialURL)
-        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportWebSheetViewModel?.initialURL)
-        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportWebSheetViewModel?.initialURL)
+        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
+        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportViewModel?.initialURL)
+        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportViewModel?.initialURL)
 
         let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
         let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
@@ -565,12 +565,12 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertNotNil(loadingRevenueCard?.reportWebSheetViewModel?.initialURL)
-        XCTAssertNotNil(loadingOrdersCard?.reportWebSheetViewModel?.initialURL)
-        XCTAssertNotNil(loadingProductsCard?.reportWebSheetViewModel?.initialURL)
+        XCTAssertNotNil(loadingRevenueCard?.reportViewModel?.initialURL)
+        XCTAssertNotNil(loadingOrdersCard?.reportViewModel?.initialURL)
+        XCTAssertNotNil(loadingProductsCard?.reportViewModel?.initialURL)
 
-        XCTAssertNotNil(vm.revenueCard.reportWebSheetViewModel?.initialURL)
-        XCTAssertNotNil(vm.ordersCard.reportWebSheetViewModel?.initialURL)
-        XCTAssertNotNil(vm.productsStatsCard.reportWebSheetViewModel?.initialURL)
+        XCTAssertNotNil(vm.revenueCard.reportViewModel?.initialURL)
+        XCTAssertNotNil(vm.ordersCard.reportViewModel?.initialURL)
+        XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
     }
 }

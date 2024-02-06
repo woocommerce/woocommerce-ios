@@ -3,7 +3,7 @@ import Combine
 
 /// Hosting controller that wraps an `OrderForm` view.
 ///
-final class OrderFormHostingController: UIHostingController<OrderForm> {
+final class OrderFormHostingController: UIHostingController<OrderFormPresentationWrapper> {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -20,7 +20,7 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
                     return .editing
             }
         }()
-        super.init(rootView: OrderForm(flow: flow, viewModel: viewModel))
+        super.init(rootView: OrderFormPresentationWrapper(flow: flow, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -100,6 +100,42 @@ private extension OrderFormHostingController {
     }
 }
 
+struct OrderFormPresentationWrapper: View {
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismissHandler: (() -> Void) = {}
+
+    let flow: WooAnalyticsEvent.Orders.Flow
+
+    var rootViewController: UIViewController?
+
+    @ObservedObject var viewModel: EditableOrderViewModel
+
+    var body: some View {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+            AdaptiveModalContainer(primaryView: { presentProductSelector in
+                OrderForm(dismissHandler: dismissHandler,
+                          flow: flow, 
+                          rootViewController: rootViewController,
+                          viewModel: viewModel,
+                          presentProductSelector: presentProductSelector)
+            }, secondaryView: { isShowingProductSelector in
+                if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                    ProductSelectorView(configuration: ProductSelectorView.Configuration.splitViewAddProductToOrder(),
+                                        source: .orderForm(flow: flow),
+                                        isPresented: isShowingProductSelector,
+                                        viewModel: productSelectorViewModel)
+                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                        ConfigurableBundleProductView(viewModel: viewModel)
+                    }
+                }
+            })
+        } else {
+            OrderForm(dismissHandler: dismissHandler, flow: flow, rootViewController: rootViewController, viewModel: viewModel, presentProductSelector: nil)
+        }
+    }
+}
+
 /// View to create or edit an order
 ///
 struct OrderForm: View {
@@ -112,6 +148,8 @@ struct OrderForm: View {
     var rootViewController: UIViewController?
 
     @ObservedObject var viewModel: EditableOrderViewModel
+
+    let presentProductSelector: (() -> Void)?
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -128,24 +166,13 @@ struct OrderForm: View {
 
     @State private var shouldShowShippingLineDetails = false
 
+    @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+
     var body: some View {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            AdaptiveModalContainer(primaryView: { presentProductSelector in
-                orderFormSummary(presentProductSelector)
-            }, secondaryView: { isShowingProductSelector in
-                if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorView(configuration: ProductSelectorView.Configuration.splitViewAddProductToOrder(),
-                                        source: .orderForm(flow: flow),
-                                        isPresented: isShowingProductSelector,
-                                        viewModel: productSelectorViewModel)
-                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                        ConfigurableBundleProductView(viewModel: viewModel)
-                    }
-                }
-            })
-        } else {
-            orderFormSummary(nil)
-        }
+        orderFormSummary(presentProductSelector)
+            .onAppear {
+                viewModel.syncChangesImmediately = presentationStyle == .sideBySide
+            }
     }
 
     @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {
@@ -731,23 +758,23 @@ struct OrderForm_Previews: PreviewProvider {
         let viewModel = EditableOrderViewModel(siteID: 123)
 
         NavigationView {
-            OrderForm(flow: .creation, viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
 
         NavigationView {
-            OrderForm(flow: .creation, viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
         .previewDisplayName("Accessibility")
 
         NavigationView {
-            OrderForm(flow: .creation, viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            OrderForm(flow: .creation, viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
         .environment(\.layoutDirection, .rightToLeft)
         .previewDisplayName("Right to left")

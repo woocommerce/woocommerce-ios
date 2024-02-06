@@ -247,6 +247,8 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
 
+    @Published var syncChangesImmediately: Bool = false
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {

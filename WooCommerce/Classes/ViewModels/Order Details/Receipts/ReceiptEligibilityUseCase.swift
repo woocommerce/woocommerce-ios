@@ -26,8 +26,8 @@ final class ReceiptEligibilityUseCase {
             guard let wcPlugin = wcPlugin, wcPlugin.active else {
                 return onCompletion(false)
             }
-            // 2. If WooCommerce version is the specific API development branch, mark as eligible
-            if wcPlugin.version == Constants.wcPluginDevVersion {
+            // 2. If WooCommerce version is any of the specific API development branches, mark as eligible
+            if Constants.wcPluginDevVersion.contains(wcPlugin.version) {
                 onCompletion(true)
             } else {
                 // 3. Else, if WooCommerce version is higher than minimum required version, mark as eligible
@@ -44,6 +44,6 @@ private extension ReceiptEligibilityUseCase {
     enum Constants {
         static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "8.7.0"
-        static let wcPluginDevVersion = "8.6.0-dev-7625495467-gf50cc6b"
+        static let wcPluginDevVersion: [String] = ["8.6.0-dev-7625495467-gf50cc6b", "8.6.0-dev-7708067547-g87e8c5f"]
     }
 }

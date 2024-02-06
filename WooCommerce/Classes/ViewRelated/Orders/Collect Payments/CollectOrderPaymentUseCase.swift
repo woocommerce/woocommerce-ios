@@ -516,8 +516,7 @@ private extension CollectOrderPaymentUseCase {
                 case let .success(receipt):
                     self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
                 case let .failure(error):
-                    DDLogError("Failed to present receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
-                    onCompleted()
+                    self.presentBackedReceiptFailedNotice(with: error, onCompleted: onCompleted)
                 }
             })
         }
@@ -595,6 +594,18 @@ private extension CollectOrderPaymentUseCase {
         let navigationController = UINavigationController(rootViewController: receiptViewController)
         rootViewController.present(navigationController, animated: true)
     }
+
+    func presentBackedReceiptFailedNotice(with error: Error?, onCompleted: @escaping (() -> Void)) {
+        DDLogError("Failed to present receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
+
+        let noticePresenter = DefaultNoticePresenter()
+        let notice = Notice(title: Localization.failedReceiptPrintNoticeText,
+                                    feedbackType: .error)
+        noticePresenter.presentingViewController = rootViewController
+        noticePresenter.enqueue(notice: notice)
+
+        onCompleted()
+    }
 }
 
 // MARK: Interac handling
@@ -624,6 +635,11 @@ private extension CollectOrderPaymentUseCase {
 
 
     enum Localization {
+        static let failedReceiptPrintNoticeText = NSLocalizedString(
+            "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice",
+            value: "Unable to retrieve receipt.",
+            comment: "Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view.")
+
         private static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
                                                                  comment: "Subject of email sent with a card present payment receipt")
         private static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",

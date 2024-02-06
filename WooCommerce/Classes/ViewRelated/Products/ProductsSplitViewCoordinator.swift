@@ -47,6 +47,15 @@ final class ProductsSplitViewCoordinator: NSObject {
         autoSelectProductOnInitialDataLoad()
     }
 
+    /// Called when the split view is collapsing from the expanded state to determine which column to show in the collapsed mode.
+    /// - Returns: The column to show when the split view is collapsed.
+    func columnToShowWhenSplitViewIsCollapsing() -> UISplitViewController.Column {
+        guard let lastContentType = contentTypes.last else {
+            return .primary
+        }
+        return lastContentType == .empty ? .primary: .secondary
+    }
+
     /// Called when the split view transitions from collapsed to expanded mode.
     func didExpand() {
         // Auto-selects the first product if there is no content to be shown.

@@ -33,8 +33,7 @@ final class ProductsSplitViewWrapperController: UIViewController {
 
 private extension ProductsSplitViewWrapperController {
     func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {
-        // TODO: update the collapsing logic
-        .secondary
+        coordinator.columnToShowWhenSplitViewIsCollapsing()
     }
 
     func handleDidExpand(splitViewController: UISplitViewController) {

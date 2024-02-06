@@ -507,27 +507,18 @@ private extension CollectOrderPaymentUseCase {
     /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
     func presentBackendReceiptAlert(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding, onCompleted: @escaping () -> ()) {
-        // Present receipt alert
-        alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: { [weak self] in
+        // Handles receipt presentation for both print and email actions
+        let receiptPresentationCompletionAction: () -> Void = { [weak self] in
             guard let self else { return }
-
             self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] receipt in
                 guard let self else { return }
                 self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
             })
-
-        }, emailReceipt: { [weak self] in
-            guard let self else { return }
-
-            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] receipt in
-                guard let self else { return }
-                self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
-            })
-
-        }, noReceiptAction: {
-            // Do nothing, confirm the receipt link appears now on OrderDetails
-            onCompleted()
-        }))
+        }
+        // Presents receipt alert
+        alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: receiptPresentationCompletionAction,
+                                                                 emailReceipt: receiptPresentationCompletionAction,
+                                                                 noReceiptAction: { onCompleted() }))
     }
 
     /// Allow merchants to print or email locally-generated receipts.

@@ -29,6 +29,7 @@ final class ProductsSplitViewCoordinator {
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
+                                                                     selectedProduct: selectedProduct,
                                                                      navigateToContent: showFromProductList)
 
     private var addProductCoordinator: AddProductCoordinator?

@@ -39,7 +39,7 @@ struct AnalyticsProductCard: View {
 
     /// URL for the products analytics web report
     ///
-    let reportURL: URL?
+    let reportViewModel: WebViewSheetViewModel?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -128,7 +128,7 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              ],
                              isItemsSoldRedacted: false,
                              showItemsSoldError: false,
-                             reportURL: URL(string: "https://example.com"))
+                             reportViewModel: nil)
             .previewLayout(.sizeThatFits)
 
         AnalyticsProductCard(itemsSold: "-",
@@ -140,7 +140,7 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              itemsSoldData: [],
                              isItemsSoldRedacted: false,
                              showItemsSoldError: true,
-                             reportURL: URL(string: "https://example.com"))
+                             reportViewModel: nil)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

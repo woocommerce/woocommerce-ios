@@ -463,9 +463,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        stores: stores)
 
         // When
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportURL)
-        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportURL)
-        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportURL)
+        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportWebSheetViewModel?.url)
+        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportWebSheetViewModel?.url)
+        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportWebSheetViewModel?.url)
 
         let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
         let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
@@ -520,9 +520,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportURL)
-        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportURL)
-        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportURL)
+        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportWebSheetViewModel?.url)
+        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportWebSheetViewModel?.url)
+        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportWebSheetViewModel?.url)
 
         let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
         let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
@@ -565,12 +565,12 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertNotNil(loadingRevenueCard?.reportURL)
-        XCTAssertNotNil(loadingOrdersCard?.reportURL)
-        XCTAssertNotNil(loadingProductsCard?.reportURL)
+        XCTAssertNotNil(loadingRevenueCard?.reportWebSheetViewModel?.url)
+        XCTAssertNotNil(loadingOrdersCard?.reportWebSheetViewModel?.url)
+        XCTAssertNotNil(loadingProductsCard?.reportWebSheetViewModel?.url)
 
-        XCTAssertNotNil(vm.revenueCard.reportURL)
-        XCTAssertNotNil(vm.ordersCard.reportURL)
-        XCTAssertNotNil(vm.productsStatsCard.reportURL)
+        XCTAssertNotNil(vm.revenueCard.reportWebSheetViewModel?.url)
+        XCTAssertNotNil(vm.ordersCard.reportWebSheetViewModel?.url)
+        XCTAssertNotNil(vm.productsStatsCard.reportWebSheetViewModel?.url)
     }
 }

@@ -53,9 +53,9 @@ struct AnalyticsReportCardViewModel {
     ///
     let syncErrorMessage: String
 
-    /// URL for the corresponding web analytics report
+    /// WebViewSheetViewModel for the web analytics report
     ///
-    let reportURL: URL?
+    let reportWebSheetViewModel: WebViewSheetViewModel?
 }
 
 extension AnalyticsReportCardViewModel {
@@ -76,7 +76,7 @@ extension AnalyticsReportCardViewModel {
               isRedacted: true,
               showSyncError: false,
               syncErrorMessage: "",
-              reportURL: reportURL)
+              reportWebSheetViewModel: reportWebSheetViewModel)
     }
 }
 
@@ -102,19 +102,6 @@ extension AnalyticsReportCard {
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage
-        self.reportViewModel = {
-            guard let reportURL = viewModel.reportURL else {
-                return nil
-            }
-            return WebViewSheetViewModel(url: reportURL, navigationTitle: Localization.reportTitle, authenticated: true)
-        }()
-    }
-}
-
-private extension AnalyticsReportCard {
-    enum Localization {
-        static let reportTitle = NSLocalizedString("analyticsHub.reportCard.reportTitle",
-                                                   value: "Analytics Report",
-                                                   comment: "Title for the webview displaying a web analytics report")
+        self.reportViewModel = viewModel.reportWebSheetViewModel
     }
 }

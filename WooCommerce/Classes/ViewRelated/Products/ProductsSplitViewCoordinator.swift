@@ -1,8 +1,29 @@
+import Combine
 import UIKit
 import Yosemite
 
 /// Coordinates the state of multiple columns (product list and secondary view) based on the secondary view.
 final class ProductsSplitViewCoordinator {
+    /// Content type that is shown in the secondary view.
+    enum SecondaryViewContentType: Equatable {
+        case empty
+        case productForm(product: Product?)
+    }
+
+    @Published private var contentTypes: [SecondaryViewContentType] = []
+    private var selectedProduct: AnyPublisher<Product?, Never> {
+        $contentTypes.map { contentTypes -> Product? in
+            guard let contentType = contentTypes.last else {
+                return nil
+            }
+            guard case let .productForm(product) = contentType else {
+                return nil
+            }
+            return product
+        }.eraseToAnyPublisher()
+    }
+    private var subscriptions: Set<AnyCancellable> = []
+
     private let siteID: Int64
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
@@ -43,35 +64,42 @@ private extension ProductsSplitViewCoordinator {
             image: .emptyProductsTabImage
         )
         let emptyStateViewController = EmptyStateViewController(style: .basic, configuration: config)
-        showSecondaryView(viewController: emptyStateViewController, replacesNavigationStack: true)
+        showSecondaryView(contentType: .empty, viewController: emptyStateViewController, replacesNavigationStack: true)
     }
 
     func showProductForm(product: Product) {
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false) { [weak self] viewController in
-            self?.showSecondaryView(viewController: viewController, replacesNavigationStack: true)
+            self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
         }
     }
 
     func startProductCreation(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {
+        let replacesNavigationStack = contentTypes.last == .empty
         let addProductCoordinator = AddProductCoordinator(siteID: siteID,
                                                            source: .productsTab,
                                                            sourceView: sourceView,
                                                            sourceNavigationController: primaryNavigationController,
                                                            isFirstProduct: isFirstProduct,
                                                            navigateToProductForm: { [weak self] viewController in
-            self?.showSecondaryView(viewController: viewController, replacesNavigationStack: true)
+            self?.showSecondaryView(contentType: .productForm(product: nil), viewController: viewController, replacesNavigationStack: replacesNavigationStack)
         })
+        addProductCoordinator.onProductCreated = { [weak self] product in
+            guard let self, let lastContentType = contentTypes.last, lastContentType == .productForm(product: nil) else { return }
+            contentTypes[contentTypes.count - 1] = .productForm(product: product)
+        }
         addProductCoordinator.start()
         self.addProductCoordinator = addProductCoordinator
     }
 
-    func showSecondaryView(viewController: UIViewController, replacesNavigationStack: Bool) {
+    func showSecondaryView(contentType: SecondaryViewContentType, viewController: UIViewController, replacesNavigationStack: Bool) {
         if replacesNavigationStack {
             secondaryNavigationController.setViewControllers([viewController], animated: false)
+            contentTypes = [contentType]
         } else {
-            secondaryNavigationController.show(viewController, sender: self)
+            secondaryNavigationController.pushViewController(viewController, animated: false)
+            contentTypes.append(contentType)
         }
 
         splitViewController.show(.secondary)

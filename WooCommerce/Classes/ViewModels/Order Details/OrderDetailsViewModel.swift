@@ -468,6 +468,11 @@ extension OrderDetailsViewModel {
             let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
+            guard let cell = tableView.cellForRow(at: indexPath) as? TwoColumnHeadlineFootnoteTableViewCell else {
+                return
+            }
+            cell.startLoading()
+
             let action = ReceiptAction.retrieveReceipt(order: order) { [weak self] result in
                 guard let self else { return }
                 switch result {
@@ -482,6 +487,7 @@ extension OrderDetailsViewModel {
                 case let .failure(error):
                     debugPrint("\(error)")
                 }
+                cell.stopLoading()
             }
             ServiceLocator.stores.dispatch(action)
         case .seeLegacyReceipt:

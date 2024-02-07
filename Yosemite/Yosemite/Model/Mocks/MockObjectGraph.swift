@@ -376,7 +376,8 @@ extension MockObjectGraph {
             taxes: [],
             customFields: [],
             renewalSubscriptionID: nil,
-            appliedGiftCards: []
+            appliedGiftCards: [],
+            attributionInfo: nil
         )
     }
 }

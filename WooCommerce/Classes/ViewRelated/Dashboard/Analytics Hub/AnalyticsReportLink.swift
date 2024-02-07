@@ -40,6 +40,7 @@ private extension AnalyticsReportLink {
                         reportViewModel: .init(reportType: .revenue,
                                                period: .today,
                                                webViewTitle: "Revenue Report",
-                                               reportURL: URL(string: "https://woo.com/")!))
+                                               reportURL: URL(string: "https://woo.com/")!,
+                                               usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
         .previewLayout(.sizeThatFits)
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-23 19:54:03+0000 */
+/* Translation-Revision-Date: 2024-01-31 08:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -758,9 +758,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Se han marcado todas las reseñas como leídas";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"All set!" = "¡Todo configurado!";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "Viene con todas las funciones que necesitas";
@@ -3511,11 +3508,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Fallo en el registro en Google.";
 
-/* Confirmation button for the alert after the support request is created. */
-"Got It!" = "¡Entendido!";
-
 /* Button title that dismisses the Write with AI tooltip
-   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Entendido";
 
@@ -6272,9 +6265,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the report section on the privacy screen */
 "Reports" = "Informes";
 
-/* Title for the alert after the support request is created. */
-"Request Sent!" = "¡Solicitud enviada!";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Solicitar un reembolso";
@@ -7162,17 +7152,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "Disculpa, el nombre de usuario, también debe contener letras.";
 
-/* Error message when the app can't create a zendesk identity. */
-"Sorry, we cannot create support requests right now, please try again later." = "Lo siento, en este momento no podemos crear solicitudes de soporte. Vuelve a intentarlo más tarde.";
-
 /* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
 "Sorry, we could not complete this action, as no active payment was found." = "Lo sentimos, no hemos podido completar esta acción, ya que no se ha encontrado ningún pago activo.";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Lo sentimos, no hemos podido conectar con el lector. Inténtalo de nuevo.";
-
-/* Error message when the app can't create a support request. */
-"Sorry, we could not create your support request, please try again later." = "Lo siento, no hemos podido crear tu solicitud de soporte. Vuelve a intentarlo más tarde.";
 
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "Lo sentimos, no hemos podido iniciar la función Tocar para pagar en el iPhone. Comprueba la conexión e inténtalo de nuevo.";
@@ -7707,9 +7691,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "La URL no contiene un host válido.";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "Se ha enviado el anuncio para su aprobación. Te enviaremos un correo electrónico de confirmación en cuanto esté listo.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "El importe no es compatible con Tap to Pay on iPhone. Prueba con un lector físico o con otro método de pago.";
@@ -9594,9 +9575,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error description displayed when plan activation fails after purchasing a plan. */
 "Your subscription is active, but there was an error activating the plan on your store." = "Tu suscripción está activa, pero se ha producido un error al activar el plan en tu tienda.";
 
-/* Message for the alert after the support request is created. */
-"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Hemos recibido correctamente tu solicitud de soporte. Te contestaremos por correo electrónico lo antes posible.";
-
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "Actualmente, el tipo impositivo se calcula en función de la dirección de facturación del cliente:";
 
@@ -9712,6 +9690,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the product URL destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.productURLLabel" = "La URL del producto";
 
+/* Button to save in the Blaze Ad Destination setting screen */
+"blazeAdDestinationSettingView.save" = "Guardar";
+
 /* Label for the site home destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.siteHomeLabel" = "La página de inicio del sitio";
 
@@ -9747,6 +9728,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Value input on the Blaze Add Parameter screen */
 "blazeAddParameterView.valueTitle" = "Valor";
+
+/* Title of the button to dismiss the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.cancelButton" = "Cancelar";
+
+/* Navigation bar title in the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.navigationBarTitle" = "Método de pago";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazeAddPaymentWebView.paymentMethodAddedNotice" = "Método de pago añadido";
 
 /* Button to apply the changes on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.apply" = "Aplicar";
@@ -9811,6 +9801,27 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "durante %1$d día";
 
+/* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Cancelar";
+
+/* Button to create a product when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.createProduct" = "Crear producto";
+
+/* Message of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.message" = "Actualmente no tenemos ningún producto disponible para promoción. ¿Te gustaría crear un producto ahora?";
+
+/* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.title" = "No se ha encontrado ningún producto.";
+
+/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successCTA" = "Hecho";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successSubtitle" = "Estamos revisando tu campaña. Se lanzará en un plazo de 24 horas. ¡Se avecinan momentos emocionantes para sus ventas!";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successTitle" = "¡Todo listo!";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "Cancelar campaña";
 
@@ -9839,6 +9850,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Destino del anuncio";
 
+/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "Cancelar";
+
+/* Error message indicating that loading suggestions for tagline and description failed */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "No se han podido cargar las sugerencias para la descripción corta y la descripción.";
+
+/* Button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Reintentar";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Presupuesto";
 
@@ -9854,15 +9874,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Editar anuncio";
 
-/* Error message indicating that loading suggestions for tagline and description failed */
-"blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions" = "No se han podido cargar las sugerencias para la descripción corta y la descripción.";
-
-/* Button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.retry" = "Reintentar";
-
-/* Title on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.title" = "¡Vaya! Hemos encontrado un obstáculo";
-
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Intereses";
 
@@ -9871,6 +9882,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "Ubicación";
+
+/* Button on the alert to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.addImage" = "Añadir imagen";
+
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "Cancelar";
+
+/* Message asking to select an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Añade una imagen para la campaña Blaze";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Comprar ahora";
@@ -10004,6 +10024,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "La descripción no puede estar vacía.";
 
+/* Edit Blaze Ad screen: Error message if Description exceeds the character limit. */
+"blazeEditAdViewModel.description.lengthExceedsLimit" = "La descripción no puede tener más de %1$d caracteres";
+
 /* Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining */
 "blazeEditAdViewModel.lengthLimit.plural" = "%1$d caracteres restantes";
 
@@ -10012,6 +10035,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Edit Blaze Ad screen: Error message if Tagline field is empty. */
 "blazeEditAdViewModel.tagline.emptyError" = "La descripción corta no puede estar vacía.";
+
+/* Edit Blaze Ad screen: Error message if Tagline exceeds the character limit. */
+"blazeEditAdViewModel.tagline.lengthExceedsLimit" = "La descripción corta no puede tener más de %1$d caracteres";
 
 /* Subtitle for the Choose a product step */
 "blazeLearnHowView.chooseProduct.subtitle" = "Elige qué quieres promocionar con Blaze.";
@@ -10055,26 +10081,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button to dismiss the Blaze payment method list screen */
 "blazePaymentMethodsView.cancelButton" = "Cancelar";
 
-/* Done navigation button in the Blaze Payment Method screen */
-"blazePaymentMethodsView.doneButton" = "Hecho";
-
-/* Done navigation button in Blaze add payment web view */
-"blazePaymentMethodsView.doneButtonAddPayment" = "Hecho";
-
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "Envía por correo electrónico los recibos de compra de la etiqueta a %1$@ (%2$@) en %3$@";
 
-/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
-"blazePaymentMethodsView.errorMessage" = "Error al cargar tus métodos de pago";
-
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "Método de pago";
-
-/* Notice that will be displayed after adding a new Blaze payment method */
-"blazePaymentMethodsView.paymentMethodAddedNotice" = "Método de pago añadido";
-
-/* Title of the web view of adding a payment method in Blaze */
-"blazePaymentMethodsView.paymentMethodWebViewTitle" = "Método de pago";
 
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.paymentMethodsFooter" = "Las tarjetas de crédito se han obtenido de la siguiente cuenta de WordPress.com: %1$@ <%2$@>";
@@ -10088,8 +10099,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "Todas las transacciones son seguras y están cifradas";
 
-/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
-"blazePaymentMethodsView.tryAgain" = "Intentar de nuevo";
+/* Title of the row to select all target devices for Blaze campaign creation */
+"blazeTargetDevicePickerView.allTitle" = "Todos los dispositivos";
 
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "Cancelar";
@@ -10647,6 +10658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "plan finalizado";
 
+/* Close title for the navigation bar button on the Print Shipping Label view. */
+"print.shipping.label.close.button.title" = "Cerrar";
+
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "Tu privacidad es extremamente importante para nosotros y siempre lo ha sido. Utilizamos, almacenamos y procesamos tus datos personales para optimizar nuestra aplicación (y tu experiencia) de diversas maneras. Algunos usos de tus datos son absolutamente necesarios para que las cosas funcionen, y otros puedes personalizarlos en los Ajustes.";
 
@@ -10694,15 +10708,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promocionar con Blaze";
-
-/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationCTA" = "De acuerdo";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationSubtitle" = "Se ha enviado el anuncio para su aprobación. Te enviaremos un correo electrónico de confirmación en cuanto esté listo.";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationTitle" = "¡Todo listo!";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Espera hasta que se terminen todas las actualizaciones para reordenar imágenes.";
@@ -10779,6 +10784,9 @@ which should be translated separately and considered part of this sentence. */
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "compartir información";
+
+/* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
+"shipping.label.navigationBar.cancel.button.title" = "Cancelar";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Las estadísticas de hoy de WooCommerce";
@@ -10861,6 +10869,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Período de prueba";
+
+/* Button to dismiss the alert when a support request. */
+"supportForm.gotIt" = "Entendido";
+
+/* Button to dismiss the input alert for identity info to be used in the support form */
+"supportForm.identityInput.cancel" = "Cancelar";
+
+/* Placeholder of the email field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.email" = "Correo electrónico";
+
+/* Placeholder of the name field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.name" = "Nombre";
+
+/* Button to submit details on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.ok" = "Aceptar";
+
+/* Title of the input alert for identity info to be used in the support form */
+"supportForm.identityInput.title" = "Introduce tu dirección de correo electrónico y nombre de usuario.";
+
+/* Title for the alert after the support request is created. */
+"supportForm.supportRequestSent" = "¡Solicitud enviada!";
+
+/* Message for the alert after the support request is created. */
+"supportForm.supportRequestSentMessage" = "Hemos recibido correctamente tu solicitud de soporte. Te responderemos por correo electrónico lo antes posible.";
+
+/* Error message when the app can't create a zendesk identity. */
+"supportFormViewModel.badIdentityError" = "Lo sentimos, en este momento no podemos crear solicitudes de soporte. Vuelve a intentarlo más tarde.";
+
+/* Error message when the app can't create a support request. */
+"supportFormViewModel.supportRequestFailed" = "Lo sentimos, en este momento no podemos crear solicitudes de soporte. Vuelve a intentarlo más tarde.";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Prueba del reembolso automático del pago de Tap to Pay";

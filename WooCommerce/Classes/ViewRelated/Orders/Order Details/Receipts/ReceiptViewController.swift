@@ -4,10 +4,18 @@ import WebKit
 final class ReceiptViewController: UIViewController {
     @IBOutlet private weak var webView: WKWebView!
     private let viewModel: ReceiptViewModel
+    
+    var onDisappear: (() -> Void)?
 
-    init(viewModel: ReceiptViewModel) {
+    init(viewModel: ReceiptViewModel, onDisappear: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.onDisappear = onDisappear
         super.init(nibName: "LegacyReceiptViewController", bundle: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        onDisappear?()
     }
 
     required init?(coder: NSCoder) {

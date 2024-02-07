@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 17.2
+This version includes optimizations for speed and reliability, along with an exciting upgrade to our Product Creation AI—now smarter and quicker at turning your ideas into sellable products! We're committed to continuously improving the app, making managing your online store more efficient and hassle-free.
+
 ## 17.1
 Say goodbye to glitches and hello to smoother management with our latest update! We've squashed a bug that hindered system status reports on certain themes, ensuring your store's health is always at your fingertips. Plus, we've streamlined your dashboard by tucking away the Blaze section for non-WPCom users. Enjoy a seamless shipping label experience with our new modal purchase and print flows. And for our iPad and large iPhone users, multitasking is a breeze with our new side-by-side view of Order List and Order Details. Update now for a more efficient WooCommerce mobile app experience!
 

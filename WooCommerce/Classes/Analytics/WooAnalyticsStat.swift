@@ -175,6 +175,7 @@ public enum WooAnalyticsStat: String {
     case analyticsHubEnableJetpackStatsTapped = "analytics_hub_enable_jetpack_stats_tapped"
     case analyticsHubEnableJetpackStatsSuccess = "analytics_hub_enable_jetpack_stats_success"
     case analyticsHubEnableJetpackStatsFailed = "analytics_hub_enable_jetpack_stats_failed"
+    case analyticsHubViewFullReportTapped = "analytics_hub_view_full_report_tapped"
 
     // MARK: Blaze Events
     //

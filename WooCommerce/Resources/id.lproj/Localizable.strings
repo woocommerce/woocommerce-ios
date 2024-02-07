@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-23 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-01-30 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -758,9 +758,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Semua ulasan ditandai sudah dibaca";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"All set!" = "Semua telah siap!";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "Semua fitur yang Anda butuhkan, sudah bawaan";
@@ -3511,11 +3508,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Pendaftaran Google gagal.";
 
-/* Confirmation button for the alert after the support request is created. */
-"Got It!" = "Berhasil!";
-
 /* Button title that dismisses the Write with AI tooltip
-   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Saya mengerti";
 
@@ -6272,9 +6265,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the report section on the privacy screen */
 "Reports" = "Laporan";
 
-/* Title for the alert after the support request is created. */
-"Request Sent!" = "Permintaan terkirim!";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Minta Pengembalian Dana";
@@ -7162,17 +7152,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "Maaf, nama pengguna harus memiliki huruf (a-z) pula!";
 
-/* Error message when the app can't create a zendesk identity. */
-"Sorry, we cannot create support requests right now, please try again later." = "Maaf, untuk saat ini permintaan dukungan tidak dapat dibuat, coba lagi nanti.";
-
 /* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
 "Sorry, we could not complete this action, as no active payment was found." = "Maaf, kami tidak dapat menyelesaikan tindakan ini karena pembayaran aktif tidak ditemukan.";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Maaf, tidak dapat menyambungkan ke pembaca. Harap coba lagi.";
-
-/* Error message when the app can't create a support request. */
-"Sorry, we could not create your support request, please try again later." = "Maaf, permintaan dukungan Anda tidak dapat dibuat, coba lagi nanti.";
 
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "Maaf, kami tidak dapat memulai Ketuk untuk Membayar di iPhone. Periksa koneksi Anda dan coba lagi.";
@@ -7707,9 +7691,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL tidak menemukan host yang valid.";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "Iklan telah dikirimkan untuk disetujui. Kami akan mengirimkan email konfirmasi kepada Anda setelah iklan disetujui dan ditayangkan.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Jumlah ini tidak didukung oleh Ketuk untuk Bayar di iPhone. Coba gunakan perangkat keras pembaca atau metode pembayaran lainnya.";
@@ -9594,9 +9575,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error description displayed when plan activation fails after purchasing a plan. */
 "Your subscription is active, but there was an error activating the plan on your store." = "Langganan Anda aktif. Namun, terjadi error saat aktivasi paket di toko Anda.";
 
-/* Message for the alert after the support request is created. */
-"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Permintaan dukungan Anda sudah masuk ke inbox kami. Kami akan mengirimkan email balasan secepatnya.";
-
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "Tarif pajak Anda saat ini dihitung berdasarkan alamat penagihan pelanggan:";
 
@@ -9712,6 +9690,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the product URL destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.productURLLabel" = "URL Produk";
 
+/* Button to save in the Blaze Ad Destination setting screen */
+"blazeAdDestinationSettingView.save" = "Simpan";
+
 /* Label for the site home destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.siteHomeLabel" = "Beranda situs";
 
@@ -9747,6 +9728,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Value input on the Blaze Add Parameter screen */
 "blazeAddParameterView.valueTitle" = "Nilai";
+
+/* Title of the button to dismiss the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.cancelButton" = "Batal";
+
+/* Navigation bar title in the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.navigationBarTitle" = "Metode Pembayaran";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazeAddPaymentWebView.paymentMethodAddedNotice" = "Metode pembayaran ditambahkan";
 
 /* Button to apply the changes on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.apply" = "Terapkan";
@@ -9811,6 +9801,27 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "selama %1$d hari";
 
+/* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Batal";
+
+/* Button to create a product when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.createProduct" = "Buat Produk";
+
+/* Message of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.message" = "Saat ini tidak ada produk yang tersedia untuk promosi. Anda ingin membuat produk sekarang?";
+
+/* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.title" = "Tidak ada produk yang ditemukan";
+
+/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successCTA" = "Selesai";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successSubtitle" = "Kami sedang meninjau kampanye Anda. Kampanye Anda akan aktif dalam waktu 24 jam. Masa menyenangkan untuk penjualan Anda sudah di depan mata!";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successTitle" = "Semua Siap!";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "Batalkan Kampanye";
 
@@ -9839,6 +9850,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Tujuan iklan:";
 
+/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "Batal";
+
+/* Error message indicating that loading suggestions for tagline and description failed */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "Gagal memuat saran slogan dan deskripsi";
+
+/* Button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Coba lagi";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Anggaran";
 
@@ -9854,15 +9874,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Edit iklan";
 
-/* Error message indicating that loading suggestions for tagline and description failed */
-"blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions" = "Gagal memuat saran slogan dan deskripsi";
-
-/* Button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.retry" = "Coba lagi";
-
-/* Title on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.title" = "Ups! Kami mengalami kendala";
-
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Minat";
 
@@ -9871,6 +9882,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "Lokasi";
+
+/* Button on the alert to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.addImage" = "Tambahkan Gambar";
+
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "Batal";
+
+/* Message asking to select an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Tambahkan gambar untuk kampanye Blaze";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Beli Sekarang";
@@ -10004,6 +10024,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "Deskripsi tidak boleh kosong";
 
+/* Edit Blaze Ad screen: Error message if Description exceeds the character limit. */
+"blazeEditAdViewModel.description.lengthExceedsLimit" = "Deskripsi tidak boleh melebihi %1$d karakter";
+
 /* Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining */
 "blazeEditAdViewModel.lengthLimit.plural" = "%1$d karakter tersisa";
 
@@ -10012,6 +10035,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Edit Blaze Ad screen: Error message if Tagline field is empty. */
 "blazeEditAdViewModel.tagline.emptyError" = "Slogan tidak boleh kosong";
+
+/* Edit Blaze Ad screen: Error message if Tagline exceeds the character limit. */
+"blazeEditAdViewModel.tagline.lengthExceedsLimit" = "Tagline tidak boleh melebihi %1$d karakter";
 
 /* Subtitle for the Choose a product step */
 "blazeLearnHowView.chooseProduct.subtitle" = "Pilih apa yang akan dipromosikan dengan Blaze.";
@@ -10055,26 +10081,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button to dismiss the Blaze payment method list screen */
 "blazePaymentMethodsView.cancelButton" = "Batal";
 
-/* Done navigation button in the Blaze Payment Method screen */
-"blazePaymentMethodsView.doneButton" = "Selesai";
-
-/* Done navigation button in Blaze add payment web view */
-"blazePaymentMethodsView.doneButtonAddPayment" = "Selesai";
-
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "Kirimkan tanda terima pembelian label via email ke %1$@ (%2$@) di %3$@";
 
-/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
-"blazePaymentMethodsView.errorMessage" = "Terjadi error saat memuat metode pembayaran Anda";
-
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "Metode Pembayaran";
-
-/* Notice that will be displayed after adding a new Blaze payment method */
-"blazePaymentMethodsView.paymentMethodAddedNotice" = "Metode pembayaran ditambahkan";
-
-/* Title of the web view of adding a payment method in Blaze */
-"blazePaymentMethodsView.paymentMethodWebViewTitle" = "Metode pembayaran";
 
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.paymentMethodsFooter" = "Kartu kredit diambil dari akun WordPress.com berikut: %1$@ <%2$@>";
@@ -10088,8 +10099,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "Semua transaksi aman dan terenkripsi";
 
-/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
-"blazePaymentMethodsView.tryAgain" = "Coba Lagi";
+/* Title of the row to select all target devices for Blaze campaign creation */
+"blazeTargetDevicePickerView.allTitle" = "Semua perangkat";
 
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "Batal";
@@ -10647,6 +10658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "paket berakhir";
 
+/* Close title for the navigation bar button on the Print Shipping Label view. */
+"print.shipping.label.close.button.title" = "Tutup";
+
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "Privasi Anda selalu kami utamakan. Kami menggunakan, menyimpan, dan memproses data pribadi Anda untuk mengoptimalkan aplikasi kami (dan pengalaman Anda) dengan beragam cara. Sebagian penggunaan data Anda sangat kami butuhkan agar aplikasi berjalan optimal, dan sisanya dapat Anda sesuaikan dari Pengaturan.";
 
@@ -10694,15 +10708,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promosikan dengan Blaze";
-
-/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationCTA" = "Saya mengerti";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationSubtitle" = "Iklan telah dikirimkan untuk disetujui. Kami akan mengirimkan email konfirmasi kepada Anda setelah iklan disetujui dan ditayangkan.";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationTitle" = "Semua sudah siap!";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Tunggu hingga semua selesai diunggah sebelum menyusun ulang gambar.";
@@ -10779,6 +10784,9 @@ which should be translated separately and considered part of this sentence. */
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "bagikan detail";
+
+/* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
+"shipping.label.navigationBar.cancel.button.title" = "Batal";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Statistik WooCommerce Hari Ini";
@@ -10861,6 +10869,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Percobaan gratis";
+
+/* Button to dismiss the alert when a support request. */
+"supportForm.gotIt" = "Mengerti";
+
+/* Button to dismiss the input alert for identity info to be used in the support form */
+"supportForm.identityInput.cancel" = "Batal";
+
+/* Placeholder of the email field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.email" = "Email";
+
+/* Placeholder of the name field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.name" = "Nama";
+
+/* Button to submit details on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.ok" = "OK";
+
+/* Title of the input alert for identity info to be used in the support form */
+"supportForm.identityInput.title" = "Masukkan alamat email dan nama pengguna Anda";
+
+/* Title for the alert after the support request is created. */
+"supportForm.supportRequestSent" = "Permintaan Terkirim!";
+
+/* Message for the alert after the support request is created. */
+"supportForm.supportRequestSentMessage" = "Permintaan dukungan Anda sudah masuk ke inbox kami. Kami akan mengirimkan email balasan secepatnya.";
+
+/* Error message when the app can't create a zendesk identity. */
+"supportFormViewModel.badIdentityError" = "Maaf, permintaan dukungan tidak dapat dibuat saat ini, coba lagi nanti.";
+
+/* Error message when the app can't create a support request. */
+"supportFormViewModel.supportRequestFailed" = "Maaf, permintaan dukungan tidak dapat dibuat saat ini, coba lagi nanti.";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Pengembalian dana otomatis Uji Coba Pembayaran Ketuk untuk Bayar";

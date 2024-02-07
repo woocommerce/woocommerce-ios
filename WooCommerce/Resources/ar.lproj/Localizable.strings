@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-23 13:54:04+0000 */
+/* Translation-Revision-Date: 2024-01-29 19:54:16+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -758,9 +758,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "تم وسم جميع المراجعات كمقروءة";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"All set!" = "كل شيء جاهز!";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "كل الميزات التي تحتاج إليها مدمجة بالفعل";
@@ -3511,11 +3508,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "فشل الاشتراك في Google";
 
-/* Confirmation button for the alert after the support request is created. */
-"Got It!" = "فهمت!";
-
 /* Button title that dismisses the Write with AI tooltip
-   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "فهمت";
 
@@ -6272,9 +6265,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the report section on the privacy screen */
 "Reports" = "التقارير";
 
-/* Title for the alert after the support request is created. */
-"Request Sent!" = "تم إرسال الطلب!";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "طلب استرداد الأموال";
@@ -7162,17 +7152,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "عذرًا، يجب أن تحتوي أسماء المستخدمين على حروف أبجدية (a-z) أيضًا!";
 
-/* Error message when the app can't create a zendesk identity. */
-"Sorry, we cannot create support requests right now, please try again later." = "عذرًا، يتعذر علينا إنشاء طلبات الدعم الآن، ترجى المحاولة مجددًا في وقت لاحق.";
-
 /* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
 "Sorry, we could not complete this action, as no active payment was found." = "عفوًا، يتعذر علينا إكمال هذا الإجراء، نظرًا إلى عدم وجود دفع نشط.";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "عذرًا، لا يمكننا الربط بالقارئ. ترجى المحاولة مجددًا.";
-
-/* Error message when the app can't create a support request. */
-"Sorry, we could not create your support request, please try again later." = "عذرًا، تعذر علينا إنشاء طلب الدعم الخاص بك، ترجى المحاولة مجددًا في وقت لاحق.";
 
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "عذرًا، يتعذر علينا بدء ميزة \"الضغط للدفع\" على iPhone. يرجى التحقّق من اتصالك والمحاولة لاحقًا.";
@@ -7707,9 +7691,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "يفتقد عنوان URL إلى مضيف صالح.";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "تم إرسال الإعلان للموافقة. سنُرسل إليك رسالة تأكيد عبر البريد الإلكتروني بمجرد الموافقة والتشغيل.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "المبلغ غير مدعوم لميزة \"الضغط للدفع على iPhone\" - ترجى تجربة قارئ الأجهزة أو طريقة دفع أخرى.";
@@ -9594,9 +9575,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error description displayed when plan activation fails after purchasing a plan. */
 "Your subscription is active, but there was an error activating the plan on your store." = "أصبح اشتراكك نشطًا، لكن كان هناك خطأ في أثناء تفعيل الخطة على متجرك.";
 
-/* Message for the alert after the support request is created. */
-"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "وصل طلب الدعم الخاص بك بأمان إلى علبة الوارد لديك. سنرد عبر رسالة على البريد الإلكتروني بأسرع ما يمكننا.";
-
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "يُحسب معدل الضريبة الخاص بك حاليًا استنادًا إلى عنوان الفوترة الخاص بالعميل:";
 
@@ -9712,6 +9690,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the product URL destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.productURLLabel" = "عنوان URL للمنتج";
 
+/* Button to save in the Blaze Ad Destination setting screen */
+"blazeAdDestinationSettingView.save" = "حفظ";
+
 /* Label for the site home destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.siteHomeLabel" = "الصفحة الرئيسية للموقع";
 
@@ -9747,6 +9728,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Value input on the Blaze Add Parameter screen */
 "blazeAddParameterView.valueTitle" = "القيمة";
+
+/* Title of the button to dismiss the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.cancelButton" = "إلغاء";
+
+/* Navigation bar title in the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.navigationBarTitle" = "طريقة الدفع";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazeAddPaymentWebView.paymentMethodAddedNotice" = "تمت إضافة طريقة الدفع";
 
 /* Button to apply the changes on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.apply" = "تطبيق";
@@ -9811,6 +9801,27 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "لمدة ⁦%1$d⁩ من الأيام";
 
+/* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "إلغاء";
+
+/* Button to create a product when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.createProduct" = "إنشاء المنتج";
+
+/* Message of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.message" = "لا يتاح أمامك منتج لغرض الترويج حاليًا. هل تود إنشاء منتج الآن؟";
+
+/* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.title" = " لم يتم العثور على منتج";
+
+/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successCTA" = "تم";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successSubtitle" = "إننا نراجع حملتك. سيصبح فعالاً في غضون 24 ساعة. أوقات مشوقة في انتظار مبيعاتك!";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successTitle" = "كل شيء جاهز الآن!";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "إلغاء الحملة";
 
@@ -9839,6 +9850,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "وجهة الإعلان";
 
+/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "إلغاء";
+
+/* Error message indicating that loading suggestions for tagline and description failed */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "فشل تحميل الاقتراحات الخاصة بالشعار والوصف";
+
+/* Button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "إعادة المحاولة";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "الميزانية";
 
@@ -9854,15 +9874,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "تحرير الإعلان";
 
-/* Error message indicating that loading suggestions for tagline and description failed */
-"blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions" = "فشل تحميل الاقتراحات الخاصة بالشعار والوصف";
-
-/* Button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.retry" = "إعادة المحاولة";
-
-/* Title on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.title" = "عذرًا! لقد واجهنا مشكلة";
-
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "مجالات الاهتمام";
 
@@ -9871,6 +9882,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "الموقع";
+
+/* Button on the alert to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.addImage" = "إضافة صورة";
+
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "إلغاء";
+
+/* Message asking to select an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "ترجى إضافة صورة لحملة Blaze";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "التسوق الآن";
@@ -10004,6 +10024,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "يتعذر أن يكون الوصف فارغًا";
 
+/* Edit Blaze Ad screen: Error message if Description exceeds the character limit. */
+"blazeEditAdViewModel.description.lengthExceedsLimit" = "يتعذر أن يتجاوز الوصف ⁦%1$d⁩ من الأحرف";
+
 /* Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining */
 "blazeEditAdViewModel.lengthLimit.plural" = "يتبقى ⁦%1$d⁩ من الأحرف";
 
@@ -10012,6 +10035,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Edit Blaze Ad screen: Error message if Tagline field is empty. */
 "blazeEditAdViewModel.tagline.emptyError" = "يتعذر أن يكون الشعار فارغًا";
+
+/* Edit Blaze Ad screen: Error message if Tagline exceeds the character limit. */
+"blazeEditAdViewModel.tagline.lengthExceedsLimit" = "يتعذر أن يتجاوز الشعار ⁦%1$d⁩ من الأحرف";
 
 /* Subtitle for the Choose a product step */
 "blazeLearnHowView.chooseProduct.subtitle" = "اختر ما تريد الترويج له باستخدام Blaze.";
@@ -10055,26 +10081,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button to dismiss the Blaze payment method list screen */
 "blazePaymentMethodsView.cancelButton" = "إلغاء";
 
-/* Done navigation button in the Blaze Payment Method screen */
-"blazePaymentMethodsView.doneButton" = "تم";
-
-/* Done navigation button in Blaze add payment web view */
-"blazePaymentMethodsView.doneButtonAddPayment" = "تم";
-
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "إرسال إيصالات شراء الملصق عبر البريد الإلكتروني إلى %1$@ (%2$@) على %3$@";
 
-/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
-"blazePaymentMethodsView.errorMessage" = "خطأ في أثناء تحميل طرق الدفع الخاصة بك";
-
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "طريقة الدفع";
-
-/* Notice that will be displayed after adding a new Blaze payment method */
-"blazePaymentMethodsView.paymentMethodAddedNotice" = "تمت إضافة طريقة الدفع";
-
-/* Title of the web view of adding a payment method in Blaze */
-"blazePaymentMethodsView.paymentMethodWebViewTitle" = "طريقة الدفع";
 
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.paymentMethodsFooter" = "يتم استرداد بطاقات الائتمان من حساب ووردبريس.كوم الآتي: %1$@ ⁦<%2$@>⁩";
@@ -10088,8 +10099,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "تكون كل المعاملات مؤمنة ومشفَّرة";
 
-/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
-"blazePaymentMethodsView.tryAgain" = "المحاولة مجددًا";
+/* Title of the row to select all target devices for Blaze campaign creation */
+"blazeTargetDevicePickerView.allTitle" = "كل الأجهزة";
 
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "إلغاء";
@@ -10647,6 +10658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "انتهت الخطة";
 
+/* Close title for the navigation bar button on the Print Shipping Label view. */
+"print.shipping.label.close.button.title" = "إغلاق";
+
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "تُمثِّل خصوصيتك أهمية بالغة بالنسبة إلينا وكانت دومًا كذلك. إننا نستخدم بياناتك الشخصية ونخزّنها ونعالجها لتحسين تطبيقنا (وتجربتك) بطرق متنوعة. إننا بحاجة إلى بعض استخدامات بياناتك بشكل كلي لكي تسير الأمور على ما يرام، إلى جانب استخدامات أخرى يمكنك تحسينها من إعداداتك.";
 
@@ -10694,15 +10708,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "الترويج باستخدام Blaze";
-
-/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationCTA" = "فهمت";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationSubtitle" = "تم إرسال الإعلان للموافقة. سنُرسل إليك رسالة تأكيد عبر البريد الإلكتروني بمجرد الموافقة والتشغيل.";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationTitle" = "كل شيء جاهز!";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "يرجى الانتظار حتى تنتهي كل عمليات الرفع قبل إعادة ترتيب الصور";
@@ -10779,6 +10784,9 @@ which should be translated separately and considered part of this sentence. */
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "مشاركة التفاصيل";
+
+/* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
+"shipping.label.navigationBar.cancel.button.title" = "إلغاء";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "إحصاءات WooCommerce اليوم";
@@ -10861,6 +10869,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "تجربة مجانية";
+
+/* Button to dismiss the alert when a support request. */
+"supportForm.gotIt" = "حصلت عليه";
+
+/* Button to dismiss the input alert for identity info to be used in the support form */
+"supportForm.identityInput.cancel" = "إلغاء";
+
+/* Placeholder of the email field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.email" = "البريد الإلكتروني";
+
+/* Placeholder of the name field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.name" = "الاسم";
+
+/* Button to submit details on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.ok" = "موافق";
+
+/* Title of the input alert for identity info to be used in the support form */
+"supportForm.identityInput.title" = "يرجى إدخال عنوان بريدك الإلكتروني واسم المستخدم الخاص بك";
+
+/* Title for the alert after the support request is created. */
+"supportForm.supportRequestSent" = "تم إرسال الطلب!";
+
+/* Message for the alert after the support request is created. */
+"supportForm.supportRequestSentMessage" = "وصل طلب الدعم الخاص بك بأمان إلى علبة الوارد لديك. سنرد عبر رسالة على البريد الإلكتروني بأسرع ما يمكننا.";
+
+/* Error message when the app can't create a zendesk identity. */
+"supportFormViewModel.badIdentityError" = "عذرًا، يتعذر علينا إنشاء طلبات الدعم الآن، ترجى المحاولة مجددًا في وقت لاحق.";
+
+/* Error message when the app can't create a support request. */
+"supportFormViewModel.supportRequestFailed" = "عذرًا، يتعذر علينا إنشاء طلبات الدعم الآن، ترجى المحاولة مجددًا في وقت لاحق.";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "الاسترداد التلقائي لمدفوعات الإصدار التجريبي لميزة Tap To Pay";

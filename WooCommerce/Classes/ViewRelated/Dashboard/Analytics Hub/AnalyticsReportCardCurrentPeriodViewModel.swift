@@ -73,6 +73,7 @@ extension AnalyticsReportCard {
         self.trailingDeltaTextColor = nil
         self.trailingChartData = []
         self.trailingChartColor = nil
+        self.reportViewModel = nil
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage

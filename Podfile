@@ -23,7 +23,9 @@ workspace 'WooCommerce.xcworkspace'
 ## =====================================
 ##
 def aztec
-  pod 'WordPress-Editor-iOS', '~> 1.19.9'
+  # pod 'WordPress-Editor-iOS', '~> 1.19.9'
+  pod 'WordPress-Editor-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: '950c7bc1bf98326986f10cccb2715ad86976f0fd'
+  pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: '950c7bc1bf98326986f10cccb2715ad86976f0fd'
 end
 
 def tracks
@@ -98,7 +100,6 @@ target 'WooCommerce' do
 
   # pod 'WPMediaPicker', '~> 1.8.1'
   pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: '1dfb9cbbfbd60597befc057087f3e22ef571be5d'
-
 
   # External Libraries
   # ==================

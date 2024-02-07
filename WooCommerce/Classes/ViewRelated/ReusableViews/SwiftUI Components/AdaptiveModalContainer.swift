@@ -21,8 +21,10 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
     var body: some View {
         if horizontalSizeClass == .compact {
             ModalOnModalView(primaryView: primaryView, secondaryView: secondaryView)
+                .environment(\.adaptiveModalContainerPresentationStyle, .modalOnModal)
         } else {
             SideBySideView(primaryView: primaryView, secondaryView: secondaryView)
+                .environment(\.adaptiveModalContainerPresentationStyle, .sideBySide)
         }
     }
 
@@ -86,5 +88,21 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 .frame(minWidth: 400)
             }
         }
+    }
+}
+
+enum AdaptiveModalContainerPresentationStyle {
+    case modalOnModal
+    case sideBySide
+}
+
+struct AdaptiveModalContainerPresentationStyleKey: EnvironmentKey {
+    static let defaultValue: AdaptiveModalContainerPresentationStyle = .modalOnModal
+}
+
+extension EnvironmentValues {
+    var adaptiveModalContainerPresentationStyle: AdaptiveModalContainerPresentationStyle {
+        get { self[AdaptiveModalContainerPresentationStyleKey.self] }
+        set { self[AdaptiveModalContainerPresentationStyleKey.self] = newValue }
     }
 }

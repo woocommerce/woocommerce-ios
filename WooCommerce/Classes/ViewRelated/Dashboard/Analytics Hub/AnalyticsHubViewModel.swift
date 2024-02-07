@@ -52,20 +52,36 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
+        let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
+        let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue, timeRange: selectedType, storeAdminURL: storeAdminURL)
+        self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil,
+                                                             previousPeriodStats: nil,
+                                                             webReportViewModel: revenueWebReportVM)
+
+        let ordersWebReportVM = AnalyticsHubViewModel.webReportVM(for: .orders, timeRange: selectedType, storeAdminURL: storeAdminURL)
+        self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil,
+                                                           previousPeriodStats: nil,
+                                                           webReportViewModel: ordersWebReportVM)
+
+        let productsWebReportVM = AnalyticsHubViewModel.webReportVM(for: .products, timeRange: selectedType, storeAdminURL: storeAdminURL)
+        self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil,
+                                                                         previousPeriodStats: nil,
+                                                                         webReportViewModel: productsWebReportVM)
+
         bindViewModelsWithData()
     }
 
     /// Revenue Card ViewModel
     ///
-    @Published var revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var revenueCard: AnalyticsReportCardViewModel
 
     /// Orders Card ViewModel
     ///
-    @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var ordersCard: AnalyticsReportCardViewModel
 
     /// Products Stats Card ViewModel
     ///
-    @Published var productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var productsStatsCard: AnalyticsProductsStatsCardViewModel
 
     /// Items Sold Card ViewModel
     ///
@@ -351,9 +367,15 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
-                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats,
+                                                                     previousPeriodStats: previousOrderStats,
+                                                                     webReportViewModel: webReportVM(for: .revenue))
+                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats,
+                                                                   previousPeriodStats: previousOrderStats,
+                                                                   webReportViewModel: webReportVM(for: .orders))
+                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats,
+                                                                                 previousPeriodStats: previousOrderStats,
+                                                                                 webReportViewModel: webReportVM(for: .products))
 
             }.store(in: &subscriptions)
 
@@ -388,7 +410,9 @@ private extension AnalyticsHubViewModel {
             }.store(in: &subscriptions)
     }
 
-    static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+    static func revenueCard(currentPeriodStats: OrderStatsV4?,
+                            previousPeriodStats: OrderStatsV4?,
+                            webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
 
         return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
@@ -403,10 +427,13 @@ private extension AnalyticsHubViewModel {
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
-                                            syncErrorMessage: Localization.RevenueCard.noRevenue)
+                                            syncErrorMessage: Localization.RevenueCard.noRevenue,
+                                            reportViewModel: webReportViewModel)
     }
 
-    static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+    static func ordersCard(currentPeriodStats: OrderStatsV4?,
+                           previousPeriodStats: OrderStatsV4?,
+                           webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
 
         return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
@@ -422,13 +449,15 @@ private extension AnalyticsHubViewModel {
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
-                                            syncErrorMessage: Localization.OrderCard.noOrders)
+                                            syncErrorMessage: Localization.OrderCard.noOrders,
+                                            reportViewModel: webReportViewModel)
     }
 
     /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
     ///
     static func productsStatsCard(currentPeriodStats: OrderStatsV4?,
-                                  previousPeriodStats: OrderStatsV4?) -> AnalyticsProductsStatsCardViewModel {
+                                  previousPeriodStats: OrderStatsV4?,
+                                  webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsProductsStatsCardViewModel {
         let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
@@ -436,7 +465,8 @@ private extension AnalyticsHubViewModel {
         return AnalyticsProductsStatsCardViewModel(itemsSold: itemsSold,
                                                    delta: itemsSoldDelta,
                                                    isRedacted: false,
-                                                   showStatsError: showStatsError)
+                                                   showStatsError: showStatsError,
+                                                   reportViewModel: webReportViewModel)
     }
 
     /// Helper function to create a `AnalyticsItemsSoldViewModel` from the fetched stats.
@@ -493,6 +523,33 @@ private extension AnalyticsHubViewModel {
             analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
         })
     }
+
+    /// Gets the view model to show a web analytics report, based on the provided report type and currently selected time range
+    ///
+    func webReportVM(for report: AnalyticsWebReport.ReportType) -> AnalyticsReportLinkViewModel? {
+        return AnalyticsHubViewModel.webReportVM(for: report, timeRange: timeRangeSelectionType, storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
+    }
+
+    /// Gets the view model to show a web analytics report, based on the provided report type, time range, and store admin URL
+    ///
+    static func webReportVM(for report: AnalyticsWebReport.ReportType,
+                            timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
+                            storeAdminURL: String?) -> AnalyticsReportLinkViewModel? {
+        guard let url = AnalyticsWebReport.getUrl(for: report, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
+            return nil
+        }
+        let title = {
+            switch report {
+            case .revenue:
+                return Localization.RevenueCard.reportTitle
+            case .orders:
+                return Localization.OrderCard.reportTitle
+            case .products:
+                return Localization.ProductCard.reportTitle
+            }
+        }()
+        return AnalyticsReportLinkViewModel(reportType: report, period: timeRange, webViewTitle: title, reportURL: url)
+    }
 }
 
 // MARK: - Constants
@@ -508,6 +565,9 @@ private extension AnalyticsHubViewModel {
             static let trailingTitle = NSLocalizedString("Net Sales", comment: "Label for net sales (net revenue) in the Analytics Hub")
             static let noRevenue = NSLocalizedString("Unable to load revenue analytics",
                                                      comment: "Text displayed when there is an error loading revenue stats data.")
+            static let reportTitle = NSLocalizedString("analyticsHub.revenueCard.reportTitle",
+                                                       value: "Revenue Report",
+                                                       comment: "Title for the revenue analytics report linked in the Analytics Hub")
         }
 
         enum OrderCard {
@@ -516,6 +576,9 @@ private extension AnalyticsHubViewModel {
             static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
             static let noOrders = NSLocalizedString("Unable to load order analytics",
                                                     comment: "Text displayed when there is an error loading order stats data.")
+            static let reportTitle = NSLocalizedString("analyticsHub.orderCard.reportTitle",
+                                                       value: "Orders Report",
+                                                       comment: "Title for the orders analytics report linked in the Analytics Hub")
         }
 
         enum ProductCard {
@@ -523,6 +586,9 @@ private extension AnalyticsHubViewModel {
                 String.localizedStringWithFormat(NSLocalizedString("Net sales: %@", comment: "Label for the total sales of a product in the Analytics Hub"),
                                                  value)
             }
+            static let reportTitle = NSLocalizedString("analyticsHub.productCard.reportTitle",
+                                                       value: "Products Report",
+                                                       comment: "Title for the products analytics report linked in the Analytics Hub")
         }
 
         enum SessionsCard {

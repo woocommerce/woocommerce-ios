@@ -216,6 +216,7 @@
         <attribute name="total" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <relationship name="appliedGiftCards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderGiftCard" inverseName="order" inverseEntity="OrderGiftCard"/>
+        <relationship name="attributionInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OrderAttributionInfo" inverseName="order" inverseEntity="OrderAttributionInfo"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon"/>
         <relationship name="customFields" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderMetaData" inverseName="order" inverseEntity="OrderMetaData"/>
         <relationship name="fees" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderFeeLine" inverseName="order" inverseEntity="OrderFeeLine"/>
@@ -235,6 +236,7 @@
         <attribute name="sessionPageViews" optional="YES" attributeType="String"/>
         <attribute name="source" optional="YES" attributeType="String"/>
         <attribute name="sourceType" optional="YES" attributeType="String"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="attributionInfo" inverseEntity="Order"/>
     </entity>
     <entity name="OrderCoupon" representedClassName="OrderCoupon" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String"/>

@@ -14,5 +14,6 @@ extension OrderAttributionInfo {
     @NSManaged public var medium: String?
     @NSManaged public var deviceType: String?
     @NSManaged public var sessionPageViews: String?
+    @NSManaged public var order: Order?
 
 }

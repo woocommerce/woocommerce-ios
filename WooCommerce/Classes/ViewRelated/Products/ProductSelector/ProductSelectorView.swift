@@ -62,6 +62,14 @@ struct ProductSelectorView: View {
 
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
 
+    /// Tracks the state for the 'Clear Selection' button
+    ///
+    private var isClearSelectionDisabled: Bool {
+        viewModel.totalSelectedItemsCount == 0 ||
+        viewModel.syncStatus != .results ||
+        viewModel.selectionDisabled
+    }
+
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
@@ -95,7 +103,7 @@ struct ProductSelectorView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results || viewModel.selectionDisabled)
+                .disabled(isClearSelectionDisabled)
                 .renderedIf(configuration.multipleSelectionEnabled)
 
                 Spacer()

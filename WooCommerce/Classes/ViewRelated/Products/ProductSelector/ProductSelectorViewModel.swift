@@ -199,6 +199,8 @@ final class ProductSelectorViewModel: ObservableObject {
 
     @Published var syncChangesImmediately: Bool
 
+    private var orderSyncState: Published<OrderSyncState>.Publisher?
+
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
@@ -212,6 +214,7 @@ final class ProductSelectorViewModel: ObservableObject {
          pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex,
          pageSize: Int = PaginationTracker.Defaults.pageSize,
          syncChangesImmediately: Bool = false,
+         orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -233,6 +236,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.syncChangesImmediately = syncChangesImmediately
+        self.orderSyncState = orderSyncState
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
@@ -246,6 +250,21 @@ final class ProductSelectorViewModel: ObservableObject {
         refreshDataAndSync()
         configureFirstPageLoad()
         synchronizeProductFilterSearch()
+        bindSelectionDisabledState()
+    }
+
+    @Published var selectionDisabled: Bool = false
+
+    private func bindSelectionDisabledState() {
+        orderSyncState?.map({ state in
+            switch state {
+            case .syncing(blocking: true):
+                return true
+            default:
+                return false
+            }
+        })
+        .assign(to: &$selectionDisabled)
     }
 
     /// Selects or unselects a product to add to the order
@@ -277,6 +296,12 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs.append(id)
     }
 
+    /// Removes a product or variation ID to the product selector from an external source (e.g. OrderForm Remove Product from Order buttons).
+    /// - Parameter id: Product or variation ID to add to the product selector.
+    func removeSelection(id: Int64) {
+        selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
+    }
+
     private func toggleSelection(id: Int64) {
         if selectedItemsIDs.contains(id) {
             selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
@@ -296,6 +321,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
+                                                 orderSyncState: orderSyncState,
                                                  onVariationSelectionStateChanged: { [weak self] productVariation, product in
             guard let self else { return }
             onVariationSelectionStateChanged?(productVariation, product)

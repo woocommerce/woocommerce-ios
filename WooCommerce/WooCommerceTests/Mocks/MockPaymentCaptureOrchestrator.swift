@@ -72,7 +72,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         spySaveReceiptParams = params
     }
 
-    func presentBackendReceipt(for order: Yosemite.Order, onCompletion: @escaping (Yosemite.Receipt) -> Void) {
+    func presentBackendReceipt(for order: Yosemite.Order, onCompletion: @escaping (Result<Yosemite.Receipt, Error>) -> Void) {
         // no implemented
     }
 }

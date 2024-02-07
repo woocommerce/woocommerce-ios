@@ -3,7 +3,7 @@ import protocol Storage.StorageManagerType
 import Combine
 import WooFoundation
 
-/// View model for `ProductVariationSelector`.
+/// View model for `ProductVariationSelectorView`.
 ///
 final class ProductVariationSelectorViewModel: ObservableObject {
     private let siteID: Int64
@@ -119,6 +119,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let purchasableItemsOnly: Bool
 
+    private var orderSyncState: Published<OrderSyncState>.Publisher?
+
     init(siteID: Int64,
          productID: Int64,
          productName: String,
@@ -126,6 +128,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          allowedProductVariationIDs: [Int64] = [],
          selectedProductVariationIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
+         orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
@@ -134,6 +137,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.productID = productID
         self.productName = productName
         self.productAttributes = productAttributes
+        self.orderSyncState = orderSyncState
         self.storageManager = storageManager
         self.stores = stores
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
@@ -145,6 +149,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         configureSyncingCoordinator()
         configureProductVariationsResultsController()
         configureFirstPageLoad()
+        bindSelectionDisabledState()
     }
 
     convenience init(siteID: Int64,
@@ -152,6 +157,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      allowedProductVariationIDs: [Int64] = [],
                      selectedProductVariationIDs: [Int64] = [],
                      purchasableItemsOnly: Bool = false,
+                     orderSyncState: Published<OrderSyncState>.Publisher? = nil,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
                      onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
@@ -163,10 +169,25 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   allowedProductVariationIDs: allowedProductVariationIDs,
                   selectedProductVariationIDs: selectedProductVariationIDs,
                   purchasableItemsOnly: purchasableItemsOnly,
+                  orderSyncState: orderSyncState,
                   storageManager: storageManager,
                   stores: stores,
                   onVariationSelectionStateChanged: onVariationSelectionStateChanged,
                   onSelectionsCleared: onSelectionsCleared)
+    }
+
+    @Published var selectionDisabled: Bool = false
+
+    private func bindSelectionDisabledState() {
+        orderSyncState?.map({ state in
+            switch state {
+            case .syncing(blocking: true):
+                return true
+            default:
+                return false
+            }
+        })
+        .assign(to: &$selectionDisabled)
     }
 
     /// Select a product variation to add to the order

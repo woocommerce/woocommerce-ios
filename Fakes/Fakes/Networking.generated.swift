@@ -727,7 +727,22 @@ extension Networking.Order {
             taxes: .fake(),
             customFields: .fake(),
             renewalSubscriptionID: .fake(),
-            appliedGiftCards: .fake()
+            appliedGiftCards: .fake(),
+            attributionInfo: .fake()
+        )
+    }
+}
+extension Networking.OrderAttributionInfo {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderAttributionInfo {
+        .init(
+            sourceType: .fake(),
+            campaign: .fake(),
+            source: .fake(),
+            medium: .fake(),
+            deviceType: .fake(),
+            sessionPageViews: .fake()
         )
     }
 }

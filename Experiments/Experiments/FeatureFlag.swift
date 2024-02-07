@@ -200,6 +200,10 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInProductsTab
 
+    /// Enables customizing the cards in the Analytics Hub
+    ///
+    case customizeAnalyticsHub
+
     /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
     ///
     case useURLSessionInWordPressKit

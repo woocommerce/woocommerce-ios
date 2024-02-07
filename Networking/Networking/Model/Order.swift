@@ -57,6 +57,10 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let appliedGiftCards: [OrderGiftCard]
 
+    /// Attribution info about the source of the order
+    ///
+    public let attributionInfo: OrderAttributionInfo?
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -95,7 +99,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 taxes: [OrderTaxLine],
                 customFields: [OrderMetaData],
                 renewalSubscriptionID: String?,
-                appliedGiftCards: [OrderGiftCard]) {
+                appliedGiftCards: [OrderGiftCard],
+                attributionInfo: OrderAttributionInfo?) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -139,6 +144,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.customFields = customFields
         self.renewalSubscriptionID = renewalSubscriptionID
         self.appliedGiftCards = appliedGiftCards
+        self.attributionInfo = attributionInfo
     }
 
 
@@ -224,6 +230,15 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         // Gift Cards extension
         let appliedGiftCards = try container.decodeIfPresent([OrderGiftCard].self, forKey: .giftCards) ?? []
 
+        // Attribution info
+        let attributionInfo: OrderAttributionInfo? = {
+            guard let allOrderMetaData else {
+                return nil
+            }
+
+            return OrderAttributionInfo(metaData: allOrderMetaData)
+        }()
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
@@ -260,7 +275,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   taxes: taxes,
                   customFields: customFields,
                   renewalSubscriptionID: renewalSubscriptionID,
-                  appliedGiftCards: appliedGiftCards)
+                  appliedGiftCards: appliedGiftCards,
+                  attributionInfo: attributionInfo)
     }
 
     public static var empty: Order {
@@ -300,7 +316,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   taxes: [],
                   customFields: [],
                   renewalSubscriptionID: nil,
-                  appliedGiftCards: [])
+                  appliedGiftCards: [],
+                  attributionInfo: nil)
     }
 }
 
@@ -389,7 +406,8 @@ extension Order: Equatable {
             lhs.refunds.sorted() == rhs.refunds.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted() &&
-            lhs.customerNote == rhs.customerNote
+            lhs.customerNote == rhs.customerNote &&
+            lhs.attributionInfo == rhs.attributionInfo
     }
 }
 

@@ -487,7 +487,8 @@ extension ShippingLabelPackagesFormViewModel {
                      taxes: [],
                      customFields: [],
                      renewalSubscriptionID: nil,
-                     appliedGiftCards: [])
+                     appliedGiftCards: [],
+                     attributionInfo: nil)
     }
 
     static func sampleAddress() -> Address {

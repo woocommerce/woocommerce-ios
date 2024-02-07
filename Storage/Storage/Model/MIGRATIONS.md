@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 106 (Release 17.3.0.0)
+- @selanthiraiyan 2023-02-07
+    - Add `OrderAttributionInfo` entity.
+
 ## Model 105 (Release 16.8.0.0)
 - @rachelmcr 2023-12-19
     - Removed `price` attribute from `TopEarnerStatsItem` entity.

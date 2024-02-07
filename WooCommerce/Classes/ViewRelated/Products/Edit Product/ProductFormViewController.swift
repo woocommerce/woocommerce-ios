@@ -549,6 +549,7 @@ private extension ProductFormViewController {
         updateNavigationBar()
         updateBackButtonTitle()
         updateNavigationBarTitle()
+        navigationItem.largeTitleDisplayMode = .never
     }
 
     func configureMainView() {

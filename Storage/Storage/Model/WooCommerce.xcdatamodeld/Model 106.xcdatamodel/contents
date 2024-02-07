@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B92" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -227,6 +227,14 @@
         <relationship name="shippingLabelSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelSettings" inverseName="order" inverseEntity="ShippingLabelSettings"/>
         <relationship name="shippingLines" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLine" inverseName="order" inverseEntity="ShippingLine"/>
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderTaxLine" inverseName="order" inverseEntity="OrderTaxLine"/>
+    </entity>
+    <entity name="OrderAttributionInfo" representedClassName="OrderAttributionInfo" syncable="YES">
+        <attribute name="campaign" optional="YES" attributeType="String"/>
+        <attribute name="deviceType" optional="YES" attributeType="String"/>
+        <attribute name="medium" optional="YES" attributeType="String"/>
+        <attribute name="sessionPageViews" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="sourceType" optional="YES" attributeType="String"/>
     </entity>
     <entity name="OrderCoupon" representedClassName="OrderCoupon" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String"/>

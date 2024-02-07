@@ -1,4 +1,5 @@
 import Combine
+import Experiments
 import UIKit
 import Yosemite
 import class WidgetKit.WidgetCenter
@@ -35,6 +36,7 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let dashboardViewModel: DashboardViewModel
     private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
+    private let featureFlagService: FeatureFlagService
 
     /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
     /// We need to make sure any call to the public `reloadData` is after the selected time range is set to avoid making unnecessary API requests
@@ -52,17 +54,28 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     private var localOrdersSubscription: AnyCancellable?
     private var remoteOrdersSubscription: AnyCancellable?
 
+    private lazy var customRangeButton: UIButton = {
+        let button = UIButton(configuration: .plain())
+        button.setImage(UIImage(systemName: "calendar.badge.plus"), for: .normal)
+        button.tintColor = .accent
+        button.frame = CGRect(origin: .zero, size: TabBar.customRangeButtonSize)
+        button.backgroundColor = .listForeground(modal: false)
+        return button
+    }()
+
     // MARK: - View Lifecycle
 
     init(siteID: Int64,
          dashboardViewModel: DashboardViewModel,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
-         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.dashboardViewModel = dashboardViewModel
         self.pushNotificationsManager = pushNotificationsManager
 
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.featureFlagService = featureFlagService
 
         let currentDate = Date()
         let tabItems: [TabbedItem] = timeRanges.map { timeRange in
@@ -397,6 +410,12 @@ private extension StoreStatsAndTopPerformersViewController {
     func configureTabBar() {
         tabBar.equalWidthFill = .equalSpacing
         tabBar.equalWidthSpacing = TabBar.tabSpacing
+
+        /// TODO-11935: Check if a custom range has been added and hide this button.
+        ///
+        if featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) {
+            addCustomViewToTabBar(customRangeButton)
+        }
     }
 }
 
@@ -466,6 +485,7 @@ private extension StoreStatsAndTopPerformersViewController {
         /// With `equalSpacing` distribution, there is a default spacing ~16px even if `stackView.spacing = 0`.
         /// Setting a negative spacing offsets the default spacing to match the design more.
         static let tabSpacing: CGFloat = -8.0
+        static let customRangeButtonSize = CGSize(width: 24, height: 24)
     }
 
     enum Constants {

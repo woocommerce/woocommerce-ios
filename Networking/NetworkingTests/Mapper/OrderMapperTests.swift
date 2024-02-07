@@ -496,7 +496,7 @@ final class OrderMapperTests: XCTestCase {
         ])
     }
 
-    func test_order_attribution_info_is_parsed_successfully() throws {
+    func test_order_attribution_info_is_parsed_correctly() throws {
         // Given
         let order = try XCTUnwrap(mapLoadOrderWithAttributionInfo())
 

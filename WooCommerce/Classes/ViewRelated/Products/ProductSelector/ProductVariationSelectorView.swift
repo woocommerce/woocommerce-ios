@@ -15,6 +15,14 @@ struct ProductVariationSelectorView: View {
 
     private let onMultipleSelections: (([Int64]) -> Void)?
 
+    /// Tracks the state for the 'Clear Selection' button
+    ///
+    private var isClearSelectionDisabled: Bool {
+        viewModel.selectedProductVariationIDs.isEmpty ||
+        viewModel.syncStatus != .results ||
+        viewModel.selectionDisabled
+    }
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
@@ -37,7 +45,7 @@ struct ProductVariationSelectorView: View {
                     }
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize()
-                    .disabled(viewModel.selectedProductVariationIDs.isEmpty || viewModel.syncStatus != .results || viewModel.selectionDisabled)
+                    .disabled(isClearSelectionDisabled)
 
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {

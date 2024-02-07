@@ -277,6 +277,12 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs.append(id)
     }
 
+    /// Removes a product or variation ID to the product selector from an external source (e.g. OrderForm Remove Product from Order buttons).
+    /// - Parameter id: Product or variation ID to add to the product selector.
+    func removeSelection(id: Int64) {
+        selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
+    }
+
     private func toggleSelection(id: Int64) {
         if selectedItemsIDs.contains(id) {
             selectedItemsIDs = selectedItemsIDs.filter { $0 != id }

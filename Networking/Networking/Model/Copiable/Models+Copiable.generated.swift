@@ -3,7 +3,6 @@
 import Codegen
 import Foundation
 
-
 extension Networking.AIProduct {
     public func copy(
         name: CopiableProp<String> = .copy,
@@ -1179,7 +1178,7 @@ extension Networking.Order {
 
 extension Networking.OrderAttributionInfo {
     public func copy(
-        sourceType: NullableCopiableProp<OrderAttributionInfo.SourceType> = .copy,
+        sourceType: NullableCopiableProp<String> = .copy,
         campaign: NullableCopiableProp<String> = .copy,
         source: NullableCopiableProp<String> = .copy,
         medium: NullableCopiableProp<String> = .copy,

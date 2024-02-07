@@ -4,45 +4,14 @@ import Codegen
 /// Order's attribution info helps to know the source of the order
 ///
 public struct OrderAttributionInfo: Equatable, GeneratedFakeable, GeneratedCopiable {
-
-    // Source types based on
-    // swiftlint:disable:next line_length
-    // https://github.com/woocommerce/woocommerce/blob/4dcc7d8bf80dcd660e0e999ca84794ef61627d41/plugins/woocommerce/src/Internal/Traits/OrderAttributionMeta.php#L276-L314
-    //
-    public enum SourceType: Equatable {
-        case utm
-        case organic
-        case referral
-        case typein
-        case admin
-        case unknown(_ sourceType: String)
-
-        init(string: String) {
-            switch string {
-            case "utm":
-                self = .utm
-            case "organic":
-                self = .organic
-            case "referral":
-                self = .referral
-            case "typein":
-                self = .typein
-            case "admin":
-                self = .admin
-            default:
-                self = .unknown(string)
-            }
-        }
-    }
-
-    public let sourceType: SourceType?
+    public let sourceType: String?
     public let campaign: String?
     public let source: String?
     public let medium: String?
     public let deviceType: String?
     public let sessionPageViews: String?
 
-    public init(sourceType: SourceType?,
+    public init(sourceType: String?,
                 campaign: String?,
                 source: String?,
                 medium: String?,
@@ -57,7 +26,7 @@ public struct OrderAttributionInfo: Equatable, GeneratedFakeable, GeneratedCopia
     }
 
     public init(metaData: [OrderMetaData]) {
-        var sourceType: SourceType?
+        var sourceType: String?
         var campaign: String?
         var source: String?
         var medium: String?
@@ -66,7 +35,7 @@ public struct OrderAttributionInfo: Equatable, GeneratedFakeable, GeneratedCopia
         for item in metaData {
             switch item.key {
             case Keys.sourceType.rawValue:
-                sourceType = SourceType(string: item.value)
+                sourceType = item.value
             case Keys.campaign.rawValue:
                 campaign = item.value
             case Keys.source.rawValue:

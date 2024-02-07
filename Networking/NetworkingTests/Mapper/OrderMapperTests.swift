@@ -504,7 +504,7 @@ final class OrderMapperTests: XCTestCase {
         let attributionInfo = try XCTUnwrap(order.attributionInfo)
 
         // Then
-        XCTAssertEqual(attributionInfo.sourceType, .referral)
+        XCTAssertEqual(attributionInfo.sourceType, "referral")
         XCTAssertEqual(attributionInfo.campaign, "sale")
         XCTAssertEqual(attributionInfo.source, "woo.com")
         XCTAssertEqual(attributionInfo.medium, "referral")

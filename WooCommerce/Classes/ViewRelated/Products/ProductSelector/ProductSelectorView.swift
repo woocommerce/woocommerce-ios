@@ -151,7 +151,7 @@ struct ProductSelectorView: View {
                     .renderedIf(configuration.multipleSelectionEnabled && !viewModel.syncChangesImmediately)
 
                     if let variationListViewModel = variationListViewModel {
-                        LazyNavigationLink(destination: ProductVariationSelector(
+                        LazyNavigationLink(destination: ProductVariationSelectorView(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
                             onMultipleSelections: { selectedIDs in

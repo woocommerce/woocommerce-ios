@@ -2,7 +2,7 @@ import SwiftUI
 
 /// View showing a list of product variations to select.
 ///
-struct ProductVariationSelector: View {
+struct ProductVariationSelectorView: View {
     @Environment(\.presentationMode) private var presentation
 
     /// Defines whether the view is presented.
@@ -102,7 +102,7 @@ struct ProductVariationSelector: View {
     }
 }
 
-private extension ProductVariationSelector {
+private extension ProductVariationSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
@@ -131,6 +131,6 @@ struct AddProductVariationToOrder_Previews: PreviewProvider {
             selectedProductVariationIDs: []
         )
 
-        ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel)
+        ProductVariationSelectorView(isPresented: .constant(true), viewModel: viewModel)
     }
 }

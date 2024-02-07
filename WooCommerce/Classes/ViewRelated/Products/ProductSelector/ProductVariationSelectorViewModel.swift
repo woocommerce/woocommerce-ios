@@ -3,7 +3,7 @@ import protocol Storage.StorageManagerType
 import Combine
 import WooFoundation
 
-/// View model for `ProductVariationSelector`.
+/// View model for `ProductVariationSelectorView`.
 ///
 final class ProductVariationSelectorViewModel: ObservableObject {
     private let siteID: Int64

@@ -67,6 +67,7 @@ public typealias OrderFeeLine = Networking.OrderFeeLine
 public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
 public typealias OrderGiftCard = Networking.OrderGiftCard
 public typealias OrderMetaData = Networking.OrderMetaData
+public typealias OrderAttributionInfo = Networking.OrderAttributionInfo
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderTaxLine = Networking.OrderTaxLine
 public typealias OrderRefundCondensed = Networking.OrderRefundCondensed

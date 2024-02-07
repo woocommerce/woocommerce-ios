@@ -54,14 +54,7 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     private var localOrdersSubscription: AnyCancellable?
     private var remoteOrdersSubscription: AnyCancellable?
 
-    private lazy var customRangeButton: UIButton = {
-        let button = UIButton(configuration: .plain())
-        button.setImage(UIImage(systemName: "calendar.badge.plus"), for: .normal)
-        button.tintColor = .accent
-        button.frame = CGRect(origin: .zero, size: TabBar.customRangeButtonSize)
-        button.backgroundColor = .listForeground(modal: false)
-        return button
-    }()
+    private lazy var customRangeButtonView = createCustomRangeButtonView()
 
     // MARK: - View Lifecycle
 
@@ -414,8 +407,29 @@ private extension StoreStatsAndTopPerformersViewController {
         /// TODO-11935: Check if a custom range has been added and hide this button.
         ///
         if featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) {
-            addCustomViewToTabBar(customRangeButton)
+            addCustomViewToTabBar(customRangeButtonView)
         }
+    }
+
+    func createCustomRangeButtonView() -> UIView {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+
+        // TODO-11935: handle button action
+        let button = UIButton(configuration: .plain())
+        button.setImage(UIImage(systemName: "calendar.badge.plus"), for: .normal)
+        button.tintColor = .accent
+        button.frame = CGRect(origin: .zero, size: TabBar.customRangeButtonSize)
+        button.backgroundColor = .listForeground(modal: false)
+
+        let separator = UIView()
+        separator.heightAnchor.constraint(equalToConstant: TabBar.customRangeViewSeparator).isActive = true
+        separator.backgroundColor = .systemColor(.separator)
+
+        stackView.addArrangedSubview(button)
+        stackView.addArrangedSubview(separator)
+        return stackView
     }
 }
 
@@ -486,6 +500,7 @@ private extension StoreStatsAndTopPerformersViewController {
         /// Setting a negative spacing offsets the default spacing to match the design more.
         static let tabSpacing: CGFloat = -8.0
         static let customRangeButtonSize = CGSize(width: 24, height: 24)
+        static let customRangeViewSeparator: CGFloat = 0.5
     }
 
     enum Constants {

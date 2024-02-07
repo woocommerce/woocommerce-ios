@@ -510,9 +510,14 @@ private extension CollectOrderPaymentUseCase {
         // Handles receipt presentation for both print and email actions
         let receiptPresentationCompletionAction: () -> Void = { [weak self] in
             guard let self else { return }
-            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] receipt in
+            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] result in
                 guard let self else { return }
-                self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
+                switch result {
+                case let .success(receipt):
+                    self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
+                case let .failure(error):
+                    self.presentBackedReceiptFailedNotice(with: error, onCompleted: onCompleted)
+                }
             })
         }
         // Presents receipt alert
@@ -589,6 +594,18 @@ private extension CollectOrderPaymentUseCase {
         let navigationController = UINavigationController(rootViewController: receiptViewController)
         rootViewController.present(navigationController, animated: true)
     }
+
+    func presentBackedReceiptFailedNotice(with error: Error?, onCompleted: @escaping (() -> Void)) {
+        DDLogError("Failed to present receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
+
+        let noticePresenter = DefaultNoticePresenter()
+        let notice = Notice(title: Localization.failedReceiptPrintNoticeText,
+                                    feedbackType: .error)
+        noticePresenter.presentingViewController = rootViewController
+        noticePresenter.enqueue(notice: notice)
+
+        onCompleted()
+    }
 }
 
 // MARK: Interac handling
@@ -618,6 +635,11 @@ private extension CollectOrderPaymentUseCase {
 
 
     enum Localization {
+        static let failedReceiptPrintNoticeText = NSLocalizedString(
+            "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice",
+            value: "Unable to retrieve receipt.",
+            comment: "Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view.")
+
         private static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
                                                                  comment: "Subject of email sent with a card present payment receipt")
         private static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",

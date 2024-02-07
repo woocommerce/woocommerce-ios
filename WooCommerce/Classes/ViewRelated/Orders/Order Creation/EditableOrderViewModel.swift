@@ -254,6 +254,8 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
 
+    @Published var syncChangesImmediately: Bool = false
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -578,6 +580,10 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
         } else if item.productID != 0 {
             selectedProducts.removeAll(where: { $0.productID == item.productID })
+        }
+
+        if syncChangesImmediately {
+            productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))

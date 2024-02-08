@@ -50,7 +50,7 @@ final class ProductsSplitViewCoordinator: NSObject {
         guard let lastContentType = contentTypes.last else {
             return .primary
         }
-        return lastContentType == .empty ? .primary: .secondary
+        return lastContentType == .empty ? .primary : .secondary
     }
 
     /// Called when the split view transitions from collapsed to expanded mode.

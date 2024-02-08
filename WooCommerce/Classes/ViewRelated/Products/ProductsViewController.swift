@@ -962,14 +962,16 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if splitViewController?.isCollapsed == true || !isSplitViewEnabled {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+
         let product = resultsController.object(at: indexPath)
 
         if tableView.isEditing {
             viewModel.selectProduct(product)
             updatedSelectedItems()
         } else {
-            tableView.deselectRow(at: indexPath, animated: true)
-
             ServiceLocator.analytics.track(.productListProductTapped)
 
             didSelectProduct(product: product)

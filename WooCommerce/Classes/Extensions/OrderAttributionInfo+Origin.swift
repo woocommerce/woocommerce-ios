@@ -22,8 +22,10 @@ extension OrderAttributionInfo {
             return Localization.unknown
         }
     }
+}
 
-    private enum Localization {
+extension OrderAttributionInfo {
+    enum Localization {
         static let source = NSLocalizedString(
             "orderAttributionInfo.source",
             value: "Source: %1$@",

@@ -11,10 +11,14 @@ final class WooSplitViewController: UISplitViewController {
 
     private let columnForCollapsingHandler: ColumnForCollapsingHandler?
 
+    private let didExpandHandler: ((UISplitViewController) -> Void)?
+
     /// Init a split view with an optional handler to decide which column to collapse the split view into.
     /// By default, always display the primary column when collapsed.
-    init(columnForCollapsingHandler: ColumnForCollapsingHandler? = nil) {
+    init(columnForCollapsingHandler: ColumnForCollapsingHandler? = nil,
+         didExpandHandler: ((UISplitViewController) -> Void)? = nil) {
         self.columnForCollapsingHandler = columnForCollapsingHandler
+        self.didExpandHandler = didExpandHandler
         super.init(style: .doubleColumn)
         configureCommonStyle()
     }
@@ -39,5 +43,9 @@ extension WooSplitViewController: UISplitViewControllerDelegate {
     func splitViewController(_ splitViewController: UISplitViewController, willChangeTo displayMode: UISplitViewController.DisplayMode) {
         // Automatically hides the default toggle button if displaying 2 columns.
         splitViewController.presentsWithGesture = displayMode != .oneBesideSecondary
+    }
+
+    func splitViewControllerDidExpand(_ svc: UISplitViewController) {
+        didExpandHandler?(svc)
     }
 }

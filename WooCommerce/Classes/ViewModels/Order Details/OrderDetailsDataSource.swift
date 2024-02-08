@@ -463,6 +463,20 @@ private extension OrderDetailsDataSource {
             configureSubscriptions(cell: cell, at: indexPath)
         case let cell as TitleAndValueTableViewCell where row == .giftCards:
             configureGiftCards(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionOrigin:
+            configureAttributionOrigin(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionSourceType:
+            configureAttributionSourceType(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionCampaign:
+            configureAttributionCampaign(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionSource:
+            configureAttributionSource(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionMedium:
+            configureAttributionMedium(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionDeviceType:
+            configureAttributionDeviceType(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionSessionPageViews:
+            configureAttributionSessionPageViews(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -1015,6 +1029,57 @@ private extension OrderDetailsDataSource {
             return []
         }
         return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOns()
+    }
+}
+
+// MARK: - Attribution section
+private extension OrderDetailsDataSource {
+    func configureAttributionOrigin(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        let origin: String = {
+            guard let orderAttributionInfo = order.attributionInfo else {
+                return Localization.AttributionInfo.unknown
+            }
+            return orderAttributionInfo.origin
+        }()
+
+        cell.updateUI(title: Localization.AttributionInfo.origin, value: origin)
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionSourceType(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.sourceType,
+                      value: order.attributionInfo?.sourceType ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionCampaign(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.campaign,
+                      value: order.attributionInfo?.campaign ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionSource(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.source,
+                      value: order.attributionInfo?.source ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionMedium(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.medium,
+                      value: order.attributionInfo?.medium ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionDeviceType(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.deviceType,
+                      value: order.attributionInfo?.deviceType ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionSessionPageViews(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.sessionPageViews,
+                      value: order.attributionInfo?.sessionPageViews ?? "")
+        cell.apply(style: .regular)
     }
 }
 

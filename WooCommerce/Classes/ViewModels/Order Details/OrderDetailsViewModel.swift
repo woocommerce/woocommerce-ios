@@ -468,6 +468,9 @@ extension OrderDetailsViewModel {
             let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
+            let countryCode = configurationLoader.configuration.countryCode
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))
+
             let action = ReceiptAction.retrieveReceipt(order: order) { [weak self] result in
                 guard let self else { return }
                 switch result {
@@ -480,13 +483,14 @@ extension OrderDetailsViewModel {
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
                 case let .failure(error):
+                    ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error))
                     self.displayReceiptRetrievalErrorNotice(for: order, with: error, in: viewController)
                 }
             }
             ServiceLocator.stores.dispatch(action)
         case .seeLegacyReceipt:
             let countryCode = configurationLoader.configuration.countryCode
-            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .local))
             guard let receipt = receipt else {
                 return
             }

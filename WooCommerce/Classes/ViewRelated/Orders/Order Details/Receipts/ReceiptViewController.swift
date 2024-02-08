@@ -72,15 +72,33 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
     }
 
     @objc private func shareReceipt() {
+        ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailTapped(countryCode: nil,
+                                                                                   cardReaderModel: nil,
+                                                                                   source: .backend))
         guard let url = URL(string: viewModel.receiptURLString) else {
             return
         }
         let activityViewController = UIActivityViewController(activityItems: [url],
                                                 applicationActivities: nil)
+        activityViewController.completionWithItemsHandler = { [weak self] _, success, _, error in
+            if let error = error {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailFailed(error: error, source: .backend))
+                DDLogError("Failed to share receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
+            }
+            switch success {
+            case true:
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: nil, cardReaderModel: nil, source: .backend))
+            case false:
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: nil, cardReaderModel: nil, source: .backend))
+            }
+        }
         present(activityViewController, animated: true)
     }
 
     @objc private func printReceipt() {
+        ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: nil,
+                                                                                   cardReaderModel: nil,
+                                                                                   source: .backend))
         guard let url = URL(string: viewModel.receiptURLString) else {
             return
         }
@@ -95,10 +113,16 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error = error {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error, source: .backend))
                 DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
-            } else if isCompleted {
-                self?.dismiss(animated: true)
             }
+            switch isCompleted {
+            case true:
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: nil, cardReaderModel: nil, source: .backend))
+            case false:
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: nil, cardReaderModel: nil, source: .backend))
+            }
+            self?.dismiss(animated: true)
         })
     }
 }

@@ -86,7 +86,7 @@ final class ReceiptRemoteTests: XCTestCase {
         assertEqual("false", received)
     }
 
-    func test_retrieveReceipt_when_expiration_date_is_unset_then_returns_default_2_days() throws {
+    func test_retrieveReceipt_when_expiration_date_is_unset_then_sends_expiration_days_parameter_as_default_2_days() throws {
         // Given
         let remote = ReceiptRemote(network: network)
 
@@ -99,7 +99,7 @@ final class ReceiptRemoteTests: XCTestCase {
         assertEqual("2", received)
     }
 
-    func test_retrieveReceipt_when_expiration_date_is_set_then_returns_expirationDays_passed_in() throws {
+    func test_retrieveReceipt_when_expiration_date_is_set_then_sends_expiration_days_parameter_as_default_days_passed_in() throws {
         // Given
         let remote = ReceiptRemote(network: network)
         let expirationDays = 365

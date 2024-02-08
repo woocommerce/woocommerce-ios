@@ -1585,6 +1585,7 @@ extension OrderDetailsDataSource {
             case addTracking
             case notes
             case customFields
+            case attribution
         }
 
         /// The table header style of a `Section`.
@@ -1690,6 +1691,13 @@ extension OrderDetailsDataSource {
         case orderNoteHeader
         case orderNote
         case customFields
+        case attributionOrigin
+        case attributionSourceType
+        case attributionCampaign
+        case attributionSource
+        case attributionMedium
+        case attributionDeviceType
+        case attributionSessionPageViews
 
         var reuseIdentifier: String {
             switch self {

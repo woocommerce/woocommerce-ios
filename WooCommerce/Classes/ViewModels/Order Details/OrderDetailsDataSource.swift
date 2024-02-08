@@ -1501,6 +1501,51 @@ extension OrderDetailsDataSource {
 
 // MARK: - Constants
 extension OrderDetailsDataSource {
+    enum Localization {
+        enum AttributionInfo {
+            static let origin = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.origin",
+                value: "Origin",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let unknown = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.unknown",
+                value: "Unknown",
+                comment: "Origin in Order Attribution Section on Order Details screen."
+            )
+            static let sourceType = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.sourceType",
+                value: "Source type",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let campaign = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.campaign",
+                value: "Campaign",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let source = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.source",
+                value: "Source",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let medium = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.medium",
+                value: "Medium",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let deviceType = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.deviceType",
+                value: "Device type",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let sessionPageViews = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.sessionPageViews",
+                value: "Session page views",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+        }
+    }
+
     enum Titles {
         static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         static let addNoteText = NSLocalizedString("Add a note",
@@ -1559,6 +1604,11 @@ extension OrderDetailsDataSource {
             NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
+        static let orderInformation = NSLocalizedString(
+            "orderDetailsDataSource.attributionInfo.orderInformation",
+            value: "Order Information",
+            comment: "Title of Order Attribution Section in Order Details screen."
+        )
     }
 
     enum Footer {

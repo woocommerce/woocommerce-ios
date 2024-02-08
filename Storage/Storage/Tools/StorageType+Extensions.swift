@@ -721,4 +721,11 @@ public extension StorageType {
         let descriptor = NSSortDescriptor(keyPath: \InboxNote.dateCreated, ascending: false)
         return allObjects(ofType: InboxNote.self, matching: predicate, sortedBy: [descriptor])
     }
+
+    /// Retrieves the Stored Order Attribution Info.
+    ///
+    func loadOrderAttributionInfo(siteID: Int64, orderID: Int64) -> OrderAttributionInfo? {
+        let predicate = \OrderAttributionInfo.order?.siteID == siteID && \OrderAttributionInfo.order?.orderID == orderID
+        return firstObject(ofType: OrderAttributionInfo.self, matching: predicate)
+    }
 }

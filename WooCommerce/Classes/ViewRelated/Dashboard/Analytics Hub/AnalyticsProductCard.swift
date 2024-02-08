@@ -141,7 +141,8 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              reportViewModel: .init(reportType: .products,
                                                     period: .today,
                                                     webViewTitle: "Products Report",
-                                                    reportURL: URL(string: "https://woo.com")!))
+                                                    reportURL: URL(string: "https://woo.com")!,
+                                                    usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
             .previewLayout(.sizeThatFits)
 
         AnalyticsProductCard(itemsSold: "-",
@@ -156,7 +157,8 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              reportViewModel: .init(reportType: .products,
                                                     period: .today,
                                                     webViewTitle: "Products Report",
-                                                    reportURL: URL(string: "https://woo.com")!))
+                                                    reportURL: URL(string: "https://woo.com")!,
+                                                    usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

@@ -150,10 +150,11 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .textInverted,
                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
                             trailingChartColor: .withColorStudio(.red, shade: .shade40),
-                            reportViewModel: .init(reportType: .revenue, 
+                            reportViewModel: .init(reportType: .revenue,
                                                    period: .today,
                                                    webViewTitle: "Revenue Report",
-                                                   reportURL: URL(string: "https://woo.com")!),
+                                                   reportURL: URL(string: "https://woo.com")!,
+                                                   usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()),
                             isRedacted: false,
                             showSyncError: false,
                             syncErrorMessage: "")
@@ -177,7 +178,8 @@ struct Previews: PreviewProvider {
                             reportViewModel: .init(reportType: .revenue,
                                                    period: .today,
                                                    webViewTitle: "Revenue Report",
-                                                   reportURL: URL(string: "https://woo.com")!),
+                                                   reportURL: URL(string: "https://woo.com")!,
+                                                   usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()),
                             isRedacted: false,
                             showSyncError: true,
                             syncErrorMessage: "Error loading revenue analytics")

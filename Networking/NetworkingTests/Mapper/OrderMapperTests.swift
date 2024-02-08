@@ -495,6 +495,22 @@ final class OrderMapperTests: XCTestCase {
             .init(addOnID: 1690786915, key: "Wrapping paper", value: "Yes"),
         ])
     }
+
+    func test_order_attribution_info_is_parsed_correctly() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithAttributionInfo())
+
+        // When
+        let attributionInfo = try XCTUnwrap(order.attributionInfo)
+
+        // Then
+        XCTAssertEqual(attributionInfo.sourceType, "referral")
+        XCTAssertEqual(attributionInfo.campaign, "sale")
+        XCTAssertEqual(attributionInfo.source, "woo.com")
+        XCTAssertEqual(attributionInfo.medium, "referral")
+        XCTAssertEqual(attributionInfo.deviceType, "Desktop")
+        XCTAssertEqual(attributionInfo.sessionPageViews, "2")
+    }
 }
 
 
@@ -617,4 +633,9 @@ private extension OrderMapperTests {
         return mapOrder(from: "order-alternative-types")
     }
 
+    /// Returns the Order output upon receiving `order-with-attribution-info`
+    ///
+    func mapLoadOrderWithAttributionInfo() -> Order? {
+        return mapOrder(from: "order-with-attribution-info")
+    }
 }

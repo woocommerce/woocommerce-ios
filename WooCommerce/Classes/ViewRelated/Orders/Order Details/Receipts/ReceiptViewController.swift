@@ -1,8 +1,16 @@
 import WebKit
 
 /// Previews a backend-generated receipt
-final class ReceiptViewController: UIViewController {
+final class ReceiptViewController: UIViewController, WKNavigationDelegate {
     @IBOutlet private weak var webView: WKWebView!
+
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+
     private let viewModel: ReceiptViewModel
     
     var onDisappear: (() -> Void)?
@@ -27,6 +35,19 @@ final class ReceiptViewController: UIViewController {
 
         configureContent()
         configureNavigation()
+        configureActivityIndicator()
+
+        webView.navigationDelegate = self
+    }
+
+    func configureActivityIndicator() {
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: activityIndicator.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: activityIndicator.centerYAnchor)
+        ])
+
+        activityIndicator.startAnimating()
     }
 
     private func configureContent() {
@@ -103,5 +124,12 @@ final class ReceiptViewController: UIViewController {
             }
             self?.dismiss(animated: true)
         })
+    }
+}
+
+// MARK: - WKNavigation delegate
+extension ReceiptViewController {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        activityIndicator.stopAnimating()
     }
 }

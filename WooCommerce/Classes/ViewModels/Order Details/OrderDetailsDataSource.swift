@@ -1308,6 +1308,45 @@ extension OrderDetailsDataSource {
             return Section(category: .notes, title: Title.notes, rows: rows)
         }()
 
+        let attribution: Section? = {
+
+            let rows: [Row] = {
+                var rows: [Row] = [.attributionOrigin]
+
+                guard let orderAttributionInfo = order.attributionInfo else {
+                    return rows
+                }
+
+                if let _ = orderAttributionInfo.sourceType {
+                    rows.append(.attributionSourceType)
+                }
+
+                if let _ = orderAttributionInfo.campaign {
+                    rows.append(.attributionCampaign)
+                }
+
+                if let _ = orderAttributionInfo.source {
+                    rows.append(.attributionSource)
+                }
+
+                if let _ = orderAttributionInfo.medium {
+                    rows.append(.attributionMedium)
+                }
+
+                if let _ = orderAttributionInfo.deviceType {
+                    rows.append(.attributionDeviceType)
+                }
+
+                if let _ = orderAttributionInfo.sessionPageViews {
+                    rows.append(.attributionSessionPageViews)
+                }
+
+                return rows
+            }()
+
+            return Section(category: .attribution, title: Title.orderInformation, rows: rows)
+        }()
+
         sections = ([summary,
                      shippingNotice,
                      products,
@@ -1318,6 +1357,7 @@ extension OrderDetailsDataSource {
                     shippingLabelSections +
                     [payment,
                      customerInformation,
+                     attribution,
                      subscriptions,
                      giftCards,
                      tracking,
@@ -1818,6 +1858,14 @@ extension OrderDetailsDataSource {
             case .subscriptions:
                 return OrderSubscriptionTableViewCell.reuseIdentifier
             case .giftCards:
+                return TitleAndValueTableViewCell.reuseIdentifier
+            case .attributionOrigin,
+                    .attributionSourceType,
+                    .attributionCampaign,
+                    .attributionSource,
+                    .attributionMedium,
+                    .attributionDeviceType,
+                    .attributionSessionPageViews:
                 return TitleAndValueTableViewCell.reuseIdentifier
             }
         }

@@ -15,7 +15,7 @@ final class ProductsSplitViewCoordinator {
     init(siteID: Int64, splitViewController: UISplitViewController) {
         self.siteID = siteID
         self.splitViewController = splitViewController
-        self.primaryNavigationController = WooNavigationController()
+        self.primaryNavigationController = WooTabNavigationController()
         self.secondaryNavigationController = WooNavigationController()
     }
 

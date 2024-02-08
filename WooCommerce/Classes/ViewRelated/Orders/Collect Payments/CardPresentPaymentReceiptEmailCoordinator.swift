@@ -65,14 +65,19 @@ extension CardPresentPaymentReceiptEmailCoordinator: MFMailComposeViewController
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         switch result {
         case .cancelled:
-            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: countryCode, cardReaderModel: cardReaderModel))
+            analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: countryCode,
+                                                                          cardReaderModel: cardReaderModel,
+                                                                          source: .local))
         case .sent, .saved:
-            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: countryCode, cardReaderModel: cardReaderModel))
+            analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: countryCode,
+                                                                         cardReaderModel: cardReaderModel,
+                                                                         source: .local))
         case .failed:
             analytics.track(event: .InPersonPayments
                 .receiptEmailFailed(error: error ?? UnknownEmailError(),
                                     countryCode: countryCode,
-                                    cardReaderModel: cardReaderModel))
+                                    cardReaderModel: cardReaderModel,
+                                    source: .local))
         @unknown default:
             assertionFailure("MFMailComposeViewController finished with an unknown result type")
         }

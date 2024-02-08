@@ -55,7 +55,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let featureFlag = MockFeatureFlagService(isBackendReceiptsEnabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let plugin = SystemPlugin.fake().copy(name: "WooCommerce",
-                                              version: "8.6.0-dev-7625495467-gf50cc6b",
+                                              version: "8.6.0-dev",
                                               active: true)
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in

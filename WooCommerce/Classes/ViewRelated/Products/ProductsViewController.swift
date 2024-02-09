@@ -947,7 +947,9 @@ private extension ProductsViewController {
                 guard let self else { return }
 
                 let currentSelectedIndexPath = tableView.indexPathForSelectedRow
-                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: { $0.productID == selectedProduct?.productID }): nil
+                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
+                    $0.productID == selectedProduct?.productID
+                }): nil
                 if let selectedIndexPath {
                     guard currentSelectedIndexPath != selectedIndexPath else {
                         return

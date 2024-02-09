@@ -12,7 +12,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
     }()
 
     private let viewModel: ReceiptViewModel
-    
+
     var onDisappear: (() -> Void)?
 
     init(viewModel: ReceiptViewModel, onDisappear: (() -> Void)? = nil) {
@@ -20,7 +20,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
         self.onDisappear = onDisappear
         super.init(nibName: "LegacyReceiptViewController", bundle: nil)
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         onDisappear?()

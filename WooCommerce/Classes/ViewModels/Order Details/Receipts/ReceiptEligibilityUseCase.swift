@@ -4,11 +4,11 @@ import Experiments
 final class ReceiptEligibilityUseCase {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    
+
     private var siteID: Int64 {
         stores.sessionManager.defaultStoreID ?? 0
     }
-    
+
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
@@ -20,7 +20,7 @@ final class ReceiptEligibilityUseCase {
             onCompletion(false)
             return
         }
-        
+
         let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
             // 1. WooCommerce must be installed and active
             guard let wcPlugin = wcPlugin, wcPlugin.active else {
@@ -44,6 +44,6 @@ private extension ReceiptEligibilityUseCase {
     enum Constants {
         static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "8.7.0"
-        static let wcPluginDevVersion: [String] = ["8.7.0-dev","8.6.0-dev"]
+        static let wcPluginDevVersion: [String] = ["8.7.0-dev", "8.6.0-dev"]
     }
 }

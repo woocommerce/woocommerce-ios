@@ -200,6 +200,10 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInProductsTab
 
+    /// Displays the option to add a custom date range in My Store Analytics
+    ///
+    case customRangeInMyStoreAnalytics
+
     /// Enables customizing the cards in the Analytics Hub
     ///
     case customizeAnalyticsHub

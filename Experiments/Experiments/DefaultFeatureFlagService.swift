@@ -91,6 +91,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return false
+        case .customRangeInMyStoreAnalytics:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .customizeAnalyticsHub:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .useURLSessionInWordPressKit:

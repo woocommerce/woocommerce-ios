@@ -4,6 +4,7 @@
 -----
 - [***] Products: Cache product images to reduce network requests. [https://github.com/woocommerce/woocommerce-ios/pull/11902]
 - [***] Stats: The Analytics Hub now includes links to the full analytics report for each supported analytics card (Revenue, Orders, Products). [https://github.com/woocommerce/woocommerce-ios/pull/11920]
+- [**] Orders: Show the order attribution info in the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/11963]
 - [**] Orders: Orders have an associated receipt now. Receipts can be printed, or shared via other apps installed on device. The feature will become available for merchants with WooCommerce version of 8.7.0+. [https://github.com/woocommerce/woocommerce-ios/pull/11956]
 - [*] Products > product scanning: in wider devices, the product details after scanning a barcode does not show in split view with an empty secondary view anymore. Camera capture is also enabled when the app is in split mode with another app in iOS 16+ for supported devices. [https://github.com/woocommerce/woocommerce-ios/pull/11931]
 

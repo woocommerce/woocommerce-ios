@@ -20,6 +20,10 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     ///
     private(set) var startupActionsPending = StartupAction.allCases
 
+    /// A lock to ensure that the tracker only modifies the pending startup actions one at a time.
+    ///
+    private var lock = NSLock()
+
     init(analyticsService: Analytics = ServiceLocator.analytics,
          currentTimeInMillis: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
         super.init(trackScenario: .appStartup, analyticsService: analyticsService, currentTimeInMillis: currentTimeInMillis)
@@ -30,6 +34,9 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     /// and send it as an analytics event.
     ///
     func end(action: StartupAction) {
+        lock.lock()
+        defer { lock.unlock() }
+
         // Ignore any actions after the pending startup actions are complete.
         guard startupActionsPending.isNotEmpty else {
             return
@@ -49,6 +56,9 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     /// For example, when the app is backgrounded or a startup action has an API error or network connection error.
     ///
     override func end() {
+        lock.lock()
+        defer { lock.unlock() }
+
         startupActionsPending.removeAll()
     }
 }

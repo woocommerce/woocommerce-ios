@@ -29,7 +29,7 @@ final class AppStartupWaitingTimeTrackerTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.count, 0)
 
         // When all actions are ended
-        completeAllStartupActions()
+        tracker.end(action: .loadOnboardingTasks)
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)

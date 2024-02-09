@@ -69,3 +69,11 @@ extension OrderAttributionInfo {
         case sessionPageViews = "_wc_order_attribution_session_pages"
     }
 }
+
+public extension OrderAttributionInfo {
+    enum Values {
+        /// Sent in create order request to mark the order as created from mobile
+        ///
+        public static let mobileAppSourceType = "mobile_app"
+    }
+}

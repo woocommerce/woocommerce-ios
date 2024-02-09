@@ -32,7 +32,11 @@ final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestion
         self.onContinue = onContinue
         self.onSupport = onSupport
 
-        currentCountryCode = currentLocale.regionCode.map { CountryCode(rawValue: $0) } ?? nil
+        if let regionIdentifier = currentLocale.region?.identifier {
+            currentCountryCode = CountryCode(rawValue: regionIdentifier)
+        } else {
+            currentCountryCode = nil
+        }
         selectedCountryCode = currentCountryCode
 
         let allCountryCodes = CountryCode.allCases

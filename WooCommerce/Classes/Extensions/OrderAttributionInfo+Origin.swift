@@ -9,11 +9,11 @@ extension OrderAttributionInfo {
     var origin: String {
         switch sourceType {
         case "utm":
-            return String.localizedStringWithFormat(Localization.source, source ?? "")
+            return String.localizedStringWithFormat(Localization.source, source ?? Localization.unknown)
         case "organic":
-            return String.localizedStringWithFormat(Localization.organic, source ?? "")
+            return String.localizedStringWithFormat(Localization.organic, source ?? Localization.unknown)
         case "referral":
-            return String.localizedStringWithFormat(Localization.referral, source ?? "")
+            return String.localizedStringWithFormat(Localization.referral, source ?? Localization.unknown)
         case "typein":
             return Localization.direct
         case "admin":

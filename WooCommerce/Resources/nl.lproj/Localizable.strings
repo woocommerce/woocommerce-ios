@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-02 15:01:59+0000 */
+/* Translation-Revision-Date: 2024-02-06 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -337,9 +337,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "Een korte samenvatting van je product.";
 
-/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
-"A collection of related products" = "Een verzameling gerelateerde producten";
-
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "Er moet een douaneformulier worden afgedrukt en worden bijgevoegd bij deze internationale verzending";
 
@@ -352,17 +349,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number field */
 "A phone number is required" = "Een telefoonnummer is vereist";
 
-/* Description of the Action sheet option when the user wants to change the Product type to variable product */
-"A product with variations like color or size" = "Een product met variaties zoals kleur of maat";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Er kon geen beveiligde verbinding met de site tot stand worden gebracht. Zorg ervoor dat je site over een geldig SSL-certificaat beschikt.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "Een unieke digitaal product zoals services, downloadbare boeken, muziek of video's";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "Een uniek fysiek product dat je wellicht naar de klant moet verzenden";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Er is een geldig e-mailadres vereist om een verificatielink te mailen. Ga terug naar het vorige scherm en voer een geldig e-mailadres in.";
@@ -573,9 +561,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Voeg een productafbeelding toe";
-
-/* Description of the Action sheet option when the user wants to create a product manually */
-"Add a product manually" = "Handmatig een productafbeelding toevoegen";
 
 /* Description for the option to create product manually */
 "Add a product manually." = "Voeg handmatig een productafbeelding toe.";
@@ -1163,9 +1148,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Billing Information view Title */
 "Billing Information" = "Factuurgegevens";
-
-/* Action sheet option when the user wants to create a product manually */
-"Blank" = "Leeg";
 
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
@@ -3145,9 +3127,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text in the store creation loading screen */
 "Extending store's capabilities" = "Winkelmogelijkheden uitbreiden";
 
-/* Action sheet option when the user wants to change the Product type to external product */
-"External product" = "Extern product";
-
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Extern\/affiliate";
 
@@ -3538,9 +3517,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "Gegroepeerd product";
-
-/* Action sheet option when the user wants to change the Product type to grouped product */
-"Grouped product" = "Gegroepeerd product";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Gegroepeerde producten";
@@ -4286,9 +4262,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Beperkt tot één per bestelling";
 
-/* Message to show when a request for a WP.com API endpoint is throttled */
-"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limiet bereikt. Je kan het na 1 minuut nogmaals proberen. Als je het eerder probeert dan zul je langer moeten wachten totdat de ban wordt opgeheven. Neem contact op met de helpdesk wanneer je denk dat dit niet klopt.";
-
 /* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
 "Limited to %1$d item in cart" = "Beperkt tot %1$d artikel in winkelwagen";
 
@@ -4301,9 +4274,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the text of a link in the editor
    Navigation bar title for editing the text of a text link */
 "Link Text" = "Linktekst";
-
-/* Description of the Action sheet option when the user wants to change the Product type to external product */
-"Link a product to an external website" = "Koppel een product aan een externe website";
 
 /* Linked Products Settings navigation title */
 "Linked Products" = "Gekoppelde producten";
@@ -5233,6 +5203,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for the the row showing the total cost of the order */
 "Order total" = "Totaalaantal bestellingen";
+
+/* Text on the button title to see the order's receipt */
+"OrderDetailsDataSource.configureSeeReceipt.button.title" = "Bekijk kwitantie";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Geordende lijst";
@@ -7001,12 +6974,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for simple product type. */
 "Simple" = "Simpel";
-
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "Eenvoudig fysiek product";
-
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "Eenvoudig virtueel product";
 
 /* Country option for a site address. */
 "Singapore" = "Singapore";
@@ -8888,9 +8855,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable subscription product type. */
 "Variable Subscription" = "Variabel abonnement";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
-"Variable product" = "Variabel product";
-
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Variatie #%1$@";
 
@@ -9624,6 +9588,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Btw rekenen";
 
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"addProductWithAIActionSheet.manualOptionsTitle" = "Selecteer een producttype";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Schakel Jetpack-statistieken in";
 
@@ -10186,6 +10153,54 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Probeer opnieuw";
 
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.description" = "Koppel een product aan een externe website";
+
+/* Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.title" = "Extern product";
+
+/* Description of the Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.description" = "Handmatig een productafbeelding toevoegen";
+
+/* Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.title" = "Leeg";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.description" = "Een verzameling gerelateerde producten";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.title" = "Gegroepeerd product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.description" = "Een uniek fysiek product dat je wellicht naar de klant moet verzenden";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.title" = "Eenvoudig fysiek product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.description" = "Een uniek digitaal product zoals services, downloadbare boeken, muziek of video's";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.title" = "Eenvoudig virtueel product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.description" = "Een uniek productabonnement waarbij herhaaldelijke betalingen zijn ingeschakeld";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.title" = "Eenvoudig productabonnement";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"bottomSheetProductType.variable.description" = "Een product met variaties zoals kleur of maat";
+
+/* Action sheet option when the user wants to change the Product type to varible product */
+"bottomSheetProductType.variable.title" = "Variabel product";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.description" = "Een productabonnement met variaties";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.title" = "Variabel productabonnement";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Annuleren";
 
@@ -10658,18 +10673,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "privé";
 
-/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.description" = "Een uniek productabonnement waarbij herhaaldelijke betalingen zijn ingeschakeld";
-
-/* Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.title" = "Eenvoudig productabonnement";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.description" = "Een productabonnement met variaties";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.title" = "Variabel productabonnement";
-
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Heb je een momentje? Help ons onze functies met AI te verbeteren met wat korte feedback.";
 
@@ -10754,11 +10757,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Eenmalig verzenden";
 
+/* Title of the Products tab — plural form of Product */
+"productsTab.tabTitle" = "Producten";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld keer beoordeeld";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "één keer beoordeeld";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
+"receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: kwitantie voor bestelling #%2$@";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
+"receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: kwitantie voor bestelling #%2$@ op %3$@";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Betaling is gelukt";
@@ -11028,6 +11040,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Media laden …";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"wordpresskit.api.message.endpoint_throttled" = "Limiet bereikt. Je kan het over 1 minuut nogmaals proberen. Als je het voor die tijd nog een keer probeert, duurt het alleen maar langer voordat de blokkering is opgeheven. Als je denkt dat dit een fout is, neem dan contact op met ondersteuning.";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Gebruik een beveiligingssleutel";

@@ -88,7 +88,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .blazei3NativeCampaignCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backendReceipts:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .splitViewInProductsTab:
             return false
         case .customizeAnalyticsHub:

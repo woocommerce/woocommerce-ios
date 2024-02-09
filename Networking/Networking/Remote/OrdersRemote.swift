@@ -188,6 +188,11 @@ public class OrdersRemote: Remote {
                     params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
                 }
 
+                // Set source type to mark the order as created from mobile
+                params[Order.CodingKeys.metadata.rawValue] = try [OrderMetaData(metadataID: 0,
+                                                                                key: OrderAttributionInfo.Keys.sourceType.rawValue,
+                                                                                value: OrderAttributionInfo.Values.mobileAppSourceType).toDictionary()]
+
                 return params
             }()
 

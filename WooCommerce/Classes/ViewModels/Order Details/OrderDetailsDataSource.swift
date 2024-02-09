@@ -1409,7 +1409,7 @@ extension OrderDetailsDataSource {
                 return rows
             }()
 
-            return Section(category: .attribution, title: Title.orderInformation, rows: rows)
+            return Section(category: .attribution, title: Title.orderAttribution, rows: rows)
         }()
 
         sections = ([summary,
@@ -1709,9 +1709,9 @@ extension OrderDetailsDataSource {
             NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
-        static let orderInformation = NSLocalizedString(
-            "orderDetailsDataSource.attributionInfo.orderInformation",
-            value: "Order Information",
+        static let orderAttribution = NSLocalizedString(
+            "orderDetailsDataSource.attributionInfo.orderAttribution",
+            value: "Order attribution",
             comment: "Title of Order Attribution Section in Order Details screen."
         )
     }

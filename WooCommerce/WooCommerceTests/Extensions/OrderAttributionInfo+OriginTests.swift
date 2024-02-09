@@ -67,6 +67,14 @@ final class OrderAttributionInfo_OriginTests: XCTestCase {
         XCTAssertEqual(sut.origin, OrderAttributionInfo.Localization.webAdmin)
     }
 
+    func test_origin_when_source_type_is_mobile_app() {
+        // Given
+        let sut = OrderAttributionInfo.fake().copy(sourceType: "mobile_app", source: "example.com")
+
+        // Then
+        XCTAssertEqual(sut.origin, OrderAttributionInfo.Localization.mobileApp)
+    }
+
     func test_origin_when_source_type_is_empty() {
         // Given
         let sut = OrderAttributionInfo.fake().copy(sourceType: "", source: "example.com")

@@ -57,7 +57,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             Title.refundedProducts,
             Title.payment,
             Title.information,
-            Title.orderInformation,
+            Title.orderAttribution,
             Title.notes
         ]
 
@@ -686,7 +686,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let originRow = row(row: .attributionOrigin, in: attributionSection)
         XCTAssertNotNil(originRow)
     }
@@ -700,7 +700,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionSourceType, in: attributionSection)
         XCTAssertNil(row)
     }
@@ -714,7 +714,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionSourceType, in: attributionSection)
         XCTAssertNotNil(row)
     }
@@ -728,7 +728,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionCampaign, in: attributionSection)
         XCTAssertNil(row)
     }
@@ -742,7 +742,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionCampaign, in: attributionSection)
         XCTAssertNotNil(row)
     }
@@ -756,7 +756,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionSource, in: attributionSection)
         XCTAssertNil(row)
     }
@@ -770,7 +770,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionSource, in: attributionSection)
         XCTAssertNotNil(row)
     }
@@ -784,7 +784,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionMedium, in: attributionSection)
         XCTAssertNil(row)
     }
@@ -798,7 +798,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionMedium, in: attributionSection)
         XCTAssertNotNil(row)
     }
@@ -812,7 +812,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionDeviceType, in: attributionSection)
         XCTAssertNil(row)
     }
@@ -826,7 +826,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionDeviceType, in: attributionSection)
         XCTAssertNotNil(row)
     }
@@ -840,7 +840,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionSessionPageViews, in: attributionSection)
         XCTAssertNil(row)
     }
@@ -854,7 +854,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let attributionSection = try section(withTitle: Title.orderInformation, from: dataSource)
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionSessionPageViews, in: attributionSection)
         XCTAssertNotNil(row)
     }

@@ -1151,6 +1151,7 @@ final class OrderStoreTests: XCTestCase {
             "customer_note",
             "fee_lines",
             "line_items",
+            "meta_data",
             "shipping",
             "shipping_lines",
             "status"
@@ -1178,6 +1179,7 @@ final class OrderStoreTests: XCTestCase {
             "fee_lines",
             "gift_cards",
             "line_items",
+            "meta_data",
             "shipping",
             "shipping_lines",
             "status"

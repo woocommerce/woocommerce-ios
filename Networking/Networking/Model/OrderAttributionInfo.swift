@@ -59,7 +59,7 @@ public struct OrderAttributionInfo: Equatable, GeneratedFakeable, GeneratedCopia
     }
 }
 
-private extension OrderAttributionInfo {
+extension OrderAttributionInfo {
     enum Keys: String {
         case sourceType = "_wc_order_attribution_source_type"
         case campaign = "_wc_order_attribution_utm_campaign"

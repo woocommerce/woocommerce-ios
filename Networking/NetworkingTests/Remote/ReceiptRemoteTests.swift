@@ -85,4 +85,31 @@ final class ReceiptRemoteTests: XCTestCase {
         let received = try XCTUnwrap(request.parameters["force_new"] as? String)
         assertEqual("false", received)
     }
+
+    func test_retrieveReceipt_when_expiration_date_is_unset_then_sends_expiration_days_parameter_as_default_2_days() throws {
+        // Given
+        let remote = ReceiptRemote(network: network)
+
+        // When
+        remote.retrieveReceipt(siteID: sampleSiteID, orderID: sampleOrderID) { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["expiration_days"] as? String)
+        assertEqual("2", received)
+    }
+
+    func test_retrieveReceipt_when_expiration_date_is_set_then_sends_expiration_days_parameter_as_default_days_passed_in() throws {
+        // Given
+        let remote = ReceiptRemote(network: network)
+        let expirationDays = 365
+
+        // When
+        remote.retrieveReceipt(siteID: sampleSiteID, orderID: sampleOrderID, expirationDays: expirationDays) { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["expiration_days"] as? String)
+        assertEqual("365", received)
+    }
 }

@@ -53,17 +53,26 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
-        let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue, timeRange: selectedType, storeAdminURL: storeAdminURL)
+        let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
+                                                                   timeRange: selectedType,
+                                                                   storeAdminURL: storeAdminURL,
+                                                                   usageTracksEventEmitter: usageTracksEventEmitter)
         self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil,
                                                              previousPeriodStats: nil,
                                                              webReportViewModel: revenueWebReportVM)
 
-        let ordersWebReportVM = AnalyticsHubViewModel.webReportVM(for: .orders, timeRange: selectedType, storeAdminURL: storeAdminURL)
+        let ordersWebReportVM = AnalyticsHubViewModel.webReportVM(for: .orders,
+                                                                  timeRange: selectedType,
+                                                                  storeAdminURL: storeAdminURL,
+                                                                  usageTracksEventEmitter: usageTracksEventEmitter)
         self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil,
                                                            previousPeriodStats: nil,
                                                            webReportViewModel: ordersWebReportVM)
 
-        let productsWebReportVM = AnalyticsHubViewModel.webReportVM(for: .products, timeRange: selectedType, storeAdminURL: storeAdminURL)
+        let productsWebReportVM = AnalyticsHubViewModel.webReportVM(for: .products,
+                                                                    timeRange: selectedType,
+                                                                    storeAdminURL: storeAdminURL,
+                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
         self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil,
                                                                          previousPeriodStats: nil,
                                                                          webReportViewModel: productsWebReportVM)
@@ -527,14 +536,18 @@ private extension AnalyticsHubViewModel {
     /// Gets the view model to show a web analytics report, based on the provided report type and currently selected time range
     ///
     func webReportVM(for report: AnalyticsWebReport.ReportType) -> AnalyticsReportLinkViewModel? {
-        return AnalyticsHubViewModel.webReportVM(for: report, timeRange: timeRangeSelectionType, storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
+        return AnalyticsHubViewModel.webReportVM(for: report,
+                                                 timeRange: timeRangeSelectionType,
+                                                 storeAdminURL: stores.sessionManager.defaultSite?.adminURL,
+                                                 usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
     /// Gets the view model to show a web analytics report, based on the provided report type, time range, and store admin URL
     ///
     static func webReportVM(for report: AnalyticsWebReport.ReportType,
                             timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
-                            storeAdminURL: String?) -> AnalyticsReportLinkViewModel? {
+                            storeAdminURL: String?,
+                            usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) -> AnalyticsReportLinkViewModel? {
         guard let url = AnalyticsWebReport.getUrl(for: report, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
             return nil
         }
@@ -548,7 +561,11 @@ private extension AnalyticsHubViewModel {
                 return Localization.ProductCard.reportTitle
             }
         }()
-        return AnalyticsReportLinkViewModel(reportType: report, period: timeRange, webViewTitle: title, reportURL: url)
+        return AnalyticsReportLinkViewModel(reportType: report,
+                                            period: timeRange,
+                                            webViewTitle: title,
+                                            reportURL: url,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
     }
 }
 

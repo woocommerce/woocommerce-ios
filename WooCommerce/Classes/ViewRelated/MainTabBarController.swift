@@ -565,6 +565,7 @@ private extension MainTabBarController {
             productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: siteID)
         } else {
             productsNavigationController.viewControllers = [ProductsViewController(siteID: siteID,
+                                                                                   selectedProduct: Empty().eraseToAnyPublisher(),
                                                                                    navigateToContent: { _ in })]
         }
 

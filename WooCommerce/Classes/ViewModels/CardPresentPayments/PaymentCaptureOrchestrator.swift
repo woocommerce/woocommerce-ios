@@ -33,7 +33,7 @@ protocol PaymentCaptureOrchestrating {
 
     func saveReceipt(for order: Order, params: CardPresentReceiptParameters)
 
-    func presentBackendReceipt(for order: Order, onCompletion: @escaping (Receipt) -> Void)
+    func presentBackendReceipt(for order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void)
 }
 
 
@@ -181,15 +181,13 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         stores.dispatch(action)
     }
 
-    func presentBackendReceipt(for order: Order, onCompletion: @escaping (Receipt) -> Void) {
+    func presentBackendReceipt(for order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void) {
         let action = ReceiptAction.retrieveReceipt(order: order) { result in
             switch result {
             case let .success(receipt):
-                onCompletion(receipt)
-            case .failure:
-                // TODO: Error handling. Propagate error.
-                DDLogError("Unable to retrieve receipt for site \(order.siteID) - order \(order.orderID)")
-                break
+                onCompletion(.success(receipt))
+            case let .failure(error):
+                onCompletion(.failure(error))
             }
         }
         stores.dispatch(action)

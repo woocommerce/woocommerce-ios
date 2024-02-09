@@ -18,6 +18,8 @@ extension OrderAttributionInfo {
             return Localization.direct
         case "admin":
             return Localization.webAdmin
+        case OrderAttributionInfo.Values.mobileAppSourceType:
+            return Localization.mobileApp
         default:
             return Localization.unknown
         }
@@ -59,6 +61,12 @@ extension OrderAttributionInfo {
         static let webAdmin = NSLocalizedString(
             "orderAttributionInfo.webAdmin",
             value: "Web admin",
+            comment: "Origin in Order Attribution Section on Order Details screen."
+        )
+
+        static let mobileApp = NSLocalizedString(
+            "orderAttributionInfo.mobileApp",
+            value: "Mobile App",
             comment: "Origin in Order Attribution Section on Order Details screen."
         )
 

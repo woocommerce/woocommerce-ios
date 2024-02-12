@@ -244,6 +244,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         showTopBannerViewIfNeeded()
         syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
+
+        if !isEmpty {
+            tableView.selectRow(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: UITableView.ScrollPosition.none)
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

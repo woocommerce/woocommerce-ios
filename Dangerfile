@@ -22,12 +22,6 @@ common_release_checker.check_internal_release_notes_changed(report_type: :messag
 
 ios_release_checker.check_modified_translations_on_release_branch
 
-labels_checker.check(
-  do_not_merge_labels: ['status: do not merge'],
-  required_labels: [//],
-  required_labels_error: 'PR requires at least one label.'
-)
-
 tracks_checker.check_tracks_changes(
   tracks_files: [
     'WooAnalyticsStat.swift'
@@ -42,7 +36,14 @@ view_changes_checker.check
 
 pr_size_checker.check_diff_size(max_size: 500)
 
+# skip remaining checks if we have a Draft PR
+return if github.pr_draft?
+
+labels_checker.check(
+  do_not_merge_labels: ['status: do not merge'],
+  required_labels: [//],
+  required_labels_error: 'PR requires at least one label.'
+)
+
 # skip check for draft PRs and for WIP features unless the PR is against the main branch or release branch
-unless github.pr_draft? || (github_utils.wip_feature? && !(github_utils.release_branch? || github_utils.main_branch?))
-  milestone_checker.check_milestone_due_date(days_before_due: 2)
-end
+milestone_checker.check_milestone_due_date(days_before_due: 2) unless github_utils.wip_feature? && !(github_utils.release_branch? || github_utils.main_branch?)

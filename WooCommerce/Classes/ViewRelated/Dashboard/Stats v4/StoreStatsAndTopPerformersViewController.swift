@@ -29,7 +29,7 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     }
     // MARK: - Private Properties
 
-    private let periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
+    private var periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
     private let siteID: Int64
     // A set of syncing time ranges is tracked instead of a single boolean so that the stats for each time range
     // can be synced when swiping or tapping to change the time range tab before the syncing finishes for the previously selected tab.
@@ -449,8 +449,22 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func createCustomRangeTab(_ start: Date, _ end: Date) {
-        // todo
         print(start.description + end.description)
+        let currentDate = Date()
+
+        // todo replace with the correct tab content
+        let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                           timeRange: .thisMonth,
+                                                                           currentDate: currentDate,
+                                                                           canDisplayInAppFeedbackCard: true,
+                                                                           usageTracksEventEmitter: usageTracksEventEmitter)
+        periodVCs.append(customRangeVC)
+
+        let customRangeTabbedItem = TabbedItem(title: "Custom Range",
+                                               viewController: customRangeVC,
+                                               accessibilityIdentifier: "todo-identifier")
+        appendTabToTabBar(customRangeTabbedItem)
+        removeCustomViewFromTabBar()
     }
 }
 

@@ -423,6 +423,10 @@ private extension StoreStatsAndTopPerformersViewController {
         button.frame = CGRect(origin: .zero, size: TabBar.customRangeButtonSize)
         button.backgroundColor = .listForeground(modal: false)
 
+        button.on(.touchUpInside) { [weak self] _ in
+            self?.startCustomRangeTabCreation()
+        }
+
         let separator = UIView()
         separator.heightAnchor.constraint(equalToConstant: TabBar.customRangeViewSeparator).isActive = true
         separator.backgroundColor = .systemColor(.separator)
@@ -430,6 +434,14 @@ private extension StoreStatsAndTopPerformersViewController {
         stackView.addArrangedSubview(button)
         stackView.addArrangedSubview(separator)
         return stackView
+    }
+
+    func startCustomRangeTabCreation() {
+        guard let navigationController else {
+            return
+        }
+        let coordinator = CustomRangeTabCreationCoordinator(navigationController: navigationController)
+        coordinator.start()
     }
 }
 

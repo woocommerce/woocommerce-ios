@@ -14,6 +14,8 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
 
     var onPullToRefresh: @MainActor () async -> Void = {}
 
+    private var customRangeCoordinator: CustomRangeTabCreationCoordinator?
+
     // MARK: - Subviews
 
     private lazy var buttonBarBottomBorder: UIView = {
@@ -25,7 +27,6 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     private var visibleChildViewController: StoreStatsAndTopPerformersPeriodViewController {
         return periodVCs[selection]
     }
-
     // MARK: - Private Properties
 
     private let periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
@@ -437,11 +438,19 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func startCustomRangeTabCreation() {
-        guard let navigationController else {
-            return
-        }
-        let coordinator = CustomRangeTabCreationCoordinator(navigationController: navigationController)
-        coordinator.start()
+        guard let navigationController else { return }
+        customRangeCoordinator = CustomRangeTabCreationCoordinator(
+            navigationController: navigationController,
+            onDateRangeSelected: { [weak self] start, end in
+                self?.createCustomRangeTab(start, end)
+            }
+        )
+        customRangeCoordinator?.start()
+    }
+
+    func createCustomRangeTab(_ start: Date, _ end: Date) {
+        // todo
+        print(start.description + end.description)
     }
 }
 

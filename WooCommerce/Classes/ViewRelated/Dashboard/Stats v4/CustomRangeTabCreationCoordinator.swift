@@ -4,9 +4,11 @@ import UIKit
 /// Coordinates navigation into Custom Range tab creation from the Stats dashboard.
 final class CustomRangeTabCreationCoordinator: Coordinator {
     let navigationController: UINavigationController
+    private let onDateRangeSelected: (_ start: Date, _ end: Date) -> Void
 
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, onDateRangeSelected: @escaping (_ start: Date, _ end: Date) -> Void) {
         self.navigationController = navigationController
+        self.onDateRangeSelected = onDateRangeSelected
     }
 
     func start() {
@@ -16,9 +18,9 @@ final class CustomRangeTabCreationCoordinator: Coordinator {
 
 private extension CustomRangeTabCreationCoordinator {
     func presentDateRangePicker() {
-        let controller = RangedDatePickerHostingController(datesFormatter: DatesFormatter()) { [weak self] _, _ in
+        let controller = RangedDatePickerHostingController(datesFormatter: DatesFormatter()) { [weak self] start, end in
             guard let self else { return }
-            // TODO call function to handle range selection.
+            self.onDateRangeSelected(start, end)
         }
         navigationController.present(controller, animated: true)
     }

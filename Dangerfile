@@ -46,4 +46,4 @@ labels_checker.check(
 )
 
 # skip check for draft PRs and for WIP features unless the PR is against the main branch or release branch
-milestone_checker.check_milestone_due_date(days_before_due: 2) unless github_utils.wip_feature? && !(github_utils.release_branch? || github_utils.main_branch?)
+milestone_checker.check_milestone_due_date(days_before_due: 2) if (github_utils.main_branch? || github_utils.release_branch?) && !github_utils.wip_feature?

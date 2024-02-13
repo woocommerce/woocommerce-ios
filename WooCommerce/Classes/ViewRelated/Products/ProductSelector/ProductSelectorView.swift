@@ -98,6 +98,8 @@ struct ProductSelectorView: View {
                         .padding(.trailing)
                         .renderedIf(searchHeaderisBeingEdited)
             HStack {
+                Text(viewModel.selectProductsTitle)
+                    .renderedIf(true) // TODO: Render on split view configuration
                 Button(Localization.clearSelection) {
                     viewModel.clearSelection()
                 }

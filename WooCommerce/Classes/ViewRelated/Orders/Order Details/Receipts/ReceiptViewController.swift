@@ -4,7 +4,7 @@ import WebKit
 final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPrintInteractionControllerDelegate {
     @IBOutlet private weak var webView: WKWebView!
 
-    var printController: UIPrintInteractionController = UIPrintInteractionController.shared
+    private var printController: UIPrintInteractionController = UIPrintInteractionController.shared
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)

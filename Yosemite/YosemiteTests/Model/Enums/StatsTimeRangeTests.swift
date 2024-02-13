@@ -31,7 +31,7 @@ final class StatsTimeRangeTests: XCTestCase {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 91...364))
+        let toDate = fromDate.addingDays(Int.random(in: 91...365))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)

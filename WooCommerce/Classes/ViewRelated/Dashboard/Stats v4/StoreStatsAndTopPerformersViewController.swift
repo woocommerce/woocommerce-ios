@@ -452,7 +452,8 @@ private extension StoreStatsAndTopPerformersViewController {
         print(start.description + end.description)
         let currentDate = Date()
 
-        // todo replace with the correct tab content
+        // TODO: 11935 Replace with the correct tab content
+        // Currently this is just a dummy content
         let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                            timeRange: .thisMonth,
                                                                            currentDate: currentDate,

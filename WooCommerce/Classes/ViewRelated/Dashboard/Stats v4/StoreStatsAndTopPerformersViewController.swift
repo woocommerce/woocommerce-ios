@@ -459,9 +459,9 @@ private extension StoreStatsAndTopPerformersViewController {
                                                                            usageTracksEventEmitter: usageTracksEventEmitter)
         periodVCs.append(customRangeVC)
 
-        let customRangeTabbedItem = TabbedItem(title: "Custom Range",
+        let customRangeTabbedItem = TabbedItem(title: Localization.customRangeTabTitle,
                                                viewController: customRangeVC,
-                                               accessibilityIdentifier: "todo-identifier")
+                                               accessibilityIdentifier: Constants.customRangeTabAcessibilityIdentifier)
         appendToTabBar(customRangeTabbedItem)
         removeCustomViewFromTabBar()
     }
@@ -539,5 +539,14 @@ private extension StoreStatsAndTopPerformersViewController {
 
     enum Constants {
         static let backgroundColor: UIColor = .systemBackground
+        static let customRangeTabAcessibilityIdentifier: String = "period-data-custom-tab"
+    }
+
+    enum Localization {
+        static let customRangeTabTitle = NSLocalizedString(
+            "storeStatsAndTopPerformersViewController.customRangeTabTitle",
+            value: "Custom Range",
+            comment: "Title of the Custom Range tab"
+        )
     }
 }

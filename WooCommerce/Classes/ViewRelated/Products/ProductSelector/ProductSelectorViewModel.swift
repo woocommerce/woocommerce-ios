@@ -80,6 +80,19 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published var filterButtonTitle: String = Localization.filterButtonWithoutActiveFilters
 
+    /// Outputs a "x products selected" title in the header, based on the number of selected products in the order
+    ///
+    var selectProductsTitle: String {
+        if totalSelectedItemsCount == 0 {
+            return Localization.selectProductsTitle
+        } else {
+            let title = String.pluralize(totalSelectedItemsCount,
+                                         singular: Localization.singularProductSelectedFormattedText,
+                                         plural: Localization.pluralProductSelectedFormattedText)
+            return String.localizedStringWithFormat(title, totalSelectedItemsCount)
+        }
+    }
+
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
@@ -827,6 +840,18 @@ private extension ProductSelectorViewModel {
         static let popularProductsSectionTitle = NSLocalizedString("Popular", comment: "Section title for popular products on the Select Product screen.")
         static let lastSoldProductsSectionTitle = NSLocalizedString("Last Sold", comment: "Section title for last sold products on the Select Product screen.")
         static let productsSectionTitle = NSLocalizedString("Products", comment: "Section title for products on the Select Product screen.")
+        static let selectProductsTitle = NSLocalizedString(
+            "productSelectorViewModel.selectProductsTitle.selectProductsTitle",
+            value: "Select products",
+            comment: "Text on the header of the Select Product screen when no products are selected.")
+        static let singularProductSelectedFormattedText = NSLocalizedString(
+            "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText",
+            value: "%ld product selected",
+            comment: "Text on the header of the Select Product screen when one product is selected.")
+        static let pluralProductSelectedFormattedText = NSLocalizedString(
+            "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText",
+            value: "%ld products selected",
+            comment: "Text on the header of the Select Product screen when more than one products are selected.")
     }
 }
 

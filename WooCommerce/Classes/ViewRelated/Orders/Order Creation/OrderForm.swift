@@ -789,6 +789,7 @@ private extension ProductSelectorView.Configuration {
 
     static func splitViewAddProductToOrder() -> ProductSelectorView.Configuration {
         ProductSelectorView.Configuration(
+            productHeaderTextEnabled: true,
             searchHeaderBackgroundColor: .listBackground,
             prefersLargeTitle: false,
             doneButtonTitleSingularFormat: "",

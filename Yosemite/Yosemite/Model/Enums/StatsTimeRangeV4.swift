@@ -29,24 +29,11 @@ extension StatsTimeRangeV4: RawRepresentable, Hashable {
         case Value.thisYear:
             self = .thisYear
         default:
-            guard rawValue.starts(with: Value.custom) else {
+            guard let dates = CustomRangeFormatter.dates(from: rawValue) else {
                 return nil
             }
 
-            let splits = rawValue.split(separator: "_")
-
-            guard let from = splits[safe: 1],
-                  let to = splits[safe: 2] else {
-                return nil
-            }
-
-            let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
-            guard let fromDate = dateFormatter.date(from: String(from)),
-                  let toDate = dateFormatter.date(from: String(to)) else {
-                return nil
-            }
-
-            self = .custom(from: fromDate, to: toDate)
+            self = .custom(from: dates.from, to: dates.to)
         }
     }
 
@@ -57,10 +44,38 @@ extension StatsTimeRangeV4: RawRepresentable, Hashable {
         case .thisMonth: return Value.thisMonth
         case .thisYear: return Value.thisYear
         case .custom(let from, let to):
-            let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
-            return [Value.custom,
-                    dateFormatter.string(from: from),
-                    dateFormatter.string(from: to)].joined(separator: "_")
+            return CustomRangeFormatter.rangeFrom(from: from, to: to)
+        }
+    }
+
+    private enum CustomRangeFormatter {
+        static private let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
+        static private let separator = "_"
+
+        static func rangeFrom(from: Date, to: Date) -> String {
+            [Value.custom,
+             dateFormatter.string(from: from),
+             dateFormatter.string(from: to)].joined(separator: separator)
+        }
+
+        static func dates(from rawValue: String) -> (from: Date, to: Date)? {
+            guard rawValue.starts(with: Value.custom) else {
+                return nil
+            }
+
+            let splits = rawValue.split(separator: separator)
+
+            guard let from = splits[safe: 1],
+                  let to = splits[safe: 2] else {
+                return nil
+            }
+
+            guard let fromDate = dateFormatter.date(from: String(from)),
+                  let toDate = dateFormatter.date(from: String(to)) else {
+                return nil
+            }
+
+            return (from: fromDate, to: toDate)
         }
     }
 

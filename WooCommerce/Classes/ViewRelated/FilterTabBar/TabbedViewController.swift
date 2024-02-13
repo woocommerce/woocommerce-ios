@@ -106,7 +106,7 @@ class TabbedViewController: UIViewController {
         self.customTabBarView = nil
     }
 
-    func appendTabToTabBar(_ tab: TabbedItem) {
+    func appendToTabBar(_ tab: TabbedItem) {
         // Setup child view controller
         items.append(tab)
         tabBar.items = items

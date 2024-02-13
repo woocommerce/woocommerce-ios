@@ -464,7 +464,7 @@ private extension StoreStatsAndTopPerformersViewController {
         let customRangeTabbedItem = TabbedItem(title: "Custom Range",
                                                viewController: customRangeVC,
                                                accessibilityIdentifier: "todo-identifier")
-        appendTabToTabBar(customRangeTabbedItem)
+        appendToTabBar(customRangeTabbedItem)
         removeCustomViewFromTabBar()
     }
 }

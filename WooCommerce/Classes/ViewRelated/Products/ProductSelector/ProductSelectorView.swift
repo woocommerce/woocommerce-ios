@@ -60,6 +60,16 @@ struct ProductSelectorView: View {
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
+    @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+
+    /// Tracks the state for the 'Clear Selection' button
+    ///
+    private var isClearSelectionDisabled: Bool {
+        viewModel.totalSelectedItemsCount == 0 ||
+        viewModel.syncStatus != .results ||
+        viewModel.selectionDisabled
+    }
+
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
@@ -93,7 +103,7 @@ struct ProductSelectorView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results)
+                .disabled(isClearSelectionDisabled)
                 .renderedIf(configuration.multipleSelectionEnabled)
 
                 Spacer()
@@ -138,10 +148,10 @@ struct ProductSelectorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
-                    .renderedIf(configuration.multipleSelectionEnabled)
+                    .renderedIf(configuration.multipleSelectionEnabled && !viewModel.syncChangesImmediately)
 
                     if let variationListViewModel = variationListViewModel {
-                        LazyNavigationLink(destination: ProductVariationSelector(
+                        LazyNavigationLink(destination: ProductVariationSelectorView(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
                             onMultipleSelections: { selectedIDs in
@@ -188,6 +198,7 @@ struct ProductSelectorView: View {
         }
         .onAppear {
             viewModel.onLoadTrigger.send()
+            viewModel.syncChangesImmediately = presentationStyle == .sideBySide
         }
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
@@ -225,6 +236,8 @@ struct ProductSelectorView: View {
                     isShowingVariationList.toggle()
                     self.variationListViewModel = variationListViewModel
                 }
+                .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+                .disabled(viewModel.selectionDisabled)
 
                 DisclosureIndicator()
             }
@@ -264,6 +277,8 @@ struct ProductSelectorView: View {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
                 }
             }
+            .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+            .disabled(viewModel.selectionDisabled)
         }
     }
 }

@@ -5,7 +5,7 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
 
-    var cancellableTask: Cancellable?
+    var cancellableTask: Task<Void, Never>?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -21,8 +21,10 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
     }
 
     override func prepareForReuse() {
+        super.prepareForReuse()
         cancellableTask?.cancel()
         cancellableTask = nil
+        imageView.image = nil
     }
 }
 

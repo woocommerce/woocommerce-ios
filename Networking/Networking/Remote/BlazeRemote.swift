@@ -187,7 +187,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         ///
         let parameters = [Keys.AISuggestions.urn: "\(Keys.AISuggestions.urn):\(Keys.AISuggestions.wpcom):\(Keys.AISuggestions.post):\(siteID):\(productID)"]
 
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters, encoding: JSONEncoding.default)
         let mapper = BlazeAISuggestionListMapper()
         return try await enqueue(request, mapper: mapper)
     }

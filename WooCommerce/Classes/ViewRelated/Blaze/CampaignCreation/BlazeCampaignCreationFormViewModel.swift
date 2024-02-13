@@ -301,14 +301,11 @@ extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func loadProductImage() async -> MediaPickerImage? {
-        await withCheckedContinuation({ continuation in
-            guard let firstImage = product?.images.first else {
-                return continuation.resume(returning: nil)
-            }
-            _ = productImageLoader.requestImage(productImage: firstImage) { image in
-                continuation.resume(returning: .init(image: image, source: .productImage(image: firstImage)))
-            }
-        })
+        guard let firstImage = product?.images.first,
+              let image = try? await productImageLoader.requestImage(productImage: firstImage) else {
+            return nil
+        }
+        return .init(image: image, source: .productImage(image: firstImage))
     }
 }
 

@@ -44,6 +44,6 @@ private extension ReceiptEligibilityUseCase {
     enum Constants {
         static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "8.7.0"
-        static let wcPluginDevVersion: [String] = ["8.6.0-dev-7625495467-gf50cc6b", "8.6.0-dev-7708067547-g87e8c5f"]
+        static let wcPluginDevVersion: [String] = ["8.7.0-dev","8.6.0-dev"]
     }
 }

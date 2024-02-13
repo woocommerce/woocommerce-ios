@@ -26,6 +26,7 @@ final class CodeScannerViewController: UIViewController {
     @IBOutlet private weak var scanAreaView: UIView!
     @IBOutlet private weak var instructionLabel: PaddedLabel!
     @IBOutlet private weak var bottomDimmingView: UIView!
+    @IBOutlet private weak var cancelButton: UIButton!
 
     // > Delegate any interaction with the AVCaptureSession—including its inputs and outputs—to a
     // > dedicated serial dispatch queue, so that the interaction doesn’t block the main queue.
@@ -60,7 +61,19 @@ final class CodeScannerViewController: UIViewController {
 
         configureBarcodeDetection()
 
+        configureCancelButton()
+
         startLiveVideo()
+    }
+
+    private func configureCancelButton() {
+        cancelButton.setTitle(Localization.cancel, for: .normal)
+        cancelButton.tintColor = UIColor.white
+        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+    }
+
+    @objc func cancelButtonTapped() {
+        dismiss(animated: true)
     }
 
     override func viewDidLayoutSubviews() {
@@ -137,6 +150,11 @@ private extension CodeScannerViewController {
     /// Enables and starts live stream video, if available.
     func startLiveVideo() {
         session.sessionPreset = .photo
+        if #available(iOS 16.0, *) {
+            if session.isMultitaskingCameraAccessSupported {
+                session.isMultitaskingCameraAccessEnabled = true
+            }
+        }
 
         guard let captureDevice = AVCaptureDevice.default(for: .video),
             let deviceInput = try? AVCaptureDeviceInput(device: captureDevice) else {
@@ -312,5 +330,9 @@ private extension CodeScannerViewController {
     enum Constants {
         static let dimmingColor = UIColor(white: 0.0, alpha: 0.5)
         static let instructionTextInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
+    }
+
+    enum Localization {
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the screen")
     }
 }

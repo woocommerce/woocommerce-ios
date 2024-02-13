@@ -175,6 +175,7 @@ public enum WooAnalyticsStat: String {
     case analyticsHubEnableJetpackStatsTapped = "analytics_hub_enable_jetpack_stats_tapped"
     case analyticsHubEnableJetpackStatsSuccess = "analytics_hub_enable_jetpack_stats_success"
     case analyticsHubEnableJetpackStatsFailed = "analytics_hub_enable_jetpack_stats_failed"
+    case analyticsHubViewFullReportTapped = "analytics_hub_view_full_report_tapped"
 
     // MARK: Blaze Events
     //
@@ -564,6 +565,7 @@ public enum WooAnalyticsStat: String {
     case receiptPrintFailed = "receipt_print_failed"
     case receiptPrintCanceled = "receipt_print_canceled"
     case receiptPrintSuccess = "receipt_print_success"
+    case receiptFetchFailed = "receipt_url_fetching_fails"
 
     // MARK: Payment Events
     //

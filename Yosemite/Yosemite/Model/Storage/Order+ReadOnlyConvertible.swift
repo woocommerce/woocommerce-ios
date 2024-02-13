@@ -116,7 +116,8 @@ extension Storage.Order: ReadOnlyConvertible {
                      taxes: orderTaxLines,
                      customFields: orderCustomFields,
                      renewalSubscriptionID: renewalSubscriptionID,
-                     appliedGiftCards: orderGiftCards)
+                     appliedGiftCards: orderGiftCards,
+                     attributionInfo: attributionInfo?.toReadOnly())
 
     }
 

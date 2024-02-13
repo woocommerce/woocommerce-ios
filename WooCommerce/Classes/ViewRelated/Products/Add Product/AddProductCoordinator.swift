@@ -23,6 +23,12 @@ final class AddProductCoordinator: Coordinator {
         case blazeCampaignCreation
     }
 
+    /// Source view that initiates product creation for the action sheet to point to.
+    enum SourceView {
+        case barButtonItem(UIBarButtonItem)
+        case view(UIView)
+    }
+
     let navigationController: UINavigationController
 
     private let siteID: Int64
@@ -33,6 +39,7 @@ final class AddProductCoordinator: Coordinator {
     private let storage: StorageManagerType
     private let isFirstProduct: Bool
     private let analytics: Analytics
+    private let navigateToProductForm: ((UIViewController) -> Void)?
 
     /// ResultController to to track the current product count.
     ///
@@ -66,19 +73,31 @@ final class AddProductCoordinator: Coordinator {
 
     private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
+    /// - Parameters:
+    ///   - navigateToProductForm: Optional custom navigation when showing the product form for the new product.
     init(siteID: Int64,
          source: Source,
-         sourceBarButtonItem: UIBarButtonItem,
+         sourceView: SourceView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
-         isFirstProduct: Bool) {
+         isFirstProduct: Bool,
+         navigateToProductForm: ((UIViewController) -> Void)? = nil) {
         self.siteID = siteID
         self.source = source
-        self.sourceBarButtonItem = sourceBarButtonItem
-        self.sourceView = nil
+        switch sourceView {
+            case let .barButtonItem(barButtonItem):
+                self.sourceBarButtonItem = barButtonItem
+                self.sourceView = nil
+            case let .view(view):
+                self.sourceBarButtonItem = nil
+                self.sourceView = view
+            case .none:
+                self.sourceBarButtonItem = nil
+                self.sourceView = nil
+        }
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
@@ -86,28 +105,7 @@ final class AddProductCoordinator: Coordinator {
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
-    }
-
-    init(siteID: Int64,
-         source: Source,
-         sourceView: UIView?,
-         sourceNavigationController: UINavigationController,
-         storage: StorageManagerType = ServiceLocator.storageManager,
-         addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         analytics: Analytics = ServiceLocator.analytics,
-         isFirstProduct: Bool) {
-        self.siteID = siteID
-        self.source = source
-        self.sourceBarButtonItem = nil
-        self.sourceView = sourceView
-        self.navigationController = sourceNavigationController
-        self.productImageUploader = productImageUploader
-        self.storage = storage
-        self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
-        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
-        self.analytics = analytics
-        self.isFirstProduct = isFirstProduct
+        self.navigateToProductForm = navigateToProductForm
     }
 
     func start() {
@@ -371,7 +369,11 @@ private extension AddProductCoordinator {
                                                        presentationStyle: .navigationStack)
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
-        navigationController.pushViewController(viewController, animated: true)
+        if let navigateToProductForm {
+            navigateToProductForm(viewController)
+        } else {
+            navigationController.pushViewController(viewController, animated: true)
+        }
     }
 
     /// Presents AI Product Creation survey

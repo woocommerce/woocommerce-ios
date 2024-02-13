@@ -449,7 +449,6 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func createCustomRangeTab(_ start: Date, _ end: Date) {
-        print(start.description + end.description)
         let currentDate = Date()
 
         // TODO: 11935 Do actual data fetching and displaying.

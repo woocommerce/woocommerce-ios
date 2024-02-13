@@ -841,17 +841,17 @@ private extension ProductSelectorViewModel {
         static let lastSoldProductsSectionTitle = NSLocalizedString("Last Sold", comment: "Section title for last sold products on the Select Product screen.")
         static let productsSectionTitle = NSLocalizedString("Products", comment: "Section title for products on the Select Product screen.")
         static let selectProductsTitle = NSLocalizedString(
-            "",
+            "productSelectorViewModel.selectProductsTitle.selectProductsTitle",
             value: "Select products",
-            comment: "")
+            comment: "Text on the header of the Select Product screen when no products are selected.")
         static let singularProductSelectedFormattedText = NSLocalizedString(
-            "",
+            "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText",
             value: "%ld product selected",
-            comment: "")
+            comment: "Text on the header of the Select Product screen when one product is selected.")
         static let pluralProductSelectedFormattedText = NSLocalizedString(
-            "",
+            "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText",
             value: "%ld products selected",
-            comment: "")
+            comment: "Text on the header of the Select Product screen when more than one products are selected.")
     }
 }
 

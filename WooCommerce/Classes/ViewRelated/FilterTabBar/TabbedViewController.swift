@@ -110,12 +110,14 @@ class TabbedViewController: UIViewController {
         // Setup child view controller
         items.append(tab)
         tabBar.items = items
-        configureChildViewControllers()
+        addChild(tab.viewController)
+        stackView.addArrangedSubview(tab.viewController.view)
+        tab.viewController.didMove(toParent: self)
 
-        // Setup selected position
+        // Set the appended tab as selected
         let tabPosition = items.count-1
-        updateVisibleChildViewController(at: tabPosition)
         selection = tabPosition
+        updateVisibleChildViewController(at: tabPosition)
     }
 }
 

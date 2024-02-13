@@ -1,8 +1,10 @@
 import WebKit
 
 /// Previews a backend-generated receipt
-final class ReceiptViewController: UIViewController, WKNavigationDelegate {
+final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPrintInteractionControllerDelegate {
     @IBOutlet private weak var webView: WKWebView!
+
+    var printController: UIPrintInteractionController = UIPrintInteractionController.shared
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -12,7 +14,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
     }()
 
     private let viewModel: ReceiptViewModel
-    
+
     var onDisappear: (() -> Void)?
 
     init(viewModel: ReceiptViewModel, onDisappear: (() -> Void)? = nil) {
@@ -20,7 +22,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
         self.onDisappear = onDisappear
         super.init(nibName: "LegacyReceiptViewController", bundle: nil)
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         onDisappear?()
@@ -99,17 +101,16 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
         ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: nil,
                                                                                    cardReaderModel: nil,
                                                                                    source: .backend))
-        guard let url = URL(string: viewModel.receiptURLString) else {
-            return
-        }
-        let printController = UIPrintInteractionController.shared
-
         let printInfo = UIPrintInfo(dictionary: nil)
         let formattedJobName = viewModel.formattedReceiptJobName(printInfo.jobName)
         printInfo.jobName = formattedJobName
-
         printController.printInfo = printInfo
+
+        // Use the webview's print formatter to initialize print operation.
+        // UIPrintInteractionController printFormatter and printPageRenderer properties are mutually exclusive, in order to grab the
+        // webview's page renderer, first we need to assign it to the controller's formatter:
         printController.printFormatter = webView.viewPrintFormatter()
+        printController.delegate = self
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error = error {
@@ -124,6 +125,19 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
             }
             self?.dismiss(animated: true)
         })
+    }
+}
+
+// MARK: - UIPrintInteractionControllerDelegate delegate
+extension ReceiptViewController {
+    func printInteractionController(_ printInteractionController: UIPrintInteractionController, choosePaper paperList: [UIPrintPaper]) -> UIPrintPaper {
+        // Attempts to infer the paper size from a given content in order to optimize printing surface.
+        guard let inferPaperSize = printController.printFormatter?.printPageRenderer?.paperRect.size else {
+            DDLogInfo("Unable to retrieve inferred paper size from the web view. Using default paper provided by the system.")
+            return paperList.first ?? UIPrintPaper()
+        }
+        let paper = UIPrintPaper.bestPaper(forPageSize: inferPaperSize, withPapersFrom: paperList)
+        return paper
     }
 }
 

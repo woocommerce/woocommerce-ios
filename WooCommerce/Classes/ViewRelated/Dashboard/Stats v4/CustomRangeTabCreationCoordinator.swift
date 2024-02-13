@@ -18,10 +18,15 @@ final class CustomRangeTabCreationCoordinator: Coordinator {
 
 private extension CustomRangeTabCreationCoordinator {
     func presentDateRangePicker() {
-        let controller = RangedDatePickerHostingController(datesFormatter: DatesFormatter()) { [weak self] start, end in
-            guard let self else { return }
-            self.onDateRangeSelected(start, end)
-        }
+        let controller = RangedDatePickerHostingController(
+            datesFormatter: DatesFormatter(),
+            applyButtonTitle: Localization.add,
+            datesSelected: { [weak self] start, end in
+                guard let self else { return }
+                self.onDateRangeSelected(start, end)
+            }
+        )
+
         navigationController.present(controller, animated: true)
     }
 
@@ -31,5 +36,17 @@ private extension CustomRangeTabCreationCoordinator {
         func format(start: Date, end: Date) -> String {
             start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
         }
+    }
+}
+
+// MARK: Constant
+
+private extension CustomRangeTabCreationCoordinator {
+    enum Localization {
+        static let add = NSLocalizedString(
+            "customRangeTabCreationCoordinator.add",
+            value: "Add",
+            comment: "Button in date range picker to add a Custom Range tab"
+        )
     }
 }

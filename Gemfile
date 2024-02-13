@@ -22,9 +22,9 @@ gem 'fastlane-plugin-sentry', '~> 1.0'
 # Using '~> 9.0.1' would resolve to 9.0.x compatible version, missing out on any new feature release.
 gem 'fastlane-plugin-wpmreleasetoolkit', '~> 9.3'
 gem 'rake', '~> 12.3'
-gem 'rubocop', '~> 1.56'
+gem 'rubocop', '~> 1.60'
 gem 'rubocop-rake', '~> 0.6'
 gem 'xcode-install'
 gem 'xcpretty-travis-formatter'
 
-gem 'danger-dangermattic', git: 'https://github.com/Automattic/dangermattic'
+gem 'danger-dangermattic', '~> 1.0'

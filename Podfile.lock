@@ -42,7 +42,7 @@ PODS:
     - WordPressShared (~> 2.0-beta)
     - wpxmlrpc (~> 0.10)
   - WordPressShared (2.1.0)
-  - WordPressUI (1.15.0)
+  - WordPressUI (1.15.1)
   - Wormholy (1.6.6)
   - WPMediaPicker (1.8.11)
   - wpxmlrpc (0.10.0)
@@ -159,7 +159,7 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: ba69878bfa1368636e92d29fcfb5bd1e0a11a3ef
   WordPressKit: 7e5250e9e28fcdca787f8d313a7dc89a8571d774
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
-  WordPressUI: a491454affda3b0fb812812e637dc5e8f8f6bd06
+  WordPressUI: 700e3ec5a9f77b6920c8104c338c85788036ab3c
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: 79548964e9c7e131ccfa72270bdda3aec8fa56b5
   wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd

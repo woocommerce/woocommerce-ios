@@ -2,7 +2,7 @@
 
 17.4
 -----
-
+- [***] Dropped iOS 15 support. From now we support iOS 16 and later. [https://github.com/woocommerce/woocommerce-ios/pull/11965]
 
 17.3
 -----

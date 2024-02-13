@@ -99,7 +99,9 @@ struct ProductSelectorView: View {
                         .renderedIf(searchHeaderisBeingEdited)
             HStack {
                 Text(viewModel.selectProductsTitle)
-                    .renderedIf(true) // TODO: Render on split view configuration
+                    .renderedIf(configuration.productHeaderTextEnabled)
+                    .fixedSize()
+                    .padding(.leading)
                 Button(Localization.clearSelection) {
                     viewModel.clearSelection()
                 }
@@ -294,6 +296,7 @@ extension ProductSelectorView {
         /// Otherwise, the product itself is selected immediately.
         var treatsAllProductsAsSimple: Bool = false
 
+        var productHeaderTextEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""

@@ -164,6 +164,8 @@ extension AnalyticsHubTimeRangeSelection {
                 self = .monthToDate
             case .thisYear:
                 self = .yearToDate
+            case .custom(let start, let end):
+                self = .custom(start: start, end: end)
             }
         }
     }

@@ -17,6 +17,12 @@ private extension StatsTimeRangeV4 {
             let endDateString = dateFormatter.string(from: endDate)
             let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
+        case .custom:
+            // TODO: 11935 Update label count
+            let startDateString = dateFormatter.string(from: startDate)
+            let endDateString = dateFormatter.string(from: endDate)
+            let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval")
+            return String.localizedStringWithFormat(format, startDateString, endDateString)
         }
     }
 
@@ -33,6 +39,9 @@ private extension StatsTimeRangeV4 {
             dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
         case .thisYear:
             dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
+        case .custom:
+            // TODO: 11935 Set chart axis formatter based on interval
+            dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
         }
         dateFormatter.timeZone = timezone
         return dateFormatter
@@ -48,6 +57,9 @@ private extension StatsTimeRangeV4 {
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .thisYear:
             dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
+        case .custom:
+            // TODO: 11935 Set chart axis formatter based on interval
+            dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
         }
         dateFormatter.timeZone = timezone
         return dateFormatter

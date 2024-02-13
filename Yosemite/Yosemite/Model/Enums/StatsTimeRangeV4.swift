@@ -101,7 +101,7 @@ extension StatsTimeRangeV4 {
         case .thisYear:
             return .monthly
         case .custom(let from, let to):
-            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, toDate: to) else {
+            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
                 return .hourly
             }
             switch differenceInDays {
@@ -127,7 +127,7 @@ extension StatsTimeRangeV4 {
         case .thisYear:
             return .month
         case .custom(let from, let to):
-            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, toDate: to) else {
+            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
                 return .hour
             }
             switch differenceInDays {
@@ -187,7 +187,7 @@ extension StatsTimeRangeV4 {
         case .thisYear:
             return .year
         case .custom(let from, let to):
-            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, toDate: to) else {
+            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
                 return .hour
             }
             switch differenceInDays {
@@ -220,10 +220,7 @@ extension StatsTimeRangeV4 {
             return daysThisMonth?.count ?? 0
         case .thisYear:
             return 12
-        case .custom(let from, let to):
-            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, toDate: to) else {
-                return 1
-            }
+        case .custom:
             // TODO: 11935 Calculate interval units
             return 1
         }
@@ -245,9 +242,8 @@ private extension StatsTimeRangeV4 {
     /// 
     /// More details at pe5sF9-2ri-p2
     ///
-    static func differenceInDays(startDate: Date, toDate: Date) -> DifferenceInDays? {
-        let components = [.day, .weekOfYear, .month] as Set<Calendar.Component>
-        let dateComponents = Calendar.current.dateComponents(components, from: startDate, to: toDate)
+    static func differenceInDays(startDate: Date, endDate: Date) -> DifferenceInDays? {
+        let dateComponents = Calendar.current.dateComponents([.day], from: startDate, to: endDate)
 
         guard let day = dateComponents.day else {
             return nil

@@ -13,16 +13,26 @@ final class RangedDatePickerHostingController: UIHostingController<RangedDatePic
     init(startDate: Date? = nil,
          endDate: Date? = nil,
          datesFormatter: RangedDateTextFormatter,
+         applyButtonTitle: String = Localization.apply,
          datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         super.init(rootView: RangedDatePicker(startDate: startDate,
                                               endDate: endDate,
                                               datesFormatter: datesFormatter,
+                                              applyButtonTitle: applyButtonTitle,
                                               datesSelected: datesSelected))
     }
 
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+// MARK: Constant
+
+private extension RangedDatePickerHostingController {
+    enum Localization {
+        static let apply = NSLocalizedString("Apply", comment: "Apply navigation button in custom range date picker")
     }
 }
 
@@ -49,16 +59,22 @@ struct RangedDatePicker: View {
     ///
     private let datesFormatter: RangedDateTextFormatter
 
+    /// Custom text for the confirm button
+    ///
+    private let applyButtonTitle: String
+
     /// Custom `init` to provide intial start and end dates.
     ///
     init(startDate: Date? = nil,
          endDate: Date? = nil,
          datesFormatter: RangedDateTextFormatter,
+         applyButtonTitle: String = Localization.apply,
          datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         self._startDate = State(initialValue: startDate ?? Date())
         self._endDate = State(initialValue: endDate ?? Date())
         self.datesFormatter = datesFormatter
         self.datesSelected = datesSelected
+        self.applyButtonTitle = applyButtonTitle
     }
 
     var body: some View {
@@ -109,7 +125,7 @@ struct RangedDatePicker: View {
                         presentation.wrappedValue.dismiss()
                         datesSelected?(startDate, endDate)
                     }, label: {
-                        Text(Localization.apply)
+                        Text(applyButtonTitle)
                     })
                 }
                 ToolbarItem(placement: .cancellationAction) {

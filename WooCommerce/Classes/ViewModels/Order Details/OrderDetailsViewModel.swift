@@ -487,11 +487,12 @@ extension OrderDetailsViewModel {
                                                             siteName: siteName)
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
+                    cell.stopLoading()
                 case let .failure(error):
                     ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error))
                     self.displayReceiptRetrievalErrorNotice(for: order, with: error, in: viewController)
+                    cell.stopLoading()
                 }
-                cell.stopLoading()
             }
             ServiceLocator.stores.dispatch(action)
         case .seeLegacyReceipt:

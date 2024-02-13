@@ -12,7 +12,7 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
     @IBOutlet private weak var rightTitleLabel: UILabel!
     @IBOutlet private weak var footnoteLabel: UILabel!
     
-    let activityIndicator: UIActivityIndicatorView = {
+    private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
@@ -108,10 +108,14 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
 
     func startLoading() {
         activityIndicator.startAnimating()
+        isUserInteractionEnabled = false
+        alpha = 0.5
     }
 
     func stopLoading() {
         activityIndicator.stopAnimating()
+        isUserInteractionEnabled = true
+        alpha = 1
     }
 }
 

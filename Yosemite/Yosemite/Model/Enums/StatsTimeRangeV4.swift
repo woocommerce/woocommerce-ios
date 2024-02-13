@@ -113,7 +113,7 @@ extension StatsTimeRangeV4 {
                 return .weekly
             case .from91to365:
                 return .monthly
-            case .greaterThanOrEqualTo365:
+            case .greaterThan365:
                 return .quarterly
             }
         }
@@ -139,7 +139,7 @@ extension StatsTimeRangeV4 {
                 return .week
             case .from91to365:
                 return .month
-            case .greaterThanOrEqualTo365:
+            case .greaterThan365:
                 return .quarter
             }
         }
@@ -157,7 +157,7 @@ extension StatsTimeRangeV4 {
         case .thisYear:
             return .year
         case .custom(let from, let to):
-            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, toDate: to) else {
+            guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
                 return .hour
             }
             switch differenceInDays {
@@ -169,7 +169,7 @@ extension StatsTimeRangeV4 {
                 return .week
             case .from91to365:
                 return .month
-            case .greaterThanOrEqualTo365:
+            case .greaterThan365:
                 return .quarter
             }
         }
@@ -199,7 +199,7 @@ extension StatsTimeRangeV4 {
                 return .week
             case .from91to365:
                 return .month
-            case .greaterThanOrEqualTo365:
+            case .greaterThan365:
                 return .quarter
             }
         }
@@ -229,7 +229,7 @@ extension StatsTimeRangeV4 {
 
 private extension StatsTimeRangeV4 {
     enum DifferenceInDays {
-        case greaterThanOrEqualTo365
+        case greaterThan365
         case from91to365
         case from29To90
         case from1To28
@@ -250,8 +250,8 @@ private extension StatsTimeRangeV4 {
         }
 
         switch day {
-        case 325...Int.max:
-            return .greaterThanOrEqualTo365
+        case 366...Int.max:
+            return .greaterThan365
         case 91...365:
             return .from91to365
         case 29...90:

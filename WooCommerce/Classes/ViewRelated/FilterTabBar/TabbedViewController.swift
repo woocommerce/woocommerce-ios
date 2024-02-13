@@ -102,6 +102,7 @@ class TabbedViewController: UIViewController {
             return
         }
         tabBarStackView.removeArrangedSubview(customTabBarView)
+        customTabBarView.removeFromSuperview()
         self.customTabBarView = nil
     }
 

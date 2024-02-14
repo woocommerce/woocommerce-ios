@@ -214,6 +214,147 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         XCTAssertTrue(completionHandlerTriggered)
     }
 
+    // MARK: Retrieve Media for product image
+
+    func test_campaign_is_submitted_with_retrieved_media_src_and_mimeType() async throws {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
+
+        // When
+        let media = Media.fake().copy(mimeType: "image/jpeg", src: "http://example.com/test.jpeg")
+        mockRetrieveMedia(with: .success(media))
+
+        var submittedCampaign: CreateBlazeCampaign?
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchPaymentInfo(_, onCompletion):
+                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
+            case let .createCampaign(campaign, _, onCompletion):
+                submittedCampaign = campaign
+                onCompletion(.success(Void()))
+            default:
+                break
+            }
+        }
+
+        await viewModel.updatePaymentInfo()
+        await viewModel.submitCampaign()
+
+        // Then
+        let campaign = try XCTUnwrap(submittedCampaign)
+        XCTAssertEqual(campaign.mainImage.url, media.src)
+        XCTAssertEqual(campaign.mainImage.mimeType, media.mimeType)
+    }
+
+    func test_campaignCreationError_is_correct_when_retrieve_media_fails() async {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
+        XCTAssertNil(viewModel.campaignCreationError)
+
+        // When
+        mockRetrieveMedia(with: .failure(NSError(domain: "test", code: 500)))
+        mockCampaignCreation(with: .success(Void()))
+        await viewModel.updatePaymentInfo()
+        await viewModel.submitCampaign()
+
+        // Then
+        XCTAssertEqual(viewModel.campaignCreationError, .failedToFetchCampaignImage)
+    }
+
+    // MARK: Upload image
+
+    func test_campaign_is_submitted_with_uploaded_media_src_and_mimeType() async throws {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .asset(asset: PHAsset())),
+                                                     stores: stores) {}
+
+        // When
+        let media = Media.fake().copy(mimeType: "image/jpeg", src: "http://example.com/test.jpeg")
+        mockUploadMedia(with: .success(media))
+
+        var submittedCampaign: CreateBlazeCampaign?
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchPaymentInfo(_, onCompletion):
+                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
+            case let .createCampaign(campaign, _, onCompletion):
+                submittedCampaign = campaign
+                onCompletion(.success(Void()))
+            default:
+                break
+            }
+        }
+
+        await viewModel.updatePaymentInfo()
+        await viewModel.submitCampaign()
+
+        // Then
+        let campaign = try XCTUnwrap(submittedCampaign)
+        XCTAssertEqual(campaign.mainImage.url, media.src)
+        XCTAssertEqual(campaign.mainImage.mimeType, media.mimeType)
+    }
+
+    func test_upload_image_is_retired_one_time_if_upload_fails() async throws {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .asset(asset: PHAsset())),
+                                                     stores: stores) {}
+
+        // When
+        mockUploadMedia(with: .failure(NetworkError.timeout(response: nil)))
+        mockCampaignCreation(with: .success(Void()))
+
+        await viewModel.updatePaymentInfo()
+        await viewModel.submitCampaign()
+
+        // Then
+        var uploadMediaInvocationCount = 0
+        for action in stores.receivedActions {
+            guard let mediaAction = action as? MediaAction else {
+                continue
+            }
+            switch mediaAction {
+            case .uploadMedia:
+                uploadMediaInvocationCount += 1
+            default:
+                continue
+            }
+        }
+        XCTAssertEqual(uploadMediaInvocationCount, 2)
+    }
+
+    func test_campaignCreationError_is_correct_when_image_upload_fails() async {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .asset(asset: PHAsset())),
+                                                     stores: stores) {}
+        XCTAssertNil(viewModel.campaignCreationError)
+
+        // When
+        mockUploadMedia(with: .failure(NSError(domain: "test", code: 500)))
+        mockCampaignCreation(with: .success(Void()))
+        await viewModel.updatePaymentInfo()
+        await viewModel.submitCampaign()
+
+        // Then
+        XCTAssertEqual(viewModel.campaignCreationError, .failedToUploadCampaignImage)
+    }
+
     // MARK: Add payment from web view
 
     func test_payment_info_is_fetched_when_new_payment_method_added_from_web_view() async throws {

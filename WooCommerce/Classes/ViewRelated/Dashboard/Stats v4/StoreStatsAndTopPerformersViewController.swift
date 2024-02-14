@@ -36,7 +36,7 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     private var syncingTimeRanges: Set<StatsTimeRangeV4> = []
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let dashboardViewModel: DashboardViewModel
-    private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
+    private var timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
     private let featureFlagService: FeatureFlagService
 
     /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
@@ -453,19 +453,31 @@ private extension StoreStatsAndTopPerformersViewController {
     func createCustomRangeTab(_ start: Date, _ end: Date) {
         let currentDate = Date()
 
-        // TODO: 11935 Do actual data fetching and displaying.
+        // TODO: 11935 Add the correct data fetching and displaying based on custom range.
         let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                            timeRange: .custom(from: start, to: end),
                                                                            currentDate: currentDate,
                                                                            canDisplayInAppFeedbackCard: true,
                                                                            usageTracksEventEmitter: usageTracksEventEmitter)
+
         periodVCs.append(customRangeVC)
+        timeRanges.append(.custom(from: start, to: end))
 
         let customRangeTabbedItem = TabbedItem(title: Localization.customRangeTabTitle,
                                                viewController: customRangeVC,
                                                accessibilityIdentifier: Constants.customRangeTabAcessibilityIdentifier)
         appendToTabBar(customRangeTabbedItem)
+
+        // Once a custom range tab is created, do not show the "Custom Range" button anymore.
         removeCustomViewFromTabBar()
+
+        // Get stats data for this tab
+        self.syncStats(forced: false, viewControllerToSync: customRangeVC)
+
+        // Add pull to refresh functionality
+        customRangeVC.onPullToRefresh = { [weak self] in
+            await self?.onPullToRefresh()
+        }
     }
 }
 

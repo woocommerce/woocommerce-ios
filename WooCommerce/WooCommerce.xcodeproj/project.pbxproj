@@ -1798,6 +1798,7 @@
 		B98FF4402AAA096200326D16 /* AddressWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98FF43F2AAA096200326D16 /* AddressWooTests.swift */; };
 		B991D3952A4EC0F800D886ED /* CouponLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */; };
 		B991F5382B7BCA27001ADF83 /* LocallyStoredStateNameRetriever.swift in Sources */ = {isa = PBXBuildFile; fileRef = B991F5372B7BCA27001ADF83 /* LocallyStoredStateNameRetriever.swift */; };
+		B993051E2B7CC2A400456E35 /* LocallyStoredStateNameRetrieverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B993051D2B7CC2A400456E35 /* LocallyStoredStateNameRetrieverTests.swift */; };
 		B99686E02A13C8CC00D1AF62 /* ScanToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */; };
 		B99686E32A13C98200D1AF62 /* ScanToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */; };
 		B998DF482A989BE100D1C6E8 /* TaxEducationalDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B998DF472A989BE100D1C6E8 /* TaxEducationalDialogView.swift */; };
@@ -4496,6 +4497,7 @@
 		B98FF43F2AAA096200326D16 /* AddressWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressWooTests.swift; sourceTree = "<group>"; };
 		B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineViewModel.swift; sourceTree = "<group>"; };
 		B991F5372B7BCA27001ADF83 /* LocallyStoredStateNameRetriever.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocallyStoredStateNameRetriever.swift; sourceTree = "<group>"; };
+		B993051D2B7CC2A400456E35 /* LocallyStoredStateNameRetrieverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocallyStoredStateNameRetrieverTests.swift; sourceTree = "<group>"; };
 		B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayView.swift; sourceTree = "<group>"; };
 		B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayViewModel.swift; sourceTree = "<group>"; };
 		B998DF472A989BE100D1C6E8 /* TaxEducationalDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogView.swift; sourceTree = "<group>"; };
@@ -8205,6 +8207,7 @@
 		5791FB4024EC833200117FD6 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				B993051B2B7CC27F00456E35 /* Order Details */,
 				6850C5F22B6A11AE0026A93B /* Receipts */,
 				027111402913B9D400F5269A /* Authentication */,
 				02DAE7FD291B8C7C009342B7 /* Domains */,
@@ -9727,6 +9730,22 @@
 			isa = PBXGroup;
 			children = (
 				B991F5372B7BCA27001ADF83 /* LocallyStoredStateNameRetriever.swift */,
+			);
+			path = Address;
+			sourceTree = "<group>";
+		};
+		B993051B2B7CC27F00456E35 /* Order Details */ = {
+			isa = PBXGroup;
+			children = (
+				B993051C2B7CC28C00456E35 /* Address */,
+			);
+			path = "Order Details";
+			sourceTree = "<group>";
+		};
+		B993051C2B7CC28C00456E35 /* Address */ = {
+			isa = PBXGroup;
+			children = (
+				B993051D2B7CC2A400456E35 /* LocallyStoredStateNameRetrieverTests.swift */,
 			);
 			path = Address;
 			sourceTree = "<group>";
@@ -15171,6 +15190,7 @@
 				02BC5AA524D27F8900C43326 /* ProductVariationFormViewModel+UpdatesTests.swift in Sources */,
 				D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */,
 				02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */,
+				B993051E2B7CC2A400456E35 /* LocallyStoredStateNameRetrieverTests.swift in Sources */,
 				DE7E5E8A2B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift in Sources */,
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
 				CCCFFC5D2934F0BA006130AF /* StatsIntervalDataParserTests.swift in Sources */,

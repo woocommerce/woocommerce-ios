@@ -75,7 +75,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     @Published private(set) var cardName: String?
 
     @Published var shouldDisplayPaymentErrorAlert = false
-    @Published var shouldDisplayCampaignCreationError = false
+    @Published var campaignCreationError: BlazeCampaignCreationError? = nil
 
     @Published var isCreatingCampaign = false
 
@@ -119,17 +119,47 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         }
 
         analytics.track(event: .Blaze.Payment.submitCampaignTapped())
-        shouldDisplayCampaignCreationError = false
+        campaignCreationError = nil
         isCreatingCampaign = true
         do {
-            let updatedDetails = campaignInfo.copy(paymentMethodID: selectedPaymentMethod.id)
-            try await requestCampaignCreation(details: updatedDetails)
+            // Prepare image for campaign
+            let campaignMedia: Media
+            switch image.source {
+            case .asset(let asset):
+                do {
+                    campaignMedia = try await uploadPendingImage(asset)
+                } catch {
+                    DDLogError("⛔️ Error uploading campaign image: \(error)")
+                    throw BlazeCampaignCreationError.failedToUploadCampaignImage
+                }
+            case .media(let media):
+                campaignMedia = media
+            case .productImage(let image):
+                do {
+                    campaignMedia = try await fetchMedia(mediaID: image.imageID)
+                } catch {
+                    DDLogError("⛔️ Error fetching product image's Media: \(error)")
+                    throw BlazeCampaignCreationError.failedToFetchCampaignImage
+                }
+            }
+
+            var updatedDetails = campaignInfo
+            // Set image URL and mimeType
+            updatedDetails = updatedDetails.copy(mainImage: .init(url: campaignMedia.src, mimeType: campaignMedia.mimeType))
+            // Set payment method ID
+            updatedDetails = updatedDetails.copy(paymentMethodID: selectedPaymentMethod.id)
+
+            do {
+                try await requestCampaignCreation(details: updatedDetails)
+            } catch {
+                DDLogError("⛔️ Error creating Blaze campaign: \(error)")
+                throw BlazeCampaignCreationError.failedToCreateCampaign
+            }
             analytics.track(event: .Blaze.Payment.campaignCreationSuccess())
             completionHandler()
         } catch {
-            DDLogError("⛔️ Error creating Blaze campaign: \(error)")
             analytics.track(event: .Blaze.Payment.campaignCreationFailed())
-            shouldDisplayCampaignCreationError = true
+            campaignCreationError = error as? BlazeCampaignCreationError ?? .failedToCreateCampaign
         }
         isCreatingCampaign = false
     }

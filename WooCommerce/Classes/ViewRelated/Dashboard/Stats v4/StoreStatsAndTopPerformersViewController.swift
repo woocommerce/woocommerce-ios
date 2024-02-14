@@ -113,7 +113,9 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
         super.viewWillAppear(animated)
         ensureGhostContentIsAnimated()
     }
+}
 
+private extension StoreStatsAndTopPerformersViewController {
     func observeSelectedTimeRangeIndex() {
         let timeRangeCount = timeRanges.count
         selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex

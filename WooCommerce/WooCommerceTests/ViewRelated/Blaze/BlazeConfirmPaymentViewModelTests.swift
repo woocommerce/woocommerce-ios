@@ -1,11 +1,24 @@
 import Combine
 import XCTest
 import Yosemite
+import class Photos.PHAsset
 @testable import WooCommerce
+import enum Networking.NetworkError
 
 final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
+    private let sampleProductID: Int64 = 123
+
     private let sampleSiteID: Int64 = 122
+
+    private let samplePaymentMethod = BlazePaymentMethod(id: "test-id",
+                                                         rawType: "credit-card",
+                                                         name: "Card ending in 7284",
+                                                         info: .init(lastDigits: "7284",
+                                                                     expiring: .fake(),
+                                                                     type: "Mastercard",
+                                                                     nickname: nil,
+                                                                     cardholderName: "Jane Doe"))
 
     private var stores: MockStoresManager!
 
@@ -30,7 +43,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_isFetchingPaymentInfo_is_updated_correctly_when_fetching_payment_info() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         var fetchingStates: [Bool] = []
         subscription = viewModel.$isFetchingPaymentInfo
             .sink { isFetching in
@@ -47,7 +64,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_shouldDisplayPaymentErrorAlert_is_true_when_fetching_payment_info_fails() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         XCTAssertFalse(viewModel.shouldDisplayPaymentErrorAlert)
 
         // When
@@ -60,7 +81,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_shouldDisableCampaignCreation_is_false_until_a_selected_payment_method_is_found() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         let paymentMethod = BlazePaymentMethod(id: "test-id", rawType: "credit-card", name: "Card ending in 7284", info: .fake())
         XCTAssertTrue(viewModel.shouldDisableCampaignCreation)
 
@@ -74,7 +99,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_card_details_are_correct_if_a_selected_payment_method_is_found() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         let paymentMethod = BlazePaymentMethod(id: "test-id",
                                                rawType: "credit-card",
                                                name: "Card ending in 7284",
@@ -96,7 +125,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_confirmPaymentDetails_does_not_trigger_campaign_creation_if_selectedPaymentMethod_is_nil() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         var didTriggerCampaignCreation = false
         XCTAssertNil(viewModel.selectedPaymentMethod)
 
@@ -115,12 +148,16 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(didTriggerCampaignCreation)
         XCTAssertFalse(viewModel.isCreatingCampaign)
-        XCTAssertFalse(viewModel.shouldDisplayCampaignCreationError)
+        XCTAssertNil(viewModel.campaignCreationError)
     }
 
     func test_isCreatingCampaign_is_updated_correctly_when_creating_campaign() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         var loadingStates: [Bool] = []
         subscription = viewModel.$isCreatingCampaign
             .sink { isLoading in
@@ -128,6 +165,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
             }
 
         // When
+        mockRetrieveMedia(with: .success(.fake()))
         mockCampaignCreation(with: .success(Void()))
         await viewModel.updatePaymentInfo()
         await viewModel.submitCampaign()
@@ -136,28 +174,38 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         XCTAssertEqual(loadingStates, [false, true, false])
     }
 
-    func test_shouldDisplayCampaignCreationError_is_correct_when_campaign_creation_fails() async {
+    func test_campaignCreationError_is_correct_when_campaign_creation_fails() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
-        XCTAssertFalse(viewModel.shouldDisplayCampaignCreationError)
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
+        XCTAssertNil(viewModel.campaignCreationError)
 
         // When
+        mockRetrieveMedia(with: .success(.fake()))
         mockCampaignCreation(with: .failure(NSError(domain: "test", code: 500)))
         await viewModel.updatePaymentInfo()
         await viewModel.submitCampaign()
 
         // Then
-        XCTAssertTrue(viewModel.shouldDisplayCampaignCreationError)
+        XCTAssertEqual(viewModel.campaignCreationError, .failedToCreateCampaign)
     }
 
     func test_onCompletion_is_triggered_when_campaign_creation_succeeds() async {
         // Given
         var completionHandlerTriggered = false
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {
             completionHandlerTriggered = true
         }
 
         // When
+        mockRetrieveMedia(with: .success(.fake()))
         mockCampaignCreation(with: .success(Void()))
         await viewModel.updatePaymentInfo()
         await viewModel.submitCampaign()
@@ -170,7 +218,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_payment_info_is_fetched_when_new_payment_method_added_from_web_view() async throws {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         viewModel.showAddPaymentSheet = true
         let samplePaymentInfo: BlazePaymentInfo = BlazePaymentMethodsViewModel.samplePaymentInfo()
         mockPaymentFetch(with: .success(samplePaymentInfo))
@@ -201,7 +253,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_add_payment_web_view_is_dismissed_after_selecting_payment_method() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         let samplePaymentInfo: BlazePaymentInfo = BlazePaymentMethodsViewModel.samplePaymentInfo()
         mockPaymentFetch(with: .success(samplePaymentInfo))
         await viewModel.updatePaymentInfo()
@@ -219,7 +275,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_payment_info_is_fetched_when_new_payment_method_added() async {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID, campaignInfo: .fake(), stores: stores) {}
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
         viewModel.showAddPaymentSheet = true
         let samplePaymentInfo: BlazePaymentInfo = BlazePaymentMethodsViewModel.samplePaymentInfo()
         mockPaymentFetch(with: .success(samplePaymentInfo))
@@ -248,11 +308,14 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
     // MARK: Analytics
     func test_event_is_tracked_when_submitting_campaign() async throws {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID,
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
                                                      campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
                                                      stores: stores,
                                                      analytics: analytics) {}
         // When
+        mockRetrieveMedia(with: .success(.fake()))
         mockCampaignCreation(with: .failure(NSError(domain: "test", code: 500)))
         await viewModel.updatePaymentInfo()
 
@@ -265,11 +328,14 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_event_is_tracked_when_campaign_creation_successful() async throws {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID,
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
                                                      campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
                                                      stores: stores,
                                                      analytics: analytics) {}
         // When
+        mockRetrieveMedia(with: .success(.fake()))
         mockCampaignCreation(with: .success(Void()))
         await viewModel.updatePaymentInfo()
 
@@ -282,11 +348,14 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
 
     func test_event_is_tracked_when_campaign_creation_failed() async throws {
         // Given
-        let viewModel = BlazeConfirmPaymentViewModel(siteID: sampleSiteID,
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
                                                      campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
                                                      stores: stores,
                                                      analytics: analytics) {}
         // When
+        mockRetrieveMedia(with: .success(.fake()))
         mockCampaignCreation(with: .failure(NSError(domain: "test", code: 500)))
         await viewModel.updatePaymentInfo()
 
@@ -310,19 +379,33 @@ private extension BlazeConfirmPaymentViewModelTests {
         }
     }
 
+    func mockRetrieveMedia(with result: Result<Media, Error>) {
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            switch action {
+            case let .retrieveMedia(_, _, onCompletion):
+                onCompletion(result)
+            default:
+                break
+            }
+        }
+    }
+
+    func mockUploadMedia(with result: Result<Media, Error>) {
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            switch action {
+            case let .uploadMedia(_, _, _, _, _, onCompletion):
+                onCompletion(result)
+            default:
+                break
+            }
+        }
+    }
+
     func mockCampaignCreation(with result: Result<Void, Error>) {
-        let paymentMethod = BlazePaymentMethod(id: "test-id",
-                                               rawType: "credit-card",
-                                               name: "Card ending in 7284",
-                                               info: .init(lastDigits: "7284",
-                                                           expiring: .fake(),
-                                                           type: "Mastercard",
-                                                           nickname: nil,
-                                                           cardholderName: "Jane Doe"))
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchPaymentInfo(_, onCompletion):
-                onCompletion(.success(.fake().copy(savedPaymentMethods: [paymentMethod])))
+                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
             case let .createCampaign(_, _, onCompletion):
                 onCompletion(result)
             default:

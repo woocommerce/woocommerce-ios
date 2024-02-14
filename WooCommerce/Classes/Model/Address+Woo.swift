@@ -136,14 +136,28 @@ private extension Address {
     /// Returns a CNPostalAddress with the receiver's properties
     ///
     var postalAddress: CNPostalAddress {
+        let refinedAddress = refineAddressState()
         let address = CNMutablePostalAddress()
-        address.street = combinedAddress
-        address.city = city
-        address.state = state
-        address.postalCode = postcode
-        address.country = country
-        address.isoCountryCode = country
+
+        address.street = refinedAddress.combinedAddress
+        address.city = refinedAddress.city
+        address.state = refinedAddress.state
+        address.postalCode = refinedAddress.postcode
+        address.country = refinedAddress.country
+        address.isoCountryCode = refinedAddress.country
 
         return address
+    }
+
+    func refineAddressState() -> Address {
+        // https://github.com/woocommerce/woocommerce-ios/issues/5851
+        // The backend gives us the state code in the state field.
+        // For these countries we should show the state name instead, as the code is not identifiable (e.g. JP01 -> Hokkaido)
+        guard ["JP", "TR"].contains(country),
+              let stateName = LocallyStoredStateNameRetriever().retrieveLocallyStoredStateName(of: self) else {
+            return self
+        }
+
+        return copy(state: stateName)
     }
 }

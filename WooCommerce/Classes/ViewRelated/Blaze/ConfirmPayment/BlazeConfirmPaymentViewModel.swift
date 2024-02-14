@@ -1,11 +1,14 @@
 import Foundation
 import Yosemite
+import class Photos.PHAsset
 
 /// View model for `BlazeConfirmPaymentView`
 final class BlazeConfirmPaymentViewModel: ObservableObject {
 
+    private let productID: Int64
     private let siteID: Int64
     private let campaignInfo: CreateBlazeCampaign
+    private let image: MediaPickerImage
     private let stores: StoresManager
     private let analytics: Analytics
     private let completionHandler: () -> Void
@@ -76,13 +79,17 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
 
     @Published var isCreatingCampaign = false
 
-    init(siteID: Int64,
+    init(productID: Int64,
+         siteID: Int64,
          campaignInfo: CreateBlazeCampaign,
+         image: MediaPickerImage,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
+        self.productID = productID
         self.siteID = siteID
         self.campaignInfo = campaignInfo
+        self.image = image
         self.stores = stores
         self.analytics = analytics
         self.completionHandler = onCompletion

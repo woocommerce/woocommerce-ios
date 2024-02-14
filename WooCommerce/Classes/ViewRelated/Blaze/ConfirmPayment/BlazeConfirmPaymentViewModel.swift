@@ -136,7 +136,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
                 campaignMedia = media
             case .productImage(let image):
                 do {
-                    campaignMedia = try await fetchMedia(mediaID: image.imageID)
+                    campaignMedia = try await retrieveMedia(mediaID: image.imageID)
                 } catch {
                     DDLogError("⛔️ Error fetching product image's Media: \(error)")
                     throw BlazeCampaignCreationError.failedToFetchCampaignImage
@@ -176,7 +176,7 @@ private extension BlazeConfirmPaymentViewModel {
     }
 
     @MainActor
-    func fetchMedia(mediaID: Int64) async throws -> Media {
+    func retrieveMedia(mediaID: Int64) async throws -> Media {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(MediaAction.retrieveMedia(siteID: siteID,
                                                       mediaID: mediaID,

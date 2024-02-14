@@ -146,6 +146,43 @@ private extension BlazeConfirmPaymentViewModel {
     }
 
     @MainActor
+    func fetchMedia(mediaID: Int64) async throws -> Media {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(MediaAction.retrieveMedia(siteID: siteID,
+                                                      mediaID: mediaID,
+                                                      onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+
+    @MainActor
+    func uploadPendingImage(_ asset: PHAsset) async throws -> Media {
+        func uploadAsset(_ asset: PHAsset) async throws -> Media {
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(MediaAction.uploadMedia(siteID: siteID,
+                                                        productID: productID,
+                                                        mediaAsset: asset,
+                                                        altText: nil,
+                                                        filename: nil,
+                                                        onCompletion: { result in
+                    continuation.resume(with: result)
+                }))
+            }
+        }
+
+        let media = try await {
+            do {
+                return try await uploadAsset(asset)
+            } catch {
+                // Try again as image upload request can fail due to network issues
+                return try await uploadAsset(asset)
+            }
+        }()
+        return media
+    }
+
+    @MainActor
     func requestCampaignCreation(details: CreateBlazeCampaign) async throws {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(BlazeAction.createCampaign(campaign: details, siteID: siteID, onCompletion: { result in

@@ -16,13 +16,12 @@ final class LocallyStoredStateNameRetriever {
     }
 
     /// Retrieves the locally stored state name of the given address.
-    /// If there's no stored name, it returns the given address state.
     ///
     ///  - Parameter address: The passed address. The function assumes that the state value is a code.
-    ///  - Returns: The retrieved state name, or the original in case it cannot be retrieved.
+    ///  - Returns: The retrieved state name, or `nil` if none be retrieved.
     ///
-    func retrieveLocallyStoredStateName(of address: Address) -> String {
-        retrieveLocallyStoredStateName(for: address.state, countryCode: address.country) ?? address.state
+    func retrieveLocallyStoredStateName(of address: Address) -> String? {
+        retrieveLocallyStoredStateName(for: address.state, countryCode: address.country)
     }
 }
 

@@ -107,11 +107,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }()
 
-    lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
-        BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo, onCompletion: { [weak self] in
+    var confirmPaymentViewModel: BlazeConfirmPaymentViewModel? {
+        guard let image else {
+            DDLogError("Image is required to confirm payment and submit Blaze campaign.")
+            return nil
+        }
+        return BlazeConfirmPaymentViewModel(productID: productID,
+                                            siteID: siteID,
+                                            campaignInfo: campaignInfo,
+                                            image: image,
+                                            onCompletion: { [weak self] in
             self?.completionHandler()
         })
-    }()
+    }
 
     var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
@@ -193,7 +201,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             textSnippet: description,
                             targetUrl: "", // TODO: update this
                             urlParams: "", // TODO: update this
-                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // TODO: update this
+                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // Image info will be added by `BlazeConfirmPaymentViewModel`.
                             targeting: targetOptions,
                             targetUrn: targetUrn,
                             type: Constants.campaignType)

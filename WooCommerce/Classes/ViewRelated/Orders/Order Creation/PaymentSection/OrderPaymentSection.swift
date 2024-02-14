@@ -161,6 +161,7 @@ private extension OrderPaymentSection {
         VStack(alignment: .leading, spacing: Constants.taxesSectionVerticalSpacing) {
             taxSectionTitle
             taxLines
+            shippingTax
             taxBasedOnLine
                 .onTapGesture {
                     shouldShowTaxEducationalDialog = true
@@ -200,8 +201,26 @@ private extension OrderPaymentSection {
                         .foregroundColor(Color(uiColor: .secondaryLabel))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
-
                     Text(viewModel.value)
+                        .footnoteStyle()
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: nil, alignment: .trailing)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder var shippingTax: some View {
+        if viewModel.showShippingTax {
+            HStack {
+                AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
+                    Text(Localization.shippingTax)
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color(uiColor: .secondaryLabel))
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(viewModel.shippingTax)
                         .footnoteStyle()
                         .multilineTextAlignment(.trailing)
                         .frame(width: nil, alignment: .trailing)
@@ -289,6 +308,10 @@ private extension OrderPaymentSection {
             "order.form.paymentSection.taxes.learnMore",
             value: "Learn More.",
             comment: "A 'Learn More' label text, which shows tax information upon being clicked.")
+        static let shippingTax = NSLocalizedString(
+            "order.form.paymentSection.taxes.shippingTax",
+            value: "Shipping Tax",
+            comment: "Label for the row showing the shipping tax.")
     }
 
     enum Constants {

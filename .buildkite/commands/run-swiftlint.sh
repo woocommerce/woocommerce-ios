@@ -2,8 +2,12 @@
 
 echo "--- :swift: Running SwiftLint"
 
+# Run SwiftLint only on the modified files, similarly to what is done on Scripts/build-phases/swiftlint.sh
+MODIFIED_SWIFT_FILES=$(git diff --name-only --diff-filter=d HEAD -- '*.swift' \
+                     $(git ls-files --others --exclude-standard -- '*.swift'))
+
 set +e
-SWIFTLINT_OUTPUT=$(swiftlint lint --quiet "$@" --reporter relative-path)
+SWIFTLINT_OUTPUT=$(echo "$MODIFIED_SWIFT_FILES" | xargs swiftlint lint --quiet "$@" --reporter relative-path)
 SWIFTLINT_EXIT_STATUS=$?
 set -e
 

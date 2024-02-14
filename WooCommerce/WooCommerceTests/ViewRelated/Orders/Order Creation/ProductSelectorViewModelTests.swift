@@ -44,6 +44,24 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalSelectedItemsCount, 0)
     }
 
+    func test_selectProductsTitle_when_changeSelectionStateForProduct_then_updates_text_reflecting_number_of_products_selected() {
+        // Given
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        insert(product1)
+        insert(product2)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager)
+        // When, Then
+        assertEqual("Select products", viewModel.selectProductsTitle)
+
+        viewModel.changeSelectionStateForProduct(with: product1.productID)
+        assertEqual("1 product selected", viewModel.selectProductsTitle)
+
+        viewModel.changeSelectionStateForProduct(with: product2.productID)
+        assertEqual("2 products selected", viewModel.selectProductsTitle)
+    }
+
     func test_view_model_adds_product_rows() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)

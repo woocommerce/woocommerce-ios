@@ -41,7 +41,11 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     var onStateChange: (() -> Void)?
 
     let siteID: Int64
-    let siteURL: String
+
+    var siteURL: String {
+        stores.sessionManager.defaultSite?.url ?? ""
+    }
+
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
@@ -79,14 +83,12 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
-         siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          userDefaults: UserDefaults = .standard) {
         self.siteID = siteID
-        self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics

@@ -22,7 +22,11 @@ final class BlazeCampaignListViewModel: ObservableObject {
     private var didShowIntroView = false
 
     let siteID: Int64
-    let siteURL: String
+
+    var siteURL: String {
+        stores.sessionManager.defaultSite?.url ?? ""
+    }
+
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let userDefaults: UserDefaults
@@ -49,13 +53,11 @@ final class BlazeCampaignListViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
-         siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
-        self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults

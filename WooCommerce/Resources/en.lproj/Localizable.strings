@@ -910,6 +910,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "SESSIONS";
 
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "Orders Report";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "Products Report";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "See Report";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "Revenue Report";
+
 /* Country option for a site address. */
 "Andorra" = "Andorra";
 
@@ -1980,6 +1992,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the screen
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
@@ -6221,14 +6234,65 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Add Shipping";
 
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "Direct";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "Mobile App";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "Organic: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "Referral: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "Source: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "Unknown";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Web admin";
+
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Custom Amounts";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Custom Amount";
 
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "Campaign";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "Device type";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "Medium";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "Order attribution";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "Origin";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "Session page views";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "Source";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "Source type";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "Unknown";
+
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "See Receipt";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Unable to retrieve receipt.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Ordered List";
@@ -7114,6 +7178,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "One time shipping";
+
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "No product selected";
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "Products";

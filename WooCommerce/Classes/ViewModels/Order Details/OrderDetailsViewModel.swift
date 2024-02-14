@@ -468,6 +468,14 @@ extension OrderDetailsViewModel {
             let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
+            let countryCode = configurationLoader.configuration.countryCode
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))
+
+            guard let cell = tableView.cellForRow(at: indexPath) as? TwoColumnHeadlineFootnoteTableViewCell else {
+                return
+            }
+            cell.startLoading()
+
             let action = ReceiptAction.retrieveReceipt(order: order) { [weak self] result in
                 guard let self else { return }
                 switch result {
@@ -479,14 +487,17 @@ extension OrderDetailsViewModel {
                                                             siteName: siteName)
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
+                    cell.stopLoading()
                 case let .failure(error):
-                    debugPrint("\(error)")
+                    ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error))
+                    self.displayReceiptRetrievalErrorNotice(for: order, with: error, in: viewController)
+                    cell.stopLoading()
                 }
             }
             ServiceLocator.stores.dispatch(action)
         case .seeLegacyReceipt:
             let countryCode = configurationLoader.configuration.countryCode
-            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode))
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .local))
             guard let receipt = receipt else {
                 return
             }
@@ -799,5 +810,27 @@ private extension OrderDetailsViewModel {
     enum SyncState {
         case notSynced
         case synced
+    }
+}
+
+// MARK: - Notices
+private extension OrderDetailsViewModel {
+    func displayReceiptRetrievalErrorNotice(for order: Order,
+                                            with error: Error?,
+                                            in viewController: UIViewController) {
+        let noticePresenter = DefaultNoticePresenter()
+        let notice = Notice(title: Localization.failedReceiptRetrievalNoticeText,
+                            feedbackType: .error)
+        noticePresenter.presentingViewController = viewController
+        noticePresenter.enqueue(notice: notice)
+
+        DDLogError("Failed to retrieve receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
+    }
+
+    enum Localization {
+        static let failedReceiptRetrievalNoticeText = NSLocalizedString(
+            "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice",
+            value: "Unable to retrieve receipt.",
+            comment: "Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view.")
     }
 }

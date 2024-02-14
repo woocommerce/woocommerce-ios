@@ -48,6 +48,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
             return 60*60
         case .thisYear:
             return 60*60*12
+        case .custom:
+            // TODO: 11935 Specify refresh interval
+            return 60
         }
     }
 

@@ -161,6 +161,7 @@ struct UpdateProductInventoryView: View {
                 }
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

@@ -62,6 +62,14 @@ struct ProductSelectorView: View {
 
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
 
+    /// Tracks the state for the 'Clear Selection' button
+    ///
+    private var isClearSelectionDisabled: Bool {
+        viewModel.totalSelectedItemsCount == 0 ||
+        viewModel.syncStatus != .results ||
+        viewModel.selectionDisabled
+    }
+
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
@@ -90,12 +98,16 @@ struct ProductSelectorView: View {
                         .padding(.trailing)
                         .renderedIf(searchHeaderisBeingEdited)
             HStack {
+                Text(viewModel.selectProductsTitle)
+                    .renderedIf(configuration.productHeaderTextEnabled)
+                    .fixedSize()
+                    .padding(.leading)
                 Button(Localization.clearSelection) {
                     viewModel.clearSelection()
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results)
+                .disabled(isClearSelectionDisabled)
                 .renderedIf(configuration.multipleSelectionEnabled)
 
                 Spacer()
@@ -143,7 +155,7 @@ struct ProductSelectorView: View {
                     .renderedIf(configuration.multipleSelectionEnabled && !viewModel.syncChangesImmediately)
 
                     if let variationListViewModel = variationListViewModel {
-                        LazyNavigationLink(destination: ProductVariationSelector(
+                        LazyNavigationLink(destination: ProductVariationSelectorView(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
                             onMultipleSelections: { selectedIDs in
@@ -228,6 +240,8 @@ struct ProductSelectorView: View {
                     isShowingVariationList.toggle()
                     self.variationListViewModel = variationListViewModel
                 }
+                .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+                .disabled(viewModel.selectionDisabled)
 
                 DisclosureIndicator()
             }
@@ -267,6 +281,8 @@ struct ProductSelectorView: View {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
                 }
             }
+            .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+            .disabled(viewModel.selectionDisabled)
         }
     }
 }
@@ -280,6 +296,7 @@ extension ProductSelectorView {
         /// Otherwise, the product itself is selected immediately.
         var treatsAllProductsAsSimple: Bool = false
 
+        var productHeaderTextEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""

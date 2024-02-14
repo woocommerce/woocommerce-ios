@@ -2,13 +2,13 @@ import XCTest
 import TestKit
 @testable import WooCommerce
 
-final class AnalyticsHubWebReportTests: XCTestCase {
+final class AnalyticsWebReportTests: XCTestCase {
 
     let exampleAdminURL = "https://example.com/wp-admin/"
 
     func test_getURL_returns_expected_report_URL() throws {
         // Given
-        let reportURL = try XCTUnwrap(AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: .today, storeAdminURL: exampleAdminURL))
+        let reportURL = try XCTUnwrap(AnalyticsWebReport.getUrl(for: .revenue, timeRange: .today, storeAdminURL: exampleAdminURL))
 
         // Then
         let expectedURL = try XCTUnwrap(URL(string: exampleAdminURL +
@@ -28,7 +28,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
 
     func test_getUrl_returns_URL_containing_expected_revenue_report_path() throws {
         // Given
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: .today, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: .today, storeAdminURL: exampleAdminURL)
 
         // When
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -40,7 +40,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
 
     func test_getUrl_returns_URL_containing_expected_orders_report_path() throws {
         // Given
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .orders, timeRange: .today, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .orders, timeRange: .today, storeAdminURL: exampleAdminURL)
 
         // When
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -52,7 +52,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
 
     func test_getUrl_returns_URL_containing_expected_products_report_path() throws {
         // Given
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .products, timeRange: .today, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .products, timeRange: .today, storeAdminURL: exampleAdminURL)
 
         // When
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -70,7 +70,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeZone = TimeZone(abbreviation: "GMT") ?? TimeZone.current
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL, timeZone: timeZone)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL, timeZone: timeZone)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -89,7 +89,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .today
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -102,7 +102,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .yesterday
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -115,7 +115,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .lastWeek
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -128,7 +128,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .lastMonth
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -141,7 +141,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .lastQuarter
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -154,7 +154,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .lastYear
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -167,7 +167,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .weekToDate
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -180,7 +180,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .monthToDate
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -193,7 +193,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .quarterToDate
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems
@@ -206,7 +206,7 @@ final class AnalyticsHubWebReportTests: XCTestCase {
         let timeRange: AnalyticsHubTimeRangeSelection.SelectionType = .yearToDate
 
         // When
-        let reportURL = AnalyticsHubWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
+        let reportURL = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: exampleAdminURL)
 
         // Then
         let reportQueryItems = URLComponents(url: try XCTUnwrap(reportURL), resolvingAgainstBaseURL: false)?.queryItems

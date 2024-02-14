@@ -37,6 +37,11 @@ struct AnalyticsProductCard: View {
     ///
     let showItemsSoldError: Bool
 
+    /// URL for the products analytics web report
+    ///
+    let reportViewModel: AnalyticsReportLinkViewModel?
+    @State private var showingWebReport: Bool = false
+
     var body: some View {
         VStack(alignment: .leading) {
 
@@ -73,14 +78,22 @@ struct AnalyticsProductCard: View {
                               valueTitle: Localization.itemsSold,
                               rows: itemsSoldData,
                               isRedacted: isItemsSoldRedacted)
-                .padding(.top, Layout.columnSpacing)
+                .padding(.vertical, Layout.columnSpacing)
 
             if showItemsSoldError {
                 Text(Localization.noItemsSold)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.top, Layout.columnSpacing)
+                    .padding(.vertical, Layout.columnSpacing)
+            }
+
+            if let reportViewModel {
+                VStack(spacing: Layout.cardPadding) {
+                    Divider()
+                        .padding(.horizontal, Layout.dividerPadding)
+                    AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                }
             }
         }
         .padding(Layout.cardPadding)
@@ -102,6 +115,7 @@ private extension AnalyticsProductCard {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
         static let columnSpacing: CGFloat = 10
+        static let dividerPadding: CGFloat = -16
     }
 }
 
@@ -123,7 +137,12 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                                 .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
                              ],
                              isItemsSoldRedacted: false,
-                             showItemsSoldError: false)
+                             showItemsSoldError: false,
+                             reportViewModel: .init(reportType: .products,
+                                                    period: .today,
+                                                    webViewTitle: "Products Report",
+                                                    reportURL: URL(string: "https://woo.com")!,
+                                                    usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
             .previewLayout(.sizeThatFits)
 
         AnalyticsProductCard(itemsSold: "-",
@@ -134,7 +153,12 @@ struct AnalyticsProductCardPreviews: PreviewProvider {
                              showStatsError: true,
                              itemsSoldData: [],
                              isItemsSoldRedacted: false,
-                             showItemsSoldError: true)
+                             showItemsSoldError: true,
+                             reportViewModel: .init(reportType: .products,
+                                                    period: .today,
+                                                    webViewTitle: "Products Report",
+                                                    reportURL: URL(string: "https://woo.com")!,
+                                                    usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

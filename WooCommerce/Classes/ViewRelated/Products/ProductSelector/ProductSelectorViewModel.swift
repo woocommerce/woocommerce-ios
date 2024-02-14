@@ -80,6 +80,19 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published var filterButtonTitle: String = Localization.filterButtonWithoutActiveFilters
 
+    /// Outputs a "x products selected" title in the header, based on the number of selected products in the order
+    ///
+    var selectProductsTitle: String {
+        if totalSelectedItemsCount == 0 {
+            return Localization.selectProductsTitle
+        } else {
+            let title = String.pluralize(totalSelectedItemsCount,
+                                         singular: Localization.singularProductSelectedFormattedText,
+                                         plural: Localization.pluralProductSelectedFormattedText)
+            return String.localizedStringWithFormat(title, totalSelectedItemsCount)
+        }
+    }
+
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
@@ -199,6 +212,8 @@ final class ProductSelectorViewModel: ObservableObject {
 
     @Published var syncChangesImmediately: Bool
 
+    private var orderSyncState: Published<OrderSyncState>.Publisher?
+
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
@@ -212,6 +227,7 @@ final class ProductSelectorViewModel: ObservableObject {
          pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex,
          pageSize: Int = PaginationTracker.Defaults.pageSize,
          syncChangesImmediately: Bool = false,
+         orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -233,6 +249,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.syncChangesImmediately = syncChangesImmediately
+        self.orderSyncState = orderSyncState
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
@@ -246,6 +263,21 @@ final class ProductSelectorViewModel: ObservableObject {
         refreshDataAndSync()
         configureFirstPageLoad()
         synchronizeProductFilterSearch()
+        bindSelectionDisabledState()
+    }
+
+    @Published var selectionDisabled: Bool = false
+
+    private func bindSelectionDisabledState() {
+        orderSyncState?.map({ state in
+            switch state {
+            case .syncing(blocking: true):
+                return true
+            default:
+                return false
+            }
+        })
+        .assign(to: &$selectionDisabled)
     }
 
     /// Selects or unselects a product to add to the order
@@ -277,6 +309,12 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs.append(id)
     }
 
+    /// Removes a product or variation ID to the product selector from an external source (e.g. OrderForm Remove Product from Order buttons).
+    /// - Parameter id: Product or variation ID to add to the product selector.
+    func removeSelection(id: Int64) {
+        selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
+    }
+
     private func toggleSelection(id: Int64) {
         if selectedItemsIDs.contains(id) {
             selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
@@ -296,6 +334,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
+                                                 orderSyncState: orderSyncState,
                                                  onVariationSelectionStateChanged: { [weak self] productVariation, product in
             guard let self else { return }
             onVariationSelectionStateChanged?(productVariation, product)
@@ -801,6 +840,18 @@ private extension ProductSelectorViewModel {
         static let popularProductsSectionTitle = NSLocalizedString("Popular", comment: "Section title for popular products on the Select Product screen.")
         static let lastSoldProductsSectionTitle = NSLocalizedString("Last Sold", comment: "Section title for last sold products on the Select Product screen.")
         static let productsSectionTitle = NSLocalizedString("Products", comment: "Section title for products on the Select Product screen.")
+        static let selectProductsTitle = NSLocalizedString(
+            "productSelectorViewModel.selectProductsTitle.selectProductsTitle",
+            value: "Select products",
+            comment: "Text on the header of the Select Product screen when no products are selected.")
+        static let singularProductSelectedFormattedText = NSLocalizedString(
+            "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText",
+            value: "%ld product selected",
+            comment: "Text on the header of the Select Product screen when one product is selected.")
+        static let pluralProductSelectedFormattedText = NSLocalizedString(
+            "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText",
+            value: "%ld products selected",
+            comment: "Text on the header of the Select Product screen when more than one products are selected.")
     }
 }
 

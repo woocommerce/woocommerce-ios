@@ -53,9 +53,9 @@ struct AnalyticsReportCardViewModel {
     ///
     let syncErrorMessage: String
 
-    /// URL for the corresponding web analytics report
+    /// View model for the web analytics report link
     ///
-    let reportURL: URL?
+    let reportViewModel: AnalyticsReportLinkViewModel?
 }
 
 extension AnalyticsReportCardViewModel {
@@ -76,7 +76,7 @@ extension AnalyticsReportCardViewModel {
               isRedacted: true,
               showSyncError: false,
               syncErrorMessage: "",
-              reportURL: reportURL)
+              reportViewModel: reportViewModel)
     }
 }
 
@@ -102,5 +102,6 @@ extension AnalyticsReportCard {
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage
+        self.reportViewModel = viewModel.reportViewModel
     }
 }

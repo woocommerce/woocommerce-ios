@@ -8,5 +8,6 @@ public enum StatsGranularityV4: String, Decodable, GeneratedFakeable {
     case daily = "day"
     case weekly = "week"
     case monthly = "month"
+    case quarterly = "quarter"
     case yearly = "year"
 }

@@ -78,7 +78,7 @@ struct ConfigurableBundleItemView: View {
             .renderedIf(viewModel.isVariable && viewModel.isIncludedInBundle && viewModel.quantity > 0)
 
             if let variationSelectorViewModel = viewModel.variationSelectorViewModel {
-                LazyNavigationLink(destination: ProductVariationSelector(
+                LazyNavigationLink(destination: ProductVariationSelectorView(
                     isPresented: $showsVariationSelector,
                     viewModel: variationSelectorViewModel,
                     onMultipleSelections: { _ in }),

@@ -83,7 +83,14 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
+        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return false
+        }
+        // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
+        guard !featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return false
+        }
+        return flow == .creation
     }
 
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
@@ -246,6 +253,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines the multiple lines info message to show.
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
+
+    @Published var syncChangesImmediately: Bool = false
 
     /// Status Results Controller.
     ///
@@ -571,6 +580,10 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
         } else if item.productID != 0 {
             selectedProducts.removeAll(where: { $0.productID == item.productID })
+        }
+
+        if syncChangesImmediately {
+            productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -1733,6 +1746,7 @@ private extension EditableOrderViewModel {
                     stores: stores,
                     toggleAllVariationsOnSelection: false,
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
+                    orderSyncState: orderSynchronizer.statePublisher,
                     onProductSelectionStateChanged: { [weak self] product in
                         guard let self = self else { return }
                         self.changeSelectionStateForProduct(product)
@@ -1803,7 +1817,7 @@ private extension EditableOrderViewModel {
             hasCustomerDetails: hasCustomerDetails,
             hasFees: orderSynchronizer.order.fees.isNotEmpty,
             hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-            products: Array(allProducts), 
+            products: Array(allProducts),
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 

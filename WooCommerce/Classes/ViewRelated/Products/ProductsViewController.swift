@@ -200,6 +200,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private let isSplitViewEnabled: Bool
     private let navigateToContent: (NavigationContentType) -> Void
+    private let selectedProduct: AnyPublisher<Product?, Never>
+    let onDataReloaded: PassthroughSubject<Void, Never> = .init()
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -208,10 +210,12 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     // MARK: - View Lifecycle
 
     init(siteID: Int64,
+         selectedProduct: AnyPublisher<Product?, Never>,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          navigateToContent: @escaping (NavigationContentType) -> Void) {
         self.siteID = siteID
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
+        self.selectedProduct = selectedProduct
         self.isSplitViewEnabled = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
         self.navigateToContent = navigateToContent
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -239,6 +243,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
         showTopBannerViewIfNeeded()
         syncProductsSettings()
+        observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -272,6 +277,14 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     override var shouldShowOfflineBanner: Bool {
         return true
+    }
+
+    /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
+    func selectFirstProductIfAvailable() {
+        guard let firstProduct = resultsController.fetchedObjects.first else {
+            return
+        }
+        didSelectProduct(product: firstProduct)
     }
 }
 
@@ -879,6 +892,7 @@ private extension ProductsViewController {
         }
 
         tableView.reloadData()
+        onDataReloaded.send(())
     }
 
     /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
@@ -899,6 +913,7 @@ private extension ProductsViewController {
         showOrHideToolbar()
         addOrRemoveOverlay()
         tableView.reloadData()
+        onDataReloaded.send(())
     }
 
     /// Add or remove the overlay based on number of products
@@ -924,6 +939,32 @@ private extension ProductsViewController {
                 self?.syncingCoordinator.resynchronize()
             }
         }
+    }
+
+    func observeSelectedProductAndDataLoadedStateToUpdateSelectedRow() {
+        Publishers.CombineLatest(selectedProduct, onDataReloaded)
+            .sink { [weak self] selectedProduct, _ in
+                guard let self else { return }
+
+                let currentSelectedIndexPath = tableView.indexPathForSelectedRow
+                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
+                    $0.productID == selectedProduct?.productID
+                }): nil
+                if let selectedIndexPath {
+                    guard currentSelectedIndexPath != selectedIndexPath else {
+                        return
+                    }
+                    if let currentSelectedIndexPath {
+                        tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                    }
+                    let scrollPosition: UITableView.ScrollPosition = tableView.indexPathsForVisibleRows?.contains(selectedIndexPath) == true ?
+                        .none: .middle
+                    tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
+                } else if let currentSelectedIndexPath {
+                    tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                }
+            }
+            .store(in: &subscriptions)
     }
 }
 
@@ -962,14 +1003,16 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if splitViewController?.isCollapsed == true || !isSplitViewEnabled {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+
         let product = resultsController.object(at: indexPath)
 
         if tableView.isEditing {
             viewModel.selectProduct(product)
             updatedSelectedItems()
         } else {
-            tableView.deselectRow(at: indexPath, animated: true)
-
             ServiceLocator.analytics.track(.productListProductTapped)
 
             didSelectProduct(product: product)
@@ -998,11 +1041,13 @@ extension ProductsViewController: UITableViewDelegate {
         estimatedRowHeights[indexPath] = cell.frame.height
 
         // Restore cell selection state
-        let product = resultsController.object(at: indexPath)
-        if self.viewModel.productIsSelected(product) {
-            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-        } else {
-            tableView.deselectRow(at: indexPath, animated: false)
+        if tableView.isEditing {
+            let product = resultsController.object(at: indexPath)
+            if self.viewModel.productIsSelected(product) {
+                tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            } else {
+                tableView.deselectRow(at: indexPath, animated: false)
+            }
         }
     }
 

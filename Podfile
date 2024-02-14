@@ -14,7 +14,7 @@ inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
-app_ios_deployment_target = Gem::Version.new('15.0')
+app_ios_deployment_target = Gem::Version.new('16.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
@@ -87,19 +87,20 @@ target 'WooCommerce' do
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   # pod 'WordPressAuthenticator', '~> 9.0'
   # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: ''
-  pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: '6312d0a91e709a4bae017e04f70e520199928928'
+  pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: 'fa06fca7178b268d382d91861752b3be0729e8a8'
   # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
+  pod 'WordPressKit', git: 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', commit: 'b5c2bd39ec8f478dd53ecb7533ad025aad48f42e'
 
   wordpress_shared
 
-  # pod 'WordPressUI', '~> 1.13'
+  pod 'WordPressUI', '~> 1.15'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
-  pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: 'a0248ba6dabaed1d493416fd1273aa6718c76331'
+  # pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: ''
 
   aztec
 
-  # pod 'WPMediaPicker', '~> 1.8.1'
-  pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: '1dfb9cbbfbd60597befc057087f3e22ef571be5d'
+  pod 'WPMediaPicker', '~> 1.8'
+  # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
 
   # External Libraries
   # ==================

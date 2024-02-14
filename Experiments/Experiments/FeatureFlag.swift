@@ -199,4 +199,16 @@ public enum FeatureFlag: Int {
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab
+
+    /// Displays the option to add a custom date range in My Store Analytics
+    ///
+    case customRangeInMyStoreAnalytics
+
+    /// Enables customizing the cards in the Analytics Hub
+    ///
+    case customizeAnalyticsHub
+
+    /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
+    ///
+    case useURLSessionInWordPressKit
 }

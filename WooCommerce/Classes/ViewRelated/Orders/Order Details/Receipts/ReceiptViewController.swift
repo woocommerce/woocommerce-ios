@@ -1,10 +1,18 @@
 import WebKit
 
 /// Previews a backend-generated receipt
-final class ReceiptViewController: UIViewController {
+final class ReceiptViewController: UIViewController, WKNavigationDelegate {
     @IBOutlet private weak var webView: WKWebView!
+
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+
     private let viewModel: ReceiptViewModel
-    
+
     var onDisappear: (() -> Void)?
 
     init(viewModel: ReceiptViewModel, onDisappear: (() -> Void)? = nil) {
@@ -12,7 +20,7 @@ final class ReceiptViewController: UIViewController {
         self.onDisappear = onDisappear
         super.init(nibName: "LegacyReceiptViewController", bundle: nil)
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         onDisappear?()
@@ -27,6 +35,19 @@ final class ReceiptViewController: UIViewController {
 
         configureContent()
         configureNavigation()
+        configureActivityIndicator()
+
+        webView.navigationDelegate = self
+    }
+
+    func configureActivityIndicator() {
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: activityIndicator.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: activityIndicator.centerYAnchor)
+        ])
+
+        activityIndicator.startAnimating()
     }
 
     private func configureContent() {
@@ -51,15 +72,33 @@ final class ReceiptViewController: UIViewController {
     }
 
     @objc private func shareReceipt() {
+        ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailTapped(countryCode: nil,
+                                                                                   cardReaderModel: nil,
+                                                                                   source: .backend))
         guard let url = URL(string: viewModel.receiptURLString) else {
             return
         }
         let activityViewController = UIActivityViewController(activityItems: [url],
                                                 applicationActivities: nil)
+        activityViewController.completionWithItemsHandler = { [weak self] _, success, _, error in
+            if let error = error {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailFailed(error: error, source: .backend))
+                DDLogError("Failed to share receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
+            }
+            switch success {
+            case true:
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: nil, cardReaderModel: nil, source: .backend))
+            case false:
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: nil, cardReaderModel: nil, source: .backend))
+            }
+        }
         present(activityViewController, animated: true)
     }
 
     @objc private func printReceipt() {
+        ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: nil,
+                                                                                   cardReaderModel: nil,
+                                                                                   source: .backend))
         guard let url = URL(string: viewModel.receiptURLString) else {
             return
         }
@@ -74,10 +113,23 @@ final class ReceiptViewController: UIViewController {
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error = error {
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error, source: .backend))
                 DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
-            } else if isCompleted {
-                self?.dismiss(animated: true)
             }
+            switch isCompleted {
+            case true:
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: nil, cardReaderModel: nil, source: .backend))
+            case false:
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: nil, cardReaderModel: nil, source: .backend))
+            }
+            self?.dismiss(animated: true)
         })
+    }
+}
+
+// MARK: - WKNavigation delegate
+extension ReceiptViewController {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        activityIndicator.stopAnimating()
     }
 }

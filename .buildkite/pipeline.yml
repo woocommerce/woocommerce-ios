@@ -59,10 +59,6 @@ steps:
           - docker#v5.8.0:
               image: "ghcr.io/realm/swiftlint:0.54.0"
               mount-buildkite-agent: true # Needed for calling `buildkite-agent annotate`
-              propagate-environment: true
-              environment:
-                - "BUILDKITE_PULL_REQUEST_REPO"
-                - "BUILDKITE_PULL_REQUEST"
         notify:
           - github_commit_status:
               context: "SwiftLint"

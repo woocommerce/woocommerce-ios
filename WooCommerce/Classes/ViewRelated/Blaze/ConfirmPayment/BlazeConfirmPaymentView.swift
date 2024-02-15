@@ -1,4 +1,5 @@
 import SwiftUI
+import class Photos.PHAsset
 
 /// View to confirm the payment method before creating a Blaze campaign.
 struct BlazeConfirmPaymentView: View {
@@ -81,14 +82,15 @@ struct BlazeConfirmPaymentView: View {
             BlazeCampaignCreationLoadingView()
                 .interactiveDismissDisabled()
         }
-        .sheet(isPresented: $viewModel.shouldDisplayCampaignCreationError) {
-            BlazeCampaignCreationErrorView(onTryAgain: {
-                viewModel.shouldDisplayCampaignCreationError = false
+        .sheet(item: $viewModel.campaignCreationError) { error in
+            BlazeCampaignCreationErrorView(error: error,
+                                           onTryAgain: {
+                viewModel.campaignCreationError = nil
                 Task {
                     await viewModel.submitCampaign()
                 }
             }, onCancel: {
-                viewModel.shouldDisplayCampaignCreationError = false
+                viewModel.campaignCreationError = nil
                 dismiss()
             })
             .interactiveDismissDisabled()
@@ -309,6 +311,7 @@ private extension BlazeConfirmPaymentView {
 
 #Preview {
     BlazeConfirmPaymentView(viewModel: BlazeConfirmPaymentViewModel(
+        productID: 123,
         siteID: 123,
         campaignInfo: .init(origin: "test",
                             originVersion: "1.0",
@@ -325,5 +328,6 @@ private extension BlazeConfirmPaymentView {
                             targeting: nil,
                             targetUrn: "",
                             type: "product"),
+        image: .init(image: .iconBolt, source: .asset(asset: PHAsset())),
         onCompletion: {}))
 }

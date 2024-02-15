@@ -94,6 +94,8 @@ final class PickListTableViewCell: UITableViewCell {
     }
 
     override func prepareForReuse() {
+        super.prepareForReuse()
+
         setupSkuLabel()
     }
 

@@ -1,28 +1,23 @@
 import SwiftUI
 
 struct AnalyticsHubCustomizeView: View {
-    // TODO: Add view model to contain view data
-
-    // TODO: Replace with dynamic data (all available cards)
-    @State private var allCards: [String] = [
+    // TODO: Initialize with real data
+    @ObservedObject var viewModel = AnalyticsHubCustomizeViewModel(allCards: [
         "Revenue",
         "Orders",
         "Products",
         "Sessions"
-    ]
-
-    // TODO: Replace with dynamic data (all selected/enabled cards)
-    @State private var selectedCards: Set<String> = [
+    ], selectedCards: [
         "Revenue",
         "Orders"
-    ]
+    ])
 
     /// Dismisses the view.
     ///
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        MultiSelectionReorderableList(contents: $allCards, contentKeyPath: \.self, selectedItems: $selectedCards)
+        MultiSelectionReorderableList(contents: $viewModel.allCards, contentKeyPath: \.self, selectedItems: $viewModel.selectedCards)
             .toolbar(content: {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {

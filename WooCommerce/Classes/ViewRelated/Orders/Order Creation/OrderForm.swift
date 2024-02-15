@@ -544,6 +544,7 @@ private struct ProductsSection: View {
     var body: some View {
         Group {
             Divider()
+                .renderedIf(presentationStyle == .modalOnModal)
 
             VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
                 HStack {

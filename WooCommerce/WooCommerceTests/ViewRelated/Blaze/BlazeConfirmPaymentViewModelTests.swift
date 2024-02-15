@@ -305,7 +305,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         XCTAssertEqual(campaign.mainImage.mimeType, media.mimeType)
     }
 
-    func test_upload_image_is_retired_one_time_if_upload_fails() async throws {
+    func test_upload_image_is_retried_one_time_if_upload_fails() async throws {
         // Given
         let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
                                                      siteID: sampleSiteID,

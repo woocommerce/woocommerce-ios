@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Renders a button with the pencil system name image
-/// 
+///
 struct PencilEditButton: View {
     let action: () -> Void
 

@@ -89,7 +89,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
 
 private extension DefaultRequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
-    /// 
+    ///
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
         let siteAddress: String? = {
             switch credentials {

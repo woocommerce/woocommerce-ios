@@ -104,7 +104,7 @@ final class PickListTableViewCell: UITableViewCell {
 }
 
 
-/// MARK: - Public Methods
+// MARK: - Public Methods
 ///
 extension PickListTableViewCell {
     /// Configure a pick list cell
@@ -128,7 +128,7 @@ extension PickListTableViewCell {
     }
 }
 
-/// MARK: - Private Methods
+// MARK: - Private Methods
 ///
 private extension PickListTableViewCell {
 

@@ -178,7 +178,7 @@ final class EditableOrderViewModel: ObservableObject {
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
     /// Defines the tax based on setting to be displayed in the Taxes section.
-    /// 
+    ///
     @Published private var taxBasedOnSetting: TaxBasedOnSetting?
 
     /// Selected tax rate to apply to the order
@@ -395,7 +395,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Saves a coupon line after an edition on it.
     ///
     /// - Parameter result: Contains the user action on the line: remove, add, or edit it changing the coupon code.
-    /// 
+    ///
     func saveCouponLine(result: CouponLineDetailsResult) {
         switch result {
         case let .removed(removeCode):
@@ -417,7 +417,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// Current OrderItems
-    /// 
+    ///
     var currentOrderItems: [OrderItem] {
         orderSynchronizer.order.items
     }
@@ -525,7 +525,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// Clears selected variations
-    /// 
+    ///
     private func clearSelectedVariations() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
@@ -1174,7 +1174,7 @@ extension EditableOrderViewModel {
 // MARK: - Helpers
 private extension EditableOrderViewModel {
     /// Converts the add custom amount UI input type to view models
-    /// 
+    ///
     func addCustomAmountInputType(from option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel.InputType {
         switch option {
         case .fixedAmount:
@@ -1969,7 +1969,7 @@ private extension EditableOrderViewModel {
     }
 
     /// Calculates the discount on an order item, that is, subtotal minus total
-    /// 
+    ///
     func currentDiscount(on item: OrderItem) -> Decimal {
         guard let subtotal = currencyFormatter.convertToDecimal(item.subtotal),
               let total = currencyFormatter.convertToDecimal(item.total) else {

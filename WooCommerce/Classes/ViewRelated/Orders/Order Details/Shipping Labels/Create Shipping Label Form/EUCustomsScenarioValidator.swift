@@ -47,7 +47,7 @@ extension Country {
                                                            "CH", "CHE"] // Switzerland
 
     /// GDPR Country Code definitions. Copied from: https://bit.ly/3Mb101j
-    /// *Although the UK has departed from the EU as of January 2021, the GDPR was enacted before its withdrawal and is therefore considered a valid UK law.* 
+    /// *Although the UK has departed from the EU as of January 2021, the GDPR was enacted before its withdrawal and is therefore considered a valid UK law.*
     ///
     static let GDPRCountryCodes = countriesFollowingEUCustoms + ["GB", "IS", "LI"]
 }

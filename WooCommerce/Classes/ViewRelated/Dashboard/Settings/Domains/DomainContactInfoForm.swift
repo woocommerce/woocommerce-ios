@@ -1,7 +1,4 @@
 import SwiftUI
-import struct Yosemite.DomainContactInfo
-
-/// Hosting controller that wraps the `DomainContactInfoForm` view for the user to edit contact info for redeeming a domain.
 final class DomainContactInfoFormHostingController: UIHostingController<DomainContactInfoForm> {
     /// - Parameters:
     ///   - viewModel: View model for the domain contact info form.

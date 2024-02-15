@@ -4,8 +4,6 @@ import XCTest
 
 /// Array+IndexPath: Unit Tests
 ///
-import XCTest
-
 final class ArrayIndexPathTests: XCTestCase {
 
     private let sections: [Section] = [Section(rows: [.simplenote, .wordpress]), Section(rows: [.woocommerce]), Section(rows: [.wordpress])]

@@ -123,7 +123,7 @@ final class ProductSelectorViewModel: ObservableObject {
     @Published private(set) var sections: [ProductSelectorSection] = []
 
     /// View Models for the sections
-    /// 
+    ///
     @Published var productsSectionViewModels: [ProductsSectionViewModel] = []
 
     /// Determines if it is possible to toggle all variation items upon selection

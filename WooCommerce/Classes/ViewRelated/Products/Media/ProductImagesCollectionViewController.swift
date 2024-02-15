@@ -262,8 +262,8 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
     }
 
     /// Reloads collection view only if there is any pending upload.
-    /// This makes sure that cells for pending uploads are reloaded properly 
-    /// to remove their overlays after uploading is done. 
+    /// This makes sure that cells for pending uploads are reloaded properly
+    /// to remove their overlays after uploading is done.
     ///
     private func reloadCollectionViewIfNeeded() {
         if productImageStatuses.hasPendingUpload {
@@ -293,7 +293,7 @@ private extension ProductImagesCollectionViewController {
 }
 
 /// Private data structures
-/// 
+///
 private extension ProductImagesCollectionViewController {
     enum Localization {
         static let dragAndDropMessageWhileUploading = NSLocalizedString(

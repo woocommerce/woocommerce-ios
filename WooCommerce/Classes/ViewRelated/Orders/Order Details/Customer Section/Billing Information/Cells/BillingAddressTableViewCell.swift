@@ -99,7 +99,7 @@ final class BillingAddressTableViewCell: UITableViewCell {
     }
 }
 
-/// MARK: - Private Methods
+// MARK: - Private Methods
 ///
 private extension BillingAddressTableViewCell {
 
@@ -143,7 +143,7 @@ private extension BillingAddressTableViewCell {
     }
 }
 
-/// MARK: - Testability
+// MARK: - Testability
 extension BillingAddressTableViewCell {
 
     func getNameLabel() -> UILabel {

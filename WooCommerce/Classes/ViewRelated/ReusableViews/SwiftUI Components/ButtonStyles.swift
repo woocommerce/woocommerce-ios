@@ -87,7 +87,7 @@ struct LinkButtonStyle: ButtonStyle {
 }
 
 /// Depending on whether isLoading is true, shows a progress view or a link button
-/// 
+///
 struct LinkLoadingButtonStyle: ButtonStyle {
     let isLoading: Bool
 

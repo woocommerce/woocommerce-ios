@@ -81,7 +81,7 @@ private extension FullFeatureListView {
 
         static let paymentsDisclaimerText = NSLocalizedString(
             "1. Available as standard in WooCommerce Payments (restrictions apply)." +
-            "Additional extensions may be required for other payment providers." ,
+            "Additional extensions may be required for other payment providers.",
             comment: "Disclaimer regarding some of the features related to payments.")
 
         static let pluginsDisclaimerText = NSLocalizedString(

@@ -26,7 +26,7 @@ public class WCAnalyticsCustomerRemote: Remote {
     }
 
     /// Loads a paginated list of customers
-    /// 
+    ///
     public func loadCustomers(for siteID: Int64,
                                 pageNumber: Int = 1,
                                 pageSize: Int = 25,

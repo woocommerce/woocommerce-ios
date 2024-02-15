@@ -521,7 +521,7 @@ private struct ProductsSection: View {
     @State private var showPermissionsSheet: Bool = false
 
     /// Defines whether we should show a progress view instead of the barcode scanner button.
-    /// 
+    ///
     @State private var showAddProductViaSKUScannerLoading: Bool = false
 
     /// ID for Add Product button

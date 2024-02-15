@@ -83,20 +83,29 @@ struct ProductSelectorView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-                searchHeaderisBeingEdited = isEditing
-            })
+            HStack {
+                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+                    searchHeaderisBeingEdited = isEditing
+                })
                 .padding(.horizontal, insets: safeAreaInsets)
                 .accessibilityIdentifier("product-selector-search-bar")
-            Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                ForEach(ProductSearchFilter.allCases, id: \.self) { option in
-                    Text(option.title)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .padding(.leading)
-                        .padding(.trailing)
-                        .renderedIf(searchHeaderisBeingEdited)
+                Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+                    ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+                }
+                .pickerStyle(.segmented)
+                .padding(.leading)
+                .padding(.trailing)
+                .renderedIf(searchHeaderisBeingEdited)
+                Button(action: {
+                    // TODO: gh-12011
+                }, label: {
+                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                        .foregroundColor(Color(.brand))
+                })
+                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) &&
+                            presentationStyle == .sideBySide)
+            }
+
             HStack {
                 Text(viewModel.selectProductsTitle)
                     .renderedIf(configuration.productHeaderTextEnabled)

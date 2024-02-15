@@ -390,11 +390,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                        in: navigationController)
         }
 
-        /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
-        if isJetpackInvalidForSelfHostedSite(url: siteURL) {
-            return presentJetpackError(for: siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
-        }
-
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
@@ -597,14 +592,6 @@ private extension AuthenticationManager {
         }
 
         return sites
-    }
-
-    func isJetpackInvalidForSelfHostedSite(url: String) -> Bool {
-        if let site = currentSelfHostedSite, site.url == url,
-            (!site.hasJetpack || !site.isJetpackActive) {
-            return true
-        }
-        return false
     }
 
     /// Presents an error if the user tries to log in to a site without Jetpack.

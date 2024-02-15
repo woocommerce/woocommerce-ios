@@ -454,10 +454,11 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func createCustomRangeTab(_ start: Date, _ end: Date) {
         let currentDate = Date()
+        let range = StatsTimeRangeV4.custom(from: start, to: end)
 
         // TODO: 11935 Add the correct data fetching and displaying based on custom range.
         let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                           timeRange: .custom(from: start, to: end),
+                                                                           timeRange: range,
                                                                            currentDate: currentDate,
                                                                            canDisplayInAppFeedbackCard: false,
                                                                            usageTracksEventEmitter: usageTracksEventEmitter)
@@ -465,7 +466,7 @@ private extension StoreStatsAndTopPerformersViewController {
         periodVCs.append(customRangeVC)
         timeRanges.append(.custom(from: start, to: end))
 
-        let customRangeTabbedItem = TabbedItem(title: Localization.customRangeTabTitle,
+        let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,
                                                accessibilityIdentifier: Constants.customRangeTabAcessibilityIdentifier)
         appendToTabBar(customRangeTabbedItem)
@@ -474,7 +475,7 @@ private extension StoreStatsAndTopPerformersViewController {
         removeCustomViewFromTabBar()
 
         // Get stats data for this tab
-        self.syncStats(forced: false, viewControllerToSync: customRangeVC)
+        syncStats(forced: false, viewControllerToSync: customRangeVC)
 
         // Add pull to refresh functionality
         customRangeVC.onPullToRefresh = { [weak self] in
@@ -556,13 +557,5 @@ private extension StoreStatsAndTopPerformersViewController {
     enum Constants {
         static let backgroundColor: UIColor = .systemBackground
         static let customRangeTabAcessibilityIdentifier: String = "period-data-custom-tab"
-    }
-
-    enum Localization {
-        static let customRangeTabTitle = NSLocalizedString(
-            "storeStatsAndTopPerformersViewController.customRangeTabTitle",
-            value: "Custom Range",
-            comment: "Title of the Custom Range tab"
-        )
     }
 }

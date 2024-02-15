@@ -24,6 +24,7 @@ PODS:
   - Sourcery (1.0.3)
   - StripeTerminal (3.1.0)
   - SVProgressHUD (2.2.5)
+  - SwiftLint (0.54.0)
   - UIDeviceIdentifier (2.3.0)
   - WordPress-Aztec-iOS (1.19.9)
   - WordPress-Editor-iOS (1.19.9):
@@ -70,6 +71,7 @@ DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.1.0)
+  - SwiftLint (~> 0.54)
   - WordPress-Aztec-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `950c7bc1bf98326986f10cccb2715ad86976f0fd`)
   - WordPress-Editor-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `950c7bc1bf98326986f10cccb2715ad86976f0fd`)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `fa06fca7178b268d382d91861752b3be0729e8a8`)
@@ -96,6 +98,7 @@ SPEC REPOS:
     - Sourcery
     - StripeTerminal
     - SVProgressHUD
+    - SwiftLint
     - UIDeviceIdentifier
     - WordPressShared
     - WordPressUI
@@ -153,6 +156,7 @@ SPEC CHECKSUMS:
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: fa064cf68a7a3df7c2ee1b2e6d33c8866d1e6aef
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: fbebd569c61baa252b3f5058c0a2a9a6ada686bb
   WordPress-Editor-iOS: bda9f7f942212589b890329a0cb22547311749ef
@@ -171,6 +175,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 07dd31cac4626d121176c18d27cb6db680e8632d
+PODFILE CHECKSUM: 1ea53ed3b2f86a30293a871c11dfb745ed4a469e
 
 COCOAPODS: 1.14.0

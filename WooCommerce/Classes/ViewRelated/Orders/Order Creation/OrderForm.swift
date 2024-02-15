@@ -107,6 +107,11 @@ struct OrderFormPresentationWrapper: View {
 
     @ObservedObject var viewModel: EditableOrderViewModel
 
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    // Configuration passed to initialize the `ProductSelectorView` based on current `UserInterfaceSizeClass`
+    @State private var productSelectorConfiguration: ProductSelectorView.Configuration = ProductSelectorConfiguration.loadConfiguration(for: .regular)
+
     var body: some View {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
             AdaptiveModalContainer(primaryView: { presentProductSelector in
@@ -116,7 +121,7 @@ struct OrderFormPresentationWrapper: View {
                           presentProductSelector: presentProductSelector)
             }, secondaryView: { isShowingProductSelector in
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorView(configuration: ProductSelectorView.Configuration.splitViewAddProductToOrder(),
+                    ProductSelectorView(configuration: productSelectorConfiguration,
                                         source: .orderForm(flow: flow),
                                         isPresented: isShowingProductSelector,
                                         viewModel: productSelectorViewModel)
@@ -124,9 +129,26 @@ struct OrderFormPresentationWrapper: View {
                         ConfigurableBundleProductView(viewModel: viewModel)
                     }
                 }
+            }, onSizeClassChange: { sizeClass in
+                productSelectorConfiguration = ProductSelectorConfiguration.loadConfiguration(for: sizeClass)
             })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
+        }
+    }
+}
+
+private extension OrderFormPresentationWrapper {
+    enum ProductSelectorConfiguration {
+        static func loadConfiguration(for sizeClass: UserInterfaceSizeClass?) -> ProductSelectorView.Configuration {
+            switch sizeClass {
+            case .compact:
+                return .addProductToOrder()
+            case .regular:
+                return .splitViewAddProductToOrder()
+            default:
+                return .addProductToOrder()
+            }
         }
     }
 }

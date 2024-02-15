@@ -102,6 +102,7 @@ struct ProductSelectorView: View {
                     Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
                         .foregroundColor(Color(.brand))
                 })
+                .padding(.trailing)
                 .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) &&
                             presentationStyle == .sideBySide)
             }

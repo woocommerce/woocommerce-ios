@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -eu
+
+set -o pipefail
 
 #
 # Runs SwiftLint on the whole workspace.
@@ -8,7 +10,7 @@
 
 # Abort if we are running in CI
 # See https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables
-if [ "$CI" = true ] ; then
+if [ "${CI-}" = true ] ; then
   echo "warning: skipping SwiftLint build phase because running on CI."
   exit 0
 fi
@@ -20,11 +22,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # find the paths returned from the `git` commands below.
 pushd "$DIR/../../" > /dev/null || exit 1
 
-# Paths relative to the root directory
-SWIFTLINT="./vendor/swiftlint/bin/swiftlint"
-CONFIG_FILE=".swiftlint.yml"
+# Paths are now relative to the root directory
+SWIFTLINT_BIN="./Pods/SwiftLint/swiftlint"
+# Can't do $SWIFTLINT="$SWIFTLINT_BIN lint --quiet" to DRY because the value is then passed to xcargs
+SWIFTLINT_ARGS="lint --quiet"
 
-if ! which $SWIFTLINT >/dev/null; then
+if ! which "$SWIFTLINT_BIN" >/dev/null; then
   echo "error: SwiftLint is not installed. Install by running \`rake dependencies\`."
   exit 1
 fi
@@ -35,12 +38,12 @@ fi
 # are no matches. Xcode's build will fail if we don't do this.
 #
 MODIFIED_FILES=$(git diff --name-only --diff-filter=d HEAD | grep -G "\.swift$" || true)
-echo "$MODIFIED_FILES" | xargs $SWIFTLINT --config $CONFIG_FILE --quiet
+echo "$MODIFIED_FILES" | xargs $SWIFTLINT_BIN "$SWIFTLINT_ARGS"
 MODIFIED_FILES_LINT_RESULT=$?
 
 # Run SwiftLint on the added files
 ADDED_FILES=$(git ls-files --others --exclude-standard | grep -G "\.swift$" || true)
-echo "$ADDED_FILES" | xargs $SWIFTLINT --config $CONFIG_FILE --quiet
+echo "$ADDED_FILES" | xargs $SWIFTLINT_BIN "$SWIFTLINT_ARGS"
 ADDED_FILES_LINT_RESULT=$?
 
 # Restore the previous directory

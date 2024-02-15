@@ -28,10 +28,6 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
         return periodVCs[selection]
     }
 
-    var timeRangeCount: Int {
-        return timeRanges.count
-    }
-
     // MARK: - Private Properties
 
     private var periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
@@ -142,7 +138,7 @@ private extension StoreStatsAndTopPerformersViewController {
         selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
             .compactMap { $0 }
             // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
-            .filter { $0 >= 0 && $0 < self.timeRangeCount }
+            .filter { $0 >= 0 && $0 < self.timeRanges.count }
             .removeDuplicates()
             // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
             // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
@@ -313,7 +309,6 @@ private extension StoreStatsAndTopPerformersViewController {
             }
         }
     }
-
 
     func observeRemotelyCreatedOrdersToResetLastSyncTimestamp() {
         let siteID = self.siteID

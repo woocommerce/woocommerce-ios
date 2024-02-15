@@ -164,7 +164,7 @@ struct AnalyticsHubView: View {
         }
         .sheet(isPresented: $isCustomizingAnalyticsCards) {
             NavigationView {
-                AnalyticsHubManageView()
+                AnalyticsHubCustomizeView()
             }
         }
     }
@@ -188,7 +188,7 @@ private extension AnalyticsHubView {
                                                          comment: "Label for button to enable Jetpack Stats")
         static let editButton = NSLocalizedString("analyticsHub.editButton.label",
                                                   value: "Edit",
-                                                  comment: "Label for button that opens a screen to customize the sections in the Analytics Hub")
+                                                  comment: "Label for button that opens a screen to customize the Analytics Hub")
     }
 
     struct Layout {

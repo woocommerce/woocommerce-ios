@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AnalyticsHubManageView: View {
+struct AnalyticsHubCustomizeView: View {
     // TODO: Add view model to contain view data
 
     // TODO: Replace with dynamic data (all available cards)
@@ -48,19 +48,19 @@ struct AnalyticsHubManageView: View {
 }
 
 // MARK: - Constants
-private extension AnalyticsHubManageView {
+private extension AnalyticsHubCustomizeView {
     enum Localization {
-        static let title = NSLocalizedString("analyticsHub.manageAnalyticsCards.title",
-                                             value: "Manage Analytics Cards",
-                                             comment: "Title for the screen to manage the analytics cards in the Analytics Hub")
-        static let saveButton = NSLocalizedString("analyticsHub.manageAnalytics.saveButton",
+        static let title = NSLocalizedString("analyticsHub.customizeAnalytics.title",
+                                             value: "Customize Analytics",
+                                             comment: "Title for the screen to customize the analytics cards in the Analytics Hub")
+        static let saveButton = NSLocalizedString("analyticsHub.customizeAnalytics.saveButton",
                                                   value: "Save",
-                                                  comment: "Button to save changes on the Manage Analytics screen")
+                                                  comment: "Button to save changes on the Customize Analytics screen")
     }
 }
 
 #Preview {
     NavigationView {
-        AnalyticsHubManageView()
+        AnalyticsHubCustomizeView()
     }
 }

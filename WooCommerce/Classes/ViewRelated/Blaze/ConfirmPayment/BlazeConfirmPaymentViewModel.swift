@@ -123,25 +123,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         isCreatingCampaign = true
         do {
             // Prepare image for campaign
-            let campaignMedia: Media
-            switch image.source {
-            case .asset(let asset):
-                do {
-                    campaignMedia = try await uploadPendingImage(asset)
-                } catch {
-                    DDLogError("⛔️ Error uploading campaign image: \(error)")
-                    throw BlazeCampaignCreationError.failedToUploadCampaignImage
-                }
-            case .media(let media):
-                campaignMedia = media
-            case .productImage(let image):
-                do {
-                    campaignMedia = try await retrieveMedia(mediaID: image.imageID)
-                } catch {
-                    DDLogError("⛔️ Error fetching product image's Media: \(error)")
-                    throw BlazeCampaignCreationError.failedToFetchCampaignImage
-                }
-            }
+            let campaignMedia = try await prepareImage()
 
             // Set payment method ID, image URL and mimeType
             let updatedDetails = campaignInfo
@@ -165,6 +147,27 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
 }
 
 private extension BlazeConfirmPaymentViewModel {
+    func prepareImage() async throws -> Media {
+        switch image.source {
+        case .asset(let asset):
+            do {
+                return try await uploadPendingImage(asset)
+            } catch {
+                DDLogError("⛔️ Error uploading campaign image: \(error)")
+                throw BlazeCampaignCreationError.failedToUploadCampaignImage
+            }
+        case .media(let media):
+            return media
+        case .productImage(let image):
+            do {
+                return try await retrieveMedia(mediaID: image.imageID)
+            } catch {
+                DDLogError("⛔️ Error fetching product image's Media: \(error)")
+                throw BlazeCampaignCreationError.failedToFetchCampaignImage
+            }
+        }
+    }
+
     @MainActor
     func fetchPaymentInfo() async throws -> BlazePaymentInfo {
         try await withCheckedThrowingContinuation { continuation in

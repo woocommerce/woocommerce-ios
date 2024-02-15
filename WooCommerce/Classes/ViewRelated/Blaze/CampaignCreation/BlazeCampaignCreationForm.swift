@@ -19,11 +19,36 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = Localization.title
+        configureNavigation()
     }
 }
 
 private extension BlazeCampaignCreationFormHostingController {
+    func configureNavigation() {
+        title = Localization.title
+        addHelpButtonToNavigationItem()
+    }
+
+    func addHelpButtonToNavigationItem() {
+        let helpBarButtonItem = UIBarButtonItem(title: Localization.help,
+                                                style: .plain,
+                                                target: self,
+                                                action: #selector(helpButtonWasPressed))
+        navigationItem.rightBarButtonItem = helpBarButtonItem
+    }
+
+    @objc func helpButtonWasPressed() {
+        guard let navigationController else {
+            return
+        }
+        showSupport(from: navigationController)
+    }
+
+    func showSupport(from navigationController: UINavigationController) {
+        let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: Constants.supportTag))
+        supportForm.show(from: navigationController)
+    }
+
     func navigateToEditAd() {
         let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
         present(vc, animated: true)
@@ -37,6 +62,16 @@ private extension BlazeCampaignCreationFormHostingController {
             value: "Preview",
             comment: "Title of the Blaze campaign creation screen"
         )
+
+        static let help = NSLocalizedString(
+            "blazeCampaignCreationForm.help",
+            value: "Help",
+            comment: "Button to contact support on the Blaze campaign creation screen"
+        )
+    }
+
+    enum Constants {
+        static let supportTag = "origin:blaze-native-campaign-creation"
     }
 }
 

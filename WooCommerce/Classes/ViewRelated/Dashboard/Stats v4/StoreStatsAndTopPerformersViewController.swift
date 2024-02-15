@@ -459,7 +459,7 @@ private extension StoreStatsAndTopPerformersViewController {
         let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                            timeRange: .custom(from: start, to: end),
                                                                            currentDate: currentDate,
-                                                                           canDisplayInAppFeedbackCard: true,
+                                                                           canDisplayInAppFeedbackCard: false,
                                                                            usageTracksEventEmitter: usageTracksEventEmitter)
 
         periodVCs.append(customRangeVC)

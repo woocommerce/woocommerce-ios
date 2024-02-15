@@ -1567,7 +1567,7 @@ private extension EditableOrderViewModel {
                         return true
                     }
                     // If no coupons have been applied, but there are order discounts (discounts added directly to products of an order), disable coupons
-                    if order.coupons.isEmpty && order.discountTotal != "0.00" {
+                    if order.coupons.isEmpty && isDiscountBiggerThanZero {
                         return true
                     }
                     return false

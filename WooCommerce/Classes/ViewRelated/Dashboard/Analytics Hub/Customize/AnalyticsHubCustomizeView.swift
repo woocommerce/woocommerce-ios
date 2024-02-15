@@ -19,26 +19,20 @@ struct AnalyticsHubCustomizeView: View {
     var body: some View {
         MultiSelectionReorderableList(contents: $viewModel.allCards, contentKeyPath: \.self, selectedItems: $viewModel.selectedCards)
             .toolbar(content: {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        dismiss() // TODO: Show discard changes prompt when there are changes
-                    }, label: {
-                        Image(uiImage: .closeButton)
-                            .secondaryBodyStyle()
-                    })
-                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         dismiss() // TODO: Save changes
                     } label: {
                         Text(Localization.saveButton)
-                    } // TODO: Disable when there are no changes to save
+                    }
+                    .disabled(!viewModel.hasChanges)
                 }
             })
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(uiColor: .listBackground))
             .wooNavigationBarStyle()
+            .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasChanges)
     }
 }
 

@@ -81,6 +81,43 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
     }
 }
 
+struct CloseButtonWithDiscardPrompt: ViewModifier {
+    let showPrompt: Bool
+    let didDismiss: (() -> Void)?
+
+    @State private var isShowingPrompt: Bool = false
+    @Environment(\.dismiss) private var dismiss
+
+    func body(content: Content) -> some View {
+        content
+            .toolbar(content: {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        if showPrompt {
+                            isShowingPrompt.toggle()
+                        } else {
+                            didDismiss?()
+                            dismiss()
+                        }
+                    }, label: {
+                        Image(uiImage: .closeButton)
+                            .secondaryBodyStyle()
+                    })
+                }
+            })
+            .interactiveDismissDisabled()
+            .confirmationDialog("", isPresented: $isShowingPrompt) {
+                Button(Localization.discard, role: .destructive, action: {
+                    didDismiss?()
+                    dismiss()
+                })
+                Button(Localization.cancel, role: .cancel, action: {})
+            } message: {
+                Text(Localization.message)
+            }
+    }
+}
+
 extension View {
     /// Adds a discard changes prompt on the dismiss drag gesture for the provided view.
     /// - Parameters:
@@ -104,6 +141,15 @@ extension View {
                               canDismiss: canDismiss,
                               didDismiss: didDismiss)
             .ignoresSafeArea() // Removes extra safe area insets added by the wrapper
+    }
+
+    /// Adds a close button with a discard changes prompt, and disables the dismiss drag gesture.
+    /// - Parameters:
+    ///   - hasChanges: Whether there are changes to be discarded.
+    ///   - didDismiss: Optional method to be invoked when the view is dismissed.
+    func closeButtonWithDiscardChangesPrompt(hasChanges: Bool,
+                                             didDismiss: (() -> Void)? = nil) -> some View {
+        ModifiedContent(content: self, modifier: CloseButtonWithDiscardPrompt(showPrompt: hasChanges, didDismiss: didDismiss))
     }
 }
 

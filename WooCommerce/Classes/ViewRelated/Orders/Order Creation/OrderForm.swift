@@ -535,6 +535,7 @@ private struct ProductsSection: View {
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentation: AdaptiveModalContainerPresentationStyle
 
     var body: some View {
         Group {
@@ -604,7 +605,7 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentation == .modalOnModal {
                         Button(OrderForm.Localization.addProducts) {
                             viewModel.toggleProductSelectorVisibility()
                         }
@@ -614,7 +615,7 @@ private struct ProductsSection: View {
                     }
 
                     scanProductButton
-                    .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+                        .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled && presentation == .modalOnModal)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }

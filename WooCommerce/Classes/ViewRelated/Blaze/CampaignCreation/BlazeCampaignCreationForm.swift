@@ -38,15 +38,8 @@ private extension BlazeCampaignCreationFormHostingController {
     }
 
     @objc func helpButtonWasPressed() {
-        guard let navigationController else {
-            return
-        }
-        showSupport(from: navigationController)
-    }
-
-    func showSupport(from navigationController: UINavigationController) {
         let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: Constants.supportTag))
-        supportForm.show(from: navigationController)
+        supportForm.show(from: self)
     }
 
     func navigateToEditAd() {

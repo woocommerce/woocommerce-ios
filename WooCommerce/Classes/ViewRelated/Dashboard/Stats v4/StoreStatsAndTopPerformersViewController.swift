@@ -463,7 +463,8 @@ private extension StoreStatsAndTopPerformersViewController {
 
         let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,
-                                               accessibilityIdentifier: Constants.customRangeTabAcessibilityIdentifier)
+                                               accessibilityIdentifier: "period-data-" + range.rawValue + "-tab")
+
         appendToTabBar(customRangeTabbedItem)
 
         // Once a custom range tab is created, do not show the "Custom Range" button anymore.
@@ -551,6 +552,5 @@ private extension StoreStatsAndTopPerformersViewController {
 
     enum Constants {
         static let backgroundColor: UIColor = .systemBackground
-        static let customRangeTabAcessibilityIdentifier: String = "period-data-custom-tab"
     }
 }

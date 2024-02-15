@@ -20,7 +20,7 @@ private extension CustomRangeTabCreationCoordinator {
     func presentDateRangePicker() {
         let controller = RangedDatePickerHostingController(
             datesFormatter: DatesFormatter(),
-            applyButtonTitle: Localization.add,
+            customApplyButtonTitle: Localization.add,
             datesSelected: { [weak self] start, end in
                 guard let self else { return }
                 self.onDateRangeSelected(start, end)

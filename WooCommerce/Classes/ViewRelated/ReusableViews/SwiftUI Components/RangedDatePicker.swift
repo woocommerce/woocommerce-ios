@@ -13,12 +13,12 @@ final class RangedDatePickerHostingController: UIHostingController<RangedDatePic
     init(startDate: Date? = nil,
          endDate: Date? = nil,
          datesFormatter: RangedDateTextFormatter,
-         applyButtonTitle: String = Localization.apply,
+         customApplyButtonTitle: String? = nil,
          datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         super.init(rootView: RangedDatePicker(startDate: startDate,
                                               endDate: endDate,
                                               datesFormatter: datesFormatter,
-                                              applyButtonTitle: applyButtonTitle,
+                                              customApplyButtonTitle: customApplyButtonTitle,
                                               datesSelected: datesSelected))
     }
 
@@ -68,13 +68,13 @@ struct RangedDatePicker: View {
     init(startDate: Date? = nil,
          endDate: Date? = nil,
          datesFormatter: RangedDateTextFormatter,
-         applyButtonTitle: String = Localization.apply,
+         customApplyButtonTitle: String? = nil,
          datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         self._startDate = State(initialValue: startDate ?? Date())
         self._endDate = State(initialValue: endDate ?? Date())
         self.datesFormatter = datesFormatter
         self.datesSelected = datesSelected
-        self.applyButtonTitle = applyButtonTitle
+        self.applyButtonTitle = customApplyButtonTitle ?? Localization.apply
     }
 
     var body: some View {

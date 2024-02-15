@@ -102,6 +102,8 @@ final class AztecEditorViewController: UIViewController, Editor {
         return keyboardFrameObserver
     }()
 
+    // FIXME: This has a long call chain and cannot be quickly addressed as part of the current SwiftLint violations smashing round
+    // swiftlint:disable:next weak_delegate
     private let textViewAttachmentDelegate: TextViewAttachmentDelegate
 
     private let isAIGenerationEnabled: Bool

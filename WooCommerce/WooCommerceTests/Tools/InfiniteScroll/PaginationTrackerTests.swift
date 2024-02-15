@@ -3,7 +3,7 @@ import XCTest
 
 final class PaginationTrackerTests: XCTestCase {
     private var paginationTracker: PaginationTracker!
-    private var mockDelegate: MockPaginationTrackerDelegate!
+    private weak var mockDelegate: MockPaginationTrackerDelegate!
 
     override func setUp() {
         super.setUp()

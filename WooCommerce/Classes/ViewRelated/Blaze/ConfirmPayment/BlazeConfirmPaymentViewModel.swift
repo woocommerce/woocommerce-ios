@@ -143,11 +143,10 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
                 }
             }
 
-            var updatedDetails = campaignInfo
-            // Set image URL and mimeType
-            updatedDetails = updatedDetails.copy(mainImage: .init(url: campaignMedia.src, mimeType: campaignMedia.mimeType))
-            // Set payment method ID
-            updatedDetails = updatedDetails.copy(paymentMethodID: selectedPaymentMethod.id)
+            // Set payment method ID, image URL and mimeType
+            let updatedDetails = campaignInfo
+                .copy(paymentMethodID: selectedPaymentMethod.id,
+                      mainImage: .init(url: campaignMedia.src, mimeType: campaignMedia.mimeType))
 
             do {
                 try await requestCampaignCreation(details: updatedDetails)

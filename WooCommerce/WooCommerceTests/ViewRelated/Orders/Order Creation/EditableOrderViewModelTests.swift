@@ -674,14 +674,17 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00",
-                                                                          shippingTotal: "3.00",
+                                                                               shippingTotal: "3.00",
+                                                                               shippingTax: "0.30",
                                                                                customAmountsTotal: "2.00",
-                                                                          taxesTotal: "5.00",
-                                                                          currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
+                                                                               taxesTotal: "5.00",
+                                                                               currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
 
         // Then
         XCTAssertEqual(paymentDataViewModel.itemsTotal, "£20.00")
         XCTAssertEqual(paymentDataViewModel.shippingTotal, "£3.00")
+        XCTAssertEqual(paymentDataViewModel.shippingTax, "£0.30")
+        XCTAssertEqual(paymentDataViewModel.shouldShowShippingTax, true)
         XCTAssertEqual(paymentDataViewModel.customAmountsTotal, "£2.00")
         XCTAssertEqual(paymentDataViewModel.taxesTotal, "£5.00")
     }
@@ -696,6 +699,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTax, "£0.00")
+        XCTAssertEqual(paymentDataViewModel.shouldShowShippingTax, false)
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "£0.00")
     }

@@ -1039,7 +1039,7 @@ extension EditableOrderViewModel {
 
         let shippingTax: String
         // We show shipping tax if the amount is not zero
-        let showShippingTax: Bool
+        let shouldShowShippingTax: Bool
 
         let shouldShowTotalCustomAmounts: Bool
         let customAmountsTotal: String
@@ -1126,7 +1126,7 @@ extension EditableOrderViewModel {
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
             self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
-            self.showShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
+            self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"

@@ -209,9 +209,9 @@ private extension OrderPaymentSection {
             }
         }
     }
-    
+
     @ViewBuilder var shippingTax: some View {
-        if viewModel.showShippingTax {
+        if viewModel.shouldShowShippingTax {
             HStack {
                 AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
                     Text(Localization.shippingTax)

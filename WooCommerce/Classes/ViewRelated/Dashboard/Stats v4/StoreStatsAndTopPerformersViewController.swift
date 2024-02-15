@@ -115,26 +115,6 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     }
 }
 
-private extension StoreStatsAndTopPerformersViewController {
-    func observeSelectedTimeRangeIndex() {
-        let timeRangeCount = timeRanges.count
-        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
-            .compactMap { $0 }
-            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
-            .filter { $0 >= 0 && $0 < timeRangeCount }
-            .removeDuplicates()
-            // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
-            // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
-            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
-            .sink { [weak self] timeRangeTabIndex in
-                guard let self else { return }
-                let periodViewController = self.periodVCs[timeRangeTabIndex]
-                self.saveLastTimeRange(periodViewController.timeRange)
-                self.syncStats(forced: false, viewControllerToSync: periodViewController)
-            }
-    }
-}
-
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
     @MainActor
     func reloadData(forced: Bool) async {
@@ -153,6 +133,24 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 // MARK: - Syncing Data
 //
 private extension StoreStatsAndTopPerformersViewController {
+    func observeSelectedTimeRangeIndex() {
+        let timeRangeCount = timeRanges.count
+        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
+            .compactMap { $0 }
+            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
+            .filter { $0 >= 0 && $0 < timeRangeCount }
+            .removeDuplicates()
+            // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
+            // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
+            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
+            .sink { [weak self] timeRangeTabIndex in
+                guard let self else { return }
+                let periodViewController = self.periodVCs[timeRangeTabIndex]
+                self.saveLastTimeRange(periodViewController.timeRange)
+                self.syncStats(forced: false, viewControllerToSync: periodViewController)
+            }
+    }
+
     func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         syncStats(forced: forced, viewControllerToSync: visibleChildViewController, onCompletion: onCompletion)
     }

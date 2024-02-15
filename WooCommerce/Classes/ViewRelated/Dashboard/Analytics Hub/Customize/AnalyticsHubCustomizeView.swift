@@ -9,7 +9,7 @@ struct AnalyticsHubCustomizeView: View {
         "Sessions"
     ], selectedCards: [
         "Revenue",
-        "Orders"
+        "Products"
     ])
 
     /// Dismisses the view.

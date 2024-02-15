@@ -113,6 +113,7 @@ class TabbedViewController: UIViewController {
         addChild(tab.viewController)
         stackView.addArrangedSubview(tab.viewController.view)
         tab.viewController.didMove(toParent: self)
+        tab.viewController.view.isHidden = true
 
         // Set the appended tab as selected
         let tabPosition = items.count-1

@@ -621,7 +621,9 @@ private struct ProductsSection: View {
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
-            .background(Color(.listForeground(modal: true)))
+            .if(presentation == .modalOnModal, transform: {
+                $0.background(Color(.listForeground(modal: true)))
+            })
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
             }

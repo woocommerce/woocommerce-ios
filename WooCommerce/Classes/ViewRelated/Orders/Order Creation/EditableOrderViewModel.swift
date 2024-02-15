@@ -1037,9 +1037,9 @@ extension EditableOrderViewModel {
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
-        let shippingTax: String
         // We show shipping tax if the amount is not zero
         let shouldShowShippingTax: Bool
+        let shippingTax: String
 
         let shouldShowTotalCustomAmounts: Bool
         let customAmountsTotal: String

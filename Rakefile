@@ -140,7 +140,7 @@ end
 namespace :lint do
   desc 'Automatically corrects style errors where possible'
   task autocorrect: %w[dependencies:lint:check] do
-    swiftlint %w[autocorrect]
+    swiftlint %w[lint --autocorrect --quiet]
   end
 end
 

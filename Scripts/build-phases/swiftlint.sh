@@ -18,14 +18,14 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Temporarily move to the root directory so that SwiftLint can correctly
 # find the paths returned from the `git` commands below.
-pushd $DIR/../../ > /dev/null
+pushd "$DIR/../../" > /dev/null || exit 1
 
 # Paths relative to the root directory
 SWIFTLINT="./vendor/swiftlint/bin/swiftlint"
 CONFIG_FILE=".swiftlint.yml"
 
 if ! which $SWIFTLINT >/dev/null; then
-  echo "error: SwiftLint is not installed. Install by running `rake dependencies`."
+  echo "error: SwiftLint is not installed. Install by running \`rake dependencies\`."
   exit 1
 fi
 
@@ -34,22 +34,22 @@ fi
 # The `|| true` at the end is to stop `grep` from returning a non-zero exit if there
 # are no matches. Xcode's build will fail if we don't do this.
 #
-MODIFIED_FILES=`git diff --name-only --diff-filter=d HEAD | grep -G "\.swift$" || true`
-echo $MODIFIED_FILES | xargs $SWIFTLINT --config $CONFIG_FILE --quiet
+MODIFIED_FILES=$(git diff --name-only --diff-filter=d HEAD | grep -G "\.swift$" || true)
+echo "$MODIFIED_FILES" | xargs $SWIFTLINT --config $CONFIG_FILE --quiet
 MODIFIED_FILES_LINT_RESULT=$?
 
 # Run SwiftLint on the added files
-ADDED_FILES=`git ls-files --others --exclude-standard | grep -G "\.swift$" || true`
-echo $ADDED_FILES | xargs $SWIFTLINT --config $CONFIG_FILE --quiet
+ADDED_FILES=$(git ls-files --others --exclude-standard | grep -G "\.swift$" || true)
+echo "$ADDED_FILES" | xargs $SWIFTLINT --config $CONFIG_FILE --quiet
 ADDED_FILES_LINT_RESULT=$?
 
 # Restore the previous directory
-popd > /dev/null
+popd > /dev/null || exit 1
 
-# Exit with non-zero if SwiftLint found a serious violation in the linted files. 
+# Exit with non-zero if SwiftLint found a serious violation in the linted files.
 #
 # This stops Xcode from complaining about "...did not return a nonzero exit code...".
 #
-if [ $MODIFIED_FILES_LINT_RESULT -ne 0 ] || [ $ADDED_FILES_LINT_RESULT -ne 0 ] ; then 
+if [ $MODIFIED_FILES_LINT_RESULT -ne 0 ] || [ $ADDED_FILES_LINT_RESULT -ne 0 ] ; then
   exit 1
 fi

@@ -403,8 +403,16 @@ extension OrderListViewController {
 extension OrderListViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
+    /// Sets `retryTimeout` as `true`.
     ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)?) {
+        sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: true, onCompletion: onCompletion)
+    }
+
+    /// Synchronizes the Orders for the Default Store (if any).
+    /// When retry timeout is `true` it retires the request one time recursively when a timeout happens.
+    ///
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, retryTimeout: Bool, onCompletion: ((Bool) -> Void)? = nil) {
         if pageNumber == syncingCoordinator.pageFirstIndex,
            reason == SyncReason.viewWillAppear.rawValue,
            let lastFullSyncTimestamp = lastFullSyncTimestamp,
@@ -430,7 +438,13 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 if let error {
                     ServiceLocator.analytics.track(event: .ordersListLoadError(error))
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.viewModel.dataLoadingError = error
+
+                    // Recursively retries timeout errors when required.
+                    if error.isTimeoutError && retryTimeout {
+                        self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
+                    } else {
+                        self.viewModel.dataLoadingError = error
+                    }
                 } else {
                     if pageNumber == self.syncingCoordinator.pageFirstIndex {
                         // save timestamp of last successful update

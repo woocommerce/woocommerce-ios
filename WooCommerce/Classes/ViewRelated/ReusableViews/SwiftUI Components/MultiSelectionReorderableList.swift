@@ -23,13 +23,14 @@ struct MultiSelectionReorderableList<T: Hashable>: View {
         List {
             ForEach(contents, id: contentKeyPath) { item in
                 SelectableItemRow(title: item[keyPath: contentKeyPath],
-                                  selected: selectedItems.contains(item),
+                                  selected: isSelected(item),
                                   displayMode: .compact,
                                   selectionStyle: .checkcircle)
                     .listRowInsets(.zero)
                     .onTapGesture {
                         toggleItem(item)
                     }
+                    .disabled(isLastSelected(item))
             }
             .onMove(perform: moveItem)
         }
@@ -45,6 +46,17 @@ private extension MultiSelectionReorderableList {
         contents.move(fromOffsets: source, toOffset: destination)
     }
 
+    /// Checks if the given item is selected.
+    func isSelected(_ item: T) -> Bool {
+        selectedItems.contains(item)
+    }
+
+    /// Checks if the given item is the last selected item.
+    /// This is used to disable that row, so it can't be deselected.
+    func isLastSelected(_ item: T) -> Bool {
+        isSelected(item) && selectedItems.count == 1
+    }
+
     /// Selects or deselects the given item.
     func toggleItem(_ item: T) {
         if selectedItems.contains(item) {
@@ -55,8 +67,14 @@ private extension MultiSelectionReorderableList {
     }
 }
 
-#Preview {
-    return MultiSelectionReorderableList(contents: .constant(["🥪", "🥓", "🥗"]),
-                                         contentKeyPath: \.self,
-                                         selectedItems: .constant(["🥓"]))
+#Preview("List") {
+    MultiSelectionReorderableList(contents: .constant(["🥪", "🥓", "🥗"]),
+                                  contentKeyPath: \.self,
+                                  selectedItems: .constant(["🥗", "🥓"]))
+}
+
+#Preview("Last selected item") {
+    MultiSelectionReorderableList(contents: .constant(["🥪", "🥓", "🥗"]),
+                                  contentKeyPath: \.self,
+                                  selectedItems: .constant(["🥓"]))
 }

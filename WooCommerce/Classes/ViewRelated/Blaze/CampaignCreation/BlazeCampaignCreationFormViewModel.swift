@@ -109,7 +109,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     var confirmPaymentViewModel: BlazeConfirmPaymentViewModel? {
         guard let image else {
-            DDLogError("Image is required to confirm payment and submit Blaze campaign.")
             return nil
         }
         return BlazeConfirmPaymentViewModel(productID: productID,

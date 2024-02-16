@@ -6,8 +6,11 @@ import Yosemite
 final class BlazeBudgetSettingViewModel: ObservableObject {
     @Published var dailyAmount: Double
     /// Using Double because Slider doesn't work with Int
-    @Published var dayCount: Double
-    @Published var startDate: Date
+    /// This is readonly and will be updated through `didTapApplyDuration`.
+    @Published private(set) var dayCount: Double
+
+    /// This is readonly and will be updated through `didTapApplyDuration`.
+    @Published private(set) var startDate: Date
 
     @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
@@ -30,12 +33,6 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         String.pluralize(Int(dayCount),
                          singular: Localization.totalDurationSingleDay,
                          plural: Localization.totalDurationMultipleDays)
-    }
-
-    var formattedDayCount: String {
-        String.pluralize(Int(dayCount),
-                         singular: Localization.singleDay,
-                         plural: Localization.multipleDays)
     }
 
     var formattedDateRange: String {
@@ -83,8 +80,16 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         observeSettings()
     }
 
-    func didTapApplyDuration() {
+    func didTapApplyDuration(dayCount: Double, since startDate: Date) {
         analytics.track(event: .Blaze.Budget.changedDuration(Int(dayCount)))
+        self.dayCount = dayCount
+        self.startDate = startDate
+    }
+
+    func formatDayCount(_ count: Double) -> String {
+        String.pluralize(Int(count),
+                         singular: Localization.singleDay,
+                         plural: Localization.multipleDays)
     }
 
     func confirmSettings() {

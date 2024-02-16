@@ -6,6 +6,8 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         case home
     }
 
+    typealias BlazeAdDestinationSettingCompletionHandler = (_ targetUrl: String, _ urlParams: String) -> Void
+
     let productURL: String
     let homeURL: String
     let initialFinalDestinationURL: String
@@ -76,13 +78,22 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     }
 
     private let analytics: Analytics
-    private let onSave: (String) -> Void
+    private let onSave: BlazeAdDestinationSettingCompletionHandler
 
-    init (productURL: String,
-          homeURL: String,
-          finalDestinationURL: String,
-          analytics: Analytics = ServiceLocator.analytics,
-          onSave: @escaping (String) -> Void) {
+    private var baseURL: String {
+        switch selectedDestinationType {
+        case .product:
+            productURL
+        case .home:
+            homeURL
+        }
+    }
+
+    init(productURL: String,
+         homeURL: String,
+         finalDestinationURL: String,
+         analytics: Analytics = ServiceLocator.analytics,
+         onSave: @escaping BlazeAdDestinationSettingCompletionHandler) {
         self.productURL = productURL
         self.homeURL = homeURL
         self.initialFinalDestinationURL = finalDestinationURL
@@ -92,13 +103,14 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         initializeDestinationType()
         initializeParameters()
     }
+
     func setDestinationType(as type: DestinationURLType) {
         selectedDestinationType = type
     }
 
     func confirmSave() {
         analytics.track(event: .Blaze.AdDestination.saveTapped())
-        onSave(buildFinalDestinationURL())
+        onSave(baseURL, parameters.convertToQueryString())
     }
 
     func calculateRemainingCharacters() -> Int {
@@ -143,15 +155,7 @@ private extension BlazeAdDestinationSettingViewModel {
     }
 
     func buildFinalDestinationURL() -> String {
-        let baseURL: String
-        switch selectedDestinationType {
-        case .product:
-            baseURL = productURL
-        case .home:
-            baseURL = homeURL
-        }
-
-        return parameters.isEmpty ? baseURL : baseURL + "?" + parameters.convertToQueryString()
+        baseURL + "?" + parameters.convertToQueryString()
     }
 }
 

@@ -1,4 +1,6 @@
 import SwiftUI
+import Yosemite
+
 final class DomainContactInfoFormHostingController: UIHostingController<DomainContactInfoForm> {
     /// - Parameters:
     ///   - viewModel: View model for the domain contact info form.

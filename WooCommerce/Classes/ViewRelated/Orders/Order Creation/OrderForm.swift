@@ -554,7 +554,6 @@ private struct ProductsSection: View {
 
                     HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {
                         scanProductButton
-                        .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
 
                         if let presentProductSelector {
                             Button(action: {
@@ -612,9 +611,7 @@ private struct ProductsSection: View {
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
                     }
-
                     scanProductButton
-                    .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }

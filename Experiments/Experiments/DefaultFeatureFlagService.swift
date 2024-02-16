@@ -43,8 +43,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .dashboardOnboarding:
             return true
-        case .addProductToOrderViaSKUScanner:
-            return true
         case .productBundles:
             return true
         case .manualErrorHandlingForSiteCredentialLogin:

@@ -28,14 +28,6 @@ final class RangedDatePickerHostingController: UIHostingController<RangedDatePic
     }
 }
 
-// MARK: Constant
-
-private extension RangedDatePickerHostingController {
-    enum Localization {
-        static let apply = NSLocalizedString("Apply", comment: "Apply navigation button in custom range date picker")
-    }
-}
-
 /// View to select a custom date range.
 /// Consists of two date pickers laid out vertically.
 ///

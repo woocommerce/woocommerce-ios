@@ -544,7 +544,7 @@ private extension OrderListViewController {
 
     /// Checks to see if there is a selected order ID, and selects its order.
     /// Otherwise, try to select first item.
-    /// 
+    ///
     func checkSelectedItem() {
         guard let orderID = selectedOrderID else {
             selectFirstItemIfPossible()

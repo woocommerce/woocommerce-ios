@@ -1,7 +1,7 @@
 import Networking
 import Storage
 
-/// MARK: SitePostStore
+// MARK: SitePostStore
 ///
 final public class SitePostStore: Store {
     private let remote: SitePostsRemote

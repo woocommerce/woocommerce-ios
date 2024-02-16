@@ -120,6 +120,8 @@ final class LoginProloguePageTypeViewController: UIViewController {
     }
 
     override func viewDidLoad() {
+        super.viewDidLoad()
+
         view = UIView()
         view.backgroundColor = .clear
 

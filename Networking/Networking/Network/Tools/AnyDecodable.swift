@@ -7,14 +7,14 @@ import Foundation
 
 /**
  A type-erased `Decodable` value.
- 
+
  The `AnyDecodable` type forwards decoding responsibilities
  to an underlying value, hiding its specific underlying type.
- 
+
  You can decode mixed-type values in dictionaries
  and other collections that require `Decodable` conformance
  by declaring their contained type to be `AnyDecodable`:
- 
+
      let json = """
      {
          "boolean": true,
@@ -29,7 +29,7 @@ import Foundation
          }
      }
      """.data(using: .utf8)!
- 
+
      let decoder = JSONDecoder()
      let dictionary = try! decoder.decode([String: AnyCodable].self, from: json)
  */

@@ -56,11 +56,11 @@ private extension WCPayPaymentMethodDetails {
         switch self {
         case .unknown:
             return "unknown"
-        case .card(_):
+        case .card:
             return "card"
-        case .cardPresent(_):
+        case .cardPresent:
             return "cardPresent"
-        case .interacPresent(_):
+        case .interacPresent:
             return "interacPresent"
         }
     }

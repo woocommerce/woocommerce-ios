@@ -104,7 +104,7 @@ custom_rules:
 
   localization_comment:
     name: "Localization Comment"
-    regex: 'NSLocalizedString([^,]+,\s+comment:\s*"")'
+    regex: 'NSLocalizedString\([^,]+,\s*+comment:\s""\)'
     message: "Localized strings should include a description giving context for how the string is used."
     severity: warning
     excluded: .*Tests/.* # We might want to remove this and add comments to tests, too

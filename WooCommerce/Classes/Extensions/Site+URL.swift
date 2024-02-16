@@ -21,7 +21,7 @@ extension Site {
         adminURL + "plugins.php"
     }
     /// Payment plugin settings in wp-admin. This can be helpful when the plugin needs to be setup completely.
-    /// 
+    ///
     func pluginSettingsSectionURL(from plugin: CardPresentPaymentsPlugin) -> String {
         adminURL + "admin.php?page=wc-settings&tab=checkout&section=" + plugin.setupURLSectionPath
     }

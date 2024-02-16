@@ -33,7 +33,7 @@ final class NotificationsBadgeController {
     ///
     func updateBadge(with input: NotificationsBadgeInput) {
         switch input.action {
-        case .show(_):
+        case .show:
             showDotOn(with: input)
         case .hide:
             hideDotOn(with: input)

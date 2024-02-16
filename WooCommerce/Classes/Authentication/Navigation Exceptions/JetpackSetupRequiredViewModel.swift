@@ -4,7 +4,7 @@ import UIKit
 /// Configuration and actions for an ULErrorViewController,
 /// modeling an error when Jetpack is not installed or is not connected
 /// Displayed as an entry point to the native Jetpack setup flow.
-/// 
+///
 final class JetpackSetupRequiredViewModel: ULErrorViewModel {
 
     let siteURL: String

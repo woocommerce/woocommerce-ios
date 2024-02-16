@@ -578,7 +578,7 @@ extension WooAnalyticsEvent {
         static func orderOpen(order: Order,
                               horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             let customFieldsSize = order.customFields.map { $0.value.utf8.count }.reduce(0, +) // Total byte size of custom field values
-            return WooAnalyticsEvent(statName: .orderOpen, 
+            return WooAnalyticsEvent(statName: .orderOpen,
                                      properties: [
                                         "id": order.orderID,
                                         "status": order.status.rawValue,
@@ -2034,7 +2034,7 @@ extension WooAnalyticsEvent {
         ///
         /// - Parameters:
         ///   - countryCode: the country code of the store.
-        ///   - source: the screen which the enable attempt was made on     
+        ///   - source: the screen which the enable attempt was made on
         ///
         static func enableCashOnDeliverySuccess(countryCode: CountryCode, source: CashOnDeliverySource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .enableCashOnDeliverySuccess,

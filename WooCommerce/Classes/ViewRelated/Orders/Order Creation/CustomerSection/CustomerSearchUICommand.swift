@@ -224,7 +224,7 @@ private extension CustomerSearchUICommand {
     func synchronizeAllLightCustomersDataAction(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
         CustomerAction.synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
-            case .success(_):
+            case .success:
                 onCompletion?(result.isSuccess)
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")

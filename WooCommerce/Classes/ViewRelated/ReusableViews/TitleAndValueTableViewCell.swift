@@ -44,7 +44,7 @@ extension TitleAndValueTableViewCell {
         apply(style: .default)
     }
 
-    /// Change the styling of the UI elements. 
+    /// Change the styling of the UI elements.
     func apply(style: Style) {
         switch style {
         case .regular:

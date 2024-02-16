@@ -1362,7 +1362,16 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
+            let title: String?
+            if orderTracking.count == 0 {
+                title = NSLocalizedString(
+                    "orderDetails.addTrackingRow.title",
+                    value: "Optional Tracking Information",
+                    comment: "Title for the row to add tracking information."
+                )
+            } else {
+                title = nil
+            }
             let row = Row.trackingAdd
 
             return Section(category: .addTracking, title: title, rightTitle: nil, rows: [row])

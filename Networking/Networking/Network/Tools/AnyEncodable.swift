@@ -7,14 +7,14 @@ import Foundation
 
 /**
  A type-erased `Encodable` value.
- 
+
  The `AnyEncodable` type forwards encoding responsibilities
  to an underlying value, hiding its specific underlying type.
- 
+
  You can encode mixed-type values in dictionaries
  and other collections that require `Encodable` conformance
  by declaring their contained type to be `AnyEncodable`:
- 
+
      let dictionary: [String: AnyEncodable] = [
          "boolean": true,
          "integer": 1,
@@ -27,7 +27,7 @@ import Foundation
              "c": "charlie"
          ]
      ]
- 
+
      let encoder = JSONEncoder()
      let json = try! encoder.encode(dictionary)
  */

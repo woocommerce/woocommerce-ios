@@ -49,7 +49,8 @@ class LearnMoreViewModel: ObservableObject {
 
 private enum Localization {
     static let learnMoreLink = NSLocalizedString(
-        "Learn more",
+        "learnMore.link",
+        value: "Learn more",
         comment: """
                  A label prompting users to learn more about card readers.
                  This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -57,7 +58,8 @@ private enum Localization {
     )
 
     static let learnMoreText = NSLocalizedString(
-        "%1$@ about accepting payments with your mobile device and ordering card readers",
+        "learnMore.text",
+        value: "%1$@ about accepting payments with your mobile device and ordering card readers",
         comment: """
                  A label prompting users to learn more about card readers"
                  %1$@ is a placeholder that always replaced with \"Learn more\" string,

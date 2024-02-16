@@ -29,7 +29,7 @@ protocol SearchUICommand {
 
     /// Return true if you want the table view to adjust its bottom inset when the keyboard is shown, so it's covered partially by it.
     /// Sometimes we don't need it, as the table view adjust automatically its height thanks to the superview constraits.
-    /// 
+    ///
     var adjustTableViewBottomInsetWhenKeyboardIsShown: Bool { get }
 
     /// A closure to resynchronize models if the data source might change (e.g. when the filter changes in products search).

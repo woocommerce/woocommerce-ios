@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-05 19:54:04+0000 */
+/* Translation-Revision-Date: 2024-02-14 22:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -5208,6 +5208,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "Ver recibo";
 
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Não foi possível recuperar o recibo.";
+
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Lista ordenada";
 
@@ -9607,6 +9610,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "SESSÕES";
 
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "Relatório de pedidos";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "Relatório de produtos";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "Ver relatório";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "Relatório de receitas";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Cancelar";
 
@@ -10602,11 +10617,59 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Adicionar envio";
 
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "Direto";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "Aplicativo móvel";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "Orgânico: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "Indicação: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "Fonte: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "Desconhecido";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Administrador da web";
+
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Valores personalizados";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Valor personalizado";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "Campanha";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "Tipo de dispositivo";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "Média";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "Atribuição do pedido";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "Origem";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "Visualizações de página da sessão";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "Fonte";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "Tipo de fonte";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "Desconhecido";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Valores personalizados";
@@ -10766,6 +10829,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Taxa de envio única";
+
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "Nenhum produto selecionado";
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "Produtos";

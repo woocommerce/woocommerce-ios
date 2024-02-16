@@ -162,12 +162,13 @@ private extension OrderPaymentSection {
             taxSectionTitle
             taxLines
             shippingTax
+                .renderedIf(viewModel.shouldShowShippingTax)
             taxBasedOnLine
                 .onTapGesture {
                     shouldShowTaxEducationalDialog = true
                     viewModel.onTaxHelpButtonTappedClosure()
                 }
-            .renderedIf(viewModel.taxBasedOnSetting != nil)
+                .renderedIf(viewModel.taxBasedOnSetting != nil)
         }
         .padding(Constants.sectionPadding)
         .renderedIf(viewModel.taxLineViewModels.isNotEmpty)
@@ -211,20 +212,18 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var shippingTax: some View {
-        if viewModel.shouldShowShippingTax {
-            HStack {
-                AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
-                    Text(Localization.shippingTax)
-                        .font(.footnote)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color(uiColor: .secondaryLabel))
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(viewModel.shippingTax)
-                        .footnoteStyle()
-                        .multilineTextAlignment(.trailing)
-                        .frame(width: nil, alignment: .trailing)
-                }
+        HStack {
+            AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
+                Text(Localization.shippingTax)
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(viewModel.shippingTax)
+                    .footnoteStyle()
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: nil, alignment: .trailing)
             }
         }
     }

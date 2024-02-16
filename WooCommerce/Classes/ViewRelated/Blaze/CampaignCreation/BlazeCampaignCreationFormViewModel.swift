@@ -198,7 +198,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             totalBudget: dailyBudget * Double(duration),
                             siteName: tagline,
                             textSnippet: description,
-                            destinationURL: finalDestinationURL,
+                            targetUrl: "", // TODO: update this
+                            urlParams: "", // TODO: update this
                             mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // Image info will be added by `BlazeConfirmPaymentViewModel`.
                             targeting: targetOptions,
                             targetUrn: targetUrn,

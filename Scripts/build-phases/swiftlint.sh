@@ -24,13 +24,20 @@ pushd "$DIR/../../" > /dev/null || exit 1
 
 # Paths are now relative to the root directory
 SWIFTLINT_BIN="./Pods/SwiftLint/swiftlint"
-# Can't do $SWIFTLINT="$SWIFTLINT_BIN lint --quiet" to DRY because the value is then passed to xcargs
-SWIFTLINT_ARGS="lint --quiet"
 
 if ! which "$SWIFTLINT_BIN" >/dev/null; then
   echo "error: SwiftLint is not installed. Install by running \`rake dependencies\`."
   exit 1
 fi
+
+# DRY linting call in function so that we can be robust against paths with spaces
+lint_files() {
+  while IFS= read -r file; do
+    if [ -n "$file" ]; then
+      "$SWIFTLINT_BIN" lint --quiet "$file"
+    fi
+  done
+}
 
 # Run SwiftLint on the modified files.
 #
@@ -38,12 +45,12 @@ fi
 # are no matches. Xcode's build will fail if we don't do this.
 #
 MODIFIED_FILES=$(git diff --name-only --diff-filter=d HEAD | grep -G "\.swift$" || true)
-echo "$MODIFIED_FILES" | xargs $SWIFTLINT_BIN "$SWIFTLINT_ARGS"
+echo "$MODIFIED_FILES" | lint_files
 MODIFIED_FILES_LINT_RESULT=$?
 
 # Run SwiftLint on the added files
 ADDED_FILES=$(git ls-files --others --exclude-standard | grep -G "\.swift$" || true)
-echo "$ADDED_FILES" | xargs $SWIFTLINT_BIN "$SWIFTLINT_ARGS"
+echo "$ADDED_FILES" | lint_files
 ADDED_FILES_LINT_RESULT=$?
 
 # Restore the previous directory

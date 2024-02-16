@@ -1,1 +1,2 @@
-We've turbocharged your WooCommerce experience! Now, product images load at lightning speed thanks to our new caching magic, making shopping smoother than ever. Dive deep into your business insights with direct links to full analytics reports right from the Analytics Hub! Plus, we're spilling the beans on where your orders are coming from with shiny new attribution info in order details. And guess what? Starting with WooCommerce 8.7.0, every order comes with a printable receipt. Get ready to zoom ahead!
+- [***] Dropped iOS 15 support. From now we support iOS 16 and later. [https://github.com/woocommerce/woocommerce-ios/pull/11965]
+

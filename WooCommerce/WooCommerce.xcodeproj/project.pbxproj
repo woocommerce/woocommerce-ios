@@ -2020,10 +2020,12 @@
 		CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */; };
 		CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */; };
 		CE4FE7D82B7D306200F66DD5 /* MultiSelectionReorderableList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FE7D72B7D306200F66DD5 /* MultiSelectionReorderableList.swift */; };
+		CE4FE7DA2B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FE7D92B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift */; };
 		CE55F2D42B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */; };
 		CE55F2D62B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D52B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift */; };
 		CE55F2D82B23961B005D53D7 /* CollapsibleProductCardPriceSummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D72B23961B005D53D7 /* CollapsibleProductCardPriceSummaryViewModelTests.swift */; };
 		CE55F2DA2B28796E005D53D7 /* ProductDiscountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D92B28796E005D53D7 /* ProductDiscountViewModel.swift */; };
+		CE5757AF2B7E7F7400AEEB6D /* AnalyticsHubCustomizeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5757AE2B7E7F7400AEEB6D /* AnalyticsHubCustomizeViewModelTests.swift */; };
 		CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0321076C0100D73C1C /* NewNoteViewController.swift */; };
 		CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */; };
 		CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */; };
@@ -4729,10 +4731,12 @@
 		CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyFormatterTests.swift; sourceTree = "<group>"; };
 		CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Helpers.swift"; sourceTree = "<group>"; };
 		CE4FE7D72B7D306200F66DD5 /* MultiSelectionReorderableList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectionReorderableList.swift; sourceTree = "<group>"; };
+		CE4FE7D92B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubCustomizeViewModel.swift; sourceTree = "<group>"; };
 		CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCardPriceSummaryViewModel.swift; sourceTree = "<group>"; };
 		CE55F2D52B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCardPriceSummary.swift; sourceTree = "<group>"; };
 		CE55F2D72B23961B005D53D7 /* CollapsibleProductCardPriceSummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCardPriceSummaryViewModelTests.swift; sourceTree = "<group>"; };
 		CE55F2D92B28796E005D53D7 /* ProductDiscountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDiscountViewModel.swift; sourceTree = "<group>"; };
+		CE5757AE2B7E7F7400AEEB6D /* AnalyticsHubCustomizeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubCustomizeViewModelTests.swift; sourceTree = "<group>"; };
 		CE583A0321076C0100D73C1C /* NewNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewController.swift; sourceTree = "<group>"; };
 		CE583A052107849F00D73C1C /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		CE583A062107849F00D73C1C /* SwitchTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SwitchTableViewCell.xib; sourceTree = "<group>"; };
@@ -9557,6 +9561,7 @@
 				B6440FB8292E74230012D506 /* AnalyticsHubTimeRangeSelectionTests.swift */,
 				CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */,
 				CE6A8FB72B7291760063564D /* AnalyticsReportLinkViewModelTests.swift */,
+				CE5757AE2B7E7F7400AEEB6D /* AnalyticsHubCustomizeViewModelTests.swift */,
 			);
 			path = "Analytics Hub";
 			sourceTree = "<group>";
@@ -10917,6 +10922,7 @@
 			isa = PBXGroup;
 			children = (
 				CEFA16F02B74F64D00512782 /* AnalyticsHubCustomizeView.swift */,
+				CE4FE7D92B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift */,
 			);
 			path = Customize;
 			sourceTree = "<group>";
@@ -13628,6 +13634,7 @@
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
 				AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */,
 				DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */,
+				CE4FE7DA2B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift in Sources */,
 				CC857C7529B23AE100E19D1E /* BundledProductsListViewModel.swift in Sources */,
 				02E8B17E23E2C8D900A43403 /* ProductImageActionHandler.swift in Sources */,
 				03076D3A290C22BE008EE839 /* WebView.swift in Sources */,
@@ -15168,6 +15175,7 @@
 				02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */,
 				B90DACC22A31BBC800365897 /* BarcodeSKUScannerProductFinderTests.swift in Sources */,
 				D88D5A3B230B5D63007B6E01 /* MockAnalyticsProvider.swift in Sources */,
+				CE5757AF2B7E7F7400AEEB6D /* AnalyticsHubCustomizeViewModelTests.swift in Sources */,
 				EE1905822B50289100617C53 /* BlazeCampaignCreationFormViewModelTests.swift in Sources */,
 				B9C4AB29280031AB007008B8 /* PaymentReceiptEmailParameterDeterminerTests.swift in Sources */,
 				029A9C672535873000BECEC5 /* AppCoordinatorTests.swift in Sources */,

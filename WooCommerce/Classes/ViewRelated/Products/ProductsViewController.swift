@@ -245,7 +245,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
 
-        if !isEmpty {
+        if splitViewController?.isCollapsed == false, !isEmpty {
             tableView.selectRow(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: UITableView.ScrollPosition.none)
         }
     }

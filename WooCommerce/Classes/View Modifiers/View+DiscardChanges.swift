@@ -82,6 +82,11 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
 }
 
 struct CloseButtonWithDiscardPrompt: ViewModifier {
+    let title: String
+    let message: String
+    let discardButtonTitle: String
+    let cancelButtonTitle: String
+
     let showPrompt: Bool
     let didDismiss: (() -> Void)?
 
@@ -106,14 +111,14 @@ struct CloseButtonWithDiscardPrompt: ViewModifier {
                 }
             })
             .interactiveDismissDisabled()
-            .confirmationDialog("", isPresented: $isShowingPrompt) {
-                Button(Localization.discard, role: .destructive, action: {
+            .confirmationDialog(title, isPresented: $isShowingPrompt) {
+                Button(discardButtonTitle, role: .destructive, action: {
                     didDismiss?()
                     dismiss()
                 })
-                Button(Localization.cancel, role: .cancel, action: {})
+                Button(cancelButtonTitle, role: .cancel, action: {})
             } message: {
-                Text(Localization.message)
+                Text(message)
             }
     }
 }
@@ -145,11 +150,24 @@ extension View {
 
     /// Adds a close button with a discard changes prompt, and disables the dismiss drag gesture.
     /// - Parameters:
+    ///   - title: Title for the discard changes action sheet. Defaults to empty string.
+    ///   - message: Message for the discard changes action sheet. Defaults to "Are you sure you want to discard these changes?"
+    ///   - discardButtonTitle: Title for the discard changes button on the action sheet. Defaults to "Discard changes".
+    ///   - cancelButtonTitle: Title for the cancel button on the action sheet. Defaults to "Cancel".
     ///   - hasChanges: Whether there are changes to be discarded.
     ///   - didDismiss: Optional method to be invoked when the view is dismissed.
-    func closeButtonWithDiscardChangesPrompt(hasChanges: Bool,
+    func closeButtonWithDiscardChangesPrompt(title: String = "",
+                                             message: String = Localization.message,
+                                             discardButtonTitle: String = Localization.discard,
+                                             cancelButtonTitle: String = Localization.cancel,
+                                             hasChanges: Bool,
                                              didDismiss: (() -> Void)? = nil) -> some View {
-        ModifiedContent(content: self, modifier: CloseButtonWithDiscardPrompt(showPrompt: hasChanges, didDismiss: didDismiss))
+        ModifiedContent(content: self, modifier: CloseButtonWithDiscardPrompt(title: title,
+                                                                              message: message,
+                                                                              discardButtonTitle: discardButtonTitle,
+                                                                              cancelButtonTitle: cancelButtonTitle,
+                                                                              showPrompt: hasChanges,
+                                                                              didDismiss: didDismiss))
     }
 }
 

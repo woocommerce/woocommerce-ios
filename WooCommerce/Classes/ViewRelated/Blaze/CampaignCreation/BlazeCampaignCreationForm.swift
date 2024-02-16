@@ -26,20 +26,6 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 private extension BlazeCampaignCreationFormHostingController {
     func configureNavigation() {
         title = Localization.title
-        addHelpButtonToNavigationItem()
-    }
-
-    func addHelpButtonToNavigationItem() {
-        let helpBarButtonItem = UIBarButtonItem(title: Localization.help,
-                                                style: .plain,
-                                                target: self,
-                                                action: #selector(helpButtonWasPressed))
-        navigationItem.rightBarButtonItem = helpBarButtonItem
-    }
-
-    @objc func helpButtonWasPressed() {
-        let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: Constants.supportTag))
-        supportForm.show(from: self)
     }
 
     func navigateToEditAd() {
@@ -54,12 +40,6 @@ private extension BlazeCampaignCreationFormHostingController {
             "blazeCampaignCreationForm.title",
             value: "Preview",
             comment: "Title of the Blaze campaign creation screen"
-        )
-
-        static let help = NSLocalizedString(
-            "blazeCampaignCreationForm.help",
-            value: "Help",
-            comment: "Button to contact support on the Blaze campaign creation screen"
         )
     }
 
@@ -81,6 +61,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingTopicPicker = false
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
+    @State private var isShowingSupport: Bool = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -160,6 +141,16 @@ struct BlazeCampaignCreationForm: View {
                 .disabled(!viewModel.canConfirmDetails)
             }
             .background(Constants.backgroundViewColor)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(Localization.help) {
+                    isShowingSupport = true
+                }
+            }
+        }
+        .sheet(isPresented: $isShowingSupport) {
+            supportForm
         }
         .sheet(isPresented: $isShowingBudgetSetting) {
             BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
@@ -321,6 +312,23 @@ private extension BlazeCampaignCreationForm {
 }
 
 private extension BlazeCampaignCreationForm {
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(isPresented: $isShowingSupport,
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.done) {
+                        isShowingSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+}
+
+private extension BlazeCampaignCreationForm {
     enum Layout {
         static let contentMargin: CGFloat = 8
         static let contentPadding: CGFloat = 16
@@ -337,6 +345,8 @@ private extension BlazeCampaignCreationForm {
                                                dark: .init(uiColor: .secondarySystemBackground))
         static let cellColor = Color(light: .init(uiColor: .systemBackground),
                                      dark: .init(uiColor: .tertiarySystemBackground))
+
+        static let supportTag = "origin:blaze-native-campaign-creation"
     }
 
     enum Localization {
@@ -429,6 +439,20 @@ private extension BlazeCampaignCreationForm {
                 comment: "Button on the alert to add an image for the Blaze campaign"
             )
         }
+
+
+        static let help = NSLocalizedString(
+            "blazeCampaignCreationForm.help",
+            value: "Help",
+            comment: "Button to contact support on the Blaze campaign form screen."
+        )
+
+        static let done = NSLocalizedString(
+            "blazeCampaignCreationForm.done",
+            value: "Done",
+            comment: "Button to dismiss the support form from the Blaze campaign form screen."
+        )
+
     }
 }
 

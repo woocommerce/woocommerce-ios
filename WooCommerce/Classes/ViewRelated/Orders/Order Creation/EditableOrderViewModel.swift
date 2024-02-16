@@ -1031,6 +1031,10 @@ extension EditableOrderViewModel {
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
+        // We show shipping tax if the amount is not zero
+        let shouldShowShippingTax: Bool
+        let shippingTax: String
+
         let shouldShowTotalCustomAmounts: Bool
         let customAmountsTotal: String
 
@@ -1078,6 +1082,7 @@ extension EditableOrderViewModel {
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
+             shippingTax: String = "0",
              shouldShowTotalCustomAmounts: Bool = false,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
@@ -1114,6 +1119,8 @@ extension EditableOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
+            self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
+            self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
@@ -1574,6 +1581,7 @@ private extension EditableOrderViewModel {
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
+                                            shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",

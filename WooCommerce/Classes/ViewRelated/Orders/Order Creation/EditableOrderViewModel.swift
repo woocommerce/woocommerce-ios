@@ -108,12 +108,6 @@ final class EditableOrderViewModel: ObservableObject {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
-    /// Indicates whether adding a product to the order via SKU scanning is enabled
-    ///
-    var isAddProductToOrderViaSKUScannerEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
-    }
-
     var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
         orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty
     }

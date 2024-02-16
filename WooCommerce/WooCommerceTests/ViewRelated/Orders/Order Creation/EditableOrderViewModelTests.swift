@@ -766,22 +766,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
     }
 
-    func test_add_product_to_order_via_sku_scanner_when_feature_flag_is_enabled_then_feature_support_returns_true() {
-        // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
-
-        // Then
-        XCTAssertTrue(viewModel.isAddProductToOrderViaSKUScannerEnabled)
-    }
-
-    func test_add_product_to_order_via_sku_scanner_feature_flag_is_disabled_then_feature_support_returns_false() {
-        // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: false))
-
-        // Then
-        XCTAssertFalse(viewModel.isAddProductToOrderViaSKUScannerEnabled)
-    }
-
     // MARK: - Payment Section Tests
 
     func test_payment_section_when_products_and_custom_amounts_are_added_then_paymentDataViewModel_is_updated() throws {

@@ -256,7 +256,6 @@ final class OrdersRootViewController: UIViewController {
             self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
-                self.configureLeftButtonItemAsProductScanningButton()
                 switch result {
                 case let .success(product):
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation,
@@ -351,23 +350,13 @@ private extension OrdersRootViewController {
     }
 
     /// Sets navigation buttons.
-    /// Scan: Present when `.addProductToOrderViaSKUScanner` flag is enabled
-    /// Search: Always present.
-    /// Add: Always present.
     ///
     func configureNavigationButtons() {
-        if featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner) {
-            configureLeftButtonItemAsProductScanningButton()
-        }
-
+        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
         navigationItem.rightBarButtonItems = [
             createAddOrderItem(),
             createSearchBarButtonItem()
         ]
-    }
-
-    func configureLeftButtonItemAsProductScanningButton() {
-        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
     }
 
     func configureFiltersBar() {

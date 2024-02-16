@@ -53,6 +53,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
                                                     dailyBudget: 15,
                                                     duration: 3,
                                                     startDate: .now,
+                                                    locale: Locale(identifier: "en_US"),
                                                     stores: stores,
                                                     onCompletion: { _, _, _ in })
 
@@ -70,7 +71,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         await viewModel.updateImpressions(startDate: .now, dayCount: 3, dailyBudget: 15)
 
         // Then
-        XCTAssertEqual(viewModel.forecastedImpressionState, .result(formattedResult: "1000 - 5000"))
+        XCTAssertEqual(viewModel.forecastedImpressionState, .result(formattedResult: "1,000 - 5,000"))
     }
 
     func test_updateImpressions_updates_forecastedImpressionState_correctly_when_fetching_impression_fails() async {

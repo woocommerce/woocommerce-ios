@@ -48,6 +48,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }()
 
     private let siteID: Int64
+    private let locale: Locale
     private let timeZone: TimeZone
     private let targetOptions: BlazeTargetOptions?
     private let stores: StoresManager
@@ -62,6 +63,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
          dailyBudget: Double,
          duration: Int,
          startDate: Date,
+         locale: Locale = .current,
          timeZone: TimeZone = .current,
          targetOptions: BlazeTargetOptions? = nil,
          stores: StoresManager = ServiceLocator.stores,
@@ -71,6 +73,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         self.dailyAmount = dailyBudget
         self.dayCount = Double(duration)
         self.startDate = startDate
+        self.locale = locale
         self.timeZone = timeZone
         self.targetOptions = targetOptions
         self.stores = stores
@@ -117,7 +120,10 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                                                     targeting: targetOptions)
         do {
             let result = try await fetchForecastedImpressions(input: input)
-            let formattedImpressions = String(format: "%d - %d", result.totalImpressionsMin, result.totalImpressionsMax)
+            let formattedImpressions = String(format: "%d - %d",
+                                              locale: locale,
+                                              result.totalImpressionsMin,
+                                              result.totalImpressionsMax)
             forecastedImpressionState = .result(formattedResult: formattedImpressions)
         } catch {
             DDLogError("⛔️ Error fetching forecasted impression: \(error)")

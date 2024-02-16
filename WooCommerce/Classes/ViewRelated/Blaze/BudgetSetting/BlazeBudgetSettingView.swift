@@ -7,6 +7,8 @@ struct BlazeBudgetSettingView: View {
     @Environment(\.sizeCategory) private var sizeCategory
     @State private var showingImpressionInfo = false
     @State private var showingDurationSetting = false
+    @State private var duration: Double = 0
+    @State private var startDate = Date()
 
     @ObservedObject private var viewModel: BlazeBudgetSettingViewModel
 
@@ -43,6 +45,10 @@ struct BlazeBudgetSettingView: View {
             } else {
                 durationSettingView
             }
+        }
+        .onAppear {
+            duration = viewModel.dayCount
+            startDate = viewModel.startDate
         }
     }
 }
@@ -182,11 +188,11 @@ private extension BlazeBudgetSettingView {
             ScrollView {
                 // Duration slider
                 VStack(spacing: Layout.sectionContentSpacing) {
-                    Text(viewModel.formattedDayCount)
+                    Text(viewModel.formatDayCount(duration))
                         .fontWeight(.semibold)
                         .bodyStyle()
 
-                    Slider(value: $viewModel.dayCount,
+                    Slider(value: $duration,
                            in: viewModel.dayCountSliderRange,
                            step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
                 }
@@ -201,7 +207,7 @@ private extension BlazeBudgetSettingView {
 
                         Spacer()
 
-                        DatePicker(selection: $viewModel.startDate, in: Date()..., displayedComponents: [.date]) {
+                        DatePicker(selection: $startDate, in: Date()..., displayedComponents: [.date]) {
                             EmptyView()
                         }
                         .datePickerStyle(.compact)
@@ -215,7 +221,7 @@ private extension BlazeBudgetSettingView {
 
                 // CTA
                 Button(Localization.apply) {
-                    viewModel.didTapApplyDuration()
+                    viewModel.didTapApplyDuration(dayCount: duration, since: startDate)
                     showingDurationSetting = false
                 }
                 .buttonStyle(PrimaryButtonStyle())

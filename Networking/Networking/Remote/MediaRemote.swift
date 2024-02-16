@@ -39,7 +39,7 @@ public protocol MediaRemoteProtocol {
 public class MediaRemote: Remote, MediaRemoteProtocol {
     /// Loads media from the site's WP Media library
     /// API reference - https://developer.wordpress.org/rest-api/reference/media/#retrieve-a-media-item
-    /// 
+    ///
     /// - Parameters:
     ///   - siteID: site ID for which to load Media
     ///   - mediaID: ID of the Media to load

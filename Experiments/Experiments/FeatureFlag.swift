@@ -149,7 +149,7 @@ public enum FeatureFlag: Int {
     case shareProductAI
 
     /// Enables the improvements in the customer selection logic when creating an order
-    /// 
+    ///
     case betterCustomerSelectionInOrder
 
     /// Enables the hazmat shipping selection during the Shipping Labels package details
@@ -169,7 +169,7 @@ public enum FeatureFlag: Int {
     case wooPaymentsDepositsOverviewInPaymentsMenu
 
     /// Enables Tap to Pay for UK Woo Payments stores
-    /// 
+    ///
     case tapToPayOnIPhoneInUK
 
     /// Enables bundle product configuration support in order creation/editing.

@@ -6,7 +6,7 @@ protocol WPAdminTaxSettingsURLProviderProtocol {
 }
 
 /// Provides the url to navigate to the Tax settings section in wp-admin
-/// 
+///
 struct WPAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol {
     private let stores: StoresManager
 

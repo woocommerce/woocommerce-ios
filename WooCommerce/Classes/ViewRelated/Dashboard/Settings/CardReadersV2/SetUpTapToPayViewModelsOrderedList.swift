@@ -90,7 +90,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         reevaluatePriorityViewModelAndView()
     }
 
-    private func onDidChangeShouldShow(_ : CardReaderSettingsTriState) {
+    private func onDidChangeShouldShow(_: CardReaderSettingsTriState) {
         reevaluatePriorityViewModelAndView()
     }
 

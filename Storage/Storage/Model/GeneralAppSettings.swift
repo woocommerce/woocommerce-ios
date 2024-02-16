@@ -41,7 +41,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     public var lastJetpackBenefitsBannerDismissedTime: Date?
 
     /// The settings stored locally for each feature announcement campaign
-    /// 
+    ///
     public var featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]
 
     /// Whether the user finished an IPP transaction for the given site

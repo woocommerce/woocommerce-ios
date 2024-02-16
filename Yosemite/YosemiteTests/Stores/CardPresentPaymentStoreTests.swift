@@ -147,7 +147,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// https://github.com/woocommerce/woocommerce-ios/issues/3734
     /// https://github.com/woocommerce/woocommerce-ios/issues/3741
     /// This test will be edited to assert an error was received when
-    /// proper error support is implemented. 
+    /// proper error support is implemented.
     func test_start_discovery_action_returns_empty_error_when_token_fetching_fails() {
         let expectation = self.expectation(description: "Empty readers on failure to obtain a connection token")
 

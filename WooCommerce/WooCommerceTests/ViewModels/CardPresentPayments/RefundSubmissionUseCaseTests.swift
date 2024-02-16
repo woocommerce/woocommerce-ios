@@ -310,7 +310,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                case let .refundPayment(_, retry) = cardReaderServiceError {
                 theRightFailureResultWasReturned = shouldRetry == retry
             }
-        case .success():
+        case .success:
             break
         }
 

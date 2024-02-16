@@ -33,7 +33,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 onCompletion(.success(()))
             case .thisYear:
                 success(onCompletion)
-            case .custom(_, _):
+            case .custom:
                 success(onCompletion)
         }
     }
@@ -51,7 +51,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 onCompletion(.success(()))
             case .thisYear:
                 success(onCompletion)
-            case .custom(_, _):
+            case .custom:
                 success(onCompletion)
         }
     }
@@ -69,7 +69,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
             onCompletion(.success(objectGraph.thisMonthTopProducts))
         case .thisYear:
             onCompletion(.success(objectGraph.thisMonthTopProducts))
-        case .custom(_, _):
+        case .custom:
             onCompletion(.success(objectGraph.thisMonthTopProducts))
         }
     }

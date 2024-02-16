@@ -30,7 +30,7 @@ extension Storage.ProductReview: ReadOnlyConvertible {
                              productID: productID,
                              dateCreated: dateCreated ?? Date(),
                              statusKey: statusKey ?? "",
-                             reviewer: reviewer ?? "" ,
+                             reviewer: reviewer ?? "",
                              reviewerEmail: reviewerEmail ?? "",
                              reviewerAvatarURL: reviewerAvatarURL,
                              review: review ?? "",

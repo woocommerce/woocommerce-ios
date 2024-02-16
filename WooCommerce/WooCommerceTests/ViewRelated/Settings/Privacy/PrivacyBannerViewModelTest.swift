@@ -41,7 +41,7 @@ import TestKit
             let viewModel = PrivacyBannerViewModel(analytics: analytics, stores: stores, onCompletion: { _ in })
             stores.whenReceivingAction(ofType: AccountAction.self) { action in
                 switch action {
-                case .updateAccountSettings(_, _, _):
+                case .updateAccountSettings:
                     promise((viewModel.isLoading, viewModel.isViewEnabled))
                 default:
                     break

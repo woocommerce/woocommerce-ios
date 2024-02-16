@@ -590,7 +590,7 @@ extension UIImage {
     }
 
     /// Set store name image
-    /// 
+    ///
     static var setStoreNameImage: UIImage {
         UIImage(systemName: "pencil.circle")!
     }

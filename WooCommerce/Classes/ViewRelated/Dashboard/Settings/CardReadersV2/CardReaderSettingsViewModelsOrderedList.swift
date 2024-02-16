@@ -67,7 +67,7 @@ final class CardReaderSettingsViewModelsOrderedList: PaymentSettingsFlowPrioriti
         reevaluatePriorityViewModelAndView()
     }
 
-    private func onDidChangeShouldShow(_ : CardReaderSettingsTriState) {
+    private func onDidChangeShouldShow(_: CardReaderSettingsTriState) {
         reevaluatePriorityViewModelAndView()
     }
 

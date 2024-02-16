@@ -1,6 +1,7 @@
 import XCTest
-import Yosemite
+@testable import Yosemite
 @testable import WooCommerce
+
 @MainActor
 final class ProductDetailPreviewViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123

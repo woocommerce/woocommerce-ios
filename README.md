@@ -93,6 +93,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Choosing Between Structures and Classes](docs/choosing-between-structs-and-classes.md)
     - [Creating Core Data Model Versions](docs/creating-core-data-model-versions.md)
     - [Localization](docs/localization.md)
+    - [Switch Statements](docs/switch-statements.md)
 - Design Patterns
     - [Copiable](docs/copiable.md)
         - [Generating Copiable Methods](docs/copiable.md#generating-copiable-methods)

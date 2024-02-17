@@ -62,6 +62,7 @@ struct ConnectivityToolCard: View {
                 ProgressView()
             case .success:
                 Image(uiImage: .checkCircleImage)
+                    .environment(\.colorScheme, .light)
             case .error:
                 Image(uiImage: .checkPartialCircleImage.withRenderingMode(.alwaysTemplate))
                     .foregroundColor(Color.init(uiColor: .error))

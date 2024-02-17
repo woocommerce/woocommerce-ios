@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-06 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-02-14 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -5208,6 +5208,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "レシートを確認";
 
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "領収書を取得できません。";
+
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "順序付きリスト";
 
@@ -9607,6 +9610,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "セッション";
 
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "注文レポート";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "商品レポート";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "レポートを見る";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "収益レポート";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "キャンセル";
 
@@ -10602,11 +10617,59 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "配送料を追加";
 
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "直接";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "モバイルアプリ";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "オーガニック : %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "リファラル : %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "ソース : %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "不明";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Web 管理者";
+
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "カスタム金額";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "カスタム金額";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "キャンペーン";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "デバイスタイプ";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "メディア";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "注文の属性";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "オリジン";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "セッションページ表示数";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "ソース";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "ソースタイプ";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "不明";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "カスタム金額";
@@ -10766,6 +10829,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "1回限りの発送";
+
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "商品が選択されていません";
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "商品";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-05 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-02-14 13:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -5208,6 +5208,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "الاطلاع على الإيصال";
 
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "يتعذر استرداد الإيصال.";
+
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "قائمة مرتَّبة";
 
@@ -9607,6 +9610,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "الجلسات";
 
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "تقرير الطلبات";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "تقرير المنتجات";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "الاطلاع على التقرير";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "تقرير حول الإيرادات";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "إلغاء";
 
@@ -10602,11 +10617,59 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "إضافة الشحن";
 
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "مباشر";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "تطبيق للهواتف المحمولة";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "أساسي: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "التوجيه: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "المصدر: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "غير معروف";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "مسؤول الويب";
+
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "مبالغ مخصصة";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "مبلغ مخصص";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "الحملة";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "نوع الجهاز";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "متوسط";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "تخصيص الطلب";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "الأصل";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "مشاهدات صفحة الجلسة";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "المصدر";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "نوع المصدر";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "غير معروف";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "مبالغ مخصصة";
@@ -10766,6 +10829,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "الشحن مرة واحدة";
+
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "لم يتم تحديد منتجات";
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "المنتجات";

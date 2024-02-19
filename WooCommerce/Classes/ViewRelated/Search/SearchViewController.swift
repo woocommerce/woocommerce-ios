@@ -338,7 +338,7 @@ private extension SearchViewController {
     /// Setup: Actions
     ///
     func configureActions() {
-        let title = NSLocalizedString("Cancel", comment: "")
+        let title = NSLocalizedString("searchViewController.cancelButton.tilet", value: "Cancel", comment: "The title for the cancel button in the search screen.")
         cancelButton.setTitle(title, for: .normal)
     }
 

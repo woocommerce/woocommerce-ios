@@ -2,7 +2,7 @@ import SwiftUI
 
 /// `AdaptiveModalContainer` shows two views, primary and secondary
 /// In horizontally regular environments, they are shown side-by-side, with the primary on the right (in an LTR system.)
-/// In horizontally compact environments, the primary view is shown. 
+/// In horizontally compact environments, the primary view is shown.
 ///
 /// In compact environments, the primary view can use the `presentSecondaryView` closure to trigger modal presentation of the secondary view.
 /// This closure is `nil` when the secondary view is shown side-by-side.

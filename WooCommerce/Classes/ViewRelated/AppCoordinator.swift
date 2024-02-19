@@ -5,12 +5,6 @@ import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
-import protocol Experiments.ABTestVariationProvider
-import struct Experiments.CachedABTestVariationProvider
-
-/// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
-/// when the app is logged out.
-///
 final class AppCoordinator {
     let tabBarController: MainTabBarController
 

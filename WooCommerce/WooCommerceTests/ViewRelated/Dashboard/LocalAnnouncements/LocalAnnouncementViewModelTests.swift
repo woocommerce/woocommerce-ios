@@ -71,7 +71,7 @@ final class LocalAnnouncementViewModelTests: XCTestCase {
         // When
         waitFor { promise in
             self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-                guard case .setLocalAnnouncementDismissed(_, _) = action else {
+                guard case .setLocalAnnouncementDismissed = action else {
                     return XCTFail("Unexpected action: \(action)")
                 }
                 // Then
@@ -88,7 +88,7 @@ final class LocalAnnouncementViewModelTests: XCTestCase {
         // When
         waitFor { promise in
             self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-                guard case .setLocalAnnouncementDismissed(_, _) = action else {
+                guard case .setLocalAnnouncementDismissed = action else {
                     return XCTFail("Unexpected action: \(action)")
                 }
                 // Then

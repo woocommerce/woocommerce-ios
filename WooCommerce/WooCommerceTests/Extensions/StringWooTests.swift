@@ -4,8 +4,6 @@ import XCTest
 
 /// UIURL+Woo: Unit Tests
 ///
-import XCTest
-
 final class StringWooTests: XCTestCase {
     func test_URLs_with_scheme_remain_unchanged() {
         let url = "https://automattic.com"

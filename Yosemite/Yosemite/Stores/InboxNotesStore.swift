@@ -97,7 +97,7 @@ private extension InboxNotesStore {
             case .failure(let error):
                 completion(.failure(error))
 
-            case .success(_):
+            case .success:
                 self?.deleteStoredInboxNoteInBackground(siteID: siteID, noteID: noteID, onCompletion: {
                     completion(.success(()))
                 })

@@ -87,7 +87,7 @@ extension Address {
     }
 
     /// Erases the address components that are also part of a Tax Rate. Call this if you want to unlink an address from a tax rate.
-    /// 
+    ///
     func resettingTaxRateComponents() -> Address {
         copy(city: "",
              state: "",
@@ -96,7 +96,7 @@ extension Address {
     }
 
     /// Changes the location components (city, state, postcode, country) to those of the passed tax rate. The other components remain unmodified.
-    /// 
+    ///
     func applyingTaxRate(taxRate: TaxRate) -> Address {
         resettingTaxRateComponents().copy(city: taxRate.cities.first ?? taxRate.city,
                                           state: taxRate.state,

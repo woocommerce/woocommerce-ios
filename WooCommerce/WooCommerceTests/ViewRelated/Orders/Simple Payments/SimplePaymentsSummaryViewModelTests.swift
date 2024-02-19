@@ -73,7 +73,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1", totalWithTaxes: "1", taxLines: [], stores: mockStores)
 
         // When
-        let _ : String = waitFor { promise in
+        let _: String = waitFor { promise in
             mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _):

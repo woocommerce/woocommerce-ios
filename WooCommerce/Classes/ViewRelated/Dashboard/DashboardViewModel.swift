@@ -212,7 +212,7 @@ final class DashboardViewModel {
     }
 
     /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
-    /// 
+    ///
     func trackStatsTimezone(localTimezone: TimeZone, siteGMTOffset: Double) {
         let localGMTOffsetInHours = Double(localTimezone.secondsFromGMT()) / 3600
         guard localGMTOffsetInHours != siteGMTOffset else {

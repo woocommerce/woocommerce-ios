@@ -64,7 +64,7 @@ public enum CurrencyCode: String, CaseIterable, Codable, GeneratedFakeable {
 public extension CurrencyCode {
     /// Sometimes we want to use the smallest currency unit when dealing with amounts. Use this multiplier to convert it to that unit.
     /// Source: Currency Decimals e.g. https://stripe.com/docs/currencies
-    /// 
+    ///
     var smallestCurrencyUnitMultiplier: Int {
         switch self {
         case .BIF, .CLP, .DJF, .GNF, .JPY, .KMF, .KRW, .MGA, .PYG, .RWF, .UGX, .VND, .VUV, .XAF, .XOF, .XPF:

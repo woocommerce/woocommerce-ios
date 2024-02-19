@@ -97,7 +97,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
                                         alt: nil)
 
         // When
-        let image = try await imageLoader.requestImage(productImage: productImage)
+        _ = try await imageLoader.requestImage(productImage: productImage)
 
         // Then
         XCTAssertTrue(mockImageService.downloadImageCalled)
@@ -120,7 +120,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
                                         alt: nil)
 
         // When
-        let image = try await imageLoader.requestImage(productImage: productImage)
+        _ = try await imageLoader.requestImage(productImage: productImage)
 
         // Then
         XCTAssertFalse(mockImageService.downloadImageCalled)

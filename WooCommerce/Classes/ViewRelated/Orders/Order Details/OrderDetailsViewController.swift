@@ -512,7 +512,7 @@ private extension OrderDetailsViewController {
         var cancellables = Set<AnyCancellable>()
         var cancellable: AnyCancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
-            if case .failure(_) = completion {
+            if case .failure = completion {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed)
             }
             else {

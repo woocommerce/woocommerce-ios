@@ -2,7 +2,7 @@ import Foundation
 
 /// This struct enriches a route with the parameters that came along with the URL,
 /// making it possible to perform the route action
-/// 
+///
 struct MatchedRoute {
     let route: Route
     let subPath: String

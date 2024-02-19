@@ -1,6 +1,4 @@
 import XCTest
-import XCTest
-
 @testable import WooCommerce
 
 final class AddProductFromImageTextFieldViewModelTests: XCTestCase {

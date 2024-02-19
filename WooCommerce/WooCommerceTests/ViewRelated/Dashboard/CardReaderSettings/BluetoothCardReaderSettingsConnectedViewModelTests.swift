@@ -568,7 +568,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(mockStoresManager.receivedActions.first(where: { action in
             switch action {
-            case .disconnect(_):
+            case .disconnect:
                 return true
             default:
                 return false

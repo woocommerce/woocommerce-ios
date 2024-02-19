@@ -81,6 +81,48 @@ struct DiscardChangesWrapper<Content: View>: UIViewControllerRepresentable {
     }
 }
 
+struct CloseButtonWithDiscardPrompt: ViewModifier {
+    let title: String
+    let message: String
+    let discardButtonTitle: String
+    let cancelButtonTitle: String
+
+    let showPrompt: Bool
+    let didDismiss: (() -> Void)?
+
+    @State private var isShowingPrompt: Bool = false
+    @Environment(\.dismiss) private var dismiss
+
+    func body(content: Content) -> some View {
+        content
+            .toolbar(content: {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        if showPrompt {
+                            isShowingPrompt.toggle()
+                        } else {
+                            didDismiss?()
+                            dismiss()
+                        }
+                    }, label: {
+                        Image(uiImage: .closeButton)
+                            .secondaryBodyStyle()
+                    })
+                }
+            })
+            .interactiveDismissDisabled()
+            .confirmationDialog(title, isPresented: $isShowingPrompt) {
+                Button(discardButtonTitle, role: .destructive, action: {
+                    didDismiss?()
+                    dismiss()
+                })
+                Button(cancelButtonTitle, role: .cancel, action: {})
+            } message: {
+                Text(message)
+            }
+    }
+}
+
 extension View {
     /// Adds a discard changes prompt on the dismiss drag gesture for the provided view.
     /// - Parameters:
@@ -104,6 +146,28 @@ extension View {
                               canDismiss: canDismiss,
                               didDismiss: didDismiss)
             .ignoresSafeArea() // Removes extra safe area insets added by the wrapper
+    }
+
+    /// Adds a close button with a discard changes prompt, and disables the dismiss drag gesture.
+    /// - Parameters:
+    ///   - title: Title for the discard changes action sheet. Defaults to empty string.
+    ///   - message: Message for the discard changes action sheet. Defaults to "Are you sure you want to discard these changes?"
+    ///   - discardButtonTitle: Title for the discard changes button on the action sheet. Defaults to "Discard changes".
+    ///   - cancelButtonTitle: Title for the cancel button on the action sheet. Defaults to "Cancel".
+    ///   - hasChanges: Whether there are changes to be discarded.
+    ///   - didDismiss: Optional method to be invoked when the view is dismissed.
+    func closeButtonWithDiscardChangesPrompt(title: String = "",
+                                             message: String = Localization.message,
+                                             discardButtonTitle: String = Localization.discard,
+                                             cancelButtonTitle: String = Localization.cancel,
+                                             hasChanges: Bool,
+                                             didDismiss: (() -> Void)? = nil) -> some View {
+        ModifiedContent(content: self, modifier: CloseButtonWithDiscardPrompt(title: title,
+                                                                              message: message,
+                                                                              discardButtonTitle: discardButtonTitle,
+                                                                              cancelButtonTitle: cancelButtonTitle,
+                                                                              showPrompt: hasChanges,
+                                                                              didDismiss: didDismiss))
     }
 }
 

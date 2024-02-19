@@ -44,8 +44,8 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
 
     /// Completion callback
     ///
-    typealias Completion = (_ customPackage: ShippingLabelCustomPackage? ,
-                            _ servicePackage: ShippingLabelPredefinedPackage? ,
+    typealias Completion = (_ customPackage: ShippingLabelCustomPackage?,
+                            _ servicePackage: ShippingLabelPredefinedPackage?,
                             _ packagesResponse: ShippingLabelPackagesResponse?) -> Void
     let onCompletion: Completion
 

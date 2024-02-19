@@ -11,7 +11,7 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
     @IBOutlet private weak var leftTitleLabel: UILabel!
     @IBOutlet private weak var rightTitleLabel: UILabel!
     @IBOutlet private weak var footnoteLabel: UILabel!
-    
+
     private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.translatesAutoresizingMaskIntoConstraints = false

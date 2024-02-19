@@ -540,7 +540,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
 private extension BlazeCampaignCreationFormViewModelTests {
     /// Insert a `Product` into storage.
-    /// 
+    ///
     func insertProduct(_ readOnlyProduct: Product) {
         let product = storage.insertNewObject(ofType: StorageProduct.self)
         product.update(with: readOnlyProduct)

@@ -51,6 +51,7 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.allCardsWithSettings = AnalyticsHubViewModel.defaultCards
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
         let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
@@ -136,11 +137,17 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var dismissNotice: Notice?
 
+    /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
+    ///
     var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel {
-        AnalyticsHubCustomizeViewModel(allCards: AnalyticsHubViewModel.defaultCards) // TODO: Use real data from storage
+        AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings)
     }
 
     // MARK: Private data
+
+    /// All analytics cards with their enabled/disabled settings.
+    ///
+    @Published private(set) var allCardsWithSettings: [AnalyticsCard]
 
     /// Order stats for the current selected time period
     ///
@@ -570,6 +577,22 @@ private extension AnalyticsHubViewModel {
                                             webViewTitle: title,
                                             reportURL: url,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+}
+
+// MARK: - Storage
+extension AnalyticsHubViewModel {
+    /// Load analytics card settings from storage
+    /// Defaults to all enabled cards in default order if no customized settings are stored.
+    ///
+    @MainActor
+    func loadAnalyticsCardSettings() async {
+        allCardsWithSettings = await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
+                continuation.resume(returning: cards ?? AnalyticsHubViewModel.defaultCards)
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

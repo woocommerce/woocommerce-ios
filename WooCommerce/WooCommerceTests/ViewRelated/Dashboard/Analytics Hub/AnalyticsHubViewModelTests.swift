@@ -573,4 +573,28 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertNotNil(vm.ordersCard.reportViewModel?.initialURL)
         XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
     }
+
+    func test_analyticsCardSet_shows_correct_data_after_loading_from_storage() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let expectedCards: Set<AnalyticsCard> = [
+            AnalyticsCard(type: .revenue, enabled: true, sortOrder: 0),
+            AnalyticsCard(type: .orders, enabled: false, sortOrder: 1)
+        ]
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion(expectedCards)
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+
+        // Then
+        assertEqual(expectedCards, vm.analyticsCardSet)
+    }
 }

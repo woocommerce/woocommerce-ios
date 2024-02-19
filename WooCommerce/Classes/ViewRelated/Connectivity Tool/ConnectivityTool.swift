@@ -1,5 +1,17 @@
 import SwiftUI
 
+/// Connectivity Tool Hosting Controller
+/// 
+final class ConnectivityToolViewController: UIHostingController<ConnectivityTool> {
+    override init(rootView: ConnectivityTool) {
+        super.init(rootView: rootView)
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// View for the Connectivity Tool.
 ///
 struct ConnectivityTool: View {

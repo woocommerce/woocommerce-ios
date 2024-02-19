@@ -616,6 +616,8 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
+                    } else if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .sideBySide {
+                        scanProductRow
                     }
                     scanProductButton
                         .renderedIf(presentationStyle == .modalOnModal)
@@ -664,7 +666,54 @@ private struct ProductsSection: View {
 }
 
 private extension ProductsSection {
-    var scanProductButton: some View {
+    @ViewBuilder var scanProductRow: some View {
+        HStack {
+            Button(action: {
+                viewModel.trackBarcodeScanningButtonTapped()
+                let capturePermissionStatus = viewModel.capturePermissionStatus
+                switch capturePermissionStatus {
+                case .notPermitted:
+                    viewModel.trackBarcodeScanningNotPermitted()
+                    logPermissionStatus(status: .notPermitted)
+                    self.showPermissionsSheet = true
+                case .notDetermined:
+                    logPermissionStatus(status: .notDetermined)
+                    viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                        if isPermissionGranted {
+                            showAddProductViaSKUScanner = true
+                            logPermissionStatus(status: .permitted)
+                        }
+                    })
+                case .permitted:
+                    showAddProductViaSKUScanner = true
+                    logPermissionStatus(status: .permitted)
+                }
+            }, label: {
+                if showAddProductViaSKUScannerLoading {
+                    ProgressView()
+                } else {
+                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                    .foregroundColor(Color(.brand))
+                }
+            })
+            .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
+            .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
+                scroll.scrollTo(addProductViaSKUScannerButton)
+            }, content: {
+                ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                    showAddProductViaSKUScanner = false
+                    showAddProductViaSKUScannerLoading = true
+                    viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                        showAddProductViaSKUScannerLoading = false
+                    }, onRetryRequested: {
+                        showAddProductViaSKUScanner = true
+                    })
+                })
+            })
+        }
+    }
+
+    @ViewBuilder var scanProductButton: some View {
         Button(action: {
             viewModel.trackBarcodeScanningButtonTapped()
             let capturePermissionStatus = viewModel.capturePermissionStatus

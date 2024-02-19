@@ -203,9 +203,11 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
-                            OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
-
-                            Spacer(minLength: Layout.sectionSpacing)
+                            Group {
+                                OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
+                                Spacer(minLength: Layout.sectionSpacing)
+                            }
+                            .renderedIf(flow == .editing)
 
                             ProductsSection(scroll: scroll,
                                             flow: flow,

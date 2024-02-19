@@ -586,6 +586,11 @@ private struct ProductsSection: View {
                 }
                 .renderedIf(viewModel.shouldShowProductsSectionHeader)
 
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .sideBySide {
+                    scanProductRow
+                    .scaledToFit()
+                }
+
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductCard(viewModel: productRow,
                                            flow: flow,
@@ -616,8 +621,6 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .sideBySide {
-                        scanProductRow
                     }
                     scanProductButton
                         .renderedIf(presentationStyle == .modalOnModal)
@@ -667,50 +670,53 @@ private struct ProductsSection: View {
 
 private extension ProductsSection {
     @ViewBuilder var scanProductRow: some View {
-        HStack {
-            Button(action: {
-                viewModel.trackBarcodeScanningButtonTapped()
-                let capturePermissionStatus = viewModel.capturePermissionStatus
-                switch capturePermissionStatus {
-                case .notPermitted:
-                    viewModel.trackBarcodeScanningNotPermitted()
-                    logPermissionStatus(status: .notPermitted)
-                    self.showPermissionsSheet = true
-                case .notDetermined:
-                    logPermissionStatus(status: .notDetermined)
-                    viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
-                        if isPermissionGranted {
-                            showAddProductViaSKUScanner = true
-                            logPermissionStatus(status: .permitted)
-                        }
-                    })
-                case .permitted:
-                    showAddProductViaSKUScanner = true
-                    logPermissionStatus(status: .permitted)
-                }
-            }, label: {
+        Button(action: {
+            viewModel.trackBarcodeScanningButtonTapped()
+            let capturePermissionStatus = viewModel.capturePermissionStatus
+            switch capturePermissionStatus {
+            case .notPermitted:
+                viewModel.trackBarcodeScanningNotPermitted()
+                logPermissionStatus(status: .notPermitted)
+                self.showPermissionsSheet = true
+            case .notDetermined:
+                logPermissionStatus(status: .notDetermined)
+                viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                    if isPermissionGranted {
+                        showAddProductViaSKUScanner = true
+                        logPermissionStatus(status: .permitted)
+                    }
+                })
+            case .permitted:
+                showAddProductViaSKUScanner = true
+                logPermissionStatus(status: .permitted)
+            }
+        }, label: {
+            HStack {
                 if showAddProductViaSKUScannerLoading {
                     ProgressView()
                 } else {
                     Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
                     .foregroundColor(Color(.brand))
+                    Text(Localization.scanProductRowTitle)
                 }
-            })
-            .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
-            .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
-                scroll.scrollTo(addProductViaSKUScannerButton)
-            }, content: {
-                ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                    showAddProductViaSKUScanner = false
-                    showAddProductViaSKUScannerLoading = true
-                    viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                        showAddProductViaSKUScannerLoading = false
-                    }, onRetryRequested: {
-                        showAddProductViaSKUScanner = true
-                    })
+            }
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+        })
+        .buttonStyle(LinkButtonStyle())
+        .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
+            scroll.scrollTo(addProductViaSKUScannerButton)
+        }, content: {
+            ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                showAddProductViaSKUScanner = false
+                showAddProductViaSKUScannerLoading = true
+                viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                    showAddProductViaSKUScannerLoading = false
+                }, onRetryRequested: {
+                    showAddProductViaSKUScanner = true
                 })
             })
-        }
+        })
     }
 
     @ViewBuilder var scanProductButton: some View {
@@ -896,6 +902,13 @@ private extension ProductSelectorView.Configuration {
 }
 
 private extension ProductsSection {
+    enum Localization {
+        static let scanProductRowTitle = NSLocalizedString(
+            "orderForm.products.add.scan.row.title",
+            value: "Scan product",
+            comment: "Title for the barcode scanning button to add a product to an order")
+    }
+
     func openSettingsAction() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
             return

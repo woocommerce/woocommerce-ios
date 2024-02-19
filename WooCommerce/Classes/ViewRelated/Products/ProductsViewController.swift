@@ -201,6 +201,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let isSplitViewEnabled: Bool
     private let navigateToContent: (NavigationContentType) -> Void
     private let selectedProduct: AnyPublisher<Product?, Never>
+    private let onTableViewEditingEnd: PassthroughSubject<Void, Never> = .init()
     let onDataReloaded: PassthroughSubject<Void, Never> = .init()
 
     deinit {
@@ -421,6 +422,7 @@ private extension ProductsViewController {
 
         viewModel.deselectAll()
         tableView.setEditing(false, animated: true)
+        onTableViewEditingEnd.send(())
 
         bulkEditButton.isEnabled = false
 
@@ -942,8 +944,11 @@ private extension ProductsViewController {
     }
 
     func observeSelectedProductAndDataLoadedStateToUpdateSelectedRow() {
-        Publishers.CombineLatest(selectedProduct, onDataReloaded)
-            .sink { [weak self] selectedProduct, _ in
+        Publishers.CombineLatest3(selectedProduct,
+                                  onDataReloaded,
+                                  // Giving it an initial value to enable the combined publisher from the beginning.
+                                  onTableViewEditingEnd.merge(with: Just<Void>(())))
+            .sink { [weak self] selectedProduct, _, _ in
                 guard let self else { return }
 
                 let currentSelectedIndexPath = tableView.indexPathForSelectedRow
@@ -1049,6 +1054,10 @@ extension ProductsViewController: UITableViewDelegate {
                 tableView.deselectRow(at: indexPath, animated: false)
             }
         }
+    }
+
+    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        onTableViewEditingEnd.send(())
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

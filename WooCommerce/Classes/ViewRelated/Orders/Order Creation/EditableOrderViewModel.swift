@@ -1748,6 +1748,7 @@ private extension EditableOrderViewModel {
                     stores: stores,
                     toggleAllVariationsOnSelection: false,
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
+                    syncApproach: initialProductSelectionSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
                     onProductSelectionStateChanged: { [weak self] product in
                         guard let self = self else { return }
@@ -1779,6 +1780,21 @@ private extension EditableOrderViewModel {
                     })
             }
             .assign(to: &$productSelectorViewModel)
+    }
+
+    var initialProductSelectionSyncApproach: ProductSelectorViewModel.SyncApproach {
+        guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return .onButtonTap
+        }
+        switch UITraitCollection.current.horizontalSizeClass {
+        case .regular:
+            return .immediate
+        case .compact, .unspecified:
+            return .onButtonTap
+        @unknown default:
+            DDLogWarn("Unknown horizontalSizeClass used to determine initialProductSelectionSyncApproach.")
+            return .onButtonTap
+        }
     }
 
     /// Tracks when customer details have been added

@@ -281,20 +281,6 @@ private extension ProductSelectorView {
             }
             .buttonStyle(LinkButtonStyle())
             .fixedSize()
-            
-            Divider()
-                .frame(height: Constants.dividerHeight)
-                .foregroundColor(Color(.separator))
-
-            // Not implemented. This button will hold the grid view.
-            // for the moment we use opacity 0 so we can align the rest of the UI
-            Button(action: { }, label: {
-                Image(uiImage: .wordPressLogoImage.withRenderingMode(.alwaysTemplate))
-                    .opacity(0)
-            })
-            .padding(.trailing)
-            .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) &&
-                        presentationStyle == .sideBySide)
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: false)))
@@ -314,20 +300,6 @@ private extension ProductSelectorView {
             .padding(.leading)
             .padding(.trailing)
             .renderedIf(searchHeaderisBeingEdited)
-
-            Divider()
-                .frame(width: 1.0, height: Constants.dividerHeight)
-                .foregroundColor(Color(.separator))
-
-            Button(action: {
-                // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12011
-            }, label: {
-                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                    .foregroundColor(Color(.brand))
-            })
-            .padding(.trailing)
-            .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) &&
-                        presentationStyle == .sideBySide)
         }
         .background(Color(.listForeground(modal: false)))
     }

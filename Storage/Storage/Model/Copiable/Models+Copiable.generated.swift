@@ -71,7 +71,8 @@ extension Storage.GeneralStoreSettings {
         skippedCashOnDeliveryOnboardingStep: CopiableProp<Bool> = .copy,
         lastSelectedStatsTimeRange: CopiableProp<String> = .copy,
         firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy,
-        selectedTaxRateID: NullableCopiableProp<Int64> = .copy
+        selectedTaxRateID: NullableCopiableProp<Int64> = .copy,
+        analyticsHubCards: CopiableProp<Set<AnalyticsCard>> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -82,6 +83,7 @@ extension Storage.GeneralStoreSettings {
         let lastSelectedStatsTimeRange = lastSelectedStatsTimeRange ?? self.lastSelectedStatsTimeRange
         let firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType ?? self.firstInPersonPaymentsTransactionsByReaderType
         let selectedTaxRateID = selectedTaxRateID ?? self.selectedTaxRateID
+        let analyticsHubCards = analyticsHubCards ?? self.analyticsHubCards
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -92,7 +94,8 @@ extension Storage.GeneralStoreSettings {
             skippedCashOnDeliveryOnboardingStep: skippedCashOnDeliveryOnboardingStep,
             lastSelectedStatsTimeRange: lastSelectedStatsTimeRange,
             firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
-            selectedTaxRateID: selectedTaxRateID
+            selectedTaxRateID: selectedTaxRateID,
+            analyticsHubCards: analyticsHubCards
         )
     }
 }

@@ -532,13 +532,19 @@ private struct ProductsSection: View {
     ///
     @Namespace var addProductViaSKUScannerButton
 
-    ///   Environment safe areas
+    /// Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
+    /// Environment variable that manages the presentation state of the AdaptiveModalContainer view
+    /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size
+    ///
+    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle
 
     var body: some View {
         Group {
             Divider()
+                .renderedIf(presentationStyle == .modalOnModal)
 
             VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
                 HStack {
@@ -554,6 +560,7 @@ private struct ProductsSection: View {
 
                     HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {
                         scanProductButton
+                            .renderedIf(presentationStyle == .modalOnModal)
 
                         if let presentProductSelector {
                             Button(action: {
@@ -603,7 +610,7 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .modalOnModal {
                         Button(OrderForm.Localization.addProducts) {
                             viewModel.toggleProductSelectorVisibility()
                         }
@@ -612,12 +619,15 @@ private struct ProductsSection: View {
                         .buttonStyle(PlusButtonStyle())
                     }
                     scanProductButton
+                        .renderedIf(presentationStyle == .modalOnModal)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
-            .background(Color(.listForeground(modal: true)))
+            .if(presentationStyle == .modalOnModal, transform: {
+                $0.background(Color(.listForeground(modal: true)))
+            })
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
             }

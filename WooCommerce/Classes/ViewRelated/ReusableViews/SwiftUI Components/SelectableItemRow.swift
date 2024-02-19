@@ -7,19 +7,26 @@ struct SelectableItemRow: View {
     private let selected: Bool
     private let displayMode: DisplayMode
     private let alignment: Alignment
+    private let selectionStyle: SelectionStyle
     @Environment(\.isEnabled) private var isEnabled
 
-    init(title: String, subtitle: String? = nil, selected: Bool, displayMode: DisplayMode = .full, alignment: Alignment = .leading) {
+    init(title: String,
+         subtitle: String? = nil,
+         selected: Bool,
+         displayMode: DisplayMode = .full,
+         alignment: Alignment = .leading,
+         selectionStyle: SelectionStyle = .checkmark) {
         self.title = title
         self.subtitle = subtitle
         self.selected = selected
         self.displayMode = displayMode
         self.alignment = alignment
+        self.selectionStyle = selectionStyle
     }
     var body: some View {
         HStack(spacing: 0) {
             if alignment == .leading {
-                checkmark
+                selectionIcon
             }
 
             VStack(alignment: .leading) {
@@ -38,7 +45,7 @@ struct SelectableItemRow: View {
             Spacer()
 
             if alignment == .trailing {
-                checkmark
+                selectionIcon
             }
         }
         .padding([.top, .bottom], Constants.hStackPadding)
@@ -46,10 +53,12 @@ struct SelectableItemRow: View {
         .contentShape(Rectangle())
     }
 
-    private var checkmark: some View {
+    private var selectionIcon: some View {
         ZStack {
-            if selected, isEnabled {
-                Image(uiImage: .checkmarkStyledImage).frame(width: Constants.imageSize, height: Constants.imageSize)
+            if let image = selectionStyle.image(selected: selected, isEnabled: isEnabled) {
+                Image(uiImage: image)
+                    .frame(width: Constants.imageSize, height: Constants.imageSize)
+                    .iconStyle(isEnabled)
             }
         }
         .frame(width: Constants.zStackWidth)
@@ -93,6 +102,24 @@ extension SelectableItemRow {
             }
         }
     }
+
+    enum SelectionStyle {
+        case checkmark
+        case checkcircle
+
+        func image(selected: Bool, isEnabled: Bool) -> UIImage? {
+            switch (self, selected, isEnabled) {
+            case (.checkmark, true, true):
+                return .checkmarkStyledImage
+            case (.checkmark, _, _):
+                return nil
+            case (.checkcircle, true, _):
+                return .checkCircleImage.withRenderingMode(.alwaysTemplate)
+            case (.checkcircle, false, _):
+                return .checkEmptyCircleImage
+            }
+        }
+    }
 }
 
 private extension SelectableItemRow {
@@ -110,13 +137,25 @@ struct SelectableItemRow_Previews: PreviewProvider {
     static var previews: some View {
         SelectableItemRow(title: "Title", subtitle: "My subtitle", selected: true)
             .previewLayout(.fixed(width: 375, height: 100))
+            .previewDisplayName("Selected")
 
         SelectableItemRow(title: "Title", subtitle: "My subtitle", selected: false)
             .previewLayout(.fixed(width: 375, height: 100))
+            .previewDisplayName("Unselected")
 
         SelectableItemRow(title: "Title", subtitle: "My subtitle", selected: true)
             .disabled(true)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Disabled state")
+
+        SelectableItemRow(title: "Title", subtitle: "My subtitle", selected: true, selectionStyle: .checkcircle)
+            .previewDisplayName("Check Circle Selected")
+
+        SelectableItemRow(title: "Title", subtitle: "My subtitle", selected: false, selectionStyle: .checkcircle)
+            .previewDisplayName("Check Circle Unselected")
+
+        SelectableItemRow(title: "Title", subtitle: "My subtitle", selected: true, selectionStyle: .checkcircle)
+            .disabled(true)
+            .previewDisplayName("Check Circle Disabled")
     }
 }

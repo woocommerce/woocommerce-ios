@@ -547,6 +547,15 @@ private struct ProductsSection: View {
                 .renderedIf(presentationStyle == .modalOnModal)
 
             VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
+                    && presentationStyle == .sideBySide
+                    && !viewModel.shouldShowProductsSectionHeader {
+                    HStack {
+                        scanProductRow
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(.listForeground(modal: true)))
+                }
                 HStack {
                     Text(OrderForm.Localization.products)
                         .accessibilityAddTraits(.isHeader)
@@ -585,11 +594,6 @@ private struct ProductsSection: View {
                     .renderedIf(!viewModel.shouldShowNonEditableIndicators)
                 }
                 .renderedIf(viewModel.shouldShowProductsSectionHeader)
-
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .sideBySide {
-                    scanProductRow
-                    .scaledToFit()
-                }
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductCard(viewModel: productRow,
@@ -695,15 +699,14 @@ private extension ProductsSection {
                 if showAddProductViaSKUScannerLoading {
                     ProgressView()
                 } else {
-                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                    .foregroundColor(Color(.brand))
                     Text(Localization.scanProductRowTitle)
+                    Spacer()
                 }
             }
-            .frame(maxWidth: .infinity)
-            .contentShape(Rectangle())
         })
-        .buttonStyle(LinkButtonStyle())
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .buttonStyle(IconButtonStyle(icon: .scanImage, withIconColor: Color(.brand)))
+        .foregroundColor(Color(.brand))
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {

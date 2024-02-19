@@ -201,7 +201,7 @@ private struct CollapsibleProductRowCard: View {
                     viewModel.configure?()
                     ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productCard))
                 }
-                .buttonStyle(IconButtonStyle(icon: .cogImage))
+                .buttonStyle(IconButtonStyle(icon: .cogImage, withIconColor: nil))
                 .frame(minHeight: Layout.rowMinHeight)
                 .renderedIf(viewModel.isConfigurable)
                 .onAppear {

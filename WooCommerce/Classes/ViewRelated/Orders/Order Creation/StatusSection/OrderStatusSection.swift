@@ -36,11 +36,11 @@ struct OrderStatusSection: View {
                 Spacer()
 
                 PencilEditButton {
-                    viewModel.shouldShowOrderStatusList = true
+                    viewModel.shouldShowOrderStatusListSheet = true
                 }
                 .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
                 .accessibilityIdentifier("order-status-section-edit-button")
-                .sheet(isPresented: $viewModel.shouldShowOrderStatusList) {
+                .sheet(isPresented: $viewModel.shouldShowOrderStatusListSheet) {
                     OrderStatusList(siteID: viewModel.siteID, status: viewModel.currentOrderStatus, autoConfirmSelection: true) { newStatus in
                         viewModel.updateOrderStatus(newStatus: newStatus)
                     }.ignoresSafeArea()

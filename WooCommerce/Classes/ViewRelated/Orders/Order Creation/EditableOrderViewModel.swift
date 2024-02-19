@@ -167,7 +167,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Indicates if the order status list (selector) should be shown or not.
     ///
-    @Published var shouldShowOrderStatusList: Bool = false
+    @Published var shouldShowOrderStatusListSheet: Bool = false
 
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false

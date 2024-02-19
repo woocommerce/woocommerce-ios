@@ -560,7 +560,6 @@ private struct ProductsSection: View {
 
                     HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {
                         scanProductButton
-                            .renderedIf(presentationStyle == .modalOnModal)
 
                         if let presentProductSelector {
                             Button(action: {

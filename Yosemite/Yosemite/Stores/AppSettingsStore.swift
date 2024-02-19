@@ -918,7 +918,10 @@ private extension AppSettingsStore {
     }
 
     func loadAnalyticsHubCards(siteID: Int64, onCompletion: (Set<AnalyticsCard>) -> Void) {
-        onCompletion(getStoreSettings(for: siteID).analyticsHubCards)
+        guard let storedCards = getStoreSettings(for: siteID).analyticsHubCards else {
+            return onCompletion(AnalyticsCard.defaultCards)
+        }
+        onCompletion(storedCards)
     }
 }
 

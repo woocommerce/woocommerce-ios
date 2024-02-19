@@ -1,23 +1,24 @@
 import Foundation
+import Yosemite
 
 /// View model for `AnalyticsHubCustomizeView`.
 final class AnalyticsHubCustomizeViewModel: ObservableObject {
 
     /// Ordered array of all available analytics cards.
     ///
-    @Published var allCards: [String]
+    @Published var allCards: [AnalyticsCard]
 
     /// Set of selected analytics cards, to be enabled in the Analytics Hub.
     ///
-    @Published var selectedCards: Set<String>
+    @Published var selectedCards: Set<AnalyticsCard>
 
     /// Original ordered array of analytics cards. Used to track if there are order changes to be saved.
     ///
-    private let originalCards: [String]
+    private let originalCards: [AnalyticsCard]
 
     /// Original set of selected cards. Used to track if there are selection changes to be saved.
     ///
-    private let originalSelection: Set<String>?
+    private let originalSelection: Set<AnalyticsCard>?
 
     /// Whether there are changes to be saved (card order or selection has changed).
     ///
@@ -25,10 +26,11 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject {
         allCards != originalCards || selectedCards != originalSelection
     }
 
-    init(allCards: [String],
-         selectedCards: Set<String>) {
-        self.allCards = AnalyticsHubCustomizeViewModel.groupAllCards(allCards, by: selectedCards)
-        self.originalCards = AnalyticsHubCustomizeViewModel.groupAllCards(allCards, by: selectedCards)
+    init(allCards: Set<AnalyticsCard>) {
+        self.allCards = AnalyticsHubCustomizeViewModel.groupAllCards(allCards)
+        self.originalCards = AnalyticsHubCustomizeViewModel.groupAllCards(allCards)
+
+        let selectedCards = allCards.filter { $0.enabled }
         self.selectedCards = selectedCards
         self.originalSelection = selectedCards
     }
@@ -38,9 +40,21 @@ private extension AnalyticsHubCustomizeViewModel {
     /// Groups the selected cards at the start of the list of all cards.
     /// This preserves the relative order of selected and unselected cards.
     ///
-    static func groupAllCards(_ allCards: [String], by selectedCards: Set<String>) -> [String] {
-        var groupedCards = allCards
-        _ = groupedCards.stablePartition(by: { !selectedCards.contains($0) })
+    static func groupAllCards(_ allCards: Set<AnalyticsCard>) -> [AnalyticsCard] {
+        var groupedCards = Array(allCards).sorted() // Sort cards by sort order
+        _ = groupedCards.stablePartition(by: { !$0.enabled }) // Group cards by enabled status
         return groupedCards
     }
+}
+
+// MARK: Data for SwiftUI previews
+extension AnalyticsHubCustomizeViewModel {
+    /// Sample cards to display in the SwiftUI preview
+    ///
+    static let sampleCards: Set<AnalyticsCard> = [
+        AnalyticsCard(type: .revenue, enabled: true, sortOrder: 0),
+        AnalyticsCard(type: .orders, enabled: false, sortOrder: 1),
+        AnalyticsCard(type: .products, enabled: true, sortOrder: 2),
+        AnalyticsCard(type: .sessions, enabled: false, sortOrder: 3)
+    ]
 }

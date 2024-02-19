@@ -1,34 +1,40 @@
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
 
     func test_it_inits_with_expected_properties() {
         // Given
-        let allCards = ["First", "Second"]
-        let selectedCards = Set(["First"])
-        let vm = AnalyticsHubCustomizeViewModel(allCards: allCards, selectedCards: selectedCards)
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: true, sortOrder: 0)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: false, sortOrder: 1)
+        let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard])
 
         // Then
-        assertEqual(allCards, vm.allCards)
-        assertEqual(selectedCards, vm.selectedCards)
+        assertEqual([revenueCard, ordersCard], vm.allCards)
+        assertEqual([revenueCard], vm.selectedCards)
         XCTAssertFalse(vm.hasChanges)
     }
 
     func test_it_groups_all_selected_cards_at_top_of_allCards_list_in_original_order() {
         // Given
-        let vm = AnalyticsHubCustomizeViewModel(allCards: ["First", "Second", "Third"], selectedCards: ["Third", "Second"])
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: false, sortOrder: 0)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: true, sortOrder: 1)
+        let productsCard = AnalyticsCard(type: .products, enabled: true, sortOrder: 2)
+        let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, productsCard])
 
         // Then
-        assertEqual(["Second", "Third", "First"], vm.allCards)
+        assertEqual([ordersCard, productsCard, revenueCard], vm.allCards)
     }
 
     func test_hasChanges_is_true_when_card_order_changes() {
         // Given
-        let vm = AnalyticsHubCustomizeViewModel(allCards: ["First", "Second"], selectedCards: [])
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: false, sortOrder: 0)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: false, sortOrder: 1)
+        let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard])
 
         // When
-        vm.allCards = ["Second", "First"]
+        vm.allCards = [ordersCard, revenueCard]
 
         // Then
         XCTAssertTrue(vm.hasChanges)
@@ -36,10 +42,12 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
 
     func test_hasChanges_is_true_when_selection_changes() {
         // Given
-        let vm = AnalyticsHubCustomizeViewModel(allCards: ["First", "Second"], selectedCards: ["Second"])
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: false, sortOrder: 0)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: true, sortOrder: 1)
+        let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard])
 
         // When
-        vm.selectedCards = ["First", "Second"]
+        vm.selectedCards = [revenueCard, ordersCard]
 
         // Then
         XCTAssertTrue(vm.hasChanges)

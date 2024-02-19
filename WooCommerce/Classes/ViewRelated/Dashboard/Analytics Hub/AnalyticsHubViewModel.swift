@@ -136,6 +136,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var dismissNotice: Notice?
 
+    var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel {
+        AnalyticsHubCustomizeViewModel(allCards: AnalyticsCard.defaultCards) // TODO: Use real data from storage
+    }
+
     // MARK: Private data
 
     /// Order stats for the current selected time period

@@ -1,10 +1,33 @@
 import SwiftUI
+import Combine
 
 /// Connectivity Tool Hosting Controller
-/// 
+///
 final class ConnectivityToolViewController: UIHostingController<ConnectivityTool> {
-    override init(rootView: ConnectivityTool) {
-        super.init(rootView: rootView)
+
+    /// ConnectivityTool view model
+    ///
+    private let viewModel: ConnectivityToolViewModel
+
+    /// Combine subscriptions
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
+
+    init() {
+        viewModel = ConnectivityToolViewModel()
+        let view = ConnectivityTool(cards: viewModel.cards)
+        super.init(rootView: view)
+        self.hidesBottomBarWhenPushed = true
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Bind cards to view
+        viewModel.$cards.sink { [weak self] cards in
+            self?.rootView.cards = cards
+        }
+        .store(in: &subscriptions)
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -26,7 +49,7 @@ struct ConnectivityTool: View {
 
     /// Tool cards.
     ///
-    let cards: [Card]
+    var cards: [Card]
 
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
@@ -150,7 +173,6 @@ struct ConnectivityToolCard: View {
         .padding()
     }
 }
-
 
 #Preview("Tool") {
     NavigationView {

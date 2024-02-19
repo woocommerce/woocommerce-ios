@@ -521,7 +521,7 @@ private struct ProductsSection: View {
     @State private var showPermissionsSheet: Bool = false
 
     /// Defines whether we should show a progress view instead of the barcode scanner button.
-    /// 
+    ///
     @State private var showAddProductViaSKUScannerLoading: Bool = false
 
     /// ID for Add Product button
@@ -560,7 +560,7 @@ private struct ProductsSection: View {
 
                     HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {
                         scanProductButton
-                            .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled && presentationStyle == .modalOnModal)
+                            .renderedIf(presentationStyle == .modalOnModal)
 
                         if let presentProductSelector {
                             Button(action: {
@@ -618,9 +618,8 @@ private struct ProductsSection: View {
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
                     }
-
                     scanProductButton
-                        .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled && presentationStyle == .modalOnModal)
+                        .renderedIf(presentationStyle == .modalOnModal)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }

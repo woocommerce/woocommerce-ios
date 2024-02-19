@@ -252,7 +252,7 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .getLocalAnnouncementVisibility(_, _):
+            case .getLocalAnnouncementVisibility:
                 XCTFail("Local announcement should not be loaded when JITM is available.")
             default:
                 XCTFail("Received unsupported action: \(action)")

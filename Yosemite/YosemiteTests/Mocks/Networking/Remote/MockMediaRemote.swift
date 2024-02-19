@@ -9,6 +9,9 @@ final class MockMediaRemote {
     /// Returns the requests that have been made to `MediaRemoteProtocol`.
     var invocations = [Invocation]()
 
+    /// The results to return based on the given site ID in `loadMedia`
+    private var loadMediaResultsBySiteID = [Int64: Result<WordPressMedia, Error>]()
+
     /// The results to return based on the given site ID in `loadMediaLibrary`
     private var loadMediaLibraryResultsBySiteID = [Int64: Result<[Media], Error>]()
 
@@ -26,6 +29,11 @@ final class MockMediaRemote {
 
     /// The results to return based on the given site ID in `updateProductIDToWordPressSite`
     private var updateProductIDToWordPressSiteResultsBySiteID = [Int64: Result<WordPressMedia, Error>]()
+
+    /// Returns the value as a publisher when `loadMedia` is called.
+    func whenLoadingMedia(siteID: Int64, thenReturn result: Result<WordPressMedia, Error>) {
+        loadMediaResultsBySiteID[siteID] = result
+    }
 
     /// Returns the value as a publisher when `loadMediaLibrary` is called.
     func whenLoadingMediaLibrary(siteID: Int64, thenReturn result: Result<[Media], Error>) {
@@ -60,6 +68,7 @@ final class MockMediaRemote {
 
 extension MockMediaRemote {
     enum Invocation: Equatable {
+        case loadMedia(siteID: Int64, mediaID: Int64)
         case loadMediaLibrary(siteID: Int64)
         case loadMediaLibraryFromWordPressSite(siteID: Int64)
         case uploadMedia(siteID: Int64)
@@ -72,6 +81,15 @@ extension MockMediaRemote {
 // MARK: - MediaRemoteProtocol
 
 extension MockMediaRemote: MediaRemoteProtocol {
+    func loadMedia(siteID: Int64, mediaID: Int64, completion: @escaping (Result<Networking.WordPressMedia, Error>) -> Void) {
+        invocations.append(.loadMedia(siteID: siteID, mediaID: mediaID))
+        guard let result = loadMediaResultsBySiteID[siteID] else {
+            XCTFail("\(String(describing: self)) Could not find result for site ID: \(siteID)")
+            return
+        }
+        completion(result)
+    }
+
     func loadMediaLibrary(for siteID: Int64,
                           imagesOnly: Bool,
                           pageNumber: Int,

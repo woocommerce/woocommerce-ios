@@ -239,7 +239,7 @@ private extension StatsTimeRangeV4 {
     /// Based on WooCommerce Core
     ///
     /// https://github.com/woocommerce/woocommerce/blob/e863c02551e94d928d3873131ff2f4ab61d0ff66/packages/js/date/src/index.ts#L626
-    /// 
+    ///
     /// More details at pe5sF9-2ri-p2
     ///
     static func differenceInDays(startDate: Date, endDate: Date) -> DifferenceInDays? {

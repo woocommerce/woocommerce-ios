@@ -108,12 +108,6 @@ final class EditableOrderViewModel: ObservableObject {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
-    /// Indicates whether adding a product to the order via SKU scanning is enabled
-    ///
-    var isAddProductToOrderViaSKUScannerEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
-    }
-
     var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
         orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty
     }
@@ -184,7 +178,7 @@ final class EditableOrderViewModel: ObservableObject {
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
     /// Defines the tax based on setting to be displayed in the Taxes section.
-    /// 
+    ///
     @Published private var taxBasedOnSetting: TaxBasedOnSetting?
 
     /// Selected tax rate to apply to the order
@@ -401,7 +395,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Saves a coupon line after an edition on it.
     ///
     /// - Parameter result: Contains the user action on the line: remove, add, or edit it changing the coupon code.
-    /// 
+    ///
     func saveCouponLine(result: CouponLineDetailsResult) {
         switch result {
         case let .removed(removeCode):
@@ -423,7 +417,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// Current OrderItems
-    /// 
+    ///
     var currentOrderItems: [OrderItem] {
         orderSynchronizer.order.items
     }
@@ -531,7 +525,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// Clears selected variations
-    /// 
+    ///
     private func clearSelectedVariations() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
@@ -1037,6 +1031,10 @@ extension EditableOrderViewModel {
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
+        // We show shipping tax if the amount is not zero
+        let shouldShowShippingTax: Bool
+        let shippingTax: String
+
         let shouldShowTotalCustomAmounts: Bool
         let customAmountsTotal: String
 
@@ -1084,6 +1082,7 @@ extension EditableOrderViewModel {
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
+             shippingTax: String = "0",
              shouldShowTotalCustomAmounts: Bool = false,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
@@ -1120,6 +1119,8 @@ extension EditableOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
+            self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
+            self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
@@ -1173,7 +1174,7 @@ extension EditableOrderViewModel {
 // MARK: - Helpers
 private extension EditableOrderViewModel {
     /// Converts the add custom amount UI input type to view models
-    /// 
+    ///
     func addCustomAmountInputType(from option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel.InputType {
         switch option {
         case .fixedAmount:
@@ -1567,7 +1568,7 @@ private extension EditableOrderViewModel {
                         return true
                     }
                     // If no coupons have been applied, but there are order discounts (discounts added directly to products of an order), disable coupons
-                    if order.coupons.isEmpty && order.discountTotal != "0.00" {
+                    if order.coupons.isEmpty && isDiscountBiggerThanZero {
                         return true
                     }
                     return false
@@ -1580,6 +1581,7 @@ private extension EditableOrderViewModel {
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
+                                            shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
@@ -1967,7 +1969,7 @@ private extension EditableOrderViewModel {
     }
 
     /// Calculates the discount on an order item, that is, subtotal minus total
-    /// 
+    ///
     func currentDiscount(on item: OrderItem) -> Decimal {
         guard let subtotal = currencyFormatter.convertToDecimal(item.subtotal),
               let total = currencyFormatter.convertToDecimal(item.total) else {

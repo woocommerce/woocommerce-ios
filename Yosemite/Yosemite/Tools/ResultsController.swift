@@ -61,6 +61,8 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// FetchedResultsController Delegate Wrapper.
     ///
+    // TODO: This being an internal delegate it needs to be stored strongly, or it will be immediately released. Is this approach appropriate?
+    // swiftlint:disable:next weak_delegate
     private let internalDelegate = FetchedResultsControllerDelegateWrapper()
 
     /// NotificationCenter ObserverBlock Token

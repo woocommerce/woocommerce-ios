@@ -14,6 +14,8 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
 
     var onPullToRefresh: @MainActor () async -> Void = {}
 
+    private var customRangeCoordinator: CustomRangeTabCreationCoordinator?
+
     // MARK: - Subviews
 
     private lazy var buttonBarBottomBorder: UIView = {
@@ -28,14 +30,14 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
 
     // MARK: - Private Properties
 
-    private let periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
+    private var periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
     private let siteID: Int64
     // A set of syncing time ranges is tracked instead of a single boolean so that the stats for each time range
     // can be synced when swiping or tapping to change the time range tab before the syncing finishes for the previously selected tab.
     private var syncingTimeRanges: Set<StatsTimeRangeV4> = []
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let dashboardViewModel: DashboardViewModel
-    private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
+    private var timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
     private let featureFlagService: FeatureFlagService
 
     /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
@@ -112,24 +114,6 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
         super.viewWillAppear(animated)
         ensureGhostContentIsAnimated()
     }
-
-    func observeSelectedTimeRangeIndex() {
-        let timeRangeCount = timeRanges.count
-        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
-            .compactMap { $0 }
-            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
-            .filter { $0 >= 0 && $0 < timeRangeCount }
-            .removeDuplicates()
-            // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
-            // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
-            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
-            .sink { [weak self] timeRangeTabIndex in
-                guard let self else { return }
-                let periodViewController = self.periodVCs[timeRangeTabIndex]
-                self.saveLastTimeRange(periodViewController.timeRange)
-                self.syncStats(forced: false, viewControllerToSync: periodViewController)
-            }
-    }
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
@@ -150,6 +134,23 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 // MARK: - Syncing Data
 //
 private extension StoreStatsAndTopPerformersViewController {
+    func observeSelectedTimeRangeIndex() {
+        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
+            .compactMap { $0 }
+            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
+            .filter { $0 >= 0 && $0 < self.timeRanges.count }
+            .removeDuplicates()
+            // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
+            // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
+            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
+            .sink { [weak self] timeRangeTabIndex in
+                guard let self else { return }
+                let periodViewController = self.periodVCs[timeRangeTabIndex]
+                self.saveLastTimeRange(periodViewController.timeRange)
+                self.syncStats(forced: false, viewControllerToSync: periodViewController)
+            }
+    }
+
     func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         syncStats(forced: forced, viewControllerToSync: visibleChildViewController, onCompletion: onCompletion)
     }
@@ -309,7 +310,6 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-
     func observeRemotelyCreatedOrdersToResetLastSyncTimestamp() {
         let siteID = self.siteID
         remoteOrdersSubscription = Publishers
@@ -423,6 +423,10 @@ private extension StoreStatsAndTopPerformersViewController {
         button.frame = CGRect(origin: .zero, size: TabBar.customRangeButtonSize)
         button.backgroundColor = .listForeground(modal: false)
 
+        button.on(.touchUpInside) { [weak self] _ in
+            self?.startCustomRangeTabCreation()
+        }
+
         let separator = UIView()
         separator.heightAnchor.constraint(equalToConstant: TabBar.customRangeViewSeparator).isActive = true
         separator.backgroundColor = .systemColor(.separator)
@@ -430,6 +434,49 @@ private extension StoreStatsAndTopPerformersViewController {
         stackView.addArrangedSubview(button)
         stackView.addArrangedSubview(separator)
         return stackView
+    }
+
+    func startCustomRangeTabCreation() {
+        guard let navigationController else { return }
+        customRangeCoordinator = CustomRangeTabCreationCoordinator(
+            navigationController: navigationController,
+            onDateRangeSelected: { [weak self] start, end in
+                self?.createCustomRangeTab(start, end)
+            }
+        )
+        customRangeCoordinator?.start()
+    }
+
+    func createCustomRangeTab(_ start: Date, _ end: Date) {
+        let currentDate = Date()
+        let range = StatsTimeRangeV4.custom(from: start, to: end)
+
+        // TODO: 11935 Add the correct data fetching and displaying based on custom range.
+        let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                           timeRange: range,
+                                                                           currentDate: currentDate,
+                                                                           canDisplayInAppFeedbackCard: false,
+                                                                           usageTracksEventEmitter: usageTracksEventEmitter)
+
+        periodVCs.append(customRangeVC)
+        timeRanges.append(.custom(from: start, to: end))
+
+        let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
+                                               viewController: customRangeVC,
+                                               accessibilityIdentifier: "period-data-" + range.rawValue + "-tab")
+
+        appendToTabBar(customRangeTabbedItem)
+
+        // Once a custom range tab is created, do not show the "Custom Range" button anymore.
+        removeCustomViewFromTabBar()
+
+        // Get stats data for this tab
+        syncStats(forced: false, viewControllerToSync: customRangeVC)
+
+        // Add pull to refresh functionality
+        customRangeVC.onPullToRefresh = { [weak self] in
+            await self?.onPullToRefresh()
+        }
     }
 }
 

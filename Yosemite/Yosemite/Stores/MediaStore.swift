@@ -51,6 +51,10 @@ public final class MediaStore: Store {
         }
 
         switch action {
+        case .retrieveMedia(let siteID,
+                            let mediaID,
+                            let onCompletion):
+            retrieveMedia(siteID: siteID, mediaID: mediaID, onCompletion: onCompletion)
         case let .retrieveMediaLibrary(siteID, imagesOnly, pageNumber, pageSize, onCompletion):
             retrieveMediaLibrary(siteID: siteID,
                                  imagesOnly: imagesOnly,
@@ -75,6 +79,21 @@ public final class MediaStore: Store {
 }
 
 private extension MediaStore {
+    /// Retrieves single Media item from the site's WP Media Library.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll load the media from.
+    ///   - mediaID: ID of Media to be retrieved
+    ///   - onCompletion: Closure to be executed upon completion.
+    ///
+    func retrieveMedia(siteID: Int64,
+                       mediaID: Int64,
+                       onCompletion: @escaping (Result<Media, Error>) -> Void) {
+        remote.loadMedia(siteID: siteID, mediaID: mediaID) { result in
+            onCompletion(result.map { $0.toMedia() })
+        }
+    }
+
     func retrieveMediaLibrary(siteID: Int64,
                               imagesOnly: Bool,
                               pageNumber: Int,

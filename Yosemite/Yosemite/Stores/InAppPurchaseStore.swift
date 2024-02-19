@@ -256,7 +256,7 @@ private extension InAppPurchaseStore {
         }
 
         switch verificationResult {
-        case .verified(_):
+        case .verified:
             return true
         case .unverified(_, let verificationError):
             throw verificationError
@@ -477,7 +477,7 @@ public extension InAppPurchaseStore {
                     return "iap.T.120.2"
                 case .networkError(let networkError):
                     return "iap.T.120.3.\(networkError.errorCode)"
-                case .systemError(_):
+                case .systemError:
                     return "iap.T.120.4"
                 case .notAvailableInStorefront:
                     return "iap.T.120.5"

@@ -23,7 +23,7 @@ class TabbedViewController: UIViewController {
         }
     }
 
-    private let items: [TabbedItem]
+    private var items: [TabbedItem]
     private let onDismiss: (() -> Void)?
 
     private var customTabBarView: UIView?
@@ -102,7 +102,23 @@ class TabbedViewController: UIViewController {
             return
         }
         tabBarStackView.removeArrangedSubview(customTabBarView)
+        customTabBarView.removeFromSuperview()
         self.customTabBarView = nil
+    }
+
+    func appendToTabBar(_ tab: TabbedItem) {
+        // Setup child view controller
+        items.append(tab)
+        tabBar.items = items
+        addChild(tab.viewController)
+        stackView.addArrangedSubview(tab.viewController.view)
+        tab.viewController.didMove(toParent: self)
+        tab.viewController.view.isHidden = true
+
+        // Set the appended tab as selected
+        let tabPosition = items.count-1
+        selection = tabPosition
+        updateVisibleChildViewController(at: tabPosition)
     }
 }
 

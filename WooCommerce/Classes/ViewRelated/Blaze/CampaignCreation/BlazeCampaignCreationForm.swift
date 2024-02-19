@@ -186,9 +186,11 @@ struct BlazeCampaignCreationForm: View {
         .task {
             await viewModel.onLoad()
         }
-        LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel),
-                           isActive: $viewModel.isShowingPaymentInfo) {
-            EmptyView()
+        if let confirmPaymentViewModel = viewModel.confirmPaymentViewModel {
+            LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: confirmPaymentViewModel),
+                               isActive: $viewModel.isShowingPaymentInfo) {
+                EmptyView()
+            }
         }
     }
 }

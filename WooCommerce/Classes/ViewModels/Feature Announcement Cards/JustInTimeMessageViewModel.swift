@@ -107,7 +107,7 @@ final class JustInTimeMessageViewModel {
             // set to nil by now, in order to stop displaying the Just In Time Message.
             // [weak self] will result in these two analytics never being logged.
             switch result {
-            case .success(_):
+            case .success:
                 self.analytics.track(event: .JustInTimeMessage.dismissSuccess(
                     source: self.screenName,
                     messageID: self.messageID,

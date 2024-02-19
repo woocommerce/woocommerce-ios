@@ -100,8 +100,7 @@ private extension BlazeCampaignCreationCoordinator {
     }
 
     func startCreationFlow(from source: BlazeSource) {
-        /// Force dismissing any presented view to avoid issue presenting the creation flow.
-        navigationController.dismiss(animated: true) { [weak self] in
+        let navigationHandler = { [weak self] in
             guard let self else { return }
             switch blazeCreationEntryDestination {
             case .productSelector:
@@ -113,6 +112,13 @@ private extension BlazeCampaignCreationCoordinator {
             case .noProductAvailable:
                 presentNoProductAlert()
             }
+        }
+
+        /// Force dismissing any presented view to avoid issue presenting the creation flow.
+        if navigationController.presentedViewController != nil {
+            navigationController.dismiss(animated: true, completion: navigationHandler)
+        } else {
+             navigationHandler()
         }
     }
 

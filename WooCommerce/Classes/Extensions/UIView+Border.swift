@@ -20,7 +20,7 @@ extension UIView {
     /// - Parameter height: height of the separator. Default to be 0.5px.
     /// - Parameter width: width of the separator. Default to be 0.5px.
     /// - Parameter color: background color of the separator. Default to be `.clear`
-    /// 
+    ///
     static func createSeparatorView(height: CGFloat = 0.5,
                                 width: CGFloat = 0.5,
                                 color: UIColor = .clear) -> UIView {

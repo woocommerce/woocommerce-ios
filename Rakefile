@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-SWIFTLINT_VERSION = '0.27.0'
-XCODE_WORKSPACE = 'WooCommerce.xcworkspace'
-XCODE_SCHEME = 'WooCommerce'
-XCODE_CONFIGURATION = 'Debug'
-
 require 'fileutils'
 require 'tmpdir'
 require 'rake/clean'
 require 'yaml'
 require 'digest'
+
 PROJECT_DIR = __dir__
+SWIFTLINT_BIN = File.join(PROJECT_DIR, 'Pods', 'SwiftLint', 'swiftlint')
+XCODE_WORKSPACE = 'WooCommerce.xcworkspace'
+XCODE_SCHEME = 'WooCommerce'
+XCODE_CONFIGURATION = 'Debug'
 
 task default: %w[test]
 
@@ -88,36 +88,9 @@ namespace :dependencies do
     task :check do
       if swiftlint_needs_install
         dependency_failed('SwiftLint')
-        Rake::Task['dependencies:lint:install'].invoke
+        Rake::Task['dependencies:pod:install'].invoke
       end
     end
-
-    task :install do
-      fold('install.swiftlint') do
-        puts "Installing SwiftLint #{SWIFTLINT_VERSION} into #{swiftlint_path}"
-        Dir.mktmpdir do |tmpdir|
-          # Try first using a binary release
-          zipfile = "#{tmpdir}/swiftlint-#{SWIFTLINT_VERSION}.zip"
-          sh "curl --fail --location -o #{zipfile} https://github.com/realm/SwiftLint/releases/download/#{SWIFTLINT_VERSION}/portable_swiftlint.zip || true"
-          if File.exist?(zipfile)
-            extracted_dir = "#{tmpdir}/swiftlint-#{SWIFTLINT_VERSION}"
-            sh "unzip #{zipfile} -d #{extracted_dir}"
-            FileUtils.mkdir_p("#{swiftlint_path}/bin")
-            FileUtils.cp("#{extracted_dir}/swiftlint", "#{swiftlint_path}/bin/swiftlint")
-          else
-            sh "git clone --quiet https://github.com/realm/SwiftLint.git #{tmpdir}"
-            Dir.chdir(tmpdir) do
-              sh "git checkout --quiet #{SWIFTLINT_VERSION}"
-              sh 'git submodule --quiet update --init --recursive'
-              FileUtils.rm_rf(swiftlint_path)
-              FileUtils.mkdir_p(swiftlint_path)
-              sh "make prefix_install PREFIX='#{swiftlint_path}'"
-            end
-          end
-        end
-      end
-    end
-    CLOBBER << 'vendor/swiftlint'
   end
 end
 
@@ -167,7 +140,7 @@ end
 namespace :lint do
   desc 'Automatically corrects style errors where possible'
   task autocorrect: %w[dependencies:lint:check] do
-    swiftlint %w[autocorrect]
+    swiftlint %w[lint --autocorrect --quiet]
   end
 end
 
@@ -223,24 +196,16 @@ def podfile_locked?
   podfile_checksum == lockfile_checksum
 end
 
-def swiftlint_path
-  "#{PROJECT_DIR}/vendor/swiftlint"
+def swiftlint_needs_install
+  # Notice that this doesn't check whether the local version is up-to-date.
+  # Given we are using CocoaPods to install SwiftLint, it's safe to assume SwiftLint will be up-to-date most of the time.
+  # We are trading being 100% sure we're up-to-date for a faster check.
+  File.exist?(SWIFTLINT_BIN) == false
 end
 
 def swiftlint(args)
-  args = [swiftlint_bin] + args
+  args = [SWIFTLINT_BIN] + args
   sh(*args)
-end
-
-def swiftlint_bin
-  "#{swiftlint_path}/bin/swiftlint"
-end
-
-def swiftlint_needs_install
-  return true unless File.exist?(swiftlint_bin)
-
-  installed_version = `"#{swiftlint_bin}" version`.chomp
-  (installed_version != SWIFTLINT_VERSION)
 end
 
 def xcodebuild(*build_cmds)

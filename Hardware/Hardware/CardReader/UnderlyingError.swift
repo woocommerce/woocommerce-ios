@@ -147,7 +147,7 @@ public enum UnderlyingError: Error, Equatable {
     case connectionAttemptInvalidated
 
     /// Errors that originate because there's no active payment intent, so the operation is invalid, e.g. cancelling the active PI when there isn't one.
-    /// 
+    ///
     case noActivePaymentIntent
 
     // MARK: - Tap to Pay on iPhone related errors
@@ -391,7 +391,7 @@ extension UnderlyingError: LocalizedError {
         case .internalServiceError:
             return NSLocalizedString("Sorry, this payment couldn’t be processed",
                                      comment: "Error message when the card reader service experiences an unexpected internal service error.")
-        case .incompleteStoreAddress(_):
+        case .incompleteStoreAddress:
             return NSLocalizedString("The store address is incomplete or missing, please update it before continuing.",
                                      comment: "Error message when there is an issue with the store address preventing " +
                                      "an action (e.g. reader connection.)")

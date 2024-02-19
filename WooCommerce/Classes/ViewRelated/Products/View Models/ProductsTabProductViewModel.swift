@@ -49,7 +49,7 @@ struct ProductsTabProductViewModel {
     /// Variation will show product variation ID within the title,
     /// Product will only show product name
     /// See more: https://github.com/woocommerce/woocommerce-ios/issues/4846
-    /// 
+    ///
     func createNameLabel() -> String {
         if let variationID = productVariation?.productVariationID {
             // Add product variation ID with name

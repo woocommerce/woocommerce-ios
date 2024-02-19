@@ -3,7 +3,7 @@ import UIKit
 import Combine
 
 /// Triggers the simple payments amount flow given a navigation controller and a site id
-/// 
+///
 final class SimplePaymentsAmountFlowOpener {
     static func openSimplePaymentsAmountFlow(from navigationController: UINavigationController, siteID: Int64) {
         let presentNoticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()

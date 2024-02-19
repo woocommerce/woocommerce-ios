@@ -85,7 +85,7 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     }
 
     /// Description validation error message. The message will be set depending of the `shouldEnforceEUCustomsDescription` value.
-    /// 
+    ///
     var validationErrorMessage: String {
         if shouldEnforceEUCustomsDescription {
             return Localization.EUCustomsDescriptionError
@@ -182,8 +182,8 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
 
     func getValidateHSTariffNumber(_ hsTariffNumber: String) -> String? {
         if hsTariffNumber.isNotEmpty,
-           (hsTariffNumber.count != Constants.hsTariffNumberCharacterLimit ||
-                hsTariffNumber.filter({ "0"..."9" ~= $0 }).count != 6) {
+           hsTariffNumber.count != Constants.hsTariffNumberCharacterLimit ||
+                hsTariffNumber.filter({ "0"..."9" ~= $0 }).count != 6 {
             return nil
         }
         return hsTariffNumber

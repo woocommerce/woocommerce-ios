@@ -404,7 +404,11 @@ final class ProductSelectorViewModel: ObservableObject {
         guard newSyncApproach != syncApproach else {
             return
         }
-        onMultipleSelectionCompleted?(selectedItemsIDs)
+
+        if newSyncApproach == .immediate {
+            onMultipleSelectionCompleted?(selectedItemsIDs)
+        }
+        
         syncApproach = newSyncApproach
     }
 

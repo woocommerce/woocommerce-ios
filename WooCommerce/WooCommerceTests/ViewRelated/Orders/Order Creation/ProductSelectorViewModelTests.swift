@@ -1449,6 +1449,25 @@ final class ProductSelectorViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 0.5)
     }
 
+    func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_changes_to_onButtonTap() {
+        // Given
+        let expectation = XCTestExpectation(description: "onMultipleSelectionCompleted called")
+        expectation.isInverted = true
+
+        let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                 syncApproach: .immediate,
+                                                 onMultipleSelectionCompleted: { selectedItems in
+            /// Since the expectation is inverted, the test will fail if this is called before the timeout.
+            expectation.fulfill()
+        })
+
+        // When
+        viewModel.updateSyncApproach(to: .onButtonTap)
+
+        // Then
+        wait(for: [expectation], timeout: 0.5)
+    }
+
     // MARK: - Pagination
 
     func test_it_syncs_the_second_page_after_searching_and_selecting_a_product_not_in_the_first_page() {

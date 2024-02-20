@@ -541,16 +541,24 @@ private struct ProductsSection: View {
     ///
     @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle
 
+    private var layoutVerticalSpacing: CGFloat {
+        if viewModel.shouldShowProductsSectionHeader {
+            return OrderForm.Layout.verticalSpacing
+        } else {
+            return .zero
+        }
+    }
+
     var body: some View {
         Group {
             Divider()
                 .renderedIf(presentationStyle == .modalOnModal)
 
-            VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
+            VStack(alignment: .leading, spacing: layoutVerticalSpacing) {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
                     && presentationStyle == .sideBySide
                     && !viewModel.shouldShowProductsSectionHeader {
-                    HStack {
+                    HStack() {
                         scanProductRow
                     }
                 }

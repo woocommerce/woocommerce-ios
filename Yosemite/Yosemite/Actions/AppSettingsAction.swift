@@ -240,4 +240,15 @@ public enum AppSettingsAction: Action {
 
     /// Loads the selected tax rate to be applied to orders. This is site-specific.
     case loadSelectedTaxRateID(siteID: Int64, onCompletion: (Int64?) -> Void)
+
+    // MARK: - Analytics Hub Cards
+
+    /// Stores the set of cards for the Analytics Hub with their updated enabled status and sort order.
+    ///
+    case setAnalyticsHubCards(siteID: Int64, cards: Set<AnalyticsCard>)
+
+    /// Loads the set of cards for the Analytics Hub with their enabled status and sort order.
+    /// Defaults to all cards enabled in a default order if no customized settings have been saved.
+    ///
+    case loadAnalyticsHubCards(siteID: Int64, onCompletion: (Set<AnalyticsCard>) -> Void)
 }

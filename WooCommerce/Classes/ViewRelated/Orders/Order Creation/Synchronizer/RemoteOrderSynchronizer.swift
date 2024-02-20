@@ -370,8 +370,14 @@ private extension RemoteOrderSynchronizer {
                 $0.orderID != .zero
             }
             .handleEvents(receiveOutput: { order in
-                // Set a `blocking` state if the order contains new lines or bundle configurations.
-                self.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                    // Always block when used in side-by-side mode because of immediate product change syncs and
+                    // potential for inconsistent states
+                    self.state = .syncing(blocking: true)
+                } else {
+                    // Set a `blocking` state if the order contains new lines or bundle configurations.
+                    self.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
+                }
             })
             .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.

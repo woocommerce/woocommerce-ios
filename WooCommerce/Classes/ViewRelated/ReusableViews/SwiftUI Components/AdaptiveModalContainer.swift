@@ -90,6 +90,8 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 .navigationViewStyle(.stack)
                 .layoutPriority(1)
 
+                Divider()
+
                 NavigationView {
                     primaryView(nil)
                 }

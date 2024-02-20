@@ -90,6 +90,7 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
         self.siteID = siteID
         self.stores = stores
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.blockingBehavior = .majorUpdates
 
         if case let .editing(initialOrder) = flow {
             order = initialOrder
@@ -124,6 +125,11 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
                 onCompletion(.success(order), usesGiftCard)
             }
             .store(in: &subscriptions)
+    }
+
+    private var blockingBehavior: OrderSyncBlockBehavior
+    func updateBlockingBehavior(_ behavior: OrderSyncBlockBehavior) {
+        blockingBehavior = behavior
     }
 }
 
@@ -369,14 +375,15 @@ private extension RemoteOrderSynchronizer {
             .filter { // Only continue if the order has been created.
                 $0.orderID != .zero
             }
-            .handleEvents(receiveOutput: { order in
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+            .handleEvents(receiveOutput: { [weak self] order in
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
+                    self?.blockingBehavior == .allUpdates {
                     // Always block when used in side-by-side mode because of immediate product change syncs and
                     // potential for inconsistent states
-                    self.state = .syncing(blocking: true)
+                    self?.state = .syncing(blocking: true)
                 } else {
                     // Set a `blocking` state if the order contains new lines or bundle configurations.
-                    self.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
+                    self?.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
                 }
             })
             .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.

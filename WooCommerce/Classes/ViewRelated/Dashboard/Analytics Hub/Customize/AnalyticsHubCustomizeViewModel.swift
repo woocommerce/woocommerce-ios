@@ -27,8 +27,9 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject {
     }
 
     init(allCards: Set<AnalyticsCard>) {
-        self.allCards = AnalyticsHubCustomizeViewModel.groupAllCards(allCards)
-        self.originalCards = AnalyticsHubCustomizeViewModel.groupAllCards(allCards)
+        let groupedCards = AnalyticsHubCustomizeViewModel.groupSelectedCards(in: allCards)
+        self.allCards = groupedCards
+        self.originalCards = groupedCards
 
         let selectedCards = allCards.filter { $0.enabled }
         self.selectedCards = selectedCards
@@ -40,7 +41,7 @@ private extension AnalyticsHubCustomizeViewModel {
     /// Groups the selected cards at the start of the list of all cards.
     /// This preserves the relative order of selected and unselected cards.
     ///
-    static func groupAllCards(_ allCards: Set<AnalyticsCard>) -> [AnalyticsCard] {
+    static func groupSelectedCards(in allCards: Set<AnalyticsCard>) -> [AnalyticsCard] {
         var groupedCards = Array(allCards).sorted() // Sort cards by sort order
         _ = groupedCards.stablePartition(by: { !$0.enabled }) // Group cards by enabled status
         return groupedCards

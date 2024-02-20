@@ -894,7 +894,6 @@ private extension ProductsViewController {
         }
 
         tableView.reloadData()
-        onDataReloaded.send(())
     }
 
     /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
@@ -1361,18 +1360,23 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             switch result {
             case .success(let settings):
-                self?.syncProductCategoryFilterRemotely(from: settings) { settings in
+                self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in
+                    guard let self else { return }
                     if let sort = settings.sort {
-                        self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                        sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
                     }
 
                     let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
-                    self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                                       productStatus: settings.productStatusFilter,
-                                                                       promotableProductType: promotableProductType,
-                                                                       productCategory: settings.productCategoryFilter,
-                                                                       numberOfActiveFilters: settings.numberOfActiveFilters())
+                    filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                 productStatus: settings.productStatusFilter,
+                                                                 promotableProductType: promotableProductType,
+                                                                 productCategory: settings.productCategoryFilter,
+                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
 
+                    // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
+                    // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
+                    // the product settings.
+                    onDataReloaded.send(())
                 }
             case .failure:
                 break

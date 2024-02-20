@@ -18,7 +18,7 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject {
 
     /// Original set of selected cards. Used to track if there are selection changes to be saved.
     ///
-    private let originalSelection: Set<AnalyticsCard>?
+    private let originalSelection: Set<AnalyticsCard>
 
     /// Whether there are changes to be saved (card order or selection has changed).
     ///

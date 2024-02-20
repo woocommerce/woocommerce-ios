@@ -1446,7 +1446,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         viewModel.updateSyncApproach(to: .immediate)
 
         // Then
-        wait(for: [expectation], timeout: 0.5)
+        wait(for: [expectation], timeout: 0.1)
     }
 
     func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_changes_to_onButtonTap() {
@@ -1465,7 +1465,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         viewModel.updateSyncApproach(to: .onButtonTap)
 
         // Then
-        wait(for: [expectation], timeout: 0.5)
+        wait(for: [expectation], timeout: 0.1)
     }
 
     // MARK: - Pagination

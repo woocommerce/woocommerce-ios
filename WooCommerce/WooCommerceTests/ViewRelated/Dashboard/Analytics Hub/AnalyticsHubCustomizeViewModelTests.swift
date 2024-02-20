@@ -53,4 +53,28 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
         XCTAssertTrue(vm.hasChanges)
     }
 
+    func test_saveChanges_returns_updated_array_of_cards() {
+        // Given
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: false)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: true)
+        let productsCard = AnalyticsCard(type: .products, enabled: true)
+
+        // When
+        let actualCards = waitFor { promise in
+            let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, productsCard]) { updatedCards in
+                promise(updatedCards)
+            }
+
+            vm.allCards = [ordersCard, revenueCard, productsCard]
+            vm.selectedCards = [revenueCard, ordersCard]
+            vm.saveChanges()
+        }
+
+        // Then
+        let expectedCards = [AnalyticsCard(type: .orders, enabled: true),
+                             AnalyticsCard(type: .revenue, enabled: true),
+                             AnalyticsCard(type: .products, enabled: false)]
+        assertEqual(expectedCards, actualCards)
+    }
+
 }

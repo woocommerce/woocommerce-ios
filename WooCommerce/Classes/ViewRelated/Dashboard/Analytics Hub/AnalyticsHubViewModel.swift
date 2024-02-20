@@ -51,7 +51,6 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
-        self.allCardsWithSettings = AnalyticsHubViewModel.defaultCards
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
         let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
@@ -101,6 +100,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: nil, siteStats: nil)
 
+    /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
+    ///
+    @Published private(set) var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
+
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
@@ -137,17 +140,11 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var dismissNotice: Notice?
 
-    /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
-    ///
-    var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel {
-        AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings)
-    }
-
     // MARK: Private data
 
     /// All analytics cards with their enabled/disabled settings.
     ///
-    @Published private(set) var allCardsWithSettings: [AnalyticsCard]
+    @Published private(set) var allCardsWithSettings: [AnalyticsCard]?
 
     /// Order stats for the current selected time period
     ///
@@ -428,6 +425,19 @@ private extension AnalyticsHubViewModel {
                     await self.updateData()
                 }
             }.store(in: &subscriptions)
+
+        $allCardsWithSettings
+            .sink { [weak self] analyticsCards in
+                guard let self, let analyticsCards else {
+                    return
+                }
+
+                self.customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: analyticsCards) { [weak self] updatedCards in
+                    guard let self else { return }
+                    self.allCardsWithSettings = updatedCards
+                    self.storeAnalyticsCardSettings(updatedCards)
+                }
+            }.store(in: &subscriptions)
     }
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?,
@@ -593,6 +603,13 @@ extension AnalyticsHubViewModel {
             }
             stores.dispatch(action)
         }
+    }
+
+    /// Sets analytics card settings in storage
+    ///
+    private func storeAnalyticsCardSettings(_ cards: [AnalyticsCard]) {
+        let action = AppSettingsAction.setAnalyticsHubCards(siteID: siteID, cards: cards)
+        stores.dispatch(action)
     }
 }
 

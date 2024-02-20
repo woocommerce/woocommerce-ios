@@ -59,7 +59,6 @@ struct AnalyticsHubView: View {
     @StateObject var viewModel: AnalyticsHubViewModel
 
     @State private var isEnablingJetpackStats = false
-    @State private var isCustomizingAnalyticsCards = false
 
     var body: some View {
         RefreshablePlainList(action: {
@@ -153,21 +152,49 @@ struct AnalyticsHubView: View {
                 viewModel.trackAnalyticsInteraction()
             })
         )
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    isCustomizingAnalyticsCards.toggle()
-                } label: {
-                    Text(Localization.editButton)
+        .customizeAnalyticsButton(viewModel: viewModel.customizeAnalyticsViewModel)
+    }
+}
+
+fileprivate extension View {
+    /// Adds a button to customize analytics if the provided view model is not nil
+    func customizeAnalyticsButton(viewModel: AnalyticsHubCustomizeViewModel?) -> some View {
+        self.modifier(ConditionalCustomizeAnalyticsButton(viewModel: viewModel))
+    }
+}
+
+fileprivate struct ConditionalCustomizeAnalyticsButton: ViewModifier {
+    let viewModel: AnalyticsHubCustomizeViewModel?
+
+    @State private var isCustomizingAnalyticsCards: Bool = false
+    private let featureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub)
+
+    func body(content: Content) -> some View {
+        if featureFlagEnabled, let viewModel {
+            content
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isCustomizingAnalyticsCards.toggle()
+                        } label: {
+                            Text(Localization.editButton)
+                        }
+                    }
                 }
-                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub))
-            }
+                .sheet(isPresented: $isCustomizingAnalyticsCards) {
+                    NavigationView {
+                        AnalyticsHubCustomizeView(viewModel: viewModel)
+                    }
+                }
+        } else {
+            content
         }
-        .sheet(isPresented: $isCustomizingAnalyticsCards) {
-            NavigationView {
-                AnalyticsHubCustomizeView(viewModel: viewModel.customizeAnalyticsViewModel)
-            }
-        }
+    }
+
+    enum Localization {
+        static let editButton = NSLocalizedString("analyticsHub.editButton.label",
+                                                  value: "Edit",
+                                                  comment: "Label for button that opens a screen to customize the Analytics Hub")
     }
 }
 
@@ -187,9 +214,6 @@ private extension AnalyticsHubView {
         static let sessionsCTAButton = NSLocalizedString("analyticsHub.jetpackStatsCTA.buttonLabel",
                                                          value: "Enable Jetpack Stats",
                                                          comment: "Label for button to enable Jetpack Stats")
-        static let editButton = NSLocalizedString("analyticsHub.editButton.label",
-                                                  value: "Edit",
-                                                  comment: "Label for button that opens a screen to customize the Analytics Hub")
     }
 
     struct Layout {

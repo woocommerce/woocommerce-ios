@@ -112,16 +112,15 @@ struct TextButtonStyle: ButtonStyle {
 struct IconButtonStyle: ButtonStyle {
     /// Image of the icon.
     let icon: UIImage
-    let withIconColor: Color?
 
     func makeBody(configuration: Configuration) -> some View {
-        return IconButton(configuration: configuration, icon: icon, withIconColor: withIconColor)
+        return IconButton(configuration: configuration, icon: icon)
     }
 }
 
 struct PlusButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        return IconButton(configuration: configuration, icon: .plusImage, withIconColor: nil)
+        return IconButton(configuration: configuration, icon: .plusImage)
     }
 }
 
@@ -398,19 +397,13 @@ private struct IconButton: View {
 
     let configuration: ButtonStyleConfiguration
     let icon: UIImage
-    let withIconColor: Color?
 
     var body: some View {
         HStack {
             Label {
                 configuration.label
             } icon: {
-                if let color = withIconColor {
-                    Image(uiImage: icon.withRenderingMode(.alwaysTemplate))
-                        .foregroundColor(color)
-                } else {
-                    Image(uiImage: icon)
-                }
+                Image(uiImage: icon)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -491,10 +484,10 @@ struct PrimaryButton_Previews: PreviewProvider {
 
             Group {
                 Button("Icon button") {}
-                    .buttonStyle(IconButtonStyle(icon: .cogImage, withIconColor: nil))
+                    .buttonStyle(IconButtonStyle(icon: .cogImage))
 
                 Button("Icon button (disabled)") {}
-                    .buttonStyle(IconButtonStyle(icon: .cogImage, withIconColor: nil))
+                    .buttonStyle(IconButtonStyle(icon: .cogImage))
                     .disabled(true)
             }
 
@@ -563,10 +556,10 @@ struct PrimaryButton_Previews: PreviewProvider {
 
             Group {
                 Button("Icon button") {}
-                    .buttonStyle(IconButtonStyle(icon: .cogImage, withIconColor: nil))
+                    .buttonStyle(IconButtonStyle(icon: .cogImage))
 
                 Button("Icon button (disabled)") {}
-                    .buttonStyle(IconButtonStyle(icon: .cogImage, withIconColor: nil))
+                    .buttonStyle(IconButtonStyle(icon: .cogImage))
                     .disabled(true)
             }
 

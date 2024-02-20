@@ -1412,13 +1412,13 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(simpleProduct)
 
-        let selectedItems = waitFor { promise in
+        let selectedItemIDs = waitFor { promise in
             let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
                                                      selectedItemIDs: [],
                                                      storageManager: self.storageManager,
                                                      syncApproach: .onButtonTap,
-                                                     onMultipleSelectionCompleted: { selectedItems in
-                promise(selectedItems)
+                                                     onMultipleSelectionCompleted: { selectedItemIDs in
+                promise(selectedItemIDs)
             })
 
             // When
@@ -1427,7 +1427,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // Then
-        assertEqual([1], selectedItems)
+        assertEqual([1], selectedItemIDs)
     }
 
     func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_stays_on_immediate() {

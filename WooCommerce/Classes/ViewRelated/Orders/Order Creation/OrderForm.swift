@@ -203,11 +203,16 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
-                            Group {
+                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                                Group {
+                                    OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
+                                    Spacer(minLength: Layout.sectionSpacing)
+                                }
+                                .renderedIf(flow == .editing)
+                            } else {
                                 OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
-                            .renderedIf(flow == .editing)
 
                             ProductsSection(scroll: scroll,
                                             flow: flow,

@@ -2061,6 +2061,7 @@
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
 		CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE006042077D1280079161F /* SummaryTableViewCell.xib */; };
 		CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006072077D14C0079161F /* OrderDetailsViewController.swift */; };
+		CEE482D52B83A9A300FAC8C5 /* AnalyticsCard+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE482D42B83A9A300FAC8C5 /* AnalyticsCard+UI.swift */; };
 		CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */; };
 		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
 		CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */; };
@@ -4774,6 +4775,7 @@
 		CEE006032077D1280079161F /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		CEE006042077D1280079161F /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
 		CEE006072077D14C0079161F /* OrderDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewController.swift; sourceTree = "<group>"; };
+		CEE482D42B83A9A300FAC8C5 /* AnalyticsCard+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCard+UI.swift"; sourceTree = "<group>"; };
 		CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagTests.swift; sourceTree = "<group>"; };
 		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 		CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManagerTests.swift; sourceTree = "<group>"; };
@@ -10934,6 +10936,7 @@
 			children = (
 				CEFA16F02B74F64D00512782 /* AnalyticsHubCustomizeView.swift */,
 				CE4FE7D92B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift */,
+				CEE482D42B83A9A300FAC8C5 /* AnalyticsCard+UI.swift */,
 			);
 			path = Customize;
 			sourceTree = "<group>";
@@ -13917,6 +13920,7 @@
 				B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */,
 				0235BFD9246E959500778909 /* ProductFormActionsFactory.swift in Sources */,
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
+				CEE482D52B83A9A300FAC8C5 /* AnalyticsCard+UI.swift in Sources */,
 				EE3E9E8F2B05FDD500985B2C /* SubscriptionExpiryViewController.swift in Sources */,
 				68B6F22B2ADE7ED500D171FC /* TooltipView.swift in Sources */,
 				02EAF5BE29FA04750058071C /* ProductDescriptionGenerationView.swift in Sources */,

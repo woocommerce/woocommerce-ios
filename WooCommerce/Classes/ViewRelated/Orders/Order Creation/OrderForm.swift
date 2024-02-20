@@ -109,9 +109,6 @@ struct OrderFormPresentationWrapper: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    // Configuration passed to initialize the `ProductSelectorView` based on current `UserInterfaceSizeClass`
-    @State private var productSelectorConfiguration: ProductSelectorView.Configuration = ProductSelectorConfiguration.loadConfiguration(for: .regular)
-
     var body: some View {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
             AdaptiveModalContainer(primaryView: { presentProductSelector in
@@ -121,7 +118,7 @@ struct OrderFormPresentationWrapper: View {
                           presentProductSelector: presentProductSelector)
             }, secondaryView: { isShowingProductSelector in
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorView(configuration: productSelectorConfiguration,
+                    ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
                                         source: .orderForm(flow: flow),
                                         isPresented: isShowingProductSelector,
                                         viewModel: productSelectorViewModel)
@@ -129,8 +126,6 @@ struct OrderFormPresentationWrapper: View {
                         ConfigurableBundleProductView(viewModel: viewModel)
                     }
                 }
-            }, onSizeClassChange: { sizeClass in
-                productSelectorConfiguration = ProductSelectorConfiguration.loadConfiguration(for: sizeClass)
             })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
@@ -138,17 +133,21 @@ struct OrderFormPresentationWrapper: View {
     }
 }
 
-private extension OrderFormPresentationWrapper {
-    enum ProductSelectorConfiguration {
-        static func loadConfiguration(for sizeClass: UserInterfaceSizeClass?) -> ProductSelectorView.Configuration {
-            switch sizeClass {
-            case .compact:
-                return .addProductToOrder()
-            case .regular:
-                return .splitViewAddProductToOrder()
-            default:
-                return .addProductToOrder()
-            }
+private extension ProductSelectorView.Configuration {
+    static func loadConfiguration(for sizeClass: UserInterfaceSizeClass?) -> ProductSelectorView.Configuration {
+        guard let sizeClass else {
+            DDLogWarn("No size class when determining configuration for product selector")
+            return .addProductToOrder()
+        }
+
+        switch sizeClass {
+        case .compact:
+            return .addProductToOrder()
+        case .regular:
+            return .splitViewAddProductToOrder()
+        @unknown default:
+            DDLogError("Size class unknown when determining configuration for product selector")
+            return .addProductToOrder()
         }
     }
 }

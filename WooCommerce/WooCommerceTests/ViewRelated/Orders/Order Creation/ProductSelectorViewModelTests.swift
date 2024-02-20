@@ -526,7 +526,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 syncChangesImmediately: true,
+                                                 syncApproach: .immediate,
                                                  onMultipleSelectionCompleted: { productIDs in
             selectedProducts = productIDs
         })
@@ -1402,6 +1402,70 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         assertEqual(bundleProduct, productToConfigure)
+    }
+
+    /// We call onMultipleSelectionCompleted to save the selections made on a modal product
+    /// selector, e.g. when an iPad is in split-screen mode and is rotated to landscape.
+    /// It's a blocking operation, so we only want to do it when required.
+    func test_updateSyncApproach_calls_onMultipleSelectionCompleted_when_approach_changes_to_immediate() {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(simpleProduct)
+
+        let selectedItemIDs = waitFor { promise in
+            let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                     selectedItemIDs: [],
+                                                     storageManager: self.storageManager,
+                                                     syncApproach: .onButtonTap,
+                                                     onMultipleSelectionCompleted: { selectedItemIDs in
+                promise(selectedItemIDs)
+            })
+
+            // When
+            viewModel.addSelection(id: 1)
+            viewModel.updateSyncApproach(to: .immediate)
+        }
+
+        // Then
+        assertEqual([1], selectedItemIDs)
+    }
+
+    func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_stays_on_immediate() {
+        // Given
+        let expectation = XCTestExpectation(description: "onMultipleSelectionCompleted called")
+        expectation.isInverted = true
+
+        let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                 syncApproach: .immediate,
+                                                 onMultipleSelectionCompleted: { selectedItems in
+            /// Since the expectation is inverted, the test will fail if this is called before the timeout.
+            expectation.fulfill()
+        })
+
+        // When
+        viewModel.updateSyncApproach(to: .immediate)
+
+        // Then
+        wait(for: [expectation], timeout: 0.1)
+    }
+
+    func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_changes_to_onButtonTap() {
+        // Given
+        let expectation = XCTestExpectation(description: "onMultipleSelectionCompleted called")
+        expectation.isInverted = true
+
+        let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                 syncApproach: .immediate,
+                                                 onMultipleSelectionCompleted: { selectedItems in
+            /// Since the expectation is inverted, the test will fail if this is called before the timeout.
+            expectation.fulfill()
+        })
+
+        // When
+        viewModel.updateSyncApproach(to: .onButtonTap)
+
+        // Then
+        wait(for: [expectation], timeout: 0.1)
     }
 
     // MARK: - Pagination

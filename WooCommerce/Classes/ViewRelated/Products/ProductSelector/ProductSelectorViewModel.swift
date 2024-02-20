@@ -210,7 +210,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onConfigureProductRow: ((_ product: Product) -> Void)?
 
-    @Published var syncChangesImmediately: Bool
+    @Published private(set) var syncApproach: SyncApproach
 
     private var orderSyncState: Published<OrderSyncState>.Publisher?
 
@@ -226,7 +226,7 @@ final class ProductSelectorViewModel: ObservableObject {
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex,
          pageSize: Int = PaginationTracker.Defaults.pageSize,
-         syncChangesImmediately: Bool = false,
+         syncApproach: SyncApproach = .onButtonTap,
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
@@ -248,7 +248,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.purchasableItemsOnly = purchasableItemsOnly
         self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
-        self.syncChangesImmediately = syncChangesImmediately
+        self.syncApproach = syncApproach
         self.orderSyncState = orderSyncState
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
@@ -298,7 +298,7 @@ final class ProductSelectorViewModel: ObservableObject {
             onProductSelectionStateChanged?(selectedProduct)
         }
 
-        if syncChangesImmediately {
+        if syncApproach == .immediate {
             onMultipleSelectionCompleted?(selectedItemsIDs)
         }
     }
@@ -339,7 +339,7 @@ final class ProductSelectorViewModel: ObservableObject {
             guard let self else { return }
             onVariationSelectionStateChanged?(productVariation, product)
 
-            if syncChangesImmediately {
+            if syncApproach == .immediate {
                 onMultipleSelectionCompleted?(selectedItemsIDs)
             }
         },
@@ -347,7 +347,7 @@ final class ProductSelectorViewModel: ObservableObject {
             guard let self else { return }
             onSelectedVariationsCleared?()
 
-            if syncChangesImmediately {
+            if syncApproach == .immediate {
                 onMultipleSelectionCompleted?(selectedItemsIDs)
             }
         })
@@ -400,6 +400,18 @@ final class ProductSelectorViewModel: ObservableObject {
         updateSelectedVariations(productID: productID, selectedVariationIDs: selectedIDs)
     }
 
+    func updateSyncApproach(to newSyncApproach: SyncApproach) {
+        guard newSyncApproach != syncApproach else {
+            return
+        }
+
+        if newSyncApproach == .immediate {
+            onMultipleSelectionCompleted?(selectedItemsIDs)
+        }
+
+        syncApproach = newSyncApproach
+    }
+
     /// Triggers completion closure when the multiple selection completes.
     ///
     func completeMultipleSelection() {
@@ -419,9 +431,14 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs = []
 
         onAllSelectionsCleared?()
-        if syncChangesImmediately {
+        if syncApproach == .immediate {
             onMultipleSelectionCompleted?(selectedItemsIDs)
         }
+    }
+
+    enum SyncApproach {
+        case immediate
+        case onButtonTap
     }
 }
 

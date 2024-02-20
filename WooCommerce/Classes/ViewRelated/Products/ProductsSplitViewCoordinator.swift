@@ -10,6 +10,7 @@ final class ProductsSplitViewCoordinator: NSObject {
         case productForm(product: Product?)
     }
 
+    /// The source of truth of the content shown in the secondary view.
     @Published private var contentTypes: [SecondaryViewContentType] = []
     private var selectedProduct: AnyPublisher<Product?, Never> {
         $contentTypes.map { contentTypes -> Product? in
@@ -137,12 +138,15 @@ private extension ProductsSplitViewCoordinator {
 
     func autoSelectProductOnInitialDataLoad() {
         Publishers.CombineLatest(selectedProduct, productsViewController.onDataReloaded)
+            .filter { [weak self] selectedProduct, onDataReloaded in
+                guard let self else {
+                    return false
+                }
+                return selectedProduct == nil && !splitViewController.isCollapsed
+            }
             .first()
             .sink { [weak self] selectedProduct, onDataReloaded in
-                guard let self else { return }
-                if selectedProduct == nil && !splitViewController.isCollapsed {
-                    productsViewController.selectFirstProductIfAvailable()
-                }
+                self?.productsViewController.selectFirstProductIfAvailable()
             }
             .store(in: &subscriptions)
     }

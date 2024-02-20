@@ -553,8 +553,6 @@ private struct ProductsSection: View {
                     HStack {
                         scanProductRow
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color(.listForeground(modal: true)))
                 }
                 HStack {
                     Text(OrderForm.Localization.products)
@@ -695,18 +693,20 @@ private extension ProductsSection {
                 logPermissionStatus(status: .permitted)
             }
         }, label: {
-            HStack {
-                if showAddProductViaSKUScannerLoading {
-                    ProgressView()
-                } else {
+            if showAddProductViaSKUScannerLoading {
+                ProgressView()
+            } else {
+                HStack() {
+                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                        .foregroundColor(Color(.brand))
                     Text(Localization.scanProductRowTitle)
-                    Spacer()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .foregroundColor(Color(.accent))
+                .bodyStyle()
             }
         })
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .buttonStyle(IconButtonStyle(icon: .scanImage, withIconColor: Color(.brand)))
-        .foregroundColor(Color(.brand))
+        .frame(maxWidth: .infinity)
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {

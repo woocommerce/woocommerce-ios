@@ -683,27 +683,45 @@ private struct ProductsSection: View {
 }
 
 private extension ProductsSection {
+    // Handles the different outcomes of barcode scanner presentation, depending on capture permission status
+    func handleProductScannerPresentation() {
+        viewModel.trackBarcodeScanningButtonTapped()
+        let capturePermissionStatus = viewModel.capturePermissionStatus
+        switch capturePermissionStatus {
+        case .notPermitted:
+            viewModel.trackBarcodeScanningNotPermitted()
+            logPermissionStatus(status: .notPermitted)
+            self.showPermissionsSheet = true
+        case .notDetermined:
+            logPermissionStatus(status: .notDetermined)
+            viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                if isPermissionGranted {
+                    showAddProductViaSKUScanner = true
+                    logPermissionStatus(status: .permitted)
+                }
+            })
+        case .permitted:
+            showAddProductViaSKUScanner = true
+            logPermissionStatus(status: .permitted)
+        }
+    }
+
+    // View containing the scanner, ready for product SKU reading input
+    func scannerViewContent() -> ProductSKUInputScannerView {
+        ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+            showAddProductViaSKUScanner = false
+            showAddProductViaSKUScannerLoading = true
+            viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                showAddProductViaSKUScannerLoading = false
+            }, onRetryRequested: {
+                showAddProductViaSKUScanner = true
+            })
+        })
+    }
+
     @ViewBuilder var scanProductRow: some View {
         Button(action: {
-            viewModel.trackBarcodeScanningButtonTapped()
-            let capturePermissionStatus = viewModel.capturePermissionStatus
-            switch capturePermissionStatus {
-            case .notPermitted:
-                viewModel.trackBarcodeScanningNotPermitted()
-                logPermissionStatus(status: .notPermitted)
-                self.showPermissionsSheet = true
-            case .notDetermined:
-                logPermissionStatus(status: .notDetermined)
-                viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
-                    if isPermissionGranted {
-                        showAddProductViaSKUScanner = true
-                        logPermissionStatus(status: .permitted)
-                    }
-                })
-            case .permitted:
-                showAddProductViaSKUScanner = true
-                logPermissionStatus(status: .permitted)
-            }
+            handleProductScannerPresentation()
         }, label: {
             if showAddProductViaSKUScannerLoading {
                 ProgressView()
@@ -722,39 +740,13 @@ private extension ProductsSection {
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {
-            ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                showAddProductViaSKUScanner = false
-                showAddProductViaSKUScannerLoading = true
-                viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                    showAddProductViaSKUScannerLoading = false
-                }, onRetryRequested: {
-                    showAddProductViaSKUScanner = true
-                })
-            })
+            scannerViewContent()
         })
     }
 
     @ViewBuilder var scanProductButton: some View {
         Button(action: {
-            viewModel.trackBarcodeScanningButtonTapped()
-            let capturePermissionStatus = viewModel.capturePermissionStatus
-            switch capturePermissionStatus {
-            case .notPermitted:
-                viewModel.trackBarcodeScanningNotPermitted()
-                logPermissionStatus(status: .notPermitted)
-                self.showPermissionsSheet = true
-            case .notDetermined:
-                logPermissionStatus(status: .notDetermined)
-                viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
-                    if isPermissionGranted {
-                        showAddProductViaSKUScanner = true
-                        logPermissionStatus(status: .permitted)
-                    }
-                })
-            case .permitted:
-                showAddProductViaSKUScanner = true
-                logPermissionStatus(status: .permitted)
-            }
+            handleProductScannerPresentation()
         }, label: {
             if showAddProductViaSKUScannerLoading {
                 ProgressView()
@@ -767,15 +759,7 @@ private extension ProductsSection {
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {
-            ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                showAddProductViaSKUScanner = false
-                showAddProductViaSKUScannerLoading = true
-                viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                    showAddProductViaSKUScannerLoading = false
-                }, onRetryRequested: {
-                    showAddProductViaSKUScanner = true
-                })
-            })
+            scannerViewContent()
         })
     }
 }

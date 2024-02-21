@@ -8,6 +8,8 @@ extension WordPressAuthenticator {
                                             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = true
         let isManualErrorHandlingEnabled = featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin)
+        let useURLSession = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.useURLSessionInWordPressKit)
+
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: dotcomAuthScheme,
@@ -39,7 +41,8 @@ extension WordPressAuthenticator {
                                                                 enableManualSiteCredentialLogin: true,
                                                                 enableManualErrorHandlingForSiteCredentialLogin: isManualErrorHandlingEnabled,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
-                                                                enableSiteAddressLoginOnlyInPrologue: true)
+                                                                enableSiteAddressLoginOnlyInPrologue: true,
+                                                                useURLSession: useURLSession)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)

@@ -90,9 +90,6 @@ target 'WooCommerce' do
   pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: 'b516ec85375fe4e3fa0d4f5a2358697cf43cc6a8'
   # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
 
-  pod 'WordPressKit', '~> 13.1'
-  # pod 'WordPressKit', git: 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', commit: ''
-
   wordpress_shared
 
   pod 'WordPressUI', '~> 1.15'

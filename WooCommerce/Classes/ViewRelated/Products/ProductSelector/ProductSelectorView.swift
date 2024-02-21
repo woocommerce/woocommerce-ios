@@ -309,21 +309,24 @@ private extension ProductSelectorView {
     }
 
     @ViewBuilder private var productSelectorHeaderSearchRow: some View {
-        HStack {
-            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-                searchHeaderisBeingEdited = isEditing
-            })
-            .accessibilityIdentifier("product-selector-search-bar")
-            Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+        GeometryReader { geometry in
+            HStack {
+                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+                    searchHeaderisBeingEdited = isEditing
+                })
+                .accessibilityIdentifier("product-selector-search-bar")
+                Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+                    ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+                }
+                .if(horizontalSizeClass == .regular && geometry.size.width < 450) { $0.pickerStyle(.menu) }
+                .if(horizontalSizeClass == .compact || geometry.size.width > 450) { $0.pickerStyle(.segmented) }
+                .padding(.leading)
+                .padding(.trailing)
+                .renderedIf(searchHeaderisBeingEdited)
             }
-            .if(horizontalSizeClass == .compact) { $0.pickerStyle(.segmented) }
-            .if(horizontalSizeClass == .regular) { $0.pickerStyle(.menu) }
-            .padding(.leading)
-            .padding(.trailing)
-            .renderedIf(searchHeaderisBeingEdited)
+            .background(Color(.listForeground(modal: false)))
         }
-        .background(Color(.listForeground(modal: false)))
+        .frame(height: 48)
     }
 }
 

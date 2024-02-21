@@ -1015,7 +1015,8 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if splitViewController?.isCollapsed == true || !isSplitViewEnabled {
+        if (splitViewController?.isCollapsed == true || !isSplitViewEnabled) &&
+            !tableView.isEditing {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 

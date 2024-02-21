@@ -969,9 +969,7 @@ private extension ProductsViewController {
                     if let currentSelectedIndexPath {
                         tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                     }
-                    let scrollPosition: UITableView.ScrollPosition = tableView.indexPathsForVisibleRows?.contains(selectedIndexPath) == true ?
-                        .none: .middle
-                    tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
+                    tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
                 } else if let currentSelectedIndexPath {
                     tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                 }

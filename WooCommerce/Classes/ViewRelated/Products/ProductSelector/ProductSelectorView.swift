@@ -60,7 +60,7 @@ struct ProductSelectorView: View {
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
-    @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     /// Tracks the state for the 'Clear Selection' button
     ///
@@ -123,7 +123,7 @@ struct ProductSelectorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
-                    .renderedIf(configuration.multipleSelectionEnabled && !viewModel.syncChangesImmediately)
+                    .renderedIf(configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap)
 
                     if let variationListViewModel = variationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelectorView(
@@ -158,7 +158,6 @@ struct ProductSelectorView: View {
             }
         }
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
-        .ignoresSafeArea(.container, edges: .horizontal)
         .navigationTitle(configuration.title)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
         .toolbar {
@@ -173,8 +172,11 @@ struct ProductSelectorView: View {
         }
         .onAppear {
             viewModel.onLoadTrigger.send()
-            viewModel.syncChangesImmediately = presentationStyle == .sideBySide
+            updateSyncApproach(for: horizontalSizeClass)
         }
+        .onChange(of: horizontalSizeClass, perform: { newSizeClass in
+            updateSyncApproach(for: newSizeClass)
+        })
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
@@ -188,6 +190,25 @@ struct ProductSelectorView: View {
             }
         }
         .interactiveDismissDisabled()
+    }
+
+    private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {
+        guard let horizontalSizeClass,
+              ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return
+        }
+
+        let newSyncApproach: ProductSelectorViewModel.SyncApproach
+        switch horizontalSizeClass {
+        case .regular:
+            newSyncApproach = .immediate
+        case .compact:
+            newSyncApproach = .onButtonTap
+        @unknown default:
+            DDLogWarn("Unknown size class used to determine product selector sync approach")
+            newSyncApproach = .onButtonTap
+        }
+        viewModel.updateSyncApproach(to: newSyncApproach)
     }
 
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.

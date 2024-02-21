@@ -2,22 +2,14 @@ import SwiftUI
 
 struct AnalyticsHubCustomizeView: View {
     // TODO: Initialize with real data
-    @ObservedObject var viewModel = AnalyticsHubCustomizeViewModel(allCards: [
-        "Revenue",
-        "Orders",
-        "Products",
-        "Sessions"
-    ], selectedCards: [
-        "Revenue",
-        "Products"
-    ])
+    @ObservedObject var viewModel: AnalyticsHubCustomizeViewModel
 
     /// Dismisses the view.
     ///
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        MultiSelectionReorderableList(contents: $viewModel.allCards, contentKeyPath: \.self, selectedItems: $viewModel.selectedCards)
+        MultiSelectionReorderableList(contents: $viewModel.allCards, contentKeyPath: \.name, selectedItems: $viewModel.selectedCards)
             .toolbar(content: {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -50,6 +42,6 @@ private extension AnalyticsHubCustomizeView {
 
 #Preview {
     NavigationView {
-        AnalyticsHubCustomizeView()
+        AnalyticsHubCustomizeView(viewModel: AnalyticsHubCustomizeViewModel(allCards: AnalyticsHubCustomizeViewModel.sampleCards))
     }
 }

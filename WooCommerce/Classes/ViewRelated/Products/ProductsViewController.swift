@@ -945,7 +945,8 @@ private extension ProductsViewController {
 
     func observeSelectedProductAndDataLoadedStateToUpdateSelectedRow() {
         Publishers.CombineLatest3(selectedProduct,
-                                  onDataReloaded,
+                                  // Giving it an initial value to enable the combined publisher from the beginning.
+                                  onDataReloaded.merge(with: Just<Void>(())),
                                   // Giving it an initial value to enable the combined publisher from the beginning.
                                   onTableViewEditingEnd.merge(with: Just<Void>(())))
             .sink { [weak self] selectedProduct, _, _ in

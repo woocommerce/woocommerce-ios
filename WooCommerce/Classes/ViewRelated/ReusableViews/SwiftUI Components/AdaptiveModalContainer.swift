@@ -18,22 +18,13 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
     @ViewBuilder let primaryView: (_ presentSecondaryView: (() -> Void)?) -> PrimaryView
     @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
 
-    /// Callback to notify of `UserInterfaceSizeClass` changes as soon as one of the views is rendered
-    var onSizeClassChange: ((UserInterfaceSizeClass?) -> Void)
-
     var body: some View {
         if horizontalSizeClass == .compact {
             ModalOnModalView(primaryView: primaryView, secondaryView: secondaryView)
                 .environment(\.adaptiveModalContainerPresentationStyle, .modalOnModal)
-                .onAppear {
-                    onSizeClassChange(horizontalSizeClass)
-                }
         } else {
             SideBySideView(primaryView: primaryView, secondaryView: secondaryView)
                 .environment(\.adaptiveModalContainerPresentationStyle, .sideBySide)
-                .onAppear {
-                    onSizeClassChange(horizontalSizeClass)
-                }
         }
     }
 
@@ -74,7 +65,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
         @State var isShowingSecondaryView = true
 
         var body: some View {
-            HStack {
+            HStack(spacing: 0) {
                 NavigationView {
                     secondaryView($isShowingSecondaryView)
                         .toolbar {
@@ -89,6 +80,8 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 }
                 .navigationViewStyle(.stack)
                 .layoutPriority(1)
+
+                Divider()
 
                 NavigationView {
                     primaryView(nil)

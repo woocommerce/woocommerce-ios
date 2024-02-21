@@ -41,11 +41,6 @@
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ about accepting payments with Tap to Pay on iPhone.";
 
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
-
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ about accepting payments with your mobile device and ordering card readers.";
 
@@ -1391,6 +1386,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "Ready to Go!";
 
+/* Message on the Blaze campaign creation error screen. Keep '\n' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "Something's not quite right.\nWe couldn't create your campaign.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "Failed to fetch campaign image details.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "Failed to upload campaign image.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "Cancel Campaign";
 
@@ -1399,9 +1403,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "Get support";
-
-/* Message on the Blaze campaign creation error screen. Keep '\n' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "Something's not quite right.\nWe couldn't create your campaign.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "No payment has been taken.";
@@ -2974,7 +2975,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "Custom";
 
 /* Navigation title on the add custom amount view in orders.
@@ -3054,6 +3056,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the store onboarding task to update store title */
 "Customizing your store name can also help your store search engine optimization." = "Customizing your store name can also help your store search engine optimization.";
+
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "Add";
 
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
@@ -3613,9 +3618,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Email note to customer";
-
-/* No comment provided by engineer. */
-"Email note to customer %@" = "Email note to customer %@";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Email receipt";
@@ -5069,9 +5071,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -5108,6 +5108,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Learn more about the data we collect about your store and your options to control this data sharing.";
+
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "Learn more";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "%1$@ about accepting payments with your mobile device and ordering card readers";
 
 /* Country option for a site address. */
 "Lebanon" = "Lebanon";
@@ -5810,6 +5819,12 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "New Zealand" = "New Zealand";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "Email note to customer Off";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Email note to customer On";
+
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
@@ -6012,9 +6027,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "Off";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "Offline - using cached data";
@@ -6049,9 +6061,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Oman" = "Oman";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "On";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -6135,9 +6144,6 @@ which should be translated separately and considered part of this sentence. */
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Optional";
-
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "Optional Tracking Information";
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Options";
@@ -6231,6 +6237,9 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "Learn More.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "Shipping Tax";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Add Shipping";
 
@@ -6254,6 +6263,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "Web admin";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "Optional Tracking Information";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Custom Amounts";
@@ -6568,7 +6580,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Performance";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "Performance plan only";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -7157,6 +7169,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for computed value `product refunds + taxes = subtotal`.
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Products Refund";
+
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld products selected";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "Select products";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld product selected";
 
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Cancel";
@@ -7817,6 +7838,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Search results only";
+
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "Cancel";
 
 /* Description of the 'My Store' screen - used for spotlight indexing on iOS. */
 "See at a glance which products are winning." = "See at a glance which products are winning.";
@@ -8493,6 +8517,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the state field */
 "State missing" = "State missing";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "Custom Range";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -11102,6 +11129,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Your site domains";
+
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "Your site is taking a long time to respond";
 
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "Your site plan has ended.";

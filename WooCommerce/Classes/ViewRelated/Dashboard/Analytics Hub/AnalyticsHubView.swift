@@ -164,7 +164,7 @@ struct AnalyticsHubView: View {
         }
         .sheet(isPresented: $isCustomizingAnalyticsCards) {
             NavigationView {
-                AnalyticsHubCustomizeView()
+                AnalyticsHubCustomizeView(viewModel: viewModel.customizeAnalyticsViewModel)
             }
         }
     }

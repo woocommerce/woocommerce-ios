@@ -914,7 +914,7 @@ private extension ProductsSection {
     enum Localization {
         static let scanProductRowTitle = NSLocalizedString(
             "orderForm.products.add.scan.row.title",
-            value: "Scan product",
+            value: "Scan Product",
             comment: "Title for the barcode scanning button to add a product to an order")
     }
 

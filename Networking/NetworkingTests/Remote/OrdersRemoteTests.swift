@@ -117,7 +117,6 @@ final class OrdersRemoteTests: XCTestCase {
     func test_loadAllOrders_includes_customer_parameter_when_provided() {
         // Given
         let remote = OrdersRemote(network: network)
-        let modifiedAfter = Date()
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let expectedCustomerID: Int64 = 123
 
@@ -134,7 +133,6 @@ final class OrdersRemoteTests: XCTestCase {
             return
         }
 
-        let dateFormatter = DateFormatter.Defaults.iso8601
         let expectedParam = "customer=\(expectedCustomerID)"
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
@@ -142,7 +140,6 @@ final class OrdersRemoteTests: XCTestCase {
     func test_loadAllOrders_includes_product_parameter_when_provided() {
         // Given
         let remote = OrdersRemote(network: network)
-        let modifiedAfter = Date()
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let expectedProductID: Int64 = 13
 
@@ -159,7 +156,6 @@ final class OrdersRemoteTests: XCTestCase {
             return
         }
 
-        let dateFormatter = DateFormatter.Defaults.iso8601
         let expectedParam = "product=\(expectedProductID)"
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }

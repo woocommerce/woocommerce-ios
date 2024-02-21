@@ -143,8 +143,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     // MARK: Private data
 
     /// All analytics cards with their enabled/disabled settings.
+    /// Defaults to all enabled cards in default order.
     ///
-    @Published private(set) var allCardsWithSettings: [AnalyticsCard]?
+    @Published private(set) var allCardsWithSettings = AnalyticsHubViewModel.defaultCards
 
     /// Order stats for the current selected time period
     ///
@@ -428,9 +429,7 @@ private extension AnalyticsHubViewModel {
 
         $allCardsWithSettings
             .sink { [weak self] analyticsCards in
-                guard let self, let analyticsCards else {
-                    return
-                }
+                guard let self else { return }
 
                 self.customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: analyticsCards) { [weak self] updatedCards in
                     guard let self else { return }

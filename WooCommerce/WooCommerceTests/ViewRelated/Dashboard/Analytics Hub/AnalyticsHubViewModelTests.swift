@@ -596,25 +596,13 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_it_updates_allCardsWithSettings_when_saved() async throws {
         // Given
-        // VM loads default set of cards
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .loadAnalyticsHubCards(_, completion):
-                completion(self.defaultCards())
-            default:
-                break
-            }
-        }
-        await vm.loadAnalyticsCardSettings()
 
         // When
-        // Only revenue card is selected and changes are saved
         try XCTUnwrap (vm.customizeAnalyticsViewModel).selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
         try XCTUnwrap (vm.customizeAnalyticsViewModel).saveChanges()
 
         // Then
-        // analyticsCardSet contains updated selection
         let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
                              AnalyticsCard(type: .orders, enabled: false),
                              AnalyticsCard(type: .products, enabled: false),
@@ -624,17 +612,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_it_stores_updated_analytics_cards_when_saved() async throws {
         // Given
-        // VM loads default set of cards
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .loadAnalyticsHubCards(_, completion):
-                completion(self.defaultCards())
-            default:
-                break
-            }
-        }
-        await vm.loadAnalyticsCardSettings()
 
         // When
         let storedAnalyticsCards = try waitFor { promise in

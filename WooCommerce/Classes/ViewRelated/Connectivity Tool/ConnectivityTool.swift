@@ -140,9 +140,10 @@ struct ConnectivityToolCard: View {
     ///
     @ScaledMetric private var iconSize = 40.0
     private static let cornerRadius = 4.0
+    private static let verticalSpacing = 16.0
 
     var body: some View {
-        VStack {
+        VStack(spacing: Self.verticalSpacing) {
             HStack {
 
                 Circle()

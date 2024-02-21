@@ -96,9 +96,9 @@ final class ConnectivityToolViewModel {
                         }
                     }()
 
-                    let state: ConnectivityToolCard.State = reachable ? 
-                        .success : 
-                        .error(NSLocalizedString("It looks like you're not connected to the internet.\n" +
+                    let state: ConnectivityToolCard.State = reachable ?
+                        .success :
+                        .error(NSLocalizedString("It looks like you're not connected to the internet.\n\n" +
                                                  "Ensure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings.",
                                                  comment: "Message when there is no internet connection in the recovery tool"))
                     continuation.resume(returning: state)

@@ -174,7 +174,7 @@ final class DashboardViewController: UIViewController {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             let vc = ConnectivityToolViewController()
-            self.show(self, sender: nil)
+            self.show(vc, sender: nil)
         }
     }
 

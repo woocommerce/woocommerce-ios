@@ -46,12 +46,16 @@ public enum OrderAction: Action {
     ///               doesn't matter. It will be converted to UTC later.
     ///     - modifiedAfter: Only include orders modified after this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
+    ///     - customerID: Only include orders placed by the given customer.
+    ///     - productID: Only include orders with `lineItems` including the given product.
     ///
     case synchronizeOrders(siteID: Int64,
                            statuses: [String]?,
                            after: Date? = nil,
                            before: Date? = nil,
                            modifiedAfter: Date? = nil,
+                           customerID: Int64? = nil,
+                           productID: Int64? = nil,
                            pageNumber: Int,
                            pageSize: Int,
                            onCompletion: (TimeInterval, Error?) -> Void)

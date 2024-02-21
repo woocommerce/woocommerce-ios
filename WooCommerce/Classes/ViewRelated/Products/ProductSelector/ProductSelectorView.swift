@@ -313,12 +313,12 @@ private extension ProductSelectorView {
             SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
                 searchHeaderisBeingEdited = isEditing
             })
-            .padding(.horizontal, insets: safeAreaInsets)
             .accessibilityIdentifier("product-selector-search-bar")
             Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
                 ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
             }
-            .pickerStyle(.segmented)
+            .if(horizontalSizeClass == .compact) { $0.pickerStyle(.segmented) }
+            .if(horizontalSizeClass == .regular) { $0.pickerStyle(.menu) }
             .padding(.leading)
             .padding(.trailing)
             .renderedIf(searchHeaderisBeingEdited)

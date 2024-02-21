@@ -940,12 +940,12 @@ private extension ProductsViewController {
 
             if result.isFailure {
                 syncingCoordinator.resynchronize()
+            } else {
+                // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
+                // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
+                // the product settings.
+                onDataReloaded.send(())
             }
-
-            // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
-            // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
-            // the product settings.
-            onDataReloaded.send(())
         }
     }
 
@@ -1379,12 +1379,12 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                                                  promotableProductType: promotableProductType,
                                                                  productCategory: settings.productCategoryFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
-
+                    onCompletion(result)
                 }
             case let .failure(error):
                 DDLogError("⛔️ Error loading product settings: \(error)")
+                onCompletion(result)
             }
-            onCompletion(result)
         }
         ServiceLocator.stores.dispatch(action)
     }

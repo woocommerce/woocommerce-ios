@@ -19,6 +19,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         let view = ConnectivityTool(cards: viewModel.cards)
         super.init(rootView: view)
         self.hidesBottomBarWhenPushed = true
+        self.title = NSLocalizedString("Connectivity Test", comment: "Screen title for the connectivity tool")
     }
 
     override func viewDidLoad() {

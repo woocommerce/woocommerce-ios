@@ -762,6 +762,7 @@
 		2602A64627BDBEBA00B347F1 /* ProductInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64527BDBEBA00B347F1 /* ProductInputTransformer.swift */; };
 		2602A64827BDBF8000B347F1 /* ProductInputTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64727BDBF8000B347F1 /* ProductInputTransformerTests.swift */; };
 		2602A64A27BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */; };
+		260520F22B83B1B7005D5D59 /* ConnectivityToolViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260520F12B83B1B7005D5D59 /* ConnectivityToolViewModel.swift */; };
 		260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260837082AA66E4A0004A12B /* UserNotifications.framework */; };
 		2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */; };
 		2608370E2AA66E4B0004A12B /* OrderNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2608370D2AA66E4B0004A12B /* OrderNotificationViewController.swift */; };
@@ -3472,6 +3473,7 @@
 		2602A64527BDBEBA00B347F1 /* ProductInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputTransformer.swift; sourceTree = "<group>"; };
 		2602A64727BDBF8000B347F1 /* ProductInputTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputTransformerTests.swift; sourceTree = "<group>"; };
 		2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteOrderSynchronizerTests.swift; sourceTree = "<group>"; };
+		260520F12B83B1B7005D5D59 /* ConnectivityToolViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityToolViewModel.swift; sourceTree = "<group>"; };
 		260837072AA66E4A0004A12B /* NotificationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		260837082AA66E4A0004A12B /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -7425,6 +7427,7 @@
 			isa = PBXGroup;
 			children = (
 				26CE6F382B7E71AA008DB858 /* ConnectivityTool.swift */,
+				260520F12B83B1B7005D5D59 /* ConnectivityToolViewModel.swift */,
 			);
 			path = "Connectivity Tool";
 			sourceTree = "<group>";
@@ -13614,6 +13617,7 @@
 				0202B6922387AB0C00F3EBE0 /* WooTab+Tag.swift in Sources */,
 				D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */,
 				02619858256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift in Sources */,
+				260520F22B83B1B7005D5D59 /* ConnectivityToolViewModel.swift in Sources */,
 				0235595024496853004BE2B8 /* BottomSheetListSelectorViewController.swift in Sources */,
 				57A49128250A7EB2000FEF21 /* OrderListViewController.swift in Sources */,
 				DE34771327F174C8009CA300 /* StatusView.swift in Sources */,

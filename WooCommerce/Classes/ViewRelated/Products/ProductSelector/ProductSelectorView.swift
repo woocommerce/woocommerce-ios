@@ -91,6 +91,7 @@ struct ProductSelectorView: View {
                 productSelectorHeaderSearchRow
                 productSelectorHeaderTitleRow
             }
+            Divider()
 
             switch viewModel.syncStatus {
             case .results:

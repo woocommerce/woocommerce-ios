@@ -83,53 +83,14 @@ struct ProductSelectorView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-                    searchHeaderisBeingEdited = isEditing
-                })
-                .padding(.horizontal, insets: safeAreaInsets)
-                .accessibilityIdentifier("product-selector-search-bar")
-                Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                    ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
-                }
-                .pickerStyle(.segmented)
-                .padding(.leading)
-                .padding(.trailing)
-                .renderedIf(searchHeaderisBeingEdited)
-                Button(action: {
-                    // TODO: gh-12011
-                }, label: {
-                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                        .foregroundColor(Color(.brand))
-                })
-                .padding(.trailing)
-                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) &&
-                            horizontalSizeClass == .regular)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) &&
+                horizontalSizeClass == .regular {
+                productSelectorHeaderTitleRow
+                productSelectorHeaderSearchRow
+            } else {
+                productSelectorHeaderSearchRow
+                productSelectorHeaderTitleRow
             }
-
-            HStack {
-                Text(viewModel.selectProductsTitle)
-                    .renderedIf(configuration.productHeaderTextEnabled)
-                    .fixedSize()
-                    .padding(.leading)
-                Button(Localization.clearSelection) {
-                    viewModel.clearSelection()
-                }
-                .buttonStyle(LinkButtonStyle())
-                .fixedSize()
-                .disabled(isClearSelectionDisabled)
-                .renderedIf(configuration.multipleSelectionEnabled)
-
-                Spacer()
-
-                Button(viewModel.filterButtonTitle) {
-                    showingFilters.toggle()
-                    ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
-                }
-                .buttonStyle(LinkButtonStyle())
-                .fixedSize()
-            }
-            .padding(.horizontal, insets: safeAreaInsets)
 
             switch viewModel.syncStatus {
             case .results:
@@ -315,6 +276,53 @@ struct ProductSelectorView: View {
             .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
             .disabled(viewModel.selectionDisabled)
         }
+    }
+}
+
+private extension ProductSelectorView {
+    @ViewBuilder private var productSelectorHeaderTitleRow: some View {
+        HStack {
+            Text(viewModel.selectProductsTitle)
+                .renderedIf(configuration.productHeaderTextEnabled)
+                .fixedSize()
+                .padding(.leading)
+            Button(Localization.clearSelection) {
+                viewModel.clearSelection()
+            }
+            .buttonStyle(LinkButtonStyle())
+            .fixedSize()
+            .disabled(isClearSelectionDisabled)
+            .renderedIf(configuration.multipleSelectionEnabled)
+
+            Spacer()
+
+            Button(viewModel.filterButtonTitle) {
+                showingFilters.toggle()
+                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+            }
+            .buttonStyle(LinkButtonStyle())
+            .fixedSize()
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .background(Color(.listForeground(modal: false)))
+    }
+
+    @ViewBuilder private var productSelectorHeaderSearchRow: some View {
+        HStack {
+            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+                searchHeaderisBeingEdited = isEditing
+            })
+            .padding(.horizontal, insets: safeAreaInsets)
+            .accessibilityIdentifier("product-selector-search-bar")
+            Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+                ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+            }
+            .pickerStyle(.segmented)
+            .padding(.leading)
+            .padding(.trailing)
+            .renderedIf(searchHeaderisBeingEdited)
+        }
+        .background(Color(.listForeground(modal: false)))
     }
 }
 

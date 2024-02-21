@@ -120,7 +120,11 @@ final class ConnectivityToolViewModel {
                     DDLogError("Connectivity Tool: ❌ WPCom connection\n\(error)")
                 }
 
-                let state: ConnectivityToolCard.State = result.isSuccess ? .success : .error("Can't reach WordPress.com servers")
+                let state: ConnectivityToolCard.State = result.isSuccess ?
+                    .success :
+                    .error(NSLocalizedString("Oops! It seems we can't connect to WordPress.com at the moment.\n\n" +
+                                             "But, our support team is here to help. Please contact us and we will happily assist you.",
+                                             comment: "Message when we can't reach WPCom recovery tool"))
                 continuation.resume(returning: state)
             }
         }

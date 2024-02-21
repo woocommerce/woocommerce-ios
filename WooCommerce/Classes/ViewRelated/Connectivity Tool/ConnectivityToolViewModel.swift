@@ -85,13 +85,13 @@ final class ConnectivityToolViewModel {
     private func testInternetConnectivity() async -> ConnectivityToolCard.State {
         await withCheckedContinuation { continuation in
             ServiceLocator.connectivityObserver.statusPublisher.first()
-                .sink { [weak self] status in
-                    guard let self else { return }
-
+                .sink { status in
                     let reachable = {
                         if case .reachable = status {
+                            DDLogInfo("Connectivity Tool: ✅ Internet Connection")
                             return true
                         } else {
+                            DDLogError("Connectivity Tool: ❌ Internet Connection")
                             return false
                         }
                     }()
@@ -108,6 +108,14 @@ final class ConnectivityToolViewModel {
     func testWPComServersConnectivity() async -> ConnectivityToolCard.State {
         await withCheckedContinuation { continuation in
             announcementsRemote.loadAnnouncements(appVersion: UserAgent.bundleShortVersion, locale: Locale.current.identifier) { result in
+
+                switch result {
+                case .success:
+                    DDLogInfo("Connectivity Tool: ✅ WPCom connection")
+                case .failure(let error):
+                    DDLogError("Connectivity Tool: ❌ WPCom connection\n\(error)")
+                }
+
                 let state: ConnectivityToolCard.State = result.isSuccess ? .success : .error("Can't reach WordPress.com servers")
                 continuation.resume(returning: state)
             }
@@ -119,6 +127,14 @@ final class ConnectivityToolViewModel {
     func testSiteConnectivity() async -> ConnectivityToolCard.State {
         await withCheckedContinuation { continuation in
             systemStatusRemote.fetchSystemStatusReport(for: siteID) { result in
+
+                switch result {
+                case .success:
+                    DDLogInfo("Connectivity Tool: ✅ Site connection")
+                case .failure(let error):
+                    DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
+                }
+
                 let state: ConnectivityToolCard.State = result.isSuccess ? .success : .error("Can't reach your site servers")
                 continuation.resume(returning: state)
             }
@@ -130,6 +146,14 @@ final class ConnectivityToolViewModel {
     func testFetchingOrders() async -> ConnectivityToolCard.State {
         await withCheckedContinuation { continuation in
             orderRemote?.loadAllOrders(for: siteID) { result in
+
+                switch result {
+                case .success:
+                    DDLogInfo("Connectivity Tool: ✅ Site Orders")
+                case .failure(let error):
+                    DDLogError("Connectivity Tool: ❌ Site Orders\n\(error)")
+                }
+
                 let state: ConnectivityToolCard.State = result.isSuccess ? .success : .error("Can't reach your site servers")
                 continuation.resume(returning: state)
             }

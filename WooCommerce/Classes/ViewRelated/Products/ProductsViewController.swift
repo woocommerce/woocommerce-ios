@@ -936,9 +936,16 @@ private extension ProductsViewController {
     ///
     func syncProductsSettings() {
         syncLocalProductsSettings { [weak self] (result) in
+            guard let self else { return }
+
             if result.isFailure {
-                self?.syncingCoordinator.resynchronize()
+                syncingCoordinator.resynchronize()
             }
+
+            // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
+            // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
+            // the product settings.
+            onDataReloaded.send(())
         }
     }
 
@@ -1373,13 +1380,9 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                                                  productCategory: settings.productCategoryFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
 
-                    // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
-                    // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
-                    // the product settings.
-                    onDataReloaded.send(())
                 }
-            case .failure:
-                break
+            case let .failure(error):
+                DDLogError("⛔️ Error loading product settings: \(error)")
             }
             onCompletion(result)
         }

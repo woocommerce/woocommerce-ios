@@ -171,6 +171,11 @@ final class DashboardViewController: UIViewController {
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
         }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            let vc = ConnectivityToolViewController()
+            self.show(self, sender: nil)
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

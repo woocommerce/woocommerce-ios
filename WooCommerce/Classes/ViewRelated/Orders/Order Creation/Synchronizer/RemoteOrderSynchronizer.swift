@@ -90,6 +90,7 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
         self.siteID = siteID
         self.stores = stores
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.blockingBehavior = .majorUpdates
 
         if case let .editing(initialOrder) = flow {
             order = initialOrder
@@ -124,6 +125,11 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
                 onCompletion(.success(order), usesGiftCard)
             }
             .store(in: &subscriptions)
+    }
+
+    private var blockingBehavior: OrderSyncBlockBehavior
+    func updateBlockingBehavior(_ behavior: OrderSyncBlockBehavior) {
+        blockingBehavior = behavior
     }
 }
 
@@ -369,9 +375,17 @@ private extension RemoteOrderSynchronizer {
             .filter { // Only continue if the order has been created.
                 $0.orderID != .zero
             }
-            .handleEvents(receiveOutput: { order in
-                // Set a `blocking` state if the order contains new lines or bundle configurations.
-                self.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
+            .handleEvents(receiveOutput: { [weak self] order in
+                guard let self else { return }
+                switch blockingBehavior {
+                case .allUpdates:
+                    // Always block when used in side-by-side mode because of immediate product change syncs and
+                    // potential for inconsistent states
+                    state = .syncing(blocking: true)
+                case .majorUpdates:
+                    // Set a `blocking` state if the order contains new lines or bundle configurations.
+                    state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
+                }
             })
             .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.

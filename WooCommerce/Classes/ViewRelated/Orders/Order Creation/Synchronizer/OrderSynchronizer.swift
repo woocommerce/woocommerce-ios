@@ -10,6 +10,11 @@ enum OrderSyncState {
     case error(Error, usesGiftCard: Bool)
 }
 
+enum OrderSyncBlockBehavior {
+    case allUpdates
+    case majorUpdates
+}
+
 /// Product input for an `OrderSynchronizer` type.
 ///
 struct OrderSyncProductInput {
@@ -150,4 +155,8 @@ protocol OrderSynchronizer {
     /// Commits all order changes to the remote source. State needs to be in `.synced` to initiate work.
     ///
     func commitAllChanges(onCompletion: @escaping (Result<Order, Error>, _ usesGiftCard: Bool) -> Void)
+
+    /// Sets the block behavior for sync requests
+    ///
+    func updateBlockingBehavior(_ behavior: OrderSyncBlockBehavior)
 }

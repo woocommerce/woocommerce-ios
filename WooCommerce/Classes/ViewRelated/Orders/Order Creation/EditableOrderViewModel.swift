@@ -492,6 +492,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureGiftCardSupport()
         observeGiftCardStatesForAnalytics()
         observeProductSelectorPresentationStateForViewModel()
+        forwardSyncApproachToSynchronizer()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -1795,6 +1796,15 @@ private extension EditableOrderViewModel {
             DDLogWarn("Unknown horizontalSizeClass used to determine initialProductSelectionSyncApproach.")
             return .onButtonTap
         }
+    }
+
+    func forwardSyncApproachToSynchronizer() {
+        $syncChangesImmediately
+            .share()
+            .sink { [weak self] syncImmediately in
+                self?.orderSynchronizer.updateBlockingBehavior(syncImmediately ? .allUpdates : .majorUpdates)
+            }
+            .store(in: &cancellables)
     }
 
     /// Tracks when customer details have been added

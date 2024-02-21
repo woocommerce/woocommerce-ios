@@ -6,8 +6,8 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
 
     func test_it_inits_with_expected_properties() {
         // Given
-        let revenueCard = AnalyticsCard(type: .revenue, enabled: true, sortOrder: 0)
-        let ordersCard = AnalyticsCard(type: .orders, enabled: false, sortOrder: 1)
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: true)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: false)
         let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard])
 
         // Then
@@ -18,9 +18,9 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
 
     func test_it_groups_all_selected_cards_at_top_of_allCards_list_in_original_order() {
         // Given
-        let revenueCard = AnalyticsCard(type: .revenue, enabled: false, sortOrder: 0)
-        let ordersCard = AnalyticsCard(type: .orders, enabled: true, sortOrder: 1)
-        let productsCard = AnalyticsCard(type: .products, enabled: true, sortOrder: 2)
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: false)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: true)
+        let productsCard = AnalyticsCard(type: .products, enabled: true)
         let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, productsCard])
 
         // Then
@@ -29,8 +29,8 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
 
     func test_hasChanges_is_true_when_card_order_changes() {
         // Given
-        let revenueCard = AnalyticsCard(type: .revenue, enabled: false, sortOrder: 0)
-        let ordersCard = AnalyticsCard(type: .orders, enabled: false, sortOrder: 1)
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: false)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: false)
         let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard])
 
         // When
@@ -42,8 +42,8 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
 
     func test_hasChanges_is_true_when_selection_changes() {
         // Given
-        let revenueCard = AnalyticsCard(type: .revenue, enabled: false, sortOrder: 0)
-        let ordersCard = AnalyticsCard(type: .orders, enabled: true, sortOrder: 1)
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: false)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: true)
         let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard])
 
         // When

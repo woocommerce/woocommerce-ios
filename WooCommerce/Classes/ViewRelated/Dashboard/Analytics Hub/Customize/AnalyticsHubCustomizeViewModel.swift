@@ -26,12 +26,12 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject {
         allCards != originalCards || selectedCards != originalSelection
     }
 
-    init(allCards: Set<AnalyticsCard>) {
+    init(allCards: [AnalyticsCard]) {
         let groupedCards = AnalyticsHubCustomizeViewModel.groupSelectedCards(in: allCards)
         self.allCards = groupedCards
         self.originalCards = groupedCards
 
-        let selectedCards = allCards.filter { $0.enabled }
+        let selectedCards = Set(allCards.filter { $0.enabled })
         self.selectedCards = selectedCards
         self.originalSelection = selectedCards
     }
@@ -41,9 +41,9 @@ private extension AnalyticsHubCustomizeViewModel {
     /// Groups the selected cards at the start of the list of all cards.
     /// This preserves the relative order of selected and unselected cards.
     ///
-    static func groupSelectedCards(in allCards: Set<AnalyticsCard>) -> [AnalyticsCard] {
-        var groupedCards = Array(allCards).sorted() // Sort cards by sort order
-        _ = groupedCards.stablePartition(by: { !$0.enabled }) // Group cards by enabled status
+    static func groupSelectedCards(in allCards: [AnalyticsCard]) -> [AnalyticsCard] {
+        var groupedCards = allCards
+        _ = groupedCards.stablePartition(by: { !$0.enabled })
         return groupedCards
     }
 }
@@ -52,10 +52,10 @@ private extension AnalyticsHubCustomizeViewModel {
 extension AnalyticsHubCustomizeViewModel {
     /// Sample cards to display in the SwiftUI preview
     ///
-    static let sampleCards: Set<AnalyticsCard> = [
-        AnalyticsCard(type: .revenue, enabled: true, sortOrder: 0),
-        AnalyticsCard(type: .orders, enabled: false, sortOrder: 1),
-        AnalyticsCard(type: .products, enabled: true, sortOrder: 2),
-        AnalyticsCard(type: .sessions, enabled: false, sortOrder: 3)
+    static let sampleCards = [
+        AnalyticsCard(type: .revenue, enabled: true),
+        AnalyticsCard(type: .orders, enabled: false),
+        AnalyticsCard(type: .products, enabled: true),
+        AnalyticsCard(type: .sessions, enabled: false)
     ]
 }

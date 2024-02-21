@@ -72,7 +72,7 @@ extension Storage.GeneralStoreSettings {
         lastSelectedStatsTimeRange: CopiableProp<String> = .copy,
         firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy,
         selectedTaxRateID: NullableCopiableProp<Int64> = .copy,
-        analyticsHubCards: NullableCopiableProp<Set<AnalyticsCard>> = .copy
+        analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable

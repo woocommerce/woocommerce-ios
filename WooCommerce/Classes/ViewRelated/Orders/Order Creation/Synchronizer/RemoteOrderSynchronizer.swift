@@ -376,14 +376,15 @@ private extension RemoteOrderSynchronizer {
                 $0.orderID != .zero
             }
             .handleEvents(receiveOutput: { [weak self] order in
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
-                    self?.blockingBehavior == .allUpdates {
+                guard let self else { return }
+                switch blockingBehavior {
+                case .allUpdates:
                     // Always block when used in side-by-side mode because of immediate product change syncs and
                     // potential for inconsistent states
-                    self?.state = .syncing(blocking: true)
-                } else {
+                    state = .syncing(blocking: true)
+                case .majorUpdates:
                     // Set a `blocking` state if the order contains new lines or bundle configurations.
-                    self?.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
+                    state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
                 }
             })
             .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.

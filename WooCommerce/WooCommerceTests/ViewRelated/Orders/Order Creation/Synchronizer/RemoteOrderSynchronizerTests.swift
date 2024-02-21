@@ -845,6 +845,46 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: false), .synced])
     }
 
+    func test_states_are_properly_set_upon_success_order_update_with_no_new_items_in_allUpdates_block_behavior() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        synchronizer.updateBlockingBehavior(.allUpdates)
+
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, _, let completion):
+                completion(.success(.fake().copy(orderID: self.sampleOrderID)))
+            case .updateOrder(_, let order, _, _, let completion):
+                completion(.success(order))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // Wait for order creation
+        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
+        createOrder(on: synchronizer, input: input)
+
+        let states: [OrderSyncState] = waitFor { promise in
+            synchronizer.statePublisher
+                .dropFirst()
+                .collect(2)
+                .sink { states in
+                    promise(states)
+                }
+                .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2, discount: 0)
+            synchronizer.setProduct.send(input2)
+        }
+
+        // Then
+        XCTAssertEqual(states, [.syncing(blocking: true), .synced])
+    }
+
     func test_order_creation_can_resume_after_receiving_errors() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1420,7 +1460,9 @@ private extension RemoteOrderSynchronizerTests {
 extension OrderSyncState: Equatable {
     public static func == (lhs: OrderSyncState, rhs: OrderSyncState) -> Bool {
         switch (lhs, rhs) {
-        case (.syncing, .syncing), (.synced, .synced):
+        case (.syncing(let lhsBlocking), .syncing(let rhsBlocking)):
+            return lhsBlocking == rhsBlocking
+        case (.synced, .synced):
             return true
         case (.error(let error1, let usesGiftCard1), .error(let error2, let usesGiftCard2)):
             return error1 as NSError == error2 as NSError && usesGiftCard1 == usesGiftCard2

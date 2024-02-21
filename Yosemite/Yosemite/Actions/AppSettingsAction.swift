@@ -243,12 +243,11 @@ public enum AppSettingsAction: Action {
 
     // MARK: - Analytics Hub Cards
 
-    /// Stores the set of cards for the Analytics Hub with their updated enabled status and sort order.
+    /// Stores an ordered array of cards for the Analytics Hub.
     ///
-    case setAnalyticsHubCards(siteID: Int64, cards: Set<AnalyticsCard>)
+    case setAnalyticsHubCards(siteID: Int64, cards: [AnalyticsCard])
 
-    /// Loads the set of cards for the Analytics Hub with their enabled status and sort order.
-    /// Defaults to all cards enabled in a default order if no customized settings have been saved.
+    /// Loads the stored, ordered array of cards for the Analytics Hub.
     ///
-    case loadAnalyticsHubCards(siteID: Int64, onCompletion: (Set<AnalyticsCard>) -> Void)
+    case loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void)
 }

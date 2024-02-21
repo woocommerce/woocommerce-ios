@@ -137,7 +137,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     @Published var dismissNotice: Notice?
 
     var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel {
-        AnalyticsHubCustomizeViewModel(allCards: AnalyticsCard.defaultCards) // TODO: Use real data from storage
+        AnalyticsHubCustomizeViewModel(allCards: AnalyticsHubViewModel.defaultCards) // TODO: Use real data from storage
     }
 
     // MARK: Private data
@@ -625,5 +625,10 @@ private extension AnalyticsHubViewModel {
         static let statsCTAError = NSLocalizedString("analyticsHub.jetpackStatsCTA.errorNotice",
                                                      value: "We couldn't enable Jetpack Stats on your store",
                                                      comment: "Error shown when Jetpack Stats can't be enabled in the Analytics Hub.")
+    }
+
+    /// Set of enabled analytics cards in default order.
+    static let defaultCards: [AnalyticsCard] = AnalyticsCard.CardType.allCases.map { type in
+        AnalyticsCard(type: type, enabled: true)
     }
 }

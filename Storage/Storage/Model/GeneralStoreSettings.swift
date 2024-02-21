@@ -51,7 +51,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     public let selectedTaxRateID: Int64?
 
     /// The set of cards for the Analytics Hub, with their enabled status and sort order.
-    public let analyticsHubCards: Set<AnalyticsCard>?
+    public let analyticsHubCards: [AnalyticsCard]?
 
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
@@ -62,7 +62,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastSelectedStatsTimeRange: String = "",
                 firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date] = [:],
                 selectedTaxRateID: Int64? = nil,
-                analyticsHubCards: Set<AnalyticsCard>? = nil) {
+                analyticsHubCards: [AnalyticsCard]? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -106,7 +106,7 @@ extension GeneralStoreSettings {
         self.firstInPersonPaymentsTransactionsByReaderType = try container.decodeIfPresent([CardReaderType: Date].self,
                                                                                            forKey: .firstInPersonPaymentsTransactionsByReaderType) ?? [:]
         self.selectedTaxRateID = try container.decodeIfPresent(Int64.self, forKey: .selectedTaxRateID)
-        self.analyticsHubCards = try container.decodeIfPresent(Set<AnalyticsCard>.self, forKey: .analyticsHubCards)
+        self.analyticsHubCards = try container.decodeIfPresent([AnalyticsCard].self, forKey: .analyticsHubCards)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

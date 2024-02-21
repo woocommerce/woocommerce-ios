@@ -65,7 +65,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
         @State var isShowingSecondaryView = true
 
         var body: some View {
-            HStack {
+            HStack(spacing: 0) {
                 NavigationView {
                     secondaryView($isShowingSecondaryView)
                         .toolbar {
@@ -80,6 +80,8 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 }
                 .navigationViewStyle(.stack)
                 .layoutPriority(1)
+
+                Divider()
 
                 NavigationView {
                     primaryView(nil)

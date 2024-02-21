@@ -197,7 +197,6 @@ struct ProductSelectorView: View {
             }
         }
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
-        .ignoresSafeArea(.container, edges: .horizontal)
         .navigationTitle(configuration.title)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
         .toolbar {

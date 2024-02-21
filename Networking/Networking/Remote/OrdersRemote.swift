@@ -13,8 +13,10 @@ public class OrdersRemote: Remote {
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
-    ///     - modifiedAfter: If given, limit response to resources modified after a given compliant date. Passing a local date is fine. This
-    ///               method will convert it to UTC ISO 8601 before calling the REST API.
+    ///     - modifiedAfter: If given, limit response to resources modified after a given compliant date. Passing a local date is fine.
+    ///     This method will convert it to UTC ISO 8601 before calling the REST API.
+    ///     - customerID: If given, limit response to orders placed by a customer.
+    ///     - productID: If given, limit response to orders including the given product.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
@@ -24,6 +26,8 @@ public class OrdersRemote: Remote {
                               after: Date? = nil,
                               before: Date? = nil,
                               modifiedAfter: Date? = nil,
+                              customerID: Int64? = nil,
+                              productID: Int64? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
                               completion: @escaping (Result<[Order], Error>) -> Void) {
@@ -47,6 +51,14 @@ public class OrdersRemote: Remote {
             }
             if let modifiedAfter {
                 parameters[ParameterKeys.modifiedAfter] = utcDateFormatter.string(from: modifiedAfter)
+            }
+
+            if let customerID {
+                parameters[ParameterKeys.customer] = customerID
+            }
+
+            if let productID {
+                parameters[ParameterKeys.product] = productID
             }
 
             return parameters
@@ -399,6 +411,8 @@ public extension OrdersRemote {
         static let modifiedAfter: String    = "modified_after"
         /// Whether to consider the published or modified dates in GMT. When `false`, the local date field is used for filtering orders.
         static let usesGMTDates: String     = "dates_are_gmt"
+        static let customer = "customer"
+        static let product = "product"
     }
 
     enum ParameterValues {

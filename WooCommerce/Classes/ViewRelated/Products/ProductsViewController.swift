@@ -114,6 +114,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return resultsController
     }()
 
+    private var selectedProductListener: EntityListener<Product>?
+
     private var sortOrder: ProductsSortOrder = .default {
         didSet {
             if sortOrder != oldValue {
@@ -245,6 +247,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         showTopBannerViewIfNeeded()
         syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
+        observeSelectedProductToAutoScrollWhenProductChanges()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -975,6 +978,27 @@ private extension ProductsViewController {
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func observeSelectedProductToAutoScrollWhenProductChanges() {
+        selectedProduct.compactMap { $0 }
+            .sink { [weak self] selectedProduct in
+                self?.listenToSelectedProductToAutoScrollWhenProductChanges(product: selectedProduct)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
+        selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
+        selectedProductListener?.onUpsert = { [weak self] product in
+            guard let self,
+                  let selectedIndexPath = tableView.indexPathForSelectedRow,
+                  let visibleIndexPaths = tableView.indexPathsForVisibleRows,
+                  !visibleIndexPaths.contains(selectedIndexPath) else {
+                return
+            }
+            tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false)
+        }
     }
 }
 

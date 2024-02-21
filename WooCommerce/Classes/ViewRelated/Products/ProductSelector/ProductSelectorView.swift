@@ -84,7 +84,7 @@ struct ProductSelectorView: View {
     var body: some View {
         VStack(spacing: 0) {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) &&
-                presentationStyle == .sideBySide {
+                horizontalSizeClass == .regular {
                 productSelectorHeaderTitleRow
                 productSelectorHeaderSearchRow
             } else {

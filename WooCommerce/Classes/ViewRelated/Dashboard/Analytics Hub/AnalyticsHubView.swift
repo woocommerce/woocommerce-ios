@@ -78,62 +78,9 @@ struct AnalyticsHubView: View {
                     Divider()
                 }
 
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
-
-                    AnalyticsReportCard(viewModel: viewModel.revenueCard)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
+                ForEach(viewModel.enabledCards, id: \.self) { card in
+                    analyticsCard(type: card)
                 }
-                .renderedIf(viewModel.isCardEnabled(.revenue))
-
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
-
-                    AnalyticsReportCard(viewModel: viewModel.ordersCard)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
-                }
-                .renderedIf(viewModel.isCardEnabled(.orders))
-
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
-
-                    AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
-                }
-                .renderedIf(viewModel.isCardEnabled(.products))
-
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
-
-                    Group {
-                        if viewModel.showJetpackStatsCTA {
-                            AnalyticsCTACard(title: Localization.sessionsCTATitle,
-                                             message: Localization.sessionsCTAMessage,
-                                             buttonLabel: Localization.sessionsCTAButton,
-                                             isLoading: $isEnablingJetpackStats) {
-                                isEnablingJetpackStats = true
-                                await viewModel.enableJetpackStats()
-                                isEnablingJetpackStats = false
-                            }
-                        } else {
-                            AnalyticsReportCard(viewModel: viewModel.sessionsCard)
-                        }
-                    }
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
-                }
-                .renderedIf(viewModel.showSessionsCard)
 
                 Spacer()
             }
@@ -170,6 +117,70 @@ struct AnalyticsHubView: View {
             NavigationView {
                 AnalyticsHubCustomizeView(viewModel: viewModel.customizeAnalyticsViewModel)
             }
+        }
+    }
+}
+
+private extension AnalyticsHubView {
+    /// Creates an analytics card for the given type.
+    /// - Parameter type: Type of analytics card, e.g. revenue or orders.
+    @ViewBuilder
+    func analyticsCard(type: AnalyticsCard.CardType) -> some View {
+        switch type {
+        case .revenue:
+            VStack(spacing: Layout.dividerSpacing) {
+                Divider()
+
+                AnalyticsReportCard(viewModel: viewModel.revenueCard)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(uiColor: .listForeground(modal: false)))
+
+                Divider()
+            }
+        case .orders:
+            VStack(spacing: Layout.dividerSpacing) {
+                Divider()
+
+                AnalyticsReportCard(viewModel: viewModel.ordersCard)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(uiColor: .listForeground(modal: false)))
+
+                Divider()
+            }
+        case .products:
+            VStack(spacing: Layout.dividerSpacing) {
+                Divider()
+
+                AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(uiColor: .listForeground(modal: false)))
+
+                Divider()
+            }
+        case .sessions:
+            VStack(spacing: Layout.dividerSpacing) {
+                Divider()
+
+                Group {
+                    if viewModel.showJetpackStatsCTA {
+                        AnalyticsCTACard(title: Localization.sessionsCTATitle,
+                                         message: Localization.sessionsCTAMessage,
+                                         buttonLabel: Localization.sessionsCTAButton,
+                                         isLoading: $isEnablingJetpackStats) {
+                            isEnablingJetpackStats = true
+                            await viewModel.enableJetpackStats()
+                            isEnablingJetpackStats = false
+                        }
+                    } else {
+                        AnalyticsReportCard(viewModel: viewModel.sessionsCard)
+                    }
+                }
+                .padding(.horizontal, insets: safeAreaInsets)
+                .background(Color(uiColor: .listForeground(modal: false)))
+
+                Divider()
+            }
+            .renderedIf(viewModel.showSessionsCard)
         }
     }
 }

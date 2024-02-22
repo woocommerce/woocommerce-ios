@@ -62,6 +62,8 @@ struct ProductSelectorView: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     /// Tracks the state for the 'Clear Selection' button
     ///
     private var isClearSelectionDisabled: Bool {
@@ -318,15 +320,15 @@ private extension ProductSelectorView {
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
                     ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
                 }
-                .if(horizontalSizeClass == .regular && geometry.size.width < 450) { $0.pickerStyle(.menu) }
-                .if(horizontalSizeClass == .compact || geometry.size.width > 450) { $0.pickerStyle(.segmented) }
+                .if(horizontalSizeClass == .regular && geometry.size.width < Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
+                .if(horizontalSizeClass == .compact || geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
                 .padding(.leading)
                 .padding(.trailing)
                 .renderedIf(searchHeaderisBeingEdited)
             }
             .background(Color(.listForeground(modal: false)))
         }
-        .frame(height: 48)
+        .frame(height: Constants.minimumRowHeight * scale)
     }
 }
 
@@ -355,6 +357,8 @@ private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
+        static let minimumRowHeight: CGFloat = 48
+        static let headerSearchRowWidth: CGFloat = 450
         static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
         static let productRowAccessibilityIdentifier: String = "product-item"
     }

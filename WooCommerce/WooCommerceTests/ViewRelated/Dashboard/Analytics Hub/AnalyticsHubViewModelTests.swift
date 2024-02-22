@@ -641,4 +641,33 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                              AnalyticsCard(type: .sessions, enabled: false)]
         assertEqual(expectedCards, storedAnalyticsCards)
     }
+
+    func test_it_updates_customizeAnalyticsVM_when_analytics_cards_saved() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+
+        // When
+        let storedAnalyticsCards = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+                switch action {
+                case let .setAnalyticsHubCards(_, cards):
+                    promise(cards)
+                default:
+                    break
+                }
+            }
+
+            // Only orders card is selected and changes are saved
+            vm.customizeAnalyticsViewModel.selectedCards = [AnalyticsCard(type: .orders, enabled: true)]
+            vm.customizeAnalyticsViewModel.saveChanges()
+        }
+
+        // Then
+        // View model contains updated selection and order
+        let expectedCards = [AnalyticsCard(type: .orders, enabled: true),
+                             AnalyticsCard(type: .revenue, enabled: false),
+                             AnalyticsCard(type: .products, enabled: false),
+                             AnalyticsCard(type: .sessions, enabled: false)]
+        assertEqual(expectedCards, vm.customizeAnalyticsViewModel.allCards)
+    }
 }

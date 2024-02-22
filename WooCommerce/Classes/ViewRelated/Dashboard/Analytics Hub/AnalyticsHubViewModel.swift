@@ -103,11 +103,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     lazy private(set) var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel = {
-        AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings) { [weak self] updatedCards in
-            guard let self else { return }
-            self.allCardsWithSettings = updatedCards
-            self.storeAnalyticsCardSettings(updatedCards)
-        }
+        AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings, onSave: onCustomizeCards)
     }()
 
     /// Sessions Card display state
@@ -432,6 +428,12 @@ private extension AnalyticsHubViewModel {
                     await self.updateData()
                 }
             }.store(in: &subscriptions)
+
+        $allCardsWithSettings
+            .sink { [weak self] analyticsCards in
+                guard let self else { return }
+                self.customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: analyticsCards, onSave: onCustomizeCards)
+            }.store(in: &subscriptions)
     }
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?,
@@ -581,6 +583,14 @@ private extension AnalyticsHubViewModel {
                                             webViewTitle: title,
                                             reportURL: url,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
+    /// Updates and stores analytics card settings when cards are customized.
+    /// Passed to the `AnalyticsHubCustomizeViewModel` to be performed when changes are saved.
+    ///
+    func onCustomizeCards(_ updatedCards: [AnalyticsCard]) {
+        allCardsWithSettings = updatedCards
+        storeAnalyticsCardSettings(updatedCards)
     }
 }
 

@@ -29,10 +29,20 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             self?.rootView.cards = cards
         }
         .store(in: &subscriptions)
+
+        // Listen to the contact support button
+        rootView.onContactSupportTapped = { [weak self] in
+            self?.showContactSupportForm()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func showContactSupportForm() {
+        let supportController = SupportFormHostingController(viewModel: .init())
+        supportController.show(from: self)
     }
 }
 
@@ -52,6 +62,10 @@ struct ConnectivityTool: View {
     ///
     var cards: [Card]
 
+    /// Closure to be invoked when the "Contact Support" button is tapped.
+    ///
+    var onContactSupportTapped: (() -> ())?
+
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
 
@@ -62,7 +76,7 @@ struct ConnectivityTool: View {
             Spacer()
 
             Button(Localization.contactSupport) {
-                print()
+                onContactSupportTapped?()
             }
             .buttonStyle(PrimaryButtonStyle())
         }
@@ -86,9 +100,17 @@ struct ConnectivityToolCard: View {
     /// Represents the state of the card.
     ///
     enum State {
+
+        /// Represents an action to could be performed when presenting an error.
+        ///
+        struct ErrorAction {
+            let title: String
+            let action: () -> ()
+        }
+
         case inProgress
         case success
-        case error(String)
+        case error(String, ErrorAction?)
 
         /// Builds the icon based on the state
         ///
@@ -140,9 +162,10 @@ struct ConnectivityToolCard: View {
     ///
     @ScaledMetric private var iconSize = 40.0
     private static let cornerRadius = 4.0
+    private static let verticalSpacing = 16.0
 
     var body: some View {
-        VStack {
+        VStack(spacing: Self.verticalSpacing) {
             HStack {
 
                 Circle()
@@ -161,11 +184,16 @@ struct ConnectivityToolCard: View {
                 state.buildIcon()
             }
 
-            if case let .error(message) = state {
+            if case let .error(message, buttonAction) = state {
                 Text(message)
                     .foregroundColor(Color(uiColor: .error))
                     .subheadlineStyle()
                     .padding(.horizontal, 6)
+
+                if let buttonAction {
+                    Button(buttonAction.title, action: buttonAction.action)
+                        .buttonStyle(SecondaryButtonStyle())
+                }
             }
         }
         .padding()
@@ -182,7 +210,7 @@ struct ConnectivityToolCard: View {
             .init(title: "WordPress.com servers", icon: .system("server.rack"), state: .success),
             .init(title: "Your Site",
                   icon: .system("storefront"),
-                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance")),
+                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance", nil)),
             .init(title: "Your site orders", icon: .system("list.clipboard"), state: .inProgress)
         ])
             .navigationTitle("Connectivity Test")

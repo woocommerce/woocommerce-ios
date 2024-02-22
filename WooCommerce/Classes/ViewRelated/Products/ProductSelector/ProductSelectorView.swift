@@ -303,7 +303,6 @@ private extension ProductSelectorView {
             }
             .buttonStyle(LinkButtonStyle())
         }
-        .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: false)))
     }
 

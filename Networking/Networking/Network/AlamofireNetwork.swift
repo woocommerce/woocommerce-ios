@@ -107,16 +107,11 @@ public class AlamofireNetwork: Network {
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
         let request = requestConverter.convert(request)
-        sessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
-            switch encodingResult {
-            case .success(let upload, _, _):
-                upload.responseData { response in
-                    completion(response.value, response.error)
-                }
-            case .failure(let error):
-                completion(nil, error)
+        sessionManager
+            .upload(multipartFormData: multipartFormData, with: request)
+            .responseData { response in
+                completion(response.value, response.error)
             }
-        }
     }
 }
 

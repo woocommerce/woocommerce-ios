@@ -132,21 +132,16 @@ public final class WordPressOrgNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        sessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
-            switch encodingResult {
-            case .success(let upload, _, _):
-                upload.responseData { response in
-                    do {
-                        try self.validateResponse(response.data)
-                        completion(response.value, response.error)
-                    } catch {
-                        completion(nil, error)
-                    }
+        sessionManager
+            .upload(multipartFormData: multipartFormData, with: request)
+            .responseData() { response in
+                do {
+                    try self.validateResponse(response.data)
+                    completion(response.value, response.error)
+                } catch {
+                    completion(nil, error)
                 }
-            case .failure(let error):
-                completion(nil, error)
             }
-        }
     }
 }
 

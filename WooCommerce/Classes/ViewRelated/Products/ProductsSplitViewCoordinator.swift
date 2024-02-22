@@ -90,7 +90,11 @@ private extension ProductsSplitViewCoordinator {
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false,
                                              onDeleteCompletion: { [weak self] in
-            self?.productsViewController.selectFirstProductIfAvailable()
+            guard let self else { return }
+            splitViewController.show(.primary)
+            if !splitViewController.isCollapsed {
+                productsViewController.selectFirstProductIfAvailable()
+            }
         }) { [weak self] viewController in
             self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
         }

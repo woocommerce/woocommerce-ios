@@ -56,7 +56,7 @@ final class RequestProcessorTests: XCTestCase {
         let request = try mockRequest()
 
         // When
-        request.retryCount = 0
+        request.fakeRetryCount = 0
         let shouldRetry = waitFor { promise in
             let error = RequestAuthenticatorError.applicationPasswordNotAvailable
             self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
@@ -74,7 +74,7 @@ final class RequestProcessorTests: XCTestCase {
         let request = try mockRequest()
 
         // When
-        request.retryCount = 1
+        request.fakeRetryCount = 1
         let shouldRetry = waitFor { promise in
             let error = RequestAuthenticatorError.applicationPasswordNotAvailable
             self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
@@ -280,19 +280,16 @@ final class RequestProcessorTests: XCTestCase {
 // MARK: Helpers
 //
 private extension RequestProcessorTests {
-    func mockRequest() throws -> Alamofire.Request {
-        let originalTask = MockTaskConvertible()
-        let task = try originalTask.task(session: sessionManager.session, adapter: nil, queue: .main)
-        return Alamofire.Request(session: sessionManager.session, requestTask: .data(originalTask, task))
-    }
-}
-
-
-private class MockTaskConvertible: TaskConvertible {
-    let urlRequest = URLRequest(url: URL(string: "https://test.com/")!)
-
-    func task(session: URLSession, adapter: RequestAdapter?, queue: DispatchQueue) throws -> URLSessionTask {
-        session.dataTask(with: urlRequest)
+    func mockRequest() throws -> MockRequest {
+        let urlRequest = URLRequest(url: URL(string: "https://test.com/")!)
+        return MockRequest(
+            convertible: urlRequest,
+            underlyingQueue: .global(),
+            serializationQueue: .global(),
+            eventMonitor: nil,
+            interceptor: nil,
+            delegate: sessionManager
+        )
     }
 }
 
@@ -330,5 +327,17 @@ private class MockNotificationCenter: NotificationCenter {
     override func post(name aName: NSNotification.Name, object anObject: Any?, userInfo aUserInfo: [AnyHashable: Any]? = nil) {
         notificationName = aName
         notificationObject = anObject
+    }
+}
+
+private class MockRequest: Alamofire.DataRequest {
+    var fakeRetryCount: Int = 0
+
+    override var retryCount: Int {
+        return fakeRetryCount
+    }
+
+    override var request: URLRequest? {
+        return self.convertible.urlRequest
     }
 }

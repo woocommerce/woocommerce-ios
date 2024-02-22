@@ -4,6 +4,21 @@ import Codegen
 import Foundation
 
 
+extension Storage.AnalyticsCard {
+    public func copy(
+        type: CopiableProp<AnalyticsCard.CardType> = .copy,
+        enabled: CopiableProp<Bool> = .copy
+    ) -> Storage.AnalyticsCard {
+        let type = type ?? self.type
+        let enabled = enabled ?? self.enabled
+
+        return Storage.AnalyticsCard(
+            type: type,
+            enabled: enabled
+        )
+    }
+}
+
 extension Storage.FeatureAnnouncementCampaignSettings {
     public func copy(
         dismissedDate: NullableCopiableProp<Date> = .copy,

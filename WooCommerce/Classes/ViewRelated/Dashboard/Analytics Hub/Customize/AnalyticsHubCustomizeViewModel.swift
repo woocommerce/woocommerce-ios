@@ -47,7 +47,7 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject {
     ///
     func saveChanges() {
         let updatedCards = allCards.map { card in
-            AnalyticsCard(type: card.type, enabled: selectedCards.contains(card))
+            card.copy(enabled: selectedCards.contains(card))
         }
         onSave?(updatedCards)
     }

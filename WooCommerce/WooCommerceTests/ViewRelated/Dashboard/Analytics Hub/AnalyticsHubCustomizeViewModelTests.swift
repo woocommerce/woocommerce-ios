@@ -71,9 +71,7 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedCards = [AnalyticsCard(type: .orders, enabled: true),
-                             AnalyticsCard(type: .revenue, enabled: true),
-                             AnalyticsCard(type: .products, enabled: false)]
+        let expectedCards = [ordersCard, revenueCard.copy(enabled: true), productsCard.copy(enabled: false)]
         assertEqual(expectedCards, actualCards)
     }
 

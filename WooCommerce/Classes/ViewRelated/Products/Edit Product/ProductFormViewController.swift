@@ -94,13 +94,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     ///
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
 
+    private let onDeleteCompletion: () -> Void
+
     init(viewModel: ViewModel,
          isAIContent: Bool = false,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         onDeleteCompletion: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.isAIContent = isAIContent
         self.eventLogger = eventLogger
@@ -110,6 +113,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.productImageUploader = productImageUploader
+        self.onDeleteCompletion = onDeleteCompletion
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
@@ -1080,6 +1084,7 @@ private extension ProductFormViewController {
                 self.navigationController?.dismiss(animated: true, completion: nil)
                 // Dismiss or Pop the Product Form
                 self.dismissOrPopViewController()
+                self.onDeleteCompletion()
             case .failure(let error):
                 DDLogError("⛔️ Error deleting Product: \(error)")
 

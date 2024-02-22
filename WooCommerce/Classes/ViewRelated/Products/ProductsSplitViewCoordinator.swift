@@ -88,7 +88,10 @@ private extension ProductsSplitViewCoordinator {
     func showProductForm(product: Product) {
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             forceReadOnly: false) { [weak self] viewController in
+                                             forceReadOnly: false,
+                                             onDeleteCompletion: { [weak self] in
+            self?.productsViewController.selectFirstProductIfAvailable()
+        }) { [weak self] viewController in
             self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
         }
     }

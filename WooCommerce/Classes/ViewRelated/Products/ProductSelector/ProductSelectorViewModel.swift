@@ -198,6 +198,11 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let shouldDeleteStoredProductsOnFirstPage: Bool
 
+    /// Attempt to callback and sync the order when a single variation is deleted
+    /// We might not need this if we can redo onSelectedVariationsCleared to pass the ID or object inside the closure
+    ///
+    private let onSingleVariationSelectionCleared: (() -> Void)?
+
     /// Closure to be invoked when "Clear Selection" is called.
     ///
     private let onAllSelectionsCleared: (() -> Void)?
@@ -232,6 +237,7 @@ final class ProductSelectorViewModel: ObservableObject {
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
+         onSingleVariationSelectionCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
          onCloseButtonTapped: (() -> Void)? = nil,
          onConfigureProductRow: ((_ product: Product) -> Void)? = nil) {
@@ -251,6 +257,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.syncApproach = syncApproach
         self.orderSyncState = orderSyncState
         self.onAllSelectionsCleared = onAllSelectionsCleared
+        self.onSingleVariationSelectionCleared = onSingleVariationSelectionCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
         self.onConfigureProductRow = onConfigureProductRow
@@ -342,8 +349,10 @@ final class ProductSelectorViewModel: ObservableObject {
             if syncApproach == .immediate {
                 onMultipleSelectionCompleted?(selectedItemsIDs)
             }
-        },
-                                                 onSelectionsCleared: { [weak self] in
+        }, onSingleVariationSelectionCleared: { [weak self] in
+            guard let self else { return }
+            onSingleVariationSelectionCleared?()
+        }, onSelectionsCleared: { [weak self] in
             guard let self else { return }
             onSelectedVariationsCleared?()
 

@@ -66,6 +66,9 @@ struct ProductVariationSelectorView: View {
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground(modal: false)).ignoresSafeArea())
+//                .onChange(of: $viewModel.productVariationRows, perform: {
+//                    debugPrint("🍍 View: productVariationRows updated")
+//                })
             case .empty:
                 EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                     .frame(maxHeight: .infinity)

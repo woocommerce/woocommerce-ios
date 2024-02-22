@@ -53,6 +53,10 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     let onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)?
 
+    ///
+    ///
+    private let onSingleVariationSelectionCleared: (() -> Void)?
+
     /// Closure to be invoked when "Clear Selection" is called.
     ///
     private let onSelectionsCleared: (() -> Void)?
@@ -132,6 +136,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
+         onSingleVariationSelectionCleared: (() -> Void)? = nil,
          onSelectionsCleared: (() -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
@@ -144,6 +149,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.allowedProductVariationIDs = allowedProductVariationIDs
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.purchasableItemsOnly = purchasableItemsOnly
+        self.onSingleVariationSelectionCleared = onSingleVariationSelectionCleared
         self.onSelectionsCleared = onSelectionsCleared
 
         configureSyncingCoordinator()
@@ -161,6 +167,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
                      onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
+                     onSingleVariationSelectionCleared: (() -> Void)? = nil,
                      onSelectionsCleared: (() -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
@@ -173,6 +180,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   storageManager: storageManager,
                   stores: stores,
                   onVariationSelectionStateChanged: onVariationSelectionStateChanged,
+                  onSingleVariationSelectionCleared: onSingleVariationSelectionCleared,
                   onSelectionsCleared: onSelectionsCleared)
     }
 
@@ -216,6 +224,34 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         selectedProductVariationIDs = []
         onSelectionsCleared?()
     }
+
+    func removeSelection(_ productVariationID: Int64) {
+        selectedProductVariationIDs = selectedProductVariationIDs.filter { $0 != productVariationID}
+        onSingleVariationSelectionCleared?( /* pass the IDs or the ProductVariations object here */ )
+        // Ideally a callback here to update the chain ProductVariationSelector -> ProductSelector -> EditableOrder & views
+
+// Fail 3
+//        productVariationRows.map { row in
+//            //row.selectedState
+//            if (row.productOrVariationID == productVariationID) {
+//                //let state =  StateSelectorViewModel.partiallySelected
+// This won't work directly, since we need to recreate the product rows
+//            }
+//        }
+    }
+// Fail 2
+        //selectedProductVariationIDs = selectedProductVariationIDs.filter { $0 != productVariationID}
+        //selectedProductVariationIDs = [] // Does not trigger the observer?
+        //onSelectionsCleared?()
+        //onSingleVariationSelectionCleared?()
+// Fail 1
+//    func removeSelection(_ parentID: Int64,
+//                         _ productVariationID: Int64,
+//                         onRemove: ((Int64) -> Void)) {
+//        selectedProductVariationIDs = selectedProductVariationIDs.filter { $0 != productVariationID }
+//        changeSelectionStateForVariation(with: productVariationID)
+//        onRemove(productVariationID)
+//    }
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods
@@ -342,6 +378,7 @@ private extension ProductVariationSelectorViewModel {
         $productVariations.combineLatest($selectedProductVariationIDs) { [weak self] variations, selectedIDs -> [ProductRowViewModel] in
             guard let self = self else { return [] }
             return variations.map { variation in
+                // selected state is only updated when we're fetching from storage on init the view?
                 let selectedState: ProductRow.SelectedState = selectedIDs.contains(variation.productVariationID) ? .selected : .notSelected
                 return ProductRowViewModel(productVariation: variation,
                                            name: ProductVariationFormatter().generateName(for: variation, from: self.productAttributes),

@@ -528,6 +528,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Clears selected variations
     ///
     private func clearSelectedVariations() {
+        // Ideally we wouldn't clear all variations here, just the selected ones, so we do not need another closure coming from
+        // onSelectedVariationsCleared?()
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
     }
@@ -579,6 +581,13 @@ final class EditableOrderViewModel: ObservableObject {
 
         if syncChangesImmediately {
             productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
+
+            // When synching changes inmediately, we need to update variations as well,
+            // for this, we need to grab the specific model first:
+            // * Note that passing the variation ID to getVariationsViewModel will return nil, needs the parent ID
+            if let productVariationSelectorViewModel = productSelectorViewModel?.getVariationsViewModel(for: item.productID) {
+                productVariationSelectorViewModel.removeSelection(item.productOrVariationID)
+            }
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -1396,7 +1405,9 @@ private extension EditableOrderViewModel {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         allProducts.insert(product)
         allProductVariations.insert(variation)
-
+        debugPrint("🍍 EditableOrderVM::changeSelectionStateForProductVariation called. Selected variations: \(selectedProductVariations.map { $0.productVariationID })")
+        // Problem: It would seem than when attempting to remove variations
+        // we have 0 selectedProductVariations here...so add them rather than deleting them...
         if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
             selectedProductVariations.append(variation)
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .variation))
@@ -1404,6 +1415,7 @@ private extension EditableOrderViewModel {
             selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
         }
+        debugPrint("🍍 EditableOrderVM::changeSelectionStateForProductVariation called. Selected variations: \(selectedProductVariations.map { $0.productVariationID })")
     }
 
     /// Configures product row view models for each item in `orderDetails`.

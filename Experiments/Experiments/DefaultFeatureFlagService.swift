@@ -16,7 +16,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .splitViewInOrdersTab:
             return true
         case .sideBySideViewForOrderForm:
-            return false
+            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:

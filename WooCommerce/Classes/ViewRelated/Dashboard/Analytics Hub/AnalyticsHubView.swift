@@ -87,6 +87,7 @@ struct AnalyticsHubView: View {
 
                     Divider()
                 }
+                .renderedIf(viewModel.isCardEnabled(.revenue))
 
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
@@ -97,6 +98,7 @@ struct AnalyticsHubView: View {
 
                     Divider()
                 }
+                .renderedIf(viewModel.isCardEnabled(.orders))
 
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
@@ -107,6 +109,7 @@ struct AnalyticsHubView: View {
 
                     Divider()
                 }
+                .renderedIf(viewModel.isCardEnabled(.products))
 
                 VStack(spacing: Layout.dividerSpacing) {
                     Divider()
@@ -160,7 +163,7 @@ struct AnalyticsHubView: View {
                 } label: {
                     Text(Localization.editButton)
                 }
-                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub))
+                .renderedIf(viewModel.canCustomizeAnalytics)
             }
         }
         .sheet(isPresented: $isCustomizingAnalyticsCards) {

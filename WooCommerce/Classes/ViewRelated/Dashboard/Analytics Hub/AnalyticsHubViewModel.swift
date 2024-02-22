@@ -27,6 +27,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
+    /// Whether the `customizeAnalyticsHub` feature flag is enabled
+    ///
+    let canCustomizeAnalytics: Bool
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
@@ -34,7 +38,8 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000) {
+         backendProcessingDelay: UInt64 = 500_000_000,
+         canCustomizeAnalytics: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub)) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -51,6 +56,7 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.canCustomizeAnalytics = canCustomizeAnalytics
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
         let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
@@ -109,7 +115,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        if stores.isAuthenticatedWithoutWPCom // Non-Jetpack stores don't have sessions stats
+        if !isCardEnabled(.sessions) {
+            return false
+        } else if stores.isAuthenticatedWithoutWPCom // Non-Jetpack stores don't have sessions stats
             || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
         } else if case .custom = timeRangeSelectionType {
@@ -141,6 +149,19 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Defaults to `nil`.
     ///
     @Published var dismissNotice: Notice?
+
+    /// All analytics cards to display in the Analytics Hub.
+    ///
+    var enabledCards: [AnalyticsCard.CardType] {
+        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
+        return allCards.filter { $0.enabled }.map { $0.type }
+    }
+
+    /// Whether the card should be displayed in the Analytics Hub.
+    ///
+    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
+        return enabledCards.contains(where: { $0 == type })
+    }
 
     // MARK: Private data
 

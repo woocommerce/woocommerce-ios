@@ -7,15 +7,6 @@ extension Alamofire.MultipartFormData: MultipartFormData {}
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
-    private lazy var backgroundSessionManager: Alamofire.SessionManager = {
-        // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
-        // times (e.g. when logging in).
-        let uniqueID = UUID().uuidString
-        let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession.\(uniqueID)")
-        let sessionManager = makeSessionManager(configuration: sessionConfiguration)
-        return sessionManager
-    }()
-
     private lazy var sessionManager: Alamofire.SessionManager = {
         let sessionConfiguration = URLSessionConfiguration.default
         let sessionManager = makeSessionManager(configuration: sessionConfiguration)
@@ -116,7 +107,7 @@ public class AlamofireNetwork: Network {
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
         let request = requestConverter.convert(request)
-        backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
+        sessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
             switch encodingResult {
             case .success(let upload, _, _):
                 upload.responseData { response in

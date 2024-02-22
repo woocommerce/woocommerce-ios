@@ -319,7 +319,6 @@ private extension ProductSelectorView {
                 }
                 .if(horizontalSizeClass == .regular && geometry.size.width < Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
                 .if(horizontalSizeClass == .compact || geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
-                .padding(.leading)
                 .padding(.trailing)
                 .renderedIf(searchHeaderisBeingEdited)
             }

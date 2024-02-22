@@ -58,8 +58,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     func didExpand() {
         // Auto-selects the first product if there is no content to be shown.
         if contentTypes.isEmpty {
-            showEmptyView()
-            productsViewController.selectFirstProductIfAvailable()
+            showEmptyViewOrFirstProduct()
         }
     }
 }
@@ -90,11 +89,7 @@ private extension ProductsSplitViewCoordinator {
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false,
                                              onDeleteCompletion: { [weak self] in
-            guard let self else { return }
-            splitViewController.show(.primary)
-            if !splitViewController.isCollapsed {
-                productsViewController.selectFirstProductIfAvailable()
-            }
+            self?.onSecondaryProductFormDeletion()
         }) { [weak self] viewController in
             self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
         }
@@ -128,6 +123,18 @@ private extension ProductsSplitViewCoordinator {
         }
 
         splitViewController.show(.secondary)
+    }
+
+    func onSecondaryProductFormDeletion() {
+        splitViewController.show(.primary)
+        if !splitViewController.isCollapsed {
+            showEmptyViewOrFirstProduct()
+        }
+    }
+
+    func showEmptyViewOrFirstProduct() {
+        showEmptyView()
+        productsViewController.selectFirstProductIfAvailable()
     }
 }
 

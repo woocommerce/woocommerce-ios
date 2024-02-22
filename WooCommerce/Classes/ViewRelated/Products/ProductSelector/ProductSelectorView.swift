@@ -287,13 +287,11 @@ private extension ProductSelectorView {
         HStack {
             Text(viewModel.selectProductsTitle)
                 .renderedIf(configuration.productHeaderTextEnabled)
-                .fixedSize()
                 .padding(.leading)
             Button(Localization.clearSelection) {
                 viewModel.clearSelection()
             }
             .buttonStyle(LinkButtonStyle())
-            .fixedSize()
             .disabled(isClearSelectionDisabled)
             .renderedIf(configuration.multipleSelectionEnabled)
 
@@ -304,7 +302,6 @@ private extension ProductSelectorView {
                 ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
             }
             .buttonStyle(LinkButtonStyle())
-            .fixedSize()
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: false)))

@@ -123,8 +123,8 @@ final class ConnectivityToolViewModel {
                 let state: ConnectivityToolCard.State = result.isSuccess ?
                     .success :
                     .error(NSLocalizedString("Oops! It seems we can't connect to WordPress.com at the moment.\n\n" +
-                                             "But, our support team is here to help. Please contact us and we will happily assist you.",
-                                             comment: "Message when we can't reach WPCom recovery tool"))
+                                             "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+                                             comment: "Message when we can't reach WPCom in the recovery tool"))
                 continuation.resume(returning: state)
             }
         }
@@ -143,7 +143,7 @@ final class ConnectivityToolViewModel {
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }
 
-                let state: ConnectivityToolCard.State = result.isSuccess ? .success : .error("Can't reach your site servers")
+                let state = Self.stateForSiteResult(result)
                 continuation.resume(returning: state)
             }
         }
@@ -162,10 +162,34 @@ final class ConnectivityToolViewModel {
                     DDLogError("Connectivity Tool: ❌ Site Orders\n\(error)")
                 }
 
-                let state: ConnectivityToolCard.State = result.isSuccess ? .success : .error("Can't reach your site servers")
+                let state = Self.stateForSiteResult(result)
                 continuation.resume(returning: state)
             }
         }
+    }
+
+    static func stateForSiteResult<T>(_ result: Result<T, Error>) -> ConnectivityToolCard.State {
+        guard case let .failure(error) = result else {
+            return .success
+        }
+
+        let errorMessage = {
+            switch error {
+            case is DecodingError:
+                return NSLocalizedString("Oops! It seems we can't work properly with your site's response.\n\n" +
+                                         "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+                                         comment: "Message when we there is a decoding error in the recovery tool")
+            case DotcomError.jetpackNotConnected:
+                return NSLocalizedString("Oops! It seems that your jetpack connection is broken.\n\n" +
+                                         "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+                                         comment: "Message when we there is a jetpack error in the recovery tool")
+            default:
+                return NSLocalizedString("Oops! There seems to be a problem with your site. Contact your hosting provider for further assistance",
+                                         comment: "Message when we there is a generic error in the recovery tool")
+            }
+        }()
+
+        return .error(errorMessage)
     }
 }
 

@@ -576,7 +576,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_enabledCards_shows_correct_data_after_loading_from_storage() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadAnalyticsHubCards(_, completion):
@@ -598,7 +598,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_it_updates_enabledCards_when_saved() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
 
         // When
         vm.customizeAnalyticsViewModel.selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
@@ -610,7 +610,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_it_stores_updated_analytics_cards_when_saved() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
 
         // When
         let storedAnalyticsCards = waitFor { promise in
@@ -639,7 +639,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_it_updates_customizeAnalyticsVM_when_analytics_cards_saved() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
 
         // When
         let storedAnalyticsCards = waitFor { promise in
@@ -668,7 +668,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_isCardEnabled_returns_expected_card_visibility() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadAnalyticsHubCards(_, completion):

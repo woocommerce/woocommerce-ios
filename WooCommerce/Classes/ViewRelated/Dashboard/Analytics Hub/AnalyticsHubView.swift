@@ -163,7 +163,7 @@ struct AnalyticsHubView: View {
                 } label: {
                     Text(Localization.editButton)
                 }
-                .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub))
+                .renderedIf(viewModel.canCustomizeAnalytics)
             }
         }
         .sheet(isPresented: $isCustomizingAnalyticsCards) {

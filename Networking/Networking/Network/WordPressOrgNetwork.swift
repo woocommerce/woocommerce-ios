@@ -99,7 +99,7 @@ public final class WordPressOrgNetwork: Network {
             .responseData { response in
                 do {
                     try self.validateResponse(response.data)
-                    completion(response.result.toSwiftResult())
+                    completion(response.result.mapError { $0 })
                 } catch {
                     completion(.failure(error))
                 }
@@ -120,7 +120,7 @@ public final class WordPressOrgNetwork: Network {
             self.sessionManager.request(request).validate().responseData { response in
                 do {
                     try self.validateResponse(response.data)
-                    let result = response.result.toSwiftResult()
+                    let result: Result<Data, Error> = response.result.mapError { $0 }
                     promise(Swift.Result.success(result))
                 } catch {
                     promise(Swift.Result.success(.failure(error)))

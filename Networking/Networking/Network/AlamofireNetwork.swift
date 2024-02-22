@@ -74,7 +74,7 @@ public class AlamofireNetwork: Network {
                 if let error = response.networkingError {
                     completion(.failure(error))
                 } else {
-                    completion(response.result.toSwiftResult())
+                    completion(response.result.mapError { $0 })
                 }
             }
     }
@@ -97,7 +97,7 @@ public class AlamofireNetwork: Network {
                     if let error = response.networkingError {
                         promise(.success(.failure(error)))
                     } else {
-                        promise(.success(response.result.toSwiftResult()))
+                        promise(.success(response.result.mapError { $0 }))
                     }
                 }
         }.eraseToAnyPublisher()
@@ -167,21 +167,6 @@ extension Alamofire.DataResponse {
         return response.flatMap { response in
             NetworkError(responseData: data,
                          statusCode: response.statusCode)
-        }
-    }
-}
-
-// MARK: - Swift.Result Conversion
-//
-extension Alamofire.Result {
-    /// Convert this `Alamofire.Result` to a `Swift.Result`.
-    ///
-    func toSwiftResult() -> Swift.Result<Value, Error> {
-        switch self {
-        case .success(let value):
-            return .success(value)
-        case .failure(let error):
-            return .failure(error)
         }
     }
 }

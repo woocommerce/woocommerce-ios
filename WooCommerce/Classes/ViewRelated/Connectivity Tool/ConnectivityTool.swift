@@ -43,6 +43,8 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     private func showContactSupportForm() {
         let supportController = SupportFormHostingController(viewModel: .init())
         supportController.show(from: self)
+
+        ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
     }
 }
 

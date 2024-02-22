@@ -29,10 +29,20 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             self?.rootView.cards = cards
         }
         .store(in: &subscriptions)
+
+        // Listen to the contact support button
+        rootView.onContactSupportTapped = { [weak self] in
+            self?.showContactSupportForm()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func showContactSupportForm() {
+        let supportController = SupportFormHostingController(viewModel: .init())
+        supportController.show(from: self)
     }
 }
 
@@ -52,6 +62,10 @@ struct ConnectivityTool: View {
     ///
     var cards: [Card]
 
+    /// Closure to be invoked when the "Contact Support" button is tapped.
+    ///
+    var onContactSupportTapped: (() -> ())?
+
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
 
@@ -62,7 +76,7 @@ struct ConnectivityTool: View {
             Spacer()
 
             Button(Localization.contactSupport) {
-                print()
+                onContactSupportTapped?()
             }
             .buttonStyle(PrimaryButtonStyle())
         }

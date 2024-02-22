@@ -176,15 +176,20 @@ final class ConnectivityToolViewModel {
         let message: String
         let errorAction: ConnectivityToolCard.State.ErrorAction?
         let readMore = NSLocalizedString("Read More", comment: "Action button title for a generic error on the connectivity tool")
+        let generalTroubleshootAction = {
+            UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
+        }
+        let jetpackTroubleshootAction = {
+            UIApplication.shared.open(WooConstants.URLs.troubleshootJetpackConnection.asURL())
+            ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
+        }
 
         // Handle timeout errors specially
         if error.isTimeoutError {
             message = NSLocalizedString("Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance.",
                                         comment: "Message when we there is a timeout error in the recovery tool")
-            errorAction = .init(title: readMore, action: {
-                UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            })
-            return .error(message, errorAction)
+            return .error(message, .init(title: readMore, action: generalTroubleshootAction))
         }
 
         // Handle all other types of errors.
@@ -193,22 +198,16 @@ final class ConnectivityToolViewModel {
             message = NSLocalizedString("Oops! It seems we can't work properly with your site's response.\n\n" +
                                         "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
                                         comment: "Message when we there is a decoding error in the recovery tool")
-            errorAction = .init(title: readMore, action: {
-                UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            })
+            errorAction = .init(title: readMore, action: generalTroubleshootAction)
         case DotcomError.jetpackNotConnected:
             message = NSLocalizedString("Oops! There seems to be a problem with your jetpack connection.\n\n" +
                                         "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
                                         comment: "Message when we there is a jetpack error in the recovery tool")
-            errorAction = .init(title: readMore, action: {
-                UIApplication.shared.open(WooConstants.URLs.troubleshootJetpackConnection.asURL())
-            })
+            errorAction = .init(title: readMore, action: jetpackTroubleshootAction)
         default:
             message = NSLocalizedString("Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance.",
                                         comment: "Message when we there is a generic error in the recovery tool")
-            errorAction = .init(title: readMore, action: {
-                UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            })
+            errorAction = .init(title: readMore, action: generalTroubleshootAction)
         }
 
         return .error(message, errorAction)

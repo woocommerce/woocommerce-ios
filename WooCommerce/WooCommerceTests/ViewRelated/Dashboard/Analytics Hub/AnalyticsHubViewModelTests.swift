@@ -574,17 +574,16 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
     }
 
-    func test_allCardsWithSettings_shows_correct_data_after_loading_from_storage() async {
+    func test_enabledCards_shows_correct_data_after_loading_from_storage() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
-        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
-                             AnalyticsCard(type: .orders, enabled: false),
-                             AnalyticsCard(type: .products, enabled: false),
-                             AnalyticsCard(type: .sessions, enabled: false)]
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadAnalyticsHubCards(_, completion):
-                completion(expectedCards)
+                completion([AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .orders, enabled: false),
+                            AnalyticsCard(type: .products, enabled: false),
+                            AnalyticsCard(type: .sessions, enabled: false)])
             default:
                 break
             }
@@ -594,10 +593,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.loadAnalyticsCardSettings()
 
         // Then
-        assertEqual(expectedCards, vm.allCardsWithSettings)
+        assertEqual([.revenue], vm.enabledCards)
     }
 
-    func test_it_updates_allCardsWithSettings_when_saved() async {
+    func test_it_updates_enabledCards_when_saved() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
 
@@ -606,11 +605,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         vm.customizeAnalyticsViewModel.saveChanges()
 
         // Then
-        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
-                             AnalyticsCard(type: .orders, enabled: false),
-                             AnalyticsCard(type: .products, enabled: false),
-                             AnalyticsCard(type: .sessions, enabled: false)]
-        assertEqual(expectedCards, vm.allCardsWithSettings)
+        assertEqual([.revenue], vm.enabledCards)
     }
 
     func test_it_stores_updated_analytics_cards_when_saved() async {
@@ -669,5 +664,30 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                              AnalyticsCard(type: .products, enabled: false),
                              AnalyticsCard(type: .sessions, enabled: false)]
         assertEqual(expectedCards, vm.customizeAnalyticsViewModel.allCards)
+    }
+
+    func test_isCardEnabled_returns_expected_card_visibility() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion([AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .orders, enabled: false),
+                            AnalyticsCard(type: .products, enabled: false),
+                            AnalyticsCard(type: .sessions, enabled: false)])
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+
+        // Then
+        XCTAssertTrue(vm.isCardEnabled(.revenue))
+        [.orders, .products, .sessions].forEach { card in
+            XCTAssertFalse(vm.isCardEnabled(card))
+        }
     }
 }

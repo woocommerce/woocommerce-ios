@@ -109,7 +109,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        if stores.isAuthenticatedWithoutWPCom // Non-Jetpack stores don't have sessions stats
+        if !isCardEnabled(.sessions) {
+            return false
+        } else if stores.isAuthenticatedWithoutWPCom // Non-Jetpack stores don't have sessions stats
             || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
         } else if case .custom = timeRangeSelectionType {
@@ -141,6 +143,18 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Defaults to `nil`.
     ///
     @Published var dismissNotice: Notice?
+
+    /// All analytics cards to display in the Analytics Hub.
+    ///
+    var enabledCards: [AnalyticsCard.CardType] {
+        allCardsWithSettings.filter { $0.enabled }.map { $0.type }
+    }
+
+    /// Whether the card should be displayed in the Analytics Hub.
+    ///
+    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
+        return enabledCards.contains(where: { $0 == type })
+    }
 
     // MARK: Private data
 

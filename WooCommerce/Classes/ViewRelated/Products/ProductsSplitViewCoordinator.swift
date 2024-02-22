@@ -98,12 +98,14 @@ private extension ProductsSplitViewCoordinator {
     func startProductCreation(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {
         let replacesNavigationStack = contentTypes.last == .empty
         let addProductCoordinator = AddProductCoordinator(siteID: siteID,
-                                                           source: .productsTab,
-                                                           sourceView: sourceView,
-                                                           sourceNavigationController: primaryNavigationController,
-                                                           isFirstProduct: isFirstProduct,
-                                                           navigateToProductForm: { [weak self] viewController in
+                                                          source: .productsTab,
+                                                          sourceView: sourceView,
+                                                          sourceNavigationController: primaryNavigationController,
+                                                          isFirstProduct: isFirstProduct,
+                                                          navigateToProductForm: { [weak self] viewController in
             self?.showSecondaryView(contentType: .productForm(product: nil), viewController: viewController, replacesNavigationStack: replacesNavigationStack)
+        }, onDeleteCompletion: { [weak self] in
+            self?.onSecondaryProductFormDeletion()
         })
         addProductCoordinator.onProductCreated = { [weak self] product in
             guard let self, let lastContentType = contentTypes.last, lastContentType == .productForm(product: nil) else { return }

@@ -140,6 +140,7 @@ struct AnalyticsHubView: View {
         .background(Color(uiColor: .listBackground))
         .edgesIgnoringSafeArea(.horizontal)
         .task {
+            await viewModel.loadAnalyticsCardSettings()
             await viewModel.updateData()
         }
         .onReceive(viewModel.$dismissNotice) { notice in

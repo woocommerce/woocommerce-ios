@@ -26,7 +26,12 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject {
         allCards != originalCards || selectedCards != originalSelection
     }
 
-    init(allCards: [AnalyticsCard]) {
+    /// Callback closure called when the changes are saved.
+    ///
+    private let onSave: (([AnalyticsCard]) -> Void)?
+
+    init(allCards: [AnalyticsCard],
+         onSave: (([AnalyticsCard]) -> Void)? = nil) {
         let groupedCards = AnalyticsHubCustomizeViewModel.groupSelectedCards(in: allCards)
         self.allCards = groupedCards
         self.originalCards = groupedCards
@@ -34,6 +39,17 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject {
         let selectedCards = Set(allCards.filter { $0.enabled })
         self.selectedCards = selectedCards
         self.originalSelection = selectedCards
+
+        self.onSave = onSave
+    }
+
+    /// Assembles the new selections and order into an updated set of cards.
+    ///
+    func saveChanges() {
+        let updatedCards = allCards.map { card in
+            card.copy(enabled: selectedCards.contains(card))
+        }
+        onSave?(updatedCards)
     }
 }
 

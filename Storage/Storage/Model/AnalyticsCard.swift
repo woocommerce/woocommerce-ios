@@ -1,7 +1,8 @@
 import Foundation
+import Codegen
 
 /// Represents an analytics report card in the Analytics Hub
-public struct AnalyticsCard: Codable, Hashable, Equatable {
+public struct AnalyticsCard: Codable, Hashable, Equatable, GeneratedCopiable {
     /// The type of analytics report card.
     public let type: CardType
 

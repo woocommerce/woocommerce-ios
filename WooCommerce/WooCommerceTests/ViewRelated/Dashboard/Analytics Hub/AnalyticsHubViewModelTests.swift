@@ -573,4 +573,101 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertNotNil(vm.ordersCard.reportViewModel?.initialURL)
         XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
     }
+
+    func test_allCardsWithSettings_shows_correct_data_after_loading_from_storage() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
+                             AnalyticsCard(type: .orders, enabled: false),
+                             AnalyticsCard(type: .products, enabled: false),
+                             AnalyticsCard(type: .sessions, enabled: false)]
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion(expectedCards)
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+
+        // Then
+        assertEqual(expectedCards, vm.allCardsWithSettings)
+    }
+
+    func test_it_updates_allCardsWithSettings_when_saved() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+
+        // When
+        vm.customizeAnalyticsViewModel.selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
+        vm.customizeAnalyticsViewModel.saveChanges()
+
+        // Then
+        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
+                             AnalyticsCard(type: .orders, enabled: false),
+                             AnalyticsCard(type: .products, enabled: false),
+                             AnalyticsCard(type: .sessions, enabled: false)]
+        assertEqual(expectedCards, vm.allCardsWithSettings)
+    }
+
+    func test_it_stores_updated_analytics_cards_when_saved() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+
+        // When
+        let storedAnalyticsCards = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+                switch action {
+                case let .setAnalyticsHubCards(_, cards):
+                    promise(cards)
+                default:
+                    break
+                }
+            }
+
+            // Only revenue card is selected and changes are saved
+            vm.customizeAnalyticsViewModel.selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
+            vm.customizeAnalyticsViewModel.saveChanges()
+        }
+
+        // Then
+        // Stored cards contain updated selection
+        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
+                             AnalyticsCard(type: .orders, enabled: false),
+                             AnalyticsCard(type: .products, enabled: false),
+                             AnalyticsCard(type: .sessions, enabled: false)]
+        assertEqual(expectedCards, storedAnalyticsCards)
+    }
+
+    func test_it_updates_customizeAnalyticsVM_when_analytics_cards_saved() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
+
+        // When
+        let storedAnalyticsCards = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+                switch action {
+                case let .setAnalyticsHubCards(_, cards):
+                    promise(cards)
+                default:
+                    break
+                }
+            }
+
+            // Only orders card is selected and changes are saved
+            vm.customizeAnalyticsViewModel.selectedCards = [AnalyticsCard(type: .orders, enabled: true)]
+            vm.customizeAnalyticsViewModel.saveChanges()
+        }
+
+        // Then
+        // View model contains updated selection and order
+        let expectedCards = [AnalyticsCard(type: .orders, enabled: true),
+                             AnalyticsCard(type: .revenue, enabled: false),
+                             AnalyticsCard(type: .products, enabled: false),
+                             AnalyticsCard(type: .sessions, enabled: false)]
+        assertEqual(expectedCards, vm.customizeAnalyticsViewModel.allCards)
+    }
 }

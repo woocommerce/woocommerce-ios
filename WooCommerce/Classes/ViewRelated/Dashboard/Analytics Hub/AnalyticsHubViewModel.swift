@@ -100,6 +100,12 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: nil, siteStats: nil)
 
+    /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
+    ///
+    lazy private(set) var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel = {
+        AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings, onSave: onCustomizeCards)
+    }()
+
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
@@ -136,11 +142,12 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var dismissNotice: Notice?
 
-    var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel {
-        AnalyticsHubCustomizeViewModel(allCards: AnalyticsHubViewModel.defaultCards) // TODO: Use real data from storage
-    }
-
     // MARK: Private data
+
+    /// All analytics cards with their enabled/disabled settings.
+    /// Defaults to all enabled cards in default order.
+    ///
+    @Published private(set) var allCardsWithSettings = AnalyticsHubViewModel.defaultCards
 
     /// Order stats for the current selected time period
     ///
@@ -421,6 +428,12 @@ private extension AnalyticsHubViewModel {
                     await self.updateData()
                 }
             }.store(in: &subscriptions)
+
+        $allCardsWithSettings
+            .sink { [weak self] analyticsCards in
+                guard let self else { return }
+                self.customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: analyticsCards, onSave: onCustomizeCards)
+            }.store(in: &subscriptions)
     }
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?,
@@ -570,6 +583,37 @@ private extension AnalyticsHubViewModel {
                                             webViewTitle: title,
                                             reportURL: url,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
+    /// Updates and stores analytics card settings when cards are customized.
+    /// Passed to the `AnalyticsHubCustomizeViewModel` to be performed when changes are saved.
+    ///
+    func onCustomizeCards(_ updatedCards: [AnalyticsCard]) {
+        allCardsWithSettings = updatedCards
+        storeAnalyticsCardSettings(updatedCards)
+    }
+}
+
+// MARK: - Storage
+extension AnalyticsHubViewModel {
+    /// Load analytics card settings from storage
+    /// Defaults to all enabled cards in default order if no customized settings are stored.
+    ///
+    @MainActor
+    func loadAnalyticsCardSettings() async {
+        allCardsWithSettings = await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
+                continuation.resume(returning: cards ?? AnalyticsHubViewModel.defaultCards)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Sets analytics card settings in storage
+    ///
+    private func storeAnalyticsCardSettings(_ cards: [AnalyticsCard]) {
+        let action = AppSettingsAction.setAnalyticsHubCards(siteID: siteID, cards: cards)
+        stores.dispatch(action)
     }
 }
 

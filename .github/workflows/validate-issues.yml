@@ -9,8 +9,8 @@ jobs:
     uses: Automattic/dangermattic/.github/workflows/reusable-check-labels-on-issues.yml@v1.0.0
     with:
       label-format-list: '[
-        "^type: *$",
-        "^feature: *$"
+        "^type: ",
+        "^feature: "
       ]'
       label-error-message: '🚫 Please add a type label (e.g. **type: enhancement**) and a feature label (e.g. **feature: stats**) to this issue.'
       label-success-message: 'Thanks for reporting! 👍'

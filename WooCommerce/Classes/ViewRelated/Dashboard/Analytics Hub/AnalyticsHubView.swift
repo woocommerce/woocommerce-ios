@@ -59,7 +59,6 @@ struct AnalyticsHubView: View {
     @StateObject var viewModel: AnalyticsHubViewModel
 
     @State private var isEnablingJetpackStats = false
-    @State private var isCustomizingAnalyticsCards = false
 
     var body: some View {
         RefreshablePlainList(action: {
@@ -106,16 +105,16 @@ struct AnalyticsHubView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    isCustomizingAnalyticsCards.toggle()
+                    viewModel.customizeAnalytics()
                 } label: {
                     Text(Localization.editButton)
                 }
                 .renderedIf(viewModel.canCustomizeAnalytics)
             }
         }
-        .sheet(isPresented: $isCustomizingAnalyticsCards) {
+        .sheet(item: $viewModel.customizeAnalyticsViewModel) { customizeViewModel in
             NavigationView {
-                AnalyticsHubCustomizeView(viewModel: viewModel.customizeAnalyticsViewModel)
+                AnalyticsHubCustomizeView(viewModel: customizeViewModel)
             }
         }
     }

@@ -86,9 +86,17 @@ struct ConnectivityToolCard: View {
     /// Represents the state of the card.
     ///
     enum State {
+
+        /// Represents an action to could be performed when presenting an error.
+        ///
+        struct ErrorAction {
+            let title: String
+            let action: () -> ()
+        }
+
         case inProgress
         case success
-        case error(String)
+        case error(String, ErrorAction?)
 
         /// Builds the icon based on the state
         ///
@@ -162,11 +170,16 @@ struct ConnectivityToolCard: View {
                 state.buildIcon()
             }
 
-            if case let .error(message) = state {
+            if case let .error(message, buttonAction) = state {
                 Text(message)
                     .foregroundColor(Color(uiColor: .error))
                     .subheadlineStyle()
                     .padding(.horizontal, 6)
+
+                if let buttonAction {
+                    Button(buttonAction.title, action: buttonAction.action)
+                        .buttonStyle(SecondaryButtonStyle())
+                }
             }
         }
         .padding()
@@ -183,7 +196,7 @@ struct ConnectivityToolCard: View {
             .init(title: "WordPress.com servers", icon: .system("server.rack"), state: .success),
             .init(title: "Your Site",
                   icon: .system("storefront"),
-                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance")),
+                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance", nil)),
             .init(title: "Your site orders", icon: .system("list.clipboard"), state: .inProgress)
         ])
             .navigationTitle("Connectivity Test")

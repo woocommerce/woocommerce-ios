@@ -100,7 +100,7 @@ final class ConnectivityToolViewModel {
                         .success :
                         .error(NSLocalizedString("It looks like you're not connected to the internet.\n\n" +
                                                  "Ensure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings.",
-                                                 comment: "Message when there is no internet connection in the recovery tool"))
+                                                 comment: "Message when there is no internet connection in the recovery tool"), nil)
                     continuation.resume(returning: state)
                 }
                 .store(in: &subscriptions)
@@ -124,7 +124,7 @@ final class ConnectivityToolViewModel {
                     .success :
                     .error(NSLocalizedString("Oops! It seems we can't connect to WordPress.com at the moment.\n\n" +
                                              "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
-                                             comment: "Message when we can't reach WPCom in the recovery tool"))
+                                             comment: "Message when we can't reach WPCom in the recovery tool"), nil)
                 continuation.resume(returning: state)
             }
         }
@@ -173,23 +173,45 @@ final class ConnectivityToolViewModel {
             return .success
         }
 
-        let errorMessage = {
-            switch error {
-            case is DecodingError:
-                return NSLocalizedString("Oops! It seems we can't work properly with your site's response.\n\n" +
-                                         "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
-                                         comment: "Message when we there is a decoding error in the recovery tool")
-            case DotcomError.jetpackNotConnected:
-                return NSLocalizedString("Oops! It seems that your jetpack connection is broken.\n\n" +
-                                         "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
-                                         comment: "Message when we there is a jetpack error in the recovery tool")
-            default:
-                return NSLocalizedString("Oops! There seems to be a problem with your site. Contact your hosting provider for further assistance",
-                                         comment: "Message when we there is a generic error in the recovery tool")
-            }
-        }()
+        let message: String
+        let errorAction: ConnectivityToolCard.State.ErrorAction?
+        let readMore = NSLocalizedString("Read More", comment: "Action button title for a generic error on the connectivity tool")
 
-        return .error(errorMessage)
+        // Handle timeout errors specially
+        if error.isTimeoutError {
+            message = NSLocalizedString("Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance.",
+                                        comment: "Message when we there is a timeout error in the recovery tool")
+            errorAction = .init(title: readMore, action: {
+                UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            })
+            return .error(message, errorAction)
+        }
+
+        // Handle all other types of errors.
+        switch error {
+        case is DecodingError:
+            message = NSLocalizedString("Oops! It seems we can't work properly with your site's response.\n\n" +
+                                        "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+                                        comment: "Message when we there is a decoding error in the recovery tool")
+            errorAction = .init(title: readMore, action: {
+                UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            })
+        case DotcomError.jetpackNotConnected:
+            message = NSLocalizedString("Oops! There seems to be a problem with your jetpack connection.\n\n" +
+                                        "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+                                        comment: "Message when we there is a jetpack error in the recovery tool")
+            errorAction = .init(title: readMore, action: {
+                UIApplication.shared.open(WooConstants.URLs.troubleshootJetpackConnection.asURL())
+            })
+        default:
+            message = NSLocalizedString("Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance.",
+                                        comment: "Message when we there is a generic error in the recovery tool")
+            errorAction = .init(title: readMore, action: {
+                UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            })
+        }
+
+        return .error(message, errorAction)
     }
 }
 

@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 /// View model for `AnalyticsHubCustomizeView`.
-final class AnalyticsHubCustomizeViewModel: ObservableObject {
+final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
 
     /// Ordered array of all available analytics cards.
     ///

@@ -108,9 +108,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
-    lazy private(set) var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel = {
-        AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings, onSave: onCustomizeCards)
-    }()
+    @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
 
     /// Sessions Card display state
     ///
@@ -443,12 +441,6 @@ private extension AnalyticsHubViewModel {
                     await self.updateData()
                 }
             }.store(in: &subscriptions)
-
-        $allCardsWithSettings
-            .sink { [weak self] analyticsCards in
-                guard let self else { return }
-                self.customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: analyticsCards, onSave: onCustomizeCards)
-            }.store(in: &subscriptions)
     }
 
     static func revenueCard(currentPeriodStats: OrderStatsV4?,
@@ -600,14 +592,6 @@ private extension AnalyticsHubViewModel {
                                             usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
-    /// Updates and stores analytics card settings when cards are customized.
-    /// Passed to the `AnalyticsHubCustomizeViewModel` to be performed when changes are saved.
-    ///
-    func onCustomizeCards(_ updatedCards: [AnalyticsCard]) {
-        allCardsWithSettings = updatedCards
-        storeAnalyticsCardSettings(updatedCards)
-    }
-
     /// Whether the card should be displayed in the Analytics Hub.
     ///
     func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
@@ -615,7 +599,7 @@ private extension AnalyticsHubViewModel {
     }
 }
 
-// MARK: - Storage
+// MARK: - Customize analytics cards
 extension AnalyticsHubViewModel {
     /// Load analytics card settings from storage
     /// Defaults to all enabled cards in default order if no customized settings are stored.
@@ -635,6 +619,21 @@ extension AnalyticsHubViewModel {
     private func storeAnalyticsCardSettings(_ cards: [AnalyticsCard]) {
         let action = AppSettingsAction.setAnalyticsHubCards(siteID: siteID, cards: cards)
         stores.dispatch(action)
+    }
+
+    /// Sets a view model for `customizeAnalyticsViewModel` when the feature is enabled.
+    /// This allows the view to open
+    ///
+    func customizeAnalytics() {
+        guard canCustomizeAnalytics else {
+            return
+        }
+
+        customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings) { [weak self] updatedCards in
+            guard let self else { return }
+            self.allCardsWithSettings = updatedCards
+            self.storeAnalyticsCardSettings(updatedCards)
+        }
     }
 }
 

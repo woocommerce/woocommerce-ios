@@ -321,8 +321,12 @@ private extension AnalyticsHubViewModel {
     @MainActor
     /// Retrieves top ItemsSold stats using the `retrieveTopEarnerStats` action but without saving results into storage.
     ///
-    func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats {
-        try await withCheckedThrowingContinuation { continuation in
+    func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats? {
+        guard enabledCards.contains(.products) else {
+            return nil
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                               timeRange: .thisYear, // Only needed for storing purposes, we can ignore it.
                                                               timeZone: timeZone,

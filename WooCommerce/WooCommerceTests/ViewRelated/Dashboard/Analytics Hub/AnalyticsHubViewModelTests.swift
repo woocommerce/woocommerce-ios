@@ -659,4 +659,38 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.loadAnalyticsCardSettings()
         await vm.updateData()
     }
+
+    @MainActor
+    func test_retrieving_stats_skips_top_earner_stats_request_when_products_card_is_hidden() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                XCTFail("Request to retrieve site summary stats should not be dispatched for sites without Jetpack")
+                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion([AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .orders, enabled: true),
+                            AnalyticsCard(type: .products, enabled: false),
+                            AnalyticsCard(type: .sessions, enabled: true)])
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+        await vm.updateData()
+    }
 }

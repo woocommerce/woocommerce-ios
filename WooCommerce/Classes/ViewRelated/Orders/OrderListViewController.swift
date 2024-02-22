@@ -441,7 +441,10 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                     // Recursively retries timeout errors when required.
                     if error.isTimeoutError && retryTimeout {
+
                         self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
+                        ServiceLocator.analytics.track(event: .ConnectivityTool.automaticTimeoutRetry())
+
                     } else {
                         self.viewModel.dataLoadingError = error
                     }

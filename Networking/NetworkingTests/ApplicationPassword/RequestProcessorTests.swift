@@ -38,7 +38,11 @@ final class RequestProcessorTests: XCTestCase {
         let urlRequest = URLRequest(url: url)
 
         // When
-        let _ = try sut.adapt(urlRequest)
+        waitFor { done in
+            self.sut.adapt(urlRequest, for: .default) { _ in
+                done(())
+            }
+        }
 
         // Then
         XCTAssertTrue(mockRequestAuthenticator.authenticateCalled)
@@ -55,13 +59,13 @@ final class RequestProcessorTests: XCTestCase {
         request.retryCount = 0
         let shouldRetry = waitFor { promise in
             let error = RequestAuthenticatorError.applicationPasswordNotAvailable
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
         }
 
         // Then
-        XCTAssertTrue(shouldRetry)
+        XCTAssertTrue(shouldRetry.retryRequired)
     }
 
     func test_request_with_non_zero_retryCount_is_not_scheduled_for_retry() throws {
@@ -73,13 +77,13 @@ final class RequestProcessorTests: XCTestCase {
         request.retryCount = 1
         let shouldRetry = waitFor { promise in
             let error = RequestAuthenticatorError.applicationPasswordNotAvailable
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
         }
 
         // Then
-        XCTAssertFalse(shouldRetry)
+        XCTAssertFalse(shouldRetry.retryRequired)
     }
 
     // MARK: `shouldRetry` from RequestAuthenticator
@@ -93,13 +97,13 @@ final class RequestProcessorTests: XCTestCase {
         mockRequestAuthenticator.mockedShouldRetryValue = true
         let shouldRetry = waitFor { promise in
             let error = RequestAuthenticatorError.applicationPasswordNotAvailable
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
         }
 
         // Then
-        XCTAssertTrue(shouldRetry)
+        XCTAssertTrue(shouldRetry.retryRequired)
     }
 
     func test_request_is_not_scheduled_for_retry_when_request_authenticator_shouldRetry_returns_false() throws {
@@ -111,13 +115,13 @@ final class RequestProcessorTests: XCTestCase {
         mockRequestAuthenticator.mockedShouldRetryValue = false
         let shouldRetry = waitFor { promise in
             let error = RequestAuthenticatorError.applicationPasswordNotAvailable
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
         }
 
         // Then
-        XCTAssertFalse(shouldRetry)
+        XCTAssertFalse(shouldRetry.retryRequired)
     }
 
     // MARK: Error type
@@ -130,13 +134,13 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         let shouldRetry = waitFor { promise in
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
         }
 
         // Then
-        XCTAssertTrue(shouldRetry)
+        XCTAssertTrue(shouldRetry.retryRequired)
     }
 
     func test_request_is_scheduled_for_retry_when_401_error_occurs() throws {
@@ -147,13 +151,13 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
         let shouldRetry = waitFor { promise in
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
         }
 
         // Then
-        XCTAssertTrue(shouldRetry)
+        XCTAssertTrue(shouldRetry.retryRequired)
     }
 
     func test_request_is_not_scheduled_for_retry_when_irrelavant_error_occurs() throws {
@@ -164,13 +168,13 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = AFError.invalidURL(url: url)
         let shouldRetry = waitFor { promise in
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
         }
 
         // Then
-        XCTAssertFalse(shouldRetry)
+        XCTAssertFalse(shouldRetry.retryRequired)
     }
 
     // MARK: Generate application password
@@ -183,7 +187,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(())
             }
         }
@@ -201,7 +205,7 @@ final class RequestProcessorTests: XCTestCase {
         mockRequestAuthenticator.mockedShouldRetryValue = false
         waitFor { promise in
             let error = RequestAuthenticatorError.applicationPasswordNotAvailable
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(())
             }
         }
@@ -220,7 +224,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(())
             }
         }
@@ -240,7 +244,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(())
             }
         }
@@ -261,7 +265,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         let error = RequestAuthenticatorError.applicationPasswordNotAvailable
         waitFor { promise in
-            self.sut.should(sessionManager, retry: request, with: error) { shouldRetry, timeDelay in
+            self.sut.retry(request, for: sessionManager, dueTo: error) { shouldRetry in
                 promise(())
             }
         }

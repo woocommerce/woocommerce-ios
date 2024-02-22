@@ -157,12 +157,6 @@ final class AnalyticsHubViewModel: ObservableObject {
         return allCards.filter { $0.enabled }.map { $0.type }
     }
 
-    /// Whether the card should be displayed in the Analytics Hub.
-    ///
-    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
-        return enabledCards.contains(where: { $0 == type })
-    }
-
     // MARK: Private data
 
     /// All analytics cards with their enabled/disabled settings.
@@ -612,6 +606,12 @@ private extension AnalyticsHubViewModel {
     func onCustomizeCards(_ updatedCards: [AnalyticsCard]) {
         allCardsWithSettings = updatedCards
         storeAnalyticsCardSettings(updatedCards)
+    }
+
+    /// Whether the card should be displayed in the Analytics Hub.
+    ///
+    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
+        return enabledCards.contains(where: { $0 == type })
     }
 }
 

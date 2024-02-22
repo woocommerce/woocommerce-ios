@@ -665,29 +665,4 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                              AnalyticsCard(type: .sessions, enabled: false)]
         assertEqual(expectedCards, vm.customizeAnalyticsViewModel.allCards)
     }
-
-    func test_isCardEnabled_returns_expected_card_visibility() async {
-        // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .loadAnalyticsHubCards(_, completion):
-                completion([AnalyticsCard(type: .revenue, enabled: true),
-                            AnalyticsCard(type: .orders, enabled: false),
-                            AnalyticsCard(type: .products, enabled: false),
-                            AnalyticsCard(type: .sessions, enabled: false)])
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.loadAnalyticsCardSettings()
-
-        // Then
-        XCTAssertTrue(vm.isCardEnabled(.revenue))
-        [.orders, .products, .sessions].forEach { card in
-            XCTAssertFalse(vm.isCardEnabled(card))
-        }
-    }
 }

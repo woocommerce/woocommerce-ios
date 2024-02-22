@@ -7,7 +7,7 @@ import XCTest
 final class RequestProcessorTests: XCTestCase {
     private var mockRequestAuthenticator: MockRequestAuthenticator!
     private var sut: RequestProcessor!
-    private var sessionManager: Alamofire.SessionManager!
+    private var sessionManager: Alamofire.Session!
     private var mockNotificationCenter: MockNotificationCenter!
 
     private let url = URL(string: "https://test.com/")!
@@ -15,7 +15,7 @@ final class RequestProcessorTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         mockRequestAuthenticator = MockRequestAuthenticator()
         mockNotificationCenter = MockNotificationCenter()
         sut = RequestProcessor(requestAuthenticator: mockRequestAuthenticator,
@@ -52,7 +52,7 @@ final class RequestProcessorTests: XCTestCase {
     //
     func test_request_with_zero_retryCount_is_scheduled_for_retry() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -70,7 +70,7 @@ final class RequestProcessorTests: XCTestCase {
 
     func test_request_with_non_zero_retryCount_is_not_scheduled_for_retry() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -90,7 +90,7 @@ final class RequestProcessorTests: XCTestCase {
     //
     func test_request_is_scheduled_for_retry_when_request_authenticator_shouldRetry_returns_true() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -108,7 +108,7 @@ final class RequestProcessorTests: XCTestCase {
 
     func test_request_is_not_scheduled_for_retry_when_request_authenticator_shouldRetry_returns_false() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -128,7 +128,7 @@ final class RequestProcessorTests: XCTestCase {
     //
     func test_request_is_scheduled_for_retry_when_applicationPasswordNotAvailable_error_occurs() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -145,7 +145,7 @@ final class RequestProcessorTests: XCTestCase {
 
     func test_request_is_scheduled_for_retry_when_401_error_occurs() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -162,7 +162,7 @@ final class RequestProcessorTests: XCTestCase {
 
     func test_request_is_not_scheduled_for_retry_when_irrelavant_error_occurs() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -181,7 +181,7 @@ final class RequestProcessorTests: XCTestCase {
     //
     func test_application_password_is_generated_upon_retrying_a_request() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -198,7 +198,7 @@ final class RequestProcessorTests: XCTestCase {
 
     func test_application_password_is_not_generated_when_a_request_is_not_eligible_for_retry() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -218,7 +218,7 @@ final class RequestProcessorTests: XCTestCase {
     //
     func test_notification_is_posted_when_application_password_generation_is_successful() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
 
         // When
@@ -237,7 +237,7 @@ final class RequestProcessorTests: XCTestCase {
 
     func test_notification_is_posted_when_application_password_generation_fails() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
 
@@ -257,7 +257,7 @@ final class RequestProcessorTests: XCTestCase {
 
     func test_posted_notification_holds_expected_error_when_application_password_generation_fails() throws {
         // Given
-        let sessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.default)
+        let sessionManager = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
         let applicationPasswordGenerationError = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = applicationPasswordGenerationError

@@ -67,7 +67,7 @@ final class CookieNonceAuthenticator: RequestInterceptor {
 // MARK: Private helpers
 private extension CookieNonceAuthenticator {
 
-    func startLoginSequence(manager: SessionManager) {
+    func startLoginSequence(manager: Session) {
         DDLogInfo("Starting Cookie+Nonce login sequence for \(loginURL)")
         guard let nonceRetrievalURL = buildNonceRequestURL(base: adminURL),
               let nonceRequest = try? URLRequest(url: nonceRetrievalURL, method: .get) else {
@@ -94,7 +94,7 @@ private extension CookieNonceAuthenticator {
         }
     }
 
-    func handleSiteCredentialLogin(manager: SessionManager) async throws {
+    func handleSiteCredentialLogin(manager: Session) async throws {
         let request = authenticatedRequest()
         return try await withCheckedThrowingContinuation { continuation in
             manager.request(request)
@@ -109,7 +109,7 @@ private extension CookieNonceAuthenticator {
         }
     }
 
-    func handleNonceRetrieval(request: URLRequest, manager: SessionManager) async throws -> String {
+    func handleNonceRetrieval(request: URLRequest, manager: Session) async throws -> String {
         try await withCheckedThrowingContinuation { continuation -> Void in
             manager.request(request)
                 .validate()

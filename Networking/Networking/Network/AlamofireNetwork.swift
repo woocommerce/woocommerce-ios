@@ -7,7 +7,7 @@ extension Alamofire.MultipartFormData: MultipartFormData {}
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
-    private lazy var sessionManager: Alamofire.SessionManager = {
+    private lazy var sessionManager: Alamofire.Session = {
         let sessionConfiguration = URLSessionConfiguration.default
         let sessionManager = makeSessionManager(configuration: sessionConfiguration)
         return sessionManager
@@ -21,11 +21,11 @@ public class AlamofireNetwork: Network {
     ///
     private let requestAuthenticator: RequestProcessor
 
-    public var session: URLSession { SessionManager.default.session }
+    public var session: URLSession { Session.default.session }
 
     /// Public Initializer
     ///
-    public required init(credentials: Credentials?, sessionManager: Alamofire.SessionManager? = nil) {
+    public required init(credentials: Credentials?, sessionManager: Alamofire.Session? = nil) {
         self.requestConverter = RequestConverter(credentials: credentials)
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
         if let sessionManager {

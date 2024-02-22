@@ -25,7 +25,7 @@ public final class WordPressOrgNetwork: Network {
     private let authenticator: CookieNonceAuthenticator
     private let userAgent: String?
 
-    private lazy var sessionManager: Alamofire.SessionManager = {
+    private lazy var sessionManager: Alamofire.Session = {
         let sessionConfiguration = URLSessionConfiguration.default
         let sessionManager = makeSessionManager(configuration: sessionConfiguration)
         return sessionManager
@@ -153,7 +153,7 @@ public final class WordPressOrgNetwork: Network {
 private extension WordPressOrgNetwork {
     /// Creates a session manager with injected user agent and authenticator for handling cookie-nonce/token
     ///
-    func makeSessionManager(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.SessionManager {
+    func makeSessionManager(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
         var additionalHeaders: [String: AnyObject] = [:]
         if let userAgent = self.userAgent {
             additionalHeaders["User-Agent"] = userAgent as AnyObject?

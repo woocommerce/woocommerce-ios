@@ -169,9 +169,9 @@ final class AlamofireNetworkTests: XCTestCase {
 }
 
 private extension AlamofireNetworkTests {
-    func createSessionManagerWithMockURLProtocol() -> SessionManager {
+    func createSessionManagerWithMockURLProtocol() -> Session {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
-        return SessionManager(configuration: configuration)
+        return Session(configuration: configuration)
     }
 }

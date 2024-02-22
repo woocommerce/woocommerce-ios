@@ -20,14 +20,14 @@ extension WooAnalyticsEvent {
             .init(statName: .ordersListTopBannerTroubleshootTapped, properties: [:])
         }
 
-        static func requestResponse(test: Test, success: Bool, timeTaken: Double, error: Error?) -> WooAnalyticsEvent {
+        static func requestResponse(test: Test, success: Bool, timeTaken: Double) -> WooAnalyticsEvent {
             .init(statName: .connectivityToolRequestResponse,
                   properties: [
                     "test": test.rawValue,
                     "success": success,
                     "time_taken": timeTaken
-                  ],
-                  error: error)
+                  ]
+            )
         }
 
         static func readMoreTapped() -> WooAnalyticsEvent {

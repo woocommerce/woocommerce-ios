@@ -51,14 +51,23 @@ final class ConnectivityToolViewModel {
             // Add an inProgress card for the current test.
             cards.append(testCase.inProgressCard)
 
+            // Start time snapshot
+            let startTime = Date()
+
             // Run the test.
             let testResult = await runTest(for: testCase)
+
+            // Time taken snapshot
+            let timeTaken = Date().timeIntervalSince(startTime)
 
             // Update the test card with the test result.
             cards[index] = cards[index].updatingState(testResult)
 
+            // Track test result
+            trackResponseEvent(for: testCase, success: testResult.isSuccess, timeTaken: timeTaken)
+
             // Only continue with another test if the current test was successful.
-            if case .error = testResult {
+            if !testResult.isSuccess {
                 return // Exit connectivity test.
             }
         }
@@ -168,7 +177,7 @@ final class ConnectivityToolViewModel {
         }
     }
 
-    static func stateForSiteResult<T>(_ result: Result<T, Error>) -> ConnectivityToolCard.State {
+    private static func stateForSiteResult<T>(_ result: Result<T, Error>) -> ConnectivityToolCard.State {
         guard case let .failure(error) = result else {
             return .success
         }
@@ -211,6 +220,20 @@ final class ConnectivityToolViewModel {
         }
 
         return .error(message, errorAction)
+    }
+
+    /// Tracks the event with the respective test response.
+    ///
+    private func trackResponseEvent(for test: ConnectivityToolViewModel.ConnectivityTest, success: Bool, timeTaken: Double) {
+        let eventTest: WooAnalyticsEvent.ConnectivityTool.Test = {
+            switch test {
+            case .internetConnection: return .internet
+            case .wpComServers: return .wpCom
+            case .site: return .site
+            case .siteOrders: return .orders
+            }
+        }()
+        ServiceLocator.analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
     }
 }
 

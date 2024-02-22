@@ -128,6 +128,17 @@ struct ConnectivityToolCard: View {
                     .foregroundColor(Color.init(uiColor: .error))
             }
         }
+
+        /// Determines if the test was successful or not.
+        ///
+        var isSuccess: Bool {
+            switch self {
+            case .success:
+                return true
+            default:
+                return false
+            }
+        }
     }
 
     /// Represents the icon of the card

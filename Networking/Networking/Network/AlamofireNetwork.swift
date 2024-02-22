@@ -123,10 +123,8 @@ public class AlamofireNetwork: Network {
 private extension AlamofireNetwork {
     /// Creates a session manager with request retrier and adapter
     ///
-    func makeSessionManager(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.SessionManager {
-        let sessionManager = Alamofire.SessionManager(configuration: sessionConfiguration)
-        sessionManager.retrier = requestAuthenticator
-        sessionManager.adapter = requestAuthenticator
+    func makeSessionManager(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
+        let sessionManager = Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
         return sessionManager
     }
 }

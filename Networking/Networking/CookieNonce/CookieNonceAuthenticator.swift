@@ -8,7 +8,7 @@ import Foundation
 /// This authenticator uses Ajax nonce retrieval method by default
 /// since we are not supporting sites with WP versions earlier than 5.6.0.
 ///
-final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
+final class CookieNonceAuthenticator: RequestInterceptor {
     private let username: String
     private let password: String
     private let loginURL: URL
@@ -17,7 +17,7 @@ final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
 
     private var canRetry = true
     private var isAuthenticating = false
-    private var requestsToRetry = [RequestRetryCompletion]()
+    private var requestsToRetry = [(RetryResult) -> Void]()
 
     init(configuration: CookieNonceAuthenticatorConfiguration) {
         self.username = configuration.username
@@ -27,18 +27,17 @@ final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
     }
 
     // MARK: Request Adapter
-
-    func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
+    func adapt(_ urlRequest: URLRequest, for session: Alamofire.Session, completion: @escaping (Result<URLRequest, Swift.Error>) -> Void) {
         guard let nonce else {
-            return urlRequest
+            return completion(.success(urlRequest))
         }
         var adaptedRequest = urlRequest
         adaptedRequest.addValue(nonce, forHTTPHeaderField: "X-WP-Nonce")
-        return adaptedRequest
+        completion(.success(adaptedRequest))
     }
 
     // MARK: Retrier
-    func should(_ manager: SessionManager, retry request: Alamofire.Request, with error: Swift.Error, completion: @escaping RequestRetryCompletion) {
+    func retry(_ request: Alamofire.Request, for session: Alamofire.Session, dueTo error: Swift.Error, completion: @escaping (RetryResult) -> Void) {
         guard
             canRetry,
             // Only retry once
@@ -48,12 +47,12 @@ final class CookieNonceAuthenticator: RequestRetrier & RequestAdapter {
             // Only retry because of failed authorization
             case .responseValidationFailed(reason: .unacceptableStatusCode(code: 401)) = error as? AFError
         else {
-            return completion(false, 0.0)
+            return completion(.doNotRetry)
         }
 
         requestsToRetry.append(completion)
         if !isAuthenticating {
-            startLoginSequence(manager: manager)
+            startLoginSequence(manager: session)
         }
     }
 
@@ -144,8 +143,9 @@ private extension CookieNonceAuthenticator {
     }
 
     func completeRequests(_ shouldRetry: Bool) {
+        let result: RetryResult = shouldRetry ? .retryWithDelay(0) : .doNotRetry
         requestsToRetry.forEach { (completion) in
-            completion(shouldRetry, 0.0)
+            completion(result)
         }
         requestsToRetry.removeAll()
     }

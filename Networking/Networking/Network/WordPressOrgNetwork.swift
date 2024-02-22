@@ -161,9 +161,7 @@ private extension WordPressOrgNetwork {
 
         sessionConfiguration.httpAdditionalHeaders = additionalHeaders
 
-        let sessionManager = Alamofire.SessionManager(configuration: sessionConfiguration)
-        sessionManager.adapter = authenticator
-        sessionManager.retrier = authenticator
+        let sessionManager = Alamofire.Session(configuration: sessionConfiguration, interceptor: authenticator)
         return sessionManager
     }
 

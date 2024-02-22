@@ -113,9 +113,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        if !isCardEnabled(.sessions) {
+        guard enabledCards.contains(.sessions) else {
             return false
-        } else if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
+        }
+        if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
                     || stores.sessionManager.defaultSite?.isJetpackCPConnected == true // JCP stores don't have Jetpack stats
                     || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
@@ -591,12 +592,6 @@ private extension AnalyticsHubViewModel {
                                             webViewTitle: title,
                                             reportURL: url,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
-    }
-
-    /// Whether the card should be displayed in the Analytics Hub.
-    ///
-    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
-        return enabledCards.contains(where: { $0 == type })
     }
 }
 

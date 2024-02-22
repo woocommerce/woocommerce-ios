@@ -252,29 +252,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_retrieving_stats_skips_summary_stats_request_for_sites_without_jetpack_plugin() async {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                XCTFail("Request to retrieve site summary stats should not be dispatched for sites without Jetpack")
-                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-    }
-
-    @MainActor
     func test_showJetpackStatsCTA_true_for_admin_when_stats_module_disabled() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, analytics: analytics)
@@ -582,6 +559,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
     }
 
+    // MARK: Customized Analytics
+
     func test_enabledCards_shows_correct_data_after_loading_from_storage() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
@@ -645,5 +624,39 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                              AnalyticsCard(type: .products, enabled: false),
                              AnalyticsCard(type: .sessions, enabled: false)]
         assertEqual(expectedCards, storedAnalyticsCards)
+    }
+
+    @MainActor
+    func test_retrieving_stats_skips_summary_stats_request_when_sessions_card_is_hidden() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                XCTFail("Request to retrieve site summary stats should not be dispatched for sites without Jetpack")
+                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion([AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .orders, enabled: true),
+                            AnalyticsCard(type: .products, enabled: true),
+                            AnalyticsCard(type: .sessions, enabled: false)])
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+        await vm.updateData()
     }
 }

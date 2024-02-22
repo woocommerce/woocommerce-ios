@@ -2,7 +2,11 @@ import Combine
 import Foundation
 import Alamofire
 
-extension Alamofire.MultipartFormData: MultipartFormData {}
+extension Alamofire.MultipartFormData: MultipartFormData {
+    public func append(_ data: Data, withName name: String) {
+        self.append(data, withName: name, fileName: nil, mimeType: nil)
+    }
+}
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///

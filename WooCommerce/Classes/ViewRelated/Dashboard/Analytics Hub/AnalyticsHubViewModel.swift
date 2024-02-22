@@ -102,7 +102,13 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
-    @Published private(set) var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
+    lazy private(set) var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel = {
+        AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings) { [weak self] updatedCards in
+            guard let self else { return }
+            self.allCardsWithSettings = updatedCards
+            self.storeAnalyticsCardSettings(updatedCards)
+        }
+    }()
 
     /// Sessions Card display state
     ///
@@ -424,17 +430,6 @@ private extension AnalyticsHubViewModel {
                 // Update data on range selection change
                 Task.init {
                     await self.updateData()
-                }
-            }.store(in: &subscriptions)
-
-        $allCardsWithSettings
-            .sink { [weak self] analyticsCards in
-                guard let self else { return }
-
-                self.customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: analyticsCards) { [weak self] updatedCards in
-                    guard let self else { return }
-                    self.allCardsWithSettings = updatedCards
-                    self.storeAnalyticsCardSettings(updatedCards)
                 }
             }.store(in: &subscriptions)
     }

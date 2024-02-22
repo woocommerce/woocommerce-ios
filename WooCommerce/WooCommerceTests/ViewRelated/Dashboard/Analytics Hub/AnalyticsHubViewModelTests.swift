@@ -577,7 +577,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_allCardsWithSettings_shows_correct_data_after_loading_from_storage() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
-        let expectedCards = defaultCards()
+        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
+                             AnalyticsCard(type: .orders, enabled: false),
+                             AnalyticsCard(type: .products, enabled: false),
+                             AnalyticsCard(type: .sessions, enabled: false)]
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadAnalyticsHubCards(_, completion):
@@ -594,13 +597,13 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         assertEqual(expectedCards, vm.allCardsWithSettings)
     }
 
-    func test_it_updates_allCardsWithSettings_when_saved() async throws {
+    func test_it_updates_allCardsWithSettings_when_saved() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
 
         // When
-        try XCTUnwrap (vm.customizeAnalyticsViewModel).selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
-        try XCTUnwrap (vm.customizeAnalyticsViewModel).saveChanges()
+        vm.customizeAnalyticsViewModel.selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
+        vm.customizeAnalyticsViewModel.saveChanges()
 
         // Then
         let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
@@ -610,12 +613,12 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         assertEqual(expectedCards, vm.allCardsWithSettings)
     }
 
-    func test_it_stores_updated_analytics_cards_when_saved() async throws {
+    func test_it_stores_updated_analytics_cards_when_saved() async {
         // Given
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores)
 
         // When
-        let storedAnalyticsCards = try waitFor { promise in
+        let storedAnalyticsCards = waitFor { promise in
             self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
                 switch action {
                 case let .setAnalyticsHubCards(_, cards):
@@ -626,8 +629,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             }
 
             // Only revenue card is selected and changes are saved
-            try XCTUnwrap (vm.customizeAnalyticsViewModel).selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
-            try XCTUnwrap (vm.customizeAnalyticsViewModel).saveChanges()
+            vm.customizeAnalyticsViewModel.selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
+            vm.customizeAnalyticsViewModel.saveChanges()
         }
 
         // Then
@@ -637,14 +640,5 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                              AnalyticsCard(type: .products, enabled: false),
                              AnalyticsCard(type: .sessions, enabled: false)]
         assertEqual(expectedCards, storedAnalyticsCards)
-    }
-}
-
-private extension AnalyticsHubViewModelTests {
-    func defaultCards() -> [AnalyticsCard] {
-        return [AnalyticsCard(type: .revenue, enabled: true),
-                AnalyticsCard(type: .orders, enabled: false),
-                AnalyticsCard(type: .products, enabled: false),
-                AnalyticsCard(type: .sessions, enabled: false)]
     }
 }

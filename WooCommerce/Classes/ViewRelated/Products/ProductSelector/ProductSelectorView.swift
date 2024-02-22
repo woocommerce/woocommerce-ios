@@ -326,9 +326,10 @@ private extension ProductSelectorView {
                 .padding(.trailing)
                 .renderedIf(searchHeaderisBeingEdited)
             }
-            .background(Color(.listForeground(modal: false)))
         }
         .frame(height: Constants.minimumRowHeight * scale)
+        .padding(.bottom, Constants.defaultPadding)
+        .background(Color(.listForeground(modal: false)))
     }
 }
 

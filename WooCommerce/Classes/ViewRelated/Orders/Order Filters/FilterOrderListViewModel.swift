@@ -9,20 +9,24 @@ final class FilterOrderListViewModel: FilterListViewModel {
     struct Filters: Equatable {
         let orderStatus: [OrderStatusEnum]?
         let dateRange: OrderDateRangeFilter?
+        let product: FilterOrdersByProduct?
 
         let numberOfActiveFilters: Int
 
         init() {
             orderStatus = nil
             dateRange = nil
+            product = nil
             numberOfActiveFilters = 0
         }
 
         init(orderStatus: [OrderStatusEnum]?,
              dateRange: OrderDateRangeFilter?,
+             product: FilterOrdersByProduct?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
             self.dateRange = dateRange
+            self.product = product
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
@@ -34,6 +38,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
             if let dateRange = dateRange {
                 readable.append(dateRange.description)
             }
+            if let product = product {
+                readable.append(product.name)
+            }
             return readable.joined(separator: ", ")
         }
     }
@@ -44,23 +51,28 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     private let orderStatusFilterViewModel: FilterTypeViewModel
     private let dateRangeFilterViewModel: FilterTypeViewModel
+    private let productFilterViewModel: FilterTypeViewModel
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
     ///   - allowedStatuses: the statuses that will be shown in the filter list.
-    init(filters: Filters, allowedStatuses: [OrderStatus]) {
+    ///   - siteID: current selected site ID
+    init(filters: Filters, allowedStatuses: [OrderStatus], siteID: Int64) {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
 
-        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel]
+        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, productFilterViewModel]
     }
 
     var criteria: Filters {
         let orderStatus = orderStatusFilterViewModel.selectedValue as? [OrderStatusEnum] ?? nil
         let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
+        let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,
+                       product: product,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
@@ -70,6 +82,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         let clearedDateRange: OrderDateRangeFilter? = nil
         dateRangeFilterViewModel.selectedValue = clearedDateRange
+
+        let clearedProduct: FilterOrdersByProduct? = nil
+        productFilterViewModel.selectedValue = clearedProduct
     }
 }
 
@@ -79,6 +94,7 @@ extension FilterOrderListViewModel {
     enum OrderListFilter {
         case orderStatus
         case dateRange
+        case product(siteID: Int64)
     }
 }
 
@@ -89,6 +105,8 @@ private extension FilterOrderListViewModel.OrderListFilter {
             return Localization.rowTitleOrderStatus
         case .dateRange:
             return Localization.rowTitleDateRange
+        case .product:
+            return Localization.rowTitleProduct
         }
     }
 }
@@ -104,6 +122,10 @@ extension FilterOrderListViewModel.OrderListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .ordersDateRange,
                                        selectedValue: filters.dateRange)
+        case .product(let siteID):
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .products(siteID: siteID),
+                                       selectedValue: filters.product)
         }
     }
 }
@@ -160,6 +182,14 @@ extension Array: FilterType where Element == OrderStatusEnum {
     }
 }
 
+extension FilterOrdersByProduct: FilterType {
+    /// The user-facing description of the filter value.
+    var description: String { name }
+
+    /// Whether the filter is set to a non-empty value.
+    var isActive: Bool { true }
+}
+
 // MARK: - Constants
 private extension FilterOrderListViewModel {
     enum Localization {
@@ -171,5 +201,8 @@ private extension FilterOrderListViewModel.OrderListFilter {
     enum Localization {
         static let rowTitleOrderStatus = NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
         static let rowTitleDateRange = NSLocalizedString("Date Range", comment: "Row title for filtering orders by date range.")
+        static let rowTitleProduct = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowTitleProduct",
+                                                       value: "Product",
+                                                       comment: "Row title for filtering orders by Product.")
     }
 }

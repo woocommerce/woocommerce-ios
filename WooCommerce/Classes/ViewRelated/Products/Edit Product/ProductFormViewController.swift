@@ -564,6 +564,7 @@ private extension ProductFormViewController {
 
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
+        tableView.accessibilityIdentifier = "product-form"
 
         tableView.backgroundColor = .listForeground(modal: false)
         tableView.removeLastCellSeparator()

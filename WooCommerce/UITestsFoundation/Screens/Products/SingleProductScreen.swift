@@ -9,6 +9,10 @@ public final class SingleProductScreen: ScreenObject {
         return screen.isLoaded && screen.expectedElement.isHittable
     }
 
+    private var productFormTable: XCUIElement {
+        app.tables["product-form"]
+    }
+
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ {$0.buttons["edit-product-more-options-button"]} ],
@@ -18,14 +22,18 @@ public final class SingleProductScreen: ScreenObject {
 
     @discardableResult
     public func goBackToProductList() throws -> ProductsScreen {
-        navBackButton.tap()
+        let navBackButton = productFormTable.navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
+        // If split view is enabled, back button is not shown in the product form navigation bar.
+        if navBackButton.exists {
+            navBackButton.tap()
+        }
         return try ProductsScreen()
     }
 
     @discardableResult
     public func verifyProduct(product: ProductData) throws -> Self {
-        app.assertTextVisibilityCount(textToFind: product.stock_status, expectedCount: 1)
-        app.assertTextVisibilityCount(textToFind: product.regular_price, expectedCount: 1)
+        productFormTable.assertTextVisibilityCount(textToFind: product.stock_status, expectedCount: 1)
+        productFormTable.assertTextVisibilityCount(textToFind: product.regular_price, expectedCount: 1)
         XCTAssertTrue(app.textViews[product.name].isFullyVisibleOnScreen(), "Product name is not visible on screen!")
 
         return self

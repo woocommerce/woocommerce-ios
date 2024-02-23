@@ -80,7 +80,7 @@ struct ConnectivityTool: View {
             }
             .padding(.horizontal)
 
-            Divider()
+            Divider().ignoresSafeArea()
 
             Button(Localization.contactSupport) {
                 onContactSupportTapped?()
@@ -207,6 +207,7 @@ struct ConnectivityToolCard: View {
                     .foregroundColor(Color(uiColor: .error))
                     .subheadlineStyle()
                     .padding(.horizontal, 6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 if let buttonAction {
                     Button(buttonAction.title, action: buttonAction.action)
@@ -230,7 +231,8 @@ struct ConnectivityToolCard: View {
             .init(title: "WordPress.com servers", icon: .system("server.rack"), state: .success),
             .init(title: "Your Site",
                   icon: .system("storefront"),
-                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance", nil)),
+                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance",
+                    .init(title: "Read More", action: {}))),
             .init(title: "Your site orders", icon: .system("list.clipboard"), state: .inProgress)
         ])
             .navigationTitle("Connectivity Test")

@@ -299,9 +299,9 @@ private extension ProductSelectorView {
                 .fixedSize()
                 .disabled(isClearSelectionDisabled)
                 .renderedIf(configuration.multipleSelectionEnabled)
-                
+
                 Spacer()
-                
+
                 Button(viewModel.filterButtonTitle) {
                     showingFilters.toggle()
                     ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))

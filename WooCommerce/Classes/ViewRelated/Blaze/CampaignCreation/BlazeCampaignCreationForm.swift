@@ -6,7 +6,7 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
-        super.init(rootView: BlazeCampaignCreationForm.init(viewModel: viewModel))
+        super.init(rootView: BlazeCampaignCreationForm(viewModel: viewModel))
         self.viewModel.onEditAd = { [weak self] in
             self?.navigateToEditAd()
         }

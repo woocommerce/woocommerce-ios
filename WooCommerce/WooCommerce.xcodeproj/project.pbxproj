@@ -763,6 +763,7 @@
 		2602A64827BDBF8000B347F1 /* ProductInputTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64727BDBF8000B347F1 /* ProductInputTransformerTests.swift */; };
 		2602A64A27BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */; };
 		260520F22B83B1B7005D5D59 /* ConnectivityToolViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260520F12B83B1B7005D5D59 /* ConnectivityToolViewModel.swift */; };
+		260520F42B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260520F32B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift */; };
 		260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260837082AA66E4A0004A12B /* UserNotifications.framework */; };
 		2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */; };
 		2608370E2AA66E4B0004A12B /* OrderNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2608370D2AA66E4B0004A12B /* OrderNotificationViewController.swift */; };
@@ -3474,6 +3475,7 @@
 		2602A64727BDBF8000B347F1 /* ProductInputTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputTransformerTests.swift; sourceTree = "<group>"; };
 		2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteOrderSynchronizerTests.swift; sourceTree = "<group>"; };
 		260520F12B83B1B7005D5D59 /* ConnectivityToolViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityToolViewModel.swift; sourceTree = "<group>"; };
+		260520F32B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ConnectivityTool.swift"; sourceTree = "<group>"; };
 		260837072AA66E4A0004A12B /* NotificationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		260837082AA66E4A0004A12B /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -8597,6 +8599,7 @@
 				DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */,
 				EEA1E20D2AC55F2200A37ADD /* WooAnalyticsEvent+ProductCreationAI.swift */,
 				DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */,
+				260520F32B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -13966,6 +13969,7 @@
 				B626C71B287659D60083820C /* OrderCustomFieldsDetails.swift in Sources */,
 				025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */,
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
+				260520F42B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift in Sources */,
 				B946881229B8DD41000646B0 /* DashboardViewController+Activity.swift in Sources */,
 				579CDEFF274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift in Sources */,
 				74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */,

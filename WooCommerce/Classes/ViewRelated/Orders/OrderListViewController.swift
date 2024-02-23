@@ -441,7 +441,10 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                     // Recursively retries timeout errors when required.
                     if error.isTimeoutError && retryTimeout {
+
                         self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
+                        ServiceLocator.analytics.track(event: .ConnectivityTool.automaticTimeoutRetry())
+
                     } else {
                         self.viewModel.dataLoadingError = error
                     }
@@ -917,7 +920,13 @@ private extension OrderListViewController {
         onTroubleshootButtonPressed: { [weak self] in
             guard let self = self else { return }
 
-            WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.connectivityTool) {
+                ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
+                let connectivityToolViewController = ConnectivityToolViewController()
+                self.show(connectivityToolViewController, sender: self)
+            } else {
+                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            }
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }

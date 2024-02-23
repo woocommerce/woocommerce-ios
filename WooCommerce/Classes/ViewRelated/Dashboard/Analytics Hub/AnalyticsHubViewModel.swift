@@ -115,7 +115,8 @@ final class AnalyticsHubViewModel: ObservableObject {
     var showSessionsCard: Bool {
         if !isCardEnabled(.sessions) {
             return false
-        } else if stores.sessionManager.defaultSite?.isJetpackThePluginInstalled == false // Non-Jetpack stores don't have sessions stats
+        } else if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
+                    || stores.sessionManager.defaultSite?.isJetpackCPConnected == true // JCP stores don't have Jetpack stats
                     || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
         } else if case .custom = timeRangeSelectionType {

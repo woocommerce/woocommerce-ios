@@ -115,8 +115,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     var showSessionsCard: Bool {
         if !isCardEnabled(.sessions) {
             return false
-        } else if stores.isAuthenticatedWithoutWPCom // Non-Jetpack stores don't have sessions stats
-            || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
+        } else if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
+                    || stores.sessionManager.defaultSite?.isJetpackCPConnected == true // JCP stores don't have Jetpack stats
+                    || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
         } else if case .custom = timeRangeSelectionType {
             return false
@@ -336,7 +337,7 @@ private extension AnalyticsHubViewModel {
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
-        guard !stores.isAuthenticatedWithoutWPCom, let period = timeRangeSelectionType.period else {
+        guard showSessionsCard, let period = timeRangeSelectionType.period else {
             return nil
         }
 

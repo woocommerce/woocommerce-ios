@@ -22,7 +22,7 @@ public final class SingleProductScreen: ScreenObject {
 
     @discardableResult
     public func goBackToProductList() throws -> ProductsScreen {
-        let navBackButton = productFormTable.navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
+        let navBackButton = app.navigationBars.element(boundBy: 0).buttons["Products"]
         // If split view is enabled, back button is not shown in the product form navigation bar.
         if navBackButton.exists {
             navBackButton.tap()

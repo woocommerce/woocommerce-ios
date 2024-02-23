@@ -304,7 +304,9 @@ private extension ProductSelectorView {
                 ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
             }
             .buttonStyle(LinkButtonStyle())
+            .fixedSize()
         }
+        .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: false)))
     }
 

@@ -18,6 +18,7 @@ public class AlamofireNetwork: Network {
 
     private lazy var sessionManager: Alamofire.SessionManager = {
         let sessionConfiguration = URLSessionConfiguration.default
+        sessionConfiguration.timeoutIntervalForRequest = 1
         let sessionManager = makeSessionManager(configuration: sessionConfiguration)
         return sessionManager
     }()

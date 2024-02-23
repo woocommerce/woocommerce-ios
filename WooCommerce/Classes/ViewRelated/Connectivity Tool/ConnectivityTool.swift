@@ -71,19 +71,23 @@ struct ConnectivityTool: View {
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
 
-            ForEach(cards, id: \.title) { card in
-                ConnectivityToolCard(icon: card.icon, title: card.title, state: card.state)
-            }
-
             Spacer()
+
+            ScrollView {
+                ForEach(cards, id: \.title) { card in
+                    ConnectivityToolCard(icon: card.icon, title: card.title, state: card.state)
+                }
+            }
+            .padding(.horizontal)
+
+            Divider()
 
             Button(Localization.contactSupport) {
                 onContactSupportTapped?()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .padding()
         }
-        .frame(maxWidth: .greatestFiniteMagnitude, maxHeight: .greatestFiniteMagnitude, alignment: .topLeading)
-        .padding()
         .background(Color(uiColor: .listBackground))
     }
 }
@@ -176,6 +180,7 @@ struct ConnectivityToolCard: View {
     @ScaledMetric private var iconSize = 40.0
     private static let cornerRadius = 4.0
     private static let verticalSpacing = 16.0
+    private static let cardSpacing = 8.0
 
     var body: some View {
         VStack(spacing: Self.verticalSpacing) {
@@ -212,7 +217,9 @@ struct ConnectivityToolCard: View {
         .padding()
         .background(Color(uiColor: .listForeground(modal: false)))
         .cornerRadius(Self.cornerRadius)
-        .padding()
+        .padding(.horizontal)
+        .padding(.vertical, Self.cardSpacing)
+
     }
 }
 

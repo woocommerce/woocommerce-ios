@@ -920,9 +920,13 @@ private extension OrderListViewController {
         onTroubleshootButtonPressed: { [weak self] in
             guard let self = self else { return }
 
-            ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
-            let connectivityToolViewController = ConnectivityToolViewController()
-            self.show(connectivityToolViewController, sender: self)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.connectivityTool) {
+                ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
+                let connectivityToolViewController = ConnectivityToolViewController()
+                self.show(connectivityToolViewController, sender: self)
+            } else {
+                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            }
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }

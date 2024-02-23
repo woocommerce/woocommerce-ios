@@ -14,7 +14,7 @@ extension ProductSelectorView.Configuration {
     private enum Localization {
         static let productSelectorTitle = NSLocalizedString(
             "configurationForOrder.productSelectorTitle",
-            value: "Filter orders",
+            value: "Product",
             comment: "Title for the screen to select product for filtering orders")
         static let productSelectorCancel = NSLocalizedString(
             "configurationForOrder.productSelectorCancel",

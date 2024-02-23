@@ -644,6 +644,72 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.loadAnalyticsCardSettings()
         await vm.updateData()
     }
+
+    func test_enabling_new_card_fetches_required_data() async throws {
+        // Given
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion([AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .orders, enabled: true),
+                            AnalyticsCard(type: .products, enabled: false),
+                            AnalyticsCard(type: .sessions, enabled: false)])
+            default:
+                break
+            }
+        }
+        await vm.loadAnalyticsCardSettings()
+
+        // When
+        let fetchedProductStats: Bool = try waitFor { promise in
+            self.stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+                switch action {
+                case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                    completion(.success(.fake()))
+                case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                    completion(.success(.fake()))
+                    promise(true)
+                default:
+                    break
+                }
+            }
+            // Enable products card
+            self.vm.customizeAnalytics()
+            let customizeAnalytics = try XCTUnwrap(self.vm.customizeAnalyticsViewModel)
+            customizeAnalytics.selectedCards.update(with: AnalyticsCard(type: .products, enabled: false))
+            customizeAnalytics.saveChanges()
+        }
+
+        // Then
+        XCTAssertTrue(fetchedProductStats)
+    }
+
+    func test_changing_card_settings_without_enabling_new_cards_does_not_update_data() async throws {
+        // Given
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion([AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .orders, enabled: true),
+                            AnalyticsCard(type: .products, enabled: false),
+                            AnalyticsCard(type: .sessions, enabled: false)])
+            default:
+                break
+            }
+        }
+        await vm.loadAnalyticsCardSettings()
+
+        // When & Then
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { _ in
+            XCTFail("No data should be requested if new cards aren't enabled")
+        }
+
+        // Orders card is deselected and changes are saved
+        self.vm.customizeAnalytics()
+        let customizeAnalytics = try XCTUnwrap(self.vm.customizeAnalyticsViewModel)
+        customizeAnalytics.selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
+        customizeAnalytics.saveChanges()
+    }
 }
 
 private extension AnalyticsHubViewModelTests {

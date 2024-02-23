@@ -84,6 +84,7 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                          webReportViewModel: productsWebReportVM)
 
         bindViewModelsWithData()
+        bindCardSettingsWithData()
     }
 
     /// Revenue Card ViewModel
@@ -449,6 +450,22 @@ private extension AnalyticsHubViewModel {
                 // Update data on range selection change
                 Task.init {
                     await self.updateData()
+                }
+            }.store(in: &subscriptions)
+    }
+
+    func bindCardSettingsWithData() {
+        $allCardsWithSettings
+            .dropFirst() // do not trigger refresh action on initial value
+            .removeDuplicates()
+            .sink { [weak self] newCardSettings in
+                guard let self else { return }
+                // If there are newly enabled cards, refresh the stats data
+                let newEnabledCards = newCardSettings.filter({ $0.enabled }).map({ $0.type })
+                if !newEnabledCards.allSatisfy(self.enabledCards.contains) {
+                    Task {
+                        await self.updateData()
+                    }
                 }
             }.store(in: &subscriptions)
     }

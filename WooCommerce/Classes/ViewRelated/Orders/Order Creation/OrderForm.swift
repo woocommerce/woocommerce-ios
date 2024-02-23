@@ -728,7 +728,6 @@ private extension ProductsSection {
             } else {
                 HStack() {
                     Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                        .foregroundColor(Color(.brand))
                     Text(Localization.scanProductRowTitle)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -752,7 +751,6 @@ private extension ProductsSection {
                 ProgressView()
             } else {
                 Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                .foregroundColor(Color(.brand))
             }
         })
         .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)

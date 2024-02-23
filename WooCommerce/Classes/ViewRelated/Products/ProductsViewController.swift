@@ -114,6 +114,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return resultsController
     }()
 
+    private var selectedProductListener: EntityListener<Product>?
+
     private var sortOrder: ProductsSortOrder = .default {
         didSet {
             if sortOrder != oldValue {
@@ -245,6 +247,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         showTopBannerViewIfNeeded()
         syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
+        observeSelectedProductToAutoScrollWhenProductChanges()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -955,7 +958,9 @@ private extension ProductsViewController {
                                   onDataReloaded.merge(with: Just<Void>(())),
                                   // Giving it an initial value to enable the combined publisher from the beginning.
                                   onTableViewEditingEnd.merge(with: Just<Void>(())))
-            .sink { [weak self] selectedProduct, _, _ in
+            .map { $0.0 }
+            .withPrevious()
+            .sink { [weak self] previousSelectedProduct, selectedProduct in
                 guard let self else { return }
 
                 let currentSelectedIndexPath = tableView.indexPathForSelectedRow
@@ -969,14 +974,47 @@ private extension ProductsViewController {
                     if let currentSelectedIndexPath {
                         tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                     }
-                    let scrollPosition: UITableView.ScrollPosition = tableView.indexPathsForVisibleRows?.contains(selectedIndexPath) == true ?
-                        .none: .middle
+
+                    let scrollPosition: UITableView.ScrollPosition = {
+                        let hasSelectedProductChanged = (selectedProduct != previousSelectedProduct)
+                        guard hasSelectedProductChanged else { return .none }
+                        let isSelectedIndexPathVisible = self.isIndexPathVisible(selectedIndexPath)
+                        return isSelectedIndexPathVisible ? .none : .middle
+                    }()
+
                     tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
                 } else if let currentSelectedIndexPath {
                     tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func observeSelectedProductToAutoScrollWhenProductChanges() {
+        selectedProduct.compactMap { $0 }
+            .sink { [weak self] selectedProduct in
+                self?.listenToSelectedProductToAutoScrollWhenProductChanges(product: selectedProduct)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
+        selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
+        selectedProductListener?.onUpsert = { [weak self] product in
+            guard let self,
+                  let selectedIndexPath = tableView.indexPathForSelectedRow,
+                  !isIndexPathVisible(selectedIndexPath) else {
+                return
+            }
+            tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false)
+        }
+    }
+
+    func isIndexPathVisible(_ indexPath: IndexPath) -> Bool {
+        guard let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows else {
+            return false
+        }
+        return indexPathsForVisibleRows.contains(indexPath)
     }
 }
 

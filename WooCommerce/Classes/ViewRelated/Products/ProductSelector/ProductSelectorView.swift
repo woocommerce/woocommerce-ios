@@ -62,6 +62,8 @@ struct ProductSelectorView: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     /// Tracks the state for the 'Clear Selection' button
     ///
     private var isClearSelectionDisabled: Bool {
@@ -87,10 +89,13 @@ struct ProductSelectorView: View {
                 horizontalSizeClass == .regular {
                 productSelectorHeaderTitleRow
                 productSelectorHeaderSearchRow
+                    .padding(.bottom, Constants.defaultPadding)
+                    .background(Color(.listForeground(modal: false)))
             } else {
                 productSelectorHeaderSearchRow
                 productSelectorHeaderTitleRow
             }
+            Divider()
 
             switch viewModel.syncStatus {
             case .results:
@@ -281,47 +286,54 @@ struct ProductSelectorView: View {
 
 private extension ProductSelectorView {
     @ViewBuilder private var productSelectorHeaderTitleRow: some View {
-        HStack {
-            Text(viewModel.selectProductsTitle)
-                .renderedIf(configuration.productHeaderTextEnabled)
+        GeometryReader { geometry in
+            HStack {
+                Text(viewModel.selectProductsTitle)
+                    .renderedIf(configuration.productHeaderTextEnabled && geometry.size.width > Constants.headerSearchRowWidth)
+                    .fixedSize()
+                    .padding(.leading)
+                Button(Localization.clearSelection) {
+                    viewModel.clearSelection()
+                }
+                .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .padding(.leading)
-            Button(Localization.clearSelection) {
-                viewModel.clearSelection()
-            }
-            .buttonStyle(LinkButtonStyle())
-            .fixedSize()
-            .disabled(isClearSelectionDisabled)
-            .renderedIf(configuration.multipleSelectionEnabled)
+                .disabled(isClearSelectionDisabled)
+                .renderedIf(configuration.multipleSelectionEnabled)
 
-            Spacer()
+                Spacer()
 
-            Button(viewModel.filterButtonTitle) {
-                showingFilters.toggle()
-                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+                Button(viewModel.filterButtonTitle) {
+                    showingFilters.toggle()
+                    ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+                }
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize()
             }
-            .buttonStyle(LinkButtonStyle())
-            .fixedSize()
+            .padding(.horizontal, insets: safeAreaInsets)
         }
-        .padding(.horizontal, insets: safeAreaInsets)
+        .frame(height: Constants.minimumRowHeight * scale)
         .background(Color(.listForeground(modal: false)))
     }
 
     @ViewBuilder private var productSelectorHeaderSearchRow: some View {
-        HStack {
-            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-                searchHeaderisBeingEdited = isEditing
-            })
-            .padding(.horizontal, insets: safeAreaInsets)
-            .accessibilityIdentifier("product-selector-search-bar")
-            Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+        GeometryReader { geometry in
+            HStack {
+                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+                    searchHeaderisBeingEdited = isEditing
+                })
+                .accessibilityIdentifier("product-selector-search-bar")
+                Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+                    ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+                }
+                .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
+                .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
+                .padding(.trailing)
+                .renderedIf(searchHeaderisBeingEdited)
             }
-            .pickerStyle(.segmented)
-            .padding(.leading)
-            .padding(.trailing)
-            .renderedIf(searchHeaderisBeingEdited)
         }
+        // The GeometryReader will take all available space if not constrained vertically, while adjusting automatically horizontally,
+        // so we need to set a desired height for this view.
+        .frame(height: Constants.minimumRowHeight * scale)
         .background(Color(.listForeground(modal: false)))
     }
 }
@@ -351,6 +363,8 @@ private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
+        static let minimumRowHeight: CGFloat = 48
+        static let headerSearchRowWidth: CGFloat = 450
         static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
         static let productRowAccessibilityIdentifier: String = "product-item"
     }

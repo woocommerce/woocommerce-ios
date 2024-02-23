@@ -173,13 +173,19 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showSessionsCard)
     }
 
-    func test_session_card_is_hidden_for_sites_without_jetpack() {
+    func test_session_card_is_hidden_for_sites_without_jetpack_plugin() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let storesForNonJetpackSite = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
+        let vmNonJetpackSite = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: storesForNonJetpackSite)
+
+        let storesForJCPSite = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                              defaultSite: .fake().copy(isJetpackThePluginInstalled: false,
+                                                                                                        isJetpackConnected: true)))
+        let vmJCPSite = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: storesForJCPSite)
 
         // Then
-        XCTAssertFalse(vm.showSessionsCard)
+        XCTAssertFalse(vmNonJetpackSite.showSessionsCard)
+        XCTAssertFalse(vmJCPSite.showSessionsCard)
     }
 
     @MainActor
@@ -246,9 +252,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_retrieving_stats_skips_summary_stats_request_for_sites_without_jetpack() async {
+    func test_retrieving_stats_skips_summary_stats_request_for_sites_without_jetpack_plugin() async {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -271,7 +277,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     @MainActor
     func test_showJetpackStatsCTA_true_for_admin_when_stats_module_disabled() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, analytics: analytics)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
@@ -324,6 +330,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        statsTimeRange: .today,
                                        usageTracksEventEmitter: eventEmitter,
                                        stores: stores,
+                                       analytics: analytics,
                                        backendProcessingDelay: 0)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
             switch action {
@@ -359,6 +366,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        statsTimeRange: .today,
                                        usageTracksEventEmitter: eventEmitter,
                                        stores: stores,
+                                       analytics: analytics,
                                        noticePresenter: noticePresenter,
                                        backendProcessingDelay: 0)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
@@ -572,5 +580,70 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertNotNil(vm.revenueCard.reportViewModel?.initialURL)
         XCTAssertNotNil(vm.ordersCard.reportViewModel?.initialURL)
         XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
+    }
+
+    func test_enabledCards_shows_correct_data_after_loading_from_storage() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion([AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .orders, enabled: false),
+                            AnalyticsCard(type: .products, enabled: false),
+                            AnalyticsCard(type: .sessions, enabled: false)])
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+
+        // Then
+        assertEqual([.revenue], vm.enabledCards)
+    }
+
+    func test_it_updates_enabledCards_when_saved() async throws {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
+
+        // When
+        vm.customizeAnalytics()
+        try XCTUnwrap(vm.customizeAnalyticsViewModel).selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
+        try XCTUnwrap(vm.customizeAnalyticsViewModel).saveChanges()
+
+        // Then
+        assertEqual([.revenue], vm.enabledCards)
+    }
+
+    func test_it_stores_updated_analytics_cards_when_saved() async throws {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .thisMonth, usageTracksEventEmitter: eventEmitter, stores: stores, canCustomizeAnalytics: true)
+
+        // When
+        let storedAnalyticsCards = try waitFor { promise in
+            self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+                switch action {
+                case let .setAnalyticsHubCards(_, cards):
+                    promise(cards)
+                default:
+                    break
+                }
+            }
+
+            // Only revenue card is selected and changes are saved
+            vm.customizeAnalytics()
+            try XCTUnwrap(vm.customizeAnalyticsViewModel).selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
+            try XCTUnwrap(vm.customizeAnalyticsViewModel).saveChanges()
+        }
+
+        // Then
+        // Stored cards contain updated selection
+        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
+                             AnalyticsCard(type: .orders, enabled: false),
+                             AnalyticsCard(type: .products, enabled: false),
+                             AnalyticsCard(type: .sessions, enabled: false)]
+        assertEqual(expectedCards, storedAnalyticsCards)
     }
 }

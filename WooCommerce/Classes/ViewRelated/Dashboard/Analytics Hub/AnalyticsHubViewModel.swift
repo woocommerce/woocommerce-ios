@@ -27,6 +27,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
+    /// Whether the `customizeAnalyticsHub` feature flag is enabled
+    ///
+    let canCustomizeAnalytics: Bool
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
@@ -34,7 +38,8 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000) {
+         backendProcessingDelay: UInt64 = 500_000_000,
+         canCustomizeAnalytics: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub)) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -51,6 +56,7 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.canCustomizeAnalytics = canCustomizeAnalytics
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
         let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
@@ -100,11 +106,18 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: nil, siteStats: nil)
 
+    /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
+    ///
+    @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
+
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        if stores.isAuthenticatedWithoutWPCom // Non-Jetpack stores don't have sessions stats
-            || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
+        if !isCardEnabled(.sessions) {
+            return false
+        } else if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
+                    || stores.sessionManager.defaultSite?.isJetpackCPConnected == true // JCP stores don't have Jetpack stats
+                    || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
         } else if case .custom = timeRangeSelectionType {
             return false
@@ -136,11 +149,19 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var dismissNotice: Notice?
 
-    var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel {
-        AnalyticsHubCustomizeViewModel(allCards: AnalyticsHubViewModel.defaultCards) // TODO: Use real data from storage
+    /// All analytics cards to display in the Analytics Hub.
+    ///
+    var enabledCards: [AnalyticsCard.CardType] {
+        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
+        return allCards.filter { $0.enabled }.map { $0.type }
     }
 
     // MARK: Private data
+
+    /// All analytics cards with their enabled/disabled settings.
+    /// Defaults to all enabled cards in default order.
+    ///
+    @Published private(set) var allCardsWithSettings = AnalyticsHubViewModel.defaultCards
 
     /// Order stats for the current selected time period
     ///
@@ -316,7 +337,7 @@ private extension AnalyticsHubViewModel {
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
-        guard !stores.isAuthenticatedWithoutWPCom, let period = timeRangeSelectionType.period else {
+        guard showSessionsCard, let period = timeRangeSelectionType.period else {
             return nil
         }
 
@@ -570,6 +591,50 @@ private extension AnalyticsHubViewModel {
                                             webViewTitle: title,
                                             reportURL: url,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
+    /// Whether the card should be displayed in the Analytics Hub.
+    ///
+    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
+        return enabledCards.contains(where: { $0 == type })
+    }
+}
+
+// MARK: - Customize analytics cards
+extension AnalyticsHubViewModel {
+    /// Load analytics card settings from storage
+    /// Defaults to all enabled cards in default order if no customized settings are stored.
+    ///
+    @MainActor
+    func loadAnalyticsCardSettings() async {
+        allCardsWithSettings = await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
+                continuation.resume(returning: cards ?? AnalyticsHubViewModel.defaultCards)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Sets analytics card settings in storage
+    ///
+    private func storeAnalyticsCardSettings(_ cards: [AnalyticsCard]) {
+        let action = AppSettingsAction.setAnalyticsHubCards(siteID: siteID, cards: cards)
+        stores.dispatch(action)
+    }
+
+    /// Sets a view model for `customizeAnalyticsViewModel` when the feature is enabled.
+    /// This allows the view to open
+    ///
+    func customizeAnalytics() {
+        guard canCustomizeAnalytics else {
+            return
+        }
+
+        customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings) { [weak self] updatedCards in
+            guard let self else { return }
+            self.allCardsWithSettings = updatedCards
+            self.storeAnalyticsCardSettings(updatedCards)
+        }
     }
 }
 

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct AnalyticsHubCustomizeView: View {
-    // TODO: Initialize with real data
     @ObservedObject var viewModel: AnalyticsHubCustomizeViewModel
 
     /// Dismisses the view.
@@ -13,7 +12,8 @@ struct AnalyticsHubCustomizeView: View {
             .toolbar(content: {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        dismiss() // TODO: Save changes
+                        viewModel.saveChanges()
+                        dismiss()
                     } label: {
                         Text(Localization.saveButton)
                     }

@@ -297,10 +297,16 @@ private extension FilterListViewController {
                 )
 
                 let controller: CustomerSelectorViewController = {
-                    return CustomerSelectorViewController(siteID: siteID,
-                                                          addressFormViewModel: addressFormViewModel) {_ in
-                        // todo: 12059 - update selected customer in the filter
-                    }
+                    return CustomerSelectorViewController(
+                        siteID: siteID,
+                        addressFormViewModel: addressFormViewModel,
+                        onCustomerSelected: { [weak self] customer in
+                            selected.selectedValue = CustomerFilter(id: customer.customerID)
+                            self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                            self?.listSelector.reloadData()
+                            self?.listSelector.navigationController?.dismiss(animated: true)
+                        }
+                    )
                 }()
 
                 self.listSelector.navigationController?.present(

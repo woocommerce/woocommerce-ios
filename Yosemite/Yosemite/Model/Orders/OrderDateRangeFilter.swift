@@ -44,4 +44,8 @@ public enum OrderDateRangeFilterEnum: Codable, Hashable, CaseIterable {
 
 public struct CustomerFilter: Codable, Hashable {
     public let id: Int64
+
+    public init(id: Int64) {
+        self.id = id
+    }
 }

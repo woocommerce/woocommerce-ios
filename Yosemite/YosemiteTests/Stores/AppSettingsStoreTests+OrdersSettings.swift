@@ -122,7 +122,7 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         }
         subject.onAction(writeAction1)
 
-        let writeAction2 = AppSettingsAction.upsertOrdersSettings(siteID: siteID2, 
+        let writeAction2 = AppSettingsAction.upsertOrdersSettings(siteID: siteID2,
                                                                   orderStatusesFilter: orderStatuses2,
                                                                   dateRangeFilter: dateRange2,
                                                                   productFilter: productFilter2) { error in

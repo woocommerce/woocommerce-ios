@@ -277,7 +277,7 @@ private extension FilterListViewController {
                                                                                                      source: .orderFilter,
                                                                                                      viewModel: productSelectorViewModel))
                 }()
-                self.listSelector.navigationController?.present(controller, animated: true)        
+                self.listSelector.navigationController?.present(controller, animated: true)
             }
         }
     }

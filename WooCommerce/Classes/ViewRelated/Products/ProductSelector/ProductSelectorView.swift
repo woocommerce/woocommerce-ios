@@ -37,14 +37,6 @@ struct ProductSelectorView: View {
     ///
     @Binding var isPresented: Bool
 
-    /// Defines whether a variation list is shown.
-    ///
-    @State var isShowingVariationList: Bool = false
-
-    /// View model to use for the variation list, when it is shown.
-    ///
-    @State var variationListViewModel: ProductVariationSelectorViewModel?
-
     /// View model to drive the view.
     ///
     @ObservedObject var viewModel: ProductSelectorViewModel
@@ -130,13 +122,13 @@ struct ProductSelectorView: View {
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
                     .renderedIf(configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap)
 
-                    if let variationListViewModel = variationListViewModel {
+                    if let variationListViewModel = viewModel.productVariationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelectorView(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
                             onMultipleSelections: { selectedIDs in
                                 viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
-                            }), isActive: $isShowingVariationList) {
+                            }), isActive: $viewModel.isShowingProductVariationList) {
                                 EmptyView()
                             }
                             .renderedIf(configuration.treatsAllProductsAsSimple == false)
@@ -219,23 +211,17 @@ struct ProductSelectorView: View {
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
-        if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID),
-            configuration.treatsAllProductsAsSimple == false {
+        if viewModel.isVariableProduct(productOrVariationID: rowViewModel.productOrVariationID),
+           configuration.treatsAllProductsAsSimple == false {
             HStack {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
-                    // Display the variations list if toggleSelectionForAllVariations is not allowed
-                    if !viewModel.toggleAllVariationsOnSelection {
-                        isShowingVariationList.toggle()
-                        self.variationListViewModel = variationListViewModel
-                    }
+                    viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    isShowingVariationList.toggle()
-                    self.variationListViewModel = variationListViewModel
+                    viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)	
                 }
                 .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)

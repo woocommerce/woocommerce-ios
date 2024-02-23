@@ -45,6 +45,7 @@ final class OrdersRootViewController: UIViewController {
     private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
         didSet {
             if filters != oldValue {
+                customerFilter = filters.customer
                 updateLocalOrdersSettings(filters: filters)
                 filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
                 orderListViewModel.updateFilters(filters: filters)
@@ -72,6 +73,8 @@ final class OrdersRootViewController: UIViewController {
     private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
     private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
+
+    private var customerFilter: CustomerFilter?
 
     // MARK: View Lifecycle
 
@@ -438,6 +441,7 @@ private extension OrdersRootViewController {
             case .success(let settings):
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
+                                                                 customer: settings.customerFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure(let error):
                 print("It was not possible to sync local orders settings: \(String(describing: error))")
@@ -451,7 +455,9 @@ private extension OrdersRootViewController {
     ///
     func updateLocalOrdersSettings(filters: FilterOrderListViewModel.Filters) {
         let action = AppSettingsAction.upsertOrdersSettings(siteID: siteID,
-                                                            orderStatusesFilter: filters.orderStatus, dateRangeFilter: filters.dateRange) { error in
+                                                            orderStatusesFilter: filters.orderStatus,
+                                                            dateRangeFilter: filters.dateRange,
+                                                            customerFilter: filters.customer) { error in
             if error != nil {
                 assertionFailure("It was not possible to store order settings due to an error: \(String(describing: error))")
             }

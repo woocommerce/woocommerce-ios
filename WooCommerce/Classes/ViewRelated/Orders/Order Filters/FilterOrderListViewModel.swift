@@ -9,20 +9,24 @@ final class FilterOrderListViewModel: FilterListViewModel {
     struct Filters: Equatable {
         let orderStatus: [OrderStatusEnum]?
         let dateRange: OrderDateRangeFilter?
+        let customer: CustomerFilter?
 
         let numberOfActiveFilters: Int
 
         init() {
             orderStatus = nil
             dateRange = nil
+            customer = nil
             numberOfActiveFilters = 0
         }
 
         init(orderStatus: [OrderStatusEnum]?,
              dateRange: OrderDateRangeFilter?,
+             customer: CustomerFilter?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
             self.dateRange = dateRange
+            self.customer = customer
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
@@ -34,6 +38,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
             if let dateRange = dateRange {
                 readable.append(dateRange.description)
             }
+            if let customer = customer {
+                readable.append(customer.description)
+            }
             return readable.joined(separator: ", ")
         }
     }
@@ -44,6 +51,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     private let orderStatusFilterViewModel: FilterTypeViewModel
     private let dateRangeFilterViewModel: FilterTypeViewModel
+    private let customerFilterViewModel: FilterTypeViewModel
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
@@ -51,16 +59,19 @@ final class FilterOrderListViewModel: FilterListViewModel {
     init(filters: Filters, allowedStatuses: [OrderStatus]) {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        customerFilterViewModel = OrderListFilter.customer.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
 
-        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel]
+        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel]
     }
 
     var criteria: Filters {
         let orderStatus = orderStatusFilterViewModel.selectedValue as? [OrderStatusEnum] ?? nil
         let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
+        let customer = dateRangeFilterViewModel.selectedValue as? CustomerFilter ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,
+                       customer: customer,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
@@ -79,6 +90,7 @@ extension FilterOrderListViewModel {
     enum OrderListFilter {
         case orderStatus
         case dateRange
+        case customer
     }
 }
 
@@ -89,6 +101,8 @@ private extension FilterOrderListViewModel.OrderListFilter {
             return Localization.rowTitleOrderStatus
         case .dateRange:
             return Localization.rowTitleDateRange
+        case .customer:
+            return Localization.rowCustomer
         }
     }
 }
@@ -104,6 +118,10 @@ extension FilterOrderListViewModel.OrderListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .ordersDateRange,
                                        selectedValue: filters.dateRange)
+        case .customer:
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .customer,
+                                       selectedValue: filters.customer)
         }
     }
 }
@@ -171,5 +189,14 @@ private extension FilterOrderListViewModel.OrderListFilter {
     enum Localization {
         static let rowTitleOrderStatus = NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
         static let rowTitleDateRange = NSLocalizedString("Date Range", comment: "Row title for filtering orders by date range.")
+        static let rowCustomer = NSLocalizedString("Customer", comment: "Row title for filtering orders by customer.")
     }
+}
+
+extension CustomerFilter: FilterType {
+    /// The user-facing description of the filter value.
+    var description: String { String(id) }
+
+    /// Whether the filter is set to a non-empty value.
+    var isActive: Bool { true }
 }

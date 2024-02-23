@@ -58,6 +58,8 @@ enum FilterListValueSelectorConfig {
     case ordersStatuses(allowedStatuses: [OrderStatus])
     // Filter list selector for date range
     case ordersDateRange
+    // Filter list selector for customer
+    case customer
 }
 
 /// Contains data for rendering a filter type row.
@@ -248,6 +250,10 @@ private extension FilterListViewController {
                     self.listSelector.reloadData()
                 }
                 self.listSelector.navigationController?.pushViewController(datesFilterVC, animated: true)
+
+            case .customer:
+                let selectedOrderFilter = selected.selectedValue as? CustomerFilter
+                print("Customer filter not implemented")
             }
         }
     }

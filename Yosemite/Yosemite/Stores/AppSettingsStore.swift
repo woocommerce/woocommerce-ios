@@ -107,10 +107,12 @@ public class AppSettingsStore: Store {
         case .upsertOrdersSettings(let siteID,
                                    let orderStatusesFilter,
                                    let dateRangeFilter,
+                                   let customerFilter,
                                    let onCompletion):
             upsertOrdersSettings(siteID: siteID,
                                  orderStatusesFilter: orderStatusesFilter,
                                  dateRangeFilter: dateRangeFilter,
+                                 customerFilter: customerFilter,
                                  onCompletion: onCompletion)
         case .resetOrdersSettings:
             resetOrdersSettings()
@@ -658,6 +660,7 @@ private extension AppSettingsStore {
     func upsertOrdersSettings(siteID: Int64,
                               orderStatusesFilter: [OrderStatusEnum]?,
                               dateRangeFilter: OrderDateRangeFilter?,
+                              customerFilter: CustomerFilter?,
                               onCompletion: (Error?) -> Void) {
         var existingSettings: [Int64: StoredOrderSettings.Setting] = [:]
         if let storedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL) {
@@ -666,7 +669,8 @@ private extension AppSettingsStore {
 
         let newSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                       orderStatusesFilter: orderStatusesFilter,
-                                                      dateRangeFilter: dateRangeFilter)
+                                                      dateRangeFilter: dateRangeFilter,
+                                                      customerFilter: customerFilter)
         existingSettings[siteID] = newSettings
 
         let newStoredOrderSettings = StoredOrderSettings(settings: existingSettings)

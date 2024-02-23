@@ -43,6 +43,7 @@ public enum AppSettingsAction: Action {
     case upsertOrdersSettings(siteID: Int64,
                               orderStatusesFilter: [OrderStatusEnum]?,
                               dateRangeFilter: OrderDateRangeFilter?,
+                              customerFilter: CustomerFilter?,
                               onCompletion: (Error?) -> Void)
 
     /// Clears all the orders settings

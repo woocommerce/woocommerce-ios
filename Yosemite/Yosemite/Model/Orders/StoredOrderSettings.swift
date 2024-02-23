@@ -10,13 +10,17 @@ public struct StoredOrderSettings: Codable, Equatable {
         public let siteID: Int64
         public let orderStatusesFilter: [OrderStatusEnum]?
         public let dateRangeFilter: OrderDateRangeFilter?
+        public let customerFilter: CustomerFilter?
 
         public init(siteID: Int64,
                     orderStatusesFilter: [OrderStatusEnum]?,
-                    dateRangeFilter: OrderDateRangeFilter?) {
+                    dateRangeFilter: OrderDateRangeFilter?,
+                    customerFilter: CustomerFilter?
+        ) {
             self.siteID = siteID
             self.orderStatusesFilter = orderStatusesFilter
             self.dateRangeFilter = dateRangeFilter
+            self.customerFilter = customerFilter
         }
 
         public func numberOfActiveFilters() -> Int {
@@ -25,6 +29,9 @@ public struct StoredOrderSettings: Codable, Equatable {
                 total += 1
             }
             if let dateRangeFilter = dateRangeFilter, dateRangeFilter.filter != .any {
+                total += 1
+            }
+            if let _ = customerFilter {
                 total += 1
             }
 
@@ -37,6 +44,7 @@ public struct StoredOrderSettings: Codable, Equatable {
             case siteID = "site_id"
             case orderStatusesFilter = "order_statuses_filter"
             case dateRangeFilter = "date_range_filter"
+            case customerFilter = "customer_filter"
         }
     }
 
@@ -46,4 +54,8 @@ public struct StoredOrderSettings: Codable, Equatable {
     public init(settings: [Int64: Setting]) {
         self.settings = settings
     }
+}
+
+public struct CustomerFilter: Codable, Hashable {
+    public let id: Int64
 }

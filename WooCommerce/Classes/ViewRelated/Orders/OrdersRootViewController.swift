@@ -45,7 +45,6 @@ final class OrdersRootViewController: UIViewController {
     private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
         didSet {
             if filters != oldValue {
-                productFilter = filters.product
                 updateLocalOrdersSettings(filters: filters)
                 filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
                 orderListViewModel.updateFilters(filters: filters)
@@ -73,8 +72,6 @@ final class OrdersRootViewController: UIViewController {
     private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
     private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
-
-    private var productFilter: FilterOrdersByProduct?
 
     // MARK: View Lifecycle
 

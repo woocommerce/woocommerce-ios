@@ -58,8 +58,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     func didExpand() {
         // Auto-selects the first product if there is no content to be shown.
         if contentTypes.isEmpty {
-            showEmptyView()
-            productsViewController.selectFirstProductIfAvailable()
+            showEmptyViewOrFirstProduct()
         }
     }
 }
@@ -88,7 +87,10 @@ private extension ProductsSplitViewCoordinator {
     func showProductForm(product: Product) {
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             forceReadOnly: false) { [weak self] viewController in
+                                             forceReadOnly: false,
+                                             onDeleteCompletion: { [weak self] in
+            self?.onSecondaryProductFormDeletion()
+        }) { [weak self] viewController in
             self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
         }
     }
@@ -96,12 +98,14 @@ private extension ProductsSplitViewCoordinator {
     func startProductCreation(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {
         let replacesNavigationStack = contentTypes.last == .empty
         let addProductCoordinator = AddProductCoordinator(siteID: siteID,
-                                                           source: .productsTab,
-                                                           sourceView: sourceView,
-                                                           sourceNavigationController: primaryNavigationController,
-                                                           isFirstProduct: isFirstProduct,
-                                                           navigateToProductForm: { [weak self] viewController in
+                                                          source: .productsTab,
+                                                          sourceView: sourceView,
+                                                          sourceNavigationController: primaryNavigationController,
+                                                          isFirstProduct: isFirstProduct,
+                                                          navigateToProductForm: { [weak self] viewController in
             self?.showSecondaryView(contentType: .productForm(product: nil), viewController: viewController, replacesNavigationStack: replacesNavigationStack)
+        }, onDeleteCompletion: { [weak self] in
+            self?.onSecondaryProductFormDeletion()
         })
         addProductCoordinator.onProductCreated = { [weak self] product in
             guard let self, let lastContentType = contentTypes.last, lastContentType == .productForm(product: nil) else { return }
@@ -121,6 +125,18 @@ private extension ProductsSplitViewCoordinator {
         }
 
         splitViewController.show(.secondary)
+    }
+
+    func onSecondaryProductFormDeletion() {
+        splitViewController.show(.primary)
+        if !splitViewController.isCollapsed {
+            showEmptyViewOrFirstProduct()
+        }
+    }
+
+    func showEmptyViewOrFirstProduct() {
+        showEmptyView()
+        productsViewController.selectFirstProductIfAvailable()
     }
 }
 

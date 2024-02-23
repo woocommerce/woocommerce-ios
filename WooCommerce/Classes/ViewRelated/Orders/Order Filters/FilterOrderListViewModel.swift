@@ -108,6 +108,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         let clearedProduct: FilterOrdersByProduct? = nil
         productFilterViewModel.selectedValue = clearedProduct
+
+        let clearedCustomer: CustomerFilter? = nil
+        customerFilterViewModel.selectedValue = clearedCustomer
     }
 }
 

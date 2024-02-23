@@ -286,27 +286,32 @@ struct ProductSelectorView: View {
 
 private extension ProductSelectorView {
     @ViewBuilder private var productSelectorHeaderTitleRow: some View {
-        HStack {
-            Text(viewModel.selectProductsTitle)
-                .renderedIf(configuration.productHeaderTextEnabled)
-                .padding(.leading)
-            Button(Localization.clearSelection) {
-                viewModel.clearSelection()
+        GeometryReader { geometry in
+            HStack {
+                Text(viewModel.selectProductsTitle)
+                    .renderedIf(configuration.productHeaderTextEnabled && geometry.size.width > Constants.headerSearchRowWidth)
+                    .fixedSize()
+                    .padding(.leading)
+                Button(Localization.clearSelection) {
+                    viewModel.clearSelection()
+                }
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize()
+                .disabled(isClearSelectionDisabled)
+                .renderedIf(configuration.multipleSelectionEnabled)
+                
+                Spacer()
+                
+                Button(viewModel.filterButtonTitle) {
+                    showingFilters.toggle()
+                    ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+                }
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize()
             }
-            .buttonStyle(LinkButtonStyle())
-            .disabled(isClearSelectionDisabled)
-            .renderedIf(configuration.multipleSelectionEnabled)
-
-            Spacer()
-
-            Button(viewModel.filterButtonTitle) {
-                showingFilters.toggle()
-                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
-            }
-            .buttonStyle(LinkButtonStyle())
-            .fixedSize()
+            .padding(.horizontal, insets: safeAreaInsets)
         }
-        .padding(.horizontal, insets: safeAreaInsets)
+        .frame(height: Constants.minimumRowHeight * scale)
         .background(Color(.listForeground(modal: false)))
     }
 

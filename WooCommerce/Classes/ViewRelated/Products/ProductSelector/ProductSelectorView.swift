@@ -89,6 +89,8 @@ struct ProductSelectorView: View {
                 horizontalSizeClass == .regular {
                 productSelectorHeaderTitleRow
                 productSelectorHeaderSearchRow
+                    .padding(.bottom, Constants.defaultPadding)
+                    .background(Color(.listForeground(modal: false)))
             } else {
                 productSelectorHeaderSearchRow
                 productSelectorHeaderTitleRow
@@ -323,7 +325,6 @@ private extension ProductSelectorView {
             }
         }
         .frame(height: Constants.minimumRowHeight * scale)
-        .padding(.bottom, Constants.defaultPadding)
         .background(Color(.listForeground(modal: false)))
     }
 }

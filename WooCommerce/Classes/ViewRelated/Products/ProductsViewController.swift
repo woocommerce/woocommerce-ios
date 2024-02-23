@@ -977,8 +977,9 @@ private extension ProductsViewController {
 
                     let scrollPosition: UITableView.ScrollPosition = {
                         let hasSelectedProductChanged = (selectedProduct != previousSelectedProduct)
-                        let isSelectedIndexPathVisible = self.tableView.indexPathsForVisibleRows?.contains(selectedIndexPath) == true
-                        return hasSelectedProductChanged && !isSelectedIndexPathVisible ? .middle : .none
+                        guard hasSelectedProductChanged else { return .none }
+                        let isSelectedIndexPathVisible = self.isIndexPathVisible(selectedIndexPath)
+                        return isSelectedIndexPathVisible ? .none : .middle
                     }()
 
                     tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
@@ -1002,12 +1003,18 @@ private extension ProductsViewController {
         selectedProductListener?.onUpsert = { [weak self] product in
             guard let self,
                   let selectedIndexPath = tableView.indexPathForSelectedRow,
-                  let visibleIndexPaths = tableView.indexPathsForVisibleRows,
-                  !visibleIndexPaths.contains(selectedIndexPath) else {
+                  !isIndexPathVisible(selectedIndexPath) else {
                 return
             }
             tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false)
         }
+    }
+
+    func isIndexPathVisible(_ indexPath: IndexPath) -> Bool {
+        guard let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows else {
+            return false
+        }
+        return indexPathsForVisibleRows.contains(indexPath)
     }
 }
 

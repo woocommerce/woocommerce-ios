@@ -318,8 +318,8 @@ private extension ProductSelectorView {
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
                     ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
                 }
-                .if(horizontalSizeClass == .regular && geometry.size.width < Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
-                .if(horizontalSizeClass == .compact || geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
+                .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
+                .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
                 .padding(.trailing)
                 .renderedIf(searchHeaderisBeingEdited)
             }

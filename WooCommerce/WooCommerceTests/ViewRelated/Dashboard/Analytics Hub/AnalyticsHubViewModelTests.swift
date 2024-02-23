@@ -173,9 +173,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showSessionsCard)
     }
 
-    func test_session_card_is_hidden_for_sites_without_jetpack() {
+    func test_session_card_is_hidden_for_sites_without_jetpack_plugin() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(isJetpackThePluginInstalled: false)))
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
 
         // Then
@@ -246,9 +246,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_retrieving_stats_skips_summary_stats_request_for_sites_without_jetpack() async {
+    func test_retrieving_stats_skips_summary_stats_request_for_sites_without_jetpack_plugin() async {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(isJetpackThePluginInstalled: false)))
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {

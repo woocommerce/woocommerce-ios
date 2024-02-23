@@ -324,6 +324,8 @@ private extension ProductSelectorView {
                 .renderedIf(searchHeaderisBeingEdited)
             }
         }
+        // The GeometryReader will take all available space if not constrained vertically, while adjusting automatically horizontally,
+        // so we need to set a desired height for this view.
         .frame(height: Constants.minimumRowHeight * scale)
         .background(Color(.listForeground(modal: false)))
     }

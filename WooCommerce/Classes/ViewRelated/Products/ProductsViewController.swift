@@ -958,11 +958,10 @@ private extension ProductsViewController {
                                   onDataReloaded.merge(with: Just<Void>(())),
                                   // Giving it an initial value to enable the combined publisher from the beginning.
                                   onTableViewEditingEnd.merge(with: Just<Void>(())))
+            .map { $0.0 }
             .withPrevious()
-            .sink { [weak self] previous, current in
+            .sink { [weak self] previousSelectedProduct, selectedProduct in
                 guard let self else { return }
-
-                let selectedProduct = current.0
 
                 let currentSelectedIndexPath = tableView.indexPathForSelectedRow
                 let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
@@ -977,7 +976,7 @@ private extension ProductsViewController {
                     }
 
                     let scrollPosition: UITableView.ScrollPosition = {
-                        let hasSelectedProductChanged = (selectedProduct != previous?.0)
+                        let hasSelectedProductChanged = (selectedProduct != previousSelectedProduct)
                         let isSelectedIndexPathVisible = self.tableView.indexPathsForVisibleRows?.contains(selectedIndexPath) == true
                         return hasSelectedProductChanged && !isSelectedIndexPathVisible ? .middle : .none
                     }()

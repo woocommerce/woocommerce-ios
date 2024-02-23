@@ -258,7 +258,7 @@ private extension FilterListViewController {
                     return [filter.id]
                 }()
 
-                let controller: ProductSelectorViewController = {
+                let controller: WooNavigationController = {
                     let productSelectorViewModel = ProductSelectorViewModel(
                         siteID: siteID,
                         selectedItemIDs: selectedProductID,
@@ -273,11 +273,12 @@ private extension FilterListViewController {
                             self.listSelector.navigationController?.dismiss(animated: true)
                         }
                     )
-                    return ProductSelectorViewController(configuration: .configurationForOrder,
-                                                         source: .orderFilter,
-                                                         viewModel: productSelectorViewModel)
+                    return WooNavigationController(rootViewController: ProductSelectorViewController(configuration: .configurationForOrder,
+                                                                                                     source: .orderFilter,
+                                                                                                     viewModel: productSelectorViewModel))
                 }()
-                self.listSelector.navigationController?.present(controller, animated: true)            }
+                self.listSelector.navigationController?.present(controller, animated: true)        
+            }
         }
     }
 

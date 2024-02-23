@@ -27,6 +27,8 @@ extension CardBrand {
             self = .eftposAu
         case .unknown:
             self = .unknown
+        @unknown default:
+            self = .unknown
         }
     }
 }

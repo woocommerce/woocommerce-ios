@@ -26,7 +26,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: nil,
-                                                       product: ProductFilter(id: 1, name: "Sample product"),
+                                                       product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
@@ -57,7 +57,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: nil,
-                                                       product: ProductFilter(id: 1, name: "Sample product"),
+                                                       product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
@@ -140,7 +140,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending],
                                                        dateRange: nil,
-                                                       product: ProductFilter(id: 1, name: "Sample product"),
+                                                       product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
@@ -196,7 +196,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: nil,
-                                                       product: ProductFilter(id: 1, name: "Sample product"),
+                                                       product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)

@@ -271,7 +271,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     @MainActor
     func test_showJetpackStatsCTA_true_for_admin_when_stats_module_disabled() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, analytics: analytics)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
@@ -324,6 +324,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        statsTimeRange: .today,
                                        usageTracksEventEmitter: eventEmitter,
                                        stores: stores,
+                                       analytics: analytics,
                                        backendProcessingDelay: 0)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
             switch action {
@@ -359,6 +360,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        statsTimeRange: .today,
                                        usageTracksEventEmitter: eventEmitter,
                                        stores: stores,
+                                       analytics: analytics,
                                        noticePresenter: noticePresenter,
                                        backendProcessingDelay: 0)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in

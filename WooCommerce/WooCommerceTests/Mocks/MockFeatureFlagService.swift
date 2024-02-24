@@ -23,6 +23,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isScanToUpdateInventoryEnabled: Bool
     private let blazei3NativeCampaignCreation: Bool
     private let isBackendReceiptsEnabled: Bool
+    private let filterOrdersByProduct: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -44,7 +45,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          blazei3NativeCampaignCreation: Bool = false,
-         isBackendReceiptsEnabled: Bool = false) {
+         isBackendReceiptsEnabled: Bool = false,
+         filterOrdersByProduct: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -66,6 +68,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.blazei3NativeCampaignCreation = blazei3NativeCampaignCreation
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
+        self.filterOrdersByProduct = filterOrdersByProduct
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -110,6 +113,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return blazei3NativeCampaignCreation
         case .backendReceipts:
             return isBackendReceiptsEnabled
+        case .filterOrdersByProduct:
+            return filterOrdersByProduct
         default:
             return false
         }

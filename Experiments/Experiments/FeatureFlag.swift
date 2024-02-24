@@ -211,4 +211,8 @@ public enum FeatureFlag: Int {
     /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
     ///
     case useURLSessionInWordPressKit
+
+    /// Enables filtering orders by product
+    ///
+    case filterOrdersByProduct
 }

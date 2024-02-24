@@ -95,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .useURLSessionInWordPressKit:
             return buildConfig != .appStore
+        case .filterOrdersByProduct:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

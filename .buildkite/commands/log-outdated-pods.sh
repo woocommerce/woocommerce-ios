@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-echo '--- :cocoapods: Install Pods (required to check for outdated next)'
+echo '--- :cocoapods: Install Pods (required before checking for outdated pods)'
 install_cocoapods
 
 # Run `bundle exec pod outdated` and capture the output
@@ -15,5 +15,5 @@ if [ -z "$FILTERED_PODS" ]; then
 else
 # Create a Buildkite annotation with the filtered pods
   echo "$FILTERED_PODS"
-  buildkite-agent annotate --style "info" --context 'ctx-outdated-pods' <<< "$FILTERED_PODS"
+  buildkite-agent annotate --style "info" --context 'ctx-outdated-pods' <<< "Outdated Pods" <<< "$FILTERED_PODS"
 fi

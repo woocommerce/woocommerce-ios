@@ -8,6 +8,5 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
-      # Expand this group to surface the information.
-      echo '+++ :cocoapods: Outdated Pods'
+      echo '--- :cocoapods: Check for Outdated Pods'
       .buildkite/commands/log-outdated-pods.sh

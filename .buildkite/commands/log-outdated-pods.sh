@@ -16,5 +16,13 @@ else
 # Create a Buildkite annotation with the filtered pods
   echo '--- :cocoapods: Outdated Pods'
   echo $FILTERED_PODS
-  buildkite-agent annotate --style "info" --context 'ctx-outdated-pods' <<< "# Outdated Pods\n$FILTERED_PODS"
+
+  MESSAGE=$(cat <<EOF
+  ## Outdated Pods
+
+  $FILTERED_PODS
+  EOF
+  )
+
+  buildkite-agent annotate "$MESSAGE" --style 'info' --context 'ctx-outdated-pods'
 fi

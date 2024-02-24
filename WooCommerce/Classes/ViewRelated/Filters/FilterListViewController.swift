@@ -286,10 +286,6 @@ private extension FilterListViewController {
                 self.listSelector.navigationController?.present(controller, animated: true)
 
             case .customer(let siteID):
-                // todo: 12059 - pass selected customer in the filter to the customer selector
-                let selectedOrderFilter = selected.selectedValue as? CustomerFilter
-
-                // todo: 12059 - check if this viewmodel needs to be customized for the filter
                 let addressFormViewModel = CreateOrderAddressFormViewModel(
                     siteID: siteID,
                     addressData: .init(billingAddress: nil, shippingAddress: nil),

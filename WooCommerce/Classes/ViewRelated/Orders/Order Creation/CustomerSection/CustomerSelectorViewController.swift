@@ -13,8 +13,14 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
     private let addressFormViewModel: CreateOrderAddressFormViewModel
+
+    // Whether merchant can select guest customer in the selector
     private let disallowSelectingGuest: Bool
+
+    // Whether to show the customer creation icon in the selector
     private let disallowCreatingCustomer: Bool
+
+    // Whether to show "Guest" label in the detail area of the user information for guest customers
     private let showGuestLabel: Bool
 
     /// Notice presentation handler

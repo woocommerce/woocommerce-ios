@@ -215,4 +215,8 @@ public enum FeatureFlag: Int {
     /// Enables the connectivity tool when an order list error happens.
     ///
     case connectivityTool
+
+    /// Enables filtering orders by product
+    ///
+    case filterOrdersByProduct
 }

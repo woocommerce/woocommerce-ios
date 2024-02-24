@@ -27,6 +27,7 @@ struct ProductSelectorView: View {
         case couponForm
         case couponRestrictions
         case blaze
+        case orderFilter
     }
 
     let configuration: Configuration
@@ -391,6 +392,8 @@ private extension ProductSelectorView.Source {
                 return .couponRestrictions
         case .blaze:
             return .blaze
+        case .orderFilter:
+            return .orderFilter
         }
     }
 }

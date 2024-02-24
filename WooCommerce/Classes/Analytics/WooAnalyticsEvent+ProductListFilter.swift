@@ -42,5 +42,7 @@ extension WooAnalyticsEvent.ProductListFilter {
         case couponRestrictions = "coupon_restrictions"
         /// From Blaze campaign creation flow
         case blaze = "blaze"
+        /// From orders > filter.
+        case orderFilter = "order_filter"
     }
 }

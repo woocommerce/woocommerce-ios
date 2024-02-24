@@ -262,7 +262,9 @@ private extension FilterListViewController {
                     let productSelectorViewModel = ProductSelectorViewModel(
                         siteID: siteID,
                         selectedItemIDs: selectedProductID,
-                        onProductSelectionStateChanged: { product in
+                        onProductSelectionStateChanged: { [weak self] product in
+                            guard let self else { return }
+
                             selected.selectedValue = FilterOrdersByProduct(id: product.productID, name: product.name)
                             self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
                             self.listSelector.reloadData()
@@ -270,6 +272,7 @@ private extension FilterListViewController {
                         },
                         onCloseButtonTapped: { [weak self] in
                             guard let self else { return }
+
                             self.listSelector.navigationController?.dismiss(animated: true)
                         }
                     )

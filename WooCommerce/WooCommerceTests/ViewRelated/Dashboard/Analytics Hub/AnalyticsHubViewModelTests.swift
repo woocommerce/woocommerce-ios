@@ -173,13 +173,19 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showSessionsCard)
     }
 
-    func test_session_card_is_hidden_for_sites_without_jetpack() {
+    func test_session_card_is_hidden_for_sites_without_jetpack_plugin() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let storesForNonJetpackSite = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
+        let vmNonJetpackSite = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: storesForNonJetpackSite)
+
+        let storesForJCPSite = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                              defaultSite: .fake().copy(isJetpackThePluginInstalled: false,
+                                                                                                        isJetpackConnected: true)))
+        let vmJCPSite = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: storesForJCPSite)
 
         // Then
-        XCTAssertFalse(vm.showSessionsCard)
+        XCTAssertFalse(vmNonJetpackSite.showSessionsCard)
+        XCTAssertFalse(vmJCPSite.showSessionsCard)
     }
 
     @MainActor
@@ -246,9 +252,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_retrieving_stats_skips_summary_stats_request_for_sites_without_jetpack() async {
+    func test_retrieving_stats_skips_summary_stats_request_for_sites_without_jetpack_plugin() async {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
         let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -271,7 +277,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     @MainActor
     func test_showJetpackStatsCTA_true_for_admin_when_stats_module_disabled() async {
         // Given
-        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores)
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, stores: stores, analytics: analytics)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
@@ -324,6 +330,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        statsTimeRange: .today,
                                        usageTracksEventEmitter: eventEmitter,
                                        stores: stores,
+                                       analytics: analytics,
                                        backendProcessingDelay: 0)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
             switch action {
@@ -359,6 +366,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                                        statsTimeRange: .today,
                                        usageTracksEventEmitter: eventEmitter,
                                        stores: stores,
+                                       analytics: analytics,
                                        noticePresenter: noticePresenter,
                                        backendProcessingDelay: 0)
         stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in

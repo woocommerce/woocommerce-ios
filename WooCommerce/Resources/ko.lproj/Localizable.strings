@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-14 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-02-22 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "iPhone에서 Tap to Pay를 통한 결제 수락에 대해 %1$@";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "모바일 장치로 결제 수락 및 카드 리더 주문에 대한 %1$@";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "모바일 장치로 결제를 수락하고 카드 리더기를 주문하는 방법에 대해 %1$@";
@@ -2209,7 +2204,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "현재 최대 100개 변형의 생성이 지원됩니다. 이 상품의 변형을 생성하면 %d개 변형이 생성됩니다.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "사용자 정의";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2755,9 +2751,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "고객에게 이메일로 메모 보내기";
-
-/* No comment provided by engineer. */
-"Email note to customer %@" = "%@ 고객에게 이메일로 메모 보내기";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "이메일 영수증";
@@ -4175,9 +4168,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@에서 USPS®를 통해 HAZMAT를 안전하게 포장하고, 레이블을 부착하고, 배송하는 방법을 알아보세요.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -5035,9 +5026,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "주문";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "끔";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "오프라인 - 캐시된 데이터 사용";
@@ -5056,9 +5044,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "오만";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "켬";
 
 /* Display label for the subscription status type */
 "On Hold" = "보류 중";
@@ -5142,9 +5127,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "선택 사항";
-
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "선택적 추적 정보";
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "옵션";
@@ -5422,7 +5404,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "실적";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "성과 요금제 전용";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -9525,6 +9507,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "사이트 도메인";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "사이트가 응답하는 데 오랜 시간이 걸립니다.";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "사이트 요금제가 종료되었습니다.";
 
@@ -9805,6 +9790,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "모든 준비를 마쳤습니다!";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "문제가 발생했습니다.\n캠페인을 생성할 수 없습니다.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "캠페인 이미지 상세 정보를 가져오지 못했습니다.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "캠페인 이미지를 업로드하지 못했습니다.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "캠페인 취소";
 
@@ -9813,10 +9808,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "지원받기";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "문제가 발생했습니다.\n캠페인을 생성할 수 없습니다.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "결제가 진행되지 않았습니다.";
@@ -10341,6 +10332,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "금액 편집";
 
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "추가";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "일";
 
@@ -10483,6 +10477,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "오늘 중";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "더 알아보기";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "모바일 장치로 결제 수락 및 카드 리더 주문에 대한 %1$@";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "한정 수량 육상 패키지 - 에어로졸, 스프레이 소독제, 스프레이 페인트, 헤어스프레이, 프로판, 부탄, 세정제 등 - 향료, 매니큐어, 매니큐어 제거제, 용제, 손 소독제, 소독용 알코올, 에탄올 주성분 제품 등 - 기타 한정 수량 표면재(화장품, 세정제, 도료 등)";
 
@@ -10581,6 +10584,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "검색 결과";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "고객에게 이메일로 메모 보내기 끄기";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "고객에게 이메일로 메모 보내기 켜기";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "이전 기간 없음";
 
@@ -10614,6 +10623,9 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "자세히 알아보세요.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "운송세";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "배송 추가";
 
@@ -10637,6 +10649,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "웹 관리자";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "선택적 추적 정보";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "사용자 정의 금액";
@@ -10809,6 +10824,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "등록 수수료";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld 상품 선택됨";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "상품 선택";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld 상품 선택됨";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "취소";
 
@@ -10854,6 +10878,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "환불 사용자 정의 금액";
 
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "취소";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "결제 완료됨";
 
@@ -10866,6 +10893,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "취소";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "사용자 정의 범위";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "우커머스 통계 오늘";

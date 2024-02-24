@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Experiments
 
 /// `FilterListViewModel` for filtering a list of orders.
 final class FilterOrderListViewModel: FilterListViewModel {
@@ -52,17 +53,26 @@ final class FilterOrderListViewModel: FilterListViewModel {
     private let orderStatusFilterViewModel: FilterTypeViewModel
     private let dateRangeFilterViewModel: FilterTypeViewModel
     private let productFilterViewModel: FilterTypeViewModel
+    private let featureFlagService: FeatureFlagService
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
     ///   - allowedStatuses: the statuses that will be shown in the filter list.
     ///   - siteID: current selected site ID
-    init(filters: Filters, allowedStatuses: [OrderStatus], siteID: Int64) {
+    ///   - featureFlagService: feature flag service
+    init(filters: Filters,
+         allowedStatuses: [OrderStatus],
+         siteID: Int64,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
-
-        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, productFilterViewModel]
+        self.featureFlagService = featureFlagService
+        if featureFlagService.isFeatureFlagEnabled(.filterOrdersByProduct) {
+            filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, productFilterViewModel]
+        } else {
+            filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel]
+        }
     }
 
     var criteria: Filters {

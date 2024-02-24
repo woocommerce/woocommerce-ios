@@ -7,7 +7,7 @@ install_cocoapods
 outdated_pods=$(bundle exec pod outdated)
 
 # Filter the outdated pods from the rest of the output
-filtered_pods=$(echo "$outdated_pods" | grep -oP '- (\S+) \S+ -> \S+ \(latest version \S+\)')
+filtered_pods=$(echo "$outdated_pods" | grep -o '- (\S+) \S+ -> \S+ \(latest version \S+\)')
 
 # Check if we have any outdated pods to report
 if [ -z "$filtered_pods" ]; then

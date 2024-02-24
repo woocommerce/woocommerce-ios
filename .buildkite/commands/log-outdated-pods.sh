@@ -17,12 +17,9 @@ else
   echo '--- :cocoapods: Outdated Pods'
   echo $FILTERED_PODS
 
-  MESSAGE=$(cat <<EOF
-  ## Outdated Pods
+  MESSAGE="### Outdated Pods
 
-  $FILTERED_PODS
-  EOF
-  )
+  $FILTERED_PODS"
 
   buildkite-agent annotate "$MESSAGE" --style 'info' --context 'ctx-outdated-pods'
 fi

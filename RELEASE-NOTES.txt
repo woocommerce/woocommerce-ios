@@ -2,6 +2,7 @@
 
 17.6
 -----
+- Orders: Merchants can now contact their customers through Whatsapp and Telegram apps. [https://github.com/woocommerce/woocommerce-ios/pull/12099]
 
 
 17.5

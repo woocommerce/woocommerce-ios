@@ -42,22 +42,13 @@ public enum OrderDateRangeFilterEnum: Codable, Hashable, CaseIterable {
     }
 }
 
-public struct CustomerFilter: Codable, Hashable {
+public struct ProductFilter: Codable, Hashable {
     public let id: Int64
-    public let firstName: String
-    public let lastName: String
-    public let email: String
-    public let username: String
+    public let name: String
 
     public init(id: Int64,
-                firstName: String,
-                lastName: String,
-                email: String,
-                username: String) {
+         name: String) {
         self.id = id
-        self.firstName = firstName
-        self.lastName = lastName
-        self.email = email
-        self.username = username
+        self.name = name
     }
 }

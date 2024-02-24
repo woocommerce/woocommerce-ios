@@ -246,13 +246,15 @@ private extension FilterOrderListViewModel.OrderListFilter {
 extension CustomerFilter: FilterType {
     /// The user-facing description of the filter value.
     var description: String {
-        let fullName = (firstName + " " + lastName).trimmingCharacters(in: .whitespacesAndNewlines)
+        let fullName = ((firstName ?? "") + " " + (lastName ?? "")).trimmingCharacters(in: .whitespacesAndNewlines)
 
         if !fullName.isEmpty {
             return fullName
-        } else if !email.isEmpty {
+        } else if let email,
+                    !email.isEmpty {
             return email
-        } else if !username.isEmpty {
+        } else if let username,
+                  !username.isEmpty {
             return username
         } else {
             return "id: " + String(id)

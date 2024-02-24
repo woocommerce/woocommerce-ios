@@ -8,5 +8,8 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
+      echo '--- :snowflake: Start Code Freeze'
+      bundle exec fastlane start_code_freeze skip_confirm:true
+
       echo '--- :cocoapods: Check for Outdated Pods'
       .buildkite/commands/log-outdated-pods.sh

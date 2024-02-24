@@ -48,9 +48,13 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     private var searchTerm: String?
 
+    // If customer is a guest, show "Guest" in the detail section
+    private let showGuestLabel: Bool
+
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
          showSearchFilters: Bool = false,
+         showGuestLabel: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -61,6 +65,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.siteID = siteID
         self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
         self.showSearchFilters = showSearchFilters
+        self.showGuestLabel = showGuestLabel
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -152,6 +157,8 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
+        let detail = showGuestLabel && model.customerID == 0 ? Localization.guestLabel : model.username ?? ""
+
         return CellViewModel(
             id: "\(model.customerID)",
             title: "\(model.firstName ?? "") \(model.lastName ?? "")",
@@ -159,7 +166,7 @@ final class CustomerSearchUICommand: SearchUICommand {
             placeholderSubtitle: Localization.subtitleCellPlaceholder,
             subtitle: model.email,
             accessibilityLabel: "",
-            detail: model.username ?? "",
+            detail: detail,
             underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "" // Only underline the search term if it's longer than 1 character
         )
     }
@@ -294,6 +301,11 @@ private extension CustomerSearchUICommand {
                                                                 comment: "Message to prompt users to search for customers on the customer search screen")
         static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",
                                                                 comment: "Button title for adding customer details manually on the customer search screen")
+
+        static let guestLabel = NSLocalizedString(
+            "customerSearchUICommand.guestLabel",
+            value: "Guest",
+            comment: "The label that can be shown optionally for guest customers")
     }
 }
 

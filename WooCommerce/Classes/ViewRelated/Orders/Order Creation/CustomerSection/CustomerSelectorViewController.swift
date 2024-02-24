@@ -15,6 +15,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let addressFormViewModel: CreateOrderAddressFormViewModel
     private let disallowSelectingGuest: Bool
     private let disallowCreatingCustomer: Bool
+    private let showGuestLabel: Bool
 
     /// Notice presentation handler
     ///
@@ -34,12 +35,14 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
          addressFormViewModel: CreateOrderAddressFormViewModel,
          disallowSelectingGuest: Bool = false,
          disallowCreatingCustomer: Bool = false,
+         showGuestLabel: Bool = false,
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(siteID: siteID, onCustomerSelected: onCustomerSelected)
         self.siteID = siteID
         self.addressFormViewModel = addressFormViewModel
         self.disallowSelectingGuest = disallowSelectingGuest
         self.disallowCreatingCustomer = disallowCreatingCustomer
+        self.showGuestLabel = showGuestLabel
         self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
@@ -71,7 +74,9 @@ private extension CustomerSelectorViewController {
                     switch result {
                     case .success(let thereAreResults):
                         if thereAreResults {
-                            self.addSearchViewController(loadResultsWhenSearchTermIsEmpty: true, showSearchFilters: false)
+                            self.addSearchViewController(loadResultsWhenSearchTermIsEmpty: true,
+                                                         showSearchFilters: false,
+                                                         showGuestLabel: showGuestLabel)
                             self.configureActivityIndicator()
                         } else {
                             self.showEmptyState(with: self.emptyStateConfiguration())
@@ -84,6 +89,7 @@ private extension CustomerSelectorViewController {
                 self?.removeGhostContent()
                 self?.addSearchViewController(loadResultsWhenSearchTermIsEmpty: false,
                                               showSearchFilters: true,
+                                              showGuestLabel: self?.showGuestLabel ?? false,
                                               onAddCustomerDetailsManually: {
                     self?.presentNewCustomerDetailsFlow()
                 })
@@ -135,12 +141,13 @@ private extension CustomerSelectorViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool, showSearchFilters: Bool, onAddCustomerDetailsManually: (() -> Void)? = nil) {
+    func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool, showSearchFilters: Bool, showGuestLabel: Bool, onAddCustomerDetailsManually: (() -> Void)? = nil) {
         let searchViewController = SearchViewController(
             storeID: siteID,
             command: CustomerSearchUICommand(siteID: siteID,
                                              loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
                                              showSearchFilters: showSearchFilters,
+                                             showGuestLabel: showGuestLabel,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped,
                                              onDidStartSyncingAllCustomersFirstPage: {

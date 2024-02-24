@@ -30,7 +30,7 @@ public struct StoredOrderSettings: Codable, Equatable {
             if let dateRangeFilter = dateRangeFilter, dateRangeFilter.filter != .any {
                 total += 1
             }
-            if let _ = productFilter {
+            if productFilter != nil {
                 total += 1
             }
 

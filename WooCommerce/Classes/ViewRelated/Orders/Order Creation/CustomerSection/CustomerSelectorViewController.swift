@@ -14,6 +14,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let viewModel: CustomerSelectorViewModel
     private let addressFormViewModel: CreateOrderAddressFormViewModel
     private let disallowSelectingGuest: Bool
+    private let disallowCreatingCustomer: Bool
 
     /// Notice presentation handler
     ///
@@ -32,11 +33,13 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     init(siteID: Int64,
          addressFormViewModel: CreateOrderAddressFormViewModel,
          disallowSelectingGuest: Bool = false,
+         disallowCreatingCustomer: Bool = false,
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(siteID: siteID, onCustomerSelected: onCustomerSelected)
         self.siteID = siteID
         self.addressFormViewModel = addressFormViewModel
         self.disallowSelectingGuest = disallowSelectingGuest
+        self.disallowCreatingCustomer = disallowCreatingCustomer
         self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
@@ -98,6 +101,10 @@ private extension CustomerSelectorViewController {
                                                             target: self,
                                                             action: #selector(presentNewCustomerDetailsFlow))
         navigationItem.rightBarButtonItem?.accessibilityIdentifier = AccessibilityIdentifier.addCustomerDetailsPlusButton
+
+        if disallowCreatingCustomer {
+            navigationItem.rightBarButtonItem = nil
+        }
     }
 
     func configureActivityIndicator() {

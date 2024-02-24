@@ -301,6 +301,7 @@ private extension FilterListViewController {
                         siteID: siteID,
                         addressFormViewModel: addressFormViewModel,
                         disallowSelectingGuest: true,
+                        disallowCreatingCustomer: true,
                         onCustomerSelected: { [weak self] customer in
                             selected.selectedValue = CustomerFilter(id: customer.customerID)
                             self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)

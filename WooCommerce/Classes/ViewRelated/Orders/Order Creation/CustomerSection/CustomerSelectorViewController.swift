@@ -147,7 +147,10 @@ private extension CustomerSelectorViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool, showSearchFilters: Bool, showGuestLabel: Bool, onAddCustomerDetailsManually: (() -> Void)? = nil) {
+    func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool,
+                                 showSearchFilters: Bool,
+                                 showGuestLabel: Bool,
+                                 onAddCustomerDetailsManually: (() -> Void)? = nil) {
         let searchViewController = SearchViewController(
             storeID: siteID,
             command: CustomerSearchUICommand(siteID: siteID,

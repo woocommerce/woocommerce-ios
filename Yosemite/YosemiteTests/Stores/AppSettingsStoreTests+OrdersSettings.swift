@@ -122,16 +122,16 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
                                                          customerFilter: customerFilter2)
 
         // When
-        let writeAction1 = AppSettingsAction.upsertOrdersSettings(siteID: siteID1, 
+        let writeAction1 = AppSettingsAction.upsertOrdersSettings(siteID: siteID1,
                                                                   orderStatusesFilter: orderStatuses,
                                                                   dateRangeFilter: dateRange,
-                                                                  productFilter: productFilter, 
+                                                                  productFilter: productFilter,
                                                                   customerFilter: customerFilter) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction1)
 
-        let writeAction2 = AppSettingsAction.upsertOrdersSettings(siteID: siteID2, 
+        let writeAction2 = AppSettingsAction.upsertOrdersSettings(siteID: siteID2,
                                                                   orderStatusesFilter: orderStatuses2,
                                                                   dateRangeFilter: dateRange2,
                                                                   productFilter: productFilter2,

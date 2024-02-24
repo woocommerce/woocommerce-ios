@@ -673,7 +673,7 @@ private extension AppSettingsStore {
         let newSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                       orderStatusesFilter: orderStatusesFilter,
                                                       dateRangeFilter: dateRangeFilter,
-                                                      productFilter: productFilter, 
+                                                      productFilter: productFilter,
                                                       customerFilter: customerFilter)
         existingSettings[siteID] = newSettings
 

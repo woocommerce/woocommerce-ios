@@ -14,6 +14,7 @@ if [ -z "$FILTERED_PODS" ]; then
   echo "No outdated pods to report."
 else
 # Create a Buildkite annotation with the filtered pods
-  echo "$FILTERED_PODS"
-  buildkite-agent annotate --style "info" --context 'ctx-outdated-pods' <<< "Outdated Pods" <<< "$FILTERED_PODS"
+  echo '--- :cocoapods: Outdated Pods'
+  echo $FILTERED_PODS
+  buildkite-agent annotate --style "info" --context 'ctx-outdated-pods' <<< "# Outdated Pods\n$FILTERED_PODS"
 fi

@@ -695,8 +695,8 @@ private extension BillingInformationViewController {
         )
         static let whatsapp = NSLocalizedString(
             "billingInfoViewController.whatsapp",
-            value: "Send Whatsapp message",
-            comment: "Button to send a message to a customer via Whatsapp"
+            value: "Send WhatsApp message",
+            comment: "Button to send a message to a customer via WhatsApp"
         )
         static let telegram = NSLocalizedString(
             "billingInfoViewController.telegram",

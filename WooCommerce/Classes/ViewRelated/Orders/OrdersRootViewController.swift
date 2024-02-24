@@ -317,11 +317,8 @@ final class OrdersRootViewController: UIViewController {
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
-            let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")
-            let dateRange = filters.dateRange?.analyticsDescription ?? ""
-            self?.analytics.track(.ordersListFilter,
-                                           withProperties: ["status": statuses,
-                                                            "date_range": dateRange])
+
+            self?.analytics.track(event: .OrdersFilter.onFilterOrders(filters: filters))
         }, onClearAction: {
         }, onDismissAction: {
         })

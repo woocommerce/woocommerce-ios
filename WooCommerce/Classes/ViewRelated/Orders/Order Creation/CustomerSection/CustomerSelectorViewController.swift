@@ -13,6 +13,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
     private let addressFormViewModel: CreateOrderAddressFormViewModel
+    private let disallowSelectingGuest: Bool
 
     /// Notice presentation handler
     ///
@@ -30,10 +31,12 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
     init(siteID: Int64,
          addressFormViewModel: CreateOrderAddressFormViewModel,
+         disallowSelectingGuest: Bool = false,
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(siteID: siteID, onCustomerSelected: onCustomerSelected)
         self.siteID = siteID
         self.addressFormViewModel = addressFormViewModel
+        self.disallowSelectingGuest = disallowSelectingGuest
         self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
@@ -187,6 +190,12 @@ private extension CustomerSelectorViewController {
     }
 
     func onCustomerTapped(_ customer: Customer) {
+        // Show alert if selecting guest is disallowed
+        if disallowSelectingGuest && customer.customerID == 0 {
+            showGuestSelectionDisallowedNotice()
+            return
+        }
+
         activityIndicator.startAnimating()
         viewModel.onCustomerSelected(customer, onCompletion: { [weak self] result in
             self?.activityIndicator.stopAnimating()
@@ -203,6 +212,11 @@ private extension CustomerSelectorViewController {
     func showErrorNotice() {
         noticePresenter.presentingViewController = self
         noticePresenter.enqueue(notice: Notice(title: Localization.genericAddCustomerError, feedbackType: .error))
+    }
+
+    func showGuestSelectionDisallowedNotice() {
+        noticePresenter.presentingViewController = self
+        noticePresenter.enqueue(notice: Notice(title: Localization.guestSelectionDisallowedError, feedbackType: .error))
     }
 }
 
@@ -226,6 +240,10 @@ private extension CustomerSelectorViewController {
         static let genericFetchCustomersError = NSLocalizedString(
             "Failed to fetch the customers data. Please try again later.",
             comment: "Error message in the Add Customer to order screen when getting the customers information")
+        static let guestSelectionDisallowedError = NSLocalizedString(
+            "customerSelectorViewController.guestSelectionDisallowedError",
+            value: "Selecting guest customer is not supported at the moment.",
+            comment: "Error message in the Add Customer to order screen when getting the customer information")
     }
 
     enum AccessibilityIdentifier {

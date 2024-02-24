@@ -301,6 +301,7 @@ private extension BillingInformationViewController {
             return
         }
         UIApplication.shared.open(whatsappDeeplink)
+        ServiceLocator.analytics.track(.orderDetailCustomerWhatsappOptionTapped)
     }
 
     private func sendTelegramMessage() {
@@ -308,6 +309,7 @@ private extension BillingInformationViewController {
             return
         }
         UIApplication.shared.open(telegramDeeplink)
+        ServiceLocator.analytics.track(.orderDetailCustomerTelegramOptionTapped)
     }
 }
 

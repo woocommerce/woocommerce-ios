@@ -33,6 +33,7 @@ final class BillingInformationViewController: UIViewController {
         order.billingAddress?.cleanedPhoneNumber
     }()
 
+    /// Whatsapp deeplink to contact someone through their phone number
     private var whatsappDeeplink: URL? {
         guard let number = cleanedPhoneNumber else {
             return nil
@@ -42,6 +43,21 @@ final class BillingInformationViewController: UIViewController {
 
     private var isWhatsappAvailable: Bool {
         guard let url = whatsappDeeplink else {
+            return false
+        }
+        return UIApplication.shared.canOpenURL(url)
+    }
+
+    /// Telegram deeplink to contact someone through their phone number
+    private var telegramDeeplink: URL? {
+        guard let number = cleanedPhoneNumber else {
+            return nil
+        }
+        return URL(string: "tg://resolve?phone=\(number)")
+    }
+
+    private var isTelegramAvailable: Bool {
+        guard let url = telegramDeeplink else {
             return false
         }
         return UIApplication.shared.canOpenURL(url)
@@ -175,6 +191,12 @@ private extension BillingInformationViewController {
             }
         }
 
+        if isTelegramAvailable {
+            actionSheet.addDefaultActionWithTitle(ContactAction.telegram) { [weak self] _ in
+                self?.sendTelegramMessage()
+            }
+        }
+
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.sourceView = sourceView
         popoverController?.sourceRect = sourceView.bounds
@@ -279,6 +301,13 @@ private extension BillingInformationViewController {
             return
         }
         UIApplication.shared.open(whatsappDeeplink)
+    }
+
+    private func sendTelegramMessage() {
+        guard let telegramDeeplink else {
+            return
+        }
+        UIApplication.shared.open(telegramDeeplink)
     }
 }
 
@@ -451,7 +480,23 @@ private extension BillingInformationViewController {
             }
         }()
 
-        cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction, copyAccessibilityAction, whatsappAction].compactMap { $0 }
+        let telegramAction: UIAccessibilityCustomAction? = {
+            guard isTelegramAvailable else {
+                return nil
+            }
+            return UIAccessibilityCustomAction(name: ContactAction.telegram) { [weak self] _ in
+                self?.sendTelegramMessage()
+                return true
+            }
+        }()
+
+        cell.accessibilityCustomActions = [
+            callAccessibilityAction,
+            messageAccessibilityAction,
+            copyAccessibilityAction,
+            whatsappAction,
+            telegramAction
+        ].compactMap { $0 }
 
         guard isSplitViewInOrdersTabEnabled else {
             return
@@ -650,6 +695,11 @@ private extension BillingInformationViewController {
             "billingInfoViewController.whatsapp",
             value: "Send Whatsapp message",
             comment: "Button to send a message to a customer via Whatsapp"
+        )
+        static let telegram = NSLocalizedString(
+            "billingInfoViewController.telegram",
+            value: "Send Telegram message",
+            comment: "Button to send a message to a customer via Telegram"
         )
     }
 

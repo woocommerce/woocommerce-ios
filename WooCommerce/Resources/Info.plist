@@ -56,6 +56,7 @@
 		<string>ymail</string>
 		<string>fastmail</string>
 		<string>whatsapp</string>
+		<string>tg</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

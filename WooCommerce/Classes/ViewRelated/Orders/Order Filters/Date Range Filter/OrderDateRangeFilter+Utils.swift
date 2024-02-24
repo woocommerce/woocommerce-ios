@@ -29,7 +29,7 @@ extension OrderDateRangeFilter {
         }
     }
 
-    var analyticsDescription: String {
+    var analyticsDescription: String? {
         switch filter {
         case .today:
             return "today"
@@ -42,7 +42,7 @@ extension OrderDateRangeFilter {
         case .custom:
             return "custom_range"
         default:
-            return ""
+            return nil
         }
     }
 }

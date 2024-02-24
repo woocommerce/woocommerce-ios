@@ -304,7 +304,12 @@ private extension FilterListViewController {
                         disallowCreatingCustomer: true,
                         showGuestLabel: true,
                         onCustomerSelected: { [weak self] customer in
-                            selected.selectedValue = CustomerFilter(id: customer.customerID)
+                            selected.selectedValue = CustomerFilter(id: customer.customerID,
+                                                                    firstName: customer.firstName ?? "",
+                                                                    lastName: customer.lastName ?? "",
+                                                                    email: customer.email,
+                                                                    username: customer.username ?? "")
+
                             self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                             self?.listSelector.reloadData()
                             self?.listSelector.navigationController?.dismiss(animated: true)

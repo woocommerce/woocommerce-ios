@@ -29,6 +29,40 @@ final class BillingInformationViewController: UIViewController {
         return presenter
     }()
 
+    private lazy var cleanedPhoneNumber: String? = {
+        order.billingAddress?.cleanedPhoneNumber
+    }()
+
+    /// Whatsapp deeplink to contact someone through their phone number
+    private var whatsappDeeplink: URL? {
+        guard let number = cleanedPhoneNumber else {
+            return nil
+        }
+        return URL(string: "whatsapp://send?phone=\(number)")
+    }
+
+    private var isWhatsappAvailable: Bool {
+        guard let url = whatsappDeeplink else {
+            return false
+        }
+        return UIApplication.shared.canOpenURL(url)
+    }
+
+    /// Telegram deeplink to contact someone through their phone number
+    private var telegramDeeplink: URL? {
+        guard let number = cleanedPhoneNumber else {
+            return nil
+        }
+        return URL(string: "tg://resolve?phone=\(number)")
+    }
+
+    private var isTelegramAvailable: Bool {
+        guard let url = telegramDeeplink else {
+            return false
+        }
+        return UIApplication.shared.canOpenURL(url)
+    }
+
     /// Designated Initializer
     ///
     init(order: Order, editingEnabled: Bool) {
@@ -151,6 +185,18 @@ private extension BillingInformationViewController {
             self?.copyPhoneNumberHandler()
         }
 
+        if isWhatsappAvailable {
+            actionSheet.addDefaultActionWithTitle(ContactAction.whatsapp) { [weak self] _ in
+                self?.sendWhatsappMessage()
+            }
+        }
+
+        if isTelegramAvailable {
+            actionSheet.addDefaultActionWithTitle(ContactAction.telegram) { [weak self] _ in
+                self?.sendTelegramMessage()
+            }
+        }
+
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.sourceView = sourceView
         popoverController?.sourceRect = sourceView.bounds
@@ -248,6 +294,22 @@ private extension BillingInformationViewController {
 
         ServiceLocator.analytics.track(.orderDetailCustomerEmailCopyOptionTapped)
         sendToPasteboard(email, includeTrailingNewline: false)
+    }
+
+    private func sendWhatsappMessage() {
+        guard let whatsappDeeplink else {
+            return
+        }
+        UIApplication.shared.open(whatsappDeeplink)
+        ServiceLocator.analytics.track(.orderDetailCustomerWhatsappOptionTapped)
+    }
+
+    private func sendTelegramMessage() {
+        guard let telegramDeeplink else {
+            return
+        }
+        UIApplication.shared.open(telegramDeeplink)
+        ServiceLocator.analytics.track(.orderDetailCustomerTelegramOptionTapped)
     }
 }
 
@@ -410,7 +472,33 @@ private extension BillingInformationViewController {
             return true
         }
 
-        cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction, copyAccessibilityAction]
+        let whatsappAction: UIAccessibilityCustomAction? = {
+            guard isWhatsappAvailable else {
+                return nil
+            }
+            return UIAccessibilityCustomAction(name: ContactAction.whatsapp) { [weak self] _ in
+                self?.sendWhatsappMessage()
+                return true
+            }
+        }()
+
+        let telegramAction: UIAccessibilityCustomAction? = {
+            guard isTelegramAvailable else {
+                return nil
+            }
+            return UIAccessibilityCustomAction(name: ContactAction.telegram) { [weak self] _ in
+                self?.sendTelegramMessage()
+                return true
+            }
+        }()
+
+        cell.accessibilityCustomActions = [
+            callAccessibilityAction,
+            messageAccessibilityAction,
+            copyAccessibilityAction,
+            whatsappAction,
+            telegramAction
+        ].compactMap { $0 }
 
         guard isSplitViewInOrdersTabEnabled else {
             return
@@ -604,6 +692,16 @@ private extension BillingInformationViewController {
             "billingInformationViewController.action.copied",
             value: "Copied to clipboard.",
             comment: "Message to display when a phone number or email address has been copied to clipboard"
+        )
+        static let whatsapp = NSLocalizedString(
+            "billingInfoViewController.whatsapp",
+            value: "Send Whatsapp message",
+            comment: "Button to send a message to a customer via Whatsapp"
+        )
+        static let telegram = NSLocalizedString(
+            "billingInfoViewController.telegram",
+            value: "Send Telegram message",
+            comment: "Button to send a message to a customer via Telegram"
         )
     }
 

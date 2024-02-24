@@ -21,12 +21,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldShowInDashboard: Bool = false
 
-    @Published var shouldShowIntroView: Bool = false {
-        didSet {
-            if shouldShowIntroView {
-                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
-            }
-        }
+    var shouldShowIntroView: Bool {
+        blazeCampaignResultsController.numberOfObjects == 0
     }
 
     @Published var selectedCampaignURL: URL?
@@ -45,12 +41,18 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     var onStateChange: (() -> Void)?
 
     let siteID: Int64
-    let siteURL: String
+
+    var siteURL: String {
+        stores.sessionManager.defaultSite?.url ?? ""
+    }
+
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
-    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let userDefaults: UserDefaults
+
+    private var isSiteEligibleForBlaze = false
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
@@ -81,14 +83,12 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
-         siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          userDefaults: UserDefaults = .standard) {
         self.siteID = siteID
-        self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -102,8 +102,10 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     @MainActor
     func reload() async {
         update(state: .loading)
+        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+
         guard !userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID),
-              await blazeEligibilityChecker.isSiteEligible() else {
+              isSiteEligibleForBlaze else {
             update(state: .empty)
             return
         }
@@ -111,18 +113,17 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         // Load Blaze campaigns
         await synchronizeBlazeCampaigns()
 
-        if blazeCampaignResultsController.fetchedObjects.isEmpty {
-            // Load published product as Blaze campaigns not available
-            await synchronizeFirstPublishedProduct()
-        }
+        // Load all products
+        // In case there are no campaigns, this helps decide whether to show a Product on the Blaze dashboard.
+        // It also helps determine whether the "Promote" button opens to product selector first (if the site has multiple
+        // products) or straight to campaign creation form (if there is only one product).
+        await synchronizePublishedProducts()
 
         updateResults()
     }
 
-    func checkIfIntroViewIsNeeded() {
-        if blazeCampaignResultsController.numberOfObjects == 0 {
-            shouldShowIntroView = true
-        }
+    func didTapCreateYourCampaignButtonFromIntroView() {
+        analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
     }
 
     func didSelectCampaignList() {
@@ -168,11 +169,10 @@ private extension BlazeCampaignDashboardViewModel {
 // MARK: - Products
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
-    func synchronizeFirstPublishedProduct() async {
+    func synchronizePublishedProducts() async {
         await withCheckedContinuation { continuation in
             stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
                                                               pageNumber: Store.Default.firstPageNumber,
-                                                              pageSize: 1,
                                                               stockStatus: nil,
                                                               productStatus: .published,
                                                               productType: nil,
@@ -208,6 +208,10 @@ private extension BlazeCampaignDashboardViewModel {
     }
 
     func updateResults() {
+        guard isSiteEligibleForBlaze else {
+            return update(state: .empty)
+        }
+
         if let campaign = blazeCampaignResultsController.fetchedObjects.first {
             update(state: .showCampaign(campaign: campaign))
         } else if let product = latestPublishedProduct {

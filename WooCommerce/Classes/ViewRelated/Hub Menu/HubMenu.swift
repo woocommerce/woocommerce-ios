@@ -192,7 +192,7 @@ private extension HubMenu {
                 case .down:
                     return .chevronDownImage
                 case .leading:
-                    return .chevronImage.imageFlippedForRightToLeftLayoutDirection()
+                    return .chevronImage
                 }
             }
         }
@@ -296,6 +296,7 @@ private extension HubMenu {
                 Image(uiImage: chevron.asset)
                     .resizable()
                     .frame(width: HubMenu.Constants.chevronSize, height: HubMenu.Constants.chevronSize)
+                    .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textSubtle))
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")
                     .renderedIf(chevron != .none)

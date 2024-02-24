@@ -204,7 +204,7 @@ extension Networking.BlazeForecastedImpressionsInput {
             endDate: .fake(),
             timeZone: .fake(),
             totalBudget: .fake(),
-            targetings: .fake()
+            targeting: .fake()
         )
     }
 }
@@ -727,7 +727,22 @@ extension Networking.Order {
             taxes: .fake(),
             customFields: .fake(),
             renewalSubscriptionID: .fake(),
-            appliedGiftCards: .fake()
+            appliedGiftCards: .fake(),
+            attributionInfo: .fake()
+        )
+    }
+}
+extension Networking.OrderAttributionInfo {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderAttributionInfo {
+        .init(
+            sourceType: .fake(),
+            campaign: .fake(),
+            source: .fake(),
+            medium: .fake(),
+            deviceType: .fake(),
+            sessionPageViews: .fake()
         )
     }
 }
@@ -1464,6 +1479,16 @@ extension Networking.ProductVariationAttribute {
             id: .fake(),
             name: .fake(),
             option: .fake()
+        )
+    }
+}
+extension Networking.Receipt {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Receipt {
+        .init(
+            receiptURL: .fake(),
+            expirationDate: .fake()
         )
     }
 }

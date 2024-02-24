@@ -94,12 +94,19 @@ final class PickListTableViewCell: UITableViewCell {
     }
 
     override func prepareForReuse() {
+        super.prepareForReuse()
+
         setupSkuLabel()
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 
 
-/// MARK: - Public Methods
+// MARK: - Public Methods
 ///
 extension PickListTableViewCell {
     /// Configure a pick list cell
@@ -123,16 +130,12 @@ extension PickListTableViewCell {
     }
 }
 
-/// MARK: - Private Methods
+// MARK: - Private Methods
 ///
 private extension PickListTableViewCell {
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-
-        // Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 
     func setupImageView() {

@@ -10,6 +10,7 @@ import KeychainAccess
 import WordPressUI
 import WordPressAuthenticator
 import AutomatticTracks
+import WordPressKit
 
 import class Yosemite.ScreenshotStoresManager
 
@@ -101,6 +102,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNoticePresenter()
         setupUniversalLinkRouter()
         disableAnimationsIfNeeded()
+
+        configureWordPressKit()
 
         // Don't track startup waiting time if user starts logged out
         if !ServiceLocator.stores.isAuthenticated {
@@ -457,6 +460,13 @@ private extension AppDelegate {
             ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
         default:
             break
+        }
+    }
+
+    func configureWordPressKit() {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.useURLSessionInWordPressKit) {
+            WordPressOrgXMLRPCApi.useURLSession = true
+            WordPressComRestApi.useURLSession = true
         }
     }
 }

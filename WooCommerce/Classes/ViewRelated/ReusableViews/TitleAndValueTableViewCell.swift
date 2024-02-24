@@ -23,10 +23,15 @@ final class TitleAndValueTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         enableMultipleLines()
         apply(style: .default)
         configureStackView()
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 
@@ -39,7 +44,7 @@ extension TitleAndValueTableViewCell {
         apply(style: .default)
     }
 
-    /// Change the styling of the UI elements. 
+    /// Change the styling of the UI elements.
     func apply(style: Style) {
         switch style {
         case .regular:

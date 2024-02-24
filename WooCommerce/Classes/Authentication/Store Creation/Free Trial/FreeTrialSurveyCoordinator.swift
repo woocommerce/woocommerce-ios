@@ -1,7 +1,7 @@
 import UIKit
 
 /// Coordinates navigation for Free trial survey
-/// 
+///
 final class FreeTrialSurveyCoordinator: Coordinator {
     enum Source: String {
         case freeTrialSurvey24hAfterFreeTrialSubscribed = "free_trial_survey_24h_after_free_trial_subscribed"

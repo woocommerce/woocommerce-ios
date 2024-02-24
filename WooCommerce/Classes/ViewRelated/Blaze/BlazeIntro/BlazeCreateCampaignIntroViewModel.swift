@@ -10,8 +10,12 @@ final class BlazeCreateCampaignIntroViewModel: ObservableObject {
         self.analytics = analytics
     }
 
-    func onLearnHowBlazeWorks() {
+    func onAppear() {
+        analytics.track(event: .Blaze.introDisplayed())
+    }
+
+    func didTapLearnHowBlazeWorks() {
         showLearnHowSheet = true
-        // TODO: 11512 Track Learn how button tap
+        analytics.track(event: .Blaze.introLearnMoreTapped())
     }
 }

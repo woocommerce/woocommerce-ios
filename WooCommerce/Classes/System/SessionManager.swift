@@ -5,6 +5,7 @@ import KeychainAccess
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
+import class Kingfisher.ImageCache
 
 // MARK: - SessionManager Notifications
 //
@@ -46,6 +47,10 @@ final class SessionManager: SessionManagerProtocol {
     /// KeychainAccess Wrapper.
     ///
     private let keychain: Keychain
+
+    /// Cache which stores product images
+    ///
+    private let imageCache: ImageCache
 
     /// Default Credentials.
     ///
@@ -146,9 +151,12 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Designated Initializer.
     ///
-    init(defaults: UserDefaults, keychainServiceName: String) {
+    init(defaults: UserDefaults,
+         keychainServiceName: String,
+         imageCache: ImageCache = ImageCache.default) {
         self.defaults = defaults
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
+        self.imageCache = imageCache
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
     }
@@ -171,13 +179,13 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         defaults[.storeProfilerAnswers] = nil
         defaults[.aiPromptTone] = nil
-        defaults[.hasDisplayedTipAfterBlazeCampaignCreation] = nil
         defaults[.hasDismissedBlazeSectionOnMyStore] = nil
         defaults[.numberOfTimesProductCreationAISurveySuggested] = nil
         defaults[.didStartProductCreationAISurvey] = nil
         defaults[.themesPendingInstall] = nil
         defaults[.siteIDPendingStoreSwitch] = nil
         defaults[.expectedStoreNamePendingStoreSwitch] = nil
+        imageCache.clearCache()
     }
 
     /// Deletes application password

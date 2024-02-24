@@ -7,12 +7,12 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     let title: String
     let initialURL: URL?
     let urlToTriggerExit: String?
-    let exitTrigger: (() -> Void)?
+    let exitTrigger: ((URL?) -> Void)?
 
     init(title: String = "",
          initialURL: URL,
          urlToTriggerExit: String? = nil,
-         exitTrigger: (() -> Void)? = nil) {
+         exitTrigger: ((URL?) -> Void)? = nil) {
         self.title = title
         self.initialURL = initialURL
         self.urlToTriggerExit = urlToTriggerExit
@@ -27,7 +27,7 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
         if let urlToTriggerExit,
             let url,
             url.absoluteString.contains(urlToTriggerExit) {
-            exitTrigger?()
+            exitTrigger?(url)
         }
     }
 
@@ -59,7 +59,7 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
     init(isPresented: Binding<Bool>,
              url: URL,
              urlToTriggerExit: String? = nil,
-             exitTrigger: (() -> Void)? = nil) {
+             exitTrigger: ((URL?) -> Void)? = nil) {
             self._isPresented = isPresented
             viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
                                                          urlToTriggerExit: urlToTriggerExit,

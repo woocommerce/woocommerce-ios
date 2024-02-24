@@ -32,6 +32,8 @@ protocol PaymentCaptureOrchestrating {
     func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void)
 
     func saveReceipt(for order: Order, params: CardPresentReceiptParameters)
+
+    func presentBackendReceipt(for order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void)
 }
 
 
@@ -176,6 +178,18 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             onContent(emailContent)
         }
 
+        stores.dispatch(action)
+    }
+
+    func presentBackendReceipt(for order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void) {
+        let action = ReceiptAction.retrieveReceipt(order: order) { result in
+            switch result {
+            case let .success(receipt):
+                onCompletion(.success(receipt))
+            case let .failure(error):
+                onCompletion(.failure(error))
+            }
+        }
         stores.dispatch(action)
     }
 

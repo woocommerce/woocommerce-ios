@@ -42,39 +42,39 @@ struct CelebrationView: View {
     }
 
     var body: some View {
-        ScrollableVStack(spacing: Layout.verticalSpacing) {
+        ScrollableVStack(padding: Layout.contentPadding, spacing: Layout.contentPadding) {
+            Spacer()
+
             Image(uiImage: image)
-                .padding(.vertical, Layout.imageVerticalPadding)
+                .padding(.bottom, Layout.imageExtraBottomPadding)
 
             Group {
                 Text(title)
-                    .headlineStyle()
+                    .fontWeight(.semibold)
+                    .secondaryTitleStyle()
                     .multilineTextAlignment(.center)
 
                 Text(subtitle)
                     .foregroundColor(Color(.text))
-                    .subheadlineStyle()
+                    .bodyStyle()
                     .multilineTextAlignment(.center)
             }
-            .padding(.horizontal, Layout.textHorizontalPadding)
+
+            Spacer()
 
             Button(closeButtonTitle) {
                 onTappingDone()
             }
             .buttonStyle(PrimaryButtonStyle())
-            .padding(.horizontal, Layout.buttonHorizontalPadding)
         }
-        .padding(insets: Layout.insets)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 }
 
 private extension CelebrationView {
     enum Layout {
-        static let verticalSpacing: CGFloat = 16
-        static let imageVerticalPadding: CGFloat = 18
-        static let textHorizontalPadding: CGFloat = 24
-        static let buttonHorizontalPadding: CGFloat = 16
-        static let insets: EdgeInsets = .init(top: 40, leading: 0, bottom: 16, trailing: 0)
+        static let contentPadding: CGFloat = 16
+        static let imageExtraBottomPadding: CGFloat = 8
     }
 }
 

@@ -20,6 +20,11 @@ final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell
         setupTitleLabelText(with: searchModel)
         subtitleLabel.attributedText = subtitleAttributedString(from: searchModel)
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: - CellViewModel subtype
@@ -99,8 +104,6 @@ private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
     }
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 }

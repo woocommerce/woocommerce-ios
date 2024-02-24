@@ -1,10 +1,12 @@
 import XCTest
-import Yosemite
-@testable import WooCommerce
 @testable import Yosemite
+@testable import WooCommerce
 
 @MainActor
 final class ProductDetailPreviewViewModelTests: XCTestCase {
+    private let sampleSiteID: Int64 = 123
+    private var stores: MockStoresManager!
+    private var storage: MockStorageManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
@@ -13,24 +15,22 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        stores = MockStoresManager(sessionManager: .makeForTesting())
+        storage = MockStorageManager()
     }
 
     override func tearDown() {
         analytics = nil
         analyticsProvider = nil
+        stores = nil
+        storage = nil
         super.tearDown()
     }
 
     // MARK: `generateProductDetails`
 
-    func test_generateProductDetails_fetches_site_settings_if_weight_unit_is_nil() async throws {
+    func test_generateProductDetails_fetches_site_settings_if_weight_unit_is_nil() async {
         // Given
-        let sampleSiteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
-
         let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
@@ -47,58 +47,27 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             switch action {
             case let .synchronizeGeneralSiteSettings(siteID, completion):
                 // Then
-                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(siteID, self.sampleSiteID)
                 completion(nil)
             case let .synchronizeProductSiteSettings(siteID, completion):
                 // Then
-                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(siteID, self.sampleSiteID)
                 completion(nil)
             default:
                 break
             }
         }
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductActions()
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
         await viewModel.generateProductDetails()
     }
 
-    func test_generateProductDetails_fetches_site_settings_if_dimension_unit_is_nil() async throws {
+    func test_generateProductDetails_fetches_site_settings_if_dimension_unit_is_nil() async {
         // Given
-        let sampleSiteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
-
         let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
@@ -115,58 +84,27 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             switch action {
             case let .synchronizeGeneralSiteSettings(siteID, completion):
                 // Then
-                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(siteID, self.sampleSiteID)
                 completion(nil)
             case let .synchronizeProductSiteSettings(siteID, completion):
                 // Then
-                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(siteID, self.sampleSiteID)
                 completion(nil)
             default:
                 break
             }
         }
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductActions()
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
         await viewModel.generateProductDetails()
     }
 
-    func test_generateProductDetails_synchronizes_categories() async throws {
+    func test_generateProductDetails_synchronizes_categories() async {
         // Given
-        let sampleSiteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
-
         let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
@@ -179,42 +117,15 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case let .synchronizeGeneralSiteSettings(_, completion):
-                completion(nil)
-            case let .synchronizeProductSiteSettings(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
+        mockSettingActions()
+        mockProductActions()
+        mockProductTagActions()
 
         stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
             switch action {
             case let .synchronizeProductCategories(siteID, _, completion):
                 // Then
-                XCTAssertEqual(siteID, sampleSiteID)
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
+                XCTAssertEqual(siteID, self.sampleSiteID)
                 completion(nil)
             default:
                 break
@@ -225,14 +136,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
-    func test_generateProductDetails_synchronizes_tags() async throws {
+    func test_generateProductDetails_synchronizes_tags() async {
         // Given
-        let sampleSiteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
-
         let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
@@ -245,42 +150,15 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case let .synchronizeGeneralSiteSettings(_, completion):
-                completion(nil)
-            case let .synchronizeProductSiteSettings(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockSettingActions()
+        mockProductActions()
+        mockProductCategoryActions()
 
         stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
             switch action {
             case let .synchronizeAllProductTags(siteID, completion):
                 // Then
-                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(siteID, self.sampleSiteID)
                 completion(nil)
             default:
                 break
@@ -293,20 +171,10 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_sends_name_and_features_to_identify_language() async throws {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        userDefaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.casual.rawValue]
-
         let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
-        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: productName,
                                                       productDescription: nil,
                                                       productFeatures: productFeatures,
@@ -330,26 +198,53 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             }
         }
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
         await viewModel.generateProductDetails()
+    }
+
+    func test_identified_language_is_reused_when_generating_product_details_again() async {
+        // Given
+        let productName = "Pen"
+        let productFeatures = "Ballpoint, Blue ink, ABS plastic"
+        let expectedLanguage = "en"
+        var identifyingLanguageRequestCount = 0
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productName: productName,
+                                                      productDescription: nil,
+                                                      productFeatures: productFeatures,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateAIProduct(_, _, _, language, _, _, _, _, _, _, completion):
+                XCTAssertEqual(language, expectedLanguage)
+                completion(.success(.fake()))
+            case let .identifyLanguage(_, _, _, completion):
+                identifyingLanguageRequestCount += 1
+                completion(.success(expectedLanguage))
+            default:
+                break
+            }
+        }
+
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+        // Retry once
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertEqual(identifyingLanguageRequestCount, 1)
     }
 
     func test_generateProductDetails_sends_correct_values_to_generate_product_details() async throws {
@@ -362,12 +257,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let sampleCurrency = "₹"
         let sampleWeightUnit = "kg"
         let sampleDimensionUnit = "cm"
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.sessionManager.setStoreId(sampleSiteID)
-
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
 
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
@@ -428,42 +317,17 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             }
         }
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
         await viewModel.generateProductDetails()
     }
 
-    func test_generateProductDetails_sends_productDescription_if_available_to_generate_product_details() async throws {
+    func test_generateProductDetails_sends_productDescription_if_available_to_generate_product_details() async {
         // Given
-        let sampleSiteID: Int64 = 123
         let sampleProductName = "Pen"
         let sampleProductDescription = "Ballpoint, Blue ink, ABS plastic"
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.sessionManager.setStoreId(sampleSiteID)
-
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
-
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: sampleProductName,
@@ -473,40 +337,12 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       dimensionUnit: "m",
                                                       stores: stores,
                                                       storageManager: storage,
-                                                      userDefaults: userDefaults,
                                                       onProductCreated: { _ in })
         XCTAssertFalse(viewModel.isGeneratingDetails)
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, keywords, _, _, _, _, _, _, _, completion):
-                // Then
-                XCTAssertEqual(keywords, sampleProductDescription)
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductActions()
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
         await viewModel.generateProductDetails()
@@ -514,16 +350,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_updates_generationInProgress_correctly() async throws {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        userDefaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.casual.rawValue]
-
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productName: "Pen",
                                                       productDescription: nil,
@@ -549,23 +375,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             }
         }
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         await viewModel.generateProductDetails()
 
@@ -575,18 +386,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_errorState_is_updated_when_generateProductDetails_fails() async throws {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        userDefaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.casual.rawValue]
-
         let expectedError = NSError(domain: "test", code: 503)
-
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productName: "Pen",
                                                       productDescription: nil,
@@ -598,23 +398,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       onProductCreated: { _ in })
         XCTAssertEqual(viewModel.errorState, .none)
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -656,13 +441,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                    tags: [],
                                    price: price,
                                    categories: [])
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        userDefaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.casual.rawValue]
 
         let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
                                                       productName: "Pen",
@@ -674,35 +452,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductActions(aiGeneratedProductResult: .success(aiProduct))
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(aiProduct))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
         await viewModel.generateProductDetails()
 
         // Then
@@ -724,9 +478,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let sampleSiteID: Int64 = 123
         let biscuit = ProductCategory.fake().copy(siteID: sampleSiteID, name: "Biscuits")
         let product = AIProduct.fake().copy(categories: [biscuit.name])
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
 
         let sampleCategories = [biscuit, ProductCategory.fake().copy(siteID: sampleSiteID)]
         sampleCategories.forEach { storage.insertSampleProductCategory(readOnlyProductCategory: $0) }
@@ -748,35 +499,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(product))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
         await viewModel.generateProductDetails()
 
         // Then
@@ -786,13 +513,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_generates_product_with_new_categories_suggested_by_AI() async throws {
         // Given
-        let sampleSiteID: Int64 = 123
-
         let product = AIProduct.fake().copy(categories: ["Biscuits", "Cookies"])
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
-
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
@@ -803,35 +524,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(product))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
         await viewModel.generateProductDetails()
 
         // Then
@@ -842,12 +539,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_generates_product_with_matching_existing_tags() async throws {
         // Given
-        let sampleSiteID: Int64 = 123
         let food: ProductTag = .fake().copy(siteID: sampleSiteID, name: "Food")
         let product = AIProduct.fake().copy(tags: [food.name])
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
 
         let sampleCategories = [ProductCategory.fake().copy(siteID: sampleSiteID), ProductCategory.fake().copy(siteID: sampleSiteID)]
         sampleCategories.forEach { storage.insertSampleProductCategory(readOnlyProductCategory: $0) }
@@ -869,35 +562,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(product))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
         await viewModel.generateProductDetails()
 
         // Then
@@ -907,12 +576,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_generates_product_with_new_tags_suggested_by_AI() async throws {
         // Given
-        let sampleSiteID: Int64 = 123
         let product = AIProduct.fake().copy(tags: ["Food", "Grocery"])
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
-
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
@@ -923,41 +587,154 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(product))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
         await viewModel.generateProductDetails()
 
         // Then
         let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
         XCTAssertEqual(generatedProduct.tags.map { $0.name }, ["Food", "Grocery"])
         XCTAssertEqual(generatedProduct.tags.map { $0.tagID }, [0, 0])
+    }
+
+    func test_generateProductDetails_switches_to_given_productName_if_AIProduct_has_empty_name() async throws {
+        // Given
+        let product = AIProduct.fake().copy(name: "", description: "Test description")
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
+        XCTAssertEqual(generatedProduct.name, "Pen")
+    }
+
+    // MARK: Short description view
+
+    func test_short_description_view_is_shown_if_shortDescription_is_not_empty() async {
+        // Given
+        let product = AIProduct.fake().copy(shortDescription: "A short description")
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
+    }
+
+    func test_short_description_view_is_hidden_if_shortDescription_empty() async {
+        // Given
+        let product = AIProduct.fake().copy(shortDescription: "")
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
+    }
+
+    func test_short_description_view_is_hidden_if_shortDescription_nil() async {
+        // Given
+        let product = AIProduct.fake().copy(shortDescription: nil)
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions(aiGeneratedProductResult: .success(product))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
+    }
+
+    func test_short_description_view_is_shown_while_generating_AI_details() async {
+        // Given
+        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: nil)
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: "Blue plastic ballpoint pen",
+                                                      productFeatures: nil,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                // Then
+                XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
+                completion(.success(product))
+            case let .identifyLanguage(_, _, _, completion):
+                // Then
+                XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
+                completion(.success("en"))
+            default:
+                break
+            }
+        }
+
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
     }
 
     // MARK: - Save product
@@ -969,7 +746,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                       aiProduct: aiProduct,
                                       categories: [],
                                       tags: [])
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productName: "iPhone 15",
                                                       productDescription: nil,
@@ -979,23 +755,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -1028,7 +789,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                       aiProduct: aiProduct,
                                       categories: [],
                                       tags: [])
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productName: "iPhone 15",
                                                       productDescription: nil,
@@ -1038,37 +798,12 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       onProductCreated: { createdProduct = $0 })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
+        mockProductActions(aiGeneratedProductResult: .success(aiProduct),
+                           addedProductResult: .success(expectedProduct))
 
         // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(aiProduct))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            case let .addProduct(_, onCompletion):
-                onCompletion(.success(expectedProduct))
-            default:
-                break
-            }
-        }
         await viewModel.generateProductDetails()
         await viewModel.saveProductAsDraft()
 
@@ -1079,7 +814,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_updates_errorState_upon_failure() async {
         // Given
         let aiProduct = AIProduct.fake().copy(name: "iPhone 15")
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productName: "iPhone 15",
                                                       productDescription: nil,
@@ -1090,37 +824,12 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       onProductCreated: { _ in })
         XCTAssertEqual(viewModel.errorState, .none)
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
+        mockProductActions(aiGeneratedProductResult: .success(aiProduct),
+                           addedProductResult: .failure(.unexpected))
 
         // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(aiProduct))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            case let .addProduct(_, onCompletion):
-                onCompletion(.failure(.unexpected))
-            default:
-                break
-            }
-        }
         await viewModel.generateProductDetails()
         await viewModel.saveProductAsDraft()
 
@@ -1130,14 +839,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_saveProductAsDraft_saves_local_categories() async {
         // Given
-        let sampleSiteID: Int64 = 123
         let grocery = ProductCategory.fake().copy(siteID: sampleSiteID, name: "Groceries")
         let aiProduct = AIProduct.fake().copy(name: "iPhone 15",
                                               categories: ["Biscuits", "Cookies"])
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
 
         let sampleCategories = [grocery]
         sampleCategories.forEach { storage.insertSampleProductCategory(readOnlyProductCategory: $0) }
@@ -1158,7 +862,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 completion(nil)
             case let .addProductCategories(siteID, names, _, completion):
                 // Then
-                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(siteID, self.sampleSiteID)
                 XCTAssertEqual(names, ["Biscuits", "Cookies"])
                 completion(.success([]))
             default:
@@ -1166,44 +870,19 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             }
         }
 
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(aiProduct))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            case let .addProduct(_, onCompletion):
-                onCompletion(.success(.fake()))
-            default:
-                break
-            }
-        }
-
-        await viewModel.generateProductDetails()
+        mockProductTagActions()
+        mockProductActions(aiGeneratedProductResult: .success(aiProduct))
 
         // When
+        await viewModel.generateProductDetails()
         await viewModel.saveProductAsDraft()
     }
 
     func test_saveProductAsDraft_saves_local_tags() async {
         // Given
-        let sampleSiteID: Int64 = 123
         let existingTag = ProductTag.fake().copy(siteID: sampleSiteID, name: "Existing tag")
         let aiProduct = AIProduct.fake().copy(name: "iPhone 15",
                                               tags: ["Tag 1", "Tag 2"])
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
 
         let sampleTags = [existingTag, ProductTag.fake().copy(siteID: sampleSiteID)]
         sampleTags.forEach { storage.insertSampleProductTag(readOnlyProductTag: $0) }
@@ -1218,16 +897,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            case let .addProductCategories(_, _, _, completion):
-                completion(.success([]))
-            default:
-                break
-            }
-        }
+        mockProductCategoryActions()
+        mockProductActions(aiGeneratedProductResult: .success(aiProduct))
 
         stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
             switch action {
@@ -1235,22 +906,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 completion(nil)
             case let .addProductTags(siteID, tags, completion):
                 // Then
-                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(siteID, self.sampleSiteID)
                 XCTAssertEqual(tags, ["Tag 1", "Tag 2"])
                 completion(.success([]))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(aiProduct))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            case let .addProduct(_, onCompletion):
-                onCompletion(.success(.fake()))
             default:
                 break
             }
@@ -1266,13 +924,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_handleFeedback_sets_shouldShowFeedbackView_to_false() {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -1294,13 +946,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_tracks_event_on_success() async throws {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -1311,34 +957,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
+        mockProductActions()
 
         // When
         await viewModel.generateProductDetails()
@@ -1349,15 +970,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_tracks_event_on_failure() async throws {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
         let expectedError = NSError(domain: "test", code: 503)
 
-        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -1368,34 +983,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.failure(expectedError))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
+        mockProductActions(aiGeneratedProductResult: .failure(expectedError))
 
         // When
         await viewModel.generateProductDetails()
@@ -1409,15 +999,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(errorEventProperties["error_domain"] as? String, "test")
     }
 
-    func test_saveProductAsDraft_tracks_tapped_event() async throws {
+    func test_saveProductAsDraft_tracks_tapped_event() async {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -1428,16 +1012,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
+        mockProductActions()
 
         // When
         await viewModel.saveProductAsDraft()
@@ -1448,13 +1023,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_saveProductAsDraft_tracks_event_on_success() async throws {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -1464,36 +1033,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            case let .addProduct(product, completion):
-                completion(.success(product))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
+        mockProductActions()
 
         await viewModel.generateProductDetails()
 
@@ -1506,15 +1048,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_saveProductAsDraft_tracks_event_on_failure() async throws {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
         let expectedError = ProductUpdateError(error: NSError(domain: "test", code: 503))
 
-        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -1524,36 +1060,10 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
-            case let .addProduct(_, completion):
-                completion(.failure(expectedError))
-            default:
-                break
-            }
-        }
 
-        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
-            switch action {
-            case let .synchronizeProductCategories(_, _, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
-            switch action {
-            case let .synchronizeAllProductTags(_, completion):
-                completion(nil)
-            default:
-                break
-            }
-        }
+        mockProductTagActions()
+        mockProductCategoryActions()
+        mockProductActions(addedProductResult: .failure(expectedError))
 
         await viewModel.generateProductDetails()
 
@@ -1571,13 +1081,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_handleFeedback_tracks_feedback_received()  throws {
         // Given
-        let siteID: Int64 = 123
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
-
-        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -1596,5 +1100,61 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let eventProperties = analyticsProvider.receivedProperties[index]
         XCTAssertEqual(eventProperties["source"] as? String, "product_creation")
         XCTAssertEqual(eventProperties["is_useful"] as? Bool, true)
+    }
+}
+
+private extension ProductDetailPreviewViewModelTests {
+    func mockSettingActions() {
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .synchronizeGeneralSiteSettings(_, completion):
+                completion(nil)
+            case let .synchronizeProductSiteSettings(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+    }
+
+    func mockProductCategoryActions() {
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            case let .addProductCategories(_, _, _, completion):
+                completion(.success([]))
+            default:
+                break
+            }
+        }
+    }
+
+    func mockProductTagActions() {
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+    }
+
+    func mockProductActions(identifiedLanguage: String = "en",
+                            aiGeneratedProductResult: Result<AIProduct, Error> = .success(.fake()),
+                            addedProductResult: Result<Product, ProductUpdateError> = .success(.fake())) {
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(aiGeneratedProductResult)
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success(identifiedLanguage))
+            case let .addProduct(_, onCompletion):
+                onCompletion(addedProductResult)
+            default:
+                break
+            }
+        }
     }
 }

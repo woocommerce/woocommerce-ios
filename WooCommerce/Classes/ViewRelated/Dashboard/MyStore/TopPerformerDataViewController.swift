@@ -59,6 +59,9 @@ final class TopPerformerDataViewController: UIViewController {
             return NSLocalizedString("This Month", comment: "Top Performers section title - this month")
         case .year:
             return NSLocalizedString("This Year", comment: "Top Performers section title - this year")
+        case .hour, .quarter:
+            // TODO: 11935 I think we should calculate this based on `timeRange: StatsTimeRangeV4`?
+            return NSLocalizedString("Custom", comment: "Top Performers section title - Custom")
         }
     }
 

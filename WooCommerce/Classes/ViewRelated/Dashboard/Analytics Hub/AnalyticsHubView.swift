@@ -58,6 +58,8 @@ struct AnalyticsHubView: View {
 
     @StateObject var viewModel: AnalyticsHubViewModel
 
+    @State private var isEnablingJetpackStats = false
+
     var body: some View {
         RefreshablePlainList(action: {
             viewModel.trackAnalyticsInteraction()
@@ -75,46 +77,9 @@ struct AnalyticsHubView: View {
                     Divider()
                 }
 
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
-
-                    AnalyticsReportCard(viewModel: viewModel.revenueCard)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
+                ForEach(viewModel.enabledCards, id: \.self) { card in
+                    analyticsCard(type: card)
                 }
-
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
-
-                    AnalyticsReportCard(viewModel: viewModel.ordersCard)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
-                }
-
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
-
-                    AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
-                }
-
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
-
-                    AnalyticsReportCard(viewModel: viewModel.sessionsCard)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
-                }
-                .renderedIf(viewModel.showSessionsCard)
 
                 Spacer()
             }
@@ -124,6 +89,7 @@ struct AnalyticsHubView: View {
         .background(Color(uiColor: .listBackground))
         .edgesIgnoringSafeArea(.horizontal)
         .task {
+            await viewModel.loadAnalyticsCardSettings()
             await viewModel.updateData()
         }
         .onReceive(viewModel.$dismissNotice) { notice in
@@ -136,6 +102,85 @@ struct AnalyticsHubView: View {
                 viewModel.trackAnalyticsInteraction()
             })
         )
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.customizeAnalytics()
+                } label: {
+                    Text(Localization.editButton)
+                }
+                .renderedIf(viewModel.canCustomizeAnalytics)
+            }
+        }
+        .sheet(item: $viewModel.customizeAnalyticsViewModel) { customizeViewModel in
+            NavigationView {
+                AnalyticsHubCustomizeView(viewModel: customizeViewModel)
+            }
+        }
+    }
+}
+
+private extension AnalyticsHubView {
+    /// Creates an analytics card for the given type.
+    /// - Parameter type: Type of analytics card, e.g. revenue or orders.
+    @ViewBuilder
+    func analyticsCard(type: AnalyticsCard.CardType) -> some View {
+        switch type {
+        case .revenue:
+            VStack(spacing: Layout.dividerSpacing) {
+                Divider()
+
+                AnalyticsReportCard(viewModel: viewModel.revenueCard)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(uiColor: .listForeground(modal: false)))
+
+                Divider()
+            }
+        case .orders:
+            VStack(spacing: Layout.dividerSpacing) {
+                Divider()
+
+                AnalyticsReportCard(viewModel: viewModel.ordersCard)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(uiColor: .listForeground(modal: false)))
+
+                Divider()
+            }
+        case .products:
+            VStack(spacing: Layout.dividerSpacing) {
+                Divider()
+
+                AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(uiColor: .listForeground(modal: false)))
+
+                Divider()
+            }
+        case .sessions:
+            VStack(spacing: Layout.dividerSpacing) {
+                Divider()
+
+                Group {
+                    if viewModel.showJetpackStatsCTA {
+                        AnalyticsCTACard(title: Localization.sessionsCTATitle,
+                                         message: Localization.sessionsCTAMessage,
+                                         buttonLabel: Localization.sessionsCTAButton,
+                                         isLoading: $isEnablingJetpackStats) {
+                            isEnablingJetpackStats = true
+                            await viewModel.enableJetpackStats()
+                            isEnablingJetpackStats = false
+                        }
+                    } else {
+                        AnalyticsReportCard(viewModel: viewModel.sessionsCard)
+                    }
+                }
+                .padding(.horizontal, insets: safeAreaInsets)
+                .background(Color(uiColor: .listForeground(modal: false)))
+
+                Divider()
+            }
+            .renderedIf(viewModel.showSessionsCard)
+        }
     }
 }
 
@@ -144,6 +189,20 @@ struct AnalyticsHubView: View {
 private extension AnalyticsHubView {
     struct Localization {
         static let title = NSLocalizedString("Analytics", comment: "Title for the Analytics Hub screen.")
+
+
+        static let sessionsCTATitle = NSLocalizedString("analyticsHub.jetpackStatsCTA.title",
+                                                        value: "SESSIONS",
+                                                        comment: "Title for sessions section in the Analytics Hub")
+        static let sessionsCTAMessage = NSLocalizedString("analyticsHub.jetpackStatsCTA.message",
+                                                          value: "Enable Jetpack Stats to see your store's session analytics.",
+                                                          comment: "Text displayed in the Analytics Hub when the Jetpack Stats module is disabled")
+        static let sessionsCTAButton = NSLocalizedString("analyticsHub.jetpackStatsCTA.buttonLabel",
+                                                         value: "Enable Jetpack Stats",
+                                                         comment: "Label for button to enable Jetpack Stats")
+        static let editButton = NSLocalizedString("analyticsHub.editButton.label",
+                                                  value: "Edit",
+                                                  comment: "Label for button that opens a screen to customize the Analytics Hub")
     }
 
     struct Layout {

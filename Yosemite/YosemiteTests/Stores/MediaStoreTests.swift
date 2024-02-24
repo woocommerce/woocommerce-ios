@@ -37,6 +37,65 @@ final class MediaStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
+    // MARK: test cases for `MediaAction.retrieveMedia`
+
+    /// Verifies that `MediaAction.retrieveMedia` returns the expected response.
+    ///
+    func test_retrieveMedia_returns_media() throws {
+        // Given
+        let mediaID: Int64 = 22
+        let remote = MockMediaRemote()
+        let expectedMedia = WordPressMedia.fake()
+        remote.whenLoadingMedia(siteID: sampleSiteID, thenReturn: .success(expectedMedia))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.retrieveMedia(siteID: self.sampleSiteID,
+                                                   mediaID: mediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMedia(siteID: sampleSiteID, mediaID: mediaID)])
+
+        let media = try XCTUnwrap(result.get())
+        XCTAssertEqual(media, expectedMedia.toMedia())
+    }
+
+    func test_retrieveMedia_returns_error_upon_receiving_error_response() throws {
+        // Given
+        let mediaID: Int64 = 22
+        let remote = MockMediaRemote()
+        remote.whenLoadingMedia(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.retrieveMedia(siteID: self.sampleSiteID,
+                                                   mediaID: mediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMedia(siteID: sampleSiteID, mediaID: mediaID)])
+
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized)
+    }
+
     // MARK: test cases for `MediaAction.retrieveMediaLibrary`
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response.

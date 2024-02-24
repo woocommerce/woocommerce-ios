@@ -52,11 +52,11 @@ struct BlazeCreateCampaignIntroView: View {
                         Image(uiImage: .blaze)
                             .resizable()
                             .renderingMode(.template)
-                            .foregroundColor(Color(.brand))
+                            .foregroundColor(Color(.accent))
                             .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
 
                         Text("Blaze")
-                            .foregroundColor(Color(.brand))
+                            .foregroundColor(Color(.accent))
                             .fontWeight(.semibold)
                             .headlineStyle()
                     }
@@ -95,7 +95,7 @@ struct BlazeCreateCampaignIntroView: View {
                     .padding(.horizontal, Layout.CTAStack.buttonHPadding)
 
                     Button(Localization.learnHowBlazeWorks) {
-                        viewModel.onLearnHowBlazeWorks()
+                        viewModel.didTapLearnHowBlazeWorks()
                     }
                     .buttonStyle(LinkButtonStyle())
                     .padding(.horizontal, Layout.CTAStack.buttonHPadding)
@@ -111,6 +111,9 @@ struct BlazeCreateCampaignIntroView: View {
                     BlazeLearnHowView(isPresented: $viewModel.showLearnHowSheet)
                 }
             }
+        }
+        .onAppear() {
+            viewModel.onAppear()
         }
     }
 }
@@ -132,7 +135,7 @@ private extension BlazeCreateCampaignIntroView {
                 Image(uiImage: .blaze)
                     .resizable()
                     .renderingMode(.template)
-                    .foregroundColor(Color(.brand))
+                    .foregroundColor(Color(.accent))
                     .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
 
                 Text(feature.title)

@@ -23,8 +23,10 @@ class TabbedViewController: UIViewController {
         }
     }
 
-    private let items: [TabbedItem]
+    private var items: [TabbedItem]
     private let onDismiss: (() -> Void)?
+
+    private var customTabBarView: UIView?
 
     private(set) lazy var tabBar: FilterTabBar = {
         let bar = FilterTabBar()
@@ -33,6 +35,13 @@ class TabbedViewController: UIViewController {
         bar.translatesAutoresizingMaskIntoConstraints = false
         bar.addTarget(self, action: #selector(changedItem(sender:)), for: .valueChanged)
         return bar
+    }()
+
+    private lazy var tabBarStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        return stackView
     }()
 
     private lazy var stackView: UIStackView = {
@@ -51,7 +60,8 @@ class TabbedViewController: UIViewController {
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePressed))
 
-        stackView.addArrangedSubview(tabBar)
+        tabBarStackView.addArrangedSubview(tabBar)
+        stackView.addArrangedSubview(tabBarStackView)
     }
 
     required init?(coder: NSCoder) {
@@ -80,6 +90,35 @@ class TabbedViewController: UIViewController {
     @objc func changedItem(sender: FilterTabBar) {
         updateVisibleChildViewController(at: sender.selectedIndex)
         selection = sender.selectedIndex
+    }
+
+    func addCustomViewToTabBar(_ customView: UIView) {
+        tabBarStackView.addArrangedSubview(customView)
+        customTabBarView = customView
+    }
+
+    func removeCustomViewFromTabBar() {
+        guard let customTabBarView else {
+            return
+        }
+        tabBarStackView.removeArrangedSubview(customTabBarView)
+        customTabBarView.removeFromSuperview()
+        self.customTabBarView = nil
+    }
+
+    func appendToTabBar(_ tab: TabbedItem) {
+        // Setup child view controller
+        items.append(tab)
+        tabBar.items = items
+        addChild(tab.viewController)
+        stackView.addArrangedSubview(tab.viewController.view)
+        tab.viewController.didMove(toParent: self)
+        tab.viewController.view.isHidden = true
+
+        // Set the appended tab as selected
+        let tabPosition = items.count-1
+        selection = tabPosition
+        updateVisibleChildViewController(at: tabPosition)
     }
 }
 

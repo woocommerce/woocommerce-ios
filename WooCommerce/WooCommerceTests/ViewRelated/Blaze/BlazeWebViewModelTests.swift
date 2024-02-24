@@ -19,12 +19,12 @@ final class BlazeWebViewModelTests: XCTestCase {
 
     func test_initialURL_includes_source_and_siteURL_when_product_is_unavailable() {
         // Given
-        let source: BlazeSource = .productMoreMenu
+        let source: BlazeSource = .productDetailPromoteButton
         let siteURL = "https://example.com"
         let viewModel = BlazeWebViewModel(siteID: sampleSiteID, source: source, siteURL: siteURL, productID: nil)
 
         // Then
-        XCTAssertEqual(viewModel.initialURL, URL(string: "https://wordpress.com/advertising/example.com?source=product_more_menu"))
+        XCTAssertEqual(viewModel.initialURL, URL(string: "https://wordpress.com/advertising/example.com?source=product_detail_promote_button"))
     }
 
     func test_hasDismissedBlazeSectionOnMyStore_is_updated_upon_completion() throws {
@@ -34,7 +34,11 @@ final class BlazeWebViewModelTests: XCTestCase {
         userDefaults.setDismissedBlazeSectionOnMyStore(for: sampleSiteID)
 
         let siteURL = "https://example.com"
-        let viewModel = BlazeWebViewModel(siteID: sampleSiteID, source: .productMoreMenu, siteURL: siteURL, productID: nil, userDefaults: userDefaults)
+        let viewModel = BlazeWebViewModel(siteID: sampleSiteID,
+                                          source: .productDetailPromoteButton,
+                                          siteURL: siteURL,
+                                          productID: nil,
+                                          userDefaults: userDefaults)
 
         // When
         let path = "https://wordpress.com/advertising/example.com?blazepress-widget#step-5"

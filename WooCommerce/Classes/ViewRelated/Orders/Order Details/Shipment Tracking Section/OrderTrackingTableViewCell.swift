@@ -52,7 +52,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     private func configureTopLine() {
@@ -80,10 +80,15 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
         configureActionButtonForVoiceOver()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
-/// MARK: - Actions
+// MARK: - Actions
 private extension OrderTrackingTableViewCell {
     @objc func iconTapped() {
         onEllipsisTouchUp?()
@@ -91,7 +96,7 @@ private extension OrderTrackingTableViewCell {
 }
 
 
-/// MARK: - Accessibility
+// MARK: - Accessibility
 ///
 private extension OrderTrackingTableViewCell {
     func configureTopLineForVoiceOver() {
@@ -126,7 +131,7 @@ private extension OrderTrackingTableViewCell {
     }
 }
 
-/// MARK: - Expose private outlets for tests
+// MARK: - Expose private outlets for tests
 ///
 extension OrderTrackingTableViewCell {
     func getTopLabel() -> UILabel {

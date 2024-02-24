@@ -9,12 +9,15 @@ import Combine
 /// - When updating from an asset to remote Product image, caches the asset image locally to avoid an extra API request
 ///
 final class DefaultProductUIImageLoader: ProductUIImageLoader {
+    enum ImageLoaderError: Error {
+        case invalidURL
+        case unableToLoadImage
+    }
+
     private var imagesByProductImageID: [Int64: UIImage] = [:]
     private let imageService: ImageService
 
     private let productImageActionHandler: ProductImageActionHandler?
-
-    private var activeImageTasks = [ImageDownloadTask]()
 
     private let phAssetImageLoaderProvider: (() -> PHAssetImageLoader)?
     /// `PHAssetImageLoader` is lazy loaded to avoid triggering permission alert by initializing `PHImageManager` before it is used.
@@ -51,31 +54,41 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         }
     }
 
-    deinit {
-        activeImageTasks.forEach { $0.cancel() }
-        activeImageTasks.removeAll()
-    }
-
-    func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void) -> Cancellable? {
+    func requestImage(productImage: ProductImage) async throws -> UIImage {
         if let image = imagesByProductImageID[productImage.imageID] {
-            completion(image)
-            return nil
+            return image
         }
+
         guard let encodedString = productImage.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: encodedString) else {
-            return nil
+            throw ImageLoaderError.invalidURL
         }
-        let task = imageService.downloadImage(with: url, shouldCacheImage: true) { [weak self] (image, error) in
-            guard let image = image else {
-                return
+
+        if let imageFromCache = await withCheckedContinuation({ continuation in
+            imageService.retrieveImageFromCache(with: url) { image in
+                if let image = image {
+                    continuation.resume(returning: image)
+                } else {
+                    continuation.resume(returning: nil)
+                }
             }
-            self?.imagesByProductImageID[productImage.imageID] = image
-            completion(image)
+        }) {
+            return imageFromCache
         }
-        if let task = task {
-            activeImageTasks.append(task)
+
+        if let downloadedImage = await withCheckedContinuation({ continuation in
+            _ = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
+                if let image = image {
+                    continuation.resume(returning: image)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+        }) {
+            return downloadedImage
         }
-        return task
+
+        throw ImageLoaderError.unableToLoadImage
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {

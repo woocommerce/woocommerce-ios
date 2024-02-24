@@ -1,7 +1,7 @@
 import Yosemite
 
 /// In-Memory cache for the CardPresentPaymentOnboardingState
-/// 
+///
 class CardPresentPaymentOnboardingStateCache {
     private(set) var value: CardPresentPaymentOnboardingState?
 

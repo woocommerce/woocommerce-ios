@@ -327,6 +327,54 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }.sorted(by: { $0.amount > $1.amount }),
                        [giftCard1, giftCard2])
     }
+
+    func test_it_persists_order_attribution_info_in_storage() throws {
+        // Given
+        let attributionInfo = OrderAttributionInfo.fake()
+        let order = makeOrder().copy(siteID: 3, orderID: 11, attributionInfo: attributionInfo)
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageAttributionInfo = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 11)?.attributionInfo)
+        XCTAssertEqual(storageAttributionInfo.toReadOnly(), attributionInfo)
+    }
+
+    func test_it_replaces_existing_order_attribution_info_in_storage() throws {
+        // Given
+        let originalAttributionInfo = OrderAttributionInfo.fake().copy(source: "admin")
+        let order = makeOrder().copy(siteID: 3, orderID: 11, attributionInfo: originalAttributionInfo)
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        let attributionInfo = OrderAttributionInfo.fake().copy(source: "blaze")
+        useCase.upsert([order.copy(attributionInfo: attributionInfo)])
+
+        // Then
+        let storageAttributionInfo = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 11)?.attributionInfo)
+        XCTAssertEqual(storageAttributionInfo.toReadOnly(), attributionInfo)
+    }
+
+    func test_it_removes_existing_order_attribution_info_from_storage_if_removed_in_remote() throws {
+        // Given
+        let siteID: Int64 = 3
+        let orderID: Int64 = 11
+        let originalAttributionInfo = OrderAttributionInfo.fake().copy(source: "admin")
+        let order = makeOrder().copy(siteID: siteID, orderID: orderID, attributionInfo: originalAttributionInfo)
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        useCase.upsert([order.copy(attributionInfo: .some(nil))])
+
+        // Then
+        XCTAssertNil(viewStorage.loadOrderAttributionInfo(siteID: siteID, orderID: orderID))
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: siteID, orderID: orderID))
+        XCTAssertNil(storageOrder.attributionInfo)
+    }
 }
 
 private extension OrdersUpsertUseCaseTests {

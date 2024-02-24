@@ -3,8 +3,8 @@ import MessageUI
 import Yosemite
 import WooFoundation
 
-/// ViewModel supporting the receipt preview.
-final class ReceiptViewModel {
+/// ViewModel supporting the locally-generated receipt preview.
+final class LegacyReceiptViewModel {
     private let order: Order
     private let receipt: CardPresentReceiptParameters
     private let countryCode: CountryCode
@@ -70,7 +70,8 @@ final class ReceiptViewModel {
     func emailReceiptTapped() -> AnyPublisher<(formData: CardPresentPaymentReceiptEmailCoordinator.EmailFormData, countryCode: CountryCode), Never> {
         analytics.track(event: .InPersonPayments
             .receiptEmailTapped(countryCode: countryCode,
-                                cardReaderModel: nil))
+                                cardReaderModel: nil,
+                                source: .local))
         return content.map { .init(content: $0, order: self.order, storeName: self.stores.sessionManager.defaultSite?.name ?? "") }
             .map { (formData: $0, countryCode: self.countryCode) }
             .eraseToAnyPublisher()

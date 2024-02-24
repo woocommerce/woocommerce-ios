@@ -120,6 +120,8 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     private lazy var fetchedResultsController: NSFetchedResultsController<MutableType> = createFetchedResultsController(query: query)
 
     /// The delgate for `fetchedResultsController`.
+    // FIXME: This needs self to init and does not lend itself to being weak and cannot be easily addressed as part of the current violations smashing round.
+    // swiftlint:disable:next weak_delegate
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
 
     private var objectsDidChangeCancellable: AnyCancellable?

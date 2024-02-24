@@ -24,6 +24,8 @@ final class StatusListTableViewCell: UITableViewCell {
     }
 
     override func prepareForReuse() {
+        super.prepareForReuse()
+
         textLabel?.text = nil
     }
 
@@ -36,14 +38,17 @@ final class StatusListTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         accessoryType = selected ? .checkmark : .none
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
 private extension StatusListTableViewCell {
     func configureBackground() {
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 
     func styleCheckmark() {

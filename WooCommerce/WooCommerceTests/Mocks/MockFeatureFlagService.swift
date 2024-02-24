@@ -14,7 +14,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
     private let isHideStoreOnboardingTaskListFeatureEnabled: Bool
-    private let isAddProductToOrderViaSKUScannerEnabled: Bool
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
@@ -23,6 +22,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let productBundlesInOrderForm: Bool
     private let isScanToUpdateInventoryEnabled: Bool
     private let blazei3NativeCampaignCreation: Bool
+    private let isBackendReceiptsEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -36,7 +36,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
          isHideStoreOnboardingTaskListFeatureEnabled: Bool = false,
-         isAddProductToOrderViaSKUScannerEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
@@ -44,7 +43,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
-         blazei3NativeCampaignCreation: Bool = false) {
+         blazei3NativeCampaignCreation: Bool = false,
+         isBackendReceiptsEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -57,7 +57,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.isHideStoreOnboardingTaskListFeatureEnabled = isHideStoreOnboardingTaskListFeatureEnabled
-        self.isAddProductToOrderViaSKUScannerEnabled = isAddProductToOrderViaSKUScannerEnabled
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
@@ -66,6 +65,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.blazei3NativeCampaignCreation = blazei3NativeCampaignCreation
+        self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -94,8 +94,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isReadOnlyGiftCardsEnabled
         case .hideStoreOnboardingTaskList:
             return isHideStoreOnboardingTaskListFeatureEnabled
-        case .addProductToOrderViaSKUScanner:
-            return isAddProductToOrderViaSKUScannerEnabled
         case .shareProductAI:
             return isShareProductAIEnabled
         case .betterCustomerSelectionInOrder:
@@ -110,6 +108,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isScanToUpdateInventoryEnabled
         case .blazei3NativeCampaignCreation:
             return blazei3NativeCampaignCreation
+        case .backendReceipts:
+            return isBackendReceiptsEnabled
         default:
             return false
         }

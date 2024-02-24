@@ -156,9 +156,18 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                     case .success(let paymentData):
                         // Handle payment receipt
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-                        self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                 alertProvider: paymentAlertProvider,
-                                                 onCompleted: onCompleted)
+
+                        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { [weak self] isEligible in
+                            guard let self = self else { return }
+                            switch isEligible {
+                            case true:
+                                self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
+                            case false:
+                                self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
+                                                         alertProvider: paymentAlertProvider,
+                                                         onCompleted: onCompleted)
+                            }
+                        }
                     }
                     onPaymentCompletion()
                 })
@@ -494,10 +503,32 @@ private extension CollectOrderPaymentUseCase {
             onCompleted()
         }
     }
-
-    /// Allow merchants to print or email the payment receipt.
+    /// Allow merchants to print or email backend-generated receipts.
+    /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
-    func presentReceiptAlert(receiptParameters: CardPresentReceiptParameters,
+    func presentBackendReceiptAlert(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding, onCompleted: @escaping () -> ()) {
+        // Handles receipt presentation for both print and email actions
+        let receiptPresentationCompletionAction: () -> Void = { [weak self] in
+            guard let self else { return }
+            self.paymentOrchestrator.presentBackendReceipt(for: self.order, onCompletion: { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case let .success(receipt):
+                    self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
+                case let .failure(error):
+                    self.presentBackedReceiptFailedNotice(with: error, onCompleted: onCompleted)
+                }
+            })
+        }
+        // Presents receipt alert
+        alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: receiptPresentationCompletionAction,
+                                                                 emailReceipt: receiptPresentationCompletionAction,
+                                                                 noReceiptAction: { onCompleted() }))
+    }
+
+    /// Allow merchants to print or email locally-generated receipts.
+    ///
+    func presentLocalReceiptAlert(receiptParameters: CardPresentReceiptParameters,
                              alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
                              onCompleted: @escaping () -> ()) {
         // Present receipt alert
@@ -549,6 +580,34 @@ private extension CollectOrderPaymentUseCase {
     }
 }
 
+// MARK: Backend receipts presentation
+private extension CollectOrderPaymentUseCase {
+    /// Prepares and presents the backend receipt modally
+    ///
+    func presentBackendReceiptModally(receipt: Receipt, onCompleted: @escaping (() -> Void)) {
+        let receiptViewModel = ReceiptViewModel(receipt: receipt,
+                                                orderID: order.orderID,
+                                                siteName: stores.sessionManager.defaultSite?.name)
+        let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDisappear: {
+            onCompleted()
+        })
+        let navigationController = UINavigationController(rootViewController: receiptViewController)
+        rootViewController.present(navigationController, animated: true)
+    }
+
+    func presentBackedReceiptFailedNotice(with error: Error?, onCompleted: @escaping (() -> Void)) {
+        DDLogError("Failed to present receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
+
+        let noticePresenter = DefaultNoticePresenter()
+        let notice = Notice(title: Localization.failedReceiptPrintNoticeText,
+                                    feedbackType: .error)
+        noticePresenter.presentingViewController = rootViewController
+        noticePresenter.enqueue(notice: notice)
+
+        onCompleted()
+    }
+}
+
 // MARK: Interac handling
 private extension CollectOrderPaymentUseCase {
     /// For certain payment methods like Interac in Canada, the payment is captured on the client side (customer is charged).
@@ -576,6 +635,11 @@ private extension CollectOrderPaymentUseCase {
 
 
     enum Localization {
+        static let failedReceiptPrintNoticeText = NSLocalizedString(
+            "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice",
+            value: "Unable to retrieve receipt.",
+            comment: "Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view.")
+
         private static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
                                                                  comment: "Subject of email sent with a card present payment receipt")
         private static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",

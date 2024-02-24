@@ -1,7 +1,7 @@
 import Foundation
 
 /// Throttler class
-/// 
+///
 /// To throttle a function means to ensure that the function is called at most once in a specified time period (for instance, once every 10 seconds).
 /// Throttle function must be called at each change of the state.
 /// (eg: in a search box you may want call it on textDidChange)

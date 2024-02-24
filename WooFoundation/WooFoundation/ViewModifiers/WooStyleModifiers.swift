@@ -159,6 +159,19 @@ public struct LinkStyle: ViewModifier {
     }
 }
 
+public struct IconStyle: ViewModifier {
+    /// Environment `enabled` state.
+    ///
+    @Environment(\.isEnabled) var isEnabled
+
+    public init() {}
+
+    public func body(content: Content) -> some View {
+        content
+            .foregroundColor(isEnabled ? Color(.accent) : Color(.textTertiary))
+    }
+}
+
 public struct HeadlineLinkStyle: ViewModifier {
     /// Environment `enabled` state.
     ///
@@ -238,5 +251,9 @@ public extension View {
 
     func captionStyle() -> some View {
         self.modifier(CaptionStyle())
+    }
+
+    func iconStyle(_ isEnabled: Bool = true) -> some View {
+        self.modifier(IconStyle())
     }
 }

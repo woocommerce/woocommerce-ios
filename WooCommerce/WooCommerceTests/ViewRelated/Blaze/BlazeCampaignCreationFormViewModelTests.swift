@@ -7,7 +7,6 @@ import protocol Storage.StorageType
 @testable import WooCommerce
 import struct Networking.BlazeAISuggestion
 
-@MainActor
 final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322
@@ -39,18 +38,36 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private var imageLoader: MockProductUIImageLoader!
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
-        storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .testingInstance)
+        storageManager = MockStorageManager()
         imageLoader = MockProductUIImageLoader()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        imageLoader = nil
+        storageManager = nil
+        stores = nil
+        super.tearDown()
     }
 
     // MARK: Initial values
     func test_image_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
@@ -59,8 +76,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_tagline_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
@@ -69,12 +90,65 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_description_is_empty_initially() async throws {
         // Given
+        insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // Then
         XCTAssertEqual(viewModel.description, "")
+    }
+
+    // MARK: On load
+
+    func test_onLoad_fetches_AI_suggestions() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockDownloadImage(sampleImage)
+        var triggeredFetchAISuggestions = false
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchAISuggestions(_, _, completion):
+                triggeredFetchAISuggestions = true
+                completion(.success([.fake()]))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                               productID: sampleProductID,
+                                               stores: stores,
+                                               storage: storageManager,
+                                               productImageLoader: imageLoader,
+                                               onCompletion: {})
+
+        // When
+        await viewModel.onLoad()
+
+        // Then
+        XCTAssertTrue(triggeredFetchAISuggestions)
+    }
+
+    func test_onLoad_downloads_image() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                               productID: sampleProductID,
+                                               stores: stores,
+                                               storage: storageManager,
+                                               productImageLoader: imageLoader,
+                                               onCompletion: {})
+
+        // When
+        await viewModel.onLoad()
+
+        // Then
+        XCTAssertNotNil(imageLoader.imageRequestedForProductImage)
     }
 
     // MARK: Download product image
@@ -100,58 +174,10 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: `canEditAd`
-
-    func test_ad_cannot_be_edited_until_suggestions_are_loaded() async throws {
-        // Given
-        insertProduct(sampleProduct)
-        mockAISuggestionsSuccess(sampleAISuggestions)
-        mockDownloadImage(sampleImage)
-
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           onCompletion: {})
-
-        // Download product and ensure that ad cannot be edited
-        await viewModel.downloadProductImage()
-        XCTAssertFalse(viewModel.canEditAd)
-
-        // When
-        await viewModel.loadAISuggestions()
-
-        // Then
-        XCTAssertTrue(viewModel.canEditAd)
-    }
-
-    func test_ad_cannot_be_edited_until_image_is_downloaded() async throws {
-        // Given
-        insertProduct(sampleProduct)
-        mockAISuggestionsSuccess(sampleAISuggestions)
-        mockDownloadImage(sampleImage)
-
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           onCompletion: {})
-        // Load suggestions and ensure that ad cannot be edited
-        await viewModel.loadAISuggestions()
-        XCTAssertFalse(viewModel.canEditAd)
-
-        // When
-        await viewModel.downloadProductImage()
-
-        // Then
-        XCTAssertTrue(viewModel.canEditAd)
-    }
-
     func test_ad_can_be_edited_if_suggestions_failed_to_load() async throws {
         // Given
         insertProduct(sampleProduct)
-        mockDomainSuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError())
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -196,6 +222,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sends_correct_product_ID_to_fetch() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         var expectedProductID: Int64?
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             guard let self = self else { return }
@@ -210,6 +238,8 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -221,10 +251,14 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_tagline_and_description_upon_success() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         mockAISuggestionsSuccess(sampleAISuggestions)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -238,10 +272,14 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_error_if_request_fails() async throws {
         // Given
-        mockDomainSuggestionsFailure(MockError())
+        insertProduct(sampleProduct)
+
+        mockAISuggestionsFailure(MockError())
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -253,10 +291,14 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     func test_loadAISuggestions_sets_error_if_no_suggestions_available() async throws {
         // Given
+        insertProduct(sampleProduct)
+
         mockAISuggestionsSuccess([])
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
                                                            onCompletion: {})
 
         // When
@@ -267,31 +309,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: `canConfirmDetails`
-
-    func test_ad_cannot_be_confirmed_if_image_is_nil() async throws {
-        // Given
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   productID: sampleProductID,
-                                   statusKey: (ProductStatus.published.rawValue),
-                                   images: [])) // Product has no image
-        mockAISuggestionsSuccess(sampleAISuggestions)
-
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           onCompletion: {})
-        // Load suggestions to set tagline and description
-        await viewModel.loadAISuggestions()
-
-        // When
-        await viewModel.downloadProductImage()
-
-        // Then
-        XCTAssertNil(viewModel.image)
-        XCTAssertFalse(viewModel.canConfirmDetails)
-    }
 
     func test_ad_cannot_be_confirmed_if_tagline_is_empty() async throws {
         // Given
@@ -340,11 +357,190 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.description.isEmpty)
         XCTAssertFalse(viewModel.canConfirmDetails)
     }
+
+    // MARK: Analytics
+    func test_event_is_tracked_on_appear() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // When
+        viewModel.onAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_form_displayed"))
+    }
+
+    func test_displayed_event_is_tracked_only_once() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // When
+        viewModel.onAppear()
+        viewModel.onAppear()
+
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == "blaze_creation_form_displayed"}.count, 1)
+    }
+
+    func test_event_is_tracked_upon_tapping_edit_ad() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // When
+        viewModel.didTapEditAd()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_ad_tapped"))
+    }
+
+    func test_event_is_tracked_upon_tapping_confirm_details_with_AI_suggested_content() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
+        XCTAssertTrue(isAISuggested)
+    }
+
+    func test_event_is_tracked_upon_tapping_confirm_details_with_custom_tagline() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        let editAdViewModel = viewModel.editAdViewModel
+        editAdViewModel.tagline = "Custom tagline"
+        editAdViewModel.didTapSave()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
+        XCTAssertTrue(isAISuggested)
+    }
+
+    func test_event_is_tracked_upon_tapping_confirm_details_with_custom_description() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                            analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        let editAdViewModel = viewModel.editAdViewModel
+        editAdViewModel.description = "Custom description"
+        editAdViewModel.didTapSave()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
+        XCTAssertTrue(isAISuggested)
+    }
+
+    func test_event_is_tracked_upon_tapping_confirm_details_with_custom_tagline_and_description() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        let editAdViewModel = viewModel.editAdViewModel
+        editAdViewModel.tagline = "Custom tagline"
+        editAdViewModel.description = "Custom description"
+        editAdViewModel.didTapSave()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
+        XCTAssertFalse(isAISuggested)
+    }
 }
 
 private extension BlazeCampaignCreationFormViewModelTests {
     /// Insert a `Product` into storage.
-    /// 
+    ///
     func insertProduct(_ readOnlyProduct: Product) {
         let product = storage.insertNewObject(ofType: StorageProduct.self)
         product.update(with: readOnlyProduct)
@@ -356,19 +552,21 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
         storage.saveIfNeeded()
     }
-
-    final class MockError: Error { }
 }
+
+private final class MockError: Error { }
 
 private class MockProductUIImageLoader: ProductUIImageLoader {
     var imageRequestedForProductImage: Yosemite.ProductImage?
     var requestImageStubbedResponse: UIImage?
-    func requestImage(productImage: Yosemite.ProductImage, completion: @escaping (UIImage) -> Void) -> Cancellable? {
+
+    func requestImage(productImage: ProductImage) async throws -> UIImage {
         imageRequestedForProductImage = productImage
         if let requestImageStubbedResponse {
-            completion(requestImageStubbedResponse)
+            return requestImageStubbedResponse
+        } else {
+            throw MockError()
         }
-        return nil
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {
@@ -392,7 +590,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
     }
 
-    func mockDomainSuggestionsFailure(_ error: Error) {
+    func mockAISuggestionsFailure(_ error: Error) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchAISuggestions(_, _, completion):

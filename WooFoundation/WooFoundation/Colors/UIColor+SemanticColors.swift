@@ -417,6 +417,12 @@ public extension UIColor {
         return UIColor(light: .gray(.shade0), dark: .black)
     }
 
+    /// List selected Background.
+    ///
+    static var listSelectedBackground: UIColor {
+        return UIColor.wooCommercePurple(.shade0)
+    }
+
     /// List foreground.
     /// - Parameter modal: Whether the view is presented modally. When `true`, returns a darker background in dark mode, for better contrast.
     static func listForeground(modal: Bool) -> UIColor {

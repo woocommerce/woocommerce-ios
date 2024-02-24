@@ -297,11 +297,7 @@ private extension BlazeStore {
                                     onCompletion: @escaping (Result<BlazeImpressions, Error>) -> Void) {
         Task { @MainActor in
             do {
-                // TODO-11540: remove stubbed result when the API is ready.
-                let stubbedResult = BlazeImpressions(totalImpressionsMin: 5000, totalImpressionsMax: 10000)
-                let impressions: BlazeImpressions = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchForecastedImpressions(for: siteID, with: input)
-                })
+                let impressions = try await remote.fetchForecastedImpressions(for: siteID, with: input)
                 onCompletion(.success(impressions))
             } catch {
                 onCompletion(.failure(error))
@@ -320,13 +316,7 @@ private extension BlazeStore {
                             onCompletion: @escaping (Result<[BlazeAISuggestion], Error>) -> Void) {
         Task { @MainActor in
             do {
-                // TODO-11540: remove stubbed result when the API is ready.
-                let stubbedResult = [BlazeAISuggestion(siteName: "Shiny thing", textSnippet: "Get this new and shiny thing"),
-                                     BlazeAISuggestion(siteName: "New stuff", textSnippet: "Buy this new thing first"),
-                                     BlazeAISuggestion(siteName: "Exciting items", textSnippet: "Purchase these exciting items")]
-                let suggestions: [BlazeAISuggestion] = try await mockResponse(stubbedResult: stubbedResult, onExecution: {
-                    try await remote.fetchAISuggestions(siteID: siteID, productID: productID)
-                })
+                let suggestions: [BlazeAISuggestion] = try await remote.fetchAISuggestions(siteID: siteID, productID: productID)
                 onCompletion(.success(suggestions))
             } catch {
                 onCompletion(.failure(error))
@@ -341,21 +331,27 @@ private extension BlazeStore {
     func fetchPaymentInfo(siteID: Int64, onCompletion: @escaping (Result<BlazePaymentInfo, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let stubbedResult = BlazePaymentInfo(
-                    savedPaymentMethods: [
-                        .init(id: "payment-method-id",
-                              rawType: "credit_card",
-                              name: "Visa **** 4689",
-                              info: .init(lastDigits: "4689",
-                                          expiring: .init(year: 2025, month: 2),
-                                          type: "Visa",
-                                          nickname: "",
-                                          cardholderName: "John Doe"))
-                    ],
-                    addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
-                                            successUrl: "https://example.com/blaze-pm-success",
-                                            idUrlParameter: "pmid")
-                )
+                let stubbedResult = {
+                    var methods: [BlazePaymentMethod] = []
+                    let cardNumbers = ["4575", "2343", "6456"]
+
+                    cardNumbers.forEach { cardNumber in
+                        methods.append(BlazePaymentMethod(id: "payment-method-id-\(cardNumber)",
+                                                          rawType: "credit_card",
+                                                          name: "Visa **** \(cardNumber)",
+                                                          info: .init(lastDigits: cardNumber,
+                                                                      expiring: .init(year: 2025, month: 2),
+                                                                      type: "Visa",
+                                                                      nickname: "",
+                                                                      cardholderName: "John Doe")))
+                    }
+                    return BlazePaymentInfo(
+                        savedPaymentMethods: methods,
+                        addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
+                                                successUrl: "https://example.com/blaze-pm-success",
+                                                idUrlParameter: "pmid")
+                    )
+                }()
                 let paymentInfo = try await mockResponse(stubbedResult: stubbedResult) {
                     try await remote.fetchPaymentInfo(siteID: siteID)
                 }
@@ -376,10 +372,10 @@ private extension BlazeStore {
     func mockResponse<T>(stubbedResult: T, onExecution: () async throws -> T) async throws -> T {
         // skips stubbed result for unit tests
         guard Self.isRunningTests else {
+            // mock some wait for the loading state
+            try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
             return stubbedResult
         }
-        // mock some wait for the loading state
-        try await Task.sleep(nanoseconds: 300_000)
         return try await onExecution()
     }
 }

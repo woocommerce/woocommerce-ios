@@ -1,44 +1,44 @@
 import Foundation
 import Storage
 
-struct i18n {
-    struct DefaultAccount {
-        static let displayName = NSLocalizedString("My Account", comment: "displayName for the screenshot demo account")
-        static let email = NSLocalizedString("woocommercestore@example.com", comment: "email address for the screenshot demo account")
-        static let username = NSLocalizedString("test account", comment: "username for the screenshot demo account")
+struct Defaults {
+    struct Account {
+        static let displayName = "My Account"
+        static let email = "woocommercestore@example.com"
+        static let username = "test account"
     }
 
-    struct DefaultSite {
-        static let name = NSLocalizedString("Your WooCommerce Store", comment: "Store Name for the screenshot demo account")
-        static let url = NSLocalizedString("example.com", comment: "")
-        static let adminURL = NSLocalizedString("example.com/wp-admin", comment: "")
-        static let loginURL = NSLocalizedString("example.com/wp-login.php", comment: "")
+    struct Site {
+        static let name = "Your WooCommerce Store"
+        static let url = "example.com"
+        static let adminURL = "example.com/wp-admin"
+        static let loginURL = "example.com/wp-login.php"
     }
 }
 
 struct ScreenshotObjectGraph: MockObjectGraph {
 
     let userCredentials = Credentials.wpcom(
-        username: i18n.DefaultAccount.username,
+        username: Defaults.Account.username,
         authToken: UUID().uuidString,
-        siteAddress: i18n.DefaultSite.url
+        siteAddress: Defaults.Site.url
     )
 
     let defaultAccount = Account(
         userID: 1,
-        displayName: i18n.DefaultAccount.displayName,
-        email: i18n.DefaultAccount.email,
-        username: i18n.DefaultAccount.username,
+        displayName: Defaults.Account.displayName,
+        email: Defaults.Account.email,
+        username: Defaults.Account.username,
         gravatarUrl: nil
     )
 
     let defaultSite = Site(
         siteID: 1,
-        name: i18n.DefaultSite.name,
+        name: Defaults.Site.name,
         description: "",
-        url: i18n.DefaultSite.url,
-        adminURL: i18n.DefaultSite.adminURL,
-        loginURL: i18n.DefaultSite.loginURL,
+        url: Defaults.Site.url,
+        adminURL: Defaults.Site.adminURL,
+        loginURL: Defaults.Site.loginURL,
         isSiteOwner: false,
         frameNonce: "",
         plan: "",

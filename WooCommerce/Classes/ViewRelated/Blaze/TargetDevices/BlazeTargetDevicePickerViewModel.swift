@@ -29,6 +29,7 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
     private let locale: Locale
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let analytics: Analytics
     private let onSelection: (Set<BlazeTargetDevice>?) -> Void
 
     init(siteID: Int64,
@@ -36,12 +37,14 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
          onSelection: @escaping (Set<BlazeTargetDevice>?) -> Void) {
         self.siteID = siteID
         self.selectedDevices = selectedDevices
         self.locale = locale
         self.stores = stores
         self.storageManager = storageManager
+        self.analytics = analytics
         self.onSelection = onSelection
 
         configureResultsController()
@@ -71,6 +74,7 @@ final class BlazeTargetDevicePickerViewModel: ObservableObject {
     }
 
     func confirmSelection() {
+        analytics.track(event: .Blaze.Device.saveTapped())
         onSelection(selectedDevices)
     }
 }

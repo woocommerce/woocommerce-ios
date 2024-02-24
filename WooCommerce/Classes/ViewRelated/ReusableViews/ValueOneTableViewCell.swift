@@ -19,6 +19,11 @@ class ValueOneTableViewCell: UITableViewCell {
         apply(style: .primary)
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     /// Change the styling of the UI elements.
     ///
     func apply(style: Style) {
@@ -60,7 +65,7 @@ private extension ValueOneTableViewCell {
     }
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureTextLabel() {

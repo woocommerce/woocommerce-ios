@@ -44,7 +44,7 @@ final class OrderTotalsCalculator {
     }
 
     /// Total value of discounts, including coupons and product discounts.
-    /// 
+    ///
     var discountTotal: NSDecimalNumber {
         let itemsDiscountedTotal = order.items
             .map { $0.total }
@@ -55,7 +55,7 @@ final class OrderTotalsCalculator {
     }
 
     /// Order total
-    /// 
+    ///
     var orderTotal: NSDecimalNumber {
         itemsTotal.adding(shippingTotal).adding(feesTotal).adding(taxesTotal).subtracting(discountTotal)
     }

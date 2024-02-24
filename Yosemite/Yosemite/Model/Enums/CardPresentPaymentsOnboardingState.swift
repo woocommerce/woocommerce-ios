@@ -16,7 +16,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     /// There is more than one plugin installed and activated. The user must deactivate one.
     /// `pluginSelectionWasCleared` being true means that there was one plugin selected for payments
     /// but that selection was just cleared (e.g when in settings asking to choose a plugin again)
-    /// 
+    ///
     case selectPlugin(pluginSelectionWasCleared: Bool)
 
     /// Store is not located in one of the supported countries.
@@ -89,9 +89,9 @@ extension CardPresentPaymentOnboardingState {
             return "completed"
         case .selectPlugin:
             return "multiple_payment_providers_conflict"
-        case .countryNotSupported(countryCode: _):
+        case .countryNotSupported:
             return "country_not_supported"
-        case .countryNotSupportedStripe(countryCode: _):
+        case .countryNotSupportedStripe:
             return "country_not_supported"
         case .pluginNotInstalled:
             return "wcpay_not_installed"
@@ -105,7 +105,7 @@ extension CardPresentPaymentOnboardingState {
             return "wcpay_in_test_mode_with_live_account"
         case .stripeAccountUnderReview:
             return "account_under_review"
-        case .stripeAccountPendingRequirement(deadline: _):
+        case .stripeAccountPendingRequirement:
             return "account_pending_requirements"
         case .stripeAccountOverdueRequirement:
             return "account_overdue_requirements"
@@ -130,7 +130,7 @@ extension CardPresentPaymentOnboardingState {
     }
 
     public var isCompleted: Bool {
-        if case .completed(_) = self {
+        if case .completed = self {
             return true
         } else {
             return false
@@ -146,7 +146,7 @@ extension CardPresentPaymentOnboardingState {
     }
 
     public var isCountryNotSupported: Bool {
-        if case .countryNotSupported(_) = self {
+        if case .countryNotSupported = self {
             return true
         } else {
             return false

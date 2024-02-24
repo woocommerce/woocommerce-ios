@@ -31,21 +31,16 @@ struct FullScreenTextView: View {
                     .padding(.horizontal, Constants.margin)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                     .keyboardType(.default)
-                    .onAppear {
-                         // Remove the placeholder text when keyboard appears
-                        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification,
-                                                               object: nil, queue: .main) { _ in
-                            withAnimation {
-                                isTextEditorFocused = true
-                            }
+                    // Remove the placeholder text when keyboard appears
+                    .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                        withAnimation {
+                            isTextEditorFocused = true
                         }
-
-                        // Put back the placeholder text if the user dismisses the keyboard without adding any text
-                        NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification,
-                                                               object: nil, queue: .main) { _ in
-                            withAnimation {
-                                isTextEditorFocused = false
-                            }
+                    }
+                    // Put back the placeholder text if the user dismisses the keyboard without adding any text
+                    .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                        withAnimation {
+                            isTextEditorFocused = false
                         }
                     }
 

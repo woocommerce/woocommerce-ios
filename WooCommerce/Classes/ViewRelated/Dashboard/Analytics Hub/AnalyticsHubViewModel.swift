@@ -11,6 +11,11 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let stores: StoresManager
     private let timeZone: TimeZone
     private let analytics: Analytics
+    private let noticePresenter: NoticePresenter
+
+    /// Delay to allow the backend to process enabling the Jetpack Stats module.
+    /// Defaults to 0.5 seconds.
+    private let backendProcessingDelay: UInt64
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -18,40 +23,80 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
+    /// User is an administrator on the store
+    ///
+    private let userIsAdmin: Bool
+
+    /// Whether the `customizeAnalyticsHub` feature flag is enabled
+    ///
+    let canCustomizeAnalytics: Bool
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         backendProcessingDelay: UInt64 = 500_000_000,
+         canCustomizeAnalytics: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub)) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
         self.siteID = siteID
         self.timeZone = timeZone
         self.stores = stores
+        self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
+        self.noticePresenter = noticePresenter
+        self.backendProcessingDelay = backendProcessingDelay
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.canCustomizeAnalytics = canCustomizeAnalytics
+
+        let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
+        let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
+                                                                   timeRange: selectedType,
+                                                                   storeAdminURL: storeAdminURL,
+                                                                   usageTracksEventEmitter: usageTracksEventEmitter)
+        self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil,
+                                                             previousPeriodStats: nil,
+                                                             webReportViewModel: revenueWebReportVM)
+
+        let ordersWebReportVM = AnalyticsHubViewModel.webReportVM(for: .orders,
+                                                                  timeRange: selectedType,
+                                                                  storeAdminURL: storeAdminURL,
+                                                                  usageTracksEventEmitter: usageTracksEventEmitter)
+        self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil,
+                                                           previousPeriodStats: nil,
+                                                           webReportViewModel: ordersWebReportVM)
+
+        let productsWebReportVM = AnalyticsHubViewModel.webReportVM(for: .products,
+                                                                    timeRange: selectedType,
+                                                                    storeAdminURL: storeAdminURL,
+                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
+        self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil,
+                                                                         previousPeriodStats: nil,
+                                                                         webReportViewModel: productsWebReportVM)
 
         bindViewModelsWithData()
     }
 
     /// Revenue Card ViewModel
     ///
-    @Published var revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var revenueCard: AnalyticsReportCardViewModel
 
     /// Orders Card ViewModel
     ///
-    @Published var ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var ordersCard: AnalyticsReportCardViewModel
 
     /// Products Stats Card ViewModel
     ///
-    @Published var productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil, previousPeriodStats: nil)
+    @Published var productsStatsCard: AnalyticsProductsStatsCardViewModel
 
     /// Items Sold Card ViewModel
     ///
@@ -61,19 +106,34 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: nil, siteStats: nil)
 
+    /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
+    ///
+    @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
+
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        guard !stores.isAuthenticatedWithoutWPCom else {
+        if !isCardEnabled(.sessions) {
             return false
-        }
-
-        switch timeRangeSelectionType {
-        case .custom:
+        } else if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
+                    || stores.sessionManager.defaultSite?.isJetpackCPConnected == true // JCP stores don't have Jetpack stats
+                    || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
             return false
-        default:
+        } else if case .custom = timeRangeSelectionType {
+            return false
+        } else {
             return true
         }
+    }
+
+    /// Whether Jetpack Stats are disabled on the store
+    ///
+    private var isJetpackStatsDisabled = false
+
+    /// Whether to show the call to action to enable Jetpack Stats
+    ///
+    var showJetpackStatsCTA: Bool {
+        isJetpackStatsDisabled && userIsAdmin
     }
 
     /// Time Range Selection Type
@@ -89,7 +149,19 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var dismissNotice: Notice?
 
+    /// All analytics cards to display in the Analytics Hub.
+    ///
+    var enabledCards: [AnalyticsCard.CardType] {
+        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
+        return allCards.filter { $0.enabled }.map { $0.type }
+    }
+
     // MARK: Private data
+
+    /// All analytics cards with their enabled/disabled settings.
+    /// Defaults to all enabled cards in default order.
+    ///
+    @Published private(set) var allCardsWithSettings = AnalyticsHubViewModel.defaultCards
 
     /// Order stats for the current selected time period
     ///
@@ -133,6 +205,23 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     func trackAnalyticsInteraction() {
         usageTracksEventEmitter.interacted()
+    }
+
+    /// Enables the Jetpack Status module on the store and requests new stats data
+    ///
+    @MainActor
+    func enableJetpackStats() async {
+        analytics.track(event: .AnalyticsHub.jetpackStatsCTATapped())
+
+        do {
+            try await remoteEnableJetpackStats()
+            // Wait for backend to enable the module (it is not ready for stats to be requested immediately after a success response)
+            try await Task.sleep(nanoseconds: backendProcessingDelay)
+            await updateData()
+        } catch {
+            noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
+            DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
+        }
     }
 }
 
@@ -187,9 +276,22 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
+        isJetpackStatsDisabled = false // Reset optimistically in case stats were enabled
         async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
 
-        self.siteStats = try? await siteStatsRequest
+        do {
+            self.siteStats = try await siteStatsRequest
+        } catch SiteStatsStoreError.statsModuleDisabled {
+            self.isJetpackStatsDisabled = true
+            self.siteStats = nil
+            if showJetpackStatsCTA {
+                analytics.track(event: .AnalyticsHub.jetpackStatsCTAShown())
+            }
+            DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: Jetpack stats are disabled")
+        } catch {
+            self.siteStats = nil
+            DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: \(error)")
+        }
     }
 
     @MainActor
@@ -235,7 +337,7 @@ private extension AnalyticsHubViewModel {
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
-        guard !stores.isAuthenticatedWithoutWPCom, let period = timeRangeSelectionType.period else {
+        guard showSessionsCard, let period = timeRangeSelectionType.period else {
             return nil
         }
 
@@ -247,6 +349,27 @@ private extension AnalyticsHubViewModel {
                                                                 latestDateToInclude: latestDateToInclude,
                                                                 saveInStorage: false) { result in
                 continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Makes the remote request to enable the Jetpack Stats module on the site.
+    ///
+    func remoteEnableJetpackStats() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: siteID) { [weak self] result in
+                switch result {
+                case .success:
+                    self?.isJetpackStatsDisabled = false
+                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsSuccess())
+                    continuation.resume()
+                case let .failure(error):
+                    self?.isJetpackStatsDisabled = true
+                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsFailed(error: error))
+                    continuation.resume(throwing: error)
+                }
             }
             stores.dispatch(action)
         }
@@ -278,9 +401,15 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
-                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats,
+                                                                     previousPeriodStats: previousOrderStats,
+                                                                     webReportViewModel: webReportVM(for: .revenue))
+                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats,
+                                                                   previousPeriodStats: previousOrderStats,
+                                                                   webReportViewModel: webReportVM(for: .orders))
+                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats,
+                                                                                 previousPeriodStats: previousOrderStats,
+                                                                                 webReportViewModel: webReportVM(for: .products))
 
             }.store(in: &subscriptions)
 
@@ -315,7 +444,9 @@ private extension AnalyticsHubViewModel {
             }.store(in: &subscriptions)
     }
 
-    static func revenueCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+    static func revenueCard(currentPeriodStats: OrderStatsV4?,
+                            previousPeriodStats: OrderStatsV4?,
+                            webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
 
         return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
@@ -330,10 +461,13 @@ private extension AnalyticsHubViewModel {
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
-                                            syncErrorMessage: Localization.RevenueCard.noRevenue)
+                                            syncErrorMessage: Localization.RevenueCard.noRevenue,
+                                            reportViewModel: webReportViewModel)
     }
 
-    static func ordersCard(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardViewModel {
+    static func ordersCard(currentPeriodStats: OrderStatsV4?,
+                           previousPeriodStats: OrderStatsV4?,
+                           webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsReportCardViewModel {
         let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
 
         return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
@@ -349,13 +483,15 @@ private extension AnalyticsHubViewModel {
                                             trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
                                             isRedacted: false,
                                             showSyncError: showSyncError,
-                                            syncErrorMessage: Localization.OrderCard.noOrders)
+                                            syncErrorMessage: Localization.OrderCard.noOrders,
+                                            reportViewModel: webReportViewModel)
     }
 
     /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
     ///
     static func productsStatsCard(currentPeriodStats: OrderStatsV4?,
-                                  previousPeriodStats: OrderStatsV4?) -> AnalyticsProductsStatsCardViewModel {
+                                  previousPeriodStats: OrderStatsV4?,
+                                  webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsProductsStatsCardViewModel {
         let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
         let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
         let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
@@ -363,7 +499,8 @@ private extension AnalyticsHubViewModel {
         return AnalyticsProductsStatsCardViewModel(itemsSold: itemsSold,
                                                    delta: itemsSoldDelta,
                                                    isRedacted: false,
-                                                   showStatsError: showStatsError)
+                                                   showStatsError: showStatsError,
+                                                   reportViewModel: webReportViewModel)
     }
 
     /// Helper function to create a `AnalyticsItemsSoldViewModel` from the fetched stats.
@@ -420,6 +557,85 @@ private extension AnalyticsHubViewModel {
             analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
         })
     }
+
+    /// Gets the view model to show a web analytics report, based on the provided report type and currently selected time range
+    ///
+    func webReportVM(for report: AnalyticsWebReport.ReportType) -> AnalyticsReportLinkViewModel? {
+        return AnalyticsHubViewModel.webReportVM(for: report,
+                                                 timeRange: timeRangeSelectionType,
+                                                 storeAdminURL: stores.sessionManager.defaultSite?.adminURL,
+                                                 usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
+    /// Gets the view model to show a web analytics report, based on the provided report type, time range, and store admin URL
+    ///
+    static func webReportVM(for report: AnalyticsWebReport.ReportType,
+                            timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
+                            storeAdminURL: String?,
+                            usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) -> AnalyticsReportLinkViewModel? {
+        guard let url = AnalyticsWebReport.getUrl(for: report, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
+            return nil
+        }
+        let title = {
+            switch report {
+            case .revenue:
+                return Localization.RevenueCard.reportTitle
+            case .orders:
+                return Localization.OrderCard.reportTitle
+            case .products:
+                return Localization.ProductCard.reportTitle
+            }
+        }()
+        return AnalyticsReportLinkViewModel(reportType: report,
+                                            period: timeRange,
+                                            webViewTitle: title,
+                                            reportURL: url,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
+    /// Whether the card should be displayed in the Analytics Hub.
+    ///
+    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
+        return enabledCards.contains(where: { $0 == type })
+    }
+}
+
+// MARK: - Customize analytics cards
+extension AnalyticsHubViewModel {
+    /// Load analytics card settings from storage
+    /// Defaults to all enabled cards in default order if no customized settings are stored.
+    ///
+    @MainActor
+    func loadAnalyticsCardSettings() async {
+        allCardsWithSettings = await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
+                continuation.resume(returning: cards ?? AnalyticsHubViewModel.defaultCards)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Sets analytics card settings in storage
+    ///
+    private func storeAnalyticsCardSettings(_ cards: [AnalyticsCard]) {
+        let action = AppSettingsAction.setAnalyticsHubCards(siteID: siteID, cards: cards)
+        stores.dispatch(action)
+    }
+
+    /// Sets a view model for `customizeAnalyticsViewModel` when the feature is enabled.
+    /// This allows the view to open
+    ///
+    func customizeAnalytics() {
+        guard canCustomizeAnalytics else {
+            return
+        }
+
+        customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings) { [weak self] updatedCards in
+            guard let self else { return }
+            self.allCardsWithSettings = updatedCards
+            self.storeAnalyticsCardSettings(updatedCards)
+        }
+    }
 }
 
 // MARK: - Constants
@@ -435,6 +651,9 @@ private extension AnalyticsHubViewModel {
             static let trailingTitle = NSLocalizedString("Net Sales", comment: "Label for net sales (net revenue) in the Analytics Hub")
             static let noRevenue = NSLocalizedString("Unable to load revenue analytics",
                                                      comment: "Text displayed when there is an error loading revenue stats data.")
+            static let reportTitle = NSLocalizedString("analyticsHub.revenueCard.reportTitle",
+                                                       value: "Revenue Report",
+                                                       comment: "Title for the revenue analytics report linked in the Analytics Hub")
         }
 
         enum OrderCard {
@@ -443,6 +662,9 @@ private extension AnalyticsHubViewModel {
             static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
             static let noOrders = NSLocalizedString("Unable to load order analytics",
                                                     comment: "Text displayed when there is an error loading order stats data.")
+            static let reportTitle = NSLocalizedString("analyticsHub.orderCard.reportTitle",
+                                                       value: "Orders Report",
+                                                       comment: "Title for the orders analytics report linked in the Analytics Hub")
         }
 
         enum ProductCard {
@@ -450,6 +672,9 @@ private extension AnalyticsHubViewModel {
                 String.localizedStringWithFormat(NSLocalizedString("Net sales: %@", comment: "Label for the total sales of a product in the Analytics Hub"),
                                                  value)
             }
+            static let reportTitle = NSLocalizedString("analyticsHub.productCard.reportTitle",
+                                                       value: "Products Report",
+                                                       comment: "Title for the products analytics report linked in the Analytics Hub")
         }
 
         enum SessionsCard {
@@ -462,5 +687,13 @@ private extension AnalyticsHubViewModel {
 
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
                                                                comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
+        static let statsCTAError = NSLocalizedString("analyticsHub.jetpackStatsCTA.errorNotice",
+                                                     value: "We couldn't enable Jetpack Stats on your store",
+                                                     comment: "Error shown when Jetpack Stats can't be enabled in the Analytics Hub.")
+    }
+
+    /// Set of enabled analytics cards in default order.
+    static let defaultCards: [AnalyticsCard] = AnalyticsCard.CardType.allCases.map { type in
+        AnalyticsCard(type: type, enabled: true)
     }
 }

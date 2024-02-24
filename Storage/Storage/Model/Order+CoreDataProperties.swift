@@ -69,6 +69,7 @@ extension Order {
     @NSManaged public var shippingLabels: Set<ShippingLabel>?
     @NSManaged public var shippingLabelSettings: ShippingLabelSettings?
     @NSManaged public var taxes: Set<OrderTaxLine>?
+    @NSManaged public var attributionInfo: OrderAttributionInfo?
 
 }
 

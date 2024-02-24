@@ -44,7 +44,8 @@ public enum OrderFactory {
               taxes: [],
               customFields: [],
               renewalSubscriptionID: nil,
-              appliedGiftCards: [])
+              appliedGiftCards: [],
+              attributionInfo: nil)
     }
 
     /// Creates a fee line suitable to be used within a simple payments order.

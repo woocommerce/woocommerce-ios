@@ -52,6 +52,10 @@ struct AnalyticsReportCardViewModel {
     /// Message to display if there was an error loading the data for the card
     ///
     let syncErrorMessage: String
+
+    /// View model for the web analytics report link
+    ///
+    let reportViewModel: AnalyticsReportLinkViewModel?
 }
 
 extension AnalyticsReportCardViewModel {
@@ -71,7 +75,8 @@ extension AnalyticsReportCardViewModel {
               trailingChartData: [],
               isRedacted: true,
               showSyncError: false,
-              syncErrorMessage: "")
+              syncErrorMessage: "",
+              reportViewModel: reportViewModel)
     }
 }
 
@@ -97,5 +102,6 @@ extension AnalyticsReportCard {
         self.isRedacted = viewModel.isRedacted
         self.showSyncError = viewModel.showSyncError
         self.syncErrorMessage = viewModel.syncErrorMessage
+        self.reportViewModel = viewModel.reportViewModel
     }
 }

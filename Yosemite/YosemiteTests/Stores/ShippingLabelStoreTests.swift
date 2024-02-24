@@ -852,7 +852,7 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                // Here just for reference.
                                                                pollingMaximumRetries: 3)
 
-        // We want to test that purchaseShippingLabel does not call its completion ("return") with 
+        // We want to test that purchaseShippingLabel does not call its completion ("return") with
         // an error for the entire duration of the polling it makes under the hood when the status
         // is progress. So, let's set an inverted expectation: Let's validate that the result will
         // never be an error.

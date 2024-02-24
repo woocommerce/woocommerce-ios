@@ -15,11 +15,16 @@ final class SpacerTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         hideSeparator()
         view.backgroundColor = .clear
         selectionStyle = .none
         configure(height: height)
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 
     /// Configures the height of the spacer cell.

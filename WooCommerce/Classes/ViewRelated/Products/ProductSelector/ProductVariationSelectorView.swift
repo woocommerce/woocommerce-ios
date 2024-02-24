@@ -2,7 +2,7 @@ import SwiftUI
 
 /// View showing a list of product variations to select.
 ///
-struct ProductVariationSelector: View {
+struct ProductVariationSelectorView: View {
     @Environment(\.presentationMode) private var presentation
 
     /// Defines whether the view is presented.
@@ -14,6 +14,14 @@ struct ProductVariationSelector: View {
     @ObservedObject private var viewModel: ProductVariationSelectorViewModel
 
     private let onMultipleSelections: (([Int64]) -> Void)?
+
+    /// Tracks the state for the 'Clear Selection' button
+    ///
+    private var isClearSelectionDisabled: Bool {
+        viewModel.selectedProductVariationIDs.isEmpty ||
+        viewModel.syncStatus != .results ||
+        viewModel.selectionDisabled
+    }
 
     ///   Environment safe areas
     ///
@@ -37,7 +45,7 @@ struct ProductVariationSelector: View {
                     }
                     .buttonStyle(LinkButtonStyle())
                     .fixedSize()
-                    .disabled(viewModel.selectedProductVariationIDs.isEmpty || viewModel.syncStatus != .results)
+                    .disabled(isClearSelectionDisabled)
 
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
@@ -46,6 +54,8 @@ struct ProductVariationSelector: View {
                                        viewModel: rowViewModel)
                                 .accessibilityHint(Localization.productRowAccessibilityHint)
                                 .padding(Constants.defaultPadding)
+                                .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+                                .disabled(viewModel.selectionDisabled)
                                 .onTapGesture {
                                     viewModel.changeSelectionStateForVariation(with: rowViewModel.productOrVariationID)
                                 }
@@ -100,7 +110,7 @@ struct ProductVariationSelector: View {
     }
 }
 
-private extension ProductVariationSelector {
+private extension ProductVariationSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
@@ -129,6 +139,6 @@ struct AddProductVariationToOrder_Previews: PreviewProvider {
             selectedProductVariationIDs: []
         )
 
-        ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel)
+        ProductVariationSelectorView(isPresented: .constant(true), viewModel: viewModel)
     }
 }

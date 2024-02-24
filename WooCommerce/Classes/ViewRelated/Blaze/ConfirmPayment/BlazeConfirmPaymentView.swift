@@ -1,12 +1,16 @@
 import SwiftUI
+import class Photos.PHAsset
 
 /// View to confirm the payment method before creating a Blaze campaign.
 struct BlazeConfirmPaymentView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
+    @Environment(\.dismiss) private var dismiss
 
     @State private var externalURL: URL?
+    @State private var showingAddPaymentWebView: Bool = false
+    @State private var isShowingSupport = false
 
     private let agreementText: NSAttributedString = {
         let content = String.localizedStringWithFormat(Localization.agreement, Localization.termsOfService, Localization.adPolicy, Localization.learnMore)
@@ -62,6 +66,13 @@ struct BlazeConfirmPaymentView: View {
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(Localization.help) {
+                    isShowingSupport = true
+                }
+            }
+        }
         .safeAreaInset(edge: .bottom) {
             footerView
         }
@@ -79,8 +90,52 @@ struct BlazeConfirmPaymentView: View {
             BlazeCampaignCreationLoadingView()
                 .interactiveDismissDisabled()
         }
+        .sheet(item: $viewModel.campaignCreationError) { error in
+            BlazeCampaignCreationErrorView(error: error,
+                                           onTryAgain: {
+                viewModel.campaignCreationError = nil
+                Task {
+                    await viewModel.submitCampaign()
+                }
+            }, onCancel: {
+                viewModel.campaignCreationError = nil
+                dismiss()
+            })
+            .interactiveDismissDisabled()
+        }
+        .sheet(isPresented: $viewModel.showAddPaymentSheet) {
+            if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                BlazePaymentMethodsView(viewModel: paymentMethodsViewModel)
+            }
+        }
+        .sheet(isPresented: $showingAddPaymentWebView, content: {
+            if let viewModel = viewModel.addPaymentWebViewModel {
+                BlazeAddPaymentMethodWebView(viewModel: viewModel)
+            }
+        })
+        .sheet(isPresented: $isShowingSupport) {
+            supportForm
+        }
     }
 }
+
+private extension BlazeConfirmPaymentView {
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(isPresented: $isShowingSupport,
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.done) {
+                        isShowingSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+}
+
 
 private extension BlazeConfirmPaymentView {
     var totalAmountView: some View {
@@ -114,7 +169,7 @@ private extension BlazeConfirmPaymentView {
 
     var cardDetailView: some View {
         Button {
-            // TODO: show payment method list
+            viewModel.showAddPaymentSheet = true
         } label: {
             if let icon = viewModel.cardIcon {
                 Image(uiImage: icon)
@@ -138,19 +193,19 @@ private extension BlazeConfirmPaymentView {
 
             Spacer()
 
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .secondaryBodyStyle()
         }
     }
 
     var addPaymentMethodButton: some View {
         Button {
-            // TODO: open payment method list
+            showingAddPaymentWebView = true
         } label: {
             HStack {
                 Text(Localization.addPaymentMethod)
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .secondaryBodyStyle()
             }
         }
@@ -201,6 +256,7 @@ private extension BlazeConfirmPaymentView {
         static let termsLink = "https://wordpress.com/tos/"
         static let adPolicyLink = "https://automattic.com/advertising-policy/"
         static let learnMoreLink = "https://wordpress.com/support/promote-a-post/"
+        static let supportTag = "origin:blaze-native-campaign-creation"
     }
 
     enum Localization {
@@ -280,11 +336,24 @@ private extension BlazeConfirmPaymentView {
             value: "Try Again",
             comment: "Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow."
         )
+
+        static let help = NSLocalizedString(
+            "blazeConfirmPaymentView.help",
+            value: "Help",
+            comment: "Button to contact support on the Blaze confirm payment view screen."
+        )
+
+        static let done = NSLocalizedString(
+            "blazeConfirmPaymentView.done",
+            value: "Done",
+            comment: "Button to dismiss the support form from the Blaze confirm payment view screen."
+        )
     }
 }
 
 #Preview {
     BlazeConfirmPaymentView(viewModel: BlazeConfirmPaymentViewModel(
+        productID: 123,
         siteID: 123,
         campaignInfo: .init(origin: "test",
                             originVersion: "1.0",
@@ -300,5 +369,7 @@ private extension BlazeConfirmPaymentView {
                             mainImage: .init(url: "https://example.com", mimeType: "png"),
                             targeting: nil,
                             targetUrn: "",
-                            type: "product")) {})
+                            type: "product"),
+        image: .init(image: .iconBolt, source: .asset(asset: PHAsset())),
+        onCompletion: {}))
 }

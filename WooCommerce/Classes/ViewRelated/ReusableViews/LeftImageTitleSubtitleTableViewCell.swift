@@ -48,12 +48,13 @@ class LeftImageTitleSubtitleTableViewCell: UITableViewCell {
         detailTextLabel?.applyFootnoteStyle()
     }
 
-    private func configureBackground() {
-        applyDefaultBackgroundStyle()
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+    private func configureBackground() {
+        configureDefaultBackgroundConfiguration()
     }
 }
 

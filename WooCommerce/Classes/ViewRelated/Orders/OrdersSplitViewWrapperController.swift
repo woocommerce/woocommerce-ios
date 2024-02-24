@@ -7,7 +7,7 @@ final class OrdersSplitViewWrapperController: UIViewController {
     private let siteID: Int64
 
     private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
-    private lazy var ordersViewController = OrdersRootViewController(siteID: siteID)
+    private lazy var ordersViewController = OrdersRootViewController(siteID: siteID, switchDetailsHandler: handleSwitchingDetails)
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -42,11 +42,13 @@ final class OrdersSplitViewWrapperController: UIViewController {
     }
 
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
-        let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
-        let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
-
-        ordersSplitViewController.setViewController(loaderNavigationController, for: .secondary)
-        ordersSplitViewController.show(.secondary)
+        // If the order cannot be selected from the order list like when it hasn't been fetched remotely,
+        // `OrderLoaderViewController` is shown instead.
+        guard ordersViewController.selectOrderFromListIfPossible(for: orderID) else {
+            let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
+            let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
+            return showSecondaryView(loaderNavigationController)
+        }
     }
 
     func presentOrderCreationFlow() {
@@ -55,19 +57,93 @@ final class OrdersSplitViewWrapperController: UIViewController {
 }
 
 private extension OrdersSplitViewWrapperController {
-    func configureSplitView() {
-        let ordersNavigationController = WooTabNavigationController()
-        ordersNavigationController.viewControllers = [ordersViewController]
-
+    func showEmptyView() {
         let emptyStateViewController = EmptyStateViewController(style: .basic)
         let config = EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyOrderDetails),
             image: .emptySearchResultsImage
         )
         emptyStateViewController.configure(config)
+        let navigationController = WooNavigationController(rootViewController: emptyStateViewController)
+        showSecondaryView(navigationController)
+    }
 
+    func isShowingEmptyView() -> Bool {
+        (ordersSplitViewController.viewController(for: .secondary) as? UINavigationController)?
+            .viewControllers.contains(where: { $0 is EmptyStateViewController }) == true
+    }
+
+    func showSecondaryView(_ viewController: UIViewController) {
+        // added to remove double details presented bug #11752 https://github.com/woocommerce/woocommerce-ios/pull/11753#discussion_r1463020153
+        // - white debugging noticed that ordersViewController.navigationController had multiple orders in the view controllers list
+        ordersViewController.navigationController?.popToRootViewController(animated: false)
+
+        ordersSplitViewController.setViewController(viewController, for: .secondary)
+        ordersSplitViewController.show(.secondary)
+    }
+
+    /// This is to update the order detail in split view
+    ///
+    func handleSwitchingDetails(viewModels: [OrderDetailsViewModel],
+                                currentIndex: Int,
+                                isSelectedManually: Bool,
+                                onCompletion: ((_ hasBeenSelected: Bool) -> Void)? = nil) {
+        // If the order details is auto-selected (from `viewDidLayoutSubviews`) and the empty view isn't shown,
+        // it does not override the secondary view content.
+        guard isSelectedManually || isShowingEmptyView() else {
+            onCompletion?(false)
+            return
+        }
+
+        guard viewModels.isNotEmpty else {
+            showEmptyView()
+            onCompletion?(false)
+            return
+        }
+
+        let orderDetailsViewController = OrderDetailsViewController(
+            viewModels: viewModels,
+            currentIndex: currentIndex,
+            switchDetailsHandler: { [weak self] viewModels, currentIndex, isSelectedManually, completion in
+                self?.handleSwitchingDetails(viewModels: viewModels,
+                                             currentIndex: currentIndex,
+                                             isSelectedManually: isSelectedManually,
+                                             onCompletion: completion)
+            })
+
+        // When navigating between orders using up and down arrows (referred to "quick order navigation" in code), each new Order Details screen
+        // shown should replace the topViewController, to avoid having to tap back through several Order Details
+        // screens in the navigation stack. The back button should always go to the Order List.
+        // The up and down arrows are enabled when there is more than one item in `viewModels`.
+        guard isQuickOrderNavigationSupported(viewModels: viewModels),
+              let viewModel = viewModels[safe: currentIndex],
+              let secondaryNavigationController = ordersSplitViewController.viewController(for: .secondary) as? UINavigationController,
+              secondaryNavigationController.topViewController is OrderDetailsViewController else {
+            // When showing an order without quick navigation, it simply sets the order details to the secondary view.
+            let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
+            showSecondaryView(orderDetailsNavigationController)
+            onCompletion?(true)
+            return
+        }
+
+        secondaryNavigationController.replaceTopViewController(with: orderDetailsViewController, animated: false)
+        ordersViewController.onOrderSelected(id: viewModel.order.orderID)
+        ordersSplitViewController.show(.secondary)
+        onCompletion?(true)
+    }
+
+    func isQuickOrderNavigationSupported(viewModels: [OrderDetailsViewModel]) -> Bool {
+        viewModels.count > 1
+    }
+}
+
+private extension OrdersSplitViewWrapperController {
+    func configureSplitView() {
+        let ordersNavigationController = WooTabNavigationController()
+        ordersNavigationController.viewControllers = [ordersViewController]
         ordersSplitViewController.setViewController(ordersNavigationController, for: .primary)
-        ordersSplitViewController.setViewController(emptyStateViewController, for: .secondary)
+
+        showEmptyView()
     }
 
     func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {

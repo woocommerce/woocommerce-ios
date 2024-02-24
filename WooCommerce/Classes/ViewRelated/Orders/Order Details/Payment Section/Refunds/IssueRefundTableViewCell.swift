@@ -13,6 +13,11 @@ final class IssueRefundTableViewCell: UITableViewCell {
         configureBackground()
         configureIssueRefundButton()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: Actions
@@ -25,7 +30,7 @@ extension IssueRefundTableViewCell {
 // MARK: View Configuration
 private extension IssueRefundTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureIssueRefundButton() {

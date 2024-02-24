@@ -19,11 +19,15 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = Localization.title
+        configureNavigation()
     }
 }
 
 private extension BlazeCampaignCreationFormHostingController {
+    func configureNavigation() {
+        title = Localization.title
+    }
+
     func navigateToEditAd() {
         let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
         present(vc, animated: true)
@@ -38,11 +42,17 @@ private extension BlazeCampaignCreationFormHostingController {
             comment: "Title of the Blaze campaign creation screen"
         )
     }
+
+    enum Constants {
+        static let supportTag = "origin:blaze-native-campaign-creation"
+    }
 }
 
 /// Form to enter details for creating a new Blaze campaign.
 struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
+
+    @Environment(\.colorScheme) var colorScheme
 
     @State private var isShowingBudgetSetting = false
     @State private var isShowingLanguagePicker = false
@@ -51,6 +61,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingTopicPicker = false
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
+    @State private var isShowingSupport: Bool = false
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -69,6 +80,7 @@ struct BlazeCampaignCreationForm: View {
                 detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
                     isShowingBudgetSetting = true
                 }
+                .background(Constants.cellColor)
                 .overlay { roundedRectangleBorder }
 
                 VStack(spacing: 0) {
@@ -98,32 +110,47 @@ struct BlazeCampaignCreationForm: View {
                         isShowingTopicPicker = true
                     }
                 }
+                .background(Constants.cellColor)
                 .overlay { roundedRectangleBorder }
 
                 // Ad destination
-                detailView(title: Localization.adDestination, content: "https://example.com") {
-                    isShowingAdDestinationScreen = true
+                if viewModel.adDestinationViewModel != nil {
+                    detailView(title: Localization.adDestination,
+                               content: viewModel.finalDestinationURL,
+                               isContentSingleLine: true) {
+                        isShowingAdDestinationScreen = true
+                    }
+                    .background(Constants.cellColor)
+                    .overlay { roundedRectangleBorder }
                 }
-                .overlay { roundedRectangleBorder }
             }
             .padding(.horizontal, Layout.contentPadding)
         }
+        .background(Constants.backgroundViewColor)
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 0) {
                 Divider()
 
                 Button {
-                    // TODO: track tap
+                    viewModel.didTapConfirmDetails()
                 } label: {
-                    NavigationLink(destination: BlazeConfirmPaymentView(viewModel: viewModel.confirmPaymentViewModel)) {
-                        Text(Localization.confirmDetails)
-                    }
+                    Text(Localization.confirmDetails)
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.contentPadding)
                 .disabled(!viewModel.canConfirmDetails)
             }
-            .background(Color(uiColor: .systemBackground))
+            .background(Constants.backgroundViewColor)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(Localization.help) {
+                    isShowingSupport = true
+                }
+            }
+        }
+        .sheet(isPresented: $isShowingSupport) {
+            supportForm
         }
         .sheet(isPresented: $isShowingBudgetSetting) {
             BlazeBudgetSettingView(viewModel: viewModel.budgetSettingViewModel)
@@ -134,7 +161,9 @@ struct BlazeCampaignCreationForm: View {
             }
         }
         .sheet(isPresented: $isShowingAdDestinationScreen) {
-            BlazeAdDestinationSettingView(viewModel: .init(productURL: "https://woo.com/product/", homeURL: "https://woo.com/"))
+            if let viewModel = viewModel.adDestinationViewModel {
+                BlazeAdDestinationSettingView(viewModel: viewModel)
+            }
         }
         .sheet(isPresented: $isShowingDevicePicker) {
             BlazeTargetDevicePickerView(viewModel: viewModel.targetDeviceViewModel) {
@@ -154,21 +183,33 @@ struct BlazeCampaignCreationForm: View {
         .onChange(of: viewModel.error) { newValue in
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }
-        .alert(isPresented: $isShowingAISuggestionsErrorAlert, content: {
-            Alert(title: Text(Localization.ErrorAlert.title),
-                  message: Text(Localization.ErrorAlert.ErrorMessage.fetchingAISuggestions),
-                  primaryButton: .default(Text(Localization.ErrorAlert.retry), action: {
+        .alert(Localization.AISuggestionsErrorAlert.fetchingAISuggestions, isPresented: $isShowingAISuggestionsErrorAlert) {
+            Button(Localization.AISuggestionsErrorAlert.cancel, role: .cancel) { }
+
+            Button(Localization.AISuggestionsErrorAlert.retry) {
                 Task {
                     await viewModel.loadAISuggestions()
                 }
-            }),
-                  secondaryButton: .cancel())
-        })
-        .task {
-            await viewModel.loadAISuggestions()
+            }
+        }
+        .alert(Localization.NoImageErrorAlert.noImageFound, isPresented: $viewModel.isShowingMissingImageErrorAlert) {
+            Button(Localization.NoImageErrorAlert.cancel, role: .cancel) { }
+
+            Button(Localization.NoImageErrorAlert.addImage) {
+                viewModel.didTapEditAd()
+            }
+        }
+        .onAppear() {
+            viewModel.onAppear()
         }
         .task {
-            await viewModel.downloadProductImage()
+            await viewModel.onLoad()
+        }
+        if let confirmPaymentViewModel = viewModel.confirmPaymentViewModel {
+            LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: confirmPaymentViewModel),
+                               isActive: $viewModel.isShowingPaymentInfo) {
+                EmptyView()
+            }
         }
     }
 }
@@ -180,11 +221,12 @@ private extension BlazeCampaignCreationForm {
                 // Image
                 Image(uiImage: viewModel.image?.image ?? .blazeProductPlaceholder)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fit)
                     .cornerRadius(Layout.cornerRadius)
 
                 // Tagline
                 Text(viewModel.isLoadingAISuggestions ? "Placeholder tagline" : viewModel.tagline)
+                    .foregroundStyle(.secondary)
                     .captionStyle()
                     .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
                     .shimmering(active: viewModel.isLoadingAISuggestions)
@@ -227,16 +269,19 @@ private extension BlazeCampaignCreationForm {
                     .foregroundColor(.accentColor)
             })
             .buttonStyle(.plain)
+            .disabled(!viewModel.canEditAd)
             .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
             .shimmering(active: !viewModel.canEditAd)
         }
+        .environment(\.colorScheme, .light)
         .padding(Layout.contentPadding)
-        .background(Color(uiColor: .systemGray6))
+        .background(Color(light: .init(uiColor: .systemGray6),
+                          dark: .init(uiColor: .tertiarySystemBackground)))
         .cornerRadius(Layout.cornerRadius)
         .padding(.vertical, Layout.contentPadding)
     }
 
-    func detailView(title: String, content: String, action: @escaping () -> Void) -> some View {
+    func detailView(title: String, content: String, isContentSingleLine: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action, label: {
             HStack {
                 VStack(alignment: .leading, spacing: Layout.detailContentSpacing) {
@@ -245,9 +290,10 @@ private extension BlazeCampaignCreationForm {
                     Text(content)
                         .secondaryBodyStyle()
                         .multilineTextAlignment(.leading)
+                        .lineLimit(isContentSingleLine ? 1 : nil)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .secondaryBodyStyle()
             }
             .padding(.horizontal, Layout.contentPadding)
@@ -268,6 +314,23 @@ private extension BlazeCampaignCreationForm {
 }
 
 private extension BlazeCampaignCreationForm {
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(isPresented: $isShowingSupport,
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.done) {
+                        isShowingSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+}
+
+private extension BlazeCampaignCreationForm {
     enum Layout {
         static let contentMargin: CGFloat = 8
         static let contentPadding: CGFloat = 16
@@ -277,6 +340,15 @@ private extension BlazeCampaignCreationForm {
         static let detailContentSpacing: CGFloat = 4
         static let shadowRadius: CGFloat = 2
         static let shadowYOffset: CGFloat = 2
+    }
+
+    enum Constants {
+        static let backgroundViewColor = Color(light: .init(uiColor: .systemBackground),
+                                               dark: .init(uiColor: .secondarySystemBackground))
+        static let cellColor = Color(light: .init(uiColor: .systemBackground),
+                                     dark: .init(uiColor: .tertiarySystemBackground))
+
+        static let supportTag = "origin:blaze-native-campaign-creation"
     }
 
     enum Localization {
@@ -335,30 +407,59 @@ private extension BlazeCampaignCreationForm {
             value: "Confirm Details",
             comment: "Button to confirm ad details on the Blaze campaign creation screen"
         )
-        enum ErrorAlert {
-            enum ErrorMessage {
-                static let fetchingAISuggestions = NSLocalizedString(
-                    "blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions",
-                    value: "Failed to load suggestions for tagline and description",
-                    comment: "Error message indicating that loading suggestions for tagline and description failed"
-                )
-            }
-            static let title = NSLocalizedString(
-                "blazeCampaignCreationForm.errorAlert.title",
-                value: "Oops! We've hit a snag",
-                comment: "Title on the error alert displayed on the Blaze campaign creation screen"
+        enum AISuggestionsErrorAlert {
+            static let fetchingAISuggestions = NSLocalizedString(
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions",
+                value: "Failed to load suggestions for tagline and description",
+                comment: "Error message indicating that loading suggestions for tagline and description failed"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the error alert displayed on the Blaze campaign creation screen"
             )
             static let retry = NSLocalizedString(
-                "blazeCampaignCreationForm.errorAlert.retry",
+                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry",
                 value: "Retry",
                 comment: "Button on the error alert displayed on the Blaze campaign creation screen"
             )
         }
+        enum NoImageErrorAlert {
+            static let noImageFound = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.noImageFound",
+                value: "Please add an image for the Blaze campaign",
+                comment: "Message asking to select an image for the Blaze campaign"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
+            )
+            static let addImage = NSLocalizedString(
+                "blazeCampaignCreationForm.noImageErrorAlert.addImage",
+                value: "Add Image",
+                comment: "Button on the alert to add an image for the Blaze campaign"
+            )
+        }
+
+
+        static let help = NSLocalizedString(
+            "blazeCampaignCreationForm.help",
+            value: "Help",
+            comment: "Button to contact support on the Blaze campaign form screen."
+        )
+
+        static let done = NSLocalizedString(
+            "blazeCampaignCreationForm.done",
+            value: "Done",
+            comment: "Button to dismiss the support form from the Blaze campaign form screen."
+        )
+
     }
 }
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123) {})
+        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
     }
 }

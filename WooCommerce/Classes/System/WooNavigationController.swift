@@ -16,6 +16,8 @@ class WooNavigationController: UINavigationController {
 
     /// Private object that listens, acts upon, and forwards events from `UINavigationControllerDelegate`
     ///
+    // TODO: This being an internal delegate it needs to be stored strongly, or it will be immediately released. Is this approach appropriate?
+    // swiftlint:disable:next weak_delegate
     private let navigationDelegate = WooNavigationControllerDelegate()
 
     override func viewDidLoad() {

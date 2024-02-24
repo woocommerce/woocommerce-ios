@@ -401,6 +401,18 @@ extension UIImage {
         return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
     }
 
+    /// Big error icon
+    ///
+    static var bigErrorIcon: UIImage {
+        return UIImage(named: "error-big-icon")!
+    }
+
+    /// Blaze success image
+    ///
+    static var blazeSuccessImage: UIImage {
+        return UIImage(named: "blaze-success")!
+    }
+
     /// Subscription Product
     ///
     static var subscriptionProductImage: UIImage {
@@ -578,7 +590,7 @@ extension UIImage {
     }
 
     /// Set store name image
-    /// 
+    ///
     static var setStoreNameImage: UIImage {
         UIImage(systemName: "pencil.circle")!
     }
@@ -1347,7 +1359,7 @@ extension UIImage {
     /// Lock Image
     ///
     static var lockImage: UIImage {
-        UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
+        return UIImage(systemName: "lock.fill")?.withRenderingMode(.alwaysTemplate) ?? UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
     }
 
     /// Sites Image

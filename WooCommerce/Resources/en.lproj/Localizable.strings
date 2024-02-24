@@ -41,11 +41,6 @@
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ about accepting payments with Tap to Pay on iPhone.";
 
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ about accepting payments with your mobile device and ordering card readers";
-
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ about accepting payments with your mobile device and ordering card readers.";
 
@@ -336,9 +331,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "A brief excerpt about your product";
 
-/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
-"A collection of related products" = "A collection of related products";
-
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "A customs form must be printed and included on this international shipment";
 
@@ -351,17 +343,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number field */
 "A phone number is required" = "A phone number is required";
 
-/* Description of the Action sheet option when the user wants to change the Product type to variable product */
-"A product with variations like color or size" = "A product with variations like color or size";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "A unique digital product like services, downloadable books, music or videos";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "A unique physical product that you may have to ship to the customer";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.";
@@ -481,9 +464,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Add a product image";
-
-/* Description of the Action sheet option when the user wants to create a product manually */
-"Add a product manually" = "Add a product manually";
 
 /* Description for the option to create product manually */
 "Add a product manually." = "Add a product manually.";
@@ -691,6 +671,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Charge Taxes";
 
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"addProductWithAIActionSheet.manualOptionsTitle" = "Select a product type";
+
 /* Address section title in the domain contact info form.
    Details section title in the Edit Address Form */
 "ADDRESS" = "ADDRESS";
@@ -781,9 +764,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "All reviews marked as read";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"All set!" = "All set!";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "All the features you need, already built in";
@@ -912,6 +892,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "Analytics enabled successfully.";
+
+/* Label for button to enable Jetpack Stats */
+"analyticsHub.jetpackStatsCTA.buttonLabel" = "Enable Jetpack Stats";
+
+/* Error shown when Jetpack Stats can't be enabled in the Analytics Hub. */
+"analyticsHub.jetpackStatsCTA.errorNotice" = "We couldn't enable Jetpack Stats on your store";
+
+/* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
+"analyticsHub.jetpackStatsCTA.message" = "Enable Jetpack Stats to see your store's session analytics.";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.jetpackStatsCTA.title" = "SESSIONS";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "Orders Report";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "Products Report";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "See Report";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "Revenue Report";
 
 /* Country option for a site address. */
 "Andorra" = "Andorra";
@@ -1217,9 +1221,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "Copy number";
 
-/* Action sheet option when the user wants to create a product manually */
-"Blank" = "Blank";
-
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
@@ -1252,6 +1253,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the product URL destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.productURLLabel" = "The Product URL";
+
+/* Button to save in the Blaze Ad Destination setting screen */
+"blazeAdDestinationSettingView.save" = "Save";
 
 /* Label for the site home destination option in Blaze Ad Destination screen. */
 "blazeAdDestinationSettingView.siteHomeLabel" = "The site home";
@@ -1288,6 +1292,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Value input on the Blaze Add Parameter screen */
 "blazeAddParameterView.valueTitle" = "Value";
+
+/* Title of the button to dismiss the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.cancelButton" = "Cancel";
+
+/* Navigation bar title in the Blaze Add Payment Method screen */
+"blazeAddPaymentWebView.navigationBarTitle" = "Payment Method";
+
+/* Notice that will be displayed after adding a new Blaze payment method */
+"blazeAddPaymentWebView.paymentMethodAddedNotice" = "Payment method added";
 
 /* Button to apply the changes on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.apply" = "Apply";
@@ -1352,8 +1365,68 @@ which should be translated separately and considered part of this sentence. */
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "for %1$d day";
 
+/* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Cancel";
+
+/* Button to create a product when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.createProduct" = "Create Product";
+
+/* Message of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.message" = "You currently don’t have a product available for promotion. Would you like to create a product now?";
+
+/* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
+"blazeCampaignCreationCoordinator.NoProductAlert.title" = "No product found";
+
+/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successCTA" = "Done";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successSubtitle" = "We're reviewing your campaign. It'll be live within 24 hours. Exciting times ahead for your sales!";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"blazeCampaignCreationCoordinator.successTitle" = "Ready to Go!";
+
+/* Message on the Blaze campaign creation error screen. Keep '\n' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "Something's not quite right.\nWe couldn't create your campaign.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "Failed to fetch campaign image details.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "Failed to upload campaign image.";
+
+/* Button to dismiss the flow on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.cancel" = "Cancel Campaign";
+
+/* Button to dismiss the support form from the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.done" = "Done";
+
+/* Button to get support on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.getSupport" = "Get support";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.noPaymentTaken" = "No payment has been taken.";
+
+/* Suggested message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.suggestion" = "Please try again, or contact support for assistance.";
+
+/* Title of the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.title" = "Error creating campaign";
+
+/* Button to try again on the Blaze campaign creation error screen. */
+"blazeCampaignCreationErrorView.tryAgain" = "Try Again";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Ad destination";
+
+/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "Cancel";
+
+/* Error message indicating that loading suggestions for tagline and description failed */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "Failed to load suggestions for tagline and description";
+
+/* Button on the error alert displayed on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Retry";
 
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Budget";
@@ -1370,15 +1443,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Edit ad";
 
-/* Error message indicating that loading suggestions for tagline and description failed */
-"blazeCampaignCreationForm.errorAlert.errorMessage.fetchingAISuggestions" = "Failed to load suggestions for tagline and description";
-
-/* Button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.retry" = "Retry";
-
-/* Title on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.errorAlert.title" = "Oops! We've hit a snag";
-
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Interests";
 
@@ -1387,6 +1451,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "Location";
+
+/* Button on the alert to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.addImage" = "Add Image";
+
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "Cancel";
+
+/* Message asking to select an image for the Blaze campaign */
+"blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Please add an image for the Blaze campaign";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Shop Now";
@@ -1403,11 +1476,62 @@ which should be translated separately and considered part of this sentence. */
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d day from %3$@";
 
+/* Text indicating all locations for a Blaze campaign */
+"blazeCampaignCreationFormViewModel.everywhere" = "Everywhere";
+
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f USD";
 
+/* Message in the Blaze campaign creation loading screen */
+"blazeCampaignCreationLoadingView.Message" = "Creating your campaign";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Hide Blaze";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.promote" = "Promote";
+
+/* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.addPaymentMethod" = "Add a payment method";
+
+/* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.adPolicy" = "Advertising Policy";
+
+/* Content of the agreement at the end of the Payment screen in the Blaze campaign creation flow. Read likes: By clicking \"Submit campaign\" you agree to the Terms of Service and Advertising Policy, and authorize your payment method to be charged for the budget and duration you chose. Learn more about how budgets and payments for Promoted Posts work. */
+"blazeConfirmPaymentView.agreement" = "By clicking \"Submit Campaign\" you agree to the %1$@ and %2$@, and authorize your payment method to be charged for the budget and duration you chose. %3$@ about how budgets and payments for Promoted Posts work.";
+
+/* Item to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.blazeCampaign" = "Blaze campaign";
+
+/* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.errorMessage" = "Error loading your payment methods";
+
+/* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.learnMore" = "Learn more";
+
+/* Text for the loading state on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.loading" = "Loading payment methods...";
+
+/* Section title on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.paymentTotals" = "Payment totals";
+
+/* Action button on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.submitButton" = "Submit Campaign";
+
+/* The terms to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.terms" = "Terms of Service";
+
+/* Title of the Payment view in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.title" = "Payment";
+
+/* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
+"blazeConfirmPaymentView.total" = "Total";
+
+/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
+"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
+
+/* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
+"blazeConfirmPaymentView.tryAgain" = "Try Again";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Your ads on millions of sites within the WordPress.com and Tumblr networks.";
@@ -1469,6 +1593,9 @@ which should be translated separately and considered part of this sentence. */
 /* Edit Blaze Ad screen: Error message if Description field is empty. */
 "blazeEditAdViewModel.description.emptyError" = "Description cannot be empty";
 
+/* Edit Blaze Ad screen: Error message if Description exceeds the character limit. */
+"blazeEditAdViewModel.description.lengthExceedsLimit" = "Description cannot exceed %1$d characters";
+
 /* Edit Blaze Ad screen: Plural form text showing the max allowed characters length for Tagline or Description field. %1$d is replaced with the remaining available characters count. Reads like: 10 characters remaining */
 "blazeEditAdViewModel.lengthLimit.plural" = "%1$d characters remaining";
 
@@ -1477,6 +1604,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Edit Blaze Ad screen: Error message if Tagline field is empty. */
 "blazeEditAdViewModel.tagline.emptyError" = "Tagline cannot be empty";
+
+/* Edit Blaze Ad screen: Error message if Tagline exceeds the character limit. */
+"blazeEditAdViewModel.tagline.lengthExceedsLimit" = "Tagline cannot exceed %1$d characters";
 
 /* Subtitle for the Choose a product step */
 "blazeLearnHowView.chooseProduct.subtitle" = "Choose what to promote with Blaze.";
@@ -1511,6 +1641,36 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Blaze Learn How screen. %1$@ is replaced with string Blaze. Reads like: Learn how Blaze works */
 "blazeLearnHowView.title" = "Learn how %1$@ works";
 
+/* Button title in the Blaze Payment Method screen if there is an existing payment method */
+"blazePaymentMethodsView.addAnotherCreditCardButton" = "Add another credit card";
+
+/* Button title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.addCreditCardButton" = "Add credit card";
+
+/* Title of the button to dismiss the Blaze payment method list screen */
+"blazePaymentMethodsView.cancelButton" = "Cancel";
+
+/* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.emailReceipt" = "Email the label purchase receipts to %1$@ (%2$@) at %3$@";
+
+/* Navigation bar title in the Blaze Payment Method screen */
+"blazePaymentMethodsView.navigationBarTitle" = "Payment Method";
+
+/* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
+"blazePaymentMethodsView.paymentMethodsFooter" = "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>";
+
+/* Header for list of payment methods in Payment Method screen */
+"blazePaymentMethodsView.paymentMethodsHeader" = "Payment Method Selected";
+
+/* Message that will be displayed if there are no Blaze payment methods. */
+"blazePaymentMethodsView.pleaseAddPaymentMethodMessage" = "Please add a new payment method";
+
+/* Text to explain that transactions will be secure in Payment Method screen */
+"blazePaymentMethodsView.transactionsSecure" = "All transactions are secure and encrypted";
+
+/* Title of the row to select all target devices for Blaze campaign creation */
+"blazeTargetDevicePickerView.allTitle" = "All devices";
+
 /* Button to dismiss the target device picker for campaign creation */
 "blazeTargetDevicePickerView.cancel" = "Cancel";
 
@@ -1543,6 +1703,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry syncing data on the target language picker for campaign creation */
 "blazeTargetLanguagePickerView.tryAgain" = "Try Again";
+
+/* Button to dismiss the target location picker for campaign creation */
+"blazeTargetLocationPickerView.cancel" = "Cancel";
+
+/* Button to save the selections on the target location picker for campaign creation */
+"blazeTargetLocationPickerView.save" = "Save";
+
+/* Placeholder on the search bar of the target location picker for campaign creation */
+"blazeTargetLocationPickerView.searchPrompt" = "Search for locations";
+
+/* Title of the target language picker view for Blaze campaign creation */
+"blazeTargetLocationPickerView.title" = "Location";
+
+/* Message indicating the minimum length for search queries on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.longerQuery" = "Please enter at least 3 characters to start searching.";
+
+/* Message indicating no search result on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.noResult" = "No location found.\nPlease try again.";
+
+/* Hint message to enter search query on the target location picker for campaign creation */
+"blazeTargetLocationPickerViewModel.searchViewHintMessage" = "Start typing country, state or city to see available options";
+
+/* Title of the row to select all target location for Blaze campaign creation */
+"blazeTargetLocationSearchView.allTitle" = "Everywhere";
+
+/* Header message on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.headerMessage" = "Choose target locations";
+
+/* Suggestion for searching for specific locations on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.searchHint" = "Or choose specific locations by typing what you’re looking for in the search box.";
+
+/* Header for the Specific Locations section on the target location picker for campaign creation */
+"blazeTargetLocationSearchView.specificLocationHeader" = "Specific locations";
 
 /* Title of the row to select all target topics for Blaze campaign creation */
 "blazeTargetTopicPickerView.allTitle" = "All topics";
@@ -1600,6 +1793,54 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Botswana" = "Botswana";
+
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.description" = "Link a product to an external website";
+
+/* Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.title" = "External product";
+
+/* Description of the Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.description" = "Add a product manually";
+
+/* Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.title" = "Blank";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.description" = "A collection of related products";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.title" = "Grouped product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.description" = "A unique physical product that you may have to ship to the customer";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.title" = "Simple physical product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.description" = "A unique digital product like services, downloadable books, music or videos";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.title" = "Simple virtual product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.description" = "A unique product subscription that enables recurring payments";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.title" = "Simple subscription product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"bottomSheetProductType.variable.description" = "A product with variations like color or size";
+
+/* Action sheet option when the user wants to change the Product type to varible product */
+"bottomSheetProductType.variable.title" = "Variable product";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.description" = "A product subscription with variations";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.title" = "Variable subscription product";
 
 /* Country option for a site address. */
 "Bouvet Island" = "Bouvet Island";
@@ -1752,6 +1993,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the screen
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
@@ -1929,6 +2171,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cash method title on the select payment method screen */
 "Cash" = "Cash";
+
+/* Title for the toggle that specifies whether to add a note to the order with the change data. */
+"cashPaymentTenderView.addNoteToggle.title" = "Record transaction details in order note";
+
+/* Title for the cancel button. */
+"cashPaymentTenderView.cancelButton" = "Cancel";
+
+/* Title for the change due text. */
+"cashPaymentTenderView.changeDue" = "Change due";
+
+/* Title for the amount the customer paid. */
+"cashPaymentTenderView.customerPaid" = "Cash received";
+
+/* Title for the Mark order as complete button. */
+"cashPaymentTenderView.markOrderAsCompleteButton.title" = "Mark Order as Complete";
+
+/* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
+"cashPaymentTenderView.navigationBarTitle" = "Take Payment (%1$@)";
 
 /* Catalog Visibility label in Product Settings
    Product Catalog Visibility navigation title */
@@ -2514,13 +2774,13 @@ which should be translated separately and considered part of this sentence. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
 
 /* Message to show to user when he tries to add a self-hosted site with RSD link present, but xmlrpc is missing. */
-"Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
+"Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem." = "Couldn't connect. Required XML-RPC methods are missing on the server. Please contact your hosting provider to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
-"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem." = "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Please contact your hosting provider to solve this problem.";
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Couldn't load tags.";
@@ -2617,9 +2877,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
 "Create An Account" = "Create An Account";
-
-/* Button when tapped will launch create Blaze campaign flow. */
-"Create campaign" = "Create campaign";
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Create Coupon";
@@ -2718,7 +2975,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "Custom";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2798,6 +3056,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the store onboarding task to update store title */
 "Customizing your store name can also help your store search engine optimization." = "Customizing your store name can also help your store search engine optimization.";
+
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "Add";
 
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
@@ -3358,9 +3619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Email note to customer";
 
-/* No comment provided by engineer. */
-"Email note to customer %@" = "Email note to customer %@";
-
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Email receipt";
 
@@ -3761,9 +4019,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text in the store creation loading screen */
 "Extending store's capabilities" = "Extending store's capabilities";
 
-/* Action sheet option when the user wants to change the Product type to external product */
-"External product" = "External product";
-
 /* Display label for affiliate product type. */
 "External/Affiliate" = "External/Affiliate";
 
@@ -4125,12 +4380,8 @@ which should be translated separately and considered part of this sentence. */
 "Google sign up failed." = "Google sign up failed.";
 
 /* Button title that dismisses the Write with AI tooltip
-   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Got it";
-
-/* Confirmation button for the alert after the support request is created. */
-"Got It!" = "Got It!";
 
 /* Title in AI product description celebration screen. */
 "Great start!" = "Great start!";
@@ -4155,9 +4406,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for grouped product type. */
 "Grouped" = "Grouped";
-
-/* Action sheet option when the user wants to change the Product type to grouped product */
-"Grouped product" = "Grouped product";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Grouped products";
@@ -4823,9 +5071,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -4862,6 +5108,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Learn more about the data we collect about your store and your options to control this data sharing.";
+
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "Learn more";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "%1$@ about accepting payments with your mobile device and ordering card readers";
 
 /* Country option for a site address. */
 "Lebanon" = "Lebanon";
@@ -4912,9 +5167,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Limit one per order";
 
-/* Message to show when a request for a WP.com API endpoint is throttled */
-"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
-
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Limit Usage to X Items";
 
@@ -4926,9 +5178,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limited quantity surface materials (cosmetics, cleaning products, paints, etc.)";
-
-/* Description of the Action sheet option when the user wants to change the Product type to external product */
-"Link a product to an external website" = "Link a product to an external website";
 
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "Link Settings";
@@ -5181,12 +5430,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option to mark all reviews as read from the action sheet in Reviews screen. */
 "Mark all reviews as read" = "Mark all reviews as read";
-
-/* Alert button when selecting the cash payment method */
-"Mark as Paid" = "Mark as Paid";
-
-/* Alert title when selecting the cash payment method */
-"Mark as Paid?" = "Mark as Paid?";
 
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "Mark Completed";
@@ -5576,6 +5819,12 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "New Zealand" = "New Zealand";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "Email note to customer Off";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Email note to customer On";
+
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
@@ -5778,9 +6027,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "Off";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "Offline - using cached data";
@@ -5815,9 +6061,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Oman" = "Oman";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "On";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5901,9 +6144,6 @@ which should be translated separately and considered part of this sentence. */
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Optional";
-
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "Optional Tracking Information";
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Options";
@@ -5997,14 +6237,74 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "Learn More.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "Shipping Tax";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Add Shipping";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "Direct";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "Mobile App";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "Organic: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "Referral: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "Source: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "Unknown";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Web admin";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "Optional Tracking Information";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Custom Amounts";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Custom Amount";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "Campaign";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "Device type";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "Medium";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "Order attribution";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "Origin";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "Session page views";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "Source";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "Source type";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "Unknown";
+
+/* Text on the button title to see the order's receipt */
+"OrderDetailsDataSource.configureSeeReceipt.button.title" = "See Receipt";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Unable to retrieve receipt.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Ordered List";
@@ -6239,6 +6539,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
 
+/* Note from the cash tender view. */
+"paymentMethods.orderPaidByCashNoteText.note" = "The order was paid by cash. Customer paid %1$@. The change due was %2$@.";
+
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
    Title of the hub menu payments button
@@ -6277,7 +6580,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Performance";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "Performance plan only";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6653,6 +6956,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Print shipping labels²" = "Print shipping labels²";
 
+/* Close title for the navigation bar button on the Print Shipping Label view. */
+"print.shipping.label.close.button.title" = "Close";
+
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Printing Label";
 
@@ -6778,18 +7084,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "Product with SKU \"%@\" not found.";
 
-/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.description" = "A unique product subscription that enables recurring payments";
-
-/* Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.title" = "Simple subscription product";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.description" = "A product subscription with variations";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.title" = "Variable subscription product";
-
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Got a minute? Help us improve our AI-assisted features with your quick feedback.";
 
@@ -6819,15 +7113,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promote with Blaze";
-
-/* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationCTA" = "Got it";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationSubtitle" = "The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running.";
-
-/* Title of the celebration view when a Blaze campaign is successfully created. */
-"productFormViewController.blazeCelebrationTitle" = "All set!";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Please wait until all uploads are finished before reordering images.";
@@ -6885,6 +7170,15 @@ which should be translated separately and considered part of this sentence. */
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Products Refund";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld products selected";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "Select products";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld product selected";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Cancel";
 
@@ -6905,6 +7199,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "One time shipping";
+
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "No product selected";
+
+/* Title of the Products tab — plural form of Product */
+"productsTab.tabTitle" = "Products";
 
 /* No comment provided by engineer. */
 "Promote on TikTok" = "Promote on TikTok";
@@ -7036,6 +7336,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Receipt from %1$@";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
+"receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: receipt for order #%2$@";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
+"receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: receipt for order #%2$@ on %3$@";
 
 /* No comment provided by engineer. */
 "Recurring payments'" = "Recurring payments'";
@@ -7226,9 +7532,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Request a Refund";
-
-/* Title for the alert after the support request is created. */
-"Request Sent!" = "Request Sent!";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
    Text field placeholder in Shipping Label Address Validation
@@ -7535,6 +7838,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Search results only";
+
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "Cancel";
 
 /* Description of the 'My Store' screen - used for spotlight indexing on iOS. */
 "See at a glance which products are winning." = "See at a glance which products are winning.";
@@ -7871,6 +8177,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Shipping Refund";
 
+/* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
+"shipping.label.navigationBar.cancel.button.title" = "Cancel";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Shop and search results";
 
@@ -7954,12 +8263,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for simple product type. */
 "Simple" = "Simple";
-
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "Simple physical product";
-
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "Simple virtual product";
 
 /* Country option for a site address. */
 "Singapore" = "Singapore";
@@ -8126,17 +8429,11 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "Sorry, usernames must have letters (a-z) too!";
 
-/* Error message when the app can't create a zendesk identity. */
-"Sorry, we cannot create support requests right now, please try again later." = "Sorry, we cannot create support requests right now, please try again later.";
-
 /* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
 "Sorry, we could not complete this action, as no active payment was found." = "Sorry, we could not complete this action, as no active payment was found.";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Sorry, we could not connect to the reader. Please try again.";
-
-/* Error message when the app can't create a support request. */
-"Sorry, we could not create your support request, please try again later." = "Sorry, we could not create your support request, please try again later.";
 
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again.";
@@ -8220,6 +8517,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the state field */
 "State missing" = "State missing";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "Custom Range";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -8432,6 +8732,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
 "Summary: Order #%1$@" = "Summary: Order #%1$@";
+
+/* Button to dismiss the alert when a support request. */
+"supportForm.gotIt" = "Got It";
+
+/* Button to dismiss the input alert for identity info to be used in the support form */
+"supportForm.identityInput.cancel" = "Cancel";
+
+/* Placeholder of the email field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.email" = "Email";
+
+/* Placeholder of the name field on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.name" = "Name";
+
+/* Button to submit details on the input alert for identity info to be used in the support form */
+"supportForm.identityInput.ok" = "OK";
+
+/* Title of the input alert for identity info to be used in the support form */
+"supportForm.identityInput.title" = "Please enter your email address and user name";
+
+/* Title for the alert after the support request is created. */
+"supportForm.supportRequestSent" = "Request Sent!";
+
+/* Message for the alert after the support request is created. */
+"supportForm.supportRequestSentMessage" = "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.";
+
+/* Error message when the app can't create a zendesk identity. */
+"supportFormViewModel.badIdentityError" = "Sorry, we cannot create support requests right now, please try again later.";
+
+/* Error message when the app can't create a support request. */
+"supportFormViewModel.supportRequestFailed" = "Sorry, we cannot create support requests right now, please try again later.";
 
 /* Country option for a site address. */
 "Suriname" = "Suriname";
@@ -8755,9 +9085,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when a Card Present Payments extension is installed but the version is not supported */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version.";
-
-/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
-"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method.";
@@ -9248,9 +9575,6 @@ which should be translated separately and considered part of this sentence. */
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "This will create a variation for each and every possible combination of variation attributes (%d variations).";
 
-/* Alert info when selecting the cash payment method during payments */
-"This will mark your order as complete if you received \(total) outside of WooCommerce" = "This will mark your order as complete if you received \(total) outside of WooCommerce";
-
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "This will not affect online orders";
 
@@ -9384,11 +9708,11 @@ which should be translated separately and considered part of this sentence. */
 /* Caption displayed in promotional screens shown during the login flow. */
 "Track sales and high performing products" = "Track sales and high performing products";
 
-/* Track shipment button title */
-"Track Shipment" = "Track Shipment";
-
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "Track shipment";
+
+/* Track shipment button title */
+"Track Shipment" = "Track Shipment";
 
 /* Order tracking section title
    Title of the tracking section on the privacy screen
@@ -10073,9 +10397,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for variable product type. */
 "Variable" = "Variable";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
-"Variable product" = "Variable product";
-
 /* Display label for variable subscription product type. */
 "Variable Subscription" = "Variable Subscription";
 
@@ -10548,6 +10869,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message that describes an unknown error had occured */
 "wordpress-api.error.unknown" = "Something went wrong, please try again later.";
 
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"wordpresskit.api.message.endpoint_throttled" = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
+
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Loading media...";
 
@@ -10806,6 +11130,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Your site domains";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "Your site is taking a long time to respond";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "Your site plan has ended.";
 
@@ -10826,9 +11153,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error description displayed when plan activation fails after purchasing a plan. */
 "Your subscription is active, but there was an error activating the plan on your store." = "Your subscription is active, but there was an error activating the plan on your store.";
-
-/* Message for the alert after the support request is created. */
-"Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.";
 
 /* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
 "Your tax rate is currently calculated based on the customer billing address:" = "Your tax rate is currently calculated based on the customer billing address:";

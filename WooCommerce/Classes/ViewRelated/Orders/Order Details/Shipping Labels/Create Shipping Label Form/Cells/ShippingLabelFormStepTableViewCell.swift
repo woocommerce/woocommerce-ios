@@ -58,6 +58,11 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
     func enableButton(_ enabled: Bool) {
         button.isEnabled = enabled
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 private extension ShippingLabelFormStepTableViewCell {
@@ -68,7 +73,7 @@ private extension ShippingLabelFormStepTableViewCell {
 
 private extension ShippingLabelFormStepTableViewCell {
     func configureStyle() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         iconView.tintColor = .neutral(.shade100)
         selectionStyle = .none
         chevronView.image = .chevronImage.imageFlippedForRightToLeftLayoutDirection()

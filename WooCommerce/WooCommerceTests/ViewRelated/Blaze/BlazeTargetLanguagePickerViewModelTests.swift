@@ -17,13 +17,20 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
+        analyticsProvider = nil
+        analytics = nil
         storageManager = nil
         stores = nil
         super.tearDown()
@@ -190,6 +197,22 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(selectedItems, expectedItems)
+    }
+
+    // MARK: Analytics
+
+    func test_confirmSelection_tracks_event() throws {
+        // Given
+        let viewModel = BlazeTargetLanguagePickerViewModel(siteID: sampleSiteID,
+                                                           storageManager: storageManager,
+                                                           analytics: analytics,
+                                                           onSelection: { _ in })
+
+        // When
+        viewModel.confirmSelection()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_language_save_tapped"))
     }
 }
 

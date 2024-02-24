@@ -18,14 +18,15 @@ final class StoreCreationProfilerUploadAnswersUseCaseTests: XCTestCase {
                                           sellingPlatforms: "wordpress",
                                           category: "health_and_beauty",
                                           countryCode: "US")
-        let answerEncoded = try JSONEncoder().encode(answer)
 
         // When
         sut.storeAnswers(answer)
 
         // Then
         let answers = try XCTUnwrap(userDefaults[.storeProfilerAnswers] as? [String: Data])
-        XCTAssertEqual(answers["\(siteID)"], answerEncoded)
+        let receivedData = try XCTUnwrap(answers["\(siteID)"])
+        let receivedAnswer = try JSONDecoder().decode(StoreProfilerAnswers.self, from: receivedData)
+        assertEqual(answer, receivedAnswer)
     }
 
     func test_it_uploads_answers_if_stored_answers_available() async throws {

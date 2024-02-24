@@ -67,7 +67,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 }
                 .scrollVerticallyIfNeeded()
 
-                // This isn't ideal... it should be something we can specify as content, 
+                // This isn't ideal... it should be something we can specify as content,
                 // but it's here as it wants to be outside the scrollview.
                 Divider()
                     .renderedIf(isExpanded || revealContentDuringDrag)

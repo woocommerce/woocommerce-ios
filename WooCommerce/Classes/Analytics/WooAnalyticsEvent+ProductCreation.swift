@@ -41,6 +41,8 @@ extension AddProductCoordinator.Source {
                 return "store_onboarding"
             case .productDescriptionAIAnnouncementModal:
                 return "product_description_ai_announcement"
+            case .blazeCampaignCreation:
+                return "blaze_campaign_creation"
         }
     }
 }

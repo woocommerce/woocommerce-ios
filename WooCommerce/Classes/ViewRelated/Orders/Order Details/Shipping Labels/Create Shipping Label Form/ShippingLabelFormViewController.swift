@@ -38,6 +38,18 @@ final class ShippingLabelFormViewController: UIViewController {
     ///
     var onLabelSave: (() -> Void)?
 
+    /// Assign this closure to be notified when the cancel button is tapped. If appropriate, this should dismiss the view.
+    ///
+    var onCancel: (() -> Void)?
+
+    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
+    ///
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     /// Init
     ///
     init(order: Order) {
@@ -83,6 +95,15 @@ private extension ShippingLabelFormViewController {
 
     func configureNavigationBar() {
         title = Localization.titleView
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancelButtonTitle,
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(cancelButtonTapped))
+        isModalInPresentation = true
+    }
+
+    @objc func cancelButtonTapped() {
+        onCancel?()
     }
 
     func configureMainView() {
@@ -412,7 +433,7 @@ private extension ShippingLabelFormViewController {
                 [weak self] in
                 self?.viewModel.fetchCountries()
             }
-            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            noticePresenter.enqueue(notice: notice)
             return
         }
         let isPhoneNumberRequired = viewModel.customsFormRequired || type == .origin
@@ -445,7 +466,7 @@ private extension ShippingLabelFormViewController {
                 [weak self] in
                 self?.viewModel.fetchCountries()
             }
-            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            noticePresenter.enqueue(notice: notice)
             return
         }
         let vc = ShippingLabelSuggestedAddressViewController(siteID: viewModel.siteID,
@@ -549,15 +570,17 @@ private extension ShippingLabelFormViewController {
             return
         }
 
-        if let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
-            let viewControllersExcludingSelf = Array(navigationController.viewControllers[0..<indexOfSelf])
-            navigationController.setViewControllers(viewControllersExcludingSelf, animated: false)
-        }
         let printCoordinator = PrintShippingLabelCoordinator(shippingLabels: viewModel.purchasedShippingLabels,
                                                              printType: .print,
                                                              sourceNavigationController: navigationController,
                                                              onCompletion: onLabelSave)
-        printCoordinator.showPrintUI()
+
+        let printViewController = printCoordinator.createPrintViewController()
+
+        if let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
+            let viewControllersExcludingSelf = Array(navigationController.viewControllers[0..<indexOfSelf])
+            navigationController.setViewControllers(viewControllersExcludingSelf + [printViewController], animated: true)
+        }
     }
 
     /// Enqueues the `Label Purchase Error` Notice.
@@ -566,7 +589,7 @@ private extension ShippingLabelFormViewController {
         let message = NSLocalizedString("Error purchasing the label", comment: "Notice displayed when the label purchase fails")
         let notice = Notice(title: message, feedbackType: .error)
 
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -705,6 +728,10 @@ private extension ShippingLabelFormViewController {
         static let noticeUnableToFetchCountries = NSLocalizedString("Unable to fetch countries.",
                                                                     comment: "Unable to fetch countries action failed in Shipping Label Form")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
+        static let cancelButtonTitle = NSLocalizedString(
+            "shipping.label.navigationBar.cancel.button.title",
+            value: "Cancel",
+            comment: "Cancel button title for the Shipping Label purchase flow, shown in the nav bar")
     }
 
     enum Constants {

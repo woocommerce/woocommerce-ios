@@ -67,6 +67,7 @@ public typealias OrderFeeLine = Networking.OrderFeeLine
 public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
 public typealias OrderGiftCard = Networking.OrderGiftCard
 public typealias OrderMetaData = Networking.OrderMetaData
+public typealias OrderAttributionInfo = Networking.OrderAttributionInfo
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderTaxLine = Networking.OrderTaxLine
 public typealias OrderRefundCondensed = Networking.OrderRefundCondensed
@@ -106,6 +107,7 @@ public typealias ProductDownloadDragAndDrop = Networking.ProductDownloadDragAndD
 public typealias ProductVariation = Networking.ProductVariation
 public typealias ProductVariationAttribute = Networking.ProductVariationAttribute
 public typealias ReaderLocation = Networking.ReaderLocation
+public typealias Receipt = Networking.Receipt
 public typealias Refund = Networking.Refund
 public typealias RemoteFeatureFlag = Networking.RemoteFeatureFlag
 public typealias StatGranularity = Networking.StatGranularity
@@ -284,6 +286,7 @@ public typealias StorageWCPayCharge = Storage.WCPayCharge
 public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampaign
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 public typealias LocalAnnouncement = Storage.LocalAnnouncement
+public typealias AnalyticsCard = Storage.AnalyticsCard
 
 // MARK: - Internal ReadOnly Models
 

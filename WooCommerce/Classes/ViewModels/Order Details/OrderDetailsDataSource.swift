@@ -104,9 +104,9 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
-    /// Whether the order has a receipt associated.
+    /// Whether the order has a locally-generated receipt associated.
     ///
-    var shouldShowReceipts: Bool = false
+    var orderHasLocalReceipt: Bool = false
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -416,6 +416,8 @@ private extension OrderDetailsDataSource {
             configurePayment(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeReceipt:
             configureSeeReceipt(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeLegacyReceipt:
+            configureSeeLegacyReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
@@ -461,6 +463,20 @@ private extension OrderDetailsDataSource {
             configureSubscriptions(cell: cell, at: indexPath)
         case let cell as TitleAndValueTableViewCell where row == .giftCards:
             configureGiftCards(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionOrigin:
+            configureAttributionOrigin(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionSourceType:
+            configureAttributionSourceType(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionCampaign:
+            configureAttributionCampaign(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionSource:
+            configureAttributionSource(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionMedium:
+            configureAttributionMedium(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionDeviceType:
+            configureAttributionDeviceType(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .attributionSessionPageViews:
+            configureAttributionSessionPageViews(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -613,8 +629,18 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        guard featureFlags.isFeatureFlagEnabled(.backendReceipts) else {
+            return
+        }
         cell.setLeftTitleToLinkStyle(true)
         cell.leftText = Titles.seeReceipt
+        cell.rightText = nil
+        cell.hideFootnote()
+    }
+
+    private func configureSeeLegacyReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        cell.setLeftTitleToLinkStyle(true)
+        cell.leftText = Titles.seeLegacyReceipt
         cell.rightText = nil
         cell.hideFootnote()
         cell.hideSeparator()
@@ -1006,6 +1032,57 @@ private extension OrderDetailsDataSource {
     }
 }
 
+// MARK: - Attribution section
+private extension OrderDetailsDataSource {
+    func configureAttributionOrigin(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        let origin: String = {
+            guard let orderAttributionInfo = order.attributionInfo else {
+                return Localization.AttributionInfo.unknown
+            }
+            return orderAttributionInfo.origin
+        }()
+
+        cell.updateUI(title: Localization.AttributionInfo.origin, value: origin)
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionSourceType(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.sourceType,
+                      value: order.attributionInfo?.sourceType ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionCampaign(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.campaign,
+                      value: order.attributionInfo?.campaign ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionSource(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.source,
+                      value: order.attributionInfo?.source ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionMedium(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.medium,
+                      value: order.attributionInfo?.medium ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionDeviceType(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.deviceType,
+                      value: order.attributionInfo?.deviceType ?? "")
+        cell.apply(style: .regular)
+    }
+
+    func configureAttributionSessionPageViews(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        cell.updateUI(title: Localization.AttributionInfo.sessionPageViews,
+                      value: order.attributionInfo?.sessionPageViews ?? "")
+        cell.apply(style: .regular)
+    }
+}
+
 
 // MARK: - Lookup orders and statuses
 extension OrderDetailsDataSource {
@@ -1222,8 +1299,15 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
-            if shouldShowReceipts {
-                rows.append(.seeReceipt)
+            switch orderHasLocalReceipt {
+            case true:
+                rows.append(.seeLegacyReceipt)
+            case false:
+                isEligibleForBackendReceipt { isEligible in
+                    if isEligible {
+                        rows.append(.seeReceipt)
+                    }
+                }
             }
 
             if isEligibleForRefund {
@@ -1278,7 +1362,16 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
+            let title: String?
+            if orderTracking.count == 0 {
+                title = NSLocalizedString(
+                    "orderDetails.addTrackingRow.title",
+                    value: "Optional Tracking Information",
+                    comment: "Title for the row to add tracking information."
+                )
+            } else {
+                title = nil
+            }
             let row = Row.trackingAdd
 
             return Section(category: .addTracking, title: title, rightTitle: nil, rows: [row])
@@ -1287,6 +1380,45 @@ extension OrderDetailsDataSource {
         let notes: Section = {
             let rows = [.addOrderNote] + orderNotesSections.map {$0.row}
             return Section(category: .notes, title: Title.notes, rows: rows)
+        }()
+
+        let attribution: Section? = {
+
+            let rows: [Row] = {
+                var rows: [Row] = [.attributionOrigin]
+
+                guard let orderAttributionInfo = order.attributionInfo else {
+                    return rows
+                }
+
+                if let _ = orderAttributionInfo.sourceType {
+                    rows.append(.attributionSourceType)
+                }
+
+                if let _ = orderAttributionInfo.campaign {
+                    rows.append(.attributionCampaign)
+                }
+
+                if let _ = orderAttributionInfo.source {
+                    rows.append(.attributionSource)
+                }
+
+                if let _ = orderAttributionInfo.medium {
+                    rows.append(.attributionMedium)
+                }
+
+                if let _ = orderAttributionInfo.deviceType {
+                    rows.append(.attributionDeviceType)
+                }
+
+                if let _ = orderAttributionInfo.sessionPageViews {
+                    rows.append(.attributionSessionPageViews)
+                }
+
+                return rows
+            }()
+
+            return Section(category: .attribution, title: Title.orderAttribution, rows: rows)
         }()
 
         sections = ([summary,
@@ -1299,6 +1431,7 @@ extension OrderDetailsDataSource {
                     shippingLabelSections +
                     [payment,
                      customerInformation,
+                     attribution,
                      subscriptions,
                      giftCards,
                      tracking,
@@ -1318,6 +1451,15 @@ extension OrderDetailsDataSource {
         }
 
         return refundFound
+    }
+
+    private func isEligibleForBackendReceipt(completion: @escaping (Bool) -> Void) {
+        guard !isEligibleForPayment else {
+            return completion(false)
+        }
+        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in
+            completion(isEligibleForReceipt)
+        }
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {
@@ -1473,6 +1615,51 @@ extension OrderDetailsDataSource {
 
 // MARK: - Constants
 extension OrderDetailsDataSource {
+    enum Localization {
+        enum AttributionInfo {
+            static let origin = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.origin",
+                value: "Origin",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let unknown = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.unknown",
+                value: "Unknown",
+                comment: "Origin in Order Attribution Section on Order Details screen."
+            )
+            static let sourceType = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.sourceType",
+                value: "Source type",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let campaign = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.campaign",
+                value: "Campaign",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let source = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.source",
+                value: "Source",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let medium = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.medium",
+                value: "Medium",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let deviceType = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.deviceType",
+                value: "Device type",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let sessionPageViews = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.sessionPageViews",
+                value: "Session page views",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+        }
+    }
+
     enum Titles {
         static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         static let addNoteText = NSLocalizedString("Add a note",
@@ -1485,7 +1672,11 @@ extension OrderDetailsDataSource {
         static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
-        static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let seeReceipt = NSLocalizedString(
+            "OrderDetailsDataSource.configureSeeReceipt.button.title",
+            value: "See Receipt",
+            comment: "Text on the button title to see the order's receipt")
+        static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }
 
     enum Icons {
@@ -1527,6 +1718,11 @@ extension OrderDetailsDataSource {
             NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
+        static let orderAttribution = NSLocalizedString(
+            "orderDetailsDataSource.attributionInfo.orderAttribution",
+            value: "Order attribution",
+            comment: "Title of Order Attribution Section in Order Details screen."
+        )
     }
 
     enum Footer {
@@ -1553,6 +1749,7 @@ extension OrderDetailsDataSource {
             case addTracking
             case notes
             case customFields
+            case attribution
         }
 
         /// The table header style of a `Section`.
@@ -1636,6 +1833,7 @@ extension OrderDetailsDataSource {
         case payment
         case customerPaid
         case seeReceipt
+        case seeLegacyReceipt
         case refund
         case netAmount
         case subscriptions
@@ -1657,6 +1855,13 @@ extension OrderDetailsDataSource {
         case orderNoteHeader
         case orderNote
         case customFields
+        case attributionOrigin
+        case attributionSourceType
+        case attributionCampaign
+        case attributionSource
+        case attributionMedium
+        case attributionDeviceType
+        case attributionSessionPageViews
 
         var reuseIdentifier: String {
             switch self {
@@ -1685,6 +1890,8 @@ extension OrderDetailsDataSource {
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .seeReceipt:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .seeLegacyReceipt:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
@@ -1725,6 +1932,14 @@ extension OrderDetailsDataSource {
             case .subscriptions:
                 return OrderSubscriptionTableViewCell.reuseIdentifier
             case .giftCards:
+                return TitleAndValueTableViewCell.reuseIdentifier
+            case .attributionOrigin,
+                    .attributionSourceType,
+                    .attributionCampaign,
+                    .attributionSource,
+                    .attributionMedium,
+                    .attributionDeviceType,
+                    .attributionSessionPageViews:
                 return TitleAndValueTableViewCell.reuseIdentifier
             }
         }

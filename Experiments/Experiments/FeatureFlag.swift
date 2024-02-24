@@ -22,6 +22,10 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInOrdersTab
 
+    /// Displays the OrderForm side by side with the Product Selector
+    ///
+    case sideBySideViewForOrderForm
+
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -145,7 +149,7 @@ public enum FeatureFlag: Int {
     case shareProductAI
 
     /// Enables the improvements in the customer selection logic when creating an order
-    /// 
+    ///
     case betterCustomerSelectionInOrder
 
     /// Enables the hazmat shipping selection during the Shipping Labels package details
@@ -165,7 +169,7 @@ public enum FeatureFlag: Int {
     case wooPaymentsDepositsOverviewInPaymentsMenu
 
     /// Enables Tap to Pay for UK Woo Payments stores
-    /// 
+    ///
     case tapToPayOnIPhoneInUK
 
     /// Enables bundle product configuration support in order creation/editing.
@@ -187,4 +191,28 @@ public enum FeatureFlag: Int {
     /// Enables Blaze native campaign creation.
     ///
     case blazei3NativeCampaignCreation
+
+    /// Enables backend receipt generation for all payment methods
+    ///
+    case backendReceipts
+
+    /// Displays the Products tab in a split view
+    ///
+    case splitViewInProductsTab
+
+    /// Displays the option to add a custom date range in My Store Analytics
+    ///
+    case customRangeInMyStoreAnalytics
+
+    /// Enables customizing the cards in the Analytics Hub
+    ///
+    case customizeAnalyticsHub
+
+    /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
+    ///
+    case useURLSessionInWordPressKit
+
+    /// Enables the connectivity tool when an order list error happens.
+    ///
+    case connectivityTool
 }

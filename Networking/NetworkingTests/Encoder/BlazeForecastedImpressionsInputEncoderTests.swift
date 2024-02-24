@@ -19,7 +19,7 @@ final class BlazeForecastedImpressionsInputEncoderTests: XCTestCase {
                                                     endDate: endDate,
                                                     timeZone: timeZone,
                                                     totalBudget: totalBudget,
-                                                    targetings: targetOptions)
+                                                    targeting: targetOptions)
 
         // When
         let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
@@ -30,7 +30,7 @@ final class BlazeForecastedImpressionsInputEncoderTests: XCTestCase {
         XCTAssertEqual(parameters["total_budget"] as? Double, 35.00)
         XCTAssertEqual(parameters["time_zone"] as? String, timeZone)
 
-        let targetingsParams = try XCTUnwrap(parameters["targetings"] as? [String: Any])
+        let targetingsParams = try XCTUnwrap(parameters["targeting"] as? [String: Any])
         XCTAssertEqual(targetingsParams["locations"] as? [Int64], [29211, 42546])
         XCTAssertEqual(targetingsParams["languages"] as? [String], ["en", "de"])
         XCTAssertEqual(targetingsParams["devices"] as? [String], ["mobile"])

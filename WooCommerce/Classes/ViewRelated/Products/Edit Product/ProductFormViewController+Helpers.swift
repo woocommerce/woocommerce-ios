@@ -137,7 +137,8 @@ private extension ProductFormViewController {
     func displayInProgressView(title: String, message: String) {
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-        inProgressViewController.modalPresentationStyle = .overCurrentContext
+        inProgressViewController.modalPresentationStyle = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab) ?
+            .overFullScreen: .overCurrentContext
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
     }

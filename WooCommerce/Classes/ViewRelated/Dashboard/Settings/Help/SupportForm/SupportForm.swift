@@ -13,93 +13,16 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         return presenter
     }()
 
-
     init(viewModel: SupportFormViewModel) {
-        super.init(rootView: SupportForm(viewModel: viewModel))
-        handleSupportRequestCompletion(viewModel: viewModel)
+        super.init(rootView: SupportForm(isPresented: .constant(true), viewModel: viewModel))
+        rootView.onDismiss = { [weak self] in
+            self?.dismissView()
+        }
         hidesBottomBarWhenPushed = true
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        createZendeskIdentity()
-    }
-
-    /// Creates the Zendesk Identity if needed.
-    /// If it fails, it dismisses the view and informs the user.
-    ///
-    func createZendeskIdentity() {
-        // TODO: We should consider refactoring this to present the email alert using SwiftUI.
-        ZendeskProvider.shared.createIdentity(presentIn: self) { [weak self] identityCreated in
-            if !identityCreated {
-                self?.logIdentityErrorAndPopBack()
-            }
-        }
-    }
-
-    /// Registers a completion block on the view model to properly show alerts and notices.
-    ///
-    func handleSupportRequestCompletion(viewModel: SupportFormViewModel) {
-        viewModel.onCompletion = { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success:
-                self.informSuccessAndPopBack()
-            case .failure(let error):
-                self.logAndInformErrorCreatingRequest(error)
-            }
-        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension SupportFormHostingController {
-    /// Shows an alert informing the support creation success and after confirmation dismisses the view.
-    ///
-    func informSuccessAndPopBack() {
-        let alertController = UIAlertController(title: Localization.requestSent,
-                                                message: Localization.requestSentMessage,
-                                                preferredStyle: .alert)
-        alertController.addDefaultActionWithTitle(Localization.gotIt) { _ in
-            self.dismissView()
-        }
-        present(alertController, animated: true)
-    }
-
-    /// Logs and informs the user that a support request could not be created
-    ///
-    func logAndInformErrorCreatingRequest(_ error: Error) {
-        let notice = Notice(title: Localization.requestSentError, feedbackType: .error)
-        noticePresenter.enqueue(notice: notice)
-
-        DDLogError("⛔️ Could not create Support Request. Error: \(error.localizedDescription)")
-    }
-
-    /// Informs user about identity error and pop back
-    ///
-    func logIdentityErrorAndPopBack() {
-        let notice = Notice(title: Localization.badIdentityError, feedbackType: .error)
-        noticePresenter.enqueue(notice: notice)
-
-        dismissView()
-        DDLogError("⛔️ Zendesk Identity could not be created.")
-    }
-}
-
-private extension SupportFormHostingController {
-    enum Localization {
-        static let requestSent = NSLocalizedString("Request Sent!", comment: "Title for the alert after the support request is created.")
-        static let requestSentMessage = NSLocalizedString("Your support request has landed safely in our inbox. We will reply via email as quickly as we can.",
-                                                          comment: "Message for the alert after the support request is created.")
-        static let gotIt = NSLocalizedString("Got It!", comment: "Confirmation button for the alert after the support request is created.")
-
-        static let badIdentityError = NSLocalizedString("Sorry, we cannot create support requests right now, please try again later.",
-                                                        comment: "Error message when the app can't create a zendesk identity.")
-        static let requestSentError = NSLocalizedString("Sorry, we could not create your support request, please try again later.",
-                                                        comment: "Error message when the app can't create a support request.")
     }
 }
 
@@ -108,9 +31,16 @@ private extension SupportFormHostingController {
 ///
 struct SupportForm: View {
 
+    @Binding var isPresented: Bool
+
     /// Main ViewModel to drive the view.
     ///
     @StateObject var viewModel: SupportFormViewModel
+
+    /// Closure to be triggered when the form should be dismissed.
+    /// Assign this closure to get notified when integrated in UIKit.
+    ///
+    var onDismiss: (() -> Void)?
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -217,7 +147,35 @@ struct SupportForm: View {
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
         .onAppear {
-            viewModel.trackSupportFormViewed()
+            viewModel.onViewAppear()
+        }
+        .alert(viewModel.errorMessage, isPresented: $viewModel.shouldShowErrorAlert) {
+            Button(Localization.gotIt) {
+                viewModel.shouldShowErrorAlert = false
+            }
+        }
+        .alert(Localization.supportRequestSent, isPresented: $viewModel.shouldShowSuccessAlert) {
+            Button(Localization.gotIt) {
+                viewModel.shouldShowSuccessAlert = false
+                isPresented = false
+                onDismiss?()
+            }
+        } message: {
+            Text(Localization.supportRequestSentMessage)
+        }
+        .alert(Localization.IdentityInput.title, isPresented: $viewModel.shouldShowIdentityInput) {
+            TextField(Localization.IdentityInput.email, text: $viewModel.contactEmailAddress)
+            TextField(Localization.IdentityInput.name, text: $viewModel.contactName)
+            Button(Localization.IdentityInput.cancel) {
+                isPresented = false
+                onDismiss?()
+            }
+            Button(Localization.IdentityInput.ok) {
+                Task {
+                    await viewModel.submitIdentityInfo()
+                }
+            }
+            .disabled(viewModel.identitySubmitButtonDisabled)
         }
     }
 }
@@ -234,6 +192,49 @@ private extension SupportForm {
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
         static let message = NSLocalizedString("Message", comment: "Message on the support form")
         static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")
+
+        static let supportRequestSent = NSLocalizedString(
+            "supportForm.supportRequestSent",
+            value: "Request Sent!",
+            comment: "Title for the alert after the support request is created."
+        )
+        static let supportRequestSentMessage = NSLocalizedString(
+            "supportForm.supportRequestSentMessage",
+            value: "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.",
+            comment: "Message for the alert after the support request is created."
+        )
+        static let gotIt = NSLocalizedString(
+            "supportForm.gotIt",
+            value: "Got It",
+            comment: "Button to dismiss the alert when a support request."
+        )
+        enum IdentityInput {
+            static let title = NSLocalizedString(
+                "supportForm.identityInput.title",
+                value: "Please enter your email address and user name",
+                comment: "Title of the input alert for identity info to be used in the support form"
+            )
+            static let email = NSLocalizedString(
+                "supportForm.identityInput.email",
+                value: "Email",
+                comment: "Placeholder of the email field on the input alert for identity info to be used in the support form"
+            )
+            static let name = NSLocalizedString(
+                "supportForm.identityInput.name",
+                value: "Name",
+                comment: "Placeholder of the name field on the input alert for identity info to be used in the support form"
+            )
+            static let cancel = NSLocalizedString(
+                "supportForm.identityInput.cancel",
+                value: "Cancel",
+                comment: "Button to dismiss the input alert for identity info to be used in the support form"
+            )
+            static let ok = NSLocalizedString(
+                "supportForm.identityInput.ok",
+                value: "OK",
+                comment: "Button to submit details on the input alert for identity info to be used in the support form"
+            )
+        }
     }
 
     enum Layout {
@@ -259,7 +260,7 @@ struct SupportFormProvider: PreviewProvider {
 
     static var previews: some View {
         NavigationView {
-            SupportForm(viewModel: .init(areas: [
+            SupportForm(isPresented: .constant(true), viewModel: .init(areas: [
                 .init(title: "Mobile Apps", datasource: MockDataSource()),
                 .init(title: "Card Reader / In Person Payments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Payments", datasource: MockDataSource()),
@@ -268,16 +269,4 @@ struct SupportFormProvider: PreviewProvider {
             ]))
         }
     }
-}
-
-struct HostedSupportForm: UIViewControllerRepresentable {
-    typealias UIViewControllerType = SupportFormHostingController
-
-    let viewModel: SupportFormViewModel
-
-    func makeUIViewController(context: Context) -> SupportFormHostingController {
-        SupportFormHostingController(viewModel: viewModel)
-    }
-
-    func updateUIViewController(_ uiViewController: SupportFormHostingController, context: Context) { }
 }

@@ -101,6 +101,11 @@ final class SummaryTableViewCell: UITableViewCell {
         configureIcon()
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     override func setSelected(_ selected: Bool, animated: Bool) {
         preserveLabelColors {
             super.setSelected(selected, animated: animated)
@@ -137,7 +142,7 @@ private extension SummaryTableViewCell {
     }
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Labels
@@ -165,7 +170,7 @@ private extension SummaryTableViewCell {
 }
 
 
-/// MARK: - VoiceOver
+// MARK: - VoiceOver
 ///
 private extension SummaryTableViewCell {
     func configureIconForVoiceOver() {
@@ -177,7 +182,7 @@ private extension SummaryTableViewCell {
     }
 }
 
-/// MARK: - Localization
+// MARK: - Localization
 
 private extension SummaryTableViewCellViewModel {
     enum Localization {

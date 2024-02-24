@@ -1344,4 +1344,22 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundTopics.count, 1)
         XCTAssertEqual(foundTopics.first, topic1)
     }
+
+    func test_loadOrderAttributionInfo_by_siteID_orderID() throws {
+        // Given
+        let orderAttributionInfo = storage.insertNewObject(ofType: OrderAttributionInfo.self)
+        orderAttributionInfo.source = "Organic"
+        let orderID: Int64 = 11
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.orderID = orderID
+        order.siteID = sampleSiteID
+        order.attributionInfo = orderAttributionInfo
+
+        // When
+        let storedOrderAttributionInfo = try XCTUnwrap(storage.loadOrderAttributionInfo(siteID: sampleSiteID, orderID: orderID))
+
+        // Then
+        XCTAssertEqual(orderAttributionInfo, storedOrderAttributionInfo)
+    }
 }

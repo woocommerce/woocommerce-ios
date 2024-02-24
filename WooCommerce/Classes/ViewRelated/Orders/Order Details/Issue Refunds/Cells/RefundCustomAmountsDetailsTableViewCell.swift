@@ -29,13 +29,18 @@ final class RefundCustomAmountsDetailsTableViewCell: UITableViewCell {
         super.awakeFromNib()
         applyCellStyles()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: View Styles Configuration
 
 private extension RefundCustomAmountsDetailsTableViewCell {
     func applyCellStyles() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         applyLabelsStyles()
     }
 

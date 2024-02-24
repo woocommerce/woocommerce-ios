@@ -2,6 +2,9 @@ import Foundation
 
 /// Protocol for `MediaRemote` mainly used for mocking.
 public protocol MediaRemoteProtocol {
+    func loadMedia(siteID: Int64,
+                   mediaID: Int64,
+                   completion: @escaping (Result<WordPressMedia, Error>) -> Void)
     func loadMediaLibrary(for siteID: Int64,
                           imagesOnly: Bool,
                           pageNumber: Int,
@@ -34,6 +37,36 @@ public protocol MediaRemoteProtocol {
 /// Media: Remote Endpoints
 ///
 public class MediaRemote: Remote, MediaRemoteProtocol {
+    /// Loads media from the site's WP Media library
+    /// API reference - https://developer.wordpress.org/rest-api/reference/media/#retrieve-a-media-item
+    ///
+    /// - Parameters:
+    ///   - siteID: site ID for which to load Media
+    ///   - mediaID: ID of the Media to load
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func loadMedia(siteID: Int64,
+                          mediaID: Int64,
+                          completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
+        let parameters: [String: Any] = [
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+        ].compactMapValues { $0 }
+
+        let path = "sites/\(siteID)/media/\(mediaID)"
+        do {
+            let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                            method: .get,
+                                            path: path,
+                                            parameters: parameters,
+                                            availableAsRESTRequest: true)
+            let mapper = WordPressMediaMapper()
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
     /// Loads an array of media from the site's WP Media Library.
     /// API reference: https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
     ///

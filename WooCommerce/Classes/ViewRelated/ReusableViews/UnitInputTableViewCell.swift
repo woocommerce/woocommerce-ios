@@ -52,7 +52,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         configureInputAndUnitStackView()
         configureInputTextField()
         configureUnitLabel()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         configureTapGestureRecognizer()
     }
 
@@ -72,6 +72,11 @@ final class UnitInputTableViewCell: UITableViewCell {
         configureStyle(viewModel.style)
 
         rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 

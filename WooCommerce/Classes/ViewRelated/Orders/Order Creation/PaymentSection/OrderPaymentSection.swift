@@ -77,7 +77,7 @@ private extension OrderPaymentSection {
             ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
                 VStack(alignment: .leading, spacing: .zero) {
                     TitleAndValueRow(title: Localization.coupon,
-                                     titleSuffixImage: rowsEditImage,
+                                     titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
                                      value: .content(viewModel.discount),
                                      selectionStyle: editableRowsSelectionStyle) {
                         selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
@@ -95,7 +95,7 @@ private extension OrderPaymentSection {
 
     @ViewBuilder var existingShippingRow: some View {
         TitleAndValueRow(title: Localization.shippingTotal,
-                         titleSuffixImage: rowsEditImage,
+                         titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
                          value: .content(viewModel.shippingTotal),
                          selectionStyle: editableRowsSelectionStyle) {
             shouldShowShippingLineDetails = true
@@ -161,12 +161,14 @@ private extension OrderPaymentSection {
         VStack(alignment: .leading, spacing: Constants.taxesSectionVerticalSpacing) {
             taxSectionTitle
             taxLines
+            shippingTax
+                .renderedIf(viewModel.shouldShowShippingTax)
             taxBasedOnLine
                 .onTapGesture {
                     shouldShowTaxEducationalDialog = true
                     viewModel.onTaxHelpButtonTappedClosure()
                 }
-            .renderedIf(viewModel.taxBasedOnSetting != nil)
+                .renderedIf(viewModel.taxBasedOnSetting != nil)
         }
         .padding(Constants.sectionPadding)
         .renderedIf(viewModel.taxLineViewModels.isNotEmpty)
@@ -200,12 +202,28 @@ private extension OrderPaymentSection {
                         .foregroundColor(Color(uiColor: .secondaryLabel))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
-
                     Text(viewModel.value)
                         .footnoteStyle()
                         .multilineTextAlignment(.trailing)
                         .frame(width: nil, alignment: .trailing)
                 }
+            }
+        }
+    }
+
+    @ViewBuilder var shippingTax: some View {
+        HStack {
+            AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
+                Text(Localization.shippingTax)
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(viewModel.shippingTax)
+                    .footnoteStyle()
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: nil, alignment: .trailing)
             }
         }
     }
@@ -245,8 +263,8 @@ private extension OrderPaymentSection {
             .renderedIf(viewModel.shouldShowDiscountTotal)
     }
 
-    var rowsEditImage: Image? {
-        viewModel.showNonEditableIndicators ? nil : Image(systemName: "pencil")
+    var rowsEditImage: Image {
+        viewModel.showNonEditableIndicators ? Image(uiImage: .lockImage) : Image(systemName: "pencil")
     }
 
     var editableRowsSelectionStyle: TitleAndValueRow.SelectionStyle {
@@ -289,6 +307,10 @@ private extension OrderPaymentSection {
             "order.form.paymentSection.taxes.learnMore",
             value: "Learn More.",
             comment: "A 'Learn More' label text, which shows tax information upon being clicked.")
+        static let shippingTax = NSLocalizedString(
+            "order.form.paymentSection.taxes.shippingTax",
+            value: "Shipping Tax",
+            comment: "Label for the row showing the shipping tax.")
     }
 
     enum Constants {

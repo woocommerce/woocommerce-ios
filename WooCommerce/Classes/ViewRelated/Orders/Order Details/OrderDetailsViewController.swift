@@ -62,15 +62,20 @@ final class OrderDetailsViewController: UIViewController {
 
     private let isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
+    /// Callback closure when a different order is selected like from the quick navigation arrows.
+    private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
+
     // MARK: - View Lifecycle
-    init(viewModels: [OrderDetailsViewModel], currentIndex: Int) {
+    init(viewModels: [OrderDetailsViewModel], currentIndex: Int, switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.viewModels = viewModels
         self.currentIndex = currentIndex
+        self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
+    /// Used for screens that show order details always in a single-column view.
     convenience init(viewModel: OrderDetailsViewModel) {
-        self.init(viewModels: [viewModel], currentIndex: 0)
+        self.init(viewModels: [viewModel], currentIndex: 0, switchDetailsHandler: { _, _, _, _ in })
     }
 
     required init?(coder: NSCoder) {
@@ -164,6 +169,8 @@ private extension OrderDetailsViewController {
         editButton.accessibilityIdentifier = "order-details-edit-button"
         editButton.isEnabled = viewModel.editButtonIsEnabled
         navigationItem.rightBarButtonItems = [editButton] + orderNavigationRightBarButtonItems()
+
+        navigationItem.largeTitleDisplayMode = .never
     }
 
     func orderNavigationRightBarButtonItems() -> [UIBarButtonItem] {
@@ -201,15 +208,12 @@ private extension OrderDetailsViewController {
     }
 
     func loadOrder(with index: Int) {
-        let splitViewNavigationController = splitViewController?.viewControllers.first as? UINavigationController
-        let usingNavigationController = isSplitViewInOrdersTabEnabled ? splitViewNavigationController : navigationController
-
-        guard let usingNavigationController = usingNavigationController else {
+        guard isSplitViewInOrdersTabEnabled else {
+            let viewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: index, switchDetailsHandler: switchDetailsHandler)
+            navigationController?.replaceTopViewController(with: viewController, animated: false)
             return
         }
-
-        let viewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: index)
-        usingNavigationController.replaceTopViewController(with: viewController, animated: false)
+        switchDetailsHandler(viewModels, index, true, nil)
     }
 
     /// Setup: EntityListener
@@ -380,8 +384,13 @@ private extension OrderDetailsViewController {
     @objc private func editOrder() {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
-        let navController = UINavigationController(rootViewController: viewController)
-        present(navController, animated: true)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+            viewController.modalPresentationStyle = .overFullScreen
+            present(viewController, animated: true)
+        } else {
+            let navController = UINavigationController(rootViewController: viewController)
+            present(navController, animated: true)
+        }
 
         let hasMultipleShippingLines = self.viewModel.order.shippingLines.count > 1
         let hasMultipleFeeLines = self.viewModel.order.fees.count > 1
@@ -439,14 +448,13 @@ private extension OrderDetailsViewController {
             }
             collectPaymentTapped()
         case .reprintShippingLabel(let shippingLabel):
-            guard let navigationController = navigationController else {
-                assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
-                return
-            }
+            let printNavigationController = WooNavigationController()
             let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel],
                                                             printType: .reprint,
-                                                            sourceNavigationController: navigationController)
-            coordinator.showPrintUI()
+                                                            sourceNavigationController: printNavigationController)
+            let printViewController = coordinator.createPrintViewController()
+            printNavigationController.viewControllers = [printViewController]
+            present(printNavigationController, animated: true)
         case .createShippingLabel:
             navigateToCreateShippingLabelForm()
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
@@ -475,11 +483,15 @@ private extension OrderDetailsViewController {
                 }
                 return
             }
-
-            navigationController.popToViewController(self, animated: true)
+            syncEverything()
+            self.dismiss(animated: true)
         }
-        shippingLabelFormVC.hidesBottomBarWhenPushed = true
-        navigationController?.show(shippingLabelFormVC, sender: self)
+        shippingLabelFormVC.onCancel = { [weak self] in
+            self?.dismiss(animated: true)
+        }
+
+        let shippingLabelNavigationController = WooNavigationController(rootViewController: shippingLabelFormVC)
+        navigationController?.present(shippingLabelNavigationController, animated: true)
     }
 
     func markOrderCompleteWasPressed() {
@@ -500,7 +512,7 @@ private extension OrderDetailsViewController {
         var cancellables = Set<AnyCancellable>()
         var cancellable: AnyCancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
-            if case .failure(_) = completion {
+            if case .failure = completion {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed)
             }
             else {

@@ -24,7 +24,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let url = try XCTUnwrap(viewModel.avatarURL)
 
         // Then
-        assertEqual("https://gravatar.com/avatar/55502f40dc8b7c769880b10874abc9d0?d=mp&s=80&r=g", url.absoluteString)
+        assertEqual("https://gravatar.com/avatar/973dfe463ec85785f5f95af5ba3906eedb2d931c24e69824a89ea65dba4e813b?d=mp&s=80&r=g", url.absoluteString)
     }
 
     func test_isLoggingIn_is_updated_correctly_and_onMultifactorCodeRequest_is_triggered_when_2FA_code_is_required() {

@@ -12,6 +12,9 @@ extension StatsTimeRangeV4 {
             return 31
         case .thisYear:
             return 12
+        case .custom:
+            // TODO: 11935 Calculate number of intervals
+            return 7
         }
     }
 
@@ -26,6 +29,12 @@ extension StatsTimeRangeV4 {
             return NSLocalizedString("This Month", comment: "Tab selector title that shows the statistics for this month")
         case .thisYear:
             return NSLocalizedString("This Year", comment: "Tab selector title that shows the statistics for this year")
+        case .custom:
+            return NSLocalizedString(
+                "statsTimeRangeV4.tabTitle.custom",
+                value: "Custom Range",
+                comment: "Tab selector title that shows the statistics for today"
+            )
         }
     }
 
@@ -44,6 +53,8 @@ extension StatsTimeRangeV4 {
             return currentDate.endOfMonth(timezone: siteTimezone)!
         case .thisYear:
             return currentDate.endOfYear(timezone: siteTimezone)!
+        case .custom(_, let toDate):
+            return toDate.endOfDay(timezone: siteTimezone)
         }
     }
 
@@ -62,6 +73,8 @@ extension StatsTimeRangeV4 {
             return latestDate.startOfMonth(timezone: siteTimezone)!
         case .thisYear:
             return latestDate.startOfYear(timezone: siteTimezone)!
+        case .custom(let startDate, _):
+            return startDate.startOfDay(timezone: siteTimezone)
         }
     }
 
@@ -77,9 +90,9 @@ extension StatsTimeRangeV4 {
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .weekly:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
-        case .monthly:
+        case .monthly, .quarterly:
             dateFormatter = DateFormatter.Charts.chartAxisMonthFormatter
-        default:
+        case .yearly:
             fatalError("This case is not supported: \(intervalGranularity.rawValue)")
         }
         dateFormatter.timeZone = siteTimezone

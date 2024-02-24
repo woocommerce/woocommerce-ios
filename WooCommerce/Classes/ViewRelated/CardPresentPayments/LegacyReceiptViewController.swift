@@ -4,17 +4,17 @@ import WebKit
 import Yosemite
 
 
-/// Previews a receipt
-final class ReceiptViewController: UIViewController {
+/// Previews a locally-generated receipt
+final class LegacyReceiptViewController: UIViewController {
     @IBOutlet private weak var webView: WKWebView!
 
-    private let viewModel: ReceiptViewModel
+    private let viewModel: LegacyReceiptViewModel
 
     private var emailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
     private var receiptContentSubscription: AnyCancellable?
     private var emailDataSubscription: AnyCancellable?
 
-    init(viewModel: ReceiptViewModel) {
+    init(viewModel: LegacyReceiptViewModel) {
         self.viewModel = viewModel
         super.init(nibName: Self.nibName, bundle: nil)
     }
@@ -38,7 +38,7 @@ final class ReceiptViewController: UIViewController {
     }
 }
 
-private extension ReceiptViewController {
+private extension LegacyReceiptViewController {
     func configureToolbar() {
         title = Localization.title
         navigationItem.rightBarButtonItems = [
@@ -84,7 +84,7 @@ private extension ReceiptViewController {
     }
 }
 
-private extension ReceiptViewController {
+private extension LegacyReceiptViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Receipt",

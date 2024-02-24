@@ -6,8 +6,11 @@ import Yosemite
 final class BlazeBudgetSettingViewModel: ObservableObject {
     @Published var dailyAmount: Double
     /// Using Double because Slider doesn't work with Int
-    @Published var dayCount: Double
-    @Published var startDate: Date
+    /// This is readonly and will be updated through `didTapApplyDuration`.
+    @Published private(set) var dayCount: Double
+
+    /// This is readonly and will be updated through `didTapApplyDuration`.
+    @Published private(set) var startDate: Date
 
     @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
@@ -32,12 +35,6 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                          plural: Localization.totalDurationMultipleDays)
     }
 
-    var formattedDayCount: String {
-        String.pluralize(Int(dayCount),
-                         singular: Localization.singleDay,
-                         plural: Localization.multipleDays)
-    }
-
     var formattedDateRange: String {
         let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
         return dateFormatter.string(from: startDate, to: endDate)
@@ -51,9 +48,11 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }()
 
     private let siteID: Int64
+    private let locale: Locale
     private let timeZone: TimeZone
     private let targetOptions: BlazeTargetOptions?
     private let stores: StoresManager
+    private let analytics: Analytics
 
     typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
     private let completionHandler: BlazeBudgetSettingCompletionHandler
@@ -64,25 +63,44 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
          dailyBudget: Double,
          duration: Int,
          startDate: Date,
+         locale: Locale = .current,
          timeZone: TimeZone = .current,
          targetOptions: BlazeTargetOptions? = nil,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
         self.siteID = siteID
         self.dailyAmount = dailyBudget
         self.dayCount = Double(duration)
         self.startDate = startDate
+        self.locale = locale
         self.timeZone = timeZone
         self.targetOptions = targetOptions
         self.stores = stores
+        self.analytics = analytics
         self.completionHandler = onCompletion
 
         observeSettings()
     }
 
+    func didTapApplyDuration(dayCount: Double, since startDate: Date) {
+        analytics.track(event: .Blaze.Budget.changedDuration(Int(dayCount)))
+        self.dayCount = dayCount
+        self.startDate = startDate
+    }
+
+    func formatDayCount(_ count: Double) -> String {
+        String.pluralize(Int(count),
+                         singular: Localization.singleDay,
+                         plural: Localization.multipleDays)
+    }
+
     func confirmSettings() {
-        // TODO: track confirmation
-        completionHandler(dailyAmount, Int(dayCount), startDate)
+        let days = Int(dayCount)
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
+        analytics.track(event: .Blaze.Budget.updateTapped(duration: days,
+                                                          totalBudget: totalBudget))
+        completionHandler(dailyAmount, days, startDate)
     }
 
     @MainActor
@@ -99,10 +117,13 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                                                     endDate: endDate,
                                                     timeZone: timeZone.identifier,
                                                     totalBudget: totalBudget,
-                                                    targetings: targetOptions)
+                                                    targeting: targetOptions)
         do {
             let result = try await fetchForecastedImpressions(input: input)
-            let formattedImpressions = String(format: "%d - %d", result.totalImpressionsMin, result.totalImpressionsMax)
+            let formattedImpressions = String(format: "%d - %d",
+                                              locale: locale,
+                                              result.totalImpressionsMin,
+                                              result.totalImpressionsMax)
             forecastedImpressionState = .result(formattedResult: formattedImpressions)
         } catch {
             DDLogError("⛔️ Error fetching forecasted impression: \(error)")

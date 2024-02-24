@@ -52,7 +52,7 @@ final class MockBlazeRemote {
 }
 
 extension MockBlazeRemote: BlazeRemoteProtocol {
-    
+
     func createCampaign(_ campaign: CreateBlazeCampaign,
                         siteID: Int64) async throws {
         guard let result = creatingCampaignResult else {

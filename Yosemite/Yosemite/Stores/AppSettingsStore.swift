@@ -204,6 +204,10 @@ public class AppSettingsStore: Store {
             setSelectedTaxRateID(with: taxRateId, siteID: siteID)
         case .loadSelectedTaxRateID(let siteID, let onCompletion):
             loadSelectedTaxRateID(with: siteID, onCompletion: onCompletion)
+        case .setAnalyticsHubCards(let siteID, let cards):
+            setAnalyticsHubCards(siteID: siteID, cards: cards)
+        case .loadAnalyticsHubCards(let siteID, let onCompletion):
+            loadAnalyticsHubCards(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -901,6 +905,20 @@ private extension AppSettingsStore {
 
     func loadSelectedTaxRateID(with siteID: Int64, onCompletion: (Int64?) -> Void) {
         onCompletion(getStoreSettings(for: siteID).selectedTaxRateID)
+    }
+}
+
+// MARK: - Analytics Hub Cards
+
+private extension AppSettingsStore {
+    func setAnalyticsHubCards(siteID: Int64, cards: [AnalyticsCard]) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(analyticsHubCards: cards)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).analyticsHubCards)
     }
 }
 

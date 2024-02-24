@@ -51,7 +51,7 @@ struct BlazeAdDestinationSettingView: View {
                     .padding(.top, 0)
                     .padding(.leading, Layout.contentSpacing)
                     .listRowSeparator(.hidden, edges: .bottom)
-                    .disabled(viewModel.calculateRemainingCharacters() == 0)
+                    .disabled(viewModel.shouldDisableAddParameterButton)
 
                 } header: {
                     Text(Localization.urlParametersHeading)
@@ -79,7 +79,14 @@ struct BlazeAdDestinationSettingView: View {
                     Button(Localization.cancel) {
                         dismiss()
                     }
-                    .foregroundColor(Color(uiColor: .accent))
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.save) {
+                        viewModel.confirmSave()
+                        dismiss()
+                    }
+                    .disabled(viewModel.shouldDisableSaveButton)
                 }
             }
             .sheet(isPresented: $isShowingAddParameterView) {
@@ -130,7 +137,7 @@ struct BlazeAdDestinationSettingView: View {
             HStack {
                 Text(parameter.key)
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .foregroundColor(.secondary)
                     .padding(.leading, Layout.contentHorizontalSpacing)
             }
@@ -162,6 +169,13 @@ private extension BlazeAdDestinationSettingView {
             value: "Cancel",
             comment: "Button to dismiss the Blaze Ad Destination setting screen"
         )
+
+        static let save = NSLocalizedString(
+            "blazeAdDestinationSettingView.save",
+            value: "Save",
+            comment: "Button to save in the Blaze Ad Destination setting screen"
+        )
+
         static let adDestination = NSLocalizedString(
             "blazeAdDestinationSettingView.adDestination",
             value: "Ad Destination",
@@ -184,7 +198,6 @@ private extension BlazeAdDestinationSettingView {
             value: "The site home",
             comment: "Label for the site home destination option in Blaze Ad Destination screen."
         )
-
 
         static let destinationUrlSubtitle = NSLocalizedString(
             "blazeAdDestinationSettingView.destinationUrlSubtitle",
@@ -209,16 +222,26 @@ private extension BlazeAdDestinationSettingView {
 
 struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeAdDestinationSettingView(
-            viewModel: .init(
-                productURL: "https://woo.com/product",
-                homeURL: "https://woo.com/",
-                parameters: [
-                    BlazeAdURLParameter(key: "key1", value: "value1"),
-                    BlazeAdURLParameter(key: "key2", value: "value2"),
-                    BlazeAdURLParameter(key: "key1", value: "value1")
-                ]
+        Group {
+            // Showing the case where initial selected destination URL is product URL
+            BlazeAdDestinationSettingView(
+                viewModel: .init(
+                    productURL: "https://woo.com/product",
+                    homeURL: "https://woo.com/",
+                    finalDestinationURL: "https://woo.com/product/?key1=value1&key2=value2",
+                    onSave: { _, _ in }
+                )
             )
-        )
+
+            // Showing the case where initial selected destination URL is home URL
+            BlazeAdDestinationSettingView(
+                viewModel: .init(
+                    productURL: "https://woo.com/product",
+                    homeURL: "https://woo.com/",
+                    finalDestinationURL: "https://woo.com/?key1=value1&key2=value2",
+                    onSave: { _, _ in }
+                )
+            )
+        }
     }
 }

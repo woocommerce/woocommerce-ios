@@ -16,6 +16,9 @@ struct WooCrashLoggingStack: CrashLoggingStack {
     private let eventLoggingDataProvider = WCEventLoggingDataSource()
     private let eventLoggingDelegate = WCEventLoggingDelegate()
 
+    // When registering for a notification, the opaque observer that is returned should be stored so iOS can remove it later at deinit time.
+    private let willEnterForegroundObserver: NSObjectProtocol
+
     init(featureFlagService: FeatureFlagService) {
         let eventLogging = EventLogging(dataSource: eventLoggingDataProvider, delegate: eventLoggingDelegate)
 
@@ -24,8 +27,17 @@ struct WooCrashLoggingStack: CrashLoggingStack {
         self.crashLogging = AutomatticTracks.CrashLogging(dataProvider: crashLoggingDataProvider, eventLogging: eventLogging)
 
         /// Upload any remaining files any time the app becomes active
-        let willEnterForeground = UIApplication.willEnterForegroundNotification
-        NotificationCenter.default.addObserver(forName: willEnterForeground, object: nil, queue: nil, using: self.willEnterForeground)
+        self.willEnterForegroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: nil,
+            using: { _ in
+                eventLogging.uploadNextLogFileIfNeeded()
+                DDLogDebug("📜 Resumed encrypted log upload queue due to app entering foreground")
+            }
+
+        )
+
         do {
             _ = try crashLogging.start()
         } catch {
@@ -61,11 +73,6 @@ struct WooCrashLoggingStack: CrashLoggingStack {
 
     var queuedLogFileCount: Int {
         eventLogging.queuedLogFiles.count
-    }
-
-    private func willEnterForeground(note: Foundation.Notification) {
-        self.eventLogging.uploadNextLogFileIfNeeded()
-        DDLogDebug("📜 Resumed encrypted log upload queue due to app entering foreground")
     }
 
     private func sentrySeverity(with storageSeverity: SeverityLevel) -> SentryLevel {

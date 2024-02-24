@@ -2596,6 +2596,49 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(topic.value(forKey: "name") as? String, "Arts & Entertainment")
         XCTAssertEqual(topic.value(forKey: "locale") as? String, "en")
     }
+
+    func test_migrating_from_105_to_106_adds_OrderAttributionInfo_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 105")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        try sourceContext.save()
+
+        // Confidence Checks. This entity and relationship should not exist in Model 105.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "OrderAttributionInfo", in: sourceContext))
+        XCTAssertNil(order.entity.relationshipsByName["attributionInfo"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 106")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderAttributionInfo"), 0)
+
+        // Migrated order has expected empty attributionInfo attribute.
+        let migratedOrder = try XCTUnwrap(targetContext.firstObject(ofType: Order.self))
+        XCTAssertNil(migratedOrder.value(forKey: "attributionInfo"))
+
+        // Insert a new OrderAttributionInfo and add it to Order.
+        let attributionInfo = insertOrderAttributionInfo(to: targetContext)
+        migratedOrder.setValue(attributionInfo, forKey: "attributionInfo")
+        try targetContext.save()
+
+        // OrderAttributionInfo entity and attributes exist, including relationship with Order.
+        XCTAssertEqual(try targetContext.count(entityName: "OrderAttributionInfo"), 1)
+        XCTAssertNotNil(attributionInfo.value(forKey: "sourceType"))
+        XCTAssertNotNil(attributionInfo.value(forKey: "campaign"))
+        XCTAssertNotNil(attributionInfo.value(forKey: "source"))
+        XCTAssertNotNil(attributionInfo.value(forKey: "medium"))
+        XCTAssertNotNil(attributionInfo.value(forKey: "deviceType"))
+        XCTAssertNotNil(attributionInfo.value(forKey: "sessionPageViews"))
+        XCTAssertEqual(attributionInfo.value(forKey: "order") as? NSManagedObject, migratedOrder)
+
+        // Order and OrderAttributionInfo relationship exists.
+        XCTAssertEqual(migratedOrder.value(forKey: "attributionInfo") as? NSManagedObject, attributionInfo)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3255,6 +3298,18 @@ private extension MigrationTests {
             "giftCardID": 2,
             "code": "SU9F-MGB5-KS5V-EZFT",
             "amount": 20
+        ])
+    }
+
+    @discardableResult
+    func insertOrderAttributionInfo(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderAttributionInfo", properties: [
+            "sourceType": "referral",
+            "campaign": "sale",
+            "source": "woo.com",
+            "medium": "referral",
+            "deviceType": "Desktop",
+            "sessionPageViews": "2"
         ])
     }
 

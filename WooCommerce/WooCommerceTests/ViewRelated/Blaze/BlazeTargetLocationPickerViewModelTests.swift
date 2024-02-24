@@ -9,12 +9,20 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var subscription: AnyCancellable?
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
+
     override func tearDown() {
+        analyticsProvider = nil
+        analytics = nil
         stores = nil
         super.tearDown()
     }
@@ -196,6 +204,23 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         waitUntil {
             viewModel.searchResults.isEmpty
         }
+    }
+
+    // MARK: Analytics
+
+    func test_confirmSelection_tracks_event() throws {
+        // Given
+        let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID,
+                                                           selectedLocations: nil,
+                                                           stores: stores,
+                                                           analytics: analytics,
+                                                           onCompletion: { _ in })
+
+        // When
+        viewModel.confirmSelection()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_location_save_tapped"))
     }
 }
 

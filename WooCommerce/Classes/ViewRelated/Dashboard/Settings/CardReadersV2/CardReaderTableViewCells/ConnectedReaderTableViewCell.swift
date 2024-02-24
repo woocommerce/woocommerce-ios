@@ -14,6 +14,8 @@ final class ConnectedReaderTableViewCell: UITableViewCell {
     private var viewModel: ViewModel?
 
     override func awakeFromNib() {
+        super.awakeFromNib()
+
         styleSoftwareVersionLabel()
     }
 

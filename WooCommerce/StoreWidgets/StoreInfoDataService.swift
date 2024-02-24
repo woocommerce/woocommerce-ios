@@ -46,25 +46,41 @@ final class StoreInfoDataService {
         /// If user is authenticated with site credentials only,
         /// fetch revenue and orders and skip visitor stats as its endpoint is not available.
         guard !isAuthenticatedWithoutWPCom else {
-            let revenueAndOrders = try await fetchTodaysRevenueAndOrders(for: storeID)
-            return Stats(revenue: revenueAndOrders.totals.grossRevenue,
-                         totalOrders: revenueAndOrders.totals.totalOrders,
-                         totalVisitors: nil,
-                         conversion: nil)
+            return try await todayStatsWithoutVisitors(for: storeID)
         }
+
         // Prepare them to run in parallel
         async let revenueAndOrdersRequest = fetchTodaysRevenueAndOrders(for: storeID)
         async let siteStatsRequest = fetchTodaysVisitors(for: storeID)
 
         // Wait for for response
-        let (revenueAndOrders, siteStats) = try await (revenueAndOrdersRequest, siteStatsRequest)
+        do {
+            let (revenueAndOrders, siteStats) = try await (revenueAndOrdersRequest, siteStatsRequest)
 
-        // Assemble stats data
-        let conversion = siteStats.visitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(siteStats.visitors) : 0
+            // Assemble stats data
+            let conversion = siteStats.visitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(siteStats.visitors) : 0
+            return Stats(revenue: revenueAndOrders.totals.grossRevenue,
+                         totalOrders: revenueAndOrders.totals.totalOrders,
+                         totalVisitors: siteStats.visitors,
+                         conversion: min(conversion, 1))
+
+        } catch {
+
+            // If there was an error fetching the stats chances are that is because jetpack is not properly configure to return stats.
+            // Hence, I'm choosing to request stats without visitors again.
+            // This should continue to be performant because the response should be cached.
+            return try await todayStatsWithoutVisitors(for: storeID)
+        }
+    }
+
+    /// Fetches today stats without visitors data. Useful when that API is not available.
+    ///
+    private func todayStatsWithoutVisitors(for storeID: Int64) async throws -> Stats {
+        let revenueAndOrders = try await fetchTodaysRevenueAndOrders(for: storeID)
         return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
-                     totalVisitors: siteStats.visitors,
-                     conversion: min(conversion, 1))
+                     totalVisitors: nil,
+                     conversion: nil)
     }
 }
 

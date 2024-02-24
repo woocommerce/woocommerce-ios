@@ -16,12 +16,17 @@ final class TwoColumnTableViewCell: UITableViewCell {
         configureLeftLabel()
         configureRightLabel()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
 private extension TwoColumnTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureLeftLabel() {

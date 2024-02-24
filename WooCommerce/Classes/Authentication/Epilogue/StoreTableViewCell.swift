@@ -21,7 +21,7 @@ class StoreTableViewCell: UITableViewCell {
     @IBOutlet private var noticeContainerView: UIView!
 
     /// Image view: notice
-    /// 
+    ///
     @IBOutlet private var noticeImageView: UIImageView!
 
     /// Label: Name
@@ -93,6 +93,11 @@ class StoreTableViewCell: UITableViewCell {
         configureNoticeImageView()
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     /// Displays (or hides) the Checkmark ContainerView, based on the `allowsCheckmark` property.
     ///
     private func refreshCheckmarkVisibility() {
@@ -115,7 +120,7 @@ class StoreTableViewCell: UITableViewCell {
 
 private extension StoreTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureNameLabel() {

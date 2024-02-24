@@ -162,12 +162,7 @@ private extension NewNoteViewController {
         cell.title = NSLocalizedString("Email note to customer", comment: "Label for yes/no switch - emailing the note to customer.")
         cell.subtitle = NSLocalizedString("If disabled the note will be private", comment: "Detail label for yes/no switch.")
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Email note to customer %@", comment: ""),
-            isCustomerNote ?
-                NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") :
-                NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off.")
-        )
+        cell.accessibilityLabel = switchAccessibilityLabel(forSwitchValue: isCustomerNote)
         cell.accessibilityHint = NSLocalizedString(
             "Double tap to toggle setting.",
             comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on."
@@ -180,15 +175,26 @@ private extension NewNoteViewController {
 
             self.isCustomerNote = newValue
 
-            cell.accessibilityLabel = String.localizedStringWithFormat(
-                NSLocalizedString("Email note to customer %@", comment: ""),
-                newValue ?
-                    NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") :
-                    NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off.")
-            )
+            cell.accessibilityLabel = switchAccessibilityLabel(forSwitchValue: newValue)
 
             let stateValue = newValue ? "on" : "off"
             self.viewModel.trackOrderNoteEmailCustomerToggled(stateValue)
+        }
+    }
+
+    private func switchAccessibilityLabel(forSwitchValue value: Bool) -> String {
+        if value {
+            return NSLocalizedString(
+                "newNoteViewController.emailNoteSwitch.accessibilityLabel.on",
+                value: "Email note to customer On",
+                comment: "Spoken label to indicate switch control is turned on"
+            )
+        } else {
+            return NSLocalizedString(
+                "newNoteViewController.emailNoteSwitch.accessibilityLabel.off",
+                value: "Email note to customer Off",
+                comment: "Spoken label to indicate switch control is turned off."
+            )
         }
     }
 }

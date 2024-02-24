@@ -14,6 +14,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
+            return true
+        case .sideBySideViewForOrderForm:
             return false
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
@@ -40,8 +42,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .jetpackSetupWithApplicationPassword:
             return true
         case .dashboardOnboarding:
-            return true
-        case .addProductToOrderViaSKUScanner:
             return true
         case .productBundles:
             return true
@@ -84,6 +84,18 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .scanToUpdateInventory:
             return true
         case .blazei3NativeCampaignCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .backendReceipts:
+            return true
+        case .splitViewInProductsTab:
+            return false
+        case .customRangeInMyStoreAnalytics:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .customizeAnalyticsHub:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .useURLSessionInWordPressKit:
+            return buildConfig != .appStore
+        case .connectivityTool:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

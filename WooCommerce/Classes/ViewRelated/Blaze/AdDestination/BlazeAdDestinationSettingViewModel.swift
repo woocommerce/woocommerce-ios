@@ -6,12 +6,15 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         case home
     }
 
+    typealias BlazeAdDestinationSettingCompletionHandler = (_ targetUrl: String, _ urlParams: String) -> Void
+
     let productURL: String
     let homeURL: String
+    let initialFinalDestinationURL: String
 
-    @Published private(set) var selectedDestinationType: DestinationURLType
+    @Published private(set) var selectedDestinationType: DestinationURLType = .product
 
-    @Published private(set) var parameters: [BlazeAdURLParameter]
+    @Published private(set) var parameters: [BlazeAdURLParameter] = []
 
     // This is used as a flag whether merchant wants to add a new parameter (if nil) or update an existing one (if not)
     var selectedParameter: BlazeAdURLParameter?
@@ -28,6 +31,10 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     // Text to be shown on the view for the final ad campaign URL including parameters, if any.
     var finalDestinationLabel: String {
         return String(format: Localization.finalDestination, buildFinalDestinationURL())
+    }
+
+    var shouldDisableSaveButton: Bool {
+        buildFinalDestinationURL() == initialFinalDestinationURL
     }
 
     // View model for the add parameter view.
@@ -66,30 +73,44 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
         )
     }
 
-    init (productURL: String,
-          homeURL: String,
-          selectedDestinationType: DestinationURLType = .product,
-          parameters: [BlazeAdURLParameter] = []) {
+    var shouldDisableAddParameterButton: Bool {
+        calculateRemainingCharacters() == 0
+    }
+
+    private let analytics: Analytics
+    private let onSave: BlazeAdDestinationSettingCompletionHandler
+
+    private var baseURL: String {
+        switch selectedDestinationType {
+        case .product:
+            productURL
+        case .home:
+            homeURL
+        }
+    }
+
+    init(productURL: String,
+         homeURL: String,
+         finalDestinationURL: String,
+         analytics: Analytics = ServiceLocator.analytics,
+         onSave: @escaping BlazeAdDestinationSettingCompletionHandler) {
         self.productURL = productURL
         self.homeURL = homeURL
-        self.selectedDestinationType = selectedDestinationType
-        self.parameters = parameters
+        self.initialFinalDestinationURL = finalDestinationURL
+        self.analytics = analytics
+        self.onSave = onSave
+
+        initializeDestinationType()
+        initializeParameters()
     }
 
     func setDestinationType(as type: DestinationURLType) {
         selectedDestinationType = type
     }
 
-    private func buildFinalDestinationURL() -> String {
-        let baseURL: String
-        switch selectedDestinationType {
-        case .product:
-            baseURL = productURL
-        case .home:
-            baseURL = homeURL
-        }
-
-        return baseURL + parameters.convertToQueryString()
+    func confirmSave() {
+        analytics.track(event: .Blaze.AdDestination.saveTapped())
+        onSave(baseURL, parameters.convertToQueryString())
     }
 
     func calculateRemainingCharacters() -> Int {
@@ -105,15 +126,36 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     func deleteParameter(at offsets: IndexSet) {
         parameters.remove(atOffsets: offsets)
     }
+}
 
-    private func updateSelectedParameter(newKey: String, newValue: String) {
+private extension BlazeAdDestinationSettingViewModel {
+    func initializeDestinationType() {
+        if initialFinalDestinationURL.hasPrefix(productURL) {
+            selectedDestinationType = .product
+        } else {
+            selectedDestinationType = .home
+        }
+    }
+
+    func initializeParameters() {
+        if let finalDestinationURL = URL(string: initialFinalDestinationURL),
+           let urlComponents = URLComponents(url: finalDestinationURL, resolvingAgainstBaseURL: false) {
+            parameters = urlComponents.toBlazeAdURLParameters()
+        }
+    }
+
+    func updateSelectedParameter(newKey: String, newValue: String) {
         if let index = parameters.firstIndex(where: { $0.id == selectedParameter?.id }) {
             parameters[index] = BlazeAdURLParameter(key: newKey, value: newValue)
         }
     }
 
-    private func clearSelectedParameter() {
+    func clearSelectedParameter() {
         selectedParameter =  nil
+    }
+
+    func buildFinalDestinationURL() -> String {
+        baseURL + "?" + parameters.convertToQueryString()
     }
 }
 
@@ -146,5 +188,14 @@ private extension BlazeAdDestinationSettingViewModel {
             "%1$@ will be replaced by the URL text. " +
             "Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue"
         )
+    }
+}
+
+/// Convert a URLComponents's query items to BlazeAdURLParameter array.
+private extension URLComponents {
+    func toBlazeAdURLParameters() -> [BlazeAdURLParameter] {
+        guard let queryItems else { return [] }
+        // URLQueryItem's `value` is an optional String, so here we're converting to empty string if needed.
+        return queryItems.map { BlazeAdURLParameter(key: $0.name, value: $0.value ?? "") }
     }
 }

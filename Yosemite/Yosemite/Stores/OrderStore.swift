@@ -50,12 +50,14 @@ public class OrderStore: Store {
                                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                                 pageSize: pageSize,
                                 onCompletion: onCompletion)
-        case let .synchronizeOrders(siteID, statuses, after, before, modifiedAfter, pageNumber, pageSize, onCompletion):
+        case let .synchronizeOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, pageNumber, pageSize, onCompletion):
             synchronizeOrders(siteID: siteID,
                               statuses: statuses,
                               after: after,
                               before: before,
                               modifiedAfter: modifiedAfter,
+                              customerID: customerID,
+                              productID: productID,
                               pageNumber: pageNumber,
                               pageSize: pageSize,
                               onCompletion: onCompletion)
@@ -240,6 +242,8 @@ private extension OrderStore {
                            after: Date?,
                            before: Date?,
                            modifiedAfter: Date?,
+                           customerID: Int64?,
+                           productID: Int64?,
                            pageNumber: Int,
                            pageSize: Int,
                            onCompletion: @escaping (TimeInterval, Error?) -> Void) {
@@ -249,6 +253,8 @@ private extension OrderStore {
                              after: after,
                              before: before,
                              modifiedAfter: modifiedAfter,
+                             customerID: customerID,
+                             productID: productID,
                              pageNumber: pageNumber,
                              pageSize: pageSize) { [weak self] result in
             switch result {

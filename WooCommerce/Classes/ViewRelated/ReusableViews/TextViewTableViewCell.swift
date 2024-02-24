@@ -110,6 +110,11 @@ final class TextViewTableViewCell: UITableViewCell {
     override func becomeFirstResponder() -> Bool {
         noteTextView.becomeFirstResponder()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 extension TextViewTableViewCell: UITextViewDelegate {
@@ -152,7 +157,7 @@ extension TextViewTableViewCell {
 // Private methods
 private extension TextViewTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureTextView() {

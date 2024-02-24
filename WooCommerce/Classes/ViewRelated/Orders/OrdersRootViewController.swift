@@ -18,7 +18,7 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
-        switchDetailsHandler: handleSwitchingDetails
+        switchDetailsHandler: switchDetailsHandler
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -71,17 +71,21 @@ final class OrdersRootViewController: UIViewController {
 
     private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
+    private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
+
     // MARK: View Lifecycle
 
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
+         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(),
+         switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
+        self.switchDetailsHandler = switchDetailsHandler
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
@@ -152,9 +156,26 @@ final class OrdersRootViewController: UIViewController {
         presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
     }
 
+    /// Selects the order given the ID from the order list view if the order exists locally.
+    /// - Parameter orderID: ID of the order to select in the list.
+    /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
+    @discardableResult
+    func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
+        ordersViewController.selectOrderFromListIfPossible(for: orderID)
+    }
+
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
         let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
         navigationController?.pushViewController(loaderViewController, animated: true)
+
+        selectOrderFromListIfPossible(for: orderID)
+    }
+
+    /// Called when an order is shown externally (outside of `OrderListViewController`) and the order should be
+    /// selected in the order list.
+    /// - Parameter orderID: ID of the order to be selected in the order list.
+    func onOrderSelected(id orderID: Int64) {
+        ordersViewController.onOrderSelected(id: orderID)
     }
 
     /// Presents the Order Creation flow.
@@ -190,7 +211,7 @@ final class OrdersRootViewController: UIViewController {
 
         viewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
             self?.dismiss(animated: true) {
-                self?.navigateToOrderDetail(order) { [weak self] in
+                self?.navigateToOrderDetail(order) { [weak self] _ in
                     guard let self,
                           let orderDetailsViewController = self.orderDetailsViewController else {
                         return
@@ -202,9 +223,14 @@ final class OrdersRootViewController: UIViewController {
             }
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
-            navigationController.present(newOrderNavigationController, animated: true)
+        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            if featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                viewController.modalPresentationStyle = .overFullScreen
+                navigationController.present(viewController, animated: true)
+            } else {
+                let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+                navigationController.present(newOrderNavigationController, animated: true)
+            }
         } else {
             viewController.hidesBottomBarWhenPushed = true
             navigationController.pushViewController(viewController, animated: true)
@@ -230,7 +256,6 @@ final class OrdersRootViewController: UIViewController {
             self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
-                self.configureLeftButtonItemAsProductScanningButton()
                 switch result {
                 case let .success(product):
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation,
@@ -302,35 +327,6 @@ final class OrdersRootViewController: UIViewController {
         })
         present(filterOrderListViewController, animated: true, completion: nil)
     }
-
-    /// This is to update the order detail in split view
-    ///
-    private func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int, onCompletion: (() -> Void)? = nil) {
-        guard let splitViewController else {
-            onCompletion?()
-            return
-        }
-
-        guard viewModels.isNotEmpty else {
-            let emptyStateViewController = EmptyStateViewController(style: .basic)
-            let config = EmptyStateViewController.Config.simple(
-                message: .init(string: Localization.emptyOrderDetails),
-                image: .emptySearchResultsImage
-            )
-            emptyStateViewController.configure(config)
-            splitViewController.setViewController(UINavigationController(rootViewController: emptyStateViewController), for: .secondary)
-            splitViewController.show(.secondary)
-            onCompletion?()
-            return
-        }
-
-        let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
-        let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
-
-        splitViewController.setViewController(orderDetailsNavigationController, for: .secondary)
-        splitViewController.show(.secondary)
-        onCompletion?()
-    }
 }
 
 // MARK: - Configuration
@@ -354,23 +350,13 @@ private extension OrdersRootViewController {
     }
 
     /// Sets navigation buttons.
-    /// Scan: Present when `.addProductToOrderViaSKUScanner` flag is enabled
-    /// Search: Always present.
-    /// Add: Always present.
     ///
     func configureNavigationButtons() {
-        if featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner) {
-            configureLeftButtonItemAsProductScanningButton()
-        }
-
+        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
         navigationItem.rightBarButtonItems = [
             createAddOrderItem(),
             createSearchBarButtonItem()
         ]
-    }
-
-    func configureLeftButtonItemAsProductScanningButton() {
-        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
     }
 
     func configureFiltersBar() {
@@ -519,11 +505,16 @@ private extension OrdersRootViewController {
 
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
-    private func navigateToOrderDetail(_ order: Order, onCompletion: (() -> Void)? = nil) {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+    private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+            order: order,
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
+        ))
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return handleSwitchingDetails(viewModels: [viewModel], currentIndex: 0, onCompletion: onCompletion)
+            ordersViewController.showOrderDetails(order)
+            onCompletion?(true)
+            return
         }
 
         let orderViewController = OrderDetailsViewController(viewModel: viewModel)
@@ -535,7 +526,7 @@ private extension OrdersRootViewController {
         } else {
             show(orderViewController, sender: self)
         }
-        onCompletion?()
+        onCompletion?(true)
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {
@@ -559,7 +550,5 @@ private extension OrdersRootViewController {
             "Retrieves a list of orders that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
         )
-        static let emptyOrderDetails = NSLocalizedString("No order selected",
-                                                         comment: "Message on the detail view of the Orders tab before any order is selected")
     }
 }

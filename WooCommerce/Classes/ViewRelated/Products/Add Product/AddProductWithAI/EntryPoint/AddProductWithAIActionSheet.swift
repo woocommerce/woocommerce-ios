@@ -3,9 +3,13 @@ import SwiftUI
 /// Hosting controller for `AddProductWithAIActionSheet`.
 ///
 final class AddProductWithAIActionSheetHostingController: UIHostingController<AddProductWithAIActionSheet> {
-    init(onAIOption: @escaping () -> Void,
-         onManualOption: @escaping () -> Void) {
-        let rootView = AddProductWithAIActionSheet(onAIOption: onAIOption, onManualOption: onManualOption)
+    init(productTypes: [BottomSheetProductType],
+         onAIOption: @escaping () -> Void,
+         onProductTypeOption: @escaping (BottomSheetProductType) -> Void) {
+
+        let rootView = AddProductWithAIActionSheet(productTypes: productTypes,
+                                                   onAIOption: onAIOption,
+                                                   onProductTypeOption: onProductTypeOption)
         super.init(rootView: rootView)
     }
 
@@ -21,14 +25,18 @@ struct AddProductWithAIActionSheet: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var legalURL: URL?
+    @State private var isShowingManualOptions: Bool = false
 
+    private let productTypes: [BottomSheetProductType]
     private let onAIOption: () -> Void
-    private let onManualOption: () -> Void
+    private let onProductTypeOption: (BottomSheetProductType) -> Void
 
-    init(onAIOption: @escaping () -> Void,
-         onManualOption: @escaping () -> Void) {
+    init(productTypes: [BottomSheetProductType],
+         onAIOption: @escaping () -> Void,
+         onProductTypeOption: @escaping (BottomSheetProductType) -> Void) {
+        self.productTypes = productTypes
         self.onAIOption = onAIOption
-        self.onManualOption = onManualOption
+        self.onProductTypeOption = onProductTypeOption
     }
 
     var body: some View {
@@ -71,20 +79,30 @@ struct AddProductWithAIActionSheet: View {
                 Divider()
 
                 // Manual option
-                HStack(alignment: .top, spacing: Constants.margin) {
-                    Image(systemName: "plus.circle")
-                        .font(.title3)
-                        .foregroundColor(.secondary)
-                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                        Text(Localization.manualTitle)
-                            .bodyStyle()
-                        Text(Localization.manualDescription)
-                            .subheadlineStyle()
+                if !isShowingManualOptions {
+                    HStack(alignment: .top, spacing: Constants.margin) {
+                        Image(systemName: "plus.circle")
+                            .font(.title3)
+                            .foregroundColor(.secondary)
+                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                            Text(Localization.manualTitle)
+                                .bodyStyle()
+                            Text(Localization.manualDescription)
+                                .subheadlineStyle()
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                }
-                .onTapGesture {
-                    onManualOption()
+                    .onTapGesture {
+                        withAnimation {
+                            isShowingManualOptions = true
+                        }
+                    }
+                } else {
+                    Text(Localization.manualOptionsTitle)
+                        .subheadlineStyle()
+                        .padding(.top, Constants.margin)
+
+                    ManualProductTypeOptions(productTypes: productTypes, onOptionSelected: onProductTypeOption)
                 }
 
                 Spacer()
@@ -107,6 +125,11 @@ private extension AddProductWithAIActionSheet {
         static let title = NSLocalizedString(
             "Add a product",
             comment: "Title on the action sheet to select an option for adding new product"
+        )
+        static let manualOptionsTitle = NSLocalizedString(
+            "addProductWithAIActionSheet.manualOptionsTitle",
+            value: "Select a product type",
+            comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
         )
         static let aiTitle = NSLocalizedString(
             "Create a product with AI",
@@ -138,6 +161,18 @@ private extension AddProductWithAIActionSheet {
 
 struct AddProductWithAIActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductWithAIActionSheet(onAIOption: {}, onManualOption: {})
+        AddProductWithAIActionSheet(
+            productTypes: [
+                .simple(isVirtual: false),
+                .simple(isVirtual: true),
+                .subscription,
+                .variable,
+                .variableSubscription,
+                .grouped,
+                .affiliate
+            ],
+            onAIOption: {},
+            onProductTypeOption: {_ in }
+        )
     }
 }

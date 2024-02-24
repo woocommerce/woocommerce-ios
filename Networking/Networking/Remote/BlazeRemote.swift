@@ -1,5 +1,6 @@
 import Codegen
 import Foundation
+import struct Alamofire.JSONEncoding
 
 /// Protocol for `BlazeRemote` mainly used for mocking.
 ///
@@ -83,8 +84,14 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = Constants.dateFormat
         let parameters = try campaign.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+            .compactMapValues { $0 } // filters out any field with nil value
 
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: path,
+                                    parameters: parameters,
+                                    encoding: JSONEncoding.default)
         let mapper = CreateBlazeCampaignMapper()
         try await enqueue(request, mapper: mapper)
     }
@@ -156,8 +163,13 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         dateFormatter.dateFormat = Constants.dateFormat
 
         let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+            .compactMapValues { $0 } // filters out any field with nil value
 
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: path,
+                                    parameters: parameters,
+                                    encoding: JSONEncoding.default)
         let mapper = BlazeImpressionsMapper()
         return try await enqueue(request, mapper: mapper)
     }
@@ -175,7 +187,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         ///
         let parameters = [Keys.AISuggestions.urn: "\(Keys.AISuggestions.urn):\(Keys.AISuggestions.wpcom):\(Keys.AISuggestions.post):\(siteID):\(productID)"]
 
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters, encoding: JSONEncoding.default)
         let mapper = BlazeAISuggestionListMapper()
         return try await enqueue(request, mapper: mapper)
     }
@@ -271,18 +283,18 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     // Total budget of the campaign
     public let totalBudget: Double
     // Target options for the campaign. Optional.
-    public let targetings: BlazeTargetOptions?
+    public let targeting: BlazeTargetOptions?
 
     public init(startDate: Date,
                 endDate: Date,
                 timeZone: String,
                 totalBudget: Double,
-                targetings: BlazeTargetOptions? = nil) {
+                targeting: BlazeTargetOptions? = nil) {
         self.startDate = startDate
         self.endDate = endDate
         self.timeZone = timeZone
         self.totalBudget = totalBudget
-        self.targetings = targetings
+        self.targeting = targeting
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -290,7 +302,7 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
         case endDate
         case timeZone
         case totalBudget
-        case targetings
+        case targeting
     }
 }
 

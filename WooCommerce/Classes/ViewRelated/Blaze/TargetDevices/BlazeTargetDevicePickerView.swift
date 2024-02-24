@@ -21,7 +21,8 @@ struct BlazeTargetDevicePickerView: View {
                 case .syncing:
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 case .result(let devices):
-                    MultiSelectionList(contents: devices,
+                    MultiSelectionList(allOptionsTitle: Localization.allTitle,
+                                       contents: devices,
                                        contentKeyPath: \.name,
                                        selectedItems: $viewModel.selectedDevices)
                 case .error:
@@ -63,6 +64,11 @@ private extension BlazeTargetDevicePickerView {
             "blazeTargetDevicePickerView.title",
             value: "Devices",
             comment: "Title of the target device picker view for Blaze campaign creation"
+        )
+        static let allTitle = NSLocalizedString(
+            "blazeTargetDevicePickerView.allTitle",
+            value: "All devices",
+            comment: "Title of the row to select all target devices for Blaze campaign creation"
         )
         static let cancelButtonTitle = NSLocalizedString(
             "blazeTargetDevicePickerView.cancel",

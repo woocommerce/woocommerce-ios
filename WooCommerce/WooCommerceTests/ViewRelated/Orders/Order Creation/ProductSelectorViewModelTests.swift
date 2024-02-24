@@ -44,6 +44,24 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalSelectedItemsCount, 0)
     }
 
+    func test_selectProductsTitle_when_changeSelectionStateForProduct_then_updates_text_reflecting_number_of_products_selected() {
+        // Given
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        insert(product1)
+        insert(product2)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager)
+        // When, Then
+        assertEqual("Select products", viewModel.selectProductsTitle)
+
+        viewModel.changeSelectionStateForProduct(with: product1.productID)
+        assertEqual("1 product selected", viewModel.selectProductsTitle)
+
+        viewModel.changeSelectionStateForProduct(with: product2.productID)
+        assertEqual("2 products selected", viewModel.selectProductsTitle)
+    }
+
     func test_view_model_adds_product_rows() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
@@ -499,6 +517,25 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(selectedProduct, product.productID)
+    }
+
+    func test_changeSelectionStateForProduct_when_syncImmediately_true_calls_multiple_selection_handler() {
+        // Given
+        var selectedProducts: [Int64] = []
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 syncApproach: .immediate,
+                                                 onMultipleSelectionCompleted: { productIDs in
+            selectedProducts = productIDs
+        })
+
+        // When
+        viewModel.changeSelectionStateForProduct(with: product.productID)
+
+        // Then
+        XCTAssertEqual(selectedProducts, [product.productID])
     }
 
     func test_getVariationsViewModel_returns_expected_view_model_for_variable_product() throws {
@@ -1365,6 +1402,70 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         assertEqual(bundleProduct, productToConfigure)
+    }
+
+    /// We call onMultipleSelectionCompleted to save the selections made on a modal product
+    /// selector, e.g. when an iPad is in split-screen mode and is rotated to landscape.
+    /// It's a blocking operation, so we only want to do it when required.
+    func test_updateSyncApproach_calls_onMultipleSelectionCompleted_when_approach_changes_to_immediate() {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        insert(simpleProduct)
+
+        let selectedItemIDs = waitFor { promise in
+            let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                     selectedItemIDs: [],
+                                                     storageManager: self.storageManager,
+                                                     syncApproach: .onButtonTap,
+                                                     onMultipleSelectionCompleted: { selectedItemIDs in
+                promise(selectedItemIDs)
+            })
+
+            // When
+            viewModel.addSelection(id: 1)
+            viewModel.updateSyncApproach(to: .immediate)
+        }
+
+        // Then
+        assertEqual([1], selectedItemIDs)
+    }
+
+    func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_stays_on_immediate() {
+        // Given
+        let expectation = XCTestExpectation(description: "onMultipleSelectionCompleted called")
+        expectation.isInverted = true
+
+        let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                 syncApproach: .immediate,
+                                                 onMultipleSelectionCompleted: { selectedItems in
+            /// Since the expectation is inverted, the test will fail if this is called before the timeout.
+            expectation.fulfill()
+        })
+
+        // When
+        viewModel.updateSyncApproach(to: .immediate)
+
+        // Then
+        wait(for: [expectation], timeout: 0.1)
+    }
+
+    func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_changes_to_onButtonTap() {
+        // Given
+        let expectation = XCTestExpectation(description: "onMultipleSelectionCompleted called")
+        expectation.isInverted = true
+
+        let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                 syncApproach: .immediate,
+                                                 onMultipleSelectionCompleted: { selectedItems in
+            /// Since the expectation is inverted, the test will fail if this is called before the timeout.
+            expectation.fulfill()
+        })
+
+        // When
+        viewModel.updateSyncApproach(to: .onButtonTap)
+
+        // Then
+        wait(for: [expectation], timeout: 0.1)
     }
 
     // MARK: - Pagination

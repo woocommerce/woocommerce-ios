@@ -14,7 +14,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         styleSelection()
         styleLabels()
         styleCheckmark()
@@ -25,6 +25,11 @@ final class ProductCategoryTableViewCell: UITableViewCell {
         nameLabel.text = nil
         accessoryType = .none
         leadingNameLabelConstraint.constant = Constants.baseNameLabelMargin
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 
     /// Configure the cell with the given ViewModel

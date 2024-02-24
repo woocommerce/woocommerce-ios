@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class SupportFormViewModelTests: XCTestCase {
 
     func test_submit_button_is_disabled_when_area_and_subject_and_description_are_empty() {
@@ -67,6 +68,83 @@ final class SupportFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(zendesk.latestInvokedTags.contains(sourceTag))
+    }
+
+    func test_shouldShowIdentityInput_is_true_when_triggering_onViewAppear_no_existing_identity() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+
+        // When
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: false)
+        viewModel.onViewAppear()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowIdentityInput)
+        XCTAssertEqual(viewModel.contactName, "Test")
+        XCTAssertEqual(viewModel.contactEmailAddress, "test@example.com")
+    }
+
+    func test_shouldShowIdentityInput_is_false_when_triggering_onViewAppear_with_existing_identity() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+
+        // When
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        viewModel.onViewAppear()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowIdentityInput)
+    }
+
+    func test_submitIdentityInfo_sets_shouldShowErrorAlert_to_true_when_fails() async {
+        // Given
+        let zendesk = MockZendeskManager()
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+
+        // When
+        zendesk.whenCreateIdentity(thenReturn: .failure(NSError(domain: "Test", code: 500)))
+        await viewModel.submitIdentityInfo()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowErrorAlert)
+    }
+
+    func test_submitSupportRequest_sets_shouldShowSuccessAlert_to_true_when_succeeds() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        XCTAssertFalse(viewModel.shouldShowSuccessAlert)
+
+        // When
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        viewModel.selectArea(area)
+        viewModel.submitSupportRequest()
+
+        // Then
+        waitUntil {
+            viewModel.shouldShowSuccessAlert == true
+        }
+    }
+
+    func test_submitSupportRequest_sets_shouldShowErrorAlert_to_true_when_fails() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        XCTAssertFalse(viewModel.shouldShowErrorAlert)
+
+        // When
+        zendesk.whenCreateSupportRequest(thenReturn: .failure(NSError(domain: "Test", code: 500)))
+        viewModel.selectArea(area)
+        viewModel.submitSupportRequest()
+
+        // Then
+        waitUntil {
+            viewModel.shouldShowErrorAlert == true
+        }
     }
 }
 

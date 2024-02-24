@@ -199,74 +199,62 @@ private extension GenerativeContentRemote {
                            categories: [ProductCategory],
                            tags: [ProductTag],
                            token: JWToken) async throws -> AIProduct {
-
-        let tagsAsString = {
-            guard !tags.isEmpty else {
-                return ", tags: suggest an array of the best matching tags for this product."
-            }
-
-            return
-                ", tags: Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
-                "suggest an array of the best matching tags for this product. You can suggest new tags as well."
-        }()
-
-        let categoriesAsString = {
-            guard !categories.isEmpty else {
-                return ", categories: suggest an array of the best matching categories for this product."
-            }
-
-            return
-                ", categories: Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
-                "suggest an array of the best matching categories for this product. You can suggest new categories as well."
-        }()
-
-        let shippingJson = {
-            let weightJson = {
-                guard let weightUnit else {
-                    return ""
-                }
-
-                return "weight: Guess and provide only the number in ```\(weightUnit)```"
-            }()
-
-            let dimensionsJson = {
-                guard let dimensionUnit else {
-                    return ""
-                }
-
-                return
-                    ", " +
-                    "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
-                    "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
-                    "height: Guess and provide only the number in ```\(dimensionUnit)```"
-            }()
-
-            return "shipping: {" +
-                            weightJson +
-                            dimensionsJson +
-                    "}, "
-        }()
-
         let input = [
             "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
-            "using the provided name, keywords and tone, and give your response in the below JSON format.",
+            "using the provided name, keywords and tone.",
+            "Your response should be in JSON format and don't send anything extra.",
             "name: ```\(productName)```",
             "keywords: ```\(keywords)```",
             "tone: ```\(tone)```",
         ].joined(separator: "\n")
 
+        let jsonResponseFormatDict: [String: Any] = {
+            let tagsPrompt: String = {
+                guard !tags.isEmpty else {
+                    return "Suggest an array of the best matching tags for this product."
+                }
+
+                return "Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
+                        "suggest an array of the best matching tags for this product. You can suggest new tags as well."
+            }()
+
+            let categoriesPrompt: String = {
+                guard !categories.isEmpty else {
+                    return "Suggest an array of the best matching categories for this product."
+                }
+
+                return "Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
+                        "suggest an array of the best matching categories for this product. You can suggest new categories as well."
+            }()
+
+            let shippingPrompt = {
+                var dict = [String: String]()
+                if let weightUnit {
+                    dict["weight"] = "Guess and provide only the number in \(weightUnit)"
+                }
+
+                if let dimensionUnit {
+                    dict["length"] = "Guess and provide only the number in \(dimensionUnit)"
+                    dict["width"] = "Guess and provide only the number in \(dimensionUnit)"
+                    dict["height"] = "Guess and provide only the number in \(dimensionUnit)"
+                }
+                return dict
+            }()
+
+            return ["name": "The name of the product, written in the language with ISO code ```\(language)```",
+                    "description": "Product description of around 100 words long in a ```\(tone)``` tone, "
+                    + "written in the language with ISO code ```\(language)```",
+                    "short_description": "Product's short description, written in the language with ISO code ```\(language)```",
+                    "virtual": "A boolean value that shows whether the product is virtual or physical",
+                    "shipping": shippingPrompt,
+                    "price": "Guess the price in \(currencySymbol), do not include the currency symbol, "
+                    + "only provide the price as a number",
+                    "tags": tagsPrompt,
+                    "categories": categoriesPrompt]
+        }()
+
         let expectedJsonFormat =
-        "Expected json response format:" + "\n" +
-        "{" +
-            "name: The name of the product, in the ISO language code ```\(language)```, " +
-            "description: Product description of around 100 words long in a ```\(tone)``` tone, in the ISO language code ```\(language)```, " +
-            "short_description: Product's short description, in the ISO language code ```\(language)```, " +
-            "virtual: A boolean value that shows whether the product is virtual or physical, " +
-            shippingJson +
-            "price: Guess the price in ```\(currencySymbol)```, do not include the currency symbol, only provide the price as a number" +
-            tagsAsString +
-            categoriesAsString +
-        "}"
+        "Expected json response format:" + "\n" + (jsonResponseFormatDict.toJSONEncoded() ?? "")
 
         let prompt = input + "\n" + expectedJsonFormat
 

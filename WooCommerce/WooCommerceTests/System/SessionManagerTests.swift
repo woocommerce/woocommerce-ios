@@ -6,7 +6,7 @@ import KeychainAccess
 
 /// SessionManager Unit Tests
 ///
-class SessionManagerTests: XCTestCase {
+final class SessionManagerTests: XCTestCase {
 
     /// Sample Application Password
     ///
@@ -297,28 +297,6 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.aiPromptTone])
     }
 
-    /// Verifies that `hasDisplayedTipAfterBlazeCampaignCreation` is set to `nil` upon reset
-    ///
-    func test_hasDisplayedTipAfterBlazeCampaignCreation_is_set_to_nil_upon_reset() throws {
-        // Given
-        let siteID: Int64 = 123
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-
-        // When
-        defaults[.hasDisplayedTipAfterBlazeCampaignCreation] = ["\(siteID)": true]
-
-        // Then
-        XCTAssertTrue(try XCTUnwrap(defaults.hasDisplayedTipAfterBlazeCampaignCreation(for: siteID)))
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[.hasDisplayedTipAfterBlazeCampaignCreation])
-    }
-
     /// Verifies that `numberOfTimesProductCreationAISurveySuggested` is set to `nil` upon reset
     ///
     func test_numberOfTimesProductCreationAISurveySuggested_is_set_to_nil_upon_reset() throws {
@@ -424,6 +402,24 @@ class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertNil(defaults[.expectedStoreNamePendingStoreSwitch])
+    }
+
+    /// Verifies that image cache is cleared upon reset
+    ///
+    func test_image_cache_is_cleared_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let mockCache = MockImageCache(name: "Testing")
+        let sut = SessionManager(defaults: defaults,
+                                 keychainServiceName: Settings.keychainServiceName,
+                                 imageCache: mockCache)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertTrue(mockCache.clearCacheCalled)
     }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain

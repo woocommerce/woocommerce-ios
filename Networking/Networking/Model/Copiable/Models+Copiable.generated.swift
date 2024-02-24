@@ -3,7 +3,6 @@
 import Codegen
 import Foundation
 
-
 extension Networking.AIProduct {
     public func copy(
         name: CopiableProp<String> = .copy,
@@ -1092,7 +1091,8 @@ extension Networking.Order {
         taxes: CopiableProp<[OrderTaxLine]> = .copy,
         customFields: CopiableProp<[OrderMetaData]> = .copy,
         renewalSubscriptionID: NullableCopiableProp<String> = .copy,
-        appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy
+        appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy,
+        attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy
     ) -> Networking.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -1131,6 +1131,7 @@ extension Networking.Order {
         let customFields = customFields ?? self.customFields
         let renewalSubscriptionID = renewalSubscriptionID ?? self.renewalSubscriptionID
         let appliedGiftCards = appliedGiftCards ?? self.appliedGiftCards
+        let attributionInfo = attributionInfo ?? self.attributionInfo
 
         return Networking.Order(
             siteID: siteID,
@@ -1169,7 +1170,35 @@ extension Networking.Order {
             taxes: taxes,
             customFields: customFields,
             renewalSubscriptionID: renewalSubscriptionID,
-            appliedGiftCards: appliedGiftCards
+            appliedGiftCards: appliedGiftCards,
+            attributionInfo: attributionInfo
+        )
+    }
+}
+
+extension Networking.OrderAttributionInfo {
+    public func copy(
+        sourceType: NullableCopiableProp<String> = .copy,
+        campaign: NullableCopiableProp<String> = .copy,
+        source: NullableCopiableProp<String> = .copy,
+        medium: NullableCopiableProp<String> = .copy,
+        deviceType: NullableCopiableProp<String> = .copy,
+        sessionPageViews: NullableCopiableProp<String> = .copy
+    ) -> Networking.OrderAttributionInfo {
+        let sourceType = sourceType ?? self.sourceType
+        let campaign = campaign ?? self.campaign
+        let source = source ?? self.source
+        let medium = medium ?? self.medium
+        let deviceType = deviceType ?? self.deviceType
+        let sessionPageViews = sessionPageViews ?? self.sessionPageViews
+
+        return Networking.OrderAttributionInfo(
+            sourceType: sourceType,
+            campaign: campaign,
+            source: source,
+            medium: medium,
+            deviceType: deviceType,
+            sessionPageViews: sessionPageViews
         )
     }
 }
@@ -2358,6 +2387,21 @@ extension Networking.ProductVariationAttribute {
             id: id,
             name: name,
             option: option
+        )
+    }
+}
+
+extension Networking.Receipt {
+    public func copy(
+        receiptURL: CopiableProp<String> = .copy,
+        expirationDate: CopiableProp<String> = .copy
+    ) -> Networking.Receipt {
+        let receiptURL = receiptURL ?? self.receiptURL
+        let expirationDate = expirationDate ?? self.expirationDate
+
+        return Networking.Receipt(
+            receiptURL: receiptURL,
+            expirationDate: expirationDate
         )
     }
 }

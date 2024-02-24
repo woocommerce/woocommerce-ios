@@ -8,8 +8,13 @@ class ImageTableViewCell: UITableViewCell {
         configureCell()
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     private func configureCell() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         setNeedsLayout()
     }
 

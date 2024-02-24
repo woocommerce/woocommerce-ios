@@ -20,6 +20,9 @@ struct AnalyticsReportCard: View {
     let trailingChartData: [Double]
     let trailingChartColor: UIColor?
 
+    let reportViewModel: AnalyticsReportLinkViewModel?
+    @State private var showingWebReport: Bool = false
+
     let isRedacted: Bool
 
     let showSyncError: Bool
@@ -97,11 +100,19 @@ struct AnalyticsReportCard: View {
             }
 
             if showSyncError {
-               Text(syncErrorMessage)
-                   .foregroundColor(Color(.text))
-                   .subheadlineStyle()
-                   .frame(maxWidth: .infinity, alignment: .leading)
-           }
+                Text(syncErrorMessage)
+                    .foregroundColor(Color(.text))
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            if let reportViewModel {
+                VStack(spacing: Layout.cardPadding) {
+                    Divider()
+                        .padding(.horizontal, Layout.dividerPadding)
+                    AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                }
+            }
         }
         .padding(Layout.cardPadding)
     }
@@ -117,6 +128,7 @@ private extension AnalyticsReportCard {
         static let chartHeight: CGFloat = 32
         static let chartWidth: CGFloat = 72
         static let chartAspectRatio: CGFloat = 2.25
+        static let dividerPadding: CGFloat = -16
     }
 }
 
@@ -138,6 +150,11 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .textInverted,
                             trailingChartData: [50.0, 15.0, 20.0, 2.0, 10.0, 0.0, 40.0, 15.0, 20.0, 2.0, 10.0, 0.0],
                             trailingChartColor: .withColorStudio(.red, shade: .shade40),
+                            reportViewModel: .init(reportType: .revenue,
+                                                   period: .today,
+                                                   webViewTitle: "Revenue Report",
+                                                   reportURL: URL(string: "https://woo.com")!,
+                                                   usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()),
                             isRedacted: false,
                             showSyncError: false,
                             syncErrorMessage: "")
@@ -158,6 +175,11 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: .text,
                             trailingChartData: [],
                             trailingChartColor: .withColorStudio(.gray, shade: .shade30),
+                            reportViewModel: .init(reportType: .revenue,
+                                                   period: .today,
+                                                   webViewTitle: "Revenue Report",
+                                                   reportURL: URL(string: "https://woo.com")!,
+                                                   usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()),
                             isRedacted: false,
                             showSyncError: true,
                             syncErrorMessage: "Error loading revenue analytics")
@@ -179,6 +201,7 @@ struct Previews: PreviewProvider {
                             trailingDeltaTextColor: nil,
                             trailingChartData: [],
                             trailingChartColor: nil,
+                            reportViewModel: nil,
                             isRedacted: false,
                             showSyncError: true,
                             syncErrorMessage: "")

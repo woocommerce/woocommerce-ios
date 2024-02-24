@@ -11,9 +11,14 @@ class RefundConfirmationCardDetailsCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         titleLabel.applyHeadlineStyle()
         cardDescriptionLabel.applyBodyStyle()
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
     }
 
     func update(title: String,

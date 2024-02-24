@@ -44,7 +44,7 @@ public enum ProductAction: Action {
     ///
     case synchronizeProducts(siteID: Int64,
                              pageNumber: Int,
-                             pageSize: Int,
+                             pageSize: Int = ProductsRemote.Default.pageSize,
                              stockStatus: ProductStockStatus?,
                              productStatus: ProductStatus?,
                              productType: ProductType?,

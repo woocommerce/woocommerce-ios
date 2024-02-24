@@ -283,35 +283,6 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfLoadCampaigns, 1)
     }
 
-    // MARK: - checkIfPostCreationTipIsNeeded
-
-    func test_checkIfPostCreationTipIsNeeded_sets_shouldDisplayPostCampaignCreationTip_to_true_if_the_tip_has_not_been_displayed() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, userDefaults: userDefaults)
-
-        // When
-        viewModel.checkIfPostCreationTipIsNeeded()
-
-        // Then
-        XCTAssertTrue(viewModel.shouldDisplayPostCampaignCreationTip)
-    }
-
-    func test_checkIfPostCreationTipIsNeeded_keeps_shouldDisplayPostCampaignCreationTip_as_false_if_the_tip_has_been_displayed() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        userDefaults[.hasDisplayedTipAfterBlazeCampaignCreation] = ["\(sampleSiteID)": true]
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, userDefaults: userDefaults)
-
-        // When
-        viewModel.checkIfPostCreationTipIsNeeded()
-
-        // Then
-        XCTAssertFalse(viewModel.shouldDisplayPostCampaignCreationTip)
-    }
-
     // MARK: - shouldShowIntroView
 
     func test_shouldShowIntroView_is_false_when_there_are_existing_campaigns() {
@@ -370,8 +341,10 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {
         // Given
         let testURL = "https://example.com"
+        let site = Site.fake().copy(siteID: sampleSiteID, url: testURL)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: site))
         let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 123)
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: testURL)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
 
         // Confidence check
         XCTAssertNil(viewModel.selectedCampaignURL)
@@ -400,23 +373,6 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_entry_point_displayed"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(eventProperties["source"] as? String, "campaign_list")
-    }
-
-    func test_blazeEntryPointDisplayed_is_tracked_when_intro_view_is_shown() throws {
-        // Given
-        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
-
-        // Confidence check
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
-
-        // When
-        viewModel.shouldShowIntroView = true
-
-        // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
-        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_entry_point_displayed"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
-        XCTAssertEqual(eventProperties["source"] as? String, "intro_view")
     }
 
     func test_didSelectCampaignDetails_tracks_blazeCampaignDetailSelected_with_correct_source() throws {

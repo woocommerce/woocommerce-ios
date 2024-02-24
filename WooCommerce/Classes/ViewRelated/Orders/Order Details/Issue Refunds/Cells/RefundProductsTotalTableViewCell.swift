@@ -32,12 +32,17 @@ final class RefundProductsTotalTableViewCell: UITableViewCell {
         super.awakeFromNib()
         applyCellStyles()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: View Styles Configuration
 private extension RefundProductsTotalTableViewCell {
     func applyCellStyles() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
         applyLabelsStyles()
     }
 

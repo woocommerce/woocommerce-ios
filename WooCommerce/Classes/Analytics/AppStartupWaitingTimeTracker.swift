@@ -13,7 +13,6 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     enum StartupAction: CaseIterable {
         case syncDashboardStats
         case loadOnboardingTasks
-        case syncBlazeCampaigns
     }
 
     /// Represents all of the app startup actions waiting to be completed.

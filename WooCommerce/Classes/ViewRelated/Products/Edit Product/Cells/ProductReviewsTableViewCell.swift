@@ -35,13 +35,18 @@ final class ProductReviewsTableViewCell: UITableViewCell {
         starRating = Double(averageRating)
         selectionStyle = ratingCount > 0 ? .default: .none
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 // MARK: - Configure
 //
 private extension ProductReviewsTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureImageView() {

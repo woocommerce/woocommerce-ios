@@ -4,20 +4,6 @@ import TestKit
 import Yosemite
 
 final class PrintShippingLabelCoordinatorTests: XCTestCase {
-    func test_showPrintUI_shows_PrintShippingLabelViewController() {
-        // Given
-        let viewController = MockSourceNavigationController()
-        let shippingLabel = MockShippingLabel.emptyLabel()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel], printType: .print, sourceNavigationController: viewController)
-
-        // When
-        coordinator.showPrintUI()
-
-        // Then
-        XCTAssertEqual(viewController.shownViewControllers.count, 1)
-        assertThat(viewController.shownViewControllers[0], isAnInstanceOf: PrintShippingLabelViewController.self)
-    }
-
     // MARK: `showPaperSizeSelector`
 
     func test_showPaperSizeSelector_shows_ListSelectorViewController() throws {
@@ -27,15 +13,15 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel],
                                                         printType: .print,
                                                         sourceNavigationController: viewController)
-        coordinator.showPrintUI()
-        let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
+
+        let printViewController = coordinator.createPrintViewController()
 
         // When
         printViewController.onAction?(.showPaperSizeSelector(paperSizeOptions: [.label], selectedPaperSize: nil, onSelection: { _ in }))
 
         // Then
-        XCTAssertEqual(viewController.shownViewControllers.count, 2)
-        assertThat(viewController.shownViewControllers[1],
+        XCTAssertEqual(viewController.shownViewControllers.count, 1)
+        assertThat(viewController.shownViewControllers[0],
                    isAnInstanceOf: ListSelectorViewController<ShippingLabelPaperSizeListSelectorCommand, ShippingLabelPaperSize, BasicTableViewCell>.self)
     }
 
@@ -50,8 +36,8 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
                                                         printType: .print,
                                                         sourceNavigationController: viewController,
                                                         stores: stores)
-        coordinator.showPrintUI()
-        let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
+
+        let printViewController = coordinator.createPrintViewController()
 
         // When
         printViewController.onAction?(.print(paperSize: .label))
@@ -80,8 +66,8 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
                                                         printType: .print,
                                                         sourceNavigationController: viewController,
                                                         stores: stores)
-        coordinator.showPrintUI()
-        let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
+
+        let printViewController = coordinator.createPrintViewController()
 
         // When
         printViewController.onAction?(.print(paperSize: .label))
@@ -107,8 +93,8 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
                                                         sourceNavigationController: viewController,
                                                         stores: stores,
                                                         analytics: analytics)
-        coordinator.showPrintUI()
-        let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
+
+        let printViewController = coordinator.createPrintViewController()
 
         // When
         printViewController.onAction?(.print(paperSize: .label))
@@ -127,8 +113,8 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel],
                                                         printType: .print,
                                                         sourceNavigationController: viewController)
-        coordinator.showPrintUI()
-        let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
+
+        let printViewController = coordinator.createPrintViewController()
 
         // When
         printViewController.onAction?(.presentPaperSizeOptions)
@@ -148,8 +134,8 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel],
                                                         printType: .print,
                                                         sourceNavigationController: viewController)
-        coordinator.showPrintUI()
-        let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
+
+        let printViewController = coordinator.createPrintViewController()
 
         // When
         printViewController.onAction?(.presentPrintingInstructions)

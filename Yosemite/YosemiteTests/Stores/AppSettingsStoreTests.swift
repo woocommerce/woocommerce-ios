@@ -1239,6 +1239,67 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertEqual(loadedTaxRateID, storedTaxRateID)
     }
+
+    func test_setAnalyticsHubCards_works_correctly() throws {
+        // Given
+        let analyticsCards = [
+            AnalyticsCard(type: .revenue, enabled: true),
+            AnalyticsCard(type: .orders, enabled: false),
+            AnalyticsCard(type: .products, enabled: true),
+            AnalyticsCard(type: .sessions, enabled: false)
+        ]
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setAnalyticsHubCards(siteID: TestConstants.siteID, cards: analyticsCards)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(analyticsCards, settingsForSite?.analyticsHubCards)
+    }
+
+    func test_loadAnalyticsHubCards_works_correctly() throws {
+        // Given
+        let storedAnalyticsCards = [
+            AnalyticsCard(type: .revenue, enabled: true),
+            AnalyticsCard(type: .orders, enabled: false),
+            AnalyticsCard(type: .products, enabled: true),
+            AnalyticsCard(type: .sessions, enabled: false)
+        ]
+        let storeSettings = GeneralStoreSettings(analyticsHubCards: storedAnalyticsCards)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedAnalyticsCards: [AnalyticsCard]?
+        let action = AppSettingsAction.loadAnalyticsHubCards(siteID: TestConstants.siteID) { cards in
+            loadedAnalyticsCards = cards
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(storedAnalyticsCards, loadedAnalyticsCards)
+    }
+
+    func test_loadAnalyticsHubCards_returns_nil_when_no_cards_are_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedAnalyticsCards: [AnalyticsCard]?
+        let action = AppSettingsAction.loadAnalyticsHubCards(siteID: TestConstants.siteID) { cards in
+            loadedAnalyticsCards = cards
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedAnalyticsCards)
+    }
 }
 
 // MARK: - Utils

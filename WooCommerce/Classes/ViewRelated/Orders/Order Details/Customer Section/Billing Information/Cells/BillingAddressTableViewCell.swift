@@ -52,6 +52,9 @@ final class BillingAddressTableViewCell: UITableViewCell {
         }
     }
 
+    var rightBorder: CALayer?
+    var leftBorder: CALayer?
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
@@ -66,18 +69,42 @@ final class BillingAddressTableViewCell: UITableViewCell {
         onEditTapped = nil
         editButton.accessibilityLabel = nil
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard bounds.width >= Constants.widthForSideBorders else {
+            removeSideBorders()
+            return
+        }
+
+        if leftBorder == nil || rightBorder == nil {
+            addSideBorders()
+        }
+
+        leftBorder?.frame = CGRect(x: 0.0,
+                                   y: 0.0,
+                                   width: Constants.borderWidth,
+                                   height: bounds.maxY)
+
+        rightBorder?.frame = CGRect(x: bounds.maxX - Constants.borderWidth,
+                                    y: 0.0,
+                                    width: Constants.borderWidth,
+                                    height: bounds.maxY)
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
-/// MARK: - Private Methods
+// MARK: - Private Methods
 ///
 private extension BillingAddressTableViewCell {
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureLabels() {
@@ -94,9 +121,29 @@ private extension BillingAddressTableViewCell {
     @objc func editButtonTapped() {
         onEditTapped?()
     }
+
+    func addSideBorders() {
+        let leftBorder = CALayer()
+        leftBorder.backgroundColor = UIColor.border.cgColor
+
+        let rightBorder = CALayer()
+        rightBorder.backgroundColor = UIColor.border.cgColor
+
+        contentView.layer.addSublayer(leftBorder)
+        contentView.layer.addSublayer(rightBorder)
+        self.leftBorder = leftBorder
+        self.rightBorder = rightBorder
+    }
+
+    func removeSideBorders() {
+        leftBorder?.removeFromSuperlayer()
+        rightBorder?.removeFromSuperlayer()
+        leftBorder = nil
+        rightBorder = nil
+    }
 }
 
-/// MARK: - Testability
+// MARK: - Testability
 extension BillingAddressTableViewCell {
 
     func getNameLabel() -> UILabel {
@@ -105,5 +152,12 @@ extension BillingAddressTableViewCell {
 
     func getAddressLabel() -> UILabel {
         return addressLabel
+    }
+}
+
+private extension BillingAddressTableViewCell {
+    enum Constants {
+        static let borderWidth: CGFloat = 0.5
+        static let widthForSideBorders: CGFloat = 525
     }
 }

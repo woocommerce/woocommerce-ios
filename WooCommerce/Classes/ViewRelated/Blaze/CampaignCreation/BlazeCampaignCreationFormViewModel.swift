@@ -14,6 +14,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private let stores: StoresManager
     private let productImageLoader: ProductUIImageLoader
     private let completionHandler: () -> Void
+
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .none
@@ -48,7 +49,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                   pageTopics: pageTopics?.map { $0.id })
     }
 
-    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
+    /// We need to recreate the view model every time the budget screen is opened to get the updated target options.
+    var budgetSettingViewModel: BlazeBudgetSettingViewModel {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     duration: duration,
@@ -60,7 +62,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
-    }()
+    }
 
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
@@ -105,11 +107,38 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }()
 
-    lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
-        BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo, onCompletion: { [weak self] in
+    var confirmPaymentViewModel: BlazeConfirmPaymentViewModel? {
+        guard let image else {
+            return nil
+        }
+        return BlazeConfirmPaymentViewModel(productID: productID,
+                                            siteID: siteID,
+                                            campaignInfo: campaignInfo,
+                                            image: image,
+                                            onCompletion: { [weak self] in
             self?.completionHandler()
         })
-    }()
+    }
+
+    var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
+        // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
+        guard let productURL, let siteURL else {
+            DDLogError("Error: unable to create BlazeAdDestinationSettingViewModel because productURL and/or siteURL is empty.")
+            return nil
+        }
+        return BlazeAdDestinationSettingViewModel(
+            productURL: productURL,
+            homeURL: siteURL,
+            finalDestinationURL: finalDestinationURL) { [weak self] targetUrl, urlParams in
+                guard let self else { return }
+                self.targetUrl = targetUrl
+                self.urlParams = urlParams
+        }
+    }
+
+    // For Ad destination purposes
+    private var productURL: String? { product?.permalink }
+    private var siteURL: String? { stores.sessionManager.defaultSite?.url }
 
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
@@ -117,8 +146,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var targetTopicText: String = ""
     @Published private(set) var targetLocationText: String = ""
 
+    // Ad destination URL
+    @Published private var targetUrl: String = ""
+    @Published private var urlParams: String = ""
+    var finalDestinationURL: String {
+        guard urlParams.isNotEmpty else {
+            return targetUrl
+        }
+
+        return targetUrl + "?" + urlParams
+    }
+
     // AI Suggestions
-    @Published private(set) var isLoadingAISuggestions: Bool = true
+    @Published private(set) var isLoadingAISuggestions: Bool = false
     private let storage: StorageManagerType
     private var product: Product? {
         guard let product = productsResultsController.fetchedObjects.first else {
@@ -131,15 +171,18 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
 
-    @Published private var isLoadingProductImage: Bool = true
+    @Published private var isLoadingProductImage: Bool = false
 
     var canEditAd: Bool {
-        !(isLoadingProductImage || isLoadingAISuggestions)
+        !isLoadingAISuggestions
     }
 
     var canConfirmDetails: Bool {
-        image != nil && tagline.isNotEmpty && description.isNotEmpty
+        tagline.isNotEmpty && description.isNotEmpty
     }
+
+    @Published var isShowingMissingImageErrorAlert: Bool = false
+    @Published var isShowingPaymentInfo: Bool = false
 
     /// ResultController to get the product for the given product ID
     ///
@@ -166,25 +209,31 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             totalBudget: dailyBudget * Double(duration),
                             siteName: tagline,
                             textSnippet: description,
-                            targetUrl: "", // TODO: update this
-                            urlParams: "", // TODO: update this
-                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // TODO: update this
+                            targetUrl: targetUrl,
+                            urlParams: urlParams,
+                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // Image info will be added by `BlazeConfirmPaymentViewModel`.
                             targeting: targetOptions,
                             targetUrn: targetUrn,
                             type: Constants.campaignType)
     }
 
+    private let analytics: Analytics
+
+    private var didTrackOnAppear = false
+
     init(siteID: Int64,
          productID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-    productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
+         productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
         self.stores = stores
         self.storage = storage
         self.productImageLoader = productImageLoader
+        self.analytics = analytics
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
@@ -193,38 +242,39 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateTargetDevicesText()
         updateTargetTopicText()
         updateTargetLocationText()
+        initializeAdTargetUrl()
+    }
+
+    func onAppear() {
+        // Track displayed event only once
+        guard !didTrackOnAppear else {
+            return
+        }
+        analytics.track(event: .Blaze.CreationForm.creationFormDisplayed())
+        didTrackOnAppear = true
+    }
+
+    func onLoad() async {
+        await withTaskGroup(of: Void.self) { group in
+            if suggestions.isEmpty {
+                group.addTask {
+                    await self.loadAISuggestions()
+                }
+            }
+
+            if image == nil {
+                group.addTask {
+                    await self.downloadProductImage()
+                }
+            }
+        }
     }
 
     func didTapEditAd() {
+        analytics.track(event: .Blaze.CreationForm.editAdTapped())
         onEditAd?()
     }
-}
 
-// MARK: Image download
-extension BlazeCampaignCreationFormViewModel {
-    @MainActor
-    func downloadProductImage() async {
-        isLoadingProductImage = true
-        image = await loadProductImage()
-        isLoadingProductImage = false
-    }
-}
-
-private extension BlazeCampaignCreationFormViewModel {
-    func loadProductImage() async -> MediaPickerImage? {
-        await withCheckedContinuation({ continuation in
-            guard let firstImage = product?.images.first else {
-                return continuation.resume(returning: nil)
-            }
-            _ = productImageLoader.requestImage(productImage: firstImage) { image in
-                continuation.resume(returning: .init(image: image, source: .productImage(image: firstImage)))
-            }
-        })
-    }
-}
-
-// MARK: - Blaze AI Suggestions
-extension BlazeCampaignCreationFormViewModel {
     @MainActor
     func loadAISuggestions() async {
         isLoadingAISuggestions = true
@@ -243,7 +293,41 @@ extension BlazeCampaignCreationFormViewModel {
 
         isLoadingAISuggestions = false
     }
+
+    func didTapConfirmDetails() {
+        guard image != nil else {
+            return isShowingMissingImageErrorAlert = true
+        }
+
+        let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }
+        let descriptionMatching = suggestions.map { $0.textSnippet }.contains { $0 == description }
+        let isAISuggestedAdContent = taglineMatching || descriptionMatching
+        analytics.track(event: .Blaze.CreationForm.confirmDetailsTapped(isAISuggestedAdContent: isAISuggestedAdContent))
+        isShowingPaymentInfo = true
+    }
 }
+
+// MARK: Image download
+extension BlazeCampaignCreationFormViewModel {
+    @MainActor
+    func downloadProductImage() async {
+        isLoadingProductImage = true
+        image = await loadProductImage()
+        isLoadingProductImage = false
+    }
+}
+
+private extension BlazeCampaignCreationFormViewModel {
+    func loadProductImage() async -> MediaPickerImage? {
+        guard let firstImage = product?.images.first,
+              let image = try? await productImageLoader.requestImage(productImage: firstImage) else {
+            return nil
+        }
+        return .init(image: image, source: .productImage(image: firstImage))
+    }
+}
+
+// MARK: - Blaze AI Suggestions
 
 private extension BlazeCampaignCreationFormViewModel {
     @MainActor
@@ -328,6 +412,13 @@ private extension BlazeCampaignCreationFormViewModel {
                 .sorted()
                 .joined(separator: ", ")
         }()
+    }
+
+    func initializeAdTargetUrl() {
+        // Default to promoting Product URL at the beginning.
+        if let productURL = productURL {
+            targetUrl = productURL
+        }
     }
 }
 

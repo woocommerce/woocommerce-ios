@@ -50,6 +50,9 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The selected tax rate to apply to the orders
     public let selectedTaxRateID: Int64?
 
+    /// The set of cards for the Analytics Hub, with their enabled status and sort order.
+    public let analyticsHubCards: [AnalyticsCard]?
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -58,7 +61,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 skippedCashOnDeliveryOnboardingStep: Bool = false,
                 lastSelectedStatsTimeRange: String = "",
                 firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date] = [:],
-                selectedTaxRateID: Int64? = nil) {
+                selectedTaxRateID: Int64? = nil,
+                analyticsHubCards: [AnalyticsCard]? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -68,6 +72,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastSelectedStatsTimeRange = lastSelectedStatsTimeRange
         self.firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType
         self.selectedTaxRateID = selectedTaxRateID
+        self.analyticsHubCards = analyticsHubCards
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -79,7 +84,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              skippedCashOnDeliveryOnboardingStep: skippedCashOnDeliveryOnboardingStep,
                              lastSelectedStatsTimeRange: lastSelectedStatsTimeRange,
                              firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
-                             selectedTaxRateID: nil)
+                             selectedTaxRateID: nil,
+                             analyticsHubCards: analyticsHubCards)
     }
 }
 
@@ -100,6 +106,7 @@ extension GeneralStoreSettings {
         self.firstInPersonPaymentsTransactionsByReaderType = try container.decodeIfPresent([CardReaderType: Date].self,
                                                                                            forKey: .firstInPersonPaymentsTransactionsByReaderType) ?? [:]
         self.selectedTaxRateID = try container.decodeIfPresent(Int64.self, forKey: .selectedTaxRateID)
+        self.analyticsHubCards = try container.decodeIfPresent([AnalyticsCard].self, forKey: .analyticsHubCards)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

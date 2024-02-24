@@ -115,11 +115,16 @@ class CustomerInfoTableViewCell: UITableViewCell {
     func configureLayout() {
         addressStackView.isHidden = (name == nil || (name?.isEmpty ?? true)) && (address == nil || (address?.isEmpty ?? true))
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 private extension CustomerInfoTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureEditButton() {
@@ -148,7 +153,7 @@ private extension CustomerInfoTableViewCell {
     }
 }
 
-/// MARK: - Testability
+// MARK: - Testability
 extension CustomerInfoTableViewCell {
     func getTitleLabel() -> UILabel {
         return titleLabel

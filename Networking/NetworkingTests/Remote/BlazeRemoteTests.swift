@@ -57,7 +57,7 @@ final class BlazeRemoteTests: XCTestCase {
                                                   mimeType: "image/png")
         let targeting = BlazeTargetOptions(locations: [29211, 42546],
                                            languages: ["en", "de"],
-                                           devices: ["mobile"],
+                                           devices: nil,
                                            pageTopics: ["IAB3", "IAB4"])
         let campaign = CreateBlazeCampaign.fake().copy(origin: "WooMobile",
                                                        originVersion: "1.0.1",
@@ -99,7 +99,7 @@ final class BlazeRemoteTests: XCTestCase {
         let targetingDict = try XCTUnwrap(request.parameters?["targeting"] as? [String: Any])
         XCTAssertEqual(targetingDict["locations"] as? [Int64], targeting.locations)
         XCTAssertEqual(targetingDict["languages"] as? [String], targeting.languages)
-        XCTAssertEqual(targetingDict["devices"] as? [String], targeting.devices)
+        XCTAssertNil(targetingDict["devices"])
         XCTAssertEqual(targetingDict["page_topics"] as? [String], targeting.pageTopics)
 
         XCTAssertEqual(request.parameters?["target_urn"] as? String, campaign.targetUrn)
@@ -429,6 +429,48 @@ final class BlazeRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(result, .init(totalImpressionsMin: 17900, totalImpressionsMax: 24200))
+    }
+
+    func test_fetchForecastedImpressions_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/forecast"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-impressions")
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        let startDateString = "2023-12-05"
+        let startDate = try XCTUnwrap(dateFormatter.date(from: startDateString))
+
+        let endDateString = "2023-12-11"
+        let endDate = try XCTUnwrap(dateFormatter.date(from: endDateString))
+
+        let targeting = BlazeTargetOptions(locations: nil,
+                                           languages: ["en", "de"],
+                                           devices: nil,
+                                           pageTopics: ["IAB3", "IAB4"])
+        let input = BlazeForecastedImpressionsInput(startDate: startDate,
+                                                    endDate: endDate,
+                                                    timeZone: "America/New_York",
+                                                    totalBudget: 35.00,
+                                                    targeting: targeting)
+
+        // When
+        _ = try await remote.fetchForecastedImpressions(for: sampleSiteID, with: input)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["start_date"] as? String, startDateString)
+        XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
+        XCTAssertEqual(request.parameters?["time_zone"] as? String, input.timeZone)
+        XCTAssertEqual(request.parameters?["total_budget"] as? Double, input.totalBudget)
+
+        let targetingDict = try XCTUnwrap(request.parameters?["targeting"] as? [String: Any])
+        XCTAssertNil(targetingDict["locations"])
+        XCTAssertEqual(targetingDict["languages"] as? [String], targeting.languages)
+        XCTAssertNil(targetingDict["devices"])
+        XCTAssertEqual(targetingDict["page_topics"] as? [String], targeting.pageTopics)
     }
 
     func test_fetchForecastedImpressions_properly_relays_networking_errors() async {

@@ -187,7 +187,7 @@ extension UIButton {
     }
 
     /// By default UIButton adds an animation when changing the title. Use this method to avoid that
-    /// 
+    ///
     func setTitleWithoutAnimation(_ title: String?, for state: UIControl.State) {
         UIView.performWithoutAnimation {
             setTitle(title, for: .normal)

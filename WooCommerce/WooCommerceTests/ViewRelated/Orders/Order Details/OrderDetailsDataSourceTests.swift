@@ -57,6 +57,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             Title.refundedProducts,
             Title.payment,
             Title.information,
+            Title.orderAttribution,
             Title.notes
         ]
 
@@ -652,6 +653,210 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let giftCardsSection = section(withCategory: .giftCards, from: dataSource)
         XCTAssertNil(giftCardsSection)
+    }
+
+    func test_receipts_row_is_hidden_when_feature_flag_is_false() throws {
+        // Given
+        let order = Order.fake()
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                featureFlags: MockFeatureFlagService(isBackendReceiptsEnabled: false))
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let receiptsRow = row(row: .seeReceipt, in: paymentSection)
+        XCTAssertNil(receiptsRow)
+    }
+
+    // MARK: Order Attribution
+
+    func test_order_attribution_section_is_shown_with_origin_row_even_if_order_has_no_attribution_info() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .some(nil))
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                featureFlags: MockFeatureFlagService(isReadOnlyGiftCardsEnabled: true))
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let originRow = row(row: .attributionOrigin, in: attributionSection)
+        XCTAssertNotNil(originRow)
+    }
+
+    func test_order_attribution_section_hides_source_type_row_when_sourceType_is_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(sourceType: .some(nil)))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionSourceType, in: attributionSection)
+        XCTAssertNil(row)
+    }
+
+    func test_order_attribution_section_shows_source_type_row_when_sourceType_is_not_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(sourceType: "Source type"))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionSourceType, in: attributionSection)
+        XCTAssertNotNil(row)
+    }
+
+    func test_order_attribution_section_hides_campaign_row_when_campaign_is_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(campaign: .some(nil)))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionCampaign, in: attributionSection)
+        XCTAssertNil(row)
+    }
+
+    func test_order_attribution_section_shows_campaign_row_when_campaign_is_not_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(campaign: "Campaign"))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionCampaign, in: attributionSection)
+        XCTAssertNotNil(row)
+    }
+
+    func test_order_attribution_section_hides_source_row_when_source_is_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(source: .some(nil)))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionSource, in: attributionSection)
+        XCTAssertNil(row)
+    }
+
+    func test_order_attribution_section_shows_source_row_when_source_is_not_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(source: "Source"))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionSource, in: attributionSection)
+        XCTAssertNotNil(row)
+    }
+
+    func test_order_attribution_section_hides_medium_row_when_medium_is_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(medium: .some(nil)))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionMedium, in: attributionSection)
+        XCTAssertNil(row)
+    }
+
+    func test_order_attribution_section_shows_medium_row_when_medium_is_not_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(medium: "Medium"))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionMedium, in: attributionSection)
+        XCTAssertNotNil(row)
+    }
+
+    func test_order_attribution_section_hides_deviceType_row_when_deviceType_is_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(deviceType: .some(nil)))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionDeviceType, in: attributionSection)
+        XCTAssertNil(row)
+    }
+
+    func test_order_attribution_section_shows_deviceType_row_when_deviceType_is_not_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(deviceType: "Device type"))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionDeviceType, in: attributionSection)
+        XCTAssertNotNil(row)
+    }
+
+    func test_order_attribution_section_hides_sessionPageViews_row_when_sessionPageViews_is_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(sessionPageViews: .some(nil)))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionSessionPageViews, in: attributionSection)
+        XCTAssertNil(row)
+    }
+
+    func test_order_attribution_section_shows_sessionPageViews_row_when_sessionPageViews_is_not_nil() throws {
+        // Given
+        let order = Order.fake().copy(attributionInfo: .fake().copy(sessionPageViews: "3"))
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
+        let row = row(row: .attributionSessionPageViews, in: attributionSection)
+        XCTAssertNotNil(row)
     }
 }
 

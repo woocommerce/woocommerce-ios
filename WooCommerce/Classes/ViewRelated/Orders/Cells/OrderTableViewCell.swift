@@ -100,18 +100,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
             return
         }
-        var backgroundConfiguration: UIBackgroundConfiguration
-
-        if #available(iOS 16.0, *) {
-            backgroundConfiguration = defaultBackgroundConfiguration().updated(for: state)
-        } else {
-            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell().updated(for: state)
-        }
-
-        if state.isSelected || state.isHighlighted {
-            backgroundConfiguration.backgroundColor = .wooCommercePurple(.shade0)
-        }
-        self.backgroundConfiguration = backgroundConfiguration
+        updateDefaultBackgroundConfiguration(using: state)
     }
 }
 
@@ -147,15 +136,7 @@ private extension OrderTableViewCell {
 
 private extension OrderTableViewCell {
     func configureBackground() {
-        var backgroundConfiguration: UIBackgroundConfiguration
-
-        if #available(iOS 16.0, *) {
-            backgroundConfiguration = defaultBackgroundConfiguration()
-        } else {
-            backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
-        }
-        backgroundConfiguration.backgroundColor = .listForeground(modal: false)
-        self.backgroundConfiguration = backgroundConfiguration
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Labels

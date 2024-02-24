@@ -1,3 +1,4 @@
+import Experiments
 import UIKit
 import SwiftUI
 import WordPressUI
@@ -10,6 +11,10 @@ import class AutomatticTracks.CrashLogging
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
 final class ProductsViewController: UIViewController, GhostableViewController {
+    enum NavigationContentType {
+        case productForm(product: Product)
+        case addProduct(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool)
+    }
 
     let viewModel: ProductListViewModel
 
@@ -109,6 +114,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return resultsController
     }()
 
+    private var selectedProductListener: EntityListener<Product>?
+
     private var sortOrder: ProductsSortOrder = .default {
         didSet {
             if sortOrder != oldValue {
@@ -193,15 +200,27 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var swipeActionsGlanced = false
 
+    private let isSplitViewEnabled: Bool
+    private let navigateToContent: (NavigationContentType) -> Void
+    private let selectedProduct: AnyPublisher<Product?, Never>
+    private let onTableViewEditingEnd: PassthroughSubject<Void, Never> = .init()
+    let onDataReloaded: PassthroughSubject<Void, Never> = .init()
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - View Lifecycle
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         selectedProduct: AnyPublisher<Product?, Never>,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         navigateToContent: @escaping (NavigationContentType) -> Void) {
         self.siteID = siteID
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
+        self.selectedProduct = selectedProduct
+        self.isSplitViewEnabled = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
+        self.navigateToContent = navigateToContent
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTabBarItem()
@@ -227,6 +246,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
         showTopBannerViewIfNeeded()
         syncProductsSettings()
+        observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
+        observeSelectedProductToAutoScrollWhenProductChanges()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -260,6 +281,14 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     override var shouldShowOfflineBanner: Bool {
         return true
+    }
+
+    /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
+    func selectFirstProductIfAvailable() {
+        guard let firstProduct = resultsController.fetchedObjects.first else {
+            return
+        }
+        didSelectProduct(product: firstProduct)
     }
 }
 
@@ -331,30 +360,37 @@ private extension ProductsViewController {
     func addProduct(sourceBarButtonItem: UIBarButtonItem? = nil,
                     sourceView: UIView? = nil,
                     isFirstProduct: Bool) {
-        guard let navigationController = navigationController, sourceBarButtonItem != nil || sourceView != nil else {
+        let sourceView: AddProductCoordinator.SourceView? = {
+            if let sourceBarButtonItem = sourceBarButtonItem {
+                return .barButtonItem(sourceBarButtonItem)
+            } else if let sourceView = sourceView {
+                return .view(sourceView)
+            } else {
+                assertionFailure("No source view for adding a product")
+                return nil
+            }
+        }()
+        guard let sourceView else {
+            return
+        }
+        guard isSplitViewEnabled else {
+            guard let navigationController else {
+                return
+            }
+
+            let source: AddProductCoordinator.Source = .productsTab
+            let coordinatingController = AddProductCoordinator(siteID: siteID,
+                                                               source: source,
+                                                               sourceView: sourceView,
+                                                               sourceNavigationController: navigationController,
+                                                               isFirstProduct: isFirstProduct)
+
+            coordinatingController.start()
+            self.addProductCoordinator = coordinatingController
             return
         }
 
-        let coordinatingController: AddProductCoordinator
-        let source: AddProductCoordinator.Source = .productsTab
-        if let sourceBarButtonItem = sourceBarButtonItem {
-            coordinatingController = AddProductCoordinator(siteID: siteID,
-                                                           source: source,
-                                                           sourceBarButtonItem: sourceBarButtonItem,
-                                                           sourceNavigationController: navigationController,
-                                                           isFirstProduct: isFirstProduct)
-        } else if let sourceView = sourceView {
-            coordinatingController = AddProductCoordinator(siteID: siteID,
-                                                           source: source,
-                                                           sourceView: sourceView,
-                                                           sourceNavigationController: navigationController,
-                                                           isFirstProduct: isFirstProduct)
-        } else {
-            fatalError("No source view for adding a product")
-        }
-
-        coordinatingController.start()
-        self.addProductCoordinator = coordinatingController
+        navigateToContent(.addProduct(sourceView: sourceView, isFirstProduct: isFirstProduct))
     }
 }
 
@@ -389,6 +425,7 @@ private extension ProductsViewController {
 
         viewModel.deselectAll()
         tableView.setEditing(false, animated: true)
+        onTableViewEditingEnd.send(())
 
         bulkEditButton.isEnabled = false
 
@@ -567,6 +604,7 @@ private extension ProductsViewController {
 
         configureNavigationBarLeftButtonItems()
         configureNavigationBarRightButtonItems()
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     func configureNavigationBarLeftButtonItems() {
@@ -879,6 +917,7 @@ private extension ProductsViewController {
         showOrHideToolbar()
         addOrRemoveOverlay()
         tableView.reloadData()
+        onDataReloaded.send(())
     }
 
     /// Add or remove the overlay based on number of products
@@ -900,10 +939,82 @@ private extension ProductsViewController {
     ///
     func syncProductsSettings() {
         syncLocalProductsSettings { [weak self] (result) in
+            guard let self else { return }
+
             if result.isFailure {
-                self?.syncingCoordinator.resynchronize()
+                syncingCoordinator.resynchronize()
+            } else {
+                // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
+                // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
+                // the product settings.
+                onDataReloaded.send(())
             }
         }
+    }
+
+    func observeSelectedProductAndDataLoadedStateToUpdateSelectedRow() {
+        Publishers.CombineLatest3(selectedProduct,
+                                  // Giving it an initial value to enable the combined publisher from the beginning.
+                                  onDataReloaded.merge(with: Just<Void>(())),
+                                  // Giving it an initial value to enable the combined publisher from the beginning.
+                                  onTableViewEditingEnd.merge(with: Just<Void>(())))
+            .map { $0.0 }
+            .withPrevious()
+            .sink { [weak self] previousSelectedProduct, selectedProduct in
+                guard let self else { return }
+
+                let currentSelectedIndexPath = tableView.indexPathForSelectedRow
+                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
+                    $0.productID == selectedProduct?.productID
+                }): nil
+                if let selectedIndexPath {
+                    guard currentSelectedIndexPath != selectedIndexPath else {
+                        return
+                    }
+                    if let currentSelectedIndexPath {
+                        tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                    }
+
+                    let scrollPosition: UITableView.ScrollPosition = {
+                        let hasSelectedProductChanged = (selectedProduct != previousSelectedProduct)
+                        guard hasSelectedProductChanged else { return .none }
+                        let isSelectedIndexPathVisible = self.isIndexPathVisible(selectedIndexPath)
+                        return isSelectedIndexPathVisible ? .none : .middle
+                    }()
+
+                    tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
+                } else if let currentSelectedIndexPath {
+                    tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    func observeSelectedProductToAutoScrollWhenProductChanges() {
+        selectedProduct.compactMap { $0 }
+            .sink { [weak self] selectedProduct in
+                self?.listenToSelectedProductToAutoScrollWhenProductChanges(product: selectedProduct)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
+        selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
+        selectedProductListener?.onUpsert = { [weak self] product in
+            guard let self,
+                  let selectedIndexPath = tableView.indexPathForSelectedRow,
+                  !isIndexPathVisible(selectedIndexPath) else {
+                return
+            }
+            tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false)
+        }
+    }
+
+    func isIndexPathVisible(_ indexPath: IndexPath) -> Bool {
+        guard let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows else {
+            return false
+        }
+        return indexPathsForVisibleRows.contains(indexPath)
     }
 }
 
@@ -942,14 +1053,17 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (splitViewController?.isCollapsed == true || !isSplitViewEnabled) &&
+            !tableView.isEditing {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+
         let product = resultsController.object(at: indexPath)
 
         if tableView.isEditing {
             viewModel.selectProduct(product)
             updatedSelectedItems()
         } else {
-            tableView.deselectRow(at: indexPath, animated: true)
-
             ServiceLocator.analytics.track(.productListProductTapped)
 
             didSelectProduct(product: product)
@@ -978,12 +1092,18 @@ extension ProductsViewController: UITableViewDelegate {
         estimatedRowHeights[indexPath] = cell.frame.height
 
         // Restore cell selection state
-        let product = resultsController.object(at: indexPath)
-        if self.viewModel.productIsSelected(product) {
-            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-        } else {
-            tableView.deselectRow(at: indexPath, animated: false)
+        if tableView.isEditing {
+            let product = resultsController.object(at: indexPath)
+            if self.viewModel.productIsSelected(product) {
+                tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            } else {
+                tableView.deselectRow(at: indexPath, animated: false)
+            }
         }
+    }
+
+    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        onTableViewEditingEnd.send(())
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -1025,9 +1145,15 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
-        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack, forceReadOnly: false) { [weak self] viewController in
-            self?.navigationController?.pushViewController(viewController, animated: true)
+        guard isSplitViewEnabled else {
+            ProductDetailsFactory.productDetails(product: product,
+                                                 presentationStyle: .navigationStack,
+                                                 forceReadOnly: false) { [weak self] viewController in
+                self?.navigationController?.pushViewController(viewController, animated: true)
+            }
+            return
         }
+        navigateToContent(.productForm(product: product))
     }
 }
 
@@ -1280,23 +1406,24 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             switch result {
             case .success(let settings):
-                self?.syncProductCategoryFilterRemotely(from: settings) { settings in
+                self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in
+                    guard let self else { return }
                     if let sort = settings.sort {
-                        self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                        sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
                     }
 
                     let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
-                    self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                                       productStatus: settings.productStatusFilter,
-                                                                       promotableProductType: promotableProductType,
-                                                                       productCategory: settings.productCategoryFilter,
-                                                                       numberOfActiveFilters: settings.numberOfActiveFilters())
-
+                    filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                 productStatus: settings.productStatusFilter,
+                                                                 promotableProductType: promotableProductType,
+                                                                 productCategory: settings.productCategoryFilter,
+                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
+                    onCompletion(result)
                 }
-            case .failure:
-                break
+            case let .failure(error):
+                DDLogError("⛔️ Error loading product settings: \(error)")
+                onCompletion(result)
             }
-            onCompletion(result)
         }
         ServiceLocator.stores.dispatch(action)
     }

@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v16.9-whats-new"
+msgctxt "v17.4-whats-new"
 msgid ""
-"We've refined your order management experience! Now, when you choose a registered customer while creating an order, they're automatically linked, streamlining your workflow. Update now for a smoother, more secure handling of your sales!\n"
+"We've fine-tuned the loading of orders and polished up the login process to make your experience even smoother in our latest update. While we're all about moving forward and keeping things fresh, please note that we've had to wave goodbye to iOS 15 support. Dive in to enjoy these tweaks and keep your app experience breezy!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

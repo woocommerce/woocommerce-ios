@@ -16,6 +16,7 @@ import Foundation
 /// - Tapping on a product in the Top Performers list
 /// - Tapping on the Analytics date range
 /// - Selecting an Analytics date range option
+/// - Tapping on "See Report" on an Analytics Hub card
 ///
 /// If we ever change the algorithm in the future, we should probably consider renaming the Tracks event to avoid
 /// incorrect comparisons with old events. We should also make sure to change the Android code if we're changing anything
@@ -40,6 +41,7 @@ final class StoreStatsUsageTracksEventEmitter {
     /// - Tapping on a product in the Top Performers list
     /// - Tapping on the date range in the Analytics Hub
     /// - Selecting a date range option in the Analytics Hub
+    /// - Tapping on "See Report" on an Analytics Hub card
     private let interactionsThreshold = 5
 
     /// The maximum number of seconds in between interactions before we will consider the

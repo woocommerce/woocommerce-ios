@@ -25,6 +25,11 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
         observeValueTextFieldChanges()
     }
 
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+
     /// Change the style add the `viewModel` represented by this view.
     func update(style: Style = .condensed, viewModel: TitleAndEditableValueTableViewCellViewModel?) {
         title.text = viewModel?.title
@@ -45,7 +50,7 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
 
 private extension TitleAndEditableValueTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureAsNonSelectable() {

@@ -425,6 +425,45 @@ final class ResultsControllerTests: XCTestCase {
         // Then
         XCTAssertEqual(resultsController.fetchedObjects.count, 3)
     }
+
+    // MARK: - `indexPath(forObjectMatching:)`
+
+    func test_indexPath_returns_index_path_for_the_first_matching_object() throws {
+        // Given
+        let _ = [
+            insertAccount(displayName: "A", username: "two"),
+            insertAccount(displayName: "A", username: "one"), // index path (0, 0) when sorted by username
+            insertAccount(displayName: "C", username: "three"),
+        ]
+
+        // When
+        let sortByUsername = NSSortDescriptor(key: #selector(getter: Storage.Account.username).description, ascending: true)
+        let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: #keyPath(Storage.Account.displayName),
+                                                                   sortedBy: [sampleSortDescriptor, sortByUsername])
+        try resultsController.performFetch()
+
+        // Then
+        XCTAssertEqual(resultsController.indexPath(forObjectMatching: { $0.displayName == "A" }), .init(row: 0, section: 0))
+    }
+
+    func test_indexPath_returns_nil_when_there_is_no_matching_object() throws {
+        // Given
+        let _ = [
+            insertAccount(displayName: "A", username: "two"),
+            insertAccount(displayName: "A", username: "one"),
+            insertAccount(displayName: "C", username: "three"),
+        ]
+
+        // When
+        let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: #keyPath(Storage.Account.displayName),
+                                                                   sortedBy: [sampleSortDescriptor])
+        try resultsController.performFetch()
+
+        // Then
+        XCTAssertNil(resultsController.indexPath(forObjectMatching: { $0.displayName == "B" }))
+    }
 }
 
 // MARK: - Utils

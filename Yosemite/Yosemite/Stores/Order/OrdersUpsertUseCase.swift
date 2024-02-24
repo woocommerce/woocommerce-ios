@@ -60,6 +60,7 @@ struct OrdersUpsertUseCase {
         handleOrderTaxes(readOnlyOrder, storageOrder, storage)
         handleOrderCustomFields(readOnlyOrder, storageOrder, storage)
         handleOrderGiftCards(readOnlyOrder, storageOrder, storage)
+        handleOrderAttributionInfo(readOnlyOrder, storageOrder, storage)
 
         return storageOrder
     }
@@ -340,6 +341,25 @@ struct OrdersUpsertUseCase {
             let newStorageGiftCard = storage.insertNewObject(ofType: Storage.OrderGiftCard.self)
             newStorageGiftCard.update(with: readOnlyGiftCard)
             storageOrder.addToAppliedGiftCards(newStorageGiftCard)
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageOrder's attribution info using the provided read-only Order's attribution info
+    ///
+    private func handleOrderAttributionInfo(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        guard let readOnlyOrderAttributionInfo = readOnlyOrder.attributionInfo else {
+            if let existingStorageOrderAttributionInfo = storageOrder.attributionInfo {
+                storage.deleteObject(existingStorageOrderAttributionInfo)
+            }
+            return
+        }
+
+        if let existingStorageOrderAttributionInfo = storageOrder.attributionInfo {
+            existingStorageOrderAttributionInfo.update(with: readOnlyOrderAttributionInfo)
+        } else {
+            let newStorageOrderAttributionInfo = storage.insertNewObject(ofType: Storage.OrderAttributionInfo.self)
+            newStorageOrderAttributionInfo.update(with: readOnlyOrderAttributionInfo)
+            storageOrder.attributionInfo = newStorageOrderAttributionInfo
         }
     }
 }

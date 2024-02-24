@@ -84,7 +84,7 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let name = container.failsafeDecodeIfPresent(String.self, forKey: .name) ?? ""
-        let description = container.failsafeDecodeIfPresent(String.self, forKey: .description) ?? ""
+        let description = try container.decode(String.self, forKey: .description)
         let shortDescription = container.failsafeDecodeIfPresent(String.self, forKey: .shortDescription) ?? ""
         let virtual = container.failsafeDecodeIfPresent(Bool.self, forKey: .virtual) ?? false
         let shipping = container.failsafeDecodeIfPresent(Shipping.self, forKey: .shipping) ?? Shipping(length: "", weight: "", width: "", height: "")

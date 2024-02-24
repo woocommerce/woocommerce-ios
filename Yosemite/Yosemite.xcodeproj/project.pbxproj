@@ -451,6 +451,7 @@
 		E1BD4D0027ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BD4CFF27ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift */; };
 		E1F54D0427AD4DAF00012983 /* CardPresentConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F54D0327AD4DAF00012983 /* CardPresentConfigurationTests.swift */; };
 		EE4D51B82ACD3C9800783D77 /* MockProductCategoriesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D51B72ACD3C9800783D77 /* MockProductCategoriesRemote.swift */; };
+		EE8A30412B735A9B001D7C66 /* OrderAttributionInfo+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A30402B735A9B001D7C66 /* OrderAttributionInfo+ReadOnlyConvertible.swift */; };
 		EEB4E2C929B0489800371C3C /* StoreOnboardingTasksStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2C829B0489800371C3C /* StoreOnboardingTasksStore.swift */; };
 		EEB4E2CB29B04A1200371C3C /* StoreOnboardingTasksAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2CA29B04A1200371C3C /* StoreOnboardingTasksAction.swift */; };
 		EEB4E2CD29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2CC29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift */; };
@@ -936,6 +937,7 @@
 		E1BD4CFF27ABF84D006416D9 /* CardPresentPaymentsConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsConfiguration.swift; sourceTree = "<group>"; };
 		E1F54D0327AD4DAF00012983 /* CardPresentConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationTests.swift; sourceTree = "<group>"; };
 		EE4D51B72ACD3C9800783D77 /* MockProductCategoriesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductCategoriesRemote.swift; sourceTree = "<group>"; };
+		EE8A30402B735A9B001D7C66 /* OrderAttributionInfo+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderAttributionInfo+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		EEB4E2C829B0489800371C3C /* StoreOnboardingTasksStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTasksStore.swift; sourceTree = "<group>"; };
 		EEB4E2CA29B04A1200371C3C /* StoreOnboardingTasksAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTasksAction.swift; sourceTree = "<group>"; };
 		EEB4E2CC29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStoreOnboardingTasksRemote.swift; sourceTree = "<group>"; };
@@ -1406,6 +1408,7 @@
 				D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */,
 				D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */,
 				CE12FBDA221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift */,
+				EE8A30402B735A9B001D7C66 /* OrderAttributionInfo+ReadOnlyConvertible.swift */,
 				261CF1C8255B2C7B0090D8D3 /* PaymentGateway+ReadOnlyConvertible.swift */,
 				312A3D6D266AEA6900D28BC9 /* PaymentGatewayAccount+ReadOnlyConvertible.swift */,
 				749375032249691D007D85D1 /* Product+ReadOnlyConvertible.swift */,
@@ -2168,6 +2171,7 @@
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
 				74B2601F2188A92A0041793A /* Note+ReadOnlyConvertible.swift in Sources */,
 				CE179D57235F4E7500C24EB3 /* RefundStore.swift in Sources */,
+				EE8A30412B735A9B001D7C66 /* OrderAttributionInfo+ReadOnlyConvertible.swift in Sources */,
 				0218B4EE242E08B20083A847 /* MediaType.swift in Sources */,
 				247CE7C42582DE5300F9D9D1 /* ProductStockStatus+Mocks.swift in Sources */,
 				DE3404FC28BC5E7800CF0D97 /* JetpackConnectionAction.swift in Sources */,
@@ -2615,7 +2619,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -2730,7 +2734,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2789,7 +2793,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

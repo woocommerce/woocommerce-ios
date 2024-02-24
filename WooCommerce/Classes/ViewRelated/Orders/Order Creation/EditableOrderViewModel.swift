@@ -83,7 +83,14 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
+        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
+            return false
+        }
+        // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
+        guard !featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return false
+        }
+        return flow == .creation
     }
 
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
@@ -99,12 +106,6 @@ final class EditableOrderViewModel: ObservableObject {
 
     var shouldShowSearchButtonInOrderAddressForm: Bool {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
-    }
-
-    /// Indicates whether adding a product to the order via SKU scanning is enabled
-    ///
-    var isAddProductToOrderViaSKUScannerEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
     }
 
     var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
@@ -166,7 +167,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Indicates if the order status list (selector) should be shown or not.
     ///
-    @Published var shouldShowOrderStatusList: Bool = false
+    @Published var shouldShowOrderStatusListSheet: Bool = false
 
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
@@ -177,7 +178,7 @@ final class EditableOrderViewModel: ObservableObject {
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
     /// Defines the tax based on setting to be displayed in the Taxes section.
-    /// 
+    ///
     @Published private var taxBasedOnSetting: TaxBasedOnSetting?
 
     /// Selected tax rate to apply to the order
@@ -246,6 +247,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines the multiple lines info message to show.
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
+
+    @Published var syncChangesImmediately: Bool = false
 
     /// Status Results Controller.
     ///
@@ -392,7 +395,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Saves a coupon line after an edition on it.
     ///
     /// - Parameter result: Contains the user action on the line: remove, add, or edit it changing the coupon code.
-    /// 
+    ///
     func saveCouponLine(result: CouponLineDetailsResult) {
         switch result {
         case let .removed(removeCode):
@@ -414,7 +417,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// Current OrderItems
-    /// 
+    ///
     var currentOrderItems: [OrderItem] {
         orderSynchronizer.order.items
     }
@@ -489,6 +492,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureGiftCardSupport()
         observeGiftCardStatesForAnalytics()
         observeProductSelectorPresentationStateForViewModel()
+        forwardSyncApproachToSynchronizer()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -522,7 +526,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// Clears selected variations
-    /// 
+    ///
     private func clearSelectedVariations() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
@@ -571,6 +575,10 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
         } else if item.productID != 0 {
             selectedProducts.removeAll(where: { $0.productID == item.productID })
+        }
+
+        if syncChangesImmediately {
+            productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -1024,6 +1032,10 @@ extension EditableOrderViewModel {
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
+        // We show shipping tax if the amount is not zero
+        let shouldShowShippingTax: Bool
+        let shippingTax: String
+
         let shouldShowTotalCustomAmounts: Bool
         let customAmountsTotal: String
 
@@ -1071,6 +1083,7 @@ extension EditableOrderViewModel {
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
+             shippingTax: String = "0",
              shouldShowTotalCustomAmounts: Bool = false,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
@@ -1107,6 +1120,8 @@ extension EditableOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
+            self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
+            self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
@@ -1160,7 +1175,7 @@ extension EditableOrderViewModel {
 // MARK: - Helpers
 private extension EditableOrderViewModel {
     /// Converts the add custom amount UI input type to view models
-    /// 
+    ///
     func addCustomAmountInputType(from option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel.InputType {
         switch option {
         case .fixedAmount:
@@ -1554,7 +1569,7 @@ private extension EditableOrderViewModel {
                         return true
                     }
                     // If no coupons have been applied, but there are order discounts (discounts added directly to products of an order), disable coupons
-                    if order.coupons.isEmpty && order.discountTotal != "0.00" {
+                    if order.coupons.isEmpty && isDiscountBiggerThanZero {
                         return true
                     }
                     return false
@@ -1567,6 +1582,7 @@ private extension EditableOrderViewModel {
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
+                                            shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
@@ -1724,7 +1740,7 @@ private extension EditableOrderViewModel {
         $isProductSelectorPresented
             .removeDuplicates()
             .map { [weak self] isPresented in
-                guard let self, isPresented else { return nil }
+                guard let self else { return nil }
                 return ProductSelectorViewModel(
                     siteID: siteID,
                     selectedItemIDs: selectedProductsAndVariationsIDs,
@@ -1733,6 +1749,8 @@ private extension EditableOrderViewModel {
                     stores: stores,
                     toggleAllVariationsOnSelection: false,
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
+                    syncApproach: initialProductSelectionSyncApproach,
+                    orderSyncState: orderSynchronizer.statePublisher,
                     onProductSelectionStateChanged: { [weak self] product in
                         guard let self = self else { return }
                         self.changeSelectionStateForProduct(product)
@@ -1765,6 +1783,30 @@ private extension EditableOrderViewModel {
             .assign(to: &$productSelectorViewModel)
     }
 
+    var initialProductSelectionSyncApproach: ProductSelectorViewModel.SyncApproach {
+        guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return .onButtonTap
+        }
+        switch UITraitCollection.current.horizontalSizeClass {
+        case .regular:
+            return .immediate
+        case .compact, .unspecified:
+            return .onButtonTap
+        @unknown default:
+            DDLogWarn("Unknown horizontalSizeClass used to determine initialProductSelectionSyncApproach.")
+            return .onButtonTap
+        }
+    }
+
+    func forwardSyncApproachToSynchronizer() {
+        $syncChangesImmediately
+            .share()
+            .sink { [weak self] syncImmediately in
+                self?.orderSynchronizer.updateBlockingBehavior(syncImmediately ? .allUpdates : .majorUpdates)
+            }
+            .store(in: &cancellables)
+    }
+
     /// Tracks when customer details have been added
     ///
     func trackCustomerDetailsAdded() {
@@ -1795,26 +1837,30 @@ private extension EditableOrderViewModel {
     ///
     func trackCreateButtonTapped() {
         let hasCustomerDetails = customerDataViewModel.isDataAvailable
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(order: orderSynchronizer.order,
-                                                                                status: orderSynchronizer.order.status,
-                                                                                productCount: orderSynchronizer.order.items.count,
-                                                                                customAmountsCount: orderSynchronizer.order.fees.count,
-                                                                                hasCustomerDetails: hasCustomerDetails,
-                                                                                hasFees: orderSynchronizer.order.fees.isNotEmpty,
-                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-                                                                                products: Array(allProducts)))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(
+            order: orderSynchronizer.order,
+            status: orderSynchronizer.order.status,
+            productCount: orderSynchronizer.order.items.count,
+            customAmountsCount: orderSynchronizer.order.fees.count,
+            hasCustomerDetails: hasCustomerDetails,
+            hasFees: orderSynchronizer.order.fees.isNotEmpty,
+            hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+            products: Array(allProducts),
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 
     func trackCollectPaymentTapped() {
         let hasCustomerDetails = customerDataViewModel.isDataAvailable
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationCollectPaymentTapped(order: orderSynchronizer.order,
-                                                                                          status: orderSynchronizer.order.status,
-                                                                                          productCount: orderSynchronizer.order.items.count,
-                                                                                          customAmountsCount: orderSynchronizer.order.fees.count,
-                                                                                          hasCustomerDetails: hasCustomerDetails,
-                                                                                          hasFees: orderSynchronizer.order.fees.isNotEmpty,
-                                                                                          hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-                                                                                          products: Array(allProducts)))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationCollectPaymentTapped(
+            order: orderSynchronizer.order,
+            status: orderSynchronizer.order.status,
+            productCount: orderSynchronizer.order.items.count,
+            customAmountsCount: orderSynchronizer.order.fees.count,
+            hasCustomerDetails: hasCustomerDetails,
+            hasFees: orderSynchronizer.order.fees.isNotEmpty,
+            hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+            products: Array(allProducts),
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 
     /// Tracks an order creation success
@@ -1949,7 +1995,7 @@ private extension EditableOrderViewModel {
     }
 
     /// Calculates the discount on an order item, that is, subtotal minus total
-    /// 
+    ///
     func currentDiscount(on item: OrderItem) -> Decimal {
         guard let subtotal = currencyFormatter.convertToDecimal(item.subtotal),
               let total = currencyFormatter.convertToDecimal(item.total) else {

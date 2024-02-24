@@ -48,6 +48,7 @@ final class BillingInformationViewController: UIViewController {
         super.viewDidLoad()
         setupNavigationItem()
         setupMainView()
+        constrainToMaxWidth()
         registerTableViewCells()
         registerTableViewHeaderFooters()
         reloadSections()
@@ -58,6 +59,8 @@ final class BillingInformationViewController: UIViewController {
     private let emailComposer = OrderEmailComposer()
 
     private let messageComposerPresenter: MessageComposerPresenter = ServiceLocator.messageComposerPresenter
+
+    private let isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
 }
 
@@ -79,6 +82,16 @@ private extension BillingInformationViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+    }
+
+    func constrainToMaxWidth() {
+        guard isSplitViewInOrdersTabEnabled else {
+            return
+        }
+
+        let maxWidthConstraint = tableView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
+        maxWidthConstraint.priority = .required
+        NSLayoutConstraint.activate([maxWidthConstraint])
     }
 
     /// Registers all of the available TableViewCells
@@ -398,6 +411,11 @@ private extension BillingInformationViewController {
         }
 
         cell.accessibilityCustomActions = [callAccessibilityAction, messageAccessibilityAction, copyAccessibilityAction]
+
+        guard isSplitViewInOrdersTabEnabled else {
+            return
+        }
+        cell.showSideBorders(fromWidth: Constants.maxWidth)
     }
 
     func setupBillingEmail(cell: WooBasicTableViewCell) {
@@ -430,6 +448,11 @@ private extension BillingInformationViewController {
         }
 
         cell.accessibilityCustomActions = [emailAccessibilityAction, copyEmailAccessibilityAction]
+
+        guard isSplitViewInOrdersTabEnabled else {
+            return
+        }
+        cell.showSideBorders(fromWidth: Constants.maxWidth)
     }
 }
 
@@ -588,5 +611,6 @@ private extension BillingInformationViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let footerHeight = CGFloat(0)
+        static let maxWidth = CGFloat(525)
     }
 }

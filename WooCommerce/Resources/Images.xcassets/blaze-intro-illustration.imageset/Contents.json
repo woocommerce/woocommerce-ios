@@ -3,6 +3,16 @@
     {
       "filename" : "blaze-intro-illustration.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "illustraion.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

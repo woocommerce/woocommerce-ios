@@ -113,27 +113,32 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
     func trackEmailTapped() {
         analytics.track(event: .InPersonPayments
             .receiptEmailTapped(countryCode: configuration.countryCode,
-                                cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                cardReaderModel: connectedReader?.readerType.model ?? "",
+                                source: .local))
     }
 
     func trackReceiptPrintTapped() {
         analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: configuration.countryCode,
-                                                                    cardReaderModel: connectedReaderModel))
+                                                                    cardReaderModel: connectedReaderModel,
+                                                                    source: .local))
     }
 
     func trackReceiptPrintSuccess() {
         analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: configuration.countryCode,
-                                                                     cardReaderModel: connectedReaderModel))
+                                                                     cardReaderModel: connectedReaderModel,
+                                                                     source: .local))
     }
 
     func trackReceiptPrintCanceled() {
         analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: configuration.countryCode,
-                                                                      cardReaderModel: connectedReaderModel))
+                                                                      cardReaderModel: connectedReaderModel,
+                                                                      source: .local))
     }
 
     func trackReceiptPrintFailed(error: Error) {
         analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error,
                                                                     countryCode: configuration.countryCode,
-                                                                    cardReaderModel: connectedReaderModel))
+                                                                    cardReaderModel: connectedReaderModel,
+                                                                    source: .local))
     }
 }

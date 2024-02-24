@@ -32,12 +32,13 @@ class WooBasicTableViewCell: UITableViewCell {
         configureLabel()
     }
 
-    func configureBackground() {
-        applyDefaultBackgroundStyle()
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 
-        //Background when selected
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .listBackground
+    func configureBackground() {
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Set up the cell selection style
@@ -65,6 +66,68 @@ class WooBasicTableViewCell: UITableViewCell {
         accessoryImageView.tintColor = .primaryButtonBackground
         accessoryView = accessoryImageView
     }
+
+    // MARK: - Side borders used in wider table views when max-width used to ensure readability.
+
+    private var rightBorder: CALayer?
+    private var leftBorder: CALayer?
+    private var shouldShowSideBorders = false
+    private var minimumWidthForSideBorders: CGFloat?
+
+    func showSideBorders(fromWidth minimumWidth: CGFloat) {
+        shouldShowSideBorders = true
+        minimumWidthForSideBorders = minimumWidth
+    }
+
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard shouldShowSideBorders,
+              let minimumWidthForSideBorders else {
+            return
+        }
+
+        guard bounds.width >= minimumWidthForSideBorders else {
+            removeSideBorders()
+            return
+        }
+
+        if leftBorder == nil || rightBorder == nil {
+            removeSideBorders() // to prevent any double-border issues!
+            addSideBorders()
+        }
+
+        leftBorder?.frame = CGRect(x: 0.0,
+                                   y: 0.0,
+                                   width: Constants.borderWidth,
+                                   height: bounds.maxY)
+
+        rightBorder?.frame = CGRect(x: bounds.maxX - Constants.borderWidth,
+                                    y: 0.0,
+                                    width: Constants.borderWidth,
+                                    height: bounds.maxY)
+    }
+
+    private func addSideBorders() {
+        let leftBorder = CALayer()
+        leftBorder.backgroundColor = UIColor.border.cgColor
+
+        let rightBorder = CALayer()
+        rightBorder.backgroundColor = UIColor.border.cgColor
+
+        layer.addSublayer(leftBorder)
+        layer.addSublayer(rightBorder)
+        self.leftBorder = leftBorder
+        self.rightBorder = rightBorder
+    }
+
+    private func removeSideBorders() {
+        leftBorder?.removeFromSuperlayer()
+        rightBorder?.removeFromSuperlayer()
+        leftBorder = nil
+        rightBorder = nil
+    }
 }
 
 extension WooBasicTableViewCell {
@@ -86,5 +149,11 @@ extension WooBasicTableViewCell {
     func applySecondaryTextStyle() {
         bodyLabel.applySecondaryBodyStyle()
         bodyLabelTopMarginConstraint.constant = 8
+    }
+}
+
+private extension WooBasicTableViewCell {
+    enum Constants {
+        static let borderWidth: CGFloat = 0.5
     }
 }

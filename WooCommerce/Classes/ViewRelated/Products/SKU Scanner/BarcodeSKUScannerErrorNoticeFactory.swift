@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 /// Provides the relevant notice given an error after the SKU scanned fails to provide an order item
-/// 
+///
 struct BarcodeSKUScannerErrorNoticeFactory {
     static func notice(for error: Error, code: ScannedBarcode, actionHandler: @escaping ((() -> Void))) -> Notice {
         Notice(title: Localization.defaultTitle,

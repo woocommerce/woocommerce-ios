@@ -26,6 +26,17 @@ protocol OrderListViewControllerDelegate: AnyObject {
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
 final class OrderListViewController: UIViewController, GhostableViewController {
+    /// Callback closure when an order is selected either manually (by the user) or automatically in multi-column view.
+    /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
+    /// so that the user can navigate between order details easily. `index` is the default index of order details to be shown.
+    /// `isSelectedManually` indicates whether the order details is selected manually, as the first order can be auto-selected when the split
+    /// view has multiple columns but only if the empty view is shown.
+    /// `onCompletion` is called after switching details completes, with a boolean that indicates if the order details has been selected.
+    /// When multi-column split view is shown, auto-selection only works if the empty state isn't shown.
+    typealias SelectOrderDetails = (_ allViewModels: [OrderDetailsViewModel],
+                                    _ index: Int,
+                                    _ isSelectedManually: Bool,
+                                    _ onCompletion: ((_ hasBeenSelected: Bool) -> Void)?) -> Void
 
     weak var delegate: OrderListViewControllerDelegate?
 
@@ -37,6 +48,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
+        // Call loadViewIfNeeded to make sure IBOutlets are properly set when used in lazy vars
+        // - for normal app usage the call will not do anything since the views/IBOutlets will be setup before this call
+        // - when used for tests it is important to call it since IBOutlets might be nil in moment of using/creating dataSource
+        self.loadViewIfNeeded()
         let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
             tableView: self.tableView,
             cellProvider: self.makeCellProvider()
@@ -111,10 +126,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     private var topBannerView: UIView?
 
     /// Callback closure when an order is selected
-    ///
-    private var switchDetailsHandler: (_ allViewModels: [OrderDetailsViewModel], _
-                                       index: Int, _
-                                       onCompletion: (() -> Void)?) -> Void
+    private let switchDetailsHandler: SelectOrderDetails
 
     /// Currently selected index path in the table view
     ///
@@ -142,7 +154,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
 
-
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -150,7 +161,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, (() -> Void)?) -> Void) {
+         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, ((Bool) -> Void)?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -198,7 +209,15 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+    }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+
+        // To fix this issue, the selected item checking is now called after `viewDidLayoutSubviews`, where `isCollapsed` value is
+        // correctly set.
+        // This additionally ensures that an order is selected when changing from horizontally compact to regular.
         // Select the first order if we're showing in an open split view (i.e. on iPad in some size classes)
         guard let splitViewController,
               !splitViewController.isCollapsed else {
@@ -207,17 +226,20 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         checkSelectedItem()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tableView.updateHeaderHeight()
-    }
-
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         super.willTransition(to: newCollection, with: coordinator)
         if isSplitViewInOrdersTabEnabled, selectedIndexPath != nil {
             // Reload table view to update selected state on the list when changing rotation
             tableView.reloadData()
         }
+    }
+
+    /// Called when an order is shown and the order should be selected in the order list.
+    /// - Parameter orderID: ID of the order to be selected in the order list.
+    func onOrderSelected(id orderID: Int64) {
+        selectedOrderID = orderID
+        selectedIndexPath = indexPath(for: orderID)
+        highlightSelectedRowIfNeeded()
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -265,6 +287,8 @@ private extension OrderListViewController {
         viewModel.snapshot.sink { [weak self] snapshot in
             guard let self = self else { return }
             self.dataSource.apply(snapshot)
+
+            transitionToResultsUpdatedState()
 
             if self.isSplitViewInOrdersTabEnabled, self.splitViewController?.isCollapsed == false {
                 self.checkSelectedItem()
@@ -379,8 +403,16 @@ extension OrderListViewController {
 extension OrderListViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
+    /// Sets `retryTimeout` as `true`.
     ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)?) {
+        sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: true, onCompletion: onCompletion)
+    }
+
+    /// Synchronizes the Orders for the Default Store (if any).
+    /// When retry timeout is `true` it retires the request one time recursively when a timeout happens.
+    ///
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, retryTimeout: Bool, onCompletion: ((Bool) -> Void)? = nil) {
         if pageNumber == syncingCoordinator.pageFirstIndex,
            reason == SyncReason.viewWillAppear.rawValue,
            let lastFullSyncTimestamp = lastFullSyncTimestamp,
@@ -406,7 +438,16 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 if let error {
                     ServiceLocator.analytics.track(event: .ordersListLoadError(error))
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.viewModel.dataLoadingError = error
+
+                    // Recursively retries timeout errors when required.
+                    if error.isTimeoutError && retryTimeout {
+
+                        self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
+                        ServiceLocator.analytics.track(event: .ConnectivityTool.automaticTimeoutRetry())
+
+                    } else {
+                        self.viewModel.dataLoadingError = error
+                    }
                 } else {
                     if pageNumber == self.syncingCoordinator.pageFirstIndex {
                         // save timestamp of last successful update
@@ -494,30 +535,28 @@ private extension OrderListViewController {
     /// Removes the selected state otherwise.
     ///
     func highlightSelectedRowIfNeeded() {
-        guard let selectedIndexPath = selectedIndexPath else {
+        guard let selectedOrderID, let orderIndexPath = indexPath(for: selectedOrderID) else {
             return
         }
         if splitViewController?.isCollapsed == true {
-            tableView.deselectRow(at: selectedIndexPath, animated: false)
+            tableView.deselectRow(at: orderIndexPath, animated: false)
         } else {
-            tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
+            tableView.selectRow(at: orderIndexPath, animated: false, scrollPosition: .none)
         }
     }
 
-    /// Checks to see if the selected item is still at the same index in the list and resets its state if not.
+    /// Checks to see if there is a selected order ID, and selects its order.
+    /// Otherwise, try to select first item.
     ///
     func checkSelectedItem() {
-        guard let indexPath = selectedIndexPath, let orderID = selectedOrderID else {
-            return selectFirstItemIfPossible()
-        }
-
-        guard let objectID = dataSource.itemIdentifier(for: indexPath),
-            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
-            return selectFirstItemIfPossible()
-        }
-
-        if orderDetailsViewModel.order.orderID != orderID {
+        guard let orderID = selectedOrderID else {
             selectFirstItemIfPossible()
+            return
+        }
+        let selected = selectOrderFromListIfPossible(for: orderID)
+        if !selected {
+            selectedIndexPath = nil
+            switchDetailsHandler([], 0, true, nil)
         }
     }
 
@@ -531,15 +570,63 @@ private extension OrderListViewController {
                 state != .empty else {
             selectedOrderID = nil
             selectedIndexPath = nil
-            return switchDetailsHandler([], 0, nil)
+            return switchDetailsHandler([], 0, false, nil)
         }
-        selectedOrderID = orderDetailsViewModel.order.orderID
-        selectedIndexPath = firstIndexPath
-        switchDetailsHandler([orderDetailsViewModel], 0, nil)
-        highlightSelectedRowIfNeeded()
+        switchDetailsHandler([orderDetailsViewModel], 0, false) { [weak self] hasBeenSelected in
+            guard let self else { return }
+            if hasBeenSelected {
+                onOrderSelected(id: orderDetailsViewModel.order.orderID)
+            }
+        }
+    }
+
+    func indexPath(for orderID: Int64) -> IndexPath? {
+        for identifier in dataSource.snapshot().itemIdentifiers {
+            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+               detailsViewModel.order.orderID == orderID,
+               let indexPath = dataSource.indexPath(for: identifier) {
+                return indexPath
+            }
+        }
+        return nil
     }
 }
 
+extension OrderListViewController {
+    /// Adds ability to select any order
+    /// Used when opening an order with deep link
+    /// - Parameter orderID: ID of the order to select in the list.
+    /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
+    func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
+        for identifier in dataSource.snapshot().itemIdentifiers {
+            if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
+               detailsViewModel.order.orderID == orderID {
+                let orderNotAlreadySelected = selectedOrderID != orderID
+                let indexPath = dataSource.indexPath(for: identifier)
+                let indexPathNotAlreadySelected = selectedIndexPath != indexPath
+                let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected
+                if shouldSwitchDetails {
+                    showOrderDetails(detailsViewModel.order)
+                }
+                else {
+                    onOrderSelected(id: orderID)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
+    func showOrderDetails(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
+        let viewModel = OrderDetailsViewModel(order: order)
+        switchDetailsHandler([viewModel], 0, true) { [weak self] hasBeenSelected in
+            guard let self else { return }
+            if hasBeenSelected {
+                onOrderSelected(id: order.orderID)
+            }
+        }
+    }
+}
 
 // MARK: - Placeholders & Ghostable Table
 //
@@ -699,7 +786,8 @@ extension OrderListViewController: UITableViewDelegate {
 
         selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order,
+                                                                                 horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         selectedOrderID = order.orderID
         let allViewModels = allViewModels()
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
@@ -711,10 +799,12 @@ extension OrderListViewController: UITableViewDelegate {
             // There is no point of having order navigation in the order details view when we have a split screen,
             // because orders can be easily selected in the left view (orders list).
             // Passing just one order (the selected one) disables navigation
-            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, nil) :
-            switchDetailsHandler([orderDetailsViewModel], 0, nil)
+            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, true, nil) :
+            switchDetailsHandler([orderDetailsViewModel], 0, true, nil)
         } else {
-            let viewController = OrderDetailsViewController(viewModels: allViewModels, currentIndex: currentIndex)
+            let viewController = OrderDetailsViewController(viewModels: allViewModels,
+                                                            currentIndex: currentIndex,
+                                                            switchDetailsHandler: { _, _, _, _ in })
             navigationController?.pushViewController(viewController, animated: true)
         }
     }
@@ -830,7 +920,13 @@ private extension OrderListViewController {
         onTroubleshootButtonPressed: { [weak self] in
             guard let self = self else { return }
 
-            WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.connectivityTool) {
+                ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
+                let connectivityToolViewController = ConnectivityToolViewController()
+                self.show(connectivityToolViewController, sender: self)
+            } else {
+                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            }
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }

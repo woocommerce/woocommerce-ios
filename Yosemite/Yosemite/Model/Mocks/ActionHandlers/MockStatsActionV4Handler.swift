@@ -33,6 +33,8 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 onCompletion(.success(()))
             case .thisYear:
                 success(onCompletion)
+            case .custom:
+                success(onCompletion)
         }
     }
 
@@ -49,6 +51,8 @@ struct MockStatsActionV4Handler: MockActionHandler {
                 onCompletion(.success(()))
             case .thisYear:
                 success(onCompletion)
+            case .custom:
+                success(onCompletion)
         }
     }
 
@@ -64,6 +68,8 @@ struct MockStatsActionV4Handler: MockActionHandler {
             store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisMonthTopProducts)
             onCompletion(.success(objectGraph.thisMonthTopProducts))
         case .thisYear:
+            onCompletion(.success(objectGraph.thisMonthTopProducts))
+        case .custom:
             onCompletion(.success(objectGraph.thisMonthTopProducts))
         }
     }

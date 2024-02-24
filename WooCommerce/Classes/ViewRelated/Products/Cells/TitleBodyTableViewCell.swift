@@ -12,12 +12,17 @@ final class TitleBodyTableViewCell: UITableViewCell {
         configureTitleLabel()
         configureBodyLabel()
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
 private extension TitleBodyTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     func configureTitleLabel() {

@@ -48,7 +48,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productUIImageLoader: ProductUIImageLoader
     private let productImageUploader: ProductImageUploaderProtocol
     private var tooltipPresenter: TooltipPresenter?
-    private var productFormBottomSheetPresenter: BottomSheetPresenter?
 
     private let currency: String
 
@@ -95,13 +94,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     ///
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
 
+    private let onDeleteCompletion: () -> Void
+
     init(viewModel: ViewModel,
          isAIContent: Bool = false,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         onDeleteCompletion: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.isAIContent = isAIContent
         self.eventLogger = eventLogger
@@ -111,6 +113,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.productImageUploader = productImageUploader
+        self.onDeleteCompletion = onDeleteCompletion
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
@@ -1081,6 +1084,7 @@ private extension ProductFormViewController {
                 self.navigationController?.dismiss(animated: true, completion: nil)
                 // Dismiss or Pop the Product Form
                 self.dismissOrPopViewController()
+                self.onDeleteCompletion()
             case .failure(let error):
                 DDLogError("⛔️ Error deleting Product: \(error)")
 
@@ -1116,68 +1120,22 @@ private extension ProductFormViewController {
             return
         }
 
-        if viewModel.shouldShowBlazeIntroView {
-            let onCreateCampaignClosure = { [weak self] in
-                guard let self else { return }
-                self.dismiss(animated: true)
-                navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .introView)
-                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
-            }
-            let onDismissClosure = { [weak self] in
-                guard let self = self else { return }
-                self.dismiss(animated: true)
-            }
-            let blazeHostingController: UIViewController = {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazei3NativeCampaignCreation) {
-                    return BlazeCreateCampaignIntroController(onCreateCampaign: onCreateCampaignClosure,
-                                                              onDismiss: onDismissClosure)
-                } else {
-                    return BlazeCampaignIntroController(onStartCampaign: onCreateCampaignClosure,
-                                                        onDismiss: onDismissClosure)
-                }
-            }()
-
-            present(blazeHostingController, animated: true)
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
-        } else {
-            navigateToBlazeCampaignCreation(siteID: site.siteID, siteUrl: site.url, source: .productDetailPromoteButton)
-        }
-    }
-
-    private func navigateToBlazeCampaignCreation(siteID: Int64, siteUrl: String, source: BlazeSource) {
         guard let navigationController else {
             DDLogError("⛔️ Missing parent controller to show Blaze campaign creation form.")
             return
         }
 
         let coordinator = BlazeCampaignCreationCoordinator(
-            siteID: siteID,
-            siteURL: siteUrl,
+            siteID: site.siteID,
+            siteURL: site.url,
             productID: product.productID,
-            source: source,
+            source: .productDetailPromoteButton,
+            shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
-            onCampaignCreated: handlePostCreation
+            onCampaignCreated: {}
         )
         coordinator.start()
         blazeCampaignCreationCoordinator = coordinator
-    }
-
-    func handlePostCreation() {
-        navigationController?.popViewController(animated: true)
-        showBlazeCampaignCelebrationView()
-    }
-
-    func showBlazeCampaignCelebrationView() {
-        productFormBottomSheetPresenter = buildBottomSheetPresenter()
-        let controller = CelebrationHostingController(
-            title: Localization.Blaze.celebrationTitle,
-            subtitle: Localization.Blaze.celebrationSubtitle,
-            closeButtonTitle: Localization.Blaze.celebrationCTA,
-            onTappingDone: { [weak self] in
-            self?.productFormBottomSheetPresenter?.dismiss()
-            self?.productFormBottomSheetPresenter = nil
-        })
-        productFormBottomSheetPresenter?.present(controller, from: self)
     }
 
     func trackVariationRemoveButtonTapped() {
@@ -2008,21 +1966,6 @@ private extension ProductFormViewController {
 }
 
 
-// MARK: Bottom sheet helpers
-//
-private extension ProductFormViewController {
-    func buildBottomSheetPresenter() -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
-            var sheet = bottomSheet
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .none
-            sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium(), .large()]
-        })
-    }
-}
-
-
 // MARK: Constants
 //
 private enum Localization {
@@ -2052,24 +1995,6 @@ private enum Localization {
                                                comment: "The message for the Write with AI tooltip")
         static let gotIt = NSLocalizedString("Got it",
                                              comment: "Button title that dismisses the Write with AI tooltip")
-    }
-
-    enum Blaze {
-        static let celebrationTitle = NSLocalizedString(
-            "productFormViewController.blazeCelebrationTitle",
-            value: "All set!",
-            comment: "Title of the celebration view when a Blaze campaign is successfully created."
-        )
-        static let celebrationSubtitle = NSLocalizedString(
-            "productFormViewController.blazeCelebrationSubtitle",
-            value: "The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running.",
-            comment: "Subtitle of the celebration view when a Blaze campaign is successfully created."
-        )
-        static let celebrationCTA = NSLocalizedString(
-            "productFormViewController.blazeCelebrationCTA",
-            value: "Got it",
-            comment: "Button to dismiss the celebration view when a Blaze campaign is successfully created."
-        )
     }
 }
 

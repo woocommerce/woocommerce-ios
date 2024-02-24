@@ -125,15 +125,11 @@ private extension AddProductFromImageCoordinator {
 private extension AddProductFromImageCoordinator {
     @MainActor
     func onWPMediaPickerCompletion(mediaItems: [Media]) async -> MediaPickerImage? {
-        guard let media = mediaItems.first else {
+        guard let media = mediaItems.first,
+              let image = try? await productImageLoader.requestImage(productImage: media.toProductImage)else {
             return nil
         }
-        return await withCheckedContinuation { continuation in
-            let productImage = media.toProductImage
-            _ = productImageLoader.requestImage(productImage: productImage) { image in
-                continuation.resume(returning: .init(image: image, source: .media(media: media)))
-            }
-        }
+        return .init(image: image, source: .media(media: media))
     }
 }
 

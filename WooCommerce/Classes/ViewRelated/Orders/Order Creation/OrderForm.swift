@@ -3,7 +3,7 @@ import Combine
 
 /// Hosting controller that wraps an `OrderForm` view.
 ///
-final class OrderFormHostingController: UIHostingController<OrderForm> {
+final class OrderFormHostingController: UIHostingController<OrderFormPresentationWrapper> {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -20,7 +20,7 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
                     return .editing
             }
         }()
-        super.init(rootView: OrderForm(flow: flow, viewModel: viewModel))
+        super.init(rootView: OrderFormPresentationWrapper(flow: flow, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -34,8 +34,6 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        rootView.rootViewController = self
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             // Set presentation delegate to track the user dismiss flow event
@@ -100,6 +98,60 @@ private extension OrderFormHostingController {
     }
 }
 
+struct OrderFormPresentationWrapper: View {
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismissHandler: (() -> Void) = {}
+
+    let flow: WooAnalyticsEvent.Orders.Flow
+
+    @ObservedObject var viewModel: EditableOrderViewModel
+
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    var body: some View {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+            AdaptiveModalContainer(primaryView: { presentProductSelector in
+                OrderForm(dismissHandler: dismissHandler,
+                          flow: flow,
+                          viewModel: viewModel,
+                          presentProductSelector: presentProductSelector)
+            }, secondaryView: { isShowingProductSelector in
+                if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                    ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
+                                        source: .orderForm(flow: flow),
+                                        isPresented: isShowingProductSelector,
+                                        viewModel: productSelectorViewModel)
+                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                        ConfigurableBundleProductView(viewModel: viewModel)
+                    }
+                }
+            })
+        } else {
+            OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
+        }
+    }
+}
+
+private extension ProductSelectorView.Configuration {
+    static func loadConfiguration(for sizeClass: UserInterfaceSizeClass?) -> ProductSelectorView.Configuration {
+        guard let sizeClass else {
+            DDLogWarn("No size class when determining configuration for product selector")
+            return .addProductToOrder()
+        }
+
+        switch sizeClass {
+        case .compact:
+            return .addProductToOrder()
+        case .regular:
+            return .splitViewAddProductToOrder()
+        @unknown default:
+            DDLogError("Size class unknown when determining configuration for product selector")
+            return .addProductToOrder()
+        }
+    }
+}
+
 /// View to create or edit an order
 ///
 struct OrderForm: View {
@@ -109,9 +161,9 @@ struct OrderForm: View {
 
     let flow: WooAnalyticsEvent.Orders.Flow
 
-    var rootViewController: UIViewController?
-
     @ObservedObject var viewModel: EditableOrderViewModel
+
+    let presentProductSelector: (() -> Void)?
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -128,7 +180,16 @@ struct OrderForm: View {
 
     @State private var shouldShowShippingLineDetails = false
 
+    @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+
     var body: some View {
+        orderFormSummary(presentProductSelector)
+            .onAppear {
+                viewModel.syncChangesImmediately = presentationStyle == .sideBySide
+            }
+    }
+
+    @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
                 ScrollView {
@@ -141,13 +202,22 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
-                            OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
-
-                            Spacer(minLength: Layout.sectionSpacing)
+                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                                Group {
+                                    OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
+                                    Spacer(minLength: Layout.sectionSpacing)
+                                }
+                                .renderedIf(flow == .editing)
+                            } else {
+                                OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
+                                Spacer(minLength: Layout.sectionSpacing)
+                            }
 
                             ProductsSection(scroll: scroll,
                                             flow: flow,
-                                            viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                                            presentProductSelector: presentProductSelector,
+                                            viewModel: viewModel,
+                                            navigationButtonID: $navigationButtonID)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
@@ -440,6 +510,8 @@ private struct ProductsSection: View {
 
     let flow: WooAnalyticsEvent.Orders.Flow
 
+    let presentProductSelector: (() -> Void)?
+
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -455,7 +527,7 @@ private struct ProductsSection: View {
     @State private var showPermissionsSheet: Bool = false
 
     /// Defines whether we should show a progress view instead of the barcode scanner button.
-    /// 
+    ///
     @State private var showAddProductViaSKUScannerLoading: Bool = false
 
     /// ID for Add Product button
@@ -466,15 +538,36 @@ private struct ProductsSection: View {
     ///
     @Namespace var addProductViaSKUScannerButton
 
-    ///   Environment safe areas
+    /// Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
+    /// Environment variable that manages the presentation state of the AdaptiveModalContainer view
+    /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size
+    ///
+    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle
+
+    private var layoutVerticalSpacing: CGFloat {
+        if viewModel.shouldShowProductsSectionHeader {
+            return OrderForm.Layout.verticalSpacing
+        } else {
+            return .zero
+        }
+    }
 
     var body: some View {
         Group {
             Divider()
+                .renderedIf(presentationStyle == .modalOnModal)
 
-            VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
+            VStack(alignment: .leading, spacing: layoutVerticalSpacing) {
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
+                    && presentationStyle == .sideBySide
+                    && !viewModel.shouldShowProductsSectionHeader {
+                    HStack() {
+                        scanProductRow
+                    }
+                }
                 HStack {
                     Text(OrderForm.Localization.products)
                         .accessibilityAddTraits(.isHeader)
@@ -483,21 +576,31 @@ private struct ProductsSection: View {
                     Spacer()
 
                     Image(uiImage: .lockImage)
-                        .foregroundColor(Color(.brand))
+                        .foregroundColor(Color(.primary))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
                     HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {
                         scanProductButton
-                        .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
 
-                        Button(action: {
-                            viewModel.toggleProductSelectorVisibility()
-                        }) {
-                            Image(uiImage: .plusImage)
+                        if let presentProductSelector {
+                            Button(action: {
+                                presentProductSelector()
+                            }) {
+                                Image(uiImage: .plusImage)
+                            }
+                            .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
+                            .id(addProductButton)
+                            .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                        } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                            Button(action: {
+                                viewModel.toggleProductSelectorVisibility()
+                            }) {
+                                Image(uiImage: .plusImage)
+                            }
+                            .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
+                            .id(addProductButton)
+                            .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         }
-                        .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
-                        .id(addProductButton)
-                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     }
                     .scaledToFit()
                     .renderedIf(!viewModel.shouldShowNonEditableIndicators)
@@ -520,15 +623,23 @@ private struct ProductsSection: View {
                 }
 
                 HStack {
-                    Button(OrderForm.Localization.addProducts) {
-                        viewModel.toggleProductSelectorVisibility()
+                    if let presentProductSelector {
+                        Button(OrderForm.Localization.addProducts) {
+                            presentProductSelector()
+                        }
+                        .id(addProductButton)
+                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                        .buttonStyle(PlusButtonStyle())
+                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .modalOnModal {
+                        Button(OrderForm.Localization.addProducts) {
+                            viewModel.toggleProductSelectorVisibility()
+                        }
+                        .id(addProductButton)
+                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                        .buttonStyle(PlusButtonStyle())
                     }
-                    .id(addProductButton)
-                    .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
-                    .buttonStyle(PlusButtonStyle())
-
                     scanProductButton
-                    .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+                        .renderedIf(presentationStyle == .modalOnModal)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }
@@ -572,48 +683,81 @@ private struct ProductsSection: View {
 }
 
 private extension ProductsSection {
-    var scanProductButton: some View {
-        Button(action: {
-            viewModel.trackBarcodeScanningButtonTapped()
-            let capturePermissionStatus = viewModel.capturePermissionStatus
-            switch capturePermissionStatus {
-            case .notPermitted:
-                viewModel.trackBarcodeScanningNotPermitted()
-                logPermissionStatus(status: .notPermitted)
-                self.showPermissionsSheet = true
-            case .notDetermined:
-                logPermissionStatus(status: .notDetermined)
-                viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
-                    if isPermissionGranted {
-                        showAddProductViaSKUScanner = true
-                        logPermissionStatus(status: .permitted)
-                    }
-                })
-            case .permitted:
+    // Handles the different outcomes of barcode scanner presentation, depending on capture permission status
+    func handleProductScannerPresentation() {
+        viewModel.trackBarcodeScanningButtonTapped()
+        let capturePermissionStatus = viewModel.capturePermissionStatus
+        switch capturePermissionStatus {
+        case .notPermitted:
+            viewModel.trackBarcodeScanningNotPermitted()
+            logPermissionStatus(status: .notPermitted)
+            self.showPermissionsSheet = true
+        case .notDetermined:
+            logPermissionStatus(status: .notDetermined)
+            viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                if isPermissionGranted {
+                    showAddProductViaSKUScanner = true
+                    logPermissionStatus(status: .permitted)
+                }
+            })
+        case .permitted:
+            showAddProductViaSKUScanner = true
+            logPermissionStatus(status: .permitted)
+        }
+    }
+
+    // View containing the scanner, ready for product SKU reading input
+    func scannerViewContent() -> ProductSKUInputScannerView {
+        ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+            showAddProductViaSKUScanner = false
+            showAddProductViaSKUScannerLoading = true
+            viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                showAddProductViaSKUScannerLoading = false
+            }, onRetryRequested: {
                 showAddProductViaSKUScanner = true
-                logPermissionStatus(status: .permitted)
+            })
+        })
+    }
+
+    @ViewBuilder var scanProductRow: some View {
+        Button(action: {
+            handleProductScannerPresentation()
+        }, label: {
+            if showAddProductViaSKUScannerLoading {
+                ProgressView()
+            } else {
+                HStack() {
+                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                    Text(Localization.scanProductRowTitle)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .foregroundColor(Color(.accent))
+                .bodyStyle()
             }
+        })
+        .frame(maxWidth: .infinity)
+        .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
+            scroll.scrollTo(addProductViaSKUScannerButton)
+        }, content: {
+            scannerViewContent()
+        })
+    }
+
+    @ViewBuilder var scanProductButton: some View {
+        Button(action: {
+            handleProductScannerPresentation()
         }, label: {
             if showAddProductViaSKUScannerLoading {
                 ProgressView()
             } else {
                 Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                .foregroundColor(Color(.brand))
             }
         })
         .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
         .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
             scroll.scrollTo(addProductViaSKUScannerButton)
         }, content: {
-            ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                showAddProductViaSKUScanner = false
-                showAddProductViaSKUScannerLoading = true
-                viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                    showAddProductViaSKUScannerLoading = false
-                }, onRetryRequested: {
-                    showAddProductViaSKUScanner = true
-                })
-            })
+            scannerViewContent()
         })
     }
 }
@@ -687,23 +831,23 @@ struct OrderForm_Previews: PreviewProvider {
         let viewModel = EditableOrderViewModel(siteID: 123)
 
         NavigationView {
-            OrderForm(flow: .creation, viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
 
         NavigationView {
-            OrderForm(flow: .creation, viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
         .previewDisplayName("Accessibility")
 
         NavigationView {
-            OrderForm(flow: .creation, viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            OrderForm(flow: .creation, viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
         .environment(\.layoutDirection, .rightToLeft)
         .previewDisplayName("Right to left")
@@ -719,6 +863,19 @@ private extension ProductSelectorView.Configuration {
             doneButtonTitlePluralFormat: Localization.doneButtonPlural,
             title: Localization.title,
             cancelButtonTitle: Localization.close,
+            productRowAccessibilityHint: Localization.productRowAccessibilityHint,
+            variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
+    }
+
+    static func splitViewAddProductToOrder() -> ProductSelectorView.Configuration {
+        ProductSelectorView.Configuration(
+            productHeaderTextEnabled: true,
+            searchHeaderBackgroundColor: .listBackground,
+            prefersLargeTitle: false,
+            doneButtonTitleSingularFormat: "",
+            doneButtonTitlePluralFormat: "",
+            title: Localization.title,
+            cancelButtonTitle: nil,
             productRowAccessibilityHint: Localization.productRowAccessibilityHint,
             variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
     }
@@ -742,6 +899,13 @@ private extension ProductSelectorView.Configuration {
 }
 
 private extension ProductsSection {
+    enum Localization {
+        static let scanProductRowTitle = NSLocalizedString(
+            "orderForm.products.add.scan.row.title",
+            value: "Scan Product",
+            comment: "Title for the barcode scanning button to add a product to an order")
+    }
+
     func openSettingsAction() {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
             return

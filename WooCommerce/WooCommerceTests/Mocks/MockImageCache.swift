@@ -38,4 +38,11 @@ final class MockImageCache: ImageCache {
                         completionHandler: ((CacheStoreResult) -> Void)? = nil) {
         imagesByKey[key] = image
     }
+
+    var clearCacheCalled = false
+
+    override func clearCache(completion handler: (() -> Void)? = nil) {
+        clearCacheCalled = true
+        super.clearCache(completion: handler)
+    }
 }

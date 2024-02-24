@@ -124,6 +124,11 @@ final class OrderSubscriptionTableViewCell: UITableViewCell {
         super.prepareForReuse()
         statusLabel.layer.borderColor = UIColor.clear.cgColor
     }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
 }
 
 
@@ -132,7 +137,7 @@ final class OrderSubscriptionTableViewCell: UITableViewCell {
 private extension OrderSubscriptionTableViewCell {
 
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        configureDefaultBackgroundConfiguration()
     }
 
     /// Setup: Labels

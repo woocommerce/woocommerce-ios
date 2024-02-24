@@ -674,14 +674,17 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00",
-                                                                          shippingTotal: "3.00",
+                                                                               shippingTotal: "3.00",
+                                                                               shippingTax: "0.30",
                                                                                customAmountsTotal: "2.00",
-                                                                          taxesTotal: "5.00",
-                                                                          currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
+                                                                               taxesTotal: "5.00",
+                                                                               currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
 
         // Then
         XCTAssertEqual(paymentDataViewModel.itemsTotal, "£20.00")
         XCTAssertEqual(paymentDataViewModel.shippingTotal, "£3.00")
+        XCTAssertEqual(paymentDataViewModel.shippingTax, "£0.30")
+        XCTAssertEqual(paymentDataViewModel.shouldShowShippingTax, true)
         XCTAssertEqual(paymentDataViewModel.customAmountsTotal, "£2.00")
         XCTAssertEqual(paymentDataViewModel.taxesTotal, "£5.00")
     }
@@ -696,6 +699,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTax, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shouldShowShippingTax, false)
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "£0.00")
     }
@@ -764,22 +769,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningFailure.rawValue)
         XCTAssertEqual(analytics.receivedProperties.first?["reason"] as? String, "camera_access_not_permitted")
         XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
-    }
-
-    func test_add_product_to_order_via_sku_scanner_when_feature_flag_is_enabled_then_feature_support_returns_true() {
-        // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
-
-        // Then
-        XCTAssertTrue(viewModel.isAddProductToOrderViaSKUScannerEnabled)
-    }
-
-    func test_add_product_to_order_via_sku_scanner_feature_flag_is_disabled_then_feature_support_returns_false() {
-        // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: false))
-
-        // Then
-        XCTAssertFalse(viewModel.isAddProductToOrderViaSKUScannerEnabled)
     }
 
     // MARK: - Payment Section Tests
@@ -2185,10 +2174,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         let actionError = NSError(domain: "Error", code: 0)
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
+            case .synchronizeProducts:
+                return
             case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
                 onCompletion(.failure(actionError))
             default:
-                XCTFail("Expected failure, got success")
+                XCTFail("Unexpected ProductAction received")
             }
         })
 

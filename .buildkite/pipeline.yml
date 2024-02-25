@@ -1,107 +1,12 @@
-# Nodes with values to reuse in the pipeline.
-common_params:
-  # Common plugin settings to use with the `plugins` key.
-  - &common_plugins
-    - automattic/a8c-ci-toolkit#3.0.1
-  # Common environment values to use with the `env` key.
-  - &common_env
-    # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
-    IMAGE_ID: xcode-15.1
-
-# This is the default pipeline – it will build and test the app
 steps:
-  #################
-  # Build the app
-  #################
-  - label: ":pipeline: Build"
-    key: "build"
-    command: ".buildkite/commands/build-for-testing.sh"
-    env: *common_env
-    plugins: *common_plugins
-    notify:
-      - github_commit_status:
-          context: "Build"
+  - label: "Test annotation"
+    plugins:
+      - automattic/a8c-ci-toolkit#3.0.1
+    env:
+      # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
+      IMAGE_ID: xcode-15.1
+    command: |
+      .buildkite/commands/configure-environment.sh
 
-  #################
-  # Create Prototype Build
-  #################
-  - label: "🛠 Prototype Build"
-    command: ".buildkite/commands/prototype-build.sh"
-    env: *common_env
-    plugins: *common_plugins
-    if: build.pull_request.id != null
-    notify:
-      - github_commit_status:
-          context: "Prototype Build"
-
-  #################
-  # Run Unit Tests
-  #################
-  - label: "🔬 Unit Tests"
-    command: ".buildkite/commands/run-unit-tests.sh"
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
-    artifact_paths:
-      - "fastlane/test_output/*"
-    notify:
-      - github_commit_status:
-          context: "Unit Tests"
-
-  #################
-  # Linters
-  #################
-  - group: Linters
-    steps:
-      - label: ":swift: SwiftLint"
-        command: .buildkite/commands/run-swiftlint.sh --strict
-        plugins:
-          - docker#v5.8.0:
-              image: "ghcr.io/realm/swiftlint:0.54.0"
-              mount-buildkite-agent: true # Needed for calling `buildkite-agent annotate`
-        notify:
-          - github_commit_status:
-              context: "SwiftLint"
-        agents:
-          queue: "default"
-
-      - label: "🧹 Lint Translations"
-        command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"
-        plugins:
-          - docker#v3.8.0:
-              image: "public.ecr.aws/automattic/glotpress-validator:1.0.0"
-        agents:
-          queue: "default"
-        notify:
-          - github_commit_status:
-              context: "Lint Translations"
-
-      - label: ":sleuth_or_spy: Lint Localized Strings Format"
-        command: .buildkite/commands/lint-localized-strings-format.sh
-        plugins: *common_plugins
-        env: *common_env
-
-  #################
-  # UI Tests
-  #################
-  - label: "🔬 UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 15'
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
-    artifact_paths:
-      - "fastlane/test_output/*"
-    notify:
-      - github_commit_status:
-          context: "UI Tests (iPhone)"
-
-  - label: "🔬 UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (5th generation)"
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
-    artifact_paths:
-      - "fastlane/test_output/*"
-    notify:
-      - github_commit_status:
-          context: "UI Tests (iPad)"
+      echo '--- :cocoapods: Check for Outdated Pods'
+      .buildkite/commands/log-outdated-pods.sh

@@ -3,7 +3,8 @@ extension URLRequest {
     static func googleSignInTokenRequest(
         body: OAuthTokenRequestBody
     ) throws -> URLRequest {
-        var request = try URLRequest(url: URL.googleSignInOAuthTokenURL, method: .post)
+        var request = URLRequest(url: URL.googleSignInOAuthTokenURL)
+        request.httpMethod = "POST"
 
         request.setValue(
             "application/x-www-form-urlencoded; charset=UTF-8",

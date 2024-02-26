@@ -113,18 +113,22 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        guard enabledCards.contains(.sessions) else {
+        guard enabledCards.contains(.sessions), isEligibleForSessionsCard else {
             return false
         }
-        if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
-                    || stores.sessionManager.defaultSite?.isJetpackCPConnected == true // JCP stores don't have Jetpack stats
-                    || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
-            return false
-        } else if case .custom = timeRangeSelectionType {
+        if case .custom = timeRangeSelectionType {
             return false
         } else {
             return true
         }
+    }
+
+    /// Whether the user is eligible to view the Sessions cards
+    ///
+    private var isEligibleForSessionsCard: Bool {
+        stores.sessionManager.defaultSite?.isNonJetpackSite == false // Non-Jetpack stores don't have Jetpack stats
+        && stores.sessionManager.defaultSite?.isJetpackCPConnected == false // JCP stores don't have Jetpack stats
+        && (isJetpackStatsDisabled && !userIsAdmin) == false // Non-admins can't enable sessions stats
     }
 
     /// Whether Jetpack Stats are disabled on the store

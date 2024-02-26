@@ -43,6 +43,8 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     private func showContactSupportForm() {
         let supportController = SupportFormHostingController(viewModel: .init())
         supportController.show(from: self)
+
+        ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
     }
 }
 
@@ -124,6 +126,17 @@ struct ConnectivityToolCard: View {
             case .error:
                 Image(uiImage: .checkPartialCircleImage.withRenderingMode(.alwaysTemplate))
                     .foregroundColor(Color.init(uiColor: .error))
+            }
+        }
+
+        /// Determines if the test was successful or not.
+        ///
+        var isSuccess: Bool {
+            switch self {
+            case .success:
+                return true
+            default:
+                return false
             }
         }
     }

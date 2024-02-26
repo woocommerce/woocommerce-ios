@@ -314,14 +314,11 @@ final class OrdersRootViewController: UIViewController {
 
         let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
 
-        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
-            let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")
-            let dateRange = filters.dateRange?.analyticsDescription ?? ""
-            self?.analytics.track(.ordersListFilter,
-                                           withProperties: ["status": statuses,
-                                                            "date_range": dateRange])
+
+            self?.analytics.track(event: .OrdersFilter.onFilterOrders(filters: filters))
         }, onClearAction: {
         }, onDismissAction: {
         })
@@ -438,6 +435,7 @@ private extension OrdersRootViewController {
             case .success(let settings):
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
+                                                                 product: settings.productFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure(let error):
                 print("It was not possible to sync local orders settings: \(String(describing: error))")
@@ -451,7 +449,9 @@ private extension OrdersRootViewController {
     ///
     func updateLocalOrdersSettings(filters: FilterOrderListViewModel.Filters) {
         let action = AppSettingsAction.upsertOrdersSettings(siteID: siteID,
-                                                            orderStatusesFilter: filters.orderStatus, dateRangeFilter: filters.dateRange) { error in
+                                                            orderStatusesFilter: filters.orderStatus,
+                                                            dateRangeFilter: filters.dateRange,
+                                                            productFilter: filters.product) { error in
             if error != nil {
                 assertionFailure("It was not possible to store order settings due to an error: \(String(describing: error))")
             }

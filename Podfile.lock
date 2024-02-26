@@ -72,8 +72,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.1.0)
   - SwiftLint (= 0.54.0)
-  - WordPress-Aztec-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `950c7bc1bf98326986f10cccb2715ad86976f0fd`)
-  - WordPress-Editor-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `950c7bc1bf98326986f10cccb2715ad86976f0fd`)
+  - WordPress-Editor-iOS (~> 1.19)
   - WordPressAuthenticator (~> 9.0)
   - WordPressKit (~> 13.1)
   - WordPressShared (~> 2.1)
@@ -152,6 +151,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 7c669b20674847a8eea27ca1521414964f83301b
+PODFILE CHECKSUM: cac6aef563843a26bdcf199bb41f9f1d7f9618d2
 
 COCOAPODS: 1.14.0

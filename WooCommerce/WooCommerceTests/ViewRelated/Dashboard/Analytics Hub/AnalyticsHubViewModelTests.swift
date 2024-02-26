@@ -710,6 +710,23 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         customizeAnalytics.selectedCards = [AnalyticsCard(type: .revenue, enabled: true)]
         customizeAnalytics.saveChanges()
     }
+
+    func test_customizeAnalytics_excludes_sessions_card_when_ineligible() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
+        let vm = createViewModel(stores: stores)
+
+        // When
+        vm.customizeAnalytics()
+
+        // Then
+        let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
+        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
+                             AnalyticsCard(type: .orders, enabled: true),
+                             AnalyticsCard(type: .products, enabled: true)]
+        XCTAssertFalse(vm.showSessionsCard)
+        assertEqual(expectedCards, customizeAnalyticsVM.allCards)
+    }
 }
 
 private extension AnalyticsHubViewModelTests {

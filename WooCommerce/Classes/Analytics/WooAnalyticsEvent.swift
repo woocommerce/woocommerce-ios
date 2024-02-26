@@ -401,9 +401,10 @@ extension WooAnalyticsEvent {
             static let hasChangedData = "has_changed_data"
         }
 
-        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
+        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
-                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules])
+                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules,
+                                                                           "horizontal_size_class": horizontalSizeClass.nameForAnalytics])
         }
 
         /// Tracks when the merchant previews a product draft.

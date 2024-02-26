@@ -538,33 +538,72 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedProducts, [product.productID])
     }
 
-    func test_getVariationsViewModel_returns_expected_view_model_for_variable_product() throws {
+    func test_variationRowTapped_sets_expected_view_model_for_variable_product() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                   storageManager: storageManager)
+                                                 storageManager: storageManager)
 
         // When
-        let variationsViewModel = viewModel.getVariationsViewModel(for: product.productID)
+        viewModel.variationRowTapped(for: product.productID)
 
         // Then
+        let variationsViewModel = viewModel.productVariationListViewModel
         let actualViewModel = try XCTUnwrap(variationsViewModel)
         XCTAssertEqual(actualViewModel.productName, product.name)
+        XCTAssertTrue(viewModel.isShowingProductVariationList)
     }
 
-    func test_getVariationsViewModel_returns_nil_for_simple_product() {
+    func test_variationRowTapped_sets_nil_for_simple_product() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                   storageManager: storageManager)
+                                                 storageManager: storageManager)
 
         // When
-        let variationsViewModel = viewModel.getVariationsViewModel(for: product.productID)
+        viewModel.variationRowTapped(for: product.productID)
 
         // Then
+        let variationsViewModel = viewModel.productVariationListViewModel
         XCTAssertNil(variationsViewModel)
+        XCTAssertFalse(viewModel.isShowingProductVariationList)
+    }
+
+    func test_variationCheckboxTapped_sets_expected_view_model_for_variable_product() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 toggleAllVariationsOnSelection: false)
+
+        // When
+        viewModel.variationCheckboxTapped(for: product.productID)
+
+        // Then
+        let variationsViewModel = viewModel.productVariationListViewModel
+        let actualViewModel = try XCTUnwrap(variationsViewModel)
+        XCTAssertEqual(actualViewModel.productName, product.name)
+        XCTAssertTrue(viewModel.isShowingProductVariationList)
+    }
+
+    func test_variationCheckboxTapped_sets_nil_for_simple_product() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true)
+        insert(product)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 toggleAllVariationsOnSelection: false)
+
+        // When
+        viewModel.variationCheckboxTapped(for: product.productID)
+
+        // Then
+        let variationsViewModel = viewModel.productVariationListViewModel
+        XCTAssertNil(variationsViewModel)
+        XCTAssertFalse(viewModel.isShowingProductVariationList)
     }
 
     func test_selecting_a_product_if_supportsMultipleSelection_is_true_and_selectProduct_is_invoked_sets_its_row_to_selected_state() {

@@ -332,20 +332,20 @@ final class ProductSelectorViewModel: ObservableObject {
     }
 
     func variationCheckboxTapped(for productOrVariationID: Int64) {
-        guard let variationListViewModel = getVariationsViewModel(for: productOrVariationID) else {
-            return
-        }
-        toggleSelectionForAllVariations(of: productOrVariationID)
-        // Display the variations list if toggleSelectionForAllVariations is not allowed
-        if !toggleAllVariationsOnSelection {
-            isShowingProductVariationList.toggle()
-            productVariationListViewModel = variationListViewModel
+        if toggleAllVariationsOnSelection {
+            toggleSelectionForAllVariations(of: productOrVariationID)
+        } else {
+            showVariationList(for: productOrVariationID)
         }
     }
 
     func variationRowTapped(for productOrVariationID: Int64) {
-        isShowingProductVariationList.toggle()
+        showVariationList(for: productOrVariationID)
+    }
+
+    private func showVariationList(for productOrVariationID: Int64) {
         productVariationListViewModel = getVariationsViewModel(for: productOrVariationID)
+        isShowingProductVariationList = productVariationListViewModel != nil
     }
 
     private func variableProduct(for productID: Int64) -> Product? {

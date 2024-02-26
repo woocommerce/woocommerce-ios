@@ -61,7 +61,7 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for products
     case products(siteID: Int64)
     // Filter list selector for customer
-    case customer
+    case customer(siteID: Int64)
 
 }
 
@@ -285,9 +285,28 @@ private extension FilterListViewController {
                 }()
                 self.listSelector.navigationController?.present(controller, animated: true)
 
-            case .customer:
+            case .customer(let siteID):
+                // todo: 12059 - pass selected customer in the filter to the customer selector
                 let selectedOrderFilter = selected.selectedValue as? CustomerFilter
-                print("Customer filter not implemented")
+
+                // todo: 12059 - check if this viewmodel needs to be customized for the filter
+                let addressFormViewModel = CreateOrderAddressFormViewModel(
+                    siteID: siteID,
+                    addressData: .init(billingAddress: nil, shippingAddress: nil),
+                    onAddressUpdate: nil
+                )
+
+                let controller: CustomerSelectorViewController = {
+                    return CustomerSelectorViewController(siteID: siteID,
+                                                          addressFormViewModel: addressFormViewModel) {_ in
+                        // todo: 12059 - update selected customer in the filter
+                    }
+                }()
+
+                self.listSelector.navigationController?.present(
+                    WooNavigationController(rootViewController: controller),
+                    animated: true
+                )
             }
         }
     }

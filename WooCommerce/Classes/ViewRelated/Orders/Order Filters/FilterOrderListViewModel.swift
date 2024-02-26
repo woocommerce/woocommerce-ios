@@ -75,7 +75,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
-        customerFilterViewModel = OrderListFilter.customer.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
 
         self.featureFlagService = featureFlagService
         if featureFlagService.isFeatureFlagEnabled(.filterOrdersByProduct) {        
@@ -118,7 +118,7 @@ extension FilterOrderListViewModel {
         case orderStatus
         case dateRange
         case product(siteID: Int64)
-        case customer
+        case customer(siteID: Int64)
     }
 }
 
@@ -152,9 +152,9 @@ extension FilterOrderListViewModel.OrderListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .products(siteID: siteID),
                                        selectedValue: filters.product)
-        case .customer:
+        case .customer(let siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .customer,
+                                       listSelectorConfig: .customer(siteID: siteID),
                                        selectedValue: filters.customer)
         }
     }
@@ -247,4 +247,3 @@ extension CustomerFilter: FilterType {
     /// Whether the filter is set to a non-empty value.
     var isActive: Bool { true }
 }
-

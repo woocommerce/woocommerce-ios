@@ -6,7 +6,7 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
-        super.init(rootView: .init(viewModel: viewModel))
+        super.init(rootView: BlazeCampaignCreationForm(viewModel: viewModel))
         self.viewModel.onEditAd = { [weak self] in
             self?.navigateToEditAd()
         }
@@ -20,6 +20,7 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
+        view.backgroundColor = .listBackground
     }
 }
 
@@ -202,6 +203,7 @@ struct BlazeCampaignCreationForm: View {
         .onAppear() {
             viewModel.onAppear()
         }
+        .frame(maxWidth: Layout.maxWidth)
         .task {
             await viewModel.onLoad()
         }
@@ -340,6 +342,7 @@ private extension BlazeCampaignCreationForm {
         static let detailContentSpacing: CGFloat = 4
         static let shadowRadius: CGFloat = 2
         static let shadowYOffset: CGFloat = 2
+        static let maxWidth: CGFloat = 525
     }
 
     enum Constants {

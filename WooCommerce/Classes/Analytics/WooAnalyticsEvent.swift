@@ -2564,6 +2564,7 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case type
             case templateEligible = "template_eligible"
+            case horizontalSizeClass = "horizontal_size_class"
         }
 
         enum CreationType: String {
@@ -2577,8 +2578,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
         }
 
-        static func productListAddProductButtonTapped(templateEligible: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible])
+        static func productListAddProductButtonTapped(templateEligible: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible,
+                                                                                   Keys.horizontalSizeClass.rawValue: horizontalSizeClass.nameForAnalytics])
         }
     }
 }

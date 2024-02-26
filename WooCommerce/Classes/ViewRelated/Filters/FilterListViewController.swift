@@ -60,6 +60,9 @@ enum FilterListValueSelectorConfig {
     case ordersDateRange
     // Filter list selector for products
     case products(siteID: Int64)
+    // Filter list selector for customer
+    case customer
+
 }
 
 /// Contains data for rendering a filter type row.
@@ -281,6 +284,10 @@ private extension FilterListViewController {
                                                                                                      viewModel: productSelectorViewModel))
                 }()
                 self.listSelector.navigationController?.present(controller, animated: true)
+
+            case .customer:
+                let selectedOrderFilter = selected.selectedValue as? CustomerFilter
+                print("Customer filter not implemented")
             }
         }
     }

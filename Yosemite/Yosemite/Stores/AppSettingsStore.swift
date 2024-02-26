@@ -108,11 +108,13 @@ public class AppSettingsStore: Store {
                                    let orderStatusesFilter,
                                    let dateRangeFilter,
                                    let productFilter,
+                                   let customerFilter,
                                    let onCompletion):
             upsertOrdersSettings(siteID: siteID,
                                  orderStatusesFilter: orderStatusesFilter,
                                  dateRangeFilter: dateRangeFilter,
                                  productFilter: productFilter,
+                                 customerFilter: customerFilter,
                                  onCompletion: onCompletion)
         case .resetOrdersSettings:
             resetOrdersSettings()
@@ -661,6 +663,7 @@ private extension AppSettingsStore {
                               orderStatusesFilter: [OrderStatusEnum]?,
                               dateRangeFilter: OrderDateRangeFilter?,
                               productFilter: FilterOrdersByProduct?,
+                              customerFilter: CustomerFilter?,
                               onCompletion: (Error?) -> Void) {
         var existingSettings: [Int64: StoredOrderSettings.Setting] = [:]
         if let storedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL) {
@@ -670,7 +673,8 @@ private extension AppSettingsStore {
         let newSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                       orderStatusesFilter: orderStatusesFilter,
                                                       dateRangeFilter: dateRangeFilter,
-                                                      productFilter: productFilter)
+                                                      productFilter: productFilter, 
+                                                      customerFilter: customerFilter)
         existingSettings[siteID] = newSettings
 
         let newStoredOrderSettings = StoredOrderSettings(settings: existingSettings)

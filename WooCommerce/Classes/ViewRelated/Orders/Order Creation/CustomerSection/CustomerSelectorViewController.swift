@@ -265,7 +265,7 @@ private extension CustomerSelectorViewController {
             comment: "Error message in the Add Customer to order screen when getting the customers information")
         static let guestSelectionDisallowedError = NSLocalizedString(
             "customerSelectorViewController.guestSelectionDisallowedError",
-            value: "Selecting guest customer is not supported at the moment.",
+            value: "This user is a guest, and guests can’t be used for filtering orders.",
             comment: "Error message in the Add Customer to order screen when getting the customer information")
     }
 

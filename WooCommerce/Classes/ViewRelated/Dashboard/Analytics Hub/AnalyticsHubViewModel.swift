@@ -84,6 +84,7 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                          webReportViewModel: productsWebReportVM)
 
         bindViewModelsWithData()
+        bindCardSettingsWithData()
     }
 
     /// Revenue Card ViewModel
@@ -113,17 +114,22 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card display state
     ///
     var showSessionsCard: Bool {
-        if !isCardEnabled(.sessions) {
+        guard enabledCards.contains(.sessions), isEligibleForSessionsCard else {
             return false
-        } else if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
-                    || stores.sessionManager.defaultSite?.isJetpackCPConnected == true // JCP stores don't have Jetpack stats
-                    || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
-            return false
-        } else if case .custom = timeRangeSelectionType {
+        }
+        if case .custom = timeRangeSelectionType {
             return false
         } else {
             return true
         }
+    }
+
+    /// Whether the user is eligible to view the Sessions cards
+    ///
+    private var isEligibleForSessionsCard: Bool {
+        stores.sessionManager.defaultSite?.isNonJetpackSite == false // Non-Jetpack stores don't have Jetpack stats
+        && stores.sessionManager.defaultSite?.isJetpackCPConnected == false // JCP stores don't have Jetpack stats
+        && (isJetpackStatsDisabled && !userIsAdmin) == false // Non-admins can't enable sessions stats
     }
 
     /// Whether Jetpack Stats are disabled on the store
@@ -316,8 +322,12 @@ private extension AnalyticsHubViewModel {
     @MainActor
     /// Retrieves top ItemsSold stats using the `retrieveTopEarnerStats` action but without saving results into storage.
     ///
-    func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats {
-        try await withCheckedThrowingContinuation { continuation in
+    func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats? {
+        guard enabledCards.contains(.products) else {
+            return nil
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                               timeRange: .thisYear, // Only needed for storing purposes, we can ignore it.
                                                               timeZone: timeZone,
@@ -440,6 +450,22 @@ private extension AnalyticsHubViewModel {
                 // Update data on range selection change
                 Task.init {
                     await self.updateData()
+                }
+            }.store(in: &subscriptions)
+    }
+
+    func bindCardSettingsWithData() {
+        $allCardsWithSettings
+            .dropFirst() // do not trigger refresh action on initial value
+            .removeDuplicates()
+            .sink { [weak self] newCardSettings in
+                guard let self else { return }
+                // If there are newly enabled cards, refresh the stats data
+                let newEnabledCards = newCardSettings.filter({ $0.enabled }).map({ $0.type })
+                if !newEnabledCards.allSatisfy(self.enabledCards.contains) {
+                    Task {
+                        await self.updateData()
+                    }
                 }
             }.store(in: &subscriptions)
     }
@@ -591,12 +617,6 @@ private extension AnalyticsHubViewModel {
                                             webViewTitle: title,
                                             reportURL: url,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
-    }
-
-    /// Whether the card should be displayed in the Analytics Hub.
-    ///
-    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
-        return enabledCards.contains(where: { $0 == type })
     }
 }
 

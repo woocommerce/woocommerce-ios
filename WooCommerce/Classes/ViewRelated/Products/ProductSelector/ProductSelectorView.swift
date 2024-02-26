@@ -221,7 +221,7 @@ struct ProductSelectorView: View {
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)	
+                    viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
                 }
                 .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)

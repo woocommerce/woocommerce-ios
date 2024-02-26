@@ -349,7 +349,7 @@ final class ProductSelectorViewModel: ObservableObject {
     }
 
     private func variableProduct(for productID: Int64) -> Product? {
-        guard let variableProduct = products.first(where: { $0.productID == productID }), 
+        guard let variableProduct = products.first(where: { $0.productID == productID }),
                 variableProduct.variations.isNotEmpty else {
             return nil
         }

@@ -12,13 +12,24 @@ public class UserAgent {
 
     /// Returns the WebKit User Agent
     ///
-    static var webkitUserAgent: String {
-        guard let userAgent = WKWebView().value(forKey: Constants.userAgentKey) as? String,
-            !userAgent.isEmpty else {
-                return ""
+    static var webkitUserAgent: String = {
+        let getUserAgent: () -> String = {
+            guard let userAgent = WKWebView().value(forKey: Constants.userAgentKey) as? String,
+                !userAgent.isEmpty else {
+                    return ""
+            }
+            return userAgent
         }
-        return userAgent
-    }
+
+        if Thread.isMainThread {
+            return getUserAgent()
+        } else {
+            // Using `sync` may lead to a deadlock, i.e. when it's called from a background thread which is blocking the
+            // main thread. However, since this function body is only called once, the chance that the first call causes
+            // a deadlock is pretty low.
+            return DispatchQueue.main.sync(execute: getUserAgent)
+        }
+    }()
 
     /// Returns the Bundle Version ID
     ///

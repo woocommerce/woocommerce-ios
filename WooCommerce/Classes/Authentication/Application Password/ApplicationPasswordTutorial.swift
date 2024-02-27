@@ -1,6 +1,20 @@
 import Foundation
 import SwiftUI
 
+/// Application Password Tutorial Hosting Controller
+///
+final class ApplicationPasswordTutorialViewController: UIHostingController<ApplicationPasswordTutorial> {
+
+    init() {
+        let view = ApplicationPasswordTutorial()
+        super.init(rootView: view)
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// App Passwords tutorial view.
 ///
 struct ApplicationPasswordTutorial: View {

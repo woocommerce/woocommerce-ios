@@ -622,6 +622,7 @@
 		E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettingsTests.swift; sourceTree = "<group>"; };
 		E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorage.swift; sourceTree = "<group>"; };
 		EE319C522B14DCEE001AC211 /* Model 103.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 103.xcdatamodel"; sourceTree = "<group>"; };
+		EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 107.xcdatamodel"; sourceTree = "<group>"; };
 		EE5B5BAF2AB30251009BCBD6 /* Model 98.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 98.xcdatamodel"; sourceTree = "<group>"; };
 		EE8A30332B734AFA001D7C66 /* Model 106.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 106.xcdatamodel"; sourceTree = "<group>"; };
 		EE8A303C2B7352D0001D7C66 /* OrderAttributionInfo+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderAttributionInfo+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -1962,6 +1963,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */,
 				EE8A30332B734AFA001D7C66 /* Model 106.xcdatamodel */,
 				CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */,
 				CEC963062B173F4700688EA3 /* Model 104.xcdatamodel */,

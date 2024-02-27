@@ -108,9 +108,8 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
         Task { @MainActor in
             await configureCustomRangeTab()
             let selectedTimeRange = await loadLastTimeRange() ?? .today
-            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) else {
-                return
-            }
+            // Defaults to the Today tab if cannot find the selected time range.
+            let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) ?? 0
             selection = selectedTabIndex
             observeSelectedTimeRangeIndex()
         }
@@ -419,15 +418,24 @@ private extension StoreStatsAndTopPerformersViewController {
 
     @MainActor
     func configureCustomRangeTab() async {
+        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
+            return
+        }
+
         guard let customRange = await loadCustomRangeTab() else {
             return
         }
+
         createCustomRangeTab(range: customRange)
     }
 
     @MainActor
     func loadCustomRangeTab() async -> StatsTimeRangeV4? {
-        await withCheckedContinuation { continuation in
+        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
+            return nil
+        }
+
+        return await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
                 continuation.resume(returning: timeRange)
             })

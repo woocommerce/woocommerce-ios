@@ -130,7 +130,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
             Keys.LoadCampaigns.limit: limit
         ]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-        let mapper = BriefBlazeCampaignListMapper(siteID: siteID)
+        let mapper = BriefBlazeCampaignInfoListMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 

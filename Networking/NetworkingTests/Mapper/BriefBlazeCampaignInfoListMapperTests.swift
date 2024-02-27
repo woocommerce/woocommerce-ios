@@ -1,7 +1,7 @@
 import XCTest
 @testable import Networking
 
-final class BriefBlazeCampaignListMapperTests: XCTestCase {
+final class BriefBlazeCampaignInfoListMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -30,7 +30,7 @@ final class BriefBlazeCampaignListMapperTests: XCTestCase {
 
 // MARK: - Test Helpers
 ///
-private extension BriefBlazeCampaignListMapperTests {
+private extension BriefBlazeCampaignInfoListMapperTests {
 
     /// Returns the BriefBlazeCampaignListMapper output upon receiving `filename` (Data Encoded)
     ///
@@ -39,7 +39,7 @@ private extension BriefBlazeCampaignListMapperTests {
             return []
         }
 
-        return try BriefBlazeCampaignListMapper(siteID: dummySiteID).map(response: response)
+        return try BriefBlazeCampaignInfoListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the BlazeCampaignListMapper output from `blaze-brief-campaigns-list-success`

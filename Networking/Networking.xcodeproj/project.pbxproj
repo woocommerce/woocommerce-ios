@@ -927,9 +927,9 @@
 		E1BAB2C52913FB1800C3982B /* WordPressApiValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C42913FB1800C3982B /* WordPressApiValidator.swift */; };
 		E1BAB2C72913FB5800C3982B /* WordPressApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */; };
 		EE065AC82B8E4DE7009848CB /* BriefBlazeCampaignInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE065AC72B8E4DE7009848CB /* BriefBlazeCampaignInfo.swift */; };
-		EE065ACA2B8E5072009848CB /* BriefBlazeCampaignListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE065AC92B8E5072009848CB /* BriefBlazeCampaignListMapper.swift */; };
+		EE065ACA2B8E5072009848CB /* BriefBlazeCampaignInfoListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE065AC92B8E5072009848CB /* BriefBlazeCampaignInfoListMapper.swift */; };
 		EE065ACE2B8E51AD009848CB /* blaze-brief-campaigns-list-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE065ACD2B8E51AD009848CB /* blaze-brief-campaigns-list-success.json */; };
-		EE065AD02B8E56C2009848CB /* BriefBlazeCampaignListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE065ACF2B8E56C2009848CB /* BriefBlazeCampaignListMapperTests.swift */; };
+		EE065AD02B8E56C2009848CB /* BriefBlazeCampaignInfoListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE065ACF2B8E56C2009848CB /* BriefBlazeCampaignInfoListMapperTests.swift */; };
 		EE078D8F2AD2E65400C1199E /* JWToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE078D8E2AD2E65400C1199E /* JWToken.swift */; };
 		EE078D912AD2EFBA00C1199E /* JWTokenMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE078D902AD2EFBA00C1199E /* JWTokenMapper.swift */; };
 		EE078D932AD2F1E500C1199E /* JWTokenMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */; };
@@ -2004,9 +2004,9 @@
 		E1BAB2C42913FB1800C3982B /* WordPressApiValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiValidator.swift; sourceTree = "<group>"; };
 		E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiError.swift; sourceTree = "<group>"; };
 		EE065AC72B8E4DE7009848CB /* BriefBlazeCampaignInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefBlazeCampaignInfo.swift; sourceTree = "<group>"; };
-		EE065AC92B8E5072009848CB /* BriefBlazeCampaignListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefBlazeCampaignListMapper.swift; sourceTree = "<group>"; };
+		EE065AC92B8E5072009848CB /* BriefBlazeCampaignInfoListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefBlazeCampaignInfoListMapper.swift; sourceTree = "<group>"; };
 		EE065ACD2B8E51AD009848CB /* blaze-brief-campaigns-list-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-brief-campaigns-list-success.json"; sourceTree = "<group>"; };
-		EE065ACF2B8E56C2009848CB /* BriefBlazeCampaignListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefBlazeCampaignListMapperTests.swift; sourceTree = "<group>"; };
+		EE065ACF2B8E56C2009848CB /* BriefBlazeCampaignInfoListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefBlazeCampaignInfoListMapperTests.swift; sourceTree = "<group>"; };
 		EE078D8E2AD2E65400C1199E /* JWToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWToken.swift; sourceTree = "<group>"; };
 		EE078D902AD2EFBA00C1199E /* JWTokenMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTokenMapper.swift; sourceTree = "<group>"; };
 		EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTokenMapperTests.swift; sourceTree = "<group>"; };
@@ -3408,7 +3408,7 @@
 				EEA1E2012AC18CD700A37ADD /* AIProductMapperTests.swift */,
 				EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */,
 				DED91DE22AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift */,
-				EE065ACF2B8E56C2009848CB /* BriefBlazeCampaignListMapperTests.swift */,
+				EE065ACF2B8E56C2009848CB /* BriefBlazeCampaignInfoListMapperTests.swift */,
 				DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */,
 				DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */,
 				DEA493762B39987B00EED015 /* BlazeTargetOptionMapperTests.swift */,
@@ -3533,7 +3533,7 @@
 				EE1CB9052B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift */,
 				EE1CB9062B4BC8C500AD24D5 /* CreateBlazeCampaignMapper.swift */,
 				EE1CB9112B4BCC0D00AD24D5 /* BlazeAISuggestionListMapper.swift */,
-				EE065AC92B8E5072009848CB /* BriefBlazeCampaignListMapper.swift */,
+				EE065AC92B8E5072009848CB /* BriefBlazeCampaignInfoListMapper.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -4467,7 +4467,7 @@
 				3192F224260D34C40067FEF9 /* WCPayAccountStatusEnum.swift in Sources */,
 				EEFAA57B295D7793003583BE /* AuthenticatedDotcomRequest.swift in Sources */,
 				CEF2DD9B2B56D9D600A3DD0B /* JetpackSettingsRemote.swift in Sources */,
-				EE065ACA2B8E5072009848CB /* BriefBlazeCampaignListMapper.swift in Sources */,
+				EE065ACA2B8E5072009848CB /* BriefBlazeCampaignInfoListMapper.swift in Sources */,
 				D8FBFF2022D52553006E3336 /* OrderStatsV4Totals.swift in Sources */,
 				02C254B925637BA000A04423 /* OrderShippingLabelListMapper.swift in Sources */,
 				261CF1B8255AE62D0090D8D3 /* PaymentGatewayRemote.swift in Sources */,
@@ -4770,7 +4770,7 @@
 				8617EDA62B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift in Sources */,
 				CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */,
 				2670C3FC270F4E06002FE931 /* SiteListMapperTests.swift in Sources */,
-				EE065AD02B8E56C2009848CB /* BriefBlazeCampaignListMapperTests.swift in Sources */,
+				EE065AD02B8E56C2009848CB /* BriefBlazeCampaignInfoListMapperTests.swift in Sources */,
 				02E2AF2F2AFD1C3A00EE6FE8 /* AlamofireNetworkTests.swift in Sources */,
 				025CA2C6238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift in Sources */,
 				EE078D932AD2F1E500C1199E /* JWTokenMapperTests.swift in Sources */,

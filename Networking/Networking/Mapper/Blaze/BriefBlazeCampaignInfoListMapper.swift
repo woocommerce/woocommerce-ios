@@ -2,7 +2,7 @@ import Foundation
 
 /// Mapper: `BriefBlazeCampaignInfo` List
 ///
-struct BriefBlazeCampaignListMapper: Mapper {
+struct BriefBlazeCampaignInfoListMapper: Mapper {
     /// The site we're parsing `BriefBlazeCampaignInfo`s for.
     ///
     let siteID: Int64
@@ -15,14 +15,14 @@ struct BriefBlazeCampaignListMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        return try decoder.decode(BriefBlazeCampaignListEnvelope.self, from: response).campaigns
+        return try decoder.decode(BriefBlazeCampaignInfoListEnvelope.self, from: response).campaigns
     }
 }
 
 
-/// BriefBlazeCampaignListEnvelope Disposable Entity.
+/// BriefBlazeCampaignInfoListEnvelope Disposable Entity.
 /// This entity allows us to parse all the things with JSONDecoder.
 ///
-private struct BriefBlazeCampaignListEnvelope: Decodable {
+private struct BriefBlazeCampaignInfoListEnvelope: Decodable {
     let campaigns: [BriefBlazeCampaignInfo]
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-22 09:54:03+0000 */
+/* Translation-Revision-Date: 2024-02-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -1866,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com に接続中";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "WordPress.com サーバーに接続しています";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "WordPress.com サイトと連携中";
 
@@ -1878,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "アカウントへの接続";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "サイトに接続しています";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "ストアを接続しています";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "接続テスト";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "顧客に連絡";
@@ -1893,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -3187,6 +3197,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "バリエーションを取得しています…";
 
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "サイトの注文を取得しています";
+
 /* Country option for a site address. */
 "Fiji" = "フィジー";
 
@@ -3928,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "海外での支払い";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "インターネット接続";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "無効なメールアドレスです";
 
@@ -4018,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "分析が無効になっているようです。";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "インターネットに接続されていないようです。\n\nWi-Fi がオンになっていることをご確認ください。 モバイルデータを使用している場合、デバイスの設定で有効になっていることを確認してください。 ";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "ユーザー権限グループでは Jetpack のインストールが許可されていないようです。\nサポートをご希望の場合は管理者にお問い合わせください。";
@@ -5064,8 +5083,23 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "配送ラベルのお支払い方法を管理できるのは、サイトの所有者のみです。 お支払い方法を管理するには、%1$@ (%2$@) にお問い合わせください。";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "エラーです。 現在 WordPress.com に接続できないようです。\n\nしかしご安心ください。サポートチームがお手伝いします。 いつでもお気軽にご相談ください。";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "エラーです。 サイトの応答が正常に機能していないようです。\n\nしかしご安心ください。サポートチームがお手伝いします。 いつでもお気軽にご相談ください。";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "エラーです。 Jetpack 連携に問題があるようです。\n\nしかしご安心ください。サポートチームがお手伝いします。 いつでもお気軽にご相談ください。";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "エラーです。 サイトに問題があるようです。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "エラー。 問題が発生しました";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "エラーです。 サイトの応答が遅すぎるようです。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "予期しないエラーが発生しました。";
@@ -6021,6 +6055,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "サポートスタッフにお問い合わせください。難しい質問にもお答えします";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "続きを読む";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "トラブルシューティングのヒントを参照";
@@ -9583,6 +9620,27 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "商品タイプを選択";
 
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "注文";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "商品";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "収益";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "セッション";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "保存";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "アナリティクスのカスタマイズ";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "編集";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack 統計を有効化";
 
@@ -9845,8 +9903,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "デバイス";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "完了";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "広告を編集";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "ヘルプ";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "興味";
@@ -9908,8 +9972,14 @@ which should be translated separately and considered part of this sentence. */
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Blaze キャンペーン";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "完了";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "お支払い方法の読み込みエラー";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "ヘルプ";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "さらに詳しく";
@@ -10709,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "バーコードをスキャンする";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "商品をスキャン";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "クーポン";

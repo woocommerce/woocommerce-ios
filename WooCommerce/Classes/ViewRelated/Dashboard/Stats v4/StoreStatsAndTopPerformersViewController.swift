@@ -409,8 +409,6 @@ private extension StoreStatsAndTopPerformersViewController {
         tabBar.equalWidthFill = .equalSpacing
         tabBar.equalWidthSpacing = TabBar.tabSpacing
 
-        /// TODO-11935: Check if a custom range has been added and hide this button.
-        ///
         if featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) {
             addCustomViewToTabBar(customRangeButtonView)
         }
@@ -451,7 +449,6 @@ private extension StoreStatsAndTopPerformersViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
 
-        // TODO-11935: handle button action
         let button = UIButton(configuration: .plain())
         button.setImage(UIImage(systemName: "calendar.badge.plus"), for: .normal)
         button.tintColor = .accent
@@ -487,7 +484,6 @@ private extension StoreStatsAndTopPerformersViewController {
     func createCustomRangeTab(range: StatsTimeRangeV4) {
         let currentDate = Date()
 
-        // TODO: 11935 Add the correct data fetching and displaying based on custom range.
         let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                            timeRange: range,
                                                                            currentDate: currentDate,

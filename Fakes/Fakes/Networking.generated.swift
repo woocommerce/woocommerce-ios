@@ -320,6 +320,26 @@ extension Networking.BlazeTargetTopic {
         )
     }
 }
+extension Networking.BriefBlazeCampaignInfo {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BriefBlazeCampaignInfo {
+        .init(
+            siteID: .fake(),
+            campaignID: .fake(),
+            productID: .fake(),
+            name: .fake(),
+            textSnippet: .fake(),
+            uiStatus: .fake(),
+            imageURL: .fake(),
+            targetUrl: .fake(),
+            impressions: .fake(),
+            clicks: .fake(),
+            totalBudget: .fake(),
+            spentBudget: .fake()
+        )
+    }
+}
 extension Networking.CompositeComponentOptionType {
     /// Returns a "ready to use" type filled with fake values.
     ///

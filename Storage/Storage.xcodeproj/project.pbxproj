@@ -919,14 +919,7 @@
 		B59E11D720A9CFF3004121A4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */,
-				DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */,
-				DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */,
-				DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */,
-				DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */,
-				DEA493862B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift */,
-				DEA493882B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift */,
-				DEA493852B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift */,
+				EE3D1E802B8EA93C0016B132 /* Blaze */,
 				B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */,
 				B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */,
 				6889089728F66DED0081A07E /* Customer+CoreDataClass.swift */,
@@ -1125,6 +1118,21 @@
 				D87F615B2265AF190031A13B /* shipment-provider.plist */,
 			);
 			path = "Mock data";
+			sourceTree = "<group>";
+		};
+		EE3D1E802B8EA93C0016B132 /* Blaze */ = {
+			isa = PBXGroup;
+			children = (
+				DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */,
+				DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */,
+				DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */,
+				DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */,
+				DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */,
+				DEA493862B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift */,
+				DEA493882B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift */,
+				DEA493852B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift */,
+			);
+			path = Blaze;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

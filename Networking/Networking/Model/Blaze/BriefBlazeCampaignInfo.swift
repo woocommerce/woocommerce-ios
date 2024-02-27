@@ -18,7 +18,7 @@ public struct BriefBlazeCampaignInfo: Decodable, Equatable, GeneratedFakeable, G
     /// Name of the campaign
     public let name: String
 
-    /// Name of the campaign
+    /// Text description of the campaign
     public let textSnippet: String
 
     /// Raw status of the campaign to show to users.

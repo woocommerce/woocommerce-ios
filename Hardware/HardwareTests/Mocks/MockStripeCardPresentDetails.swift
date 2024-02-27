@@ -32,4 +32,3 @@ extension MockStripeCardPresentDetails {
 }
 
 extension MockStripeCardPresentDetails: StripeCardPresentDetails {}
-

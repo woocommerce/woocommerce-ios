@@ -138,15 +138,11 @@ private extension WooNavigationControllerDelegate {
         view.addSubview(offlineBannerView)
 
         let extraBottomSpace: CGFloat
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            // When split view is enabled, we're using a translucent tab bar.
-            // So when tab bar is visible, the bottom safe area is non-zero and we need to display content based on that.
-            extraBottomSpace = navigationController.view.safeAreaInsets.bottom
-        } else {
-            // With an opaque tab bar, all contents are displayed above it,
-            // so we don't need to care about the bottom safe area, only when the tab bar is hidden.
-            extraBottomSpace = viewController.hidesBottomBarWhenPushed ? navigationController.view.safeAreaInsets.bottom : 0
-        }
+
+        // When split view is enabled, we're using a translucent tab bar.
+        // So when tab bar is visible, the bottom safe area is non-zero and we need to display content based on that.
+        extraBottomSpace = navigationController.view.safeAreaInsets.bottom
+
         NSLayoutConstraint.activate([
             offlineBannerView.heightAnchor.constraint(equalToConstant: OfflineBannerView.height),
             offlineBannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

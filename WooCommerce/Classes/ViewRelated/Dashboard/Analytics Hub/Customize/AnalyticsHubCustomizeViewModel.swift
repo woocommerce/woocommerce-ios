@@ -30,13 +30,25 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
     ///
     private let onSave: (([AnalyticsCard]) -> Void)?
 
+    /// Any cards that are excluded from display.
+    ///
+    private let excludedCards: [AnalyticsCard]
+
+    /// - Parameters:
+    ///   - allCards: An ordered list of all possible analytics cards, with their settings.
+    ///   - cardsToExclude: Optional list of analytics cards to exclude from display, e.g. because the user or store is not eligible to view them.
+    ///   - onSave: Optional closure to perform when the changes are saved.
     init(allCards: [AnalyticsCard],
+         cardsToExclude: [AnalyticsCard] = [],
          onSave: (([AnalyticsCard]) -> Void)? = nil) {
-        let groupedCards = AnalyticsHubCustomizeViewModel.groupSelectedCards(in: allCards)
+        self.excludedCards = cardsToExclude
+        let availableCards = AnalyticsHubCustomizeViewModel.availableCards(from: allCards, excluding: cardsToExclude)
+
+        let groupedCards = AnalyticsHubCustomizeViewModel.groupSelectedCards(in: availableCards)
         self.allCards = groupedCards
         self.originalCards = groupedCards
 
-        let selectedCards = Set(allCards.filter { $0.enabled })
+        let selectedCards = Set(availableCards.filter { $0.enabled })
         self.selectedCards = selectedCards
         self.originalSelection = selectedCards
 
@@ -46,14 +58,27 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
     /// Assembles the new selections and order into an updated set of cards.
     ///
     func saveChanges() {
-        let updatedCards = allCards.map { card in
+        // Update the selected status of each available card
+        var updatedCards = allCards.map { card in
             card.copy(enabled: selectedCards.contains(card))
         }
+
+        // Add back any cards that were excluded
+        updatedCards.append(contentsOf: excludedCards)
+
         onSave?(updatedCards)
     }
 }
 
 private extension AnalyticsHubCustomizeViewModel {
+    /// Removes excluded cards from the list of all cards to display in the view.
+    ///
+    static func availableCards(from allCards: [AnalyticsCard], excluding cardsToExclude: [AnalyticsCard]) -> [AnalyticsCard] {
+        var allCardsToDisplay = allCards
+        allCardsToDisplay.removeAll(where: cardsToExclude.contains)
+        return allCardsToDisplay
+    }
+
     /// Groups the selected cards at the start of the list of all cards.
     /// This preserves the relative order of selected and unselected cards.
     ///

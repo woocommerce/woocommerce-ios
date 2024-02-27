@@ -194,6 +194,76 @@ final class BlazeRemoteTests: XCTestCase {
         }
     }
 
+    // MARK: - Load brief campaigns info tests
+
+    /// Verifies that loadBriefCampaigns properly parses the response.
+    ///
+    func test_loadBriefCampaigns_returns_parsed_campaigns() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-brief-campaigns-list-success")
+
+        // When
+        let results = try await remote.loadBriefCampaigns(for: sampleSiteID, skip: 0, limit: 25)
+
+        // Then
+        XCTAssertEqual(results.count, 1)
+        let item = try XCTUnwrap(results.first)
+        XCTAssertEqual(item.siteID, sampleSiteID)
+        XCTAssertEqual(item.campaignID, "34518")
+        XCTAssertEqual(item.productID, 134)
+        XCTAssertEqual(item.name, "Fried-egg Bacon Bagel")
+        XCTAssertEqual(item.uiStatus, "rejected")
+        XCTAssertEqual(item.targetUrl, "https://example.com/product/fried-egg-bacon-bagel/")
+        XCTAssertEqual(item.imageURL, "https://example.com/image?w=600&zoom=2")
+        XCTAssertEqual(item.totalBudget, 35)
+        XCTAssertEqual(item.spentBudget, 5)
+        XCTAssertEqual(item.clicks, 12)
+        XCTAssertEqual(item.impressions, 34)
+    }
+
+    /// Verifies that loadBriefCampaigns sends the correct parameters.
+    ///
+    func test_loadBriefCampaigns_sends_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-brief-campaigns-list-success")
+
+        // When
+        _ = try await remote.loadBriefCampaigns(for: sampleSiteID, skip: 0, limit: 25)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["site_id"] as? Int64, 1234)
+        XCTAssertEqual(request.parameters?["skip"] as? Int, 0)
+        XCTAssertEqual(request.parameters?["limit"] as? Int, 25)
+    }
+
+    /// Verifies that loadBriefCampaigns properly relays Networking Layer errors.
+    ///
+    func test_loadBriefCampaigns_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.loadBriefCampaigns(for: sampleSiteID, skip: 0, limit: 25)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
     // MARK: - Fetch target languages
 
     func test_fetchTargetLanguages_returns_parsed_campaigns() async throws {

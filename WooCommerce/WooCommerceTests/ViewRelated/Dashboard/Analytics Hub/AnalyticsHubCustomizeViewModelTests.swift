@@ -8,7 +8,8 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
         // Given
         let revenueCard = AnalyticsCard(type: .revenue, enabled: true)
         let ordersCard = AnalyticsCard(type: .orders, enabled: false)
-        let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard])
+        let sessionsCard = AnalyticsCard(type: .sessions, enabled: true)
+        let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, sessionsCard], cardsToExclude: [sessionsCard])
 
         // Then
         assertEqual([revenueCard, ordersCard], vm.allCards)
@@ -58,10 +59,11 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
         let revenueCard = AnalyticsCard(type: .revenue, enabled: false)
         let ordersCard = AnalyticsCard(type: .orders, enabled: true)
         let productsCard = AnalyticsCard(type: .products, enabled: true)
+        let sessionsCard = AnalyticsCard(type: .sessions, enabled: true)
 
         // When
         let actualCards = waitFor { promise in
-            let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, productsCard]) { updatedCards in
+            let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, productsCard], cardsToExclude: [sessionsCard]) { updatedCards in
                 promise(updatedCards)
             }
 
@@ -71,7 +73,7 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedCards = [ordersCard, revenueCard.copy(enabled: true), productsCard.copy(enabled: false)]
+        let expectedCards = [ordersCard, revenueCard.copy(enabled: true), productsCard.copy(enabled: false), sessionsCard]
         assertEqual(expectedCards, actualCards)
     }
 

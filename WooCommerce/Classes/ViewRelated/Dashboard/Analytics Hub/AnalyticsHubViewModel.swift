@@ -650,7 +650,13 @@ extension AnalyticsHubViewModel {
             return
         }
 
-        customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings) { [weak self] updatedCards in
+        // Exclude any cards the merchant/store is ineligible for.
+        let cardsToExclude: [AnalyticsCard] = [
+            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })
+        ].compactMap({ $0 })
+
+        customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings,
+                                                                     cardsToExclude: cardsToExclude) { [weak self] updatedCards in
             guard let self else { return }
             self.allCardsWithSettings = updatedCards
             self.storeAnalyticsCardSettings(updatedCards)

@@ -1272,9 +1272,10 @@ private extension ProductFormViewController {
         let exitForm: () -> Void = {
             presentationStyle.createExitForm(viewController: self, completion: onDiscard)
         }()
+        let viewControllerToPresentAlert = navigationController?.topViewController ?? self
         switch viewModel.formType {
         case .add:
-            UIAlertController.presentDiscardNewProductActionSheet(viewController: self,
+            UIAlertController.presentDiscardNewProductActionSheet(viewController: viewControllerToPresentAlert,
                                                                   onSaveDraft: { [weak self] in
                 self?.saveProductAsDraft()
             }, onDiscard: {
@@ -1283,7 +1284,7 @@ private extension ProductFormViewController {
                 onCancel()
             })
         case .edit:
-            UIAlertController.presentDiscardChangesActionSheet(viewController: self,
+            UIAlertController.presentDiscardChangesActionSheet(viewController: viewControllerToPresentAlert,
                                                                onDiscard: {
                 exitForm()
             }, onCancel: {

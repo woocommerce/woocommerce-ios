@@ -1,7 +1,17 @@
 import Foundation
 import SwiftUI
 
+/// App Passwords tutorial view.
+///
 struct ApplicationPasswordTutorial: View {
+
+    /// Assign it to react when the continue button is tapped.
+    ///
+    var continueButtonTapped: (() -> ())?
+
+    /// Assign it to react when the contact support button is tapped.
+    ///
+    var contactSupportButtonTapped: (() -> ())?
 
     var body: some View {
         VStack(spacing: .zero) {

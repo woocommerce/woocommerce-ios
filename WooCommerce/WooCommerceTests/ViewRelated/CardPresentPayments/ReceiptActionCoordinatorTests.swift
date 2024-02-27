@@ -163,7 +163,7 @@ extension CardPresentTransactionDetails {
                             generatedCard: String? = "1230",
                             receipt: ReceiptDetails? = nil,
                             emvAuthData: String? = nil,
-                            wallet: StripeWallet? = nil,
+                            wallet: Wallet? = nil,
                             network: NSNumber? = nil) -> CardPresentTransactionDetails {
         CardPresentTransactionDetails(last4: last4,
                                       expMonth: expMonth,

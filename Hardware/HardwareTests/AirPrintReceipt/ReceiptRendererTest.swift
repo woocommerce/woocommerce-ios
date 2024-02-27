@@ -72,7 +72,9 @@ private extension ReceiptRendererTest {
                         transactionStatusInformation: "6800",
                         accountType: "credit"
                     ),
-                    emvAuthData: "AD*******"),
+                    emvAuthData: "AD*******",
+                    wallet: nil,
+                    network: nil),
                 orderID: 9201
             ),
             lineItems: [ReceiptLineItem(

@@ -18,10 +18,6 @@ public enum FeatureFlag: Int {
     ///
     case inbox
 
-    /// Displays the Orders tab in a split view
-    ///
-    case splitViewInOrdersTab
-
     /// Displays the OrderForm side by side with the Product Selector
     ///
     case sideBySideViewForOrderForm

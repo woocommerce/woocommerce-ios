@@ -584,8 +584,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         let variationsViewModel = viewModel.productVariationListViewModel
-        let actualViewModel = try XCTUnwrap(variationsViewModel)
-        XCTAssertEqual(actualViewModel.productName, product.name)
+        XCTAssertEqual(variationsViewModel?.productName, product.name)
         XCTAssertTrue(viewModel.isShowingProductVariationList)
     }
 

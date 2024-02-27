@@ -41,16 +41,15 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     /// Minimal time interval for data refresh
     var minimalIntervalBetweenSync: TimeInterval {
-        switch timeRange {
-        case .today:
+        switch timeRange.intervalGranularity {
+        case .hourly:
             return 60
-        case .thisWeek, .thisMonth:
+        case .daily, .weekly:
             return 60*60
-        case .thisYear:
+        case .monthly, .quarterly:
             return 60*60*12
-        case .custom:
-            // TODO: 11935 Specify refresh interval
-            return 60
+        case .yearly:
+            return 60*60*24*15
         }
     }
 

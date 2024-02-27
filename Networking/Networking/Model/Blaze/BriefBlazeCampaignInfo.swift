@@ -42,18 +42,18 @@ public struct BriefBlazeCampaignInfo: Decodable, Equatable, GeneratedFakeable, G
     /// Spent budget
     public let spentBudget: Double
 
-    init(siteID: Int64,
-         campaignID: String,
-         productID: Int64?,
-         name: String,
-         textSnippet: String,
-         uiStatus: String,
-         imageURL: String?,
-         targetUrl: String?,
-         impressions: Int64, 
-         clicks: Int64, 
-         totalBudget: Double,
-         spentBudget: Double) {
+    public init(siteID: Int64,
+                campaignID: String,
+                productID: Int64?,
+                name: String,
+                textSnippet: String,
+                uiStatus: String,
+                imageURL: String?,
+                targetUrl: String?,
+                impressions: Int64,
+                clicks: Int64,
+                totalBudget: Double,
+                spentBudget: Double) {
         self.siteID = siteID
         self.campaignID = campaignID
         self.productID = productID

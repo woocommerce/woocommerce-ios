@@ -17,6 +17,20 @@ public enum BlazeAction: Action {
                         siteID: Int64,
                         onCompletion: (Result<Void, Error>) -> Void)
 
+    /// Retrieves and stores Brief Blaze Campaign Info for a site
+    ///
+    /// - `siteID`: the site for which Blaze campaigns should be fetched.
+    /// - `skip`: Pagination offset
+    /// - `limit`:  Pagination limit
+    /// - `onCompletion`: invoked when the sync operation finishes.
+    ///     - `result.success(Bool)`: value indicates whether there are further pages to retrieve.
+    ///     - `result.failure(Error)`: error indicates issues syncing the specified page.
+    ///
+    case synchronizeBriefCampaigns(siteID: Int64,
+                                   skip: Int,
+                                   limit: Int,
+                                   onCompletion: (Result<Bool, Error>) -> Void)
+
     /// Retrieves and stores Blaze Campaign for a site
     ///
     /// - `siteID`: the site for which Blaze campaigns should be fetched.

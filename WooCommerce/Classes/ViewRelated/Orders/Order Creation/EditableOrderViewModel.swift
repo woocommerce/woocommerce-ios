@@ -19,6 +19,8 @@ final class EditableOrderViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
 
+    @Published var syncRequired: Bool = false
+
     // MARK: - Product selector states
     @Published var productSelectorViewModel: ProductSelectorViewModel?
 
@@ -122,6 +124,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defaults to create button.
     ///
     @Published private(set) var navigationTrailingItem: NavigationItem?
+
+    @Published private(set) var doneButtonType: DoneButtonType = .done(loading: false)
 
     /// Tracks if a network request is being performed.
     ///
@@ -249,6 +253,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     enum OrderItemSelectionSyncApproach {
         case immediate
+        case onRecalculateButtonTap
         case onSelectorButtonTap
     }
 
@@ -479,6 +484,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureCollectPaymentDisabledState()
         configureOrderTotal()
         configureNavigationTrailingItem()
+        configureDoneButton()
         configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
@@ -912,6 +918,10 @@ final class EditableOrderViewModel: ObservableObject {
         trackCollectPaymentTapped()
     }
 
+    func onRecalculateTapped() {
+        syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+    }
+
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
                                                  onCustomAmountDeleted: { [weak self] feeID in
@@ -946,8 +956,15 @@ extension EditableOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
-        case create
         case loading
+        case recalculate
+        case create
+    }
+
+    enum DoneButtonType: Equatable {
+        case recalculate(loading: Bool)
+        case create(loading: Bool)
+        case done(loading: Bool)
     }
 
     /// Representation of order status display properties
@@ -1246,6 +1263,34 @@ private extension EditableOrderViewModel {
             .assign(to: &$navigationTrailingItem)
     }
 
+    /// Calculates what Call to Action button should be shown depending on our internal state.
+    ///
+    func configureDoneButton() {
+        let requestInProgress = Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
+            .map { syncState, performingNetworkRequest in
+                if case .syncing = syncState {
+                    return true
+                } else {
+                    return performingNetworkRequest
+                }
+            }
+
+        Publishers.CombineLatest4($syncRequired, requestInProgress, $selectionSyncApproach, Just(flow))
+            .map { syncRequired, requestInProgress, syncApproach, flow -> DoneButtonType in
+                if syncRequired && syncApproach == .onRecalculateButtonTap {
+                    return .recalculate(loading: requestInProgress)
+                }
+
+                switch flow {
+                case .creation:
+                    return .create(loading: requestInProgress)
+                case .editing:
+                    return .done(loading: requestInProgress)
+                }
+            }
+            .assign(to: &$doneButtonType)
+    }
+
     /// Updates the notice based on the `orderSynchronizer` sync state.
     ///
     func configureSyncErrors() {
@@ -1376,6 +1421,8 @@ private extension EditableOrderViewModel {
         if removedItemsToSync.isNotEmpty {
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
         }
+
+        syncRequired = false
     }
 
     /// Adds a selected product (from the product list) to the order.
@@ -1743,7 +1790,10 @@ private extension EditableOrderViewModel {
         $isProductSelectorPresented
             .removeDuplicates()
             .map { [weak self] isPresented in
-                guard let self else { return nil }
+                guard let self,
+                      isPresented else {
+                    return nil
+                }
                 return ProductSelectorViewModel(
                     siteID: siteID,
                     selectedItemIDs: selectedProductsAndVariationsIDs,
@@ -1778,6 +1828,7 @@ private extension EditableOrderViewModel {
                     }, onCloseButtonTapped: { [weak self] in
                         guard let self else { return }
                         syncOrderItemSelectionStateOnDismiss()
+                        isProductSelectorPresented = false
                     }, onConfigureProductRow: { [weak self] product in
                         guard let self else { return }
                         productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
@@ -1795,8 +1846,13 @@ private extension EditableOrderViewModel {
         guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
             return
         }
-        if selectionSyncApproach == .immediate {
+        switch selectionSyncApproach {
+        case .immediate:
             syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+        case .onRecalculateButtonTap:
+            syncRequired = true
+        case .onSelectorButtonTap:
+            return
         }
     }
 
@@ -2089,7 +2145,7 @@ private extension EditableOrderViewModel {
 private extension EditableOrderViewModel.OrderItemSelectionSyncApproach {
     var productSelectorSyncApproach: ProductSelectorViewModel.SyncApproach {
         switch self {
-        case .immediate:
+        case .immediate, .onRecalculateButtonTap:
             return .external
         case .onSelectorButtonTap:
             return .onButtonTap

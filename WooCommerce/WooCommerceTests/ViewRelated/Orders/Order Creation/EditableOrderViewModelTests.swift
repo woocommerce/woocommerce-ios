@@ -309,6 +309,31 @@ final class EditableOrderViewModelTests: XCTestCase {
                       "Product rows do not contain expected product")
     }
 
+    func test_button_changes_to_recalculate_when_product_is_added_to_order_using_onRecalculateButtonTap_sync_approach() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+        viewModel.toggleProductSelectorVisibility()
+
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+
+        // Then
+        switch viewModel.doneButtonType {
+        case .recalculate:
+            // Success – we just don't care about the `loading` parameter
+            break
+        default:
+            XCTFail("Unexpected doneButtonType")
+        }
+    }
+
     func test_view_model_is_updated_when_product_is_added_to_order_using_buttonTap_sync_approach_then_changes_to_immediate() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)

@@ -15,14 +15,14 @@ struct BlazeCampaignListItemsMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        return try decoder.decode(BlazeCampaignListItemEnveloper.self, from: response).campaigns
+        return try decoder.decode(BlazeCampaignListItemEnvelope.self, from: response).campaigns
     }
 }
 
 
-/// BlazeCampaignListItemEnveloper Disposable Entity.
+/// BlazeCampaignListItemEnvelope Disposable Entity.
 /// This entity allows us to parse all the things with JSONDecoder.
 ///
-private struct BlazeCampaignListItemEnveloper: Decodable {
+private struct BlazeCampaignListItemEnvelope: Decodable {
     let campaigns: [BlazeCampaignListItem]
 }

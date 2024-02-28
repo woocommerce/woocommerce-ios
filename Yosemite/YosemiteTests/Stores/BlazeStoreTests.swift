@@ -31,7 +31,7 @@ final class BlazeStoreTests: XCTestCase {
     /// Convenience: returns the number of stored brief campaigns
     ///
     private var storedBriefCampaignCount: Int {
-        return viewStorage.countObjects(ofType: StorageBriefBlazeCampaignInfo.self)
+        return viewStorage.countObjects(ofType: StorageBlazeCampaignListItem.self)
     }
 
     /// Convenience: returns the number of stored campaigns
@@ -130,9 +130,9 @@ final class BlazeStoreTests: XCTestCase {
     }
 
 
-    // MARK: - synchronizeBriefCampaigns
+    // MARK: - synchronizeCampaignsList
 
-    func test_synchronizeBriefCampaigns_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() throws {
+    func test_synchronizeCampaignsList_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() throws {
         // Given
         remote.whenLoadingBriefCampaign(thenReturn: .success([]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -142,7 +142,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeBriefCampaigns(siteID: self.sampleSiteID,
+            store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
                                                                  onCompletion: { result in
@@ -155,7 +155,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertFalse(hasNextPage)
     }
 
-    func test_synchronizeBriefCampaigns_returns_true_for_hasNextPage_when_number_of_retrieved_results_is_not_zero() throws {
+    func test_synchronizeCampaignsList_returns_true_for_hasNextPage_when_number_of_retrieved_results_is_not_zero() throws {
         // Given
         remote.whenLoadingBriefCampaign(thenReturn: .success([.fake()]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -165,7 +165,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeBriefCampaigns(siteID: self.sampleSiteID,
+            store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
                                                                  onCompletion: { result in
@@ -178,7 +178,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(hasNextPage)
     }
 
-    func test_synchronizeBriefCampaigns_returns_error_on_failure() throws {
+    func test_synchronizeCampaignsList_returns_error_on_failure() throws {
         // Given
         remote.whenLoadingBriefCampaign(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -188,7 +188,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeBriefCampaigns(siteID: self.sampleSiteID,
+            store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
                                                                  onCompletion: { result in
@@ -201,7 +201,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
-    func test_synchronizeBriefCampaigns_stores_campaigns_upon_success() throws {
+    func test_synchronizeCampaignsList_stores_campaigns_upon_success() throws {
         // Given
         remote.whenLoadingBriefCampaign(thenReturn: .success([.fake().copy(campaignID: "123")]))
         let store = BlazeStore(dispatcher: Dispatcher(),
@@ -212,7 +212,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeBriefCampaigns(siteID: self.sampleSiteID,
+            store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
                                                                  onCompletion: { result in
@@ -225,7 +225,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedBriefCampaignCount, 1)
     }
 
-    func test_synchronizeBriefCampaigns_deletes_campaigns_when_items_recieved_from_API_with_zero_as_pagination_skip_value() {
+    func test_synchronizeCampaignsList_deletes_campaigns_when_items_recieved_from_API_with_zero_as_pagination_skip_value() {
         // Given
         storeBriefCampaign(.fake().copy(siteID: sampleSiteID, campaignID: "123"))
         remote.whenLoadingBriefCampaign(thenReturn: .success([.fake().copy(campaignID: "456")]))
@@ -237,7 +237,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeBriefCampaigns(siteID: self.sampleSiteID,
+            store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: self.defaultPaginationSkip,
                                                                  limit: self.defaultPaginationLimit,
                                                                  onCompletion: { result in
@@ -250,7 +250,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedBriefCampaignCount, 1)
     }
 
-    func test_synchronizeBriefCampaigns_does_not_delete_campaigns_when_receiving_subsequent_items_using_non_zero_pagination_skip_value() {
+    func test_synchronizeCampaignsList_does_not_delete_campaigns_when_receiving_subsequent_items_using_non_zero_pagination_skip_value() {
         // Given
         storeBriefCampaign(.fake().copy(siteID: sampleSiteID, campaignID: "123"))
         remote.whenLoadingBriefCampaign(thenReturn: .success([.fake().copy(campaignID: "456")]))
@@ -262,7 +262,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(BlazeAction.synchronizeBriefCampaigns(siteID: self.sampleSiteID,
+            store.onAction(BlazeAction.synchronizeCampaignsList(siteID: self.sampleSiteID,
                                                                  skip: 2,
                                                                  limit: self.defaultPaginationLimit,
                                                                  onCompletion: { result in
@@ -868,8 +868,8 @@ final class BlazeStoreTests: XCTestCase {
 
 private extension BlazeStoreTests {
     @discardableResult
-    func storeBriefCampaign(_ campaign: Networking.BriefBlazeCampaignInfo) -> Storage.BriefBlazeCampaignInfo {
-        let storedCampaign = storage.insertNewObject(ofType: BriefBlazeCampaignInfo.self)
+    func storeBriefCampaign(_ campaign: Networking.BlazeCampaignListItem) -> Storage.BlazeCampaignListItem {
+        let storedCampaign = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
         storedCampaign.update(with: campaign)
         return storedCampaign
     }

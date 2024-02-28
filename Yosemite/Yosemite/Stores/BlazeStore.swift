@@ -56,8 +56,8 @@ public final class BlazeStore: Store {
         switch action {
         case let .createCampaign(campaign, siteID, onCompletion):
             createCampaign(campaign: campaign, siteID: siteID, onCompletion: onCompletion)
-        case let .synchronizeBriefCampaigns(siteID, skip, limit, onCompletion):
-            synchronizeBriefCampaigns(siteID: siteID,
+        case let .synchronizeCampaignsList(siteID, skip, limit, onCompletion):
+            synchronizeCampaignsList(siteID: siteID,
                                       skip: skip,
                                       limit: limit,
                                       onCompletion: onCompletion)
@@ -103,18 +103,18 @@ private extension BlazeStore {
     }
 }
 
-// MARK: - Synchronized brief campaigns
+// MARK: - Synchronized campaigns list
 //
 private extension BlazeStore {
-    func synchronizeBriefCampaigns(siteID: Int64,
+    func synchronizeCampaignsList(siteID: Int64,
                                    skip: Int,
                                    limit: Int,
                                    onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let results = try await remote.loadBriefCampaigns(for: siteID,
-                                                                  skip: skip,
-                                                                  limit: limit)
+                let results = try await remote.loadCampaignsList(for: siteID,
+                                                                 skip: skip,
+                                                                 limit: limit)
                 let shouldClearData = skip == 0
                 let hasNextPage = results.count == limit
                 upsertStoredBriefCampaignsInBackground(readOnlyCampaigns: results, siteID: siteID, shouldClearExistingCampaigns: shouldClearData) {
@@ -126,10 +126,10 @@ private extension BlazeStore {
         }
     }
 
-    /// Updates or Inserts specified BriefBlazeCampaignInfo Entities in a background thread
+    /// Updates or Inserts specified BlazeCampaignListItem Entities in a background thread
     /// `onCompletion` will be called on the main thread.
     ///
-    func upsertStoredBriefCampaignsInBackground(readOnlyCampaigns: [Networking.BriefBlazeCampaignInfo],
+    func upsertStoredBriefCampaignsInBackground(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
                                                 siteID: Int64,
                                                 shouldClearExistingCampaigns: Bool = false,
                                                 onCompletion: @escaping () -> Void) {
@@ -149,17 +149,17 @@ private extension BlazeStore {
         }
     }
 
-    /// Updates or Inserts the specified BriefBlazeCampaignInfo entities
+    /// Updates or Inserts the specified BlazeCampaignListItem entities
     ///
-    func upsertStoredBriefCampaigns(readOnlyCampaigns: [Networking.BriefBlazeCampaignInfo],
+    func upsertStoredBriefCampaigns(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
                                     in storage: StorageType,
                                     siteID: Int64) {
         for campaign in readOnlyCampaigns {
-            let storageCampaign: Storage.BriefBlazeCampaignInfo = {
+            let storageCampaign: Storage.BlazeCampaignListItem = {
                 if let storedCampaign = storage.loadBriefBlazeCampaign(siteID: siteID, campaignID: campaign.campaignID) {
                     return storedCampaign
                 }
-                return storage.insertNewObject(ofType: Storage.BriefBlazeCampaignInfo.self)
+                return storage.insertNewObject(ofType: Storage.BlazeCampaignListItem.self)
             }()
 
             storageCampaign.update(with: campaign)

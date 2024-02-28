@@ -537,20 +537,20 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 
-    // MARK: - BriefBlazeCampaignInfo
+    // MARK: - BlazeCampaignListItem
 
-    /// Returns a single BriefBlazeCampaignInfo given a `siteID` and `campaignID`
+    /// Returns a single BlazeCampaignListItem given a `siteID` and `campaignID`
     ///
-    func loadBriefBlazeCampaign(siteID: Int64, campaignID: String) -> BriefBlazeCampaignInfo? {
-        let predicate = \BriefBlazeCampaignInfo.siteID == siteID && \BriefBlazeCampaignInfo.campaignID == campaignID
-        return firstObject(ofType: BriefBlazeCampaignInfo.self, matching: predicate)
+    func loadBriefBlazeCampaign(siteID: Int64, campaignID: String) -> BlazeCampaignListItem? {
+        let predicate = \BlazeCampaignListItem.siteID == siteID && \BlazeCampaignListItem.campaignID == campaignID
+        return firstObject(ofType: BlazeCampaignListItem.self, matching: predicate)
     }
 
-    /// Returns all stored BriefBlazeCampaignInfo s for a site
+    /// Returns all stored BlazeCampaignListItem s for a site
     ///
-    func loadAllBriefBlazeCampaigns(siteID: Int64) -> [BriefBlazeCampaignInfo] {
-        let predicate = \BriefBlazeCampaignInfo.siteID == siteID
-        return allObjects(ofType: BriefBlazeCampaignInfo.self, matching: predicate, sortedBy: nil)
+    func loadAllBriefBlazeCampaigns(siteID: Int64) -> [BlazeCampaignListItem] {
+        let predicate = \BlazeCampaignListItem.siteID == siteID
+        return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
     }
 
     // MARK: - BlazeCampaign

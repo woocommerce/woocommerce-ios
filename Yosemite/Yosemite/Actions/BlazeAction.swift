@@ -26,7 +26,7 @@ public enum BlazeAction: Action {
     ///     - `result.success(Bool)`: value indicates whether there are further pages to retrieve.
     ///     - `result.failure(Error)`: error indicates issues syncing the specified page.
     ///
-    case synchronizeBriefCampaigns(siteID: Int64,
+    case synchronizeCampaignsList(siteID: Int64,
                                    skip: Int,
                                    limit: Int,
                                    onCompletion: (Result<Bool, Error>) -> Void)

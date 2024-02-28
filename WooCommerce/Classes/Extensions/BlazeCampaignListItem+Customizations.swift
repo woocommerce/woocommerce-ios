@@ -1,8 +1,8 @@
 import SwiftUI
-import struct Yosemite.BriefBlazeCampaignInfo
+import struct Yosemite.BlazeCampaignListItem
 
 /// Customizations for campaign status
-extension BriefBlazeCampaignInfo.Status {
+extension BlazeCampaignListItem.Status {
     var displayText: String {
         switch self {
         case .active:

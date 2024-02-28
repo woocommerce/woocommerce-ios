@@ -4,7 +4,7 @@ import Experiments
 import protocol Storage.StorageManagerType
 
 /// Conformance to support listing in SwiftUI
-extension BriefBlazeCampaignInfo: Identifiable {
+extension BlazeCampaignListItem: Identifiable {
     public var id: String {
         campaignID
     }
@@ -13,7 +13,7 @@ extension BriefBlazeCampaignInfo: Identifiable {
 /// View model for `BlazeCampaignListView`
 final class BlazeCampaignListViewModel: ObservableObject {
 
-    @Published private(set) var campaigns: [BriefBlazeCampaignInfo] = []
+    @Published private(set) var campaigns: [BlazeCampaignListItem] = []
     @Published var shouldDisplayPostCampaignCreationTip = false
     @Published var shouldShowIntroView = false
     @Published var selectedCampaignURL: URL?
@@ -43,10 +43,10 @@ final class BlazeCampaignListViewModel: ObservableObject {
     private let pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex
 
     /// Blaze campaign ResultsController.
-    private lazy var resultsController: ResultsController<StorageBriefBlazeCampaignInfo> = {
+    private lazy var resultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBriefBlazeCampaignInfo.campaignID, ascending: false)
-        let resultsController = ResultsController<StorageBriefBlazeCampaignInfo>(storageManager: storageManager,
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
+        let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                         matching: predicate,
                                                                         sortedBy: [sortDescriptorByID])
         return resultsController
@@ -91,7 +91,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
         }
     }
 
-    func didSelectCampaignDetails(_ campaign: BriefBlazeCampaignInfo) {
+    func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
 
         let path = String(format: Constants.campaignDetailsURLFormat,
@@ -153,9 +153,9 @@ extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
             }
             return pageSize * (pageNumber - 1)
         }()
-        let action = BlazeAction.synchronizeBriefCampaigns(siteID: siteID,
-                                                           skip: skip,
-                                                           limit: pageSize) { [weak self] result in
+        let action = BlazeAction.synchronizeCampaignsList(siteID: siteID,
+                                                          skip: skip,
+                                                          limit: pageSize) { [weak self] result in
             switch result {
             case .success(let hasNextPage):
                 onCompletion?(.success(hasNextPage))

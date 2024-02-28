@@ -37,7 +37,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCountOfLoadCampaigns = 0
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case .synchronizeBriefCampaigns = action else {
+            guard case .synchronizeCampaignsList = action else {
                 return
             }
             invocationCountOfLoadCampaigns += 1
@@ -49,12 +49,12 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfLoadCampaigns, 0)
     }
 
-    func test_synchronizeBriefCampaigns_is_dispatched_upon_loadCampaigns() {
+    func test_synchronizeCampaignsList_is_dispatched_upon_loadCampaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCountOfLoadCampaigns = 0
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case .synchronizeBriefCampaigns = action else {
+            guard case .synchronizeCampaignsList = action else {
                 return
             }
             invocationCountOfLoadCampaigns += 1
@@ -79,7 +79,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     }
 
     func test_state_is_results_upon_loadCampaigns_if_there_are_existing_campaigns_in_storage() {
-        let existingCampaign = BriefBlazeCampaignInfo.fake().copy(siteID: sampleSiteID, campaignID: "123")
+        let existingCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "123")
         insertCampaigns([existingCampaign])
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
@@ -94,9 +94,9 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var skip: Int?
-        let campaign = BriefBlazeCampaignInfo.fake().copy(siteID: sampleSiteID)
+        let campaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, skipValue, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, skipValue, _, onCompletion) = action else {
                 return
             }
             skip = skipValue
@@ -126,7 +126,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var skip: Int?
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, skipValue, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, skipValue, _, onCompletion) = action else {
                 return
             }
             skip = skipValue
@@ -155,10 +155,10 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCountOfLoadCampaigns = 0
         var skip: Int?
-        let firstPageItems = [BriefBlazeCampaignInfo](repeating: .fake().copy(siteID: sampleSiteID), count: 2)
-        let secondPageItems = [BriefBlazeCampaignInfo](repeating: .fake().copy(siteID: sampleSiteID), count: 1)
+        let firstPageItems = [BlazeCampaignListItem](repeating: .fake().copy(siteID: sampleSiteID), count: 2)
+        let secondPageItems = [BlazeCampaignListItem](repeating: .fake().copy(siteID: sampleSiteID), count: 1)
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, skipValue, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, skipValue, _, onCompletion) = action else {
                 return
             }
             invocationCountOfLoadCampaigns += 1
@@ -194,9 +194,9 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_campaignModels_match_loaded_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaign = BriefBlazeCampaignInfo.fake().copy(siteID: sampleSiteID)
+        let campaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return
             }
             self.insertCampaigns([campaign])
@@ -215,7 +215,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(false))
@@ -232,10 +232,10 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_campaignModels_are_sorted_by_id() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaignWithSmallerID = BriefBlazeCampaignInfo.fake().copy(siteID: sampleSiteID, campaignID: "1")
-        let campaignWithLargerID = BriefBlazeCampaignInfo.fake().copy(siteID: sampleSiteID, campaignID: "3")
+        let campaignWithSmallerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "1")
+        let campaignWithLargerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "3")
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return
             }
             let items = [campaignWithSmallerID, campaignWithLargerID]
@@ -261,7 +261,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         var invocationCountOfLoadCampaigns = 0
         var skip: Int?
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, skipValue, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, skipValue, _, onCompletion) = action else {
                 return
             }
             invocationCountOfLoadCampaigns += 1
@@ -288,7 +288,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_shouldShowIntroView_is_false_when_there_are_existing_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaign = BriefBlazeCampaignInfo.fake().copy(siteID: sampleSiteID)
+        let campaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // Confidence check
@@ -296,7 +296,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
         // When
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return
             }
             self.insertCampaigns([campaign])
@@ -318,7 +318,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
         // When
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeBriefCampaigns(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return
             }
             onCompletion(.success(true))
@@ -343,7 +343,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let testURL = "https://example.com"
         let site = Site.fake().copy(siteID: sampleSiteID, url: testURL)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: site))
-        let campaign = BriefBlazeCampaignInfo.fake().copy(siteID: sampleSiteID, campaignID: "123")
+        let campaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "123")
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
 
         // Confidence check
@@ -405,9 +405,9 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 }
 
 private extension BlazeCampaignListViewModelTests {
-    func insertCampaigns(_ readOnlyCampaigns: [BriefBlazeCampaignInfo]) {
+    func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
         readOnlyCampaigns.forEach { campaign in
-            let newCampaign = storage.insertNewObject(ofType: StorageBriefBlazeCampaignInfo.self)
+            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
             newCampaign.update(with: campaign)
         }
         storage.saveIfNeeded()

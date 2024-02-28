@@ -1,5 +1,5 @@
 import SwiftUI
-import struct Yosemite.BriefBlazeCampaignInfo
+import struct Yosemite.BlazeCampaignListItem
 import Kingfisher
 
 /// View to display basic details for a Blaze campaign.
@@ -8,10 +8,10 @@ struct BlazeCampaignItemView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    private let campaign: BriefBlazeCampaignInfo
+    private let campaign: BlazeCampaignListItem
     private let showBudget: Bool
 
-    init(campaign: BriefBlazeCampaignInfo,
+    init(campaign: BlazeCampaignListItem,
          showBudget: Bool = true) {
         self.campaign = campaign
         self.showBudget = showBudget
@@ -137,12 +137,12 @@ private extension BlazeCampaignItemView {
 }
 
 struct BlazeCampaignItemView_Previews: PreviewProvider {
-    static let campaign: BriefBlazeCampaignInfo = .init(siteID: 123,
+    static let campaign: BlazeCampaignListItem = .init(siteID: 123,
                                                         campaignID: "11",
                                                         productID: 33,
                                                         name: "Fluffy bunny pouch",
                                                         textSnippet: "Buy now!",
-                                                        uiStatus: BriefBlazeCampaignInfo.Status.finished.rawValue,
+                                                        uiStatus: BlazeCampaignListItem.Status.finished.rawValue,
                                                         imageURL: nil,
                                                         targetUrl: nil,
                                                         impressions: 112,

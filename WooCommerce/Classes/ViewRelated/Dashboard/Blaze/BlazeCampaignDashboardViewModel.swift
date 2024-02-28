@@ -10,7 +10,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         /// Shows placeholder views in redacted state.
         case loading
         /// Shows info about the latest Blaze campaign
-        case showCampaign(campaign: BriefBlazeCampaignInfo)
+        case showCampaign(campaign: BlazeCampaignListItem)
         /// Shows info about the latest published Product
         case showProduct(product: Product)
         /// When there is no campaign or published product
@@ -55,10 +55,10 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     /// Blaze campaign ResultsController.
-    private lazy var blazeCampaignResultsController: ResultsController<StorageBriefBlazeCampaignInfo> = {
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBriefBlazeCampaignInfo.campaignID, ascending: false)
-        let resultsController = ResultsController<StorageBriefBlazeCampaignInfo>(storageManager: storageManager,
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
+        let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                                  matching: predicate,
                                                                                  fetchLimit: 1,
                                                                                  sortedBy: [sortDescriptorByID])
@@ -130,7 +130,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
     }
 
-    func didSelectCampaignDetails(_ campaign: BriefBlazeCampaignInfo) {
+    func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
 
         let path = String(format: Constants.campaignDetailsURLFormat,
@@ -155,7 +155,7 @@ private extension BlazeCampaignDashboardViewModel {
     @MainActor
     func synchronizeBlazeCampaigns() async {
         await withCheckedContinuation({ continuation in
-            stores.dispatch(BlazeAction.synchronizeBriefCampaigns(siteID: siteID,
+            stores.dispatch(BlazeAction.synchronizeCampaignsList(siteID: siteID,
                                                                   skip: 0,
                                                                   limit: PaginationTracker.Defaults.pageSize) { result in
                 if case .failure(let error) = result {

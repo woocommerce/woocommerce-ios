@@ -181,7 +181,7 @@ struct OrderForm: View {
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
-                viewModel.selectionSyncApproach = presentationStyle == .sideBySide ? .immediate : .onSelectorButtonTap
+                viewModel.selectionSyncApproach = presentationStyle == .sideBySide ? .onRecalculateButtonTap : .onSelectorButtonTap
             }
     }
 

@@ -45,6 +45,7 @@ struct ProductSelectorView: View {
 
     /// Title for the multi-selection button
     ///
+    // TODO: Extract to viewmodel
     private var doneButtonTitle: String {
         guard viewModel.totalSelectedItemsCount > 0 else {
             return Localization.doneButton
@@ -59,6 +60,7 @@ struct ProductSelectorView: View {
 
     /// Title for the view's navigation
     ///
+    // TODO: Extract to viewmodel
     private var navigationTitle: String {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
               isViewWidthNarrowerThanConstantRowWidth else {

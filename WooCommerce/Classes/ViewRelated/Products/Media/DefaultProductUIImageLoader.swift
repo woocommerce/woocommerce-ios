@@ -126,3 +126,17 @@ private extension DefaultProductUIImageLoader {
         }
     }
 }
+
+/// Stores images in a dictionary using given `id`
+///
+private actor ImageStorage {
+    private var images: [Int64: UIImage] = [:]
+
+    func saveImage(image: UIImage, id: Int64) {
+        images[id] = image
+    }
+
+    func getImage(id: Int64) -> UIImage? {
+        images[id]
+    }
+}

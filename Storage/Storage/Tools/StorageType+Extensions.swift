@@ -539,6 +539,22 @@ public extension StorageType {
 
     // MARK: - BlazeCampaign
 
+    /// Returns a single BriefBlazeCampaignInfo given a `siteID` and `campaignID`
+    ///
+    func loadBriefBlazeCampaign(siteID: Int64, campaignID: String) -> BriefBlazeCampaignInfo? {
+        let predicate = \BriefBlazeCampaignInfo.siteID == siteID && \BriefBlazeCampaignInfo.campaignID == campaignID
+        return firstObject(ofType: BriefBlazeCampaignInfo.self, matching: predicate)
+    }
+
+    /// Returns all stored BriefBlazeCampaignInfo s for a site
+    ///
+    func loadAllBriefBlazeCampaigns(siteID: Int64) -> [BriefBlazeCampaignInfo] {
+        let predicate = \BriefBlazeCampaignInfo.siteID == siteID
+        return allObjects(ofType: BriefBlazeCampaignInfo.self, matching: predicate, sortedBy: nil)
+    }
+
+    // MARK: - BlazeCampaign
+
     /// Returns a single Blaze campaign given a `siteID` and `campaignID`
     ///
     func loadBlazeCampaign(siteID: Int64, campaignID: Int64) -> BlazeCampaign? {

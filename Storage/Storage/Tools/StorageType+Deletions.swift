@@ -110,6 +110,17 @@ public extension StorageType {
         }
     }
 
+    // MARK: - BriefBlazeCampaignInfo
+
+    /// Deletes all of the stored BriefBlazeCampaignInfo for the provided siteID.
+    ///
+    func deleteBriefBlazeCampaigns(siteID: Int64) {
+        let campaigns = loadAllBriefBlazeCampaigns(siteID: siteID)
+        for campaign in campaigns {
+            deleteObject(campaign)
+        }
+    }
+
     // MARK: - BlazeCampaign
 
     /// Deletes all of the stored Blaze campaigns for the provided siteID.

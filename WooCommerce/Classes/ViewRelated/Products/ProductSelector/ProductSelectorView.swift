@@ -372,27 +372,6 @@ private extension ProductSelectorView {
     }
 }
 
-extension ProductSelectorView {
-    struct Configuration {
-        /// Whether more than one product can be selected.
-        var multipleSelectionEnabled: Bool = true
-
-        /// If this is false, we let users select variations for variable products and specific contents for bundle products.
-        /// Otherwise, the product itself is selected immediately.
-        var treatsAllProductsAsSimple: Bool = false
-
-        var productHeaderTextEnabled: Bool = false
-        var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
-        var prefersLargeTitle: Bool = true
-        var doneButtonTitleSingularFormat: String = ""
-        var doneButtonTitlePluralFormat: String = ""
-        let title: String
-        let cancelButtonTitle: String?
-        let productRowAccessibilityHint: String
-        let variableProductRowAccessibilityHint: String
-    }
-}
-
 private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1

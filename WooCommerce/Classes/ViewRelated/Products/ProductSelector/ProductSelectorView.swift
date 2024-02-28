@@ -42,6 +42,11 @@ struct ProductSelectorView: View {
     ///
     @State var isShowingVariationList: Bool = false
 
+    /// Defines whether the Product Selector View's width is less than the predefined row's width threshold
+    /// Used so we can render a different style despite the environment's size class
+    ///
+    @State var isViewWidthNarrowerThanConstantRowWidth: Bool = false
+
     /// View model to use for the variation list, when it is shown.
     ///
     @State var variationListViewModel: ProductVariationSelectorViewModel?
@@ -88,10 +93,10 @@ struct ProductSelectorView: View {
     }
 
     /// Title for the view's navigation
-    /// 
+    ///
     private var navigationTitle: String {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
-              horizontalSizeClass == .compact else {
+              isViewWidthNarrowerThanConstantRowWidth else {
             return configuration.title
         }
         return viewModel.selectProductsTitle
@@ -366,6 +371,13 @@ private extension ProductSelectorView {
                 .fixedSize()
             }
             .padding(.horizontal, insets: safeAreaInsets)
+            .onChange(of: geometry.size.width) { newViewWidth in
+                if newViewWidth <= Constants.headerSearchRowWidth {
+                    isViewWidthNarrowerThanConstantRowWidth = true
+                } else {
+                    isViewWidthNarrowerThanConstantRowWidth = false
+                }
+            }
         }
         .frame(height: Constants.minimumRowHeight * scale)
         .background(Color(.listForeground(modal: false)))

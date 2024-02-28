@@ -31,15 +31,6 @@ public final class WordPressOrgNetwork: Network {
         return sessionManager
     }()
 
-    private lazy var backgroundSessionManager: Alamofire.SessionManager = {
-        // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
-        // times (e.g. when logging in).
-        let uniqueID = UUID().uuidString
-        let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession.\(uniqueID)")
-        let sessionManager = makeSessionManager(configuration: sessionConfiguration)
-        return sessionManager
-    }()
-
     public var session: URLSession { sessionManager.session }
 
     public init(configuration: CookieNonceAuthenticatorConfiguration, userAgent: String = UserAgent.defaultUserAgent) {
@@ -141,7 +132,7 @@ public final class WordPressOrgNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        backgroundSessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
+        sessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
             switch encodingResult {
             case .success(let upload, _, _):
                 upload.responseData { response in

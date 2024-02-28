@@ -1,38 +1,11 @@
 import SwiftUI
 import Yosemite
-
-/// Hosting controller for `ProductSelectorView`.
-///
-final class ProductSelectorViewController: UIHostingController<ProductSelectorView> {
-    init(configuration: ProductSelectorView.Configuration,
-         source: ProductSelectorView.Source,
-         viewModel: ProductSelectorViewModel) {
-
-        super.init(rootView: ProductSelectorView(configuration: configuration,
-                                                 source: source,
-                                                 isPresented: .constant(true),
-                                                 viewModel: viewModel))
-    }
-
-    @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
 /// View showing a list of products to select.
 ///
 struct ProductSelectorView: View {
-    enum Source {
-        case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
-        case couponForm
-        case couponRestrictions
-        case blaze
-        case orderFilter
-    }
+    let configuration: ProductSelectorConfiguration
 
-    let configuration: Configuration
-
-    let source: Source
+    let source: ProductSelectorSource
 
     /// Defines whether the view is presented.
     ///
@@ -70,16 +43,9 @@ struct ProductSelectorView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    /// Tracks the state for the 'Clear Selection' button
-    ///
-    private var isClearSelectionDisabled: Bool {
-        viewModel.totalSelectedItemsCount == 0 ||
-        viewModel.syncStatus != .results ||
-        viewModel.selectionDisabled
-    }
-
     /// Title for the multi-selection button
     ///
+    // TODO: Extract to viewmodel
     private var doneButtonTitle: String {
         guard viewModel.totalSelectedItemsCount > 0 else {
             return Localization.doneButton
@@ -94,6 +60,7 @@ struct ProductSelectorView: View {
 
     /// Title for the view's navigation
     ///
+    // TODO: Extract to viewmodel
     private var navigationTitle: String {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
               isViewWidthNarrowerThanConstantRowWidth else {
@@ -199,8 +166,7 @@ struct ProductSelectorView: View {
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
                 viewModel.updateFilters(filters)
-                ServiceLocator.analytics.track(event: .ProductListFilter
-                    .productFilterListShowProductsButtonTapped(source: source.filterAnalyticsSource, filters: filters))
+                viewModel.trackProductListViewFilterOptionsTapped(source.filterAnalyticsSource, filters)
             } onClearAction: {
                 // no-op
             } onDismissAction: {
@@ -268,6 +234,7 @@ struct ProductSelectorView: View {
                         guard !hasTrackedBundleProductConfigureCTAShownEvent else {
                             return
                         }
+                        // TODO: Move tracking logic outside of the view
                         switch source {
                             case let .orderForm(flow):
                                 ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productSelector))
@@ -281,6 +248,7 @@ struct ProductSelectorView: View {
                 if let configure = rowViewModel.configure, rowViewModel.isConfigurable,
                    configuration.treatsAllProductsAsSimple == false {
                     configure()
+                    // TODO: Move tracking logic outside of the view
                     switch source {
                         case let .orderForm(flow):
                             ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productSelector))
@@ -331,14 +299,14 @@ private extension ProductSelectorView {
             }
             .buttonStyle(LinkButtonStyle())
             .fixedSize()
-            .disabled(isClearSelectionDisabled)
+            .disabled(viewModel.isClearSelectionDisabled)
             .renderedIf(configuration.multipleSelectionEnabled)
 
             Spacer()
 
             Button(viewModel.filterButtonTitle) {
                 showingFilters.toggle()
-                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+                viewModel.trackFilterButtonTitleTrack(source.filterAnalyticsSource)
             }
             .buttonStyle(LinkButtonStyle())
             .fixedSize()
@@ -358,7 +326,7 @@ private extension ProductSelectorView {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .disabled(isClearSelectionDisabled)
+                .disabled(viewModel.isClearSelectionDisabled)
                 .renderedIf(configuration.multipleSelectionEnabled)
 
                 Spacer()
@@ -406,27 +374,6 @@ private extension ProductSelectorView {
     }
 }
 
-extension ProductSelectorView {
-    struct Configuration {
-        /// Whether more than one product can be selected.
-        var multipleSelectionEnabled: Bool = true
-
-        /// If this is false, we let users select variations for variable products and specific contents for bundle products.
-        /// Otherwise, the product itself is selected immediately.
-        var treatsAllProductsAsSimple: Bool = false
-
-        var productHeaderTextEnabled: Bool = false
-        var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
-        var prefersLargeTitle: Bool = true
-        var doneButtonTitleSingularFormat: String = ""
-        var doneButtonTitlePluralFormat: String = ""
-        let title: String
-        let cancelButtonTitle: String?
-        let productRowAccessibilityHint: String
-        let variableProductRowAccessibilityHint: String
-    }
-}
-
 private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
@@ -452,27 +399,10 @@ private extension ProductSelectorView {
     }
 }
 
-private extension ProductSelectorView.Source {
-    var filterAnalyticsSource: WooAnalyticsEvent.ProductListFilter.Source {
-        switch self {
-            case .orderForm:
-                return .orderForm
-            case .couponForm:
-                return .couponForm
-            case .couponRestrictions:
-                return .couponRestrictions
-        case .blaze:
-            return .blaze
-        case .orderFilter:
-            return .orderFilter
-        }
-    }
-}
-
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
-        let configuration = ProductSelectorView.Configuration(
+        let configuration = ProductSelectorConfiguration(
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",

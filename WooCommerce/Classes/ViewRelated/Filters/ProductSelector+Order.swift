@@ -1,7 +1,7 @@
 import Foundation
 
-extension ProductSelectorView.Configuration {
-    static let configurationForOrder = ProductSelectorView.Configuration(
+extension ProductSelectorConfiguration {
+    static let configurationForOrder = ProductSelectorConfiguration(
         multipleSelectionEnabled: false,
         treatsAllProductsAsSimple: true,
         prefersLargeTitle: false,

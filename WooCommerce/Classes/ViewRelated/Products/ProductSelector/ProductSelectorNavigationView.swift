@@ -2,13 +2,13 @@ import SwiftUI
 
 /// `ProductSelectorView` wrapped in a SwiftUI navigation view.
 struct ProductSelectorNavigationView: View {
-    private let configuration: ProductSelectorView.Configuration
-    private let source: ProductSelectorView.Source
+    private let configuration: ProductSelectorConfiguration
+    private let source: ProductSelectorSource
     @Binding private var isPresented: Bool
     private let viewModel: ProductSelectorViewModel
 
-    init(configuration: ProductSelectorView.Configuration,
-         source: ProductSelectorView.Source,
+    init(configuration: ProductSelectorConfiguration,
+         source: ProductSelectorSource,
          isPresented: Binding<Bool>,
          viewModel: ProductSelectorViewModel) {
         self.configuration = configuration
@@ -32,7 +32,7 @@ struct ProductSelectorNavigationView: View {
 struct ProductSelectorNavigationView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
-        let configuration = ProductSelectorView.Configuration(
+        let configuration = ProductSelectorConfiguration(
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",

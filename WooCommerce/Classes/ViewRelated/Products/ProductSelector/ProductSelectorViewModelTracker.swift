@@ -7,6 +7,19 @@ private enum ProductTrackingSource: String {
     case search
 }
 
+// WIP: Product selector tracking
+extension ProductSelectorViewModelTracker {
+    func trackProductListViewFilterOptionsTapped(_ source: WooAnalyticsEvent.ProductListFilter.Source) {
+        analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source))
+    }
+    
+    func trackProductFilterListShowProductsButtonTapped(_ source: WooAnalyticsEvent.ProductListFilter.Source, _ filters: FilterProductListViewModel.Criteria) {
+        analytics.track(event: .ProductListFilter
+            .productFilterListShowProductsButtonTapped(source: source,
+                                                       filters: filters))
+    }
+}
+
 /// This helper class takes care of tracking the events of `ProductSelectorViewModelTracker`
 ///
 final class ProductSelectorViewModelTracker {

@@ -1,7 +1,7 @@
 import Foundation
 
-extension ProductSelectorView.Configuration {
-    static let configurationForBlaze = ProductSelectorView.Configuration(
+extension ProductSelectorConfiguration {
+    static let configurationForBlaze = ProductSelectorConfiguration(
         multipleSelectionEnabled: false,
         treatsAllProductsAsSimple: true,
         prefersLargeTitle: false,

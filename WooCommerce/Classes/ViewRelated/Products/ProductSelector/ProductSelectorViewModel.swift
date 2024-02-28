@@ -15,6 +15,48 @@ struct ProductSelectorSection {
     let products: [Product]
 }
 
+enum ProductSelectorSource {
+    case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
+    case couponForm
+    case couponRestrictions
+    case blaze
+    case orderFilter
+
+    var filterAnalyticsSource: WooAnalyticsEvent.ProductListFilter.Source {
+        switch self {
+            case .orderForm:
+                return .orderForm
+            case .couponForm:
+                return .couponForm
+            case .couponRestrictions:
+                return .couponRestrictions
+        case .blaze:
+            return .blaze
+        case .orderFilter:
+            return .orderFilter
+        }
+    }
+}
+
+struct ProductSelectorConfiguration {
+    /// Whether more than one product can be selected.
+    var multipleSelectionEnabled: Bool = true
+
+    /// If this is false, we let users select variations for variable products and specific contents for bundle products.
+    /// Otherwise, the product itself is selected immediately.
+    var treatsAllProductsAsSimple: Bool = false
+
+    var productHeaderTextEnabled: Bool = false
+    var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
+    var prefersLargeTitle: Bool = true
+    var doneButtonTitleSingularFormat: String = ""
+    var doneButtonTitlePluralFormat: String = ""
+    let title: String
+    let cancelButtonTitle: String?
+    let productRowAccessibilityHint: String
+    let variableProductRowAccessibilityHint: String
+}
+
 enum ProductSelectorSectionType {
     // Show most popular products, that is, most sold
     case mostPopular
@@ -91,6 +133,12 @@ final class ProductSelectorViewModel: ObservableObject {
                                          plural: Localization.pluralProductSelectedFormattedText)
             return String.localizedStringWithFormat(title, totalSelectedItemsCount)
         }
+    }
+
+    var isClearSelectionDisabled: Bool {
+        totalSelectedItemsCount == 0 ||
+        syncStatus != .results ||
+        selectionDisabled
     }
 
     /// Defines the current notice that should be shown.
@@ -434,6 +482,14 @@ final class ProductSelectorViewModel: ObservableObject {
         if syncApproach == .immediate {
             onMultipleSelectionCompleted?(selectedItemsIDs)
         }
+    }
+
+    func trackFilterButtonTitleTrack(_ source: WooAnalyticsEvent.ProductListFilter.Source) {
+        tracker.trackProductListViewFilterOptionsTapped(source)
+    }
+
+    func trackProductListViewFilterOptionsTapped(_ source: WooAnalyticsEvent.ProductListFilter.Source, _ filters: FilterProductListViewModel.Criteria) {
+        tracker.trackProductFilterListShowProductsButtonTapped(source, filters)
     }
 
     enum SyncApproach {

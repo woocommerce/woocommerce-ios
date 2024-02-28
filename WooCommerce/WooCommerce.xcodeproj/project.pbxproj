@@ -1345,6 +1345,7 @@
 		6881CCC42A5EE6BF00AEDE36 /* WooPlanCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6881CCC32A5EE6BF00AEDE36 /* WooPlanCardView.swift */; };
 		6888A2C82A668D650026F5C0 /* FullFeatureListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C72A668D650026F5C0 /* FullFeatureListView.swift */; };
 		6888A2CA2A66C42C0026F5C0 /* FullFeatureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */; };
+		688A24D62B8F2AC30043EAFB /* ProductSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688A24D52B8F2AC30043EAFB /* ProductSelectorViewController.swift */; };
 		68A38DF52B293B030090C263 /* MockProductListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A38DF42B293B030090C263 /* MockProductListViewModel.swift */; };
 		68A905012ACCFC13004C71D3 /* CollapsibleProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A905002ACCFC13004C71D3 /* CollapsibleProductCard.swift */; };
 		68AC9D292ACE598B0042F784 /* ProductImageThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68AC9D282ACE598B0042F784 /* ProductImageThumbnail.swift */; };
@@ -4030,6 +4031,7 @@
 		6881CCC32A5EE6BF00AEDE36 /* WooPlanCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanCardView.swift; sourceTree = "<group>"; };
 		6888A2C72A668D650026F5C0 /* FullFeatureListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListView.swift; sourceTree = "<group>"; };
 		6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListViewModel.swift; sourceTree = "<group>"; };
+		688A24D52B8F2AC30043EAFB /* ProductSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSelectorViewController.swift; sourceTree = "<group>"; };
 		68A38DF42B293B030090C263 /* MockProductListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductListViewModel.swift; sourceTree = "<group>"; };
 		68A905002ACCFC13004C71D3 /* CollapsibleProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCard.swift; sourceTree = "<group>"; };
 		68AC9D282ACE598B0042F784 /* ProductImageThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageThumbnail.swift; sourceTree = "<group>"; };
@@ -11412,6 +11414,7 @@
 				02DFD5052B2048C50048CD70 /* ProductStepperViewModel.swift */,
 				02FE734A2B21613D00CD486B /* ProductWithQuantityStepperView.swift */,
 				02C7EE892B21B951008B7DF8 /* ProductWithQuantityStepperViewModel.swift */,
+				688A24D52B8F2AC30043EAFB /* ProductSelectorViewController.swift */,
 			);
 			path = ProductSelector;
 			sourceTree = "<group>";
@@ -13751,6 +13754,7 @@
 				0304E35E28BDC86D00A80191 /* LearnMoreViewModel.swift in Sources */,
 				02DF980B2A15FD920009E2EA /* StoreCreationStatusChecker.swift in Sources */,
 				02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */,
+				688A24D62B8F2AC30043EAFB /* ProductSelectorViewController.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
 				02C27BCE282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift in Sources */,
 				2647F7BA292BE2F900D59FDF /* AnalyticsReportCard.swift in Sources */,

@@ -417,7 +417,7 @@ struct AddEditCoupon_Previews: PreviewProvider {
 }
 #endif
 
-private extension ProductSelectorView.Configuration {
+private extension ProductSelectorConfiguration {
     static let productsForCoupons: Self =
         .init(doneButtonTitleSingularFormat: Localization.doneButtonSingular,
               doneButtonTitlePluralFormat: Localization.doneButtonPlural,

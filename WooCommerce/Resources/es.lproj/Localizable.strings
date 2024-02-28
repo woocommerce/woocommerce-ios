@@ -1893,6 +1893,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -6021,6 +6022,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Ponte en contacto con nuestros Happiness Engineers y soluciona las cuestiones más complicadas.";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "Leer más";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Lee nuestros consejos para solucionar problemas";

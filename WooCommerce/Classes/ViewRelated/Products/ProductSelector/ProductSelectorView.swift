@@ -173,8 +173,7 @@ struct ProductSelectorView: View {
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
                 viewModel.updateFilters(filters)
-                ServiceLocator.analytics.track(event: .ProductListFilter
-                    .productFilterListShowProductsButtonTapped(source: source.filterAnalyticsSource, filters: filters))
+                viewModel.trackProductListViewFilterOptionsTapped(source.filterAnalyticsSource, filters)
             } onClearAction: {
                 // no-op
             } onDismissAction: {

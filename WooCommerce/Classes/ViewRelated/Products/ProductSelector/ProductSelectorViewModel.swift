@@ -441,9 +441,13 @@ final class ProductSelectorViewModel: ObservableObject {
             onMultipleSelectionCompleted?(selectedItemsIDs)
         }
     }
-    
+
     func trackFilterButtonTitleTrack(_ source: WooAnalyticsEvent.ProductListFilter.Source) {
         tracker.trackProductListViewFilterOptionsTapped(source)
+    }
+
+    func trackProductListViewFilterOptionsTapped(_ source: WooAnalyticsEvent.ProductListFilter.Source, _ filters: FilterProductListViewModel.Criteria) {
+        tracker.trackProductFilterListShowProductsButtonTapped(source, filters)
     }
 
     enum SyncApproach {

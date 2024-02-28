@@ -216,6 +216,10 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         selectedProductVariationIDs = []
         onSelectionsCleared?()
     }
+
+    func removeSelection(_ productVariationID: Int64) {
+        selectedProductVariationIDs = selectedProductVariationIDs.filter { $0 != productVariationID}
+    }
 }
 
 // MARK: - SyncingCoordinatorDelegate & Sync Methods

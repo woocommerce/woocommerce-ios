@@ -63,13 +63,16 @@ extension CustomerSelectorViewController {
         let title: String
 
         // Whether guest-type customers can be selected or not
-        var disallowSelectingGuest: Bool = false
+        var disallowSelectingGuest: Bool
 
         // Whether to show or hide button to create customer
-        var disallowCreatingCustomer: Bool = false
+        var disallowCreatingCustomer: Bool
 
         // Whether to show "Guest" label in the detail area of the user information for guest customers
-        var showGuestLabel: Bool = false
+        var showGuestLabel: Bool
+
+        // Whether to track when a customer cell is tapped.
+        var shouldTrackCustomerAdded: Bool
     }
 }
 
@@ -86,9 +89,11 @@ private extension CustomerSelectorViewController {
                     switch result {
                     case .success(let thereAreResults):
                         if thereAreResults {
-                            self.addSearchViewController(loadResultsWhenSearchTermIsEmpty: true,
-                                                         showSearchFilters: false,
-                                                         showGuestLabel: viewModel.configuration.showGuestLabel)
+                            self.addSearchViewController(
+                                loadResultsWhenSearchTermIsEmpty: true,
+                                showSearchFilters: false,
+                                showGuestLabel: viewModel.configuration.showGuestLabel,
+                                shouldTrackCustomerAdded: viewModel.configuration.shouldTrackCustomerAdded)
                             self.configureActivityIndicator()
                         } else {
                             self.showEmptyState(with: self.emptyStateConfiguration())
@@ -99,12 +104,14 @@ private extension CustomerSelectorViewController {
                 })
             } else {
                 self?.removeGhostContent()
-                self?.addSearchViewController(loadResultsWhenSearchTermIsEmpty: false,
-                                              showSearchFilters: true,
-                                              showGuestLabel: self?.viewModel.configuration.showGuestLabel ?? false,
-                                              onAddCustomerDetailsManually: {
-                    self?.presentNewCustomerDetailsFlow()
-                })
+                self?.addSearchViewController(
+                    loadResultsWhenSearchTermIsEmpty: false,
+                    showSearchFilters: true,
+                    showGuestLabel: self?.viewModel.configuration.showGuestLabel ?? false,
+                    shouldTrackCustomerAdded: self?.viewModel.configuration.shouldTrackCustomerAdded ?? true,
+                    onAddCustomerDetailsManually: {
+                        self?.presentNewCustomerDetailsFlow()
+                    })
                 self?.configureActivityIndicator()
 
             }
@@ -155,6 +162,7 @@ private extension CustomerSelectorViewController {
     func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool,
                                  showSearchFilters: Bool,
                                  showGuestLabel: Bool,
+                                 shouldTrackCustomerAdded: Bool,
                                  onAddCustomerDetailsManually: (() -> Void)? = nil) {
         let searchViewController = SearchViewController(
             storeID: siteID,
@@ -162,6 +170,7 @@ private extension CustomerSelectorViewController {
                                              loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
                                              showSearchFilters: showSearchFilters,
                                              showGuestLabel: showGuestLabel,
+                                             shouldTrackCustomerAdded: shouldTrackCustomerAdded,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped,
                                              onDidStartSyncingAllCustomersFirstPage: {

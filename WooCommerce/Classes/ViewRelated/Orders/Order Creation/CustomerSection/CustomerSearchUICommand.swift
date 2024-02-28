@@ -51,10 +51,14 @@ final class CustomerSearchUICommand: SearchUICommand {
     // If customer is a guest, show "Guest" in the detail section
     private let showGuestLabel: Bool
 
+    // Whether to track customer addition
+    private let shouldTrackCustomerAdded: Bool
+
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
          showSearchFilters: Bool = false,
          showGuestLabel: Bool = false,
+         shouldTrackCustomerAdded: Bool = true,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -66,6 +70,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
         self.showSearchFilters = showSearchFilters
         self.showGuestLabel = showGuestLabel
+        self.shouldTrackCustomerAdded = shouldTrackCustomerAdded
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -196,7 +201,9 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Customer, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        analytics.track(.orderCreationCustomerAdded)
+        if shouldTrackCustomerAdded {
+            analytics.track(.orderCreationCustomerAdded)
+        }
         onDidSelectSearchResult(model)
     }
 

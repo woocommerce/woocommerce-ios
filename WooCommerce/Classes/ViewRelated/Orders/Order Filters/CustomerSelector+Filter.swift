@@ -5,7 +5,8 @@ extension CustomerSelectorViewController.Configuration {
         title: OrderFilterLocalization.customerSelectorTitle,
         disallowSelectingGuest: true,
         disallowCreatingCustomer: true,
-        showGuestLabel: true
+        showGuestLabel: true,
+        shouldTrackCustomerAdded: false
     )
 
     enum OrderFilterLocalization {

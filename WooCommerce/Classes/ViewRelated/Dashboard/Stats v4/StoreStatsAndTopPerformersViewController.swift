@@ -83,7 +83,8 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
                                                                                 timeRange: timeRange,
                                                                                 currentDate: currentDate,
                                                                                 canDisplayInAppFeedbackCard: timeRange == .today,
-                                                                                usageTracksEventEmitter: usageTracksEventEmitter)
+                                                                                usageTracksEventEmitter: usageTracksEventEmitter,
+                                                                                onEditCustomTimeRange: nil)
             return .init(title: timeRange.tabTitle,
                          viewController: viewController,
                          accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab")
@@ -456,7 +457,7 @@ private extension StoreStatsAndTopPerformersViewController {
         button.backgroundColor = .listForeground(modal: false)
 
         button.on(.touchUpInside) { [weak self] _ in
-            self?.startCustomRangeTabCreation()
+            self?.startCustomRangeTabCreation(startDate: nil, endDate: nil)
         }
 
         let separator = UIView()
@@ -468,9 +469,11 @@ private extension StoreStatsAndTopPerformersViewController {
         return stackView
     }
 
-    func startCustomRangeTabCreation() {
+    func startCustomRangeTabCreation(startDate: Date?, endDate: Date?) {
         guard let navigationController else { return }
         customRangeCoordinator = CustomRangeTabCreationCoordinator(
+            startDate: startDate,
+            endDate: endDate,
             navigationController: navigationController,
             onDateRangeSelected: { [weak self] start, end in
                 let range = StatsTimeRangeV4.custom(from: start, to: end)
@@ -488,16 +491,27 @@ private extension StoreStatsAndTopPerformersViewController {
                                                                            timeRange: range,
                                                                            currentDate: currentDate,
                                                                            canDisplayInAppFeedbackCard: false,
-                                                                           usageTracksEventEmitter: usageTracksEventEmitter)
-
-        periodVCs.append(customRangeVC)
-        timeRanges.append(range)
+                                                                           usageTracksEventEmitter: usageTracksEventEmitter,
+                                                                           onEditCustomTimeRange: { [weak self] timeRange in
+            guard case let .custom(startDate, endDate) = timeRange else {
+                return
+            }
+            self?.startCustomRangeTabCreation(startDate: startDate, endDate: endDate)
+        })
 
         let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,
                                                accessibilityIdentifier: "period-data-" + range.rawValue + "-tab")
 
-        appendToTabBar(customRangeTabbedItem)
+        if let index = timeRanges.lastIndex(where: { $0.isCustomTimeRange }) {
+            periodVCs[index] = customRangeVC
+            timeRanges[index] = range
+            replaceTab(at: index, with: customRangeTabbedItem)
+        } else {
+            periodVCs.append(customRangeVC)
+            timeRanges.append(range)
+            appendToTabBar(customRangeTabbedItem)
+        }
 
         // Once a custom range tab is created, do not show the "Custom Range" button anymore.
         removeCustomViewFromTabBar()

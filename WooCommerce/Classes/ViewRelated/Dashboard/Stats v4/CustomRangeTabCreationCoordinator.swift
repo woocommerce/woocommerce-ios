@@ -4,9 +4,17 @@ import UIKit
 /// Coordinates navigation into Custom Range tab creation from the Stats dashboard.
 final class CustomRangeTabCreationCoordinator: Coordinator {
     let navigationController: UINavigationController
+
+    private let startDate: Date?
+    private let endDate: Date?
     private let onDateRangeSelected: (_ start: Date, _ end: Date) -> Void
 
-    init(navigationController: UINavigationController, onDateRangeSelected: @escaping (_ start: Date, _ end: Date) -> Void) {
+    init(startDate: Date?,
+         endDate: Date?,
+         navigationController: UINavigationController,
+         onDateRangeSelected: @escaping (_ start: Date, _ end: Date) -> Void) {
+        self.startDate = startDate
+        self.endDate = endDate
         self.navigationController = navigationController
         self.onDateRangeSelected = onDateRangeSelected
     }
@@ -18,9 +26,14 @@ final class CustomRangeTabCreationCoordinator: Coordinator {
 
 private extension CustomRangeTabCreationCoordinator {
     func presentDateRangePicker() {
+        let buttonTitle = (startDate == nil && endDate == nil) ? Localization.add : nil
+        let endDate = self.endDate ?? Date()
+        let startDate = self.startDate ?? Date(timeInterval: -Constants.thirtyDays, since: endDate) // 30 day before end date
         let controller = RangedDatePickerHostingController(
+            startDate: startDate,
+            endDate: endDate,
             datesFormatter: DatesFormatter(),
-            customApplyButtonTitle: Localization.add,
+            customApplyButtonTitle: buttonTitle,
             datesSelected: { [weak self] start, end in
                 guard let self else { return }
                 self.onDateRangeSelected(start, end)
@@ -42,6 +55,9 @@ private extension CustomRangeTabCreationCoordinator {
 // MARK: Constant
 
 private extension CustomRangeTabCreationCoordinator {
+    enum Constants {
+        static let thirtyDays: TimeInterval = 86400*30
+    }
     enum Localization {
         static let add = NSLocalizedString(
             "customRangeTabCreationCoordinator.add",

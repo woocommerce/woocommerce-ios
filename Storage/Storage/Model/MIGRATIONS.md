@@ -2,8 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 107 (Release 17.6.0.0)
+- @selanthiraiyan 2024-02-28
+    - Add `BriefBlazeCampaignInfo` entity.
+    
 ## Model 106 (Release 17.3.0.0)
-- @selanthiraiyan 2023-02-07
+- @selanthiraiyan 2024-02-07
     - Add `OrderAttributionInfo` entity.
 
 ## Model 105 (Release 16.8.0.0)

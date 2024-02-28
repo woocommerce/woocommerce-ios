@@ -443,7 +443,7 @@ final class ProductSelectorViewModel: ObservableObject {
     }
     
     func trackFilterButtonTitleTrack(_ source: WooAnalyticsEvent.ProductListFilter.Source) {
-        tracker.trackFilterButtonTapped(source)
+        tracker.trackProductListViewFilterOptionsTapped(source)
     }
 
     enum SyncApproach {

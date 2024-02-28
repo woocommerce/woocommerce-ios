@@ -79,11 +79,16 @@ struct ProductSelectorView: View {
         guard viewModel.totalSelectedItemsCount > 0 else {
             return Localization.doneButton
         }
-        return String.pluralize(viewModel.totalSelectedItemsCount,
-                                singular: configuration.doneButtonTitleSingularFormat,
-                                plural: configuration.doneButtonTitlePluralFormat)
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return String.pluralize(viewModel.totalSelectedItemsCount,
+                                    singular: configuration.doneButtonTitleSingularFormat,
+                                    plural: configuration.doneButtonTitlePluralFormat)
+        }
+        return Localization.addProductsText
     }
 
+    /// Title for the view's navigation
+    /// 
     private var navigationTitle: String {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
               horizontalSizeClass == .compact else {
@@ -428,6 +433,10 @@ private extension ProductSelectorView {
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
         static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
+        static let addProductsText = NSLocalizedString(
+            "productselectorview.doneButtonTitle.addProductsText",
+            value: "Add Products",
+            comment: "Button to submit selected products to the order, when some product has been selected.")
     }
 }
 

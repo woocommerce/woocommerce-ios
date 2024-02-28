@@ -52,14 +52,6 @@ struct ProductSelectorView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    /// Tracks the state for the 'Clear Selection' button
-    ///
-    private var isClearSelectionDisabled: Bool {
-        viewModel.totalSelectedItemsCount == 0 ||
-        viewModel.syncStatus != .results ||
-        viewModel.selectionDisabled
-    }
-
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
@@ -313,7 +305,7 @@ private extension ProductSelectorView {
             }
             .buttonStyle(LinkButtonStyle())
             .fixedSize()
-            .disabled(isClearSelectionDisabled)
+            .disabled(viewModel.isClearSelectionDisabled)
             .renderedIf(configuration.multipleSelectionEnabled)
 
             Spacer()
@@ -340,7 +332,7 @@ private extension ProductSelectorView {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .disabled(isClearSelectionDisabled)
+                .disabled(viewModel.isClearSelectionDisabled)
                 .renderedIf(configuration.multipleSelectionEnabled)
 
                 Spacer()

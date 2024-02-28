@@ -92,6 +92,12 @@ final class ProductSelectorViewModel: ObservableObject {
             return String.localizedStringWithFormat(title, totalSelectedItemsCount)
         }
     }
+    
+    var isClearSelectionDisabled: Bool {
+        totalSelectedItemsCount == 0 ||
+        syncStatus != .results ||
+        selectionDisabled
+    }
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.

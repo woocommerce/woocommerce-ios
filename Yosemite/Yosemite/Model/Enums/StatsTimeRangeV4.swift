@@ -48,6 +48,15 @@ extension StatsTimeRangeV4: RawRepresentable, Hashable {
         }
     }
 
+    public var isCustomTimeRange: Bool {
+        switch self {
+        case .today, .thisWeek, .thisMonth, .thisYear:
+            false
+        case .custom:
+            true
+        }
+    }
+
     private enum CustomRangeFormatter {
         static private let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
         static private let separator = "_"
@@ -220,9 +229,23 @@ extension StatsTimeRangeV4 {
             return daysThisMonth?.count ?? 0
         case .thisYear:
             return 12
-        case .custom:
-            // TODO: 11935 Calculate interval units
-            return 1
+        case let .custom(startDate, endDate):
+            let calendar = Calendar.current
+            let quantity: Int? = {
+                switch siteVisitStatsGranularity {
+                case .hour:
+                    calendar.dateComponents([.hour], from: startDate, to: endDate).hour
+                case .day, .week:
+                    calendar.dateComponents([.day], from: startDate, to: endDate).day
+                case .month:
+                    calendar.dateComponents([.month], from: startDate, to: endDate).month
+                case .quarter:
+                    calendar.dateComponents([.quarter], from: startDate, to: endDate).quarter
+                case .year:
+                    calendar.dateComponents([.year], from: startDate, to: endDate).year
+                }
+            }()
+            return quantity ?? 1
         }
     }
 }

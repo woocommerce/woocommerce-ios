@@ -10,7 +10,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         /// Shows placeholder views in redacted state.
         case loading
         /// Shows info about the latest Blaze campaign
-        case showCampaign(campaign: BlazeCampaign)
+        case showCampaign(campaign: BriefBlazeCampaignInfo)
         /// Shows info about the latest published Product
         case showProduct(product: Product)
         /// When there is no campaign or published product
@@ -55,13 +55,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     /// Blaze campaign ResultsController.
-    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBriefBlazeCampaignInfo> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaign.campaignID, ascending: false)
-        let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
-                                                                        matching: predicate,
-                                                                        fetchLimit: 1,
-                                                                        sortedBy: [sortDescriptorByID])
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBriefBlazeCampaignInfo.campaignID, ascending: false)
+        let resultsController = ResultsController<StorageBriefBlazeCampaignInfo>(storageManager: storageManager,
+                                                                                 matching: predicate,
+                                                                                 fetchLimit: 1,
+                                                                                 sortedBy: [sortDescriptorByID])
         return resultsController
     }()
 
@@ -130,7 +130,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
     }
 
-    func didSelectCampaignDetails(_ campaign: BlazeCampaign) {
+    func didSelectCampaignDetails(_ campaign: BriefBlazeCampaignInfo) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
 
         let path = String(format: Constants.campaignDetailsURLFormat,
@@ -155,7 +155,9 @@ private extension BlazeCampaignDashboardViewModel {
     @MainActor
     func synchronizeBlazeCampaigns() async {
         await withCheckedContinuation({ continuation in
-            stores.dispatch(BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: Store.Default.firstPageNumber) { result in
+            stores.dispatch(BlazeAction.synchronizeBriefCampaigns(siteID: siteID,
+                                                                  skip: 0,
+                                                                  limit: PaginationTracker.Defaults.pageSize) { result in
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Dashboard — Error synchronizing Blaze campaigns: \(error)")
                 }

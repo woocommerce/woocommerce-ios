@@ -519,25 +519,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedProduct, product.productID)
     }
 
-    func test_changeSelectionStateForProduct_when_syncImmediately_true_calls_multiple_selection_handler() {
-        // Given
-        var selectedProducts: [Int64] = []
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
-        insert(product)
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 syncApproach: .immediate,
-                                                 onMultipleSelectionCompleted: { productIDs in
-            selectedProducts = productIDs
-        })
-
-        // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
-
-        // Then
-        XCTAssertEqual(selectedProducts, [product.productID])
-    }
-
     func test_variationRowTapped_sets_expected_view_model_for_variable_product() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])

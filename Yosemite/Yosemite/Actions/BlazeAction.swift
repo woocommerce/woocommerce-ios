@@ -17,7 +17,7 @@ public enum BlazeAction: Action {
                         siteID: Int64,
                         onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Retrieves and stores Brief Blaze Campaign Info for a site
+    /// Retrieves and stores Blaze Campaign items for a site using v1.1 endpoint.
     ///
     /// - `siteID`: the site for which Blaze campaigns should be fetched.
     /// - `skip`: Pagination offset

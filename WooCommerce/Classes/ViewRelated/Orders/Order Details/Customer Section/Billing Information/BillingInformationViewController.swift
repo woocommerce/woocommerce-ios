@@ -93,9 +93,6 @@ final class BillingInformationViewController: UIViewController {
     private let emailComposer = OrderEmailComposer()
 
     private let messageComposerPresenter: MessageComposerPresenter = ServiceLocator.messageComposerPresenter
-
-    private let isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
-
 }
 
 // MARK: - Interface Initialization
@@ -119,10 +116,6 @@ private extension BillingInformationViewController {
     }
 
     func constrainToMaxWidth() {
-        guard isSplitViewInOrdersTabEnabled else {
-            return
-        }
-
         let maxWidthConstraint = tableView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
         maxWidthConstraint.priority = .required
         NSLayoutConstraint.activate([maxWidthConstraint])
@@ -500,9 +493,6 @@ private extension BillingInformationViewController {
             telegramAction
         ].compactMap { $0 }
 
-        guard isSplitViewInOrdersTabEnabled else {
-            return
-        }
         cell.showSideBorders(fromWidth: Constants.maxWidth)
     }
 
@@ -537,9 +527,6 @@ private extension BillingInformationViewController {
 
         cell.accessibilityCustomActions = [emailAccessibilityAction, copyEmailAccessibilityAction]
 
-        guard isSplitViewInOrdersTabEnabled else {
-            return
-        }
         cell.showSideBorders(fromWidth: Constants.maxWidth)
     }
 }

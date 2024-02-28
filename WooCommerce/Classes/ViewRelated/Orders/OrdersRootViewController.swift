@@ -95,10 +95,6 @@ final class OrdersRootViewController: UIViewController {
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-
-        if !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            configureTabBarItem()
-        }
     }
 
     required init?(coder: NSCoder) {
@@ -127,13 +123,6 @@ final class OrdersRootViewController: UIViewController {
 
         // Clears application icon badge
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
-    }
-
-    override var shouldShowOfflineBanner: Bool {
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            return false
-        }
-        return true
     }
 
     /// Shows `SearchViewController`.
@@ -229,17 +218,12 @@ final class OrdersRootViewController: UIViewController {
             }
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            if featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                viewController.modalPresentationStyle = .overFullScreen
-                navigationController.present(viewController, animated: true)
-            } else {
-                let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
-                navigationController.present(newOrderNavigationController, animated: true)
-            }
+        if featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+            viewController.modalPresentationStyle = .overFullScreen
+            navigationController.present(viewController, animated: true)
         } else {
-            viewController.hidesBottomBarWhenPushed = true
-            navigationController.pushViewController(viewController, animated: true)
+            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNavigationController, animated: true)
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
@@ -518,30 +502,12 @@ private extension OrdersRootViewController {
             order: order,
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
         ))
-        let viewModel = OrderDetailsViewModel(order: order)
-        guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            ordersViewController.showOrderDetails(order)
-            onCompletion?(true)
-            return
-        }
 
-        let orderViewController = OrderDetailsViewController(viewModel: viewModel)
-
-        // Cleanup navigation (remove new order flow views) before navigating to order details
-        if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
-            let viewControllersIncludingSelf = navigationController.viewControllers[0...indexOfSelf]
-            navigationController.setViewControllers(viewControllersIncludingSelf + [orderViewController], animated: true)
-        } else {
-            show(orderViewController, sender: self)
-        }
+        ordersViewController.showOrderDetails(order)
         onCompletion?(true)
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {
-        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return navigationController?.topViewController as? OrderDetailsViewController
-        }
-
         guard let secondaryViewNavigationController = splitViewController?.viewController(for: .secondary) as? UINavigationController else {
             return nil
         }

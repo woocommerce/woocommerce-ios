@@ -83,9 +83,6 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return false
-        }
         // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
         guard !featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
             return false

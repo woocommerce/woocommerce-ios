@@ -13,8 +13,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .splitViewInOrdersTab:
-            return true
         case .sideBySideViewForOrderForm:
             return false
         case .updateOrderOptimistically:
@@ -96,8 +94,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .useURLSessionInWordPressKit:
             return buildConfig != .appStore
         case .connectivityTool:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .filterOrdersByProduct:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

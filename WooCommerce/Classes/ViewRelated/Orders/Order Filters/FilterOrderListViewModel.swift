@@ -78,11 +78,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
 
         self.featureFlagService = featureFlagService
-        if featureFlagService.isFeatureFlagEnabled(.filterOrdersByProduct) {
-            filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
-        } else {
-            filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel]
-        }
+        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
     }
 
     var criteria: Filters {

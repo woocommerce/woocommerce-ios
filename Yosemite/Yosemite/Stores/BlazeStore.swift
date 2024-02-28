@@ -107,9 +107,9 @@ private extension BlazeStore {
 //
 private extension BlazeStore {
     func synchronizeCampaignsList(siteID: Int64,
-                                   skip: Int,
-                                   limit: Int,
-                                   onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+                                  skip: Int,
+                                  limit: Int,
+                                  onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let results = try await remote.loadCampaignsList(for: siteID,
@@ -117,7 +117,7 @@ private extension BlazeStore {
                                                                  limit: limit)
                 let shouldClearData = skip == 0
                 let hasNextPage = results.count == limit
-                upsertStoredBriefCampaignsInBackground(readOnlyCampaigns: results, siteID: siteID, shouldClearExistingCampaigns: shouldClearData) {
+                upsertStoredBlazeCampaignListItemsInBackground(readOnlyCampaigns: results, siteID: siteID, shouldClearExistingCampaigns: shouldClearData) {
                     onCompletion(.success(hasNextPage))
                 }
             } catch {
@@ -129,19 +129,19 @@ private extension BlazeStore {
     /// Updates or Inserts specified BlazeCampaignListItem Entities in a background thread
     /// `onCompletion` will be called on the main thread.
     ///
-    func upsertStoredBriefCampaignsInBackground(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
-                                                siteID: Int64,
-                                                shouldClearExistingCampaigns: Bool = false,
-                                                onCompletion: @escaping () -> Void) {
+    func upsertStoredBlazeCampaignListItemsInBackground(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
+                                                        siteID: Int64,
+                                                        shouldClearExistingCampaigns: Bool = false,
+                                                        onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             guard let self = self else { return }
             if shouldClearExistingCampaigns {
-                derivedStorage.deleteBriefBlazeCampaigns(siteID: siteID)
+                derivedStorage.deleteBlazeCampaignListItems(siteID: siteID)
             }
-            self.upsertStoredBriefCampaigns(readOnlyCampaigns: readOnlyCampaigns,
-                                            in: derivedStorage,
-                                            siteID: siteID)
+            self.upsertStoredBlazeCampaignListItems(readOnlyCampaigns: readOnlyCampaigns,
+                                                    in: derivedStorage,
+                                                    siteID: siteID)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -151,12 +151,12 @@ private extension BlazeStore {
 
     /// Updates or Inserts the specified BlazeCampaignListItem entities
     ///
-    func upsertStoredBriefCampaigns(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
-                                    in storage: StorageType,
-                                    siteID: Int64) {
+    func upsertStoredBlazeCampaignListItems(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
+                                            in storage: StorageType,
+                                            siteID: Int64) {
         for campaign in readOnlyCampaigns {
             let storageCampaign: Storage.BlazeCampaignListItem = {
-                if let storedCampaign = storage.loadBriefBlazeCampaign(siteID: siteID, campaignID: campaign.campaignID) {
+                if let storedCampaign = storage.loadBlazeCampaignListItem(siteID: siteID, campaignID: campaign.campaignID) {
                     return storedCampaign
                 }
                 return storage.insertNewObject(ofType: Storage.BlazeCampaignListItem.self)

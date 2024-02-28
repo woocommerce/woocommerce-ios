@@ -114,8 +114,8 @@ public extension StorageType {
 
     /// Deletes all of the stored BlazeCampaignListItem for the provided siteID.
     ///
-    func deleteBriefBlazeCampaigns(siteID: Int64) {
-        let campaigns = loadAllBriefBlazeCampaigns(siteID: siteID)
+    func deleteBlazeCampaignListItems(siteID: Int64) {
+        let campaigns = loadAllBlazeCampaignListItems(siteID: siteID)
         for campaign in campaigns {
             deleteObject(campaign)
         }

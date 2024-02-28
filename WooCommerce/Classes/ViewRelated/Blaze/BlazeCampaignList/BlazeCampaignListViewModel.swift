@@ -199,6 +199,6 @@ extension BlazeCampaignListViewModel {
 
 private extension BlazeCampaignListViewModel {
     enum Constants {
-        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
+        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%@/%@?source=%@"
     }
 }

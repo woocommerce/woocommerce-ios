@@ -50,7 +50,7 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let endDate = Date().yearEnd
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
         let productFilter = FilterOrdersByProduct(id: 1, name: "Sample product")
-        let customerFilter = CustomerFilter(id: 1)
+        let customerFilter = CustomerFilter(customer: Customer.fake().copy(customerID: 1))
         let orderSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                         orderStatusesFilter: orderStatuses,
                                                         dateRangeFilter: dateRange,
@@ -101,14 +101,14 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let endDate = Date().yearEnd
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
         let productFilter = FilterOrdersByProduct(id: 1, name: "Sample product 1")
-        let customerFilter = CustomerFilter(id: 1)
+        let customerFilter = CustomerFilter(customer: Customer.fake().copy(customerID: 1))
 
         let orderStatuses2: [OrderStatusEnum] = [.pending, .cancelled]
         let startDate2 = Date().yearStart
         let endDate2 = Date().yearEnd
         let dateRange2 = OrderDateRangeFilter(filter: .custom, startDate: startDate2, endDate: endDate2)
         let productFilter2 = FilterOrdersByProduct(id: 2, name: "Sample product 2")
-        let customerFilter2 = CustomerFilter(id: 2)
+        let customerFilter2 = CustomerFilter(customer: Customer.fake().copy(customerID: 2))
 
         let orderSettings1 = StoredOrderSettings.Setting(siteID: siteID1,
                                                         orderStatusesFilter: orderStatuses,

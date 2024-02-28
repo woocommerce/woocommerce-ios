@@ -24,7 +24,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
-                                                       customer: CustomerFilter(id: 1),
+                                                       customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
                                                        numberOfActiveFilters: 4)
 
         // When
@@ -39,8 +39,8 @@ final class FilterOrderListViewModelTests: XCTestCase {
         // Given
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.completed],
                                                        dateRange: OrderDateRangeFilter(filter: .last7Days),
-                                                       product: ProductFilter(id: 1, name: "Sample product"),
-                                                       customer: CustomerFilter(id: 1),
+                                                       product: FilterOrdersByProduct(id: 1, name: "Sample product"),
+                                                       customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
                                                        numberOfActiveFilters: 4)
 
         // When
@@ -63,7 +63,8 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
-                                                       numberOfActiveFilters: 3)
+                                                       customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       numberOfActiveFilters: 4)
 
         // When
         let viewModel = FilterOrderListViewModel(filters: filters,
@@ -85,7 +86,8 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
-                                                       numberOfActiveFilters: 3)
+                                                       customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       numberOfActiveFilters: 4)
 
         // When
         let viewModel = FilterOrderListViewModel(filters: filters,

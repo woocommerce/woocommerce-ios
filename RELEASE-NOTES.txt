@@ -3,6 +3,7 @@
 17.6
 -----
 - Orders: Merchants can now contact their customers through WhatsApp and Telegram apps. [https://github.com/woocommerce/woocommerce-ios/pull/12099]
+- [internal] Blaze: Use v1.1 endpoint to load campaigns list. [https://github.com/woocommerce/woocommerce-ios/pull/12127]
 
 
 17.5

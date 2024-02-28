@@ -54,7 +54,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
 
     // MARK: Filter based on product
 
-    func test_product_filter_is_not_added_to_filterTypeViewModels_when_feature_flag_off() {
+    func test_product_filter_is_added_to_filterTypeViewModels() {
         // Given
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: OrderDateRangeFilter(filter: .today),
@@ -64,30 +64,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         // When
         let viewModel = FilterOrderListViewModel(filters: filters,
                                                  allowedStatuses: [],
-                                                 siteID: 1,
-                                                 featureFlagService: MockFeatureFlagService(filterOrdersByProduct: false))
-
-        // Then
-        XCTAssertFalse(viewModel.filterTypeViewModels.contains(where: {
-            if case .products = $0.listSelectorConfig {
-                return true
-            } else {
-                return false
-            }}))
-    }
-
-    func test_product_filter_is_added_to_filterTypeViewModels_when_feature_flag_on() {
-        // Given
-        let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
-                                                       dateRange: OrderDateRangeFilter(filter: .today),
-                                                       product: FilterOrdersByProduct(id: 1, name: "Sample product"),
-                                                       numberOfActiveFilters: 3)
-
-        // When
-        let viewModel = FilterOrderListViewModel(filters: filters,
-                                                 allowedStatuses: [],
-                                                 siteID: 1,
-                                                 featureFlagService: MockFeatureFlagService(filterOrdersByProduct: true))
+                                                 siteID: 1)
 
         // Then
         XCTAssertTrue(viewModel.filterTypeViewModels.contains(where: {

@@ -85,6 +85,7 @@ extension Storage.GeneralStoreSettings {
         preferredInPersonPaymentGateway: NullableCopiableProp<String> = .copy,
         skippedCashOnDeliveryOnboardingStep: CopiableProp<Bool> = .copy,
         lastSelectedStatsTimeRange: CopiableProp<String> = .copy,
+        customStatsTimeRange: CopiableProp<String> = .copy,
         firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy,
         selectedTaxRateID: NullableCopiableProp<Int64> = .copy,
         analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy
@@ -96,6 +97,7 @@ extension Storage.GeneralStoreSettings {
         let preferredInPersonPaymentGateway = preferredInPersonPaymentGateway ?? self.preferredInPersonPaymentGateway
         let skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep ?? self.skippedCashOnDeliveryOnboardingStep
         let lastSelectedStatsTimeRange = lastSelectedStatsTimeRange ?? self.lastSelectedStatsTimeRange
+        let customStatsTimeRange = customStatsTimeRange ?? self.customStatsTimeRange
         let firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType ?? self.firstInPersonPaymentsTransactionsByReaderType
         let selectedTaxRateID = selectedTaxRateID ?? self.selectedTaxRateID
         let analyticsHubCards = analyticsHubCards ?? self.analyticsHubCards
@@ -108,6 +110,7 @@ extension Storage.GeneralStoreSettings {
             preferredInPersonPaymentGateway: preferredInPersonPaymentGateway,
             skippedCashOnDeliveryOnboardingStep: skippedCashOnDeliveryOnboardingStep,
             lastSelectedStatsTimeRange: lastSelectedStatsTimeRange,
+            customStatsTimeRange: customStatsTimeRange,
             firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
             selectedTaxRateID: selectedTaxRateID,
             analyticsHubCards: analyticsHubCards

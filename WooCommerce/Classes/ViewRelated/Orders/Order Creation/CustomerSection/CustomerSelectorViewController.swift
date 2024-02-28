@@ -14,15 +14,6 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let viewModel: CustomerSelectorViewModel
     private let addressFormViewModel: CreateOrderAddressFormViewModel
 
-    // Whether merchant can select guest customer in the selector
-    private let disallowSelectingGuest: Bool
-
-    // Whether to show the customer creation icon in the selector
-    private let disallowCreatingCustomer: Bool
-
-    // Whether to show "Guest" label in the detail area of the user information for guest customers
-    private let showGuestLabel: Bool
-
     /// Notice presentation handler
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -38,17 +29,16 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
                                                                     GhostTableViewOptions(cellClass: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self))
 
     init(siteID: Int64,
+         configuration: CustomerSelectorViewController.Configuration,
          addressFormViewModel: CreateOrderAddressFormViewModel,
-         disallowSelectingGuest: Bool = false,
-         disallowCreatingCustomer: Bool = false,
-         showGuestLabel: Bool = false,
          onCustomerSelected: @escaping (Customer) -> Void) {
-        viewModel = CustomerSelectorViewModel(siteID: siteID, onCustomerSelected: onCustomerSelected)
+        viewModel = CustomerSelectorViewModel(
+            siteID: siteID,
+            configuration: configuration,
+            onCustomerSelected: onCustomerSelected)
+
         self.siteID = siteID
         self.addressFormViewModel = addressFormViewModel
-        self.disallowSelectingGuest = disallowSelectingGuest
-        self.disallowCreatingCustomer = disallowCreatingCustomer
-        self.showGuestLabel = showGuestLabel
         self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
@@ -67,6 +57,22 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     }
 }
 
+extension CustomerSelectorViewController {
+    struct Configuration {
+        // Customer selector view's title
+        let title: String
+
+        // Whether guest-type customers can be selected or not
+        var disallowSelectingGuest: Bool = false
+
+        // Whether to show or hide button to create customer
+        var disallowCreatingCustomer: Bool = false
+
+        // Whether to show "Guest" label in the detail area of the user information for guest customers
+        var showGuestLabel: Bool = false
+    }
+}
+
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
         viewModel.isEligibleForAdvancedSearch(completion: { [weak self] isEligible in
@@ -82,7 +88,7 @@ private extension CustomerSelectorViewController {
                         if thereAreResults {
                             self.addSearchViewController(loadResultsWhenSearchTermIsEmpty: true,
                                                          showSearchFilters: false,
-                                                         showGuestLabel: showGuestLabel)
+                                                         showGuestLabel: viewModel.configuration.showGuestLabel)
                             self.configureActivityIndicator()
                         } else {
                             self.showEmptyState(with: self.emptyStateConfiguration())
@@ -95,7 +101,7 @@ private extension CustomerSelectorViewController {
                 self?.removeGhostContent()
                 self?.addSearchViewController(loadResultsWhenSearchTermIsEmpty: false,
                                               showSearchFilters: true,
-                                              showGuestLabel: self?.showGuestLabel ?? false,
+                                              showGuestLabel: self?.viewModel.configuration.showGuestLabel ?? false,
                                               onAddCustomerDetailsManually: {
                     self?.presentNewCustomerDetailsFlow()
                 })
@@ -106,16 +112,15 @@ private extension CustomerSelectorViewController {
     }
 
     func configureNavigation() {
-        navigationItem.title = Localization.title
+        navigationItem.title = viewModel.configuration.title
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelWasPressed))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .plusBarButtonItemImage,
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(presentNewCustomerDetailsFlow))
-        navigationItem.rightBarButtonItem?.accessibilityIdentifier = AccessibilityIdentifier.addCustomerDetailsPlusButton
 
-        if disallowCreatingCustomer {
-            navigationItem.rightBarButtonItem = nil
+        if !viewModel.configuration.disallowCreatingCustomer {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: .plusBarButtonItemImage,
+                                                                style: .plain,
+                                                                target: self,
+                                                                action: #selector(presentNewCustomerDetailsFlow))
+            navigationItem.rightBarButtonItem?.accessibilityIdentifier = AccessibilityIdentifier.addCustomerDetailsPlusButton
         }
     }
 
@@ -214,7 +219,7 @@ private extension CustomerSelectorViewController {
 
     func onCustomerTapped(_ customer: Customer) {
         // Show alert if selecting guest is disallowed
-        if disallowSelectingGuest && customer.customerID == 0 {
+        if viewModel.configuration.disallowSelectingGuest && customer.customerID == 0 {
             showGuestSelectionDisallowedNotice()
             return
         }
@@ -245,9 +250,6 @@ private extension CustomerSelectorViewController {
 
 private extension CustomerSelectorViewController {
     enum Localization {
-        static let title = NSLocalizedString(
-            "Add customer details",
-            comment: "Title of the order customer selection screen.")
         static let genericAddCustomerError = NSLocalizedString(
             "Failed to fetch the customer data. Please try again.",
             comment: "Error message in the Add Customer to order screen when getting the customer information")

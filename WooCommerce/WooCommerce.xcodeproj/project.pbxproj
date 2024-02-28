@@ -1506,6 +1506,7 @@
 		866016512B47F8F800B4047E /* ProductSelector+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866016502B47F8F800B4047E /* ProductSelector+Blaze.swift */; };
 		867644A62B55121A0044ACAA /* BlazeCampaignCreationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867644A52B55121A0044ACAA /* BlazeCampaignCreationCoordinator.swift */; };
 		867B330F2B4D39B900DCBEA6 /* BlazeAddParameterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867B330E2B4D39B900DCBEA6 /* BlazeAddParameterView.swift */; };
+		867EA0AC2B8F09280064BCA7 /* CustomerSelector+Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867EA0AB2B8F09280064BCA7 /* CustomerSelector+Filter.swift */; };
 		8687FF492B7A003400D06633 /* CustomRangeTabCreationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8687FF482B7A003400D06633 /* CustomRangeTabCreationCoordinator.swift */; };
 		86967D812B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86967D802B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift */; };
 		86967D832B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86967D822B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift */; };
@@ -4193,6 +4194,7 @@
 		866016502B47F8F800B4047E /* ProductSelector+Blaze.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSelector+Blaze.swift"; sourceTree = "<group>"; };
 		867644A52B55121A0044ACAA /* BlazeCampaignCreationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationCoordinator.swift; sourceTree = "<group>"; };
 		867B330E2B4D39B900DCBEA6 /* BlazeAddParameterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddParameterView.swift; sourceTree = "<group>"; };
+		867EA0AB2B8F09280064BCA7 /* CustomerSelector+Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerSelector+Filter.swift"; sourceTree = "<group>"; };
 		8687FF482B7A003400D06633 /* CustomRangeTabCreationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRangeTabCreationCoordinator.swift; sourceTree = "<group>"; };
 		86967D802B4E21C600C20CA8 /* BlazeAddParameterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddParameterViewModel.swift; sourceTree = "<group>"; };
 		86967D822B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdUrlParameter.swift; sourceTree = "<group>"; };
@@ -7769,6 +7771,7 @@
 				EE9D03192B89E4290077CED1 /* Filter Orders By Product */,
 				4567389A2745456C00743054 /* Order Status Filter */,
 				45F931F6272AE6690098375D /* Date Range Filter */,
+				867EA0AB2B8F09280064BCA7 /* CustomerSelector+Filter.swift */,
 			);
 			path = "Order Filters";
 			sourceTree = "<group>";
@@ -13825,6 +13828,7 @@
 				DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */,
 				E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */,
 				26309F17277D0AEA0012797F /* SafeAreaInsetsKey.swift in Sources */,
+				867EA0AC2B8F09280064BCA7 /* CustomerSelector+Filter.swift in Sources */,
 				B9CA4F352AB2F33200285AB9 /* SelectedStoredTaxRateFetcher.swift in Sources */,
 				DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */,
 				023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */,

@@ -295,10 +295,8 @@ private extension FilterListViewController {
                 let controller: CustomerSelectorViewController = {
                     return CustomerSelectorViewController(
                         siteID: siteID,
+                        configuration: .configurationForOrderFilter,
                         addressFormViewModel: addressFormViewModel,
-                        disallowSelectingGuest: true,
-                        disallowCreatingCustomer: true,
-                        showGuestLabel: true,
                         onCustomerSelected: { [weak self] customer in
                             selected.selectedValue = CustomerFilter(customer: customer)
 

@@ -212,6 +212,7 @@ public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageBlazeCampaign = Storage.BlazeCampaign
+public typealias StorageBriefBlazeCampaignInfo = Storage.BriefBlazeCampaignInfo
 public typealias StorageBlazeTargetDevice = Storage.BlazeTargetDevice
 public typealias StorageBlazeTargetLanguage = Storage.BlazeTargetLanguage
 public typealias StorageBlazeTargetTopic = Storage.BlazeTargetTopic

@@ -1,9 +1,9 @@
 import Foundation
 import Codegen
 
-/// Brief information of a Blaze Campaign
+/// Brief information of a Blaze Campaign used in list screen
 ///
-public struct BriefBlazeCampaignInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Site Identifier.
     ///
@@ -100,7 +100,7 @@ public struct BriefBlazeCampaignInfo: Decodable, Equatable, GeneratedFakeable, G
 
 // MARK: Public subtypes
 //
-public extension BriefBlazeCampaignInfo {
+public extension BlazeCampaignListItem {
     enum Status: String {
         case scheduled
         case created
@@ -121,7 +121,7 @@ public extension BriefBlazeCampaignInfo {
 
 // MARK: Private subtypes
 //
-private extension BriefBlazeCampaignInfo {
+private extension BlazeCampaignListItem {
     enum CodingKeys: String, CodingKey {
         case id
         case siteName

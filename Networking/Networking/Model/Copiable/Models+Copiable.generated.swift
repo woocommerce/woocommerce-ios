@@ -232,6 +232,51 @@ extension Networking.BlazeCampaign {
     }
 }
 
+extension Networking.BlazeCampaignListItem {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        campaignID: CopiableProp<String> = .copy,
+        productID: NullableCopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        textSnippet: CopiableProp<String> = .copy,
+        uiStatus: CopiableProp<String> = .copy,
+        imageURL: NullableCopiableProp<String> = .copy,
+        targetUrl: NullableCopiableProp<String> = .copy,
+        impressions: CopiableProp<Int64> = .copy,
+        clicks: CopiableProp<Int64> = .copy,
+        totalBudget: CopiableProp<Double> = .copy,
+        spentBudget: CopiableProp<Double> = .copy
+    ) -> Networking.BlazeCampaignListItem {
+        let siteID = siteID ?? self.siteID
+        let campaignID = campaignID ?? self.campaignID
+        let productID = productID ?? self.productID
+        let name = name ?? self.name
+        let textSnippet = textSnippet ?? self.textSnippet
+        let uiStatus = uiStatus ?? self.uiStatus
+        let imageURL = imageURL ?? self.imageURL
+        let targetUrl = targetUrl ?? self.targetUrl
+        let impressions = impressions ?? self.impressions
+        let clicks = clicks ?? self.clicks
+        let totalBudget = totalBudget ?? self.totalBudget
+        let spentBudget = spentBudget ?? self.spentBudget
+
+        return Networking.BlazeCampaignListItem(
+            siteID: siteID,
+            campaignID: campaignID,
+            productID: productID,
+            name: name,
+            textSnippet: textSnippet,
+            uiStatus: uiStatus,
+            imageURL: imageURL,
+            targetUrl: targetUrl,
+            impressions: impressions,
+            clicks: clicks,
+            totalBudget: totalBudget,
+            spentBudget: spentBudget
+        )
+    }
+}
+
 extension Networking.BlazeImpressions {
     public func copy(
         totalImpressionsMin: CopiableProp<Int64> = .copy,
@@ -414,51 +459,6 @@ extension Networking.BlazeTargetTopic {
             id: id,
             name: name,
             locale: locale
-        )
-    }
-}
-
-extension Networking.BriefBlazeCampaignInfo {
-    public func copy(
-        siteID: CopiableProp<Int64> = .copy,
-        campaignID: CopiableProp<String> = .copy,
-        productID: NullableCopiableProp<Int64> = .copy,
-        name: CopiableProp<String> = .copy,
-        textSnippet: CopiableProp<String> = .copy,
-        uiStatus: CopiableProp<String> = .copy,
-        imageURL: NullableCopiableProp<String> = .copy,
-        targetUrl: NullableCopiableProp<String> = .copy,
-        impressions: CopiableProp<Int64> = .copy,
-        clicks: CopiableProp<Int64> = .copy,
-        totalBudget: CopiableProp<Double> = .copy,
-        spentBudget: CopiableProp<Double> = .copy
-    ) -> Networking.BriefBlazeCampaignInfo {
-        let siteID = siteID ?? self.siteID
-        let campaignID = campaignID ?? self.campaignID
-        let productID = productID ?? self.productID
-        let name = name ?? self.name
-        let textSnippet = textSnippet ?? self.textSnippet
-        let uiStatus = uiStatus ?? self.uiStatus
-        let imageURL = imageURL ?? self.imageURL
-        let targetUrl = targetUrl ?? self.targetUrl
-        let impressions = impressions ?? self.impressions
-        let clicks = clicks ?? self.clicks
-        let totalBudget = totalBudget ?? self.totalBudget
-        let spentBudget = spentBudget ?? self.spentBudget
-
-        return Networking.BriefBlazeCampaignInfo(
-            siteID: siteID,
-            campaignID: campaignID,
-            productID: productID,
-            name: name,
-            textSnippet: textSnippet,
-            uiStatus: uiStatus,
-            imageURL: imageURL,
-            targetUrl: targetUrl,
-            impressions: impressions,
-            clicks: clicks,
-            totalBudget: totalBudget,
-            spentBudget: spentBudget
         )
     }
 }

@@ -6,7 +6,7 @@ import Networking
 final class MockBlazeRemote {
     private var creatingCampaignResult: Result<Void, Error>?
     private var loadingCampaignResult: Result<[BlazeCampaign], Error>?
-    private var loadingBriefCampaignResult: Result<[BriefBlazeCampaignInfo], Error>?
+    private var loadingBriefCampaignResult: Result<[BlazeCampaignListItem], Error>?
     private var fetchingTargetLanguagesResult: Result<[BlazeTargetLanguage], Error>?
     private var fetchingTargetDevicesResult: Result<[BlazeTargetDevice], Error>?
     private var fetchingTargetTopicsResult: Result<[BlazeTargetTopic], Error>?
@@ -23,7 +23,7 @@ final class MockBlazeRemote {
         loadingCampaignResult = result
     }
 
-    func whenLoadingBriefCampaign(thenReturn result: Result<[BriefBlazeCampaignInfo], Error>) {
+    func whenLoadingBriefCampaign(thenReturn result: Result<[BlazeCampaignListItem], Error>) {
         loadingBriefCampaignResult = result
     }
 
@@ -72,7 +72,7 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         }
     }
 
-    func loadBriefCampaigns(for siteID: Int64, skip: Int, limit: Int) async throws -> [BriefBlazeCampaignInfo] {
+    func loadCampaignsList(for siteID: Int64, skip: Int, limit: Int) async throws -> [BlazeCampaignListItem] {
         guard let result = loadingBriefCampaignResult else {
             XCTFail("Could not find result for loading Brief Blaze campaigns.")
             throw NetworkError.notFound()

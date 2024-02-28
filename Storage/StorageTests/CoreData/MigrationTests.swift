@@ -2639,6 +2639,46 @@ final class MigrationTests: XCTestCase {
         // Order and OrderAttributionInfo relationship exists.
         XCTAssertEqual(migratedOrder.value(forKey: "attributionInfo") as? NSManagedObject, attributionInfo)
     }
+
+    func test_migrating_from_106_to_107_adds_BlazeCampaignListItem_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 106")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. `BlazeCampaignListItem` should not exist in Model 106
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignListItem", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 107")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `BlazeCampaignListItem` should exist in Model 107
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignListItem", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignListItem"), 0)
+
+        // Insert a new BlazeCampaign
+        let campaign = insertBlazeCampaignListItem(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignListItem"), 1)
+
+        // Check all attributes
+        XCTAssertNotNil(campaign.value(forKey: "siteID"))
+        XCTAssertNotNil(campaign.value(forKey: "campaignID"))
+        XCTAssertNotNil(campaign.value(forKey: "productID"))
+        XCTAssertNotNil(campaign.value(forKey: "name"))
+        XCTAssertNotNil(campaign.value(forKey: "textSnippet"))
+        XCTAssertNotNil(campaign.value(forKey: "rawStatus"))
+        XCTAssertNotNil(campaign.value(forKey: "imageURL"))
+        XCTAssertNotNil(campaign.value(forKey: "targetUrl"))
+        XCTAssertNotNil(campaign.value(forKey: "impressions"))
+        XCTAssertNotNil(campaign.value(forKey: "clicks"))
+        XCTAssertNotNil(campaign.value(forKey: "totalBudget"))
+        XCTAssertNotNil(campaign.value(forKey: "spentBudget"))
+    }
+
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3371,6 +3411,26 @@ private extension MigrationTests {
             campaign.setValue(NSNumber(value: 123), forKey: "productID")
         }
 
+        return campaign
+    }
+
+    /// Inserts a `BlazeCampaignListItem` entity, providing default values for the required properties.
+    @discardableResult
+    func insertBlazeCampaignListItem(to context: NSManagedObjectContext) -> NSManagedObject {
+        let campaign = context.insert(entityName: "BlazeCampaignListItem", properties: [
+            "siteID": 1,
+            "campaignID": "1",
+            "productID": NSNumber(value: 123),
+            "name": "Amazing deals!",
+            "textSnippet": "Get now.",
+            "rawStatus": "approved",
+            "imageURL": "https://example.com/products/1/thumbnail.png",
+            "targetUrl": "https://example.com/products/1",
+            "impressions": 150,
+            "clicks": 21,
+            "totalBudget": 35,
+            "spentBudget": 5
+        ])
         return campaign
     }
 

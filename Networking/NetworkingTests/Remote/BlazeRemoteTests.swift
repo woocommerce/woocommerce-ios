@@ -194,19 +194,19 @@ final class BlazeRemoteTests: XCTestCase {
         }
     }
 
-    // MARK: - Load brief campaigns info tests
+    // MARK: - Load campaigns list tests
 
-    /// Verifies that loadBriefCampaigns properly parses the response.
+    /// Verifies that loadCampaignsList properly parses the response.
     ///
-    func test_loadBriefCampaigns_returns_parsed_campaigns() async throws {
+    func test_loadCampaignsList_returns_parsed_campaigns() async throws {
         // Given
         let remote = BlazeRemote(network: network)
 
         let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
-        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-brief-campaigns-list-success")
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaigns-list-success")
 
         // When
-        let results = try await remote.loadBriefCampaigns(for: sampleSiteID, skip: 0, limit: 25)
+        let results = try await remote.loadCampaignsList(for: sampleSiteID, skip: 0, limit: 25)
 
         // Then
         XCTAssertEqual(results.count, 1)
@@ -224,16 +224,16 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(item.impressions, 34)
     }
 
-    /// Verifies that loadBriefCampaigns sends the correct parameters.
+    /// Verifies that loadCampaignsList sends the correct parameters.
     ///
-    func test_loadBriefCampaigns_sends_correct_parameters() async throws {
+    func test_loadCampaignsList_sends_correct_parameters() async throws {
         // Given
         let remote = BlazeRemote(network: network)
         let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
-        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-brief-campaigns-list-success")
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaigns-list-success")
 
         // When
-        _ = try await remote.loadBriefCampaigns(for: sampleSiteID, skip: 0, limit: 25)
+        _ = try await remote.loadCampaignsList(for: sampleSiteID, skip: 0, limit: 25)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
@@ -242,9 +242,9 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(request.parameters?["limit"] as? Int, 25)
     }
 
-    /// Verifies that loadBriefCampaigns properly relays Networking Layer errors.
+    /// Verifies that loadCampaignsList properly relays Networking Layer errors.
     ///
-    func test_loadBriefCampaigns_properly_relays_networking_errors() async {
+    func test_loadCampaignsList_properly_relays_networking_errors() async {
         // Given
         let remote = BlazeRemote(network: network)
 
@@ -254,7 +254,7 @@ final class BlazeRemoteTests: XCTestCase {
 
         do {
             // When
-            _ = try await remote.loadBriefCampaigns(for: sampleSiteID, skip: 0, limit: 25)
+            _ = try await remote.loadCampaignsList(for: sampleSiteID, skip: 0, limit: 25)
 
             // Then
             XCTFail("Request should fail")

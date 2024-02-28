@@ -537,6 +537,22 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 
+    // MARK: - BlazeCampaignListItem
+
+    /// Returns a single BlazeCampaignListItem given a `siteID` and `campaignID`
+    ///
+    func loadBlazeCampaignListItem(siteID: Int64, campaignID: String) -> BlazeCampaignListItem? {
+        let predicate = \BlazeCampaignListItem.siteID == siteID && \BlazeCampaignListItem.campaignID == campaignID
+        return firstObject(ofType: BlazeCampaignListItem.self, matching: predicate)
+    }
+
+    /// Returns all stored BlazeCampaignListItem s for a site
+    ///
+    func loadAllBlazeCampaignListItems(siteID: Int64) -> [BlazeCampaignListItem] {
+        let predicate = \BlazeCampaignListItem.siteID == siteID
+        return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: - BlazeCampaign
 
     /// Returns a single Blaze campaign given a `siteID` and `campaignID`

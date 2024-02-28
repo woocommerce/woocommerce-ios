@@ -56,6 +56,11 @@ public final class BlazeStore: Store {
         switch action {
         case let .createCampaign(campaign, siteID, onCompletion):
             createCampaign(campaign: campaign, siteID: siteID, onCompletion: onCompletion)
+        case let .synchronizeCampaignsList(siteID, skip, limit, onCompletion):
+            synchronizeCampaignsList(siteID: siteID,
+                                      skip: skip,
+                                      limit: limit,
+                                      onCompletion: onCompletion)
         case let .synchronizeCampaigns(siteID, pageNumber, onCompletion):
             synchronizeCampaigns(siteID: siteID,
                                  pageNumber: pageNumber,
@@ -94,6 +99,70 @@ private extension BlazeStore {
             } catch {
                 onCompletion(.failure(error))
             }
+        }
+    }
+}
+
+// MARK: - Synchronized campaigns list
+//
+private extension BlazeStore {
+    func synchronizeCampaignsList(siteID: Int64,
+                                  skip: Int,
+                                  limit: Int,
+                                  onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let results = try await remote.loadCampaignsList(for: siteID,
+                                                                 skip: skip,
+                                                                 limit: limit)
+                let shouldClearData = skip == 0
+                let hasNextPage = results.count == limit
+                upsertStoredBlazeCampaignListItemsInBackground(readOnlyCampaigns: results, siteID: siteID, shouldClearExistingCampaigns: shouldClearData) {
+                    onCompletion(.success(hasNextPage))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Updates or Inserts specified BlazeCampaignListItem Entities in a background thread
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func upsertStoredBlazeCampaignListItemsInBackground(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
+                                                        siteID: Int64,
+                                                        shouldClearExistingCampaigns: Bool = false,
+                                                        onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            guard let self = self else { return }
+            if shouldClearExistingCampaigns {
+                derivedStorage.deleteBlazeCampaignListItems(siteID: siteID)
+            }
+            self.upsertStoredBlazeCampaignListItems(readOnlyCampaigns: readOnlyCampaigns,
+                                                    in: derivedStorage,
+                                                    siteID: siteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates or Inserts the specified BlazeCampaignListItem entities
+    ///
+    func upsertStoredBlazeCampaignListItems(readOnlyCampaigns: [Networking.BlazeCampaignListItem],
+                                            in storage: StorageType,
+                                            siteID: Int64) {
+        for campaign in readOnlyCampaigns {
+            let storageCampaign: Storage.BlazeCampaignListItem = {
+                if let storedCampaign = storage.loadBlazeCampaignListItem(siteID: siteID, campaignID: campaign.campaignID) {
+                    return storedCampaign
+                }
+                return storage.insertNewObject(ofType: Storage.BlazeCampaignListItem.self)
+            }()
+
+            storageCampaign.update(with: campaign)
         }
     }
 }

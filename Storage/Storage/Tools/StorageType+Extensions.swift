@@ -537,7 +537,7 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 
-    // MARK: - BlazeCampaign
+    // MARK: - BriefBlazeCampaignInfo
 
     /// Returns a single BriefBlazeCampaignInfo given a `siteID` and `campaignID`
     ///

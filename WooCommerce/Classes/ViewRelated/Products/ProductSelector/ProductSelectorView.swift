@@ -312,7 +312,7 @@ private extension ProductSelectorView {
 
             Button(viewModel.filterButtonTitle) {
                 showingFilters.toggle()
-                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+                viewModel.trackFilterButtonTitleTrack(source.filterAnalyticsSource)
             }
             .buttonStyle(LinkButtonStyle())
             .fixedSize()

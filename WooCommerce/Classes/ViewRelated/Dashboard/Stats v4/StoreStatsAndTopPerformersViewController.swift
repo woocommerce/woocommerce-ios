@@ -421,7 +421,7 @@ private extension StoreStatsAndTopPerformersViewController {
             return
         }
 
-        guard let customRange = await loadCustomRangeTab() else {
+        guard let customRange = await loadTimeRangeForCustomRangeTab() else {
             return
         }
 
@@ -429,7 +429,7 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     @MainActor
-    func loadCustomRangeTab() async -> StatsTimeRangeV4? {
+    func loadTimeRangeForCustomRangeTab() async -> StatsTimeRangeV4? {
         guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
             return nil
         }
@@ -441,7 +441,7 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-    func saveCustomRangeTab(timeRange: StatsTimeRangeV4) {
+    func saveTimeRangeForCustomRangeTab(timeRange: StatsTimeRangeV4) {
         stores.dispatch(AppSettingsAction.setCustomStatsTimeRange(siteID: siteID, timeRange: timeRange))
     }
 
@@ -477,7 +477,7 @@ private extension StoreStatsAndTopPerformersViewController {
             navigationController: navigationController,
             onDateRangeSelected: { [weak self] start, end in
                 let range = StatsTimeRangeV4.custom(from: start, to: end)
-                self?.saveCustomRangeTab(timeRange: range)
+                self?.saveTimeRangeForCustomRangeTab(timeRange: range)
                 self?.createCustomRangeTab(range: range)
             }
         )

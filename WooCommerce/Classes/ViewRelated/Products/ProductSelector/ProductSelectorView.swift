@@ -84,6 +84,14 @@ struct ProductSelectorView: View {
                                 plural: configuration.doneButtonTitlePluralFormat)
     }
 
+    private var navigationTitle: String {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
+              horizontalSizeClass == .compact else {
+            return configuration.title
+        }
+        return viewModel.selectProductsTitle
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
@@ -158,7 +166,7 @@ struct ProductSelectorView: View {
             }
         }
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
-        .navigationTitle(configuration.title)
+        .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {

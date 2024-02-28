@@ -3,6 +3,7 @@
 import Codegen
 import Foundation
 
+
 extension Networking.AIProduct {
     public func copy(
         name: CopiableProp<String> = .copy,

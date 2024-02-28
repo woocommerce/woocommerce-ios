@@ -4,17 +4,9 @@ import Yosemite
 /// View showing a list of products to select.
 ///
 struct ProductSelectorView: View {
-    enum Source {
-        case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
-        case couponForm
-        case couponRestrictions
-        case blaze
-        case orderFilter
-    }
-
     let configuration: Configuration
 
-    let source: Source
+    let source: ProductSelectorSource
 
     /// Defines whether the view is presented.
     ///
@@ -422,23 +414,6 @@ private extension ProductSelectorView {
             "productselectorview.doneButtonTitle.addProductsText",
             value: "Add Products",
             comment: "Button to submit selected products to the order, when some product has been selected.")
-    }
-}
-
-private extension ProductSelectorView.Source {
-    var filterAnalyticsSource: WooAnalyticsEvent.ProductListFilter.Source {
-        switch self {
-            case .orderForm:
-                return .orderForm
-            case .couponForm:
-                return .couponForm
-            case .couponRestrictions:
-                return .couponRestrictions
-        case .blaze:
-            return .blaze
-        case .orderFilter:
-            return .orderFilter
-        }
     }
 }
 

@@ -15,6 +15,29 @@ struct ProductSelectorSection {
     let products: [Product]
 }
 
+enum ProductSelectorSource {
+    case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
+    case couponForm
+    case couponRestrictions
+    case blaze
+    case orderFilter
+
+    var filterAnalyticsSource: WooAnalyticsEvent.ProductListFilter.Source {
+        switch self {
+            case .orderForm:
+                return .orderForm
+            case .couponForm:
+                return .couponForm
+            case .couponRestrictions:
+                return .couponRestrictions
+        case .blaze:
+            return .blaze
+        case .orderFilter:
+            return .orderFilter
+        }
+    }
+}
+
 enum ProductSelectorSectionType {
     // Show most popular products, that is, most sold
     case mostPopular
@@ -92,7 +115,7 @@ final class ProductSelectorViewModel: ObservableObject {
             return String.localizedStringWithFormat(title, totalSelectedItemsCount)
         }
     }
-    
+
     var isClearSelectionDisabled: Bool {
         totalSelectedItemsCount == 0 ||
         syncStatus != .results ||

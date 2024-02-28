@@ -32,6 +32,20 @@
         <attribute name="totalClicks" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalImpressions" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="BlazeCampaignListItem" representedClassName="BlazeCampaignListItem" syncable="YES">
+        <attribute name="campaignID" attributeType="String" defaultValueString=""/>
+        <attribute name="clicks" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="String"/>
+        <attribute name="impressions" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="rawStatus" attributeType="String" defaultValueString=""/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="spentBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="targetUrl" optional="YES" attributeType="String"/>
+        <attribute name="textSnippet" attributeType="String" defaultValueString=""/>
+        <attribute name="totalBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="BlazeTargetDevice" representedClassName="BlazeTargetDevice" syncable="YES">
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="locale" attributeType="String" defaultValueString=""/>
@@ -46,20 +60,6 @@
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="locale" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
-    </entity>
-    <entity name="BriefBlazeCampaignInfo" representedClassName="BriefBlazeCampaignInfo" syncable="YES">
-        <attribute name="campaignID" attributeType="String" defaultValueString=""/>
-        <attribute name="clicks" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="imageURL" optional="YES" attributeType="String"/>
-        <attribute name="impressions" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="rawStatus" attributeType="String" defaultValueString=""/>
-        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="spentBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="targetUrl" optional="YES" attributeType="String"/>
-        <attribute name="textSnippet" attributeType="String" defaultValueString=""/>
-        <attribute name="totalBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="Country" representedClassName="Country" syncable="YES">
         <attribute name="code" attributeType="String"/>

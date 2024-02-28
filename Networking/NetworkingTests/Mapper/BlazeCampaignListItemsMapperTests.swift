@@ -1,7 +1,7 @@
 import XCTest
 @testable import Networking
 
-final class BriefBlazeCampaignInfoListMapperTests: XCTestCase {
+final class BlazeCampaignListItemsMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -10,7 +10,7 @@ final class BriefBlazeCampaignInfoListMapperTests: XCTestCase {
     /// Verifies that the whole list is parsed.
     ///
     func test_it_parses_all_contents_in_response() throws {
-        let campaigns = try mapLoadBriefBlazeCampaignListResponse()
+        let campaigns = try mapLoadBlazeCampaignListResponse()
         XCTAssertEqual(campaigns.count, 1)
 
         let item = try XCTUnwrap(campaigns.first)
@@ -30,21 +30,21 @@ final class BriefBlazeCampaignInfoListMapperTests: XCTestCase {
 
 // MARK: - Test Helpers
 ///
-private extension BriefBlazeCampaignInfoListMapperTests {
+private extension BlazeCampaignListItemsMapperTests {
 
-    /// Returns the BriefBlazeCampaignListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the BlazeCampaignListItemsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapBriefBlazeCampaignList(from filename: String) throws -> [BriefBlazeCampaignInfo] {
+    func mapBlazeCampaignList(from filename: String) throws -> [BlazeCampaignListItem] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try BriefBlazeCampaignInfoListMapper(siteID: dummySiteID).map(response: response)
+        return try BlazeCampaignListItemsMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the BlazeCampaignListMapper output from `blaze-brief-campaigns-list-success`
+    /// Returns the BlazeCampaignListItemsMapper output from `blaze-campaigns-list-success`
     ///
-    func mapLoadBriefBlazeCampaignListResponse() throws -> [BriefBlazeCampaignInfo] {
-        return try mapBriefBlazeCampaignList(from: "blaze-brief-campaigns-list-success")
+    func mapLoadBlazeCampaignListResponse() throws -> [BlazeCampaignListItem] {
+        return try mapBlazeCampaignList(from: "blaze-campaigns-list-success")
     }
 }

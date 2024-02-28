@@ -2640,15 +2640,15 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedOrder.value(forKey: "attributionInfo") as? NSManagedObject, attributionInfo)
     }
 
-    func test_migrating_from_106_to_107_adds_BriefBlazeCampaignInfo_entity() throws {
+    func test_migrating_from_106_to_107_adds_BlazeCampaignListItem_entity() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 106")
         let sourceContext = sourceContainer.viewContext
 
         try sourceContext.save()
 
-        // Confidence Check. `BriefBlazeCampaignInfo` should not exist in Model 106
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BriefBlazeCampaignInfo", in: sourceContext))
+        // Confidence Check. `BlazeCampaignListItem` should not exist in Model 106
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignListItem", in: sourceContext))
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 107")
@@ -2656,13 +2656,13 @@ final class MigrationTests: XCTestCase {
         // Then
         let targetContext = targetContainer.viewContext
 
-        // `BriefBlazeCampaignInfo` should exist in Model 107
-        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BriefBlazeCampaignInfo", in: targetContext))
-        XCTAssertEqual(try targetContext.count(entityName: "BriefBlazeCampaignInfo"), 0)
+        // `BlazeCampaignListItem` should exist in Model 107
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignListItem", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignListItem"), 0)
 
         // Insert a new BlazeCampaign
-        let campaign = insertBriefBlazeCampaignInfo(to: targetContext)
-        XCTAssertEqual(try targetContext.count(entityName: "BriefBlazeCampaignInfo"), 1)
+        let campaign = insertBlazeCampaignListItem(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignListItem"), 1)
 
         // Check all attributes
         XCTAssertNotNil(campaign.value(forKey: "siteID"))
@@ -3414,10 +3414,10 @@ private extension MigrationTests {
         return campaign
     }
 
-    /// Inserts a `BriefBlazeCampaignInfo` entity, providing default values for the required properties.
+    /// Inserts a `BlazeCampaignListItem` entity, providing default values for the required properties.
     @discardableResult
-    func insertBriefBlazeCampaignInfo(to context: NSManagedObjectContext) -> NSManagedObject {
-        let campaign = context.insert(entityName: "BriefBlazeCampaignInfo", properties: [
+    func insertBlazeCampaignListItem(to context: NSManagedObjectContext) -> NSManagedObject {
+        let campaign = context.insert(entityName: "BlazeCampaignListItem", properties: [
             "siteID": 1,
             "campaignID": "1",
             "productID": NSNumber(value: 123),

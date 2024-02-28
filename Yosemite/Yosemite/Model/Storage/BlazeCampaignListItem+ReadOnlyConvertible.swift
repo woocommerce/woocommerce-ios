@@ -1,12 +1,12 @@
 import Foundation
 import Storage
 
-// MARK: - Storage.BriefBlazeCampaignInfo: ReadOnlyConvertible
+// MARK: - Storage.BlazeCampaignListItem: ReadOnlyConvertible
 //
-extension Storage.BriefBlazeCampaignInfo: ReadOnlyConvertible {
-    /// Updates the `Storage.BriefBlazeCampaignInfo` from the ReadOnly representation (`Networking.BriefBlazeCampaignInfo`)
+extension Storage.BlazeCampaignListItem: ReadOnlyConvertible {
+    /// Updates the `Storage.BlazeCampaignListItem` from the ReadOnly representation (`Networking.BlazeCampaignListItem`)
     ///
-    public func update(with campaign: Yosemite.BriefBlazeCampaignInfo) {
+    public func update(with campaign: Yosemite.BlazeCampaignListItem) {
         siteID = campaign.siteID
         campaignID = campaign.campaignID
         productID = {
@@ -26,10 +26,10 @@ extension Storage.BriefBlazeCampaignInfo: ReadOnlyConvertible {
         spentBudget = campaign.spentBudget
     }
 
-    /// Returns a ReadOnly (`Networking.BriefBlazeCampaignInfo`) version of the `Storage.BriefBlazeCampaignInfo`
+    /// Returns a ReadOnly (`Networking.BlazeCampaignListItem`) version of the `Storage.BlazeCampaignListItem`
     ///
-    public func toReadOnly() -> BriefBlazeCampaignInfo {
-        BriefBlazeCampaignInfo(siteID: siteID,
+    public func toReadOnly() -> BlazeCampaignListItem {
+        BlazeCampaignListItem(siteID: siteID,
                                campaignID: campaignID,
                                productID: productID?.int64Value,
                                name: name,

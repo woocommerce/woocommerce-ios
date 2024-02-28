@@ -2,10 +2,10 @@ import Foundation
 import CoreData
 
 
-extension BriefBlazeCampaignInfo {
+extension BlazeCampaignListItem {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<BriefBlazeCampaignInfo> {
-        return NSFetchRequest<BriefBlazeCampaignInfo>(entityName: "BriefBlazeCampaignInfo")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<BlazeCampaignListItem> {
+        return NSFetchRequest<BlazeCampaignListItem>(entityName: "BlazeCampaignListItem")
     }
 
     @NSManaged public var campaignID: String
@@ -23,6 +23,6 @@ extension BriefBlazeCampaignInfo {
 
 }
 
-extension BriefBlazeCampaignInfo: Identifiable {
+extension BlazeCampaignListItem: Identifiable {
 
 }

@@ -20,15 +20,15 @@ public protocol BlazeRemoteProtocol {
     ///
     func loadCampaigns(for siteID: Int64, pageNumber: Int) async throws -> [BlazeCampaign]
 
-    /// Loads brief campaign info for the site with the provided ID
+    /// Loads list campaign info for the site with the provided ID
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to load ads campaigns.
     ///    - skip: Pagination offset
     ///    - limit: Pagination limit
     ///
-    func loadBriefCampaigns(for siteID: Int64,
+    func loadCampaignsList(for siteID: Int64,
                             skip: Int,
-                            limit: Int) async throws -> [BriefBlazeCampaignInfo]
+                            limit: Int) async throws -> [BlazeCampaignListItem]
 
     /// Fetches target languages for campaign creation.
     /// - Parameters:
@@ -118,11 +118,11 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         return try await enqueue(request, mapper: mapper)
     }
 
-    /// Loads brief information about list of Blaze campaigns.
+    /// Loads list of Blaze campaigns.
     ///
-    public func loadBriefCampaigns(for siteID: Int64,
+    public func loadCampaignsList(for siteID: Int64,
                                    skip: Int,
-                                   limit: Int) async throws -> [BriefBlazeCampaignInfo] {
+                                   limit: Int) async throws -> [BlazeCampaignListItem] {
         let path = Paths.campaigns(siteID: siteID)
         let parameters: [String: Any] = [
             Keys.LoadCampaigns.siteID: siteID,
@@ -130,7 +130,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
             Keys.LoadCampaigns.limit: limit
         ]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-        let mapper = BriefBlazeCampaignInfoListMapper(siteID: siteID)
+        let mapper = BlazeCampaignListItemsMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 

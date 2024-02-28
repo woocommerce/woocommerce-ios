@@ -4,7 +4,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 
 ## Model 107 (Release 17.6.0.0)
 - @selanthiraiyan 2024-02-28
-    - Add `BriefBlazeCampaignInfo` entity.
+    - Add `BlazeCampaignListItem` entity.
     
 ## Model 106 (Release 17.3.0.0)
 - @selanthiraiyan 2024-02-07

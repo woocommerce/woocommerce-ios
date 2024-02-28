@@ -519,25 +519,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedProduct, product.productID)
     }
 
-    func test_changeSelectionStateForProduct_when_syncImmediately_true_calls_multiple_selection_handler() {
-        // Given
-        var selectedProducts: [Int64] = []
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
-        insert(product)
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 syncApproach: .immediate,
-                                                 onMultipleSelectionCompleted: { productIDs in
-            selectedProducts = productIDs
-        })
-
-        // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
-
-        // Then
-        XCTAssertEqual(selectedProducts, [product.productID])
-    }
-
     func test_getVariationsViewModel_returns_expected_view_model_for_variable_product() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
@@ -1402,70 +1383,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         assertEqual(bundleProduct, productToConfigure)
-    }
-
-    /// We call onMultipleSelectionCompleted to save the selections made on a modal product
-    /// selector, e.g. when an iPad is in split-screen mode and is rotated to landscape.
-    /// It's a blocking operation, so we only want to do it when required.
-    func test_updateSyncApproach_calls_onMultipleSelectionCompleted_when_approach_changes_to_immediate() {
-        // Given
-        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
-        insert(simpleProduct)
-
-        let selectedItemIDs = waitFor { promise in
-            let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
-                                                     selectedItemIDs: [],
-                                                     storageManager: self.storageManager,
-                                                     syncApproach: .onButtonTap,
-                                                     onMultipleSelectionCompleted: { selectedItemIDs in
-                promise(selectedItemIDs)
-            })
-
-            // When
-            viewModel.addSelection(id: 1)
-            viewModel.updateSyncApproach(to: .immediate)
-        }
-
-        // Then
-        assertEqual([1], selectedItemIDs)
-    }
-
-    func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_stays_on_immediate() {
-        // Given
-        let expectation = XCTestExpectation(description: "onMultipleSelectionCompleted called")
-        expectation.isInverted = true
-
-        let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
-                                                 syncApproach: .immediate,
-                                                 onMultipleSelectionCompleted: { selectedItems in
-            /// Since the expectation is inverted, the test will fail if this is called before the timeout.
-            expectation.fulfill()
-        })
-
-        // When
-        viewModel.updateSyncApproach(to: .immediate)
-
-        // Then
-        wait(for: [expectation], timeout: 0.1)
-    }
-
-    func test_updateSyncApproach_doesnt_call_onMultipleSelectionCompleted_when_approach_changes_to_onButtonTap() {
-        // Given
-        let expectation = XCTestExpectation(description: "onMultipleSelectionCompleted called")
-        expectation.isInverted = true
-
-        let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
-                                                 syncApproach: .immediate,
-                                                 onMultipleSelectionCompleted: { selectedItems in
-            /// Since the expectation is inverted, the test will fail if this is called before the timeout.
-            expectation.fulfill()
-        })
-
-        // When
-        viewModel.updateSyncApproach(to: .onButtonTap)
-
-        // Then
-        wait(for: [expectation], timeout: 0.1)
     }
 
     // MARK: - Pagination

@@ -289,6 +289,50 @@ final class EditableOrderViewModelTests: XCTestCase {
                       "Product rows do not contain expected product")
     }
 
+    func test_view_model_is_updated_immediately_when_product_is_added_to_order_using_immediate_sync_approach() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+        viewModel.toggleProductSelectorVisibility()
+
+        viewModel.selectionSyncApproach = .immediate
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+
+        // Then
+        XCTAssertTrue(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
+                      "Product rows do not contain expected product")
+    }
+
+    func test_view_model_is_updated_when_product_is_added_to_order_using_buttonTap_sync_approach_then_changes_to_immediate() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+        viewModel.toggleProductSelectorVisibility()
+
+        viewModel.selectionSyncApproach = .onSelectorButtonTap
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+
+        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
+                      "Product rows unexpectedly contain product")
+
+        // When
+        viewModel.selectionSyncApproach = .immediate
+
+        // Then
+        XCTAssertTrue(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
+                      "Product rows do not contain expected product")
+    }
+
     func test_order_details_are_updated_when_product_quantity_changes() throws {
         // Given
 

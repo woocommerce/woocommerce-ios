@@ -207,14 +207,14 @@ struct ProductSelectorView: View {
         let newSyncApproach: ProductSelectorViewModel.SyncApproach
         switch horizontalSizeClass {
         case .regular:
-            newSyncApproach = .immediate
+            newSyncApproach = .external
         case .compact:
             newSyncApproach = .onButtonTap
         @unknown default:
             DDLogWarn("Unknown size class used to determine product selector sync approach")
             newSyncApproach = .onButtonTap
         }
-        viewModel.updateSyncApproach(to: newSyncApproach)
+        viewModel.syncApproach = newSyncApproach
     }
 
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.

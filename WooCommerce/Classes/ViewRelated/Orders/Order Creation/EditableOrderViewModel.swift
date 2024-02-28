@@ -245,7 +245,12 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
 
-    @Published var syncChangesImmediately: Bool = false
+    @Published var selectionSyncApproach: OrderItemSelectionSyncApproach = .onSelectorButtonTap
+
+    enum OrderItemSelectionSyncApproach {
+        case immediate
+        case onSelectorButtonTap
+    }
 
     /// Status Results Controller.
     ///
@@ -490,6 +495,7 @@ final class EditableOrderViewModel: ObservableObject {
         observeGiftCardStatesForAnalytics()
         observeProductSelectorPresentationStateForViewModel()
         forwardSyncApproachToSynchronizer()
+        observeChangesFromProductSelectorButtonTapSelectionSync()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -574,7 +580,7 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProducts.removeAll(where: { $0.productID == item.productID })
         }
 
-        if syncChangesImmediately {
+        if selectionSyncApproach == .immediate {
             productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
         }
 
@@ -1746,60 +1752,79 @@ private extension EditableOrderViewModel {
                     stores: stores,
                     toggleAllVariationsOnSelection: false,
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
-                    syncApproach: initialProductSelectionSyncApproach,
+                    syncApproach: selectionSyncApproach.productSelectorSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
                     onProductSelectionStateChanged: { [weak self] product in
-                        guard let self = self else { return }
-                        self.changeSelectionStateForProduct(product)
+                        guard let self else { return }
+                        changeSelectionStateForProduct(product)
+                        evaluateSelectionSync()
                     },
                     onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
-                        guard let self = self else { return }
-                        self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                        guard let self else { return }
+                        changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                        evaluateSelectionSync()
                     }, onMultipleSelectionCompleted: { [weak self] _ in
-                        guard let self = self else { return }
-                        self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                        guard let self else { return }
+                        syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
                     }, onAllSelectionsCleared: { [weak self] in
-                        guard let self = self else { return }
-                        self.clearAllSelectedItems()
-                        self.trackClearAllSelectedItemsTapped()
+                        guard let self else { return }
+                        clearAllSelectedItems()
+                        trackClearAllSelectedItemsTapped()
+                        evaluateSelectionSync()
                     }, onSelectedVariationsCleared: { [weak self] in
-                        guard let self = self else { return }
-                        self.clearSelectedVariations()
+                        guard let self else { return }
+                        clearSelectedVariations()
+                        evaluateSelectionSync()
                     }, onCloseButtonTapped: { [weak self] in
-                        guard let self = self else { return }
-                        self.syncOrderItemSelectionStateOnDismiss()
+                        guard let self else { return }
+                        syncOrderItemSelectionStateOnDismiss()
                     }, onConfigureProductRow: { [weak self] product in
                         guard let self else { return }
                         productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
                             guard let self else { return }
-                            self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
-                            self.productToConfigureViewModel = nil
+                            saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                            productToConfigureViewModel = nil
+                            evaluateSelectionSync()
                         })
                     })
             }
             .assign(to: &$productSelectorViewModel)
     }
 
-    var initialProductSelectionSyncApproach: ProductSelectorViewModel.SyncApproach {
+    func evaluateSelectionSync() {
         guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
-            return .onButtonTap
+            return
         }
-        switch UITraitCollection.current.horizontalSizeClass {
-        case .regular:
-            return .immediate
-        case .compact, .unspecified:
-            return .onButtonTap
-        @unknown default:
-            DDLogWarn("Unknown horizontalSizeClass used to determine initialProductSelectionSyncApproach.")
-            return .onButtonTap
+        if selectionSyncApproach == .immediate {
+            syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
         }
     }
 
     func forwardSyncApproachToSynchronizer() {
-        $syncChangesImmediately
-            .share()
-            .sink { [weak self] syncImmediately in
-                self?.orderSynchronizer.updateBlockingBehavior(syncImmediately ? .allUpdates : .majorUpdates)
+        $selectionSyncApproach
+            .sink { [weak self] selectionSyncApproach in
+                guard let self,
+                      featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+                    return
+                }
+                orderSynchronizer.updateBlockingBehavior(selectionSyncApproach == .immediate ? .allUpdates : .majorUpdates)
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeChangesFromProductSelectorButtonTapSelectionSync() {
+        $selectionSyncApproach
+            .removeDuplicates()
+            .sink { [weak self] selectionSyncApproach in
+                guard let self,
+                      featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+                    return
+                }
+                if selectionSyncApproach != .onSelectorButtonTap {
+                    /// We are changing from `onSelectorButtonTap`, so should sync everything unsynced from the
+                    /// previous mode needs to be synced now in order to avoid losing any unsynced changes to the selections.
+                    syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+                }
             }
             .store(in: &cancellables)
     }
@@ -2058,6 +2083,17 @@ private extension EditableOrderViewModel {
             return
         }
         orderSynchronizer.setProduct.send(productInput)
+    }
+}
+
+private extension EditableOrderViewModel.OrderItemSelectionSyncApproach {
+    var productSelectorSyncApproach: ProductSelectorViewModel.SyncApproach {
+        switch self {
+        case .immediate:
+            return .external
+        case .onSelectorButtonTap:
+            return .onButtonTap
+        }
     }
 }
 

@@ -210,7 +210,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onConfigureProductRow: ((_ product: Product) -> Void)?
 
-    @Published private(set) var syncApproach: SyncApproach
+    @Published var syncApproach: SyncApproach
 
     private var orderSyncState: Published<OrderSyncState>.Publisher?
 
@@ -297,10 +297,6 @@ final class ProductSelectorViewModel: ObservableObject {
         } else {
             onProductSelectionStateChanged?(selectedProduct)
         }
-
-        if syncApproach == .immediate {
-            onMultipleSelectionCompleted?(selectedItemsIDs)
-        }
     }
 
     /// Adds a product or variation ID to the product selector from an external source (e.g. bundle configuration form for bundle products).
@@ -338,18 +334,10 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  onVariationSelectionStateChanged: { [weak self] productVariation, product in
             guard let self else { return }
             onVariationSelectionStateChanged?(productVariation, product)
-
-            if syncApproach == .immediate {
-                onMultipleSelectionCompleted?(selectedItemsIDs)
-            }
         },
                                                  onSelectionsCleared: { [weak self] in
             guard let self else { return }
             onSelectedVariationsCleared?()
-
-            if syncApproach == .immediate {
-                onMultipleSelectionCompleted?(selectedItemsIDs)
-            }
         })
     }
 
@@ -400,18 +388,6 @@ final class ProductSelectorViewModel: ObservableObject {
         updateSelectedVariations(productID: productID, selectedVariationIDs: selectedIDs)
     }
 
-    func updateSyncApproach(to newSyncApproach: SyncApproach) {
-        guard newSyncApproach != syncApproach else {
-            return
-        }
-
-        if newSyncApproach == .immediate {
-            onMultipleSelectionCompleted?(selectedItemsIDs)
-        }
-
-        syncApproach = newSyncApproach
-    }
-
     /// Triggers completion closure when the multiple selection completes.
     ///
     func completeMultipleSelection() {
@@ -431,13 +407,10 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs = []
 
         onAllSelectionsCleared?()
-        if syncApproach == .immediate {
-            onMultipleSelectionCompleted?(selectedItemsIDs)
-        }
     }
 
     enum SyncApproach {
-        case immediate
+        case external
         case onButtonTap
     }
 }

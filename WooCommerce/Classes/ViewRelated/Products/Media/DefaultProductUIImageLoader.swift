@@ -14,7 +14,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         case unableToLoadImage
     }
 
-    private var imagesByProductImageID: [Int64: UIImage] = [:]
+    private var imageStorage: ImageStorage
     private let imageService: ImageService
 
     private let productImageActionHandler: ProductImageActionHandler?
@@ -44,6 +44,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         self.productImageActionHandler = productImageActionHandler
         self.imageService = imageService
         self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
+        self.imageStorage = ImageStorage()
 
         assetUploadSubscription = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self = self else { return }
@@ -55,7 +56,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
     }
 
     func requestImage(productImage: ProductImage) async throws -> UIImage {
-        if let image = imagesByProductImageID[productImage.imageID] {
+        if let image = await imageStorage.getImage(id: productImage.imageID) {
             return image
         }
 
@@ -111,18 +112,26 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 private extension DefaultProductUIImageLoader {
     func update(from asset: ProductImageAssetType, to productImage: ProductImage) {
         switch asset {
-            case .phAsset(let asset):
-                phAssetImageLoader.requestImage(for: asset,
-                                                targetSize: PHImageManagerMaximumSize,
-                                                contentMode: .aspectFit,
-                                                options: nil) { [weak self] (image, info) in
-                    guard let image else {
-                        return
-                    }
-                    self?.imagesByProductImageID[productImage.imageID] = image
+        case .phAsset(let asset):
+            phAssetImageLoader.requestImage(for: asset,
+                                            targetSize: PHImageManagerMaximumSize,
+                                            contentMode: .aspectFit,
+                                            options: nil) { (image, info) in
+                guard let image else {
+                    return
                 }
-            case .uiImage(let image, _, _):
-                imagesByProductImageID[productImage.imageID] = image
+                Task { [weak self] in
+                    guard let self else { return }
+
+                    await self.imageStorage.saveImage(image: image, id: productImage.imageID)
+                }
+            }
+        case .uiImage(let image, _, _):
+            Task { [weak self] in
+                guard let self else { return }
+
+                await self.imageStorage.saveImage(image: image, id: productImage.imageID)
+            }
         }
     }
 }

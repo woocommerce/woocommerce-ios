@@ -127,13 +127,16 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     var enabledCards: [AnalyticsCard.CardType] {
         let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
-        return allCards.filter { $0.enabled }.map { $0.type }
+        return allCards.filter { card in
+            let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
+            return card.enabled && canBeDisplayed
+        }.map { $0.type }
     }
 
     /// Sessions Card display state
     ///
-    var showSessionsCard: Bool {
-        guard enabledCards.contains(.sessions), isEligibleForSessionsCard else {
+    private var showSessionsCard: Bool {
+        guard isEligibleForSessionsCard else {
             return false
         }
         if case .custom = timeRangeSelectionType {
@@ -351,7 +354,7 @@ private extension AnalyticsHubViewModel {
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
-        guard showSessionsCard, let period = timeRangeSelectionType.period else {
+        guard enabledCards.contains(.sessions), let period = timeRangeSelectionType.period else {
             return nil
         }
 

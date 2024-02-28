@@ -179,7 +179,6 @@ private extension AnalyticsHubView {
 
                 Divider()
             }
-            .renderedIf(viewModel.showSessionsCard)
         }
     }
 }

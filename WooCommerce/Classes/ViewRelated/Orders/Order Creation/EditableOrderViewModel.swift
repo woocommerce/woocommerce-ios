@@ -1252,18 +1252,29 @@ private extension EditableOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
-            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem? in
+        let requestInProgress = Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
+            .map { syncState, performingNetworkRequest in
+                if case .syncing = syncState {
+                    return true
+                } else {
+                    return performingNetworkRequest
+                }
+            }
+
+        Publishers.CombineLatest4($syncRequired, requestInProgress, $selectionSyncApproach, Just(flow))
+            .map { syncRequired, performingNetworkRequest, syncApproach, flow -> NavigationItem? in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                switch (flow, syncState) {
-                case (.creation, _):
-                    return .create
-                case (.editing, .syncing):
-                    return .loading
-                case (.editing, _):
+                switch flow {
+                case .creation:
+                    if syncRequired && syncApproach == .onRecalculateButtonTap {
+                        return .recalculate
+                    } else {
+                        return .create
+                    }
+                case .editing:
                     return .none
                 }
             }

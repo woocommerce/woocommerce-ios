@@ -84,7 +84,10 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                          webReportViewModel: productsWebReportVM)
 
         bindViewModelsWithData()
+        bindCardSettingsWithData()
     }
+
+    // MARK: View Models
 
     /// Revenue Card ViewModel
     ///
@@ -110,20 +113,45 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
 
+    /// Time Range Selection Type
+    ///
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
+
+    /// Time Range ViewModel
+    ///
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
+
+    // MARK: Card Display States
+
+    /// All analytics cards to display in the Analytics Hub.
+    ///
+    var enabledCards: [AnalyticsCard.CardType] {
+        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
+        return allCards.filter { card in
+            let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
+            return card.enabled && canBeDisplayed
+        }.map { $0.type }
+    }
+
     /// Sessions Card display state
     ///
-    var showSessionsCard: Bool {
-        if !isCardEnabled(.sessions) {
+    private var showSessionsCard: Bool {
+        guard isEligibleForSessionsCard else {
             return false
-        } else if stores.sessionManager.defaultSite?.isNonJetpackSite == true // Non-Jetpack stores don't have Jetpack stats
-                    || stores.sessionManager.defaultSite?.isJetpackCPConnected == true // JCP stores don't have Jetpack stats
-                    || (isJetpackStatsDisabled && !userIsAdmin) { // Non-admins can't enable sessions stats
-            return false
-        } else if case .custom = timeRangeSelectionType {
+        }
+        if case .custom = timeRangeSelectionType {
             return false
         } else {
             return true
         }
+    }
+
+    /// Whether the user is eligible to view the Sessions cards
+    ///
+    private var isEligibleForSessionsCard: Bool {
+        stores.sessionManager.defaultSite?.isNonJetpackSite == false // Non-Jetpack stores don't have Jetpack stats
+        && stores.sessionManager.defaultSite?.isJetpackCPConnected == false // JCP stores don't have Jetpack stats
+        && (isJetpackStatsDisabled && !userIsAdmin) == false // Non-admins can't enable sessions stats
     }
 
     /// Whether Jetpack Stats are disabled on the store
@@ -136,25 +164,10 @@ final class AnalyticsHubViewModel: ObservableObject {
         isJetpackStatsDisabled && userIsAdmin
     }
 
-    /// Time Range Selection Type
-    ///
-    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
-
-    /// Time Range ViewModel
-    ///
-    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
-
     /// Defines a notice that, when set, dismisses the view and is then displayed.
     /// Defaults to `nil`.
     ///
     @Published var dismissNotice: Notice?
-
-    /// All analytics cards to display in the Analytics Hub.
-    ///
-    var enabledCards: [AnalyticsCard.CardType] {
-        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
-        return allCards.filter { $0.enabled }.map { $0.type }
-    }
 
     // MARK: Private data
 
@@ -316,8 +329,12 @@ private extension AnalyticsHubViewModel {
     @MainActor
     /// Retrieves top ItemsSold stats using the `retrieveTopEarnerStats` action but without saving results into storage.
     ///
-    func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats {
-        try await withCheckedThrowingContinuation { continuation in
+    func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats? {
+        guard enabledCards.contains(.products) else {
+            return nil
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                               timeRange: .thisYear, // Only needed for storing purposes, we can ignore it.
                                                               timeZone: timeZone,
@@ -337,7 +354,7 @@ private extension AnalyticsHubViewModel {
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
-        guard showSessionsCard, let period = timeRangeSelectionType.period else {
+        guard enabledCards.contains(.sessions), let period = timeRangeSelectionType.period else {
             return nil
         }
 
@@ -440,6 +457,22 @@ private extension AnalyticsHubViewModel {
                 // Update data on range selection change
                 Task.init {
                     await self.updateData()
+                }
+            }.store(in: &subscriptions)
+    }
+
+    func bindCardSettingsWithData() {
+        $allCardsWithSettings
+            .dropFirst() // do not trigger refresh action on initial value
+            .removeDuplicates()
+            .sink { [weak self] newCardSettings in
+                guard let self else { return }
+                // If there are newly enabled cards, refresh the stats data
+                let newEnabledCards = newCardSettings.filter({ $0.enabled }).map({ $0.type })
+                if !newEnabledCards.allSatisfy(self.enabledCards.contains) {
+                    Task {
+                        await self.updateData()
+                    }
                 }
             }.store(in: &subscriptions)
     }
@@ -592,12 +625,6 @@ private extension AnalyticsHubViewModel {
                                             reportURL: url,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
     }
-
-    /// Whether the card should be displayed in the Analytics Hub.
-    ///
-    func isCardEnabled(_ type: AnalyticsCard.CardType) -> Bool {
-        return enabledCards.contains(where: { $0 == type })
-    }
 }
 
 // MARK: - Customize analytics cards
@@ -630,7 +657,13 @@ extension AnalyticsHubViewModel {
             return
         }
 
-        customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings) { [weak self] updatedCards in
+        // Exclude any cards the merchant/store is ineligible for.
+        let cardsToExclude: [AnalyticsCard] = [
+            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })
+        ].compactMap({ $0 })
+
+        customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings,
+                                                                     cardsToExclude: cardsToExclude) { [weak self] updatedCards in
             guard let self else { return }
             self.allCardsWithSettings = updatedCards
             self.storeAnalyticsCardSettings(updatedCards)

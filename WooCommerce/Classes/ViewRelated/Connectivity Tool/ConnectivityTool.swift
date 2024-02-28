@@ -71,19 +71,23 @@ struct ConnectivityTool: View {
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
 
-            ForEach(cards, id: \.title) { card in
-                ConnectivityToolCard(icon: card.icon, title: card.title, state: card.state)
-            }
-
             Spacer()
+
+            ScrollView {
+                ForEach(cards, id: \.title) { card in
+                    ConnectivityToolCard(icon: card.icon, title: card.title, state: card.state)
+                }
+            }
+            .padding(.horizontal)
+
+            Divider().ignoresSafeArea()
 
             Button(Localization.contactSupport) {
                 onContactSupportTapped?()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .padding()
         }
-        .frame(maxWidth: .greatestFiniteMagnitude, maxHeight: .greatestFiniteMagnitude, alignment: .topLeading)
-        .padding()
         .background(Color(uiColor: .listBackground))
     }
 }
@@ -176,6 +180,7 @@ struct ConnectivityToolCard: View {
     @ScaledMetric private var iconSize = 40.0
     private static let cornerRadius = 4.0
     private static let verticalSpacing = 16.0
+    private static let cardSpacing = 8.0
 
     var body: some View {
         VStack(spacing: Self.verticalSpacing) {
@@ -202,6 +207,7 @@ struct ConnectivityToolCard: View {
                     .foregroundColor(Color(uiColor: .error))
                     .subheadlineStyle()
                     .padding(.horizontal, 6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 if let buttonAction {
                     Button(buttonAction.title, action: buttonAction.action)
@@ -212,7 +218,9 @@ struct ConnectivityToolCard: View {
         .padding()
         .background(Color(uiColor: .listForeground(modal: false)))
         .cornerRadius(Self.cornerRadius)
-        .padding()
+        .padding(.horizontal)
+        .padding(.vertical, Self.cardSpacing)
+
     }
 }
 
@@ -223,7 +231,8 @@ struct ConnectivityToolCard: View {
             .init(title: "WordPress.com servers", icon: .system("server.rack"), state: .success),
             .init(title: "Your Site",
                   icon: .system("storefront"),
-                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance", nil)),
+                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance",
+                    .init(title: "Read More", action: {}))),
             .init(title: "Your site orders", icon: .system("list.clipboard"), state: .inProgress)
         ])
             .navigationTitle("Connectivity Test")

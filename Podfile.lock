@@ -26,9 +26,9 @@ PODS:
   - SVProgressHUD (2.2.5)
   - SwiftLint (0.54.0)
   - UIDeviceIdentifier (2.3.0)
-  - WordPress-Aztec-iOS (1.19.9)
-  - WordPress-Editor-iOS (1.19.9):
-    - WordPress-Aztec-iOS (= 1.19.9)
+  - WordPress-Aztec-iOS (1.19.10)
+  - WordPress-Editor-iOS (1.19.10):
+    - WordPress-Aztec-iOS (= 1.19.10)
   - WordPressAuthenticator (9.0.1):
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
@@ -71,9 +71,8 @@ DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.1.0)
-  - SwiftLint (~> 0.54)
-  - WordPress-Aztec-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `950c7bc1bf98326986f10cccb2715ad86976f0fd`)
-  - WordPress-Editor-iOS (from `https://github.com/wordpress-mobile/AztecEditor-iOS.git`, commit `950c7bc1bf98326986f10cccb2715ad86976f0fd`)
+  - SwiftLint (= 0.54.0)
+  - WordPress-Editor-iOS (~> 1.19)
   - WordPressAuthenticator (~> 9.0)
   - WordPressKit (~> 13.1)
   - WordPressShared (~> 2.1)
@@ -103,6 +102,8 @@ SPEC REPOS:
     - SVProgressHUD
     - SwiftLint
     - UIDeviceIdentifier
+    - WordPress-Aztec-iOS
+    - WordPress-Editor-iOS
     - WordPressShared
     - WordPressUI
     - Wormholy
@@ -115,22 +116,6 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  WordPress-Aztec-iOS:
-    :commit: 950c7bc1bf98326986f10cccb2715ad86976f0fd
-    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
-  WordPress-Editor-iOS:
-    :commit: 950c7bc1bf98326986f10cccb2715ad86976f0fd
-    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPress-Aztec-iOS:
-    :commit: 950c7bc1bf98326986f10cccb2715ad86976f0fd
-    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
-  WordPress-Editor-iOS:
-    :commit: 950c7bc1bf98326986f10cccb2715ad86976f0fd
-    :git: https://github.com/wordpress-mobile/AztecEditor-iOS.git
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -149,8 +134,8 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
-  WordPress-Aztec-iOS: fbebd569c61baa252b3f5058c0a2a9a6ada686bb
-  WordPress-Editor-iOS: bda9f7f942212589b890329a0cb22547311749ef
+  WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
+  WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
   WordPressAuthenticator: 0891ba77c788044d32fe67a4d0435fdd598cecbd
   WordPressKit: 7189845e0325fc6022a02638b572e1de8c1d7cc6
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
@@ -166,6 +151,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 296197a9c546e1c3e40c103704720a4b850f7ab1
+PODFILE CHECKSUM: cac6aef563843a26bdcf199bb41f9f1d7f9618d2
 
 COCOAPODS: 1.14.0

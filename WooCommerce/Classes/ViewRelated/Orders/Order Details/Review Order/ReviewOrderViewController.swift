@@ -64,13 +64,6 @@ final class ReviewOrderViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.updateFooterHeight()
     }
-
-    override var shouldShowOfflineBanner: Bool {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            return false
-        }
-        return true
-    }
 }
 
 // MARK: - UI Configuration

@@ -83,9 +83,6 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return false
-        }
         // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
         guard !featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
             return false
@@ -577,8 +574,13 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProducts.removeAll(where: { $0.productID == item.productID })
         }
 
-        if syncChangesImmediately {
-            productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
+        productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
+
+        // When synching changes immediately, we need to update variations as well.
+        // If the variation list isn't showing, this will do nothing, but the model will still be accurate
+        // the next time the variation list is opened.
+        if let productVariationSelectorViewModel = productSelectorViewModel?.productVariationListViewModel {
+            productVariationSelectorViewModel.removeSelection(item.productOrVariationID)
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))

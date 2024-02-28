@@ -77,8 +77,12 @@ struct AnalyticsHubView: View {
                     Divider()
                 }
 
-                ForEach(viewModel.enabledCards, id: \.self) { card in
-                    analyticsCard(type: card)
+                if viewModel.enabledCards.isNotEmpty {
+                    ForEach(viewModel.enabledCards, id: \.self) { card in
+                        analyticsCard(type: card)
+                    }
+                } else {
+                    EmptyState(title: Localization.emptyStateTitle, description: Localization.emptyStateDescription, image: .enableAnalyticsImage)
                 }
 
                 Spacer()
@@ -179,7 +183,6 @@ private extension AnalyticsHubView {
 
                 Divider()
             }
-            .renderedIf(viewModel.showSessionsCard)
         }
     }
 }
@@ -203,6 +206,13 @@ private extension AnalyticsHubView {
         static let editButton = NSLocalizedString("analyticsHub.editButton.label",
                                                   value: "Edit",
                                                   comment: "Label for button that opens a screen to customize the Analytics Hub")
+
+        static let emptyStateTitle = NSLocalizedString("analyticsHub.emptyState.title",
+                                                       value: "No analytics available",
+                                                       comment: "Title when there are no analytics to display in the Analytics Hub.")
+        static let emptyStateDescription = NSLocalizedString("analyticsHub.emptyState.description",
+                                                             value: "Please select another date range or tap Edit to enable more analytics.",
+                                                             comment: "Description when there are no analytics to display in the Analytics Hub.")
     }
 
     struct Layout {

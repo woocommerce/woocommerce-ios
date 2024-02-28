@@ -23,9 +23,9 @@ workspace 'WooCommerce.xcworkspace'
 ## =====================================
 ##
 def aztec
-  # pod 'WordPress-Editor-iOS', '~> 1.19.9'
-  pod 'WordPress-Editor-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: '950c7bc1bf98326986f10cccb2715ad86976f0fd'
-  pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: '950c7bc1bf98326986f10cccb2715ad86976f0fd'
+  pod 'WordPress-Editor-iOS', '~> 1.19'
+  # pod 'WordPress-Editor-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: '950c7bc1bf98326986f10cccb2715ad86976f0fd'
+  # pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: '950c7bc1bf98326986f10cccb2715ad86976f0fd'
 end
 
 def tracks
@@ -290,8 +290,17 @@ target 'ExperimentsTests' do
   experiments_pods
 end
 
+# Tools
+# ==========
+#
+def swiftlint_version
+  require 'yaml'
+
+  YAML.load_file('.swiftlint.yml')['swiftlint_version']
+end
+
 abstract_target 'Tools' do
-  pod 'SwiftLint', '~> 0.54'
+  pod 'SwiftLint', swiftlint_version
 end
 
 # Workarounds:

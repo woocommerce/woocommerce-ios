@@ -92,6 +92,7 @@ struct ProductVariationSelectorView: View {
             // Minimal back button
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {
+                    onMultipleSelections?(viewModel.selectedProductVariationIDs)
                     presentation.wrappedValue.dismiss()
                 } label: {
                     Image(uiImage: .chevronLeftImage).flipsForRightToLeftLayoutDirection(true)
@@ -101,9 +102,6 @@ struct ProductVariationSelectorView: View {
         }
         .onAppear {
             viewModel.onLoadTrigger.send()
-        }
-        .onDisappear {
-            onMultipleSelections?(viewModel.selectedProductVariationIDs)
         }
         .notice($viewModel.notice, autoDismiss: false)
         .interactiveDismissDisabled()

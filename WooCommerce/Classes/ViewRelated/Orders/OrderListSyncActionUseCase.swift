@@ -60,6 +60,7 @@ struct OrderListSyncActionUseCase {
         let statuses = (filters?.orderStatus ?? []).map { $0.rawValue }
         let startDate = filters?.dateRange?.computedStartDate
         let endDate = filters?.dateRange?.computedEndDate
+        let productID = filters?.product?.id
 
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh || reason == SyncReason.newFiltersApplied
@@ -71,6 +72,7 @@ struct OrderListSyncActionUseCase {
                 after: startDate,
                 before: endDate,
                 modifiedAfter: modifiedAfter,
+                productID: productID,
                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                 pageSize: pageSize,
                 onCompletion: completionHandler
@@ -82,6 +84,7 @@ struct OrderListSyncActionUseCase {
             statuses: statuses,
             after: startDate,
             before: endDate,
+            productID: productID,
             pageNumber: pageNumber,
             pageSize: pageSize,
             onCompletion: completionHandler

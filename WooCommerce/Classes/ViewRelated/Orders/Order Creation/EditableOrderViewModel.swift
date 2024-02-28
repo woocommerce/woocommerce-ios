@@ -1880,9 +1880,10 @@ private extension EditableOrderViewModel {
                       featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
                     return
                 }
-                if selectionSyncApproach != .onSelectorButtonTap {
-                    /// We are changing from `onSelectorButtonTap`, so should sync everything unsynced from the
-                    /// previous mode needs to be synced now in order to avoid losing any unsynced changes to the selections.
+                if selectionSyncApproach != .onSelectorButtonTap || syncRequired {
+                    /// When we change from `onSelectorButtonTap`, we would lose unsynced changes if we do nothing.
+                    /// `syncRequired` indicates that we have unsynced side-by-side changes, which would be lost when
+                    /// moving to modal-on-modal.
                     syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
                 }
             }

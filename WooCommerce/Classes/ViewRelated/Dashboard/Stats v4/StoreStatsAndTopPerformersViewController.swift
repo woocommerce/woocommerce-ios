@@ -457,7 +457,7 @@ private extension StoreStatsAndTopPerformersViewController {
         button.backgroundColor = .listForeground(modal: false)
 
         button.on(.touchUpInside) { [weak self] _ in
-            self?.startCustomRangeTabCreation(startDate: nil, endDate: nil)
+            self?.startCustomRangeTabCreation()
         }
 
         let separator = UIView()
@@ -469,7 +469,7 @@ private extension StoreStatsAndTopPerformersViewController {
         return stackView
     }
 
-    func startCustomRangeTabCreation(startDate: Date?, endDate: Date?) {
+    func startCustomRangeTabCreation(startDate: Date? = nil, endDate: Date? = nil) {
         guard let navigationController else { return }
         customRangeCoordinator = CustomRangeTabCreationCoordinator(
             startDate: startDate,

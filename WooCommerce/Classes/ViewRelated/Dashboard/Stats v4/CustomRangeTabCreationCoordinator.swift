@@ -28,7 +28,7 @@ private extension CustomRangeTabCreationCoordinator {
     func presentDateRangePicker() {
         let buttonTitle = (startDate == nil && endDate == nil) ? Localization.add : nil
         let endDate = self.endDate ?? Date()
-        let startDate = self.startDate ?? Date(timeInterval: -Constants.thirtyDays, since: endDate) // 30 day before end date
+        let startDate = self.startDate ?? Date(timeInterval: -Constants.thirtyDaysInSeconds, since: endDate) // 30 day before end date
         let controller = RangedDatePickerHostingController(
             startDate: startDate,
             endDate: endDate,
@@ -56,7 +56,7 @@ private extension CustomRangeTabCreationCoordinator {
 
 private extension CustomRangeTabCreationCoordinator {
     enum Constants {
-        static let thirtyDays: TimeInterval = 86400*30
+        static let thirtyDaysInSeconds: TimeInterval = 86400*30
     }
     enum Localization {
         static let add = NSLocalizedString(

@@ -237,15 +237,13 @@ extension StatsTimeRangeV4 {
                     calendar.dateComponents([.hour], from: startDate, to: endDate).hour
                 case .day, .week:
                     calendar.dateComponents([.day], from: startDate, to: endDate).day
-                case .month:
+                case .month, .quarter:
                     calendar.dateComponents([.month], from: startDate, to: endDate).month
-                case .quarter:
-                    calendar.dateComponents([.quarter], from: startDate, to: endDate).quarter
                 case .year:
                     calendar.dateComponents([.year], from: startDate, to: endDate).year
                 }
             }()
-            return quantity ?? 1
+            return quantity ?? 7
         }
     }
 }

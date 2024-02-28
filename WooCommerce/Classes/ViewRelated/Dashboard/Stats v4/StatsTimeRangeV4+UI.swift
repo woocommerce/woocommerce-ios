@@ -20,10 +20,8 @@ extension StatsTimeRangeV4 {
                     calendar.dateComponents([.hour], from: startDate, to: endDate).hour
                 case .daily, .weekly:
                     calendar.dateComponents([.day], from: startDate, to: endDate).day
-                case .monthly:
+                case .monthly, .quarterly:
                     calendar.dateComponents([.month], from: startDate, to: endDate).month
-                case .quarterly:
-                    calendar.dateComponents([.quarter], from: startDate, to: endDate).quarter
                 case .yearly:
                     calendar.dateComponents([.year], from: startDate, to: endDate).year
                 }

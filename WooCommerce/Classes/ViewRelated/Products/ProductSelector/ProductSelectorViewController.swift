@@ -4,7 +4,7 @@ import SwiftUI
 /// Hosting controller for `ProductSelectorView`.
 ///
 final class ProductSelectorViewController: UIHostingController<ProductSelectorView> {
-    init(configuration: ProductSelectorView.Configuration,
+    init(configuration: ProductSelectorConfiguration,
          source: ProductSelectorSource,
          viewModel: ProductSelectorViewModel) {
 

@@ -1,10 +1,9 @@
 import SwiftUI
 import Yosemite
-
 /// View showing a list of products to select.
 ///
 struct ProductSelectorView: View {
-    let configuration: Configuration
+    let configuration: ProductSelectorConfiguration
 
     let source: ProductSelectorSource
 
@@ -233,6 +232,7 @@ struct ProductSelectorView: View {
                         guard !hasTrackedBundleProductConfigureCTAShownEvent else {
                             return
                         }
+                        // TODO: Move tracking logic outside of the view
                         switch source {
                             case let .orderForm(flow):
                                 ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productSelector))
@@ -246,6 +246,7 @@ struct ProductSelectorView: View {
                 if let configure = rowViewModel.configure, rowViewModel.isConfigurable,
                    configuration.treatsAllProductsAsSimple == false {
                     configure()
+                    // TODO: Move tracking logic outside of the view
                     switch source {
                         case let .orderForm(flow):
                             ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productSelector))
@@ -420,7 +421,7 @@ private extension ProductSelectorView {
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
-        let configuration = ProductSelectorView.Configuration(
+        let configuration = ProductSelectorConfiguration(
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",

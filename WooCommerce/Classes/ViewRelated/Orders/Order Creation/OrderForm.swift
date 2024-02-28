@@ -129,8 +129,8 @@ struct OrderFormPresentationWrapper: View {
     }
 }
 
-private extension ProductSelectorView.Configuration {
-    static func loadConfiguration(for sizeClass: UserInterfaceSizeClass?) -> ProductSelectorView.Configuration {
+private extension ProductSelectorConfiguration {
+    static func loadConfiguration(for sizeClass: UserInterfaceSizeClass?) -> ProductSelectorConfiguration {
         guard let sizeClass else {
             DDLogWarn("No size class when determining configuration for product selector")
             return .addProductToOrder()
@@ -650,7 +650,7 @@ private struct ProductsSection: View {
             }, content: {
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
                     ProductSelectorNavigationView(
-                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                        configuration: ProductSelectorConfiguration.addProductToOrder(),
                         source: .orderForm(flow: flow),
                         isPresented: $viewModel.isProductSelectorPresented,
                         viewModel: productSelectorViewModel)
@@ -850,9 +850,9 @@ struct OrderForm_Previews: PreviewProvider {
     }
 }
 
-private extension ProductSelectorView.Configuration {
-    static func addProductToOrder() -> ProductSelectorView.Configuration {
-        ProductSelectorView.Configuration(
+private extension ProductSelectorConfiguration {
+    static func addProductToOrder() -> ProductSelectorConfiguration {
+        ProductSelectorConfiguration(
             searchHeaderBackgroundColor: .listBackground,
             prefersLargeTitle: false,
             doneButtonTitleSingularFormat: Localization.doneButtonSingular,
@@ -863,8 +863,8 @@ private extension ProductSelectorView.Configuration {
             variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
     }
 
-    static func splitViewAddProductToOrder() -> ProductSelectorView.Configuration {
-        ProductSelectorView.Configuration(
+    static func splitViewAddProductToOrder() -> ProductSelectorConfiguration {
+        ProductSelectorConfiguration(
             productHeaderTextEnabled: true,
             searchHeaderBackgroundColor: .listBackground,
             prefersLargeTitle: false,

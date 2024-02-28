@@ -114,9 +114,9 @@ extension StatsTimeRangeV4 {
                 return .hourly
             }
             switch differenceInDays {
-            case .lessThan1:
+            case .lessThan2:
                 return .hourly
-            case .from1To28:
+            case .from2To28:
                 return .daily
             case .from29To90:
                 return .weekly
@@ -140,9 +140,9 @@ extension StatsTimeRangeV4 {
                 return .hour
             }
             switch differenceInDays {
-            case .lessThan1:
+            case .lessThan2:
                 return .hour
-            case .from1To28:
+            case .from2To28:
                 return .day
             case .from29To90:
                 return .week
@@ -170,9 +170,9 @@ extension StatsTimeRangeV4 {
                 return .hour
             }
             switch differenceInDays {
-            case .lessThan1:
+            case .lessThan2:
                 return .hour
-            case .from1To28:
+            case .from2To28:
                 return .day
             case .from29To90:
                 return .week
@@ -200,9 +200,9 @@ extension StatsTimeRangeV4 {
                 return .hour
             }
             switch differenceInDays {
-            case .lessThan1:
+            case .lessThan2:
                 return .hour
-            case .from1To28:
+            case .from2To28:
                 return .day
             case .from29To90:
                 return .week
@@ -253,8 +253,8 @@ private extension StatsTimeRangeV4 {
         case greaterThan365
         case from91to365
         case from29To90
-        case from1To28
-        case lessThan1
+        case from2To28
+        case lessThan2
     }
 
     /// Based on WooCommerce Core
@@ -277,10 +277,10 @@ private extension StatsTimeRangeV4 {
             return .from91to365
         case 29...90:
             return .from29To90
-        case 1...28:
-            return .from1To28
-        case 0:
-            return .lessThan1
+        case 2...28:
+            return .from2To28
+        case 0..<2:
+            return .lessThan2
         default:
             return nil
         }

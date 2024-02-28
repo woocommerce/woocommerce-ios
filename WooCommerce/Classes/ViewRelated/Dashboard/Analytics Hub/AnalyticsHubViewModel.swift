@@ -87,6 +87,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         bindCardSettingsWithData()
     }
 
+    // MARK: View Models
+
     /// Revenue Card ViewModel
     ///
     @Published var revenueCard: AnalyticsReportCardViewModel
@@ -110,6 +112,23 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
+
+    /// Time Range Selection Type
+    ///
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
+
+    /// Time Range ViewModel
+    ///
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
+
+    // MARK: Card Display States
+
+    /// All analytics cards to display in the Analytics Hub.
+    ///
+    var enabledCards: [AnalyticsCard.CardType] {
+        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
+        return allCards.filter { $0.enabled }.map { $0.type }
+    }
 
     /// Sessions Card display state
     ///
@@ -142,25 +161,10 @@ final class AnalyticsHubViewModel: ObservableObject {
         isJetpackStatsDisabled && userIsAdmin
     }
 
-    /// Time Range Selection Type
-    ///
-    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
-
-    /// Time Range ViewModel
-    ///
-    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
-
     /// Defines a notice that, when set, dismisses the view and is then displayed.
     /// Defaults to `nil`.
     ///
     @Published var dismissNotice: Notice?
-
-    /// All analytics cards to display in the Analytics Hub.
-    ///
-    var enabledCards: [AnalyticsCard.CardType] {
-        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
-        return allCards.filter { $0.enabled }.map { $0.type }
-    }
 
     // MARK: Private data
 

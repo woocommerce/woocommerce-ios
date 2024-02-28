@@ -77,12 +77,12 @@ struct AnalyticsHubView: View {
                     Divider()
                 }
 
-                if viewModel.enabledCards.isEmpty {
-                    EmptyState(title: Localization.emptyStateTitle, description: Localization.emptyStateDescription, image: .enableAnalyticsImage)
-                } else {
+                if viewModel.enabledCards.isNotEmpty {
                     ForEach(viewModel.enabledCards, id: \.self) { card in
                         analyticsCard(type: card)
                     }
+                } else {
+                    EmptyState(title: Localization.emptyStateTitle, description: Localization.emptyStateDescription, image: .enableAnalyticsImage)
                 }
 
                 Spacer()

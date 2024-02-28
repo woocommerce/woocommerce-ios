@@ -503,7 +503,7 @@ extension StoreStatsV4PeriodViewController: AxisValueFormatter {
             if index >= intervalLabels.count {
                 DDLogInfo("🔴 orderStatsIntervals count: \(orderStatsIntervals.count); value: \(value); index: \(index); interval labels: \(intervalLabels)")
             }
-            return intervalLabels[index]
+            return intervalLabels[safe: index] ?? ""
         } else {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis

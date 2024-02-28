@@ -95,8 +95,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig != .appStore
         case .connectivityTool:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .filterOrdersByProduct:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

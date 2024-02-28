@@ -20,6 +20,16 @@ public protocol BlazeRemoteProtocol {
     ///
     func loadCampaigns(for siteID: Int64, pageNumber: Int) async throws -> [BlazeCampaign]
 
+    /// Loads brief campaign info for the site with the provided ID
+    /// - Parameters:
+    ///    - siteID: WPCom ID for the site to load ads campaigns.
+    ///    - skip: Pagination offset
+    ///    - limit: Pagination limit
+    ///
+    func loadBriefCampaigns(for siteID: Int64,
+                            skip: Int,
+                            limit: Int) async throws -> [BriefBlazeCampaignInfo]
+
     /// Fetches target languages for campaign creation.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
@@ -105,6 +115,22 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeCampaignListMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Loads brief information about list of Blaze campaigns.
+    ///
+    public func loadBriefCampaigns(for siteID: Int64,
+                                   skip: Int,
+                                   limit: Int) async throws -> [BriefBlazeCampaignInfo] {
+        let path = Paths.campaigns(siteID: siteID)
+        let parameters: [String: Any] = [
+            Keys.LoadCampaigns.siteID: siteID,
+            Keys.LoadCampaigns.skip: skip,
+            Keys.LoadCampaigns.limit: limit
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
+        let mapper = BriefBlazeCampaignInfoListMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -259,6 +285,13 @@ private extension BlazeRemote {
             static let urn = "urn"
             static let wpcom = "wpcom"
             static let post = "post"
+        }
+
+
+        enum LoadCampaigns {
+            static let siteID = "site_id"
+            static let skip = "skip"
+            static let limit = "limit"
         }
     }
 

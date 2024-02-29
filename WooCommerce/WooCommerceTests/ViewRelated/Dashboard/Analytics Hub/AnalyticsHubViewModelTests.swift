@@ -727,6 +727,14 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
         assertEqual(expectedCards, customizeAnalyticsVM.allCards)
     }
+
+    func test_customizeAnalytics_tracks_expected_event() {
+        // When
+        vm.customizeAnalytics()
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubSettingsOpened.rawValue))
+    }
 }
 
 private extension AnalyticsHubViewModelTests {

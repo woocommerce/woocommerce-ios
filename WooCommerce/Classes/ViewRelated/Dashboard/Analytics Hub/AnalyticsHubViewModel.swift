@@ -650,7 +650,7 @@ extension AnalyticsHubViewModel {
     }
 
     /// Sets a view model for `customizeAnalyticsViewModel` when the feature is enabled.
-    /// This allows the view to open
+    /// Setting this view model opens the view.
     ///
     func customizeAnalytics() {
         guard canCustomizeAnalytics else {
@@ -662,6 +662,7 @@ extension AnalyticsHubViewModel {
             isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })
         ].compactMap({ $0 })
 
+        analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())
         customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings,
                                                                      cardsToExclude: cardsToExclude) { [weak self] updatedCards in
             guard let self else { return }

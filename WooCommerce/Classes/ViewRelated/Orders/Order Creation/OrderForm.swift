@@ -181,8 +181,17 @@ struct OrderForm: View {
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
-                viewModel.selectionSyncApproach = presentationStyle == .sideBySide ? .onRecalculateButtonTap : .onSelectorButtonTap
+                updateSelectionSyncApproach(for: presentationStyle)
             }
+    }
+
+    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle) {
+        switch presentationStyle {
+        case .modalOnModal:
+            viewModel.selectionSyncApproach = .onSelectorButtonTap
+        case .sideBySide:
+            viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        }
     }
 
     @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {

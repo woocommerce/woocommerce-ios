@@ -587,7 +587,7 @@ final class EditableOrderViewModel: ObservableObject {
         }
 
         productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
-        
+
         // When synching changes immediately, we need to update variations as well.
         // If the variation list isn't showing, this will do nothing, but the model will still be accurate
         // the next time the variation list is opened.

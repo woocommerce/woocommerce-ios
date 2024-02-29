@@ -264,22 +264,22 @@ private extension StoreStatsAndTopPerformersViewController {
                     periodStoreStatsGroup.leave()
                     group.leave() // Leave this group last so `syncError` is set, if needed
                 }
-            }
 
-            group.enter()
-            periodGroup.enter()
-            periodStoreStatsGroup.enter()
-            self.dashboardViewModel.syncSiteSummaryStats(for: siteID,
-                                                         siteTimezone: timezoneForSync,
-                                                         timeRange: vc.timeRange,
-                                                         latestDateToInclude: latestDateToInclude) { result in
-                if case let .failure(error) = result {
-                    DDLogError("⛔️ Error synchronizing summary stats: \(error)")
-                    periodSyncError = error
+                group.enter()
+                periodGroup.enter()
+                periodStoreStatsGroup.enter()
+                self.dashboardViewModel.syncSiteSummaryStats(for: siteID,
+                                                             siteTimezone: timezoneForSync,
+                                                             timeRange: vc.timeRange,
+                                                             latestDateToInclude: latestDateToInclude) { result in
+                    if case let .failure(error) = result {
+                        DDLogError("⛔️ Error synchronizing summary stats: \(error)")
+                        periodSyncError = error
+                    }
+                    periodGroup.leave()
+                    periodStoreStatsGroup.leave()
+                    group.leave() // Leave this group last so `syncError` is set, if needed
                 }
-                periodGroup.leave()
-                periodStoreStatsGroup.leave()
-                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()

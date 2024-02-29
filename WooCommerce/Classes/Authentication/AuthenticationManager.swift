@@ -343,8 +343,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
             guard let self else { return }
             onLoading(false)
-            onFailure(error.underlyingError, false)
-            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error))
+            onFailure(error, false)
+            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error.underlyingError))
         })
         self.siteCredentialLoginUseCase = useCase
 
@@ -359,7 +359,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        let isSiteCredentialError = (error as NSError).domain == SiteCredentialLoginError.errorDomain
+        let isSiteCredentialError = {
+            switch error {
+            case SiteCredentialLoginError.genericFailure:
+                return false
+            case is SiteCredentialLoginError:
+                return true
+            default:
+                return false
+            }
+        }()
+
+        // Only show the tutorial if the error is a real site credential error
         if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) && isSiteCredentialError {
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {

@@ -499,6 +499,9 @@ private extension StoreStatsAndTopPerformersViewController {
             self?.startCustomRangeTabCreation(startDate: startDate, endDate: endDate)
         })
 
+        // Custom range should not display visitors by default
+        customRangeVC.siteVisitStatsMode = .redactedDueToCustomRange
+
         let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,
                                                accessibilityIdentifier: "period-data-" + range.rawValue + "-tab")
@@ -528,9 +531,11 @@ private extension StoreStatsAndTopPerformersViewController {
 
 private extension StoreStatsAndTopPerformersViewController {
     func updateSiteVisitors(mode: SiteVisitStatsMode) {
-        periodVCs.forEach { vc in
-            vc.siteVisitStatsMode = mode
-        }
+        periodVCs
+            .filter { !$0.timeRange.isCustomTimeRange } // The Custom Range tab should always redact the visitor count.
+            .forEach { vc in
+                vc.siteVisitStatsMode = mode
+            }
     }
 
     func handleSiteStatsStoreError(error: SiteStatsStoreError) {

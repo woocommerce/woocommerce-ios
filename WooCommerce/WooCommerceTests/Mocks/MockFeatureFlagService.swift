@@ -3,7 +3,6 @@ import Experiments
 
 struct MockFeatureFlagService: FeatureFlagService {
     private let isInboxOn: Bool
-    private let isSplitViewInOrdersTabOn: Bool
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
     private let isDomainSettingsEnabled: Bool
@@ -23,10 +22,8 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isScanToUpdateInventoryEnabled: Bool
     private let blazei3NativeCampaignCreation: Bool
     private let isBackendReceiptsEnabled: Bool
-    private let filterOrdersByProduct: Bool
 
     init(isInboxOn: Bool = false,
-         isSplitViewInOrdersTabOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isDomainSettingsEnabled: Bool = false,
@@ -45,10 +42,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          blazei3NativeCampaignCreation: Bool = false,
-         isBackendReceiptsEnabled: Bool = false,
-         filterOrdersByProduct: Bool = false) {
+         isBackendReceiptsEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
-        self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
@@ -68,15 +63,12 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.blazei3NativeCampaignCreation = blazei3NativeCampaignCreation
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
-        self.filterOrdersByProduct = filterOrdersByProduct
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         switch featureFlag {
         case .inbox:
             return isInboxOn
-        case .splitViewInOrdersTab:
-            return isSplitViewInOrdersTabOn
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
         case .shippingLabelsOnboardingM1:
@@ -113,8 +105,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return blazei3NativeCampaignCreation
         case .backendReceipts:
             return isBackendReceiptsEnabled
-        case .filterOrdersByProduct:
-            return filterOrdersByProduct
         default:
             return false
         }

@@ -38,14 +38,6 @@ struct ProductSelectorView: View {
     ///
     @Binding var isPresented: Bool
 
-    /// Defines whether a variation list is shown.
-    ///
-    @State var isShowingVariationList: Bool = false
-
-    /// View model to use for the variation list, when it is shown.
-    ///
-    @State var variationListViewModel: ProductVariationSelectorViewModel?
-
     /// View model to drive the view.
     ///
     @ObservedObject var viewModel: ProductSelectorViewModel
@@ -86,17 +78,11 @@ struct ProductSelectorView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) &&
-                horizontalSizeClass == .regular {
-                productSelectorHeaderTitleRow
-                productSelectorHeaderSearchRow
-                    .padding(.bottom, Constants.defaultPadding)
-                    .background(Color(.listForeground(modal: false)))
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                productSelectorHeader
             } else {
-                productSelectorHeaderSearchRow
-                productSelectorHeaderTitleRow
+                legacyProductSelectorHeader
             }
-            Divider()
 
             switch viewModel.syncStatus {
             case .results:
@@ -131,13 +117,13 @@ struct ProductSelectorView: View {
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
                     .renderedIf(configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap)
 
-                    if let variationListViewModel = variationListViewModel {
+                    if let variationListViewModel = viewModel.productVariationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelectorView(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
                             onMultipleSelections: { selectedIDs in
                                 viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
-                            }), isActive: $isShowingVariationList) {
+                            }), isActive: $viewModel.isShowingProductVariationList) {
                                 EmptyView()
                             }
                             .renderedIf(configuration.treatsAllProductsAsSimple == false)
@@ -220,23 +206,17 @@ struct ProductSelectorView: View {
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
-        if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID),
-            configuration.treatsAllProductsAsSimple == false {
+        if viewModel.isVariableProduct(productOrVariationID: rowViewModel.productOrVariationID),
+           configuration.treatsAllProductsAsSimple == false {
             HStack {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
-                    // Display the variations list if toggleSelectionForAllVariations is not allowed
-                    if !viewModel.toggleAllVariationsOnSelection {
-                        isShowingVariationList.toggle()
-                        self.variationListViewModel = variationListViewModel
-                    }
+                    viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    isShowingVariationList.toggle()
-                    self.variationListViewModel = variationListViewModel
+                    viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
                 }
                 .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)
@@ -286,6 +266,54 @@ struct ProductSelectorView: View {
 }
 
 private extension ProductSelectorView {
+    @ViewBuilder var productSelectorHeader: some View {
+        if horizontalSizeClass == .regular {
+            productSelectorHeaderTitleRow
+            productSelectorHeaderSearchRow
+                .padding(.bottom, Constants.defaultPadding)
+                .background(Color(.listForeground(modal: false)))
+        } else {
+            productSelectorHeaderSearchRow
+            productSelectorHeaderTitleRow
+        }
+        Divider()
+    }
+
+    @ViewBuilder var legacyProductSelectorHeader: some View {
+        SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+            searchHeaderisBeingEdited = isEditing
+        })
+        .padding(.horizontal, insets: safeAreaInsets)
+        .accessibilityIdentifier("product-selector-search-bar")
+        Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+            ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+        }
+        .pickerStyle(.segmented)
+        .padding(.leading)
+        .padding(.trailing)
+        .renderedIf(searchHeaderisBeingEdited)
+
+        HStack {
+            Button(Localization.clearSelection) {
+                viewModel.clearSelection()
+            }
+            .buttonStyle(LinkButtonStyle())
+            .fixedSize()
+            .disabled(isClearSelectionDisabled)
+            .renderedIf(configuration.multipleSelectionEnabled)
+
+            Spacer()
+
+            Button(viewModel.filterButtonTitle) {
+                showingFilters.toggle()
+                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+            }
+            .buttonStyle(LinkButtonStyle())
+            .fixedSize()
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+    }
+
     @ViewBuilder private var productSelectorHeaderTitleRow: some View {
         GeometryReader { geometry in
             HStack {

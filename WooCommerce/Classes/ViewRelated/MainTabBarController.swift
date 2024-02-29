@@ -87,13 +87,6 @@ final class MainTabBarController: UITabBarController {
     private let dashboardNavigationController = WooTabNavigationController()
     private let ordersContainerController = TabContainerController()
 
-    /// Unfortunately, we can't use the above container to directly hold a WooTabNavigationController, due to
-    /// a longstanding bug where a black bar equal to the tab bar height is shown when a nav controller
-    /// is shown as an embedded vc in a tab. See link for details, but the solutions don't work here.
-    /// https://stackoverflow.com/questions/28608817/uinavigationcontroller-embedded-in-a-container-view-displays-a-table-view-contr
-    // remove when .splitViewInOrdersTab is removed.
-    private let ordersNavigationController = WooTabNavigationController()
-
     private let productsContainerController = TabContainerController()
 
     /// Unfortunately, we can't use the above container to directly hold a WooTabNavigationController, due to
@@ -116,7 +109,6 @@ final class MainTabBarController: UITabBarController {
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
-    private lazy var isOrdersSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
     private lazy var isProductsSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
 
     init?(coder: NSCoder,
@@ -384,11 +376,7 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-                    ordersTabSplitViewWrapper()?.presentDetails(for: note)
-                } else {
-                    (childViewController() as? OrdersRootViewController)?.presentDetails(for: note)
-                }
+                ordersTabSplitViewWrapper()?.presentDetails(for: note)
             }
         default:
             break
@@ -448,11 +436,7 @@ extension MainTabBarController {
     }
 
     private static func presentDetails(for orderID: Int64, siteID: Int64) {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            ordersTabSplitViewWrapper()?.presentDetails(for: orderID, siteID: siteID)
-        } else {
-            (childViewController() as? OrdersRootViewController)?.presentDetails(for: orderID, siteID: siteID)
-        }
+        ordersTabSplitViewWrapper()?.presentDetails(for: orderID, siteID: siteID)
     }
 
     private static func ordersTabSplitViewWrapper() -> OrdersSplitViewWrapperController? {
@@ -527,7 +511,7 @@ private extension MainTabBarController {
             case .myStore:
                 return dashboardNavigationController
             case .orders:
-                return isOrdersSplitViewFeatureFlagOn ? ordersContainerController: ordersNavigationController
+                return ordersContainerController
             case .products:
                 return isProductsSplitViewFeatureFlagOn ? productsContainerController: productsNavigationController
             case .hubMenu:
@@ -556,12 +540,7 @@ private extension MainTabBarController {
         let dashboardViewController = createDashboardViewController(siteID: siteID)
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
-        let ordersViewController = createOrdersViewController(siteID: siteID)
-        if isOrdersSplitViewFeatureFlagOn {
-            ordersContainerController.wrappedController = ordersViewController
-        } else {
-            ordersNavigationController.viewControllers = [ordersViewController]
-        }
+        ordersContainerController.wrappedController = createOrdersViewController(siteID: siteID)
 
         if isProductsSplitViewFeatureFlagOn {
             productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: siteID)
@@ -590,11 +569,7 @@ private extension MainTabBarController {
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
-        if isOrdersSplitViewFeatureFlagOn {
-            return OrdersSplitViewWrapperController(siteID: siteID)
-        } else {
-            return OrdersRootViewController(siteID: siteID, switchDetailsHandler: { _, _, _, _ in })
-        }
+        OrdersSplitViewWrapperController(siteID: siteID)
     }
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
@@ -749,7 +724,7 @@ private extension MainTabBarController {
                                                                 siteID: error.siteID,
                                                                 forceReadOnly: false)
         let productNavController = WooNavigationController(rootViewController: productViewController)
-        productsNavigationController.present(productNavController, animated: true)
+        rootTabViewController(tab: .products).present(productNavController, animated: true)
     }
 }
 

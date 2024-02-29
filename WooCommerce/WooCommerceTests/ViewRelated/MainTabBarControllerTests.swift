@@ -61,7 +61,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(tabBarController.tabRootViewController(tab: .myStore),
                    isAnInstanceOf: DashboardViewController.self)
         assertThat(tabBarController.tabRootViewController(tab: .orders),
-                   isAnInstanceOf: OrdersRootViewController.self)
+                   isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products),
                    isAnInstanceOf: ProductsViewController.self)
         assertThat(tabBarController.tabRootViewController(tab: .hubMenu),
@@ -70,38 +70,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_tab_view_controllers_returns_expected_values() {
         // Arrange
-        // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let featureFlagService = MockFeatureFlagService()
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
-            return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
-        }) else {
-            return
-        }
-
-        // Trigger `viewDidLoad`
-        XCTAssertNotNil(tabBarController.view)
-
-        // Action
-        let siteID: Int64 = 134
-        stores.updateDefaultStore(storeID: siteID)
-
-        // Assert
-        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-        assertThat(tabBarController.tabRootViewController(tab: .myStore),
-                   isAnInstanceOf: DashboardViewController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .orders),
-                   isAnInstanceOf: OrdersRootViewController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .products),
-                   isAnInstanceOf: ProductsViewController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .hubMenu),
-                   isAnInstanceOf: HubMenuViewController.self)
-    }
-
-    func test_tab_view_controllers_returns_expected_values_with_hub_menu_and_split_view_in_orders_tab_enabled() {
-        // Arrange
-        // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
-        let isSplitViewInOrdersTabOn = true
-        let featureFlagService = MockFeatureFlagService(isSplitViewInOrdersTabOn: isSplitViewInOrdersTabOn)
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
@@ -501,7 +470,7 @@ final class MainTabBarControllerTests: XCTestCase {
         let siteID: Int64 = 256
         stores.updateDefaultStore(storeID: siteID)
 
-        let mockFeatureFlagService = MockFeatureFlagService(isSplitViewInOrdersTabOn: true)
+        let mockFeatureFlagService = MockFeatureFlagService()
         ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
 
         let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
@@ -544,7 +513,7 @@ final class MainTabBarControllerTests: XCTestCase {
             completion(note, nil)
         }
 
-        let mockFeatureFlagService = MockFeatureFlagService(isSplitViewInOrdersTabOn: true)
+        let mockFeatureFlagService = MockFeatureFlagService()
         ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
 
         let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)

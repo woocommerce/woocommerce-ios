@@ -60,8 +60,6 @@ final class OrderDetailsViewController: UIViewController {
 
     private let currentIndex: Int
 
-    private let isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
-
     /// Callback closure when a different order is selected like from the quick navigation arrows.
     private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
 
@@ -115,10 +113,6 @@ final class OrderDetailsViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
     }
-
-    override var shouldShowOfflineBanner: Bool {
-        !isSplitViewInOrdersTabEnabled
-    }
 }
 
 // MARK: - TableView Configuration
@@ -144,9 +138,6 @@ private extension OrderDetailsViewController {
     }
 
     func configureStackView() {
-        guard isSplitViewInOrdersTabEnabled else {
-            return
-        }
         stackView.layer.borderWidth = Constants.borderWidth
         stackView.layer.borderColor = UIColor.border.cgColor
 
@@ -208,11 +199,6 @@ private extension OrderDetailsViewController {
     }
 
     func loadOrder(with index: Int) {
-        guard isSplitViewInOrdersTabEnabled else {
-            let viewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: index, switchDetailsHandler: switchDetailsHandler)
-            navigationController?.replaceTopViewController(with: viewController, animated: false)
-            return
-        }
         switchDetailsHandler(viewModels, index, true, nil)
     }
 

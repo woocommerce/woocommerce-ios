@@ -4,6 +4,14 @@ import Yosemite
 
 final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
+
+    override func setUp() {
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
     func test_it_inits_with_expected_properties() {
         // Given
         let revenueCard = AnalyticsCard(type: .revenue, enabled: true)
@@ -63,7 +71,9 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
 
         // When
         let actualCards = waitFor { promise in
-            let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, productsCard], cardsToExclude: [sessionsCard]) { updatedCards in
+            let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, productsCard],
+                                                    cardsToExclude: [sessionsCard],
+                                                    analytics: self.analytics) { updatedCards in
                 promise(updatedCards)
             }
 
@@ -75,6 +85,26 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
         // Then
         let expectedCards = [ordersCard, revenueCard.copy(enabled: true), productsCard.copy(enabled: false), sessionsCard]
         assertEqual(expectedCards, actualCards)
+    }
+
+    func test_saveChanges_tracks_expected_event() throws {
+        // Given
+        let revenueCard = AnalyticsCard(type: .revenue, enabled: true)
+        let ordersCard = AnalyticsCard(type: .orders, enabled: true)
+        let productsCard = AnalyticsCard(type: .products, enabled: false)
+        let sessionsCard = AnalyticsCard(type: .sessions, enabled: true)
+        let vm = AnalyticsHubCustomizeViewModel(allCards: [revenueCard, ordersCard, productsCard, sessionsCard],
+                                                cardsToExclude: [sessionsCard],
+                                                analytics: analytics)
+
+        // When
+        vm.saveChanges()
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubSettingsSaved.rawValue))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties.last)
+        assertEqual("revenue,orders", eventProperties["enabled_cards"] as? String)
+        assertEqual("products", eventProperties["disabled_cards"] as? String)
     }
 
 }

@@ -19,6 +19,8 @@ final class EditableOrderViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
 
+    @Published var syncRequired: Bool = false
+
     // MARK: - Product selector states
     @Published var productSelectorViewModel: ProductSelectorViewModel?
 
@@ -122,6 +124,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defaults to create button.
     ///
     @Published private(set) var navigationTrailingItem: NavigationItem?
+
+    @Published private(set) var doneButtonType: DoneButtonType = .done(loading: false)
 
     /// Tracks if a network request is being performed.
     ///
@@ -245,7 +249,13 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
 
-    @Published var syncChangesImmediately: Bool = false
+    @Published var selectionSyncApproach: OrderItemSelectionSyncApproach = .onSelectorButtonTap
+
+    enum OrderItemSelectionSyncApproach {
+        case immediate
+        case onRecalculateButtonTap
+        case onSelectorButtonTap
+    }
 
     /// Status Results Controller.
     ///
@@ -474,6 +484,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureCollectPaymentDisabledState()
         configureOrderTotal()
         configureNavigationTrailingItem()
+        configureDoneButton()
         configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
@@ -490,6 +501,7 @@ final class EditableOrderViewModel: ObservableObject {
         observeGiftCardStatesForAnalytics()
         observeProductSelectorPresentationStateForViewModel()
         forwardSyncApproachToSynchronizer()
+        observeChangesFromProductSelectorButtonTapSelectionSync()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -911,6 +923,10 @@ final class EditableOrderViewModel: ObservableObject {
         trackCollectPaymentTapped()
     }
 
+    func onRecalculateTapped() {
+        syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+    }
+
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
                                                  onCustomAmountDeleted: { [weak self] feeID in
@@ -945,8 +961,15 @@ extension EditableOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
-        case create
         case loading
+        case recalculate
+        case create
+    }
+
+    enum DoneButtonType: Equatable {
+        case recalculate(loading: Bool)
+        case create(loading: Bool)
+        case done(loading: Bool)
     }
 
     /// Representation of order status display properties
@@ -1227,22 +1250,61 @@ private extension EditableOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
-            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem? in
+        let requestInProgress = Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
+            .map { syncState, performingNetworkRequest in
+                if case .syncing = syncState {
+                    return true
+                } else {
+                    return performingNetworkRequest
+                }
+            }
+
+        Publishers.CombineLatest4($syncRequired, requestInProgress, $selectionSyncApproach, Just(flow))
+            .map { syncRequired, performingNetworkRequest, syncApproach, flow -> NavigationItem? in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                switch (flow, syncState) {
-                case (.creation, _):
-                    return .create
-                case (.editing, .syncing):
-                    return .loading
-                case (.editing, _):
+                switch flow {
+                case .creation:
+                    if syncRequired && syncApproach == .onRecalculateButtonTap {
+                        return .recalculate
+                    } else {
+                        return .create
+                    }
+                case .editing:
                     return .none
                 }
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Calculates what Call to Action button should be shown depending on our internal state.
+    ///
+    func configureDoneButton() {
+        let requestInProgress = Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
+            .map { syncState, performingNetworkRequest in
+                if case .syncing = syncState {
+                    return true
+                } else {
+                    return performingNetworkRequest
+                }
+            }
+
+        Publishers.CombineLatest4($syncRequired, requestInProgress, $selectionSyncApproach, Just(flow))
+            .map { syncRequired, requestInProgress, syncApproach, flow -> DoneButtonType in
+                if syncRequired && syncApproach == .onRecalculateButtonTap {
+                    return .recalculate(loading: requestInProgress)
+                }
+
+                switch flow {
+                case .creation:
+                    return .create(loading: requestInProgress)
+                case .editing:
+                    return .done(loading: requestInProgress)
+                }
+            }
+            .assign(to: &$doneButtonType)
     }
 
     /// Updates the notice based on the `orderSynchronizer` sync state.
@@ -1375,6 +1437,8 @@ private extension EditableOrderViewModel {
         if removedItemsToSync.isNotEmpty {
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
         }
+
+        syncRequired = false
     }
 
     /// Adds a selected product (from the product list) to the order.
@@ -1751,60 +1815,86 @@ private extension EditableOrderViewModel {
                     stores: stores,
                     toggleAllVariationsOnSelection: false,
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
-                    syncApproach: initialProductSelectionSyncApproach,
+                    syncApproach: selectionSyncApproach.productSelectorSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
                     onProductSelectionStateChanged: { [weak self] product in
-                        guard let self = self else { return }
-                        self.changeSelectionStateForProduct(product)
+                        guard let self else { return }
+                        changeSelectionStateForProduct(product)
+                        evaluateSelectionSync()
                     },
                     onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
-                        guard let self = self else { return }
-                        self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                        guard let self else { return }
+                        changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                        evaluateSelectionSync()
                     }, onMultipleSelectionCompleted: { [weak self] _ in
-                        guard let self = self else { return }
-                        self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                        guard let self else { return }
+                        syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
                     }, onAllSelectionsCleared: { [weak self] in
-                        guard let self = self else { return }
-                        self.clearAllSelectedItems()
-                        self.trackClearAllSelectedItemsTapped()
+                        guard let self else { return }
+                        clearAllSelectedItems()
+                        trackClearAllSelectedItemsTapped()
+                        evaluateSelectionSync()
                     }, onSelectedVariationsCleared: { [weak self] in
-                        guard let self = self else { return }
-                        self.clearSelectedVariations()
+                        guard let self else { return }
+                        clearSelectedVariations()
+                        evaluateSelectionSync()
                     }, onCloseButtonTapped: { [weak self] in
-                        guard let self = self else { return }
-                        self.syncOrderItemSelectionStateOnDismiss()
+                        guard let self else { return }
+                        syncOrderItemSelectionStateOnDismiss()
+                        isProductSelectorPresented = false
                     }, onConfigureProductRow: { [weak self] product in
                         guard let self else { return }
                         productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
                             guard let self else { return }
-                            self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
-                            self.productToConfigureViewModel = nil
+                            saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                            productToConfigureViewModel = nil
+                            evaluateSelectionSync()
                         })
                     })
             }
             .assign(to: &$productSelectorViewModel)
     }
 
-    var initialProductSelectionSyncApproach: ProductSelectorViewModel.SyncApproach {
+    func evaluateSelectionSync() {
         guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
-            return .onButtonTap
+            return
         }
-        switch UITraitCollection.current.horizontalSizeClass {
-        case .regular:
-            return .immediate
-        case .compact, .unspecified:
-            return .onButtonTap
-        @unknown default:
-            DDLogWarn("Unknown horizontalSizeClass used to determine initialProductSelectionSyncApproach.")
-            return .onButtonTap
+        switch selectionSyncApproach {
+        case .immediate:
+            syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+        case .onRecalculateButtonTap:
+            syncRequired = true
+        case .onSelectorButtonTap:
+            return
         }
     }
 
     func forwardSyncApproachToSynchronizer() {
-        $syncChangesImmediately
-            .share()
-            .sink { [weak self] syncImmediately in
-                self?.orderSynchronizer.updateBlockingBehavior(syncImmediately ? .allUpdates : .majorUpdates)
+        $selectionSyncApproach
+            .sink { [weak self] selectionSyncApproach in
+                guard let self,
+                      featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+                    return
+                }
+                orderSynchronizer.updateBlockingBehavior(selectionSyncApproach == .immediate ? .allUpdates : .majorUpdates)
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeChangesFromProductSelectorButtonTapSelectionSync() {
+        $selectionSyncApproach
+            .removeDuplicates()
+            .sink { [weak self] selectionSyncApproach in
+                guard let self,
+                      featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+                    return
+                }
+                if selectionSyncApproach != .onSelectorButtonTap || syncRequired {
+                    /// When we change from `onSelectorButtonTap`, we would lose unsynced changes if we do nothing.
+                    /// `syncRequired` indicates that we have unsynced side-by-side changes, which would be lost when
+                    /// moving to modal-on-modal.
+                    syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+                }
             }
             .store(in: &cancellables)
     }
@@ -2063,6 +2153,17 @@ private extension EditableOrderViewModel {
             return
         }
         orderSynchronizer.setProduct.send(productInput)
+    }
+}
+
+private extension EditableOrderViewModel.OrderItemSelectionSyncApproach {
+    var productSelectorSyncApproach: ProductSelectorViewModel.SyncApproach {
+        switch self {
+        case .immediate, .onRecalculateButtonTap:
+            return .external
+        case .onSelectorButtonTap:
+            return .onButtonTap
+        }
     }
 }
 

@@ -646,7 +646,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 
     func test_enabling_new_card_fetches_required_data() async throws {
-        // Given
+        // Given it fetches order stats (current and previous) for initial cards
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            default:
+                break
+            }
+        }
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadAnalyticsHubCards(_, completion):
@@ -659,9 +667,11 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             }
         }
         await vm.loadAnalyticsCardSettings()
+        await vm.updateData()
+        assertEqual(2, stores.receivedActions.filter { $0 is StatsActionV4 }.count)
 
-        // When
-        let fetchedProductStats: Bool = try waitFor { promise in
+        // When the products card is enabled
+        let fetchedTopEarnerStats: Bool = try waitFor { promise in
             self.stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
                 switch action {
                 case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
@@ -673,15 +683,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                     break
                 }
             }
-            // Enable products card
             self.vm.customizeAnalytics()
             let customizeAnalytics = try XCTUnwrap(self.vm.customizeAnalyticsViewModel)
             customizeAnalytics.selectedCards.update(with: AnalyticsCard(type: .products, enabled: false))
             customizeAnalytics.saveChanges()
         }
 
-        // Then
-        XCTAssertTrue(fetchedProductStats)
+        // Then it fetches order stats and top earner stats for products card
+        XCTAssertTrue(fetchedTopEarnerStats)
+        assertEqual(5, stores.receivedActions.filter { $0 is StatsActionV4 }.count)
     }
 
     func test_changing_card_settings_without_enabling_new_cards_does_not_update_data() async throws {
@@ -727,6 +737,14 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
         assertEqual(expectedCards, customizeAnalyticsVM.allCards)
     }
+
+    func test_customizeAnalytics_tracks_expected_event() {
+        // When
+        vm.customizeAnalytics()
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubSettingsOpened.rawValue))
+    }
 }
 
 private extension AnalyticsHubViewModelTests {
@@ -737,7 +755,6 @@ private extension AnalyticsHubViewModelTests {
                               stores: stores ?? self.stores,
                               analytics: analytics,
                               noticePresenter: noticePresenter,
-                              backendProcessingDelay: 0,
-                              canCustomizeAnalytics: true)
+                              backendProcessingDelay: 0)
     }
 }

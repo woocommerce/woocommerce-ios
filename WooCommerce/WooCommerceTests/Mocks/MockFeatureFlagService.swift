@@ -22,6 +22,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isScanToUpdateInventoryEnabled: Bool
     private let blazei3NativeCampaignCreation: Bool
     private let isBackendReceiptsEnabled: Bool
+    private let sideBySideViewForOrderForm: Bool
 
     init(isInboxOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
@@ -42,7 +43,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          blazei3NativeCampaignCreation: Bool = false,
-         isBackendReceiptsEnabled: Bool = false) {
+         isBackendReceiptsEnabled: Bool = false,
+         sideBySideViewForOrderForm: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
@@ -63,6 +65,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.blazei3NativeCampaignCreation = blazei3NativeCampaignCreation
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
+        self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -105,6 +108,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return blazei3NativeCampaignCreation
         case .backendReceipts:
             return isBackendReceiptsEnabled
+        case .sideBySideViewForOrderForm:
+            return sideBySideViewForOrderForm
         default:
             return false
         }

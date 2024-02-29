@@ -1,6 +1,6 @@
 /// Representation of SCPWallet
 public struct Wallet: Codable, Equatable {
-    let type: String?
+    public let type: String?
 }
 
 extension Wallet {

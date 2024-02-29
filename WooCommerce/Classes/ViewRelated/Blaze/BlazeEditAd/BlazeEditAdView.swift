@@ -63,6 +63,7 @@ struct BlazeEditAdView: View {
             .wooNavigationBarStyle()
             .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

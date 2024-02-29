@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-22 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-02-27 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -1866,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connexion à WordPress.com ";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "Connexion aux serveurs WordPress.com";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "Association à un site WordPress.com";
 
@@ -1878,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Connexion à votre compte";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "Connexion à votre site";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Connexion à votre boutique";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "Test de connectivité";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Contacter le client";
@@ -1893,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -3187,6 +3197,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Extraction des variantes en cours...";
 
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "Extraction des commandes de votre site";
+
 /* Country option for a site address. */
 "Fiji" = "Fidji";
 
@@ -3928,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "Paiements internationaux’";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "Connexion Internet";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Adresse de messagerie non valide";
 
@@ -4018,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Il semblerait que les statistiques soient désactivées.";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "Il semble que vous ne soyez pas connecté(e) à Internet.\n\nAssurez-vous que votre Wi-Fi est activé. Si vous utilisez des données mobiles, assurez-vous qu’elles soient activées dans les réglages de votre appareil.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "Il semblerait que votre rôle utilisateur ne vous permette pas d’installer Jetpack.\nVeuillez contacter votre administrateur pour obtenir de l’aide.";
@@ -5064,8 +5083,23 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Seul le propriétaire du site peut gérer les moyens de paiement des étiquettes d’expédition. Veuillez contacter %1$@ (%2$@) pour gérer les moyens de paiement.";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Oups ! Il semble que nous ne puissions pas nous connecter à WordPress.com pour l’instant.\n\nMais rassurez-vous, nos Happiness Engineers sont là pour vous aider. Contactez-nous et nous nous ferons un plaisir de vous aider.";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Oups ! Il semble que la réponse de votre site ne nous permette pas de travailler convenablement.\n\nMais rassurez-vous, nos Happiness Engineers sont là pour vous aider. Contactez-nous et nous nous ferons un plaisir de vous aider.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Oups ! Il semble y avoir un problème avec votre connexion Jetpack.\n\nMais rassurez-vous, nos Happiness Engineers sont là pour vous aider. Contactez-nous et nous nous ferons un plaisir de vous aider.";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "Oups ! Il semble y avoir un problème avec votre site.\n\nContactez votre hébergeur pour obtenir une assistance supplémentaire.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "Oups ! Il y a comme un pépin.";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "Oups ! Votre site semble mettre du temps à répondre.\n\nContactez votre hébergeur pour obtenir une assistance supplémentaire.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Oups. des erreurs inattendues se sont produites.";
@@ -6021,6 +6055,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Contactez nos Happiness Engineers pour toute question complexe";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "Lire plus";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Lire nos astuces de résolution de problème";
@@ -9583,6 +9620,27 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "Sélectionner un type de produit";
 
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "Commandes";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "Produits";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "Revenus";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "Sessions";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "Enregistrer";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "Personnaliser les statistiques";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "Modifier";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Activer Jetpack Stats";
 
@@ -9845,8 +9903,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "Appareils";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "Terminé";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Modifier la publicité";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "Aide";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Intérêts";
@@ -9908,8 +9972,14 @@ which should be translated separately and considered part of this sentence. */
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Campagne Blaze";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "Terminé";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "Erreur lors du chargement de vos moyens de paiement";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "Aide";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "Lire la suite";
@@ -10709,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "Scanner le code-barres";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "Scanner un produit";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Code promo";

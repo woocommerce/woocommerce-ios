@@ -58,27 +58,33 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
 
     private lazy var customRangeButtonView = createCustomRangeButtonView()
 
+    private let stores: StoresManager
+
     // MARK: - View Lifecycle
 
     init(siteID: Int64,
          dashboardViewModel: DashboardViewModel,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.dashboardViewModel = dashboardViewModel
         self.pushNotificationsManager = pushNotificationsManager
 
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.featureFlagService = featureFlagService
+        self.stores = stores
 
         let currentDate = Date()
+
         let tabItems: [TabbedItem] = timeRanges.map { timeRange in
             let viewController = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                                 timeRange: timeRange,
                                                                                 currentDate: currentDate,
                                                                                 canDisplayInAppFeedbackCard: timeRange == .today,
-                                                                                usageTracksEventEmitter: usageTracksEventEmitter)
+                                                                                usageTracksEventEmitter: usageTracksEventEmitter,
+                                                                                onEditCustomTimeRange: nil)
             return .init(title: timeRange.tabTitle,
                          viewController: viewController,
                          accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab")
@@ -101,10 +107,10 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
         observeLocallyCreatedOrdersToResetLastSyncTimestamp()
 
         Task { @MainActor in
+            await configureCustomRangeTab()
             let selectedTimeRange = await loadLastTimeRange() ?? .today
-            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) else {
-                return
-            }
+            // Defaults to the Today tab if cannot find the selected time range.
+            let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) ?? 0
             selection = selectedTabIndex
             observeSelectedTimeRangeIndex()
         }
@@ -330,7 +336,7 @@ private extension StoreStatsAndTopPerformersViewController {
                     self.resetLastSyncTimestamp()
                 }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func resetLastSyncTimestamp() {
@@ -391,24 +397,52 @@ private extension StoreStatsAndTopPerformersViewController {
             let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
                 continuation.resume(returning: timeRange)
             }
-            ServiceLocator.stores.dispatch(action)
+            stores.dispatch(action)
         }
     }
 
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
         let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func configureTabBar() {
         tabBar.equalWidthFill = .equalSpacing
         tabBar.equalWidthSpacing = TabBar.tabSpacing
 
-        /// TODO-11935: Check if a custom range has been added and hide this button.
-        ///
         if featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) {
             addCustomViewToTabBar(customRangeButtonView)
         }
+    }
+
+    @MainActor
+    func configureCustomRangeTab() async {
+        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
+            return
+        }
+
+        guard let customRange = await loadTimeRangeForCustomRangeTab() else {
+            return
+        }
+
+        createCustomRangeTab(range: customRange)
+    }
+
+    @MainActor
+    func loadTimeRangeForCustomRangeTab() async -> StatsTimeRangeV4? {
+        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
+            return nil
+        }
+
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
+                continuation.resume(returning: timeRange)
+            })
+        }
+    }
+
+    func saveTimeRangeForCustomRangeTab(timeRange: StatsTimeRangeV4) {
+        stores.dispatch(AppSettingsAction.setCustomStatsTimeRange(siteID: siteID, timeRange: timeRange))
     }
 
     func createCustomRangeButtonView() -> UIView {
@@ -416,7 +450,6 @@ private extension StoreStatsAndTopPerformersViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
 
-        // TODO-11935: handle button action
         let button = UIButton(configuration: .plain())
         button.setImage(UIImage(systemName: "calendar.badge.plus"), for: .normal)
         button.tintColor = .accent
@@ -436,36 +469,49 @@ private extension StoreStatsAndTopPerformersViewController {
         return stackView
     }
 
-    func startCustomRangeTabCreation() {
+    func startCustomRangeTabCreation(startDate: Date? = nil, endDate: Date? = nil) {
         guard let navigationController else { return }
         customRangeCoordinator = CustomRangeTabCreationCoordinator(
+            startDate: startDate,
+            endDate: endDate,
             navigationController: navigationController,
             onDateRangeSelected: { [weak self] start, end in
-                self?.createCustomRangeTab(start, end)
+                let range = StatsTimeRangeV4.custom(from: start, to: end)
+                self?.saveTimeRangeForCustomRangeTab(timeRange: range)
+                self?.createCustomRangeTab(range: range)
             }
         )
         customRangeCoordinator?.start()
     }
 
-    func createCustomRangeTab(_ start: Date, _ end: Date) {
+    func createCustomRangeTab(range: StatsTimeRangeV4) {
         let currentDate = Date()
-        let range = StatsTimeRangeV4.custom(from: start, to: end)
 
-        // TODO: 11935 Add the correct data fetching and displaying based on custom range.
         let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                            timeRange: range,
                                                                            currentDate: currentDate,
                                                                            canDisplayInAppFeedbackCard: false,
-                                                                           usageTracksEventEmitter: usageTracksEventEmitter)
-
-        periodVCs.append(customRangeVC)
-        timeRanges.append(.custom(from: start, to: end))
+                                                                           usageTracksEventEmitter: usageTracksEventEmitter,
+                                                                           onEditCustomTimeRange: { [weak self] timeRange in
+            guard case let .custom(startDate, endDate) = timeRange else {
+                return
+            }
+            self?.startCustomRangeTabCreation(startDate: startDate, endDate: endDate)
+        })
 
         let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,
                                                accessibilityIdentifier: "period-data-" + range.rawValue + "-tab")
 
-        appendToTabBar(customRangeTabbedItem)
+        if let index = timeRanges.lastIndex(where: { $0.isCustomTimeRange }) {
+            periodVCs[index] = customRangeVC
+            timeRanges[index] = range
+            replaceTab(at: index, with: customRangeTabbedItem)
+        } else {
+            periodVCs.append(customRangeVC)
+            timeRanges.append(range)
+            appendToTabBar(customRangeTabbedItem)
+        }
 
         // Once a custom range tab is created, do not show the "Custom Range" button anymore.
         removeCustomViewFromTabBar()
@@ -493,7 +539,7 @@ private extension StoreStatsAndTopPerformersViewController {
             updateSiteVisitors(mode: .hidden)
             trackDashboardStatsSyncComplete()
         case .statsModuleDisabled:
-            let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
+            let defaultSite = stores.sessionManager.defaultSite
             if defaultSite?.isJetpackCPConnected == true {
                 updateSiteVisitors(mode: .redactedDueToJetpack)
             } else {
@@ -521,7 +567,7 @@ private extension StoreStatsAndTopPerformersViewController {
 //
 private extension StoreStatsAndTopPerformersViewController {
     func trackStatsLoaded(for timeRange: StatsTimeRangeV4) {
-        guard ServiceLocator.stores.isAuthenticated else {
+        guard stores.isAuthenticated else {
             return
         }
 

@@ -87,6 +87,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         bindCardSettingsWithData()
     }
 
+    // MARK: View Models
+
     /// Revenue Card ViewModel
     ///
     @Published var revenueCard: AnalyticsReportCardViewModel
@@ -111,10 +113,30 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
 
+    /// Time Range Selection Type
+    ///
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
+
+    /// Time Range ViewModel
+    ///
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
+
+    // MARK: Card Display States
+
+    /// All analytics cards to display in the Analytics Hub.
+    ///
+    var enabledCards: [AnalyticsCard.CardType] {
+        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
+        return allCards.filter { card in
+            let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
+            return card.enabled && canBeDisplayed
+        }.map { $0.type }
+    }
+
     /// Sessions Card display state
     ///
-    var showSessionsCard: Bool {
-        guard enabledCards.contains(.sessions), isEligibleForSessionsCard else {
+    private var showSessionsCard: Bool {
+        guard isEligibleForSessionsCard else {
             return false
         }
         if case .custom = timeRangeSelectionType {
@@ -142,25 +164,10 @@ final class AnalyticsHubViewModel: ObservableObject {
         isJetpackStatsDisabled && userIsAdmin
     }
 
-    /// Time Range Selection Type
-    ///
-    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
-
-    /// Time Range ViewModel
-    ///
-    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
-
     /// Defines a notice that, when set, dismisses the view and is then displayed.
     /// Defaults to `nil`.
     ///
     @Published var dismissNotice: Notice?
-
-    /// All analytics cards to display in the Analytics Hub.
-    ///
-    var enabledCards: [AnalyticsCard.CardType] {
-        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
-        return allCards.filter { $0.enabled }.map { $0.type }
-    }
 
     // MARK: Private data
 
@@ -347,7 +354,7 @@ private extension AnalyticsHubViewModel {
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
-        guard showSessionsCard, let period = timeRangeSelectionType.period else {
+        guard enabledCards.contains(.sessions), let period = timeRangeSelectionType.period else {
             return nil
         }
 

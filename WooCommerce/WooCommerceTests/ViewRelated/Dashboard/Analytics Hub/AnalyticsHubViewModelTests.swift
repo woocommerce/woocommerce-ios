@@ -158,19 +158,19 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_session_card_is_hidden_for_custom_range() async {
         // Given
-        XCTAssertTrue(vm.showSessionsCard)
+        XCTAssertTrue(vm.enabledCards.contains(.sessions))
 
         // When
         vm.timeRangeSelectionType = .custom(start: Date(), end: Date())
 
         // Then
-        XCTAssertFalse(vm.showSessionsCard)
+        XCTAssertFalse(vm.enabledCards.contains(.sessions))
 
         // When
         vm.timeRangeSelectionType = .lastMonth
 
         // Then
-        XCTAssertTrue(vm.showSessionsCard)
+        XCTAssertTrue(vm.enabledCards.contains(.sessions))
     }
 
     func test_session_card_is_hidden_for_sites_without_jetpack_plugin() {
@@ -184,8 +184,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let vmJCPSite = createViewModel(stores: storesForJCPSite)
 
         // Then
-        XCTAssertFalse(vmNonJetpackSite.showSessionsCard)
-        XCTAssertFalse(vmJCPSite.showSessionsCard)
+        XCTAssertFalse(vmNonJetpackSite.enabledCards.contains(.sessions))
+        XCTAssertFalse(vmJCPSite.enabledCards.contains(.sessions))
     }
 
     @MainActor
@@ -211,7 +211,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(vm.showJetpackStatsCTA)
-        XCTAssertFalse(vm.showSessionsCard)
+        XCTAssertFalse(vm.enabledCards.contains(.sessions))
     }
 
     func test_time_range_card_tracks_expected_events() throws {
@@ -589,7 +589,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 completion(.success(.fake()))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                XCTFail("Request to retrieve site summary stats should not be dispatched for sites without Jetpack")
+                XCTFail("Request to retrieve site summary stats should not be dispatched when sessions card is hidden")
                 completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
             default:
                 break
@@ -724,7 +724,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
                              AnalyticsCard(type: .orders, enabled: true),
                              AnalyticsCard(type: .products, enabled: true)]
-        XCTAssertFalse(vm.showSessionsCard)
+        XCTAssertFalse(vm.enabledCards.contains(.sessions))
         assertEqual(expectedCards, customizeAnalyticsVM.allCards)
     }
 }

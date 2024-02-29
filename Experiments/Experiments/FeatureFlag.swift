@@ -212,7 +212,7 @@ public enum FeatureFlag: Int {
     ///
     case connectivityTool
 
-    /// Enables filtering orders by product
+    /// Enables the Application Password tutorial
     ///
-    case filterOrdersByProduct
+    case appPasswordTutorial
 }

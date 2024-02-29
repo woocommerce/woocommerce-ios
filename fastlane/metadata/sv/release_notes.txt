@@ -1,1 +1,0 @@
-I vår senaste uppdatering har vi finjusterat inläsningen av ordrar och finslipat inloggningsprocessen för att göra din upplevelse ännu smidigare. Även om vi gillar att gå vidare och hålla saker och ting uppdaterade, så måste vi tyvärr meddela att vi inte längre har något stöd för iOS 15. Ta del av dessa justeringar och få en smidig appupplevelse!

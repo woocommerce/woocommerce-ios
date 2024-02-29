@@ -12,9 +12,21 @@ extension StatsTimeRangeV4 {
             return 31
         case .thisYear:
             return 12
-        case .custom:
-            // TODO: 11935 Calculate number of intervals
-            return 7
+        case let .custom(startDate, endDate):
+            let calendar = Calendar.current
+            let quantity: Int? = {
+                switch intervalGranularity {
+                case .hourly:
+                    calendar.dateComponents([.hour], from: startDate, to: endDate).hour
+                case .daily, .weekly:
+                    calendar.dateComponents([.day], from: startDate, to: endDate).day
+                case .monthly, .quarterly:
+                    calendar.dateComponents([.month], from: startDate, to: endDate).month
+                case .yearly:
+                    calendar.dateComponents([.year], from: startDate, to: endDate).year
+                }
+            }()
+            return quantity ?? 7
         }
     }
 

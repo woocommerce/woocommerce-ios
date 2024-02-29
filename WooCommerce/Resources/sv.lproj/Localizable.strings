@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-21 12:54:03+0000 */
+/* Translation-Revision-Date: 2024-02-24 10:26:10+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -1866,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Ansluter till WordPress.com";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "Ansluter till WordPress.com-servrar";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "Ansluter till en WordPress.com-webbplats";
 
@@ -1877,6 +1880,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Ansluter till ditt konto";
+
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "Ansluter till din webbplats";
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Ansluter din butik";
@@ -1893,6 +1899,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -3928,6 +3935,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "Internationella betalningar'";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "Internetanslutning";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Ogiltig e-postadress";
 
@@ -5064,6 +5074,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Det är bara webbplatsens ägare som kan hantera betalningsmetoderna för fraktetiketter. Kontakta %1$@ (%2$@) för att hantera betalningsmetoder.";
 
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Hoppsan! Det verkar vara ett problem med din jetpack-anslutning.\n\nMen oroa dig inte, vårt supportteam är här för att hjälpa dig. Kontakta oss så hjälper vi dig gärna.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "Hoppsan. Vi stötte på ett problem";
 
@@ -6021,6 +6034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Kontakta våra supporttekniker för att få svar på svåra frågor";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "Läs mer";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Läs våra tips på felsökning";
@@ -9583,6 +9599,21 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "Välj en produkttyp";
 
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "Beställningar";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "Produkter";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "Sessioner";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "Spara";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "Redigera";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Aktivera Jetpack Stats";
 
@@ -9845,8 +9876,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "Enheter";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "Klar";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Redigera annons";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "Hjälp";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Intressen";
@@ -9908,8 +9945,14 @@ which should be translated separately and considered part of this sentence. */
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Blaze-kampanj";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "Klar";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "Det gick inte att läsa in dina betalningsmetoder";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "Hjälp";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "Lär dig mer";
@@ -10709,6 +10752,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "Skanna streckkod";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "Skanna produkt";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Rabattkod";

@@ -360,7 +360,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
 
         if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) {
-            presentAppPasswordTutorial(for: siteURL, in: viewController)
+            presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
             presentAppPasswordAlert(error: error, for: siteURL, in: viewController)
         }
@@ -797,8 +797,8 @@ private extension AuthenticationManager {
 
     /// Presents Application Passwords tutorial before redirecting user to the site login using a web view.
     ///
-    private func presentAppPasswordTutorial(for siteURL: String, in viewController: UIViewController) {
-        let tutorialVC = ApplicationPasswordTutorialViewController()
+    private func presentAppPasswordTutorial(error: Error, for siteURL: String, in viewController: UIViewController) {
+        let tutorialVC = ApplicationPasswordTutorialViewController(error: error)
         tutorialVC.continueButtonTapped = { [weak self] in
             self?.presentApplicationPasswordWebView(for: siteURL, in: viewController)
         }

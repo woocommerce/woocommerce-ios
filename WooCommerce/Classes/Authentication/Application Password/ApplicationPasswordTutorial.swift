@@ -27,8 +27,8 @@ final class ApplicationPasswordTutorialViewController: UIHostingController<Appli
         }
     }
 
-    init() {
-        let view = ApplicationPasswordTutorial()
+    init(error: Error) {
+        let view = ApplicationPasswordTutorial(errorDescription: ApplicationPasswordTutorialViewModel.friendlyErrorMessage(for: error))
         super.init(rootView: view)
     }
 
@@ -49,10 +49,14 @@ struct ApplicationPasswordTutorial: View {
     ///
     var contactSupportButtonTapped: (() -> ())?
 
+    /// Friendly error description.
+    ///
+    let errorDescription: String
+
     var body: some View {
         VStack(spacing: .zero) {
             ScrollView {
-                Text(Localization.reason)
+                Text(errorDescription)
                     .subheadlineStyle()
                     .multilineTextAlignment(.center)
                     .padding([.bottom, .top])
@@ -107,7 +111,7 @@ private extension ApplicationPasswordTutorial {
         static let tutorial = NSLocalizedString("""
                                                 ⁃ Tap the continue button at the bottom to login directly into your site.
 
-                                                ⁃ Once logged in, approve the connection to give access to the woo app   like the in the image below.
+                                                ⁃ Once logged in, approve the connection to give access to the woo app like the in the image below.
                                                 """, comment: "Tutorial steps on the application password tutorial screen")
         static let contactSupport = NSLocalizedString("If you encounter any problem, contact us and we will happily assist you!",
                                                       comment: "Text to contact support in the application password tutorial screen")
@@ -122,6 +126,6 @@ private extension ApplicationPasswordTutorial {
 
 #Preview {
     NavigationStack {
-        ApplicationPasswordTutorial()
+        ApplicationPasswordTutorial(errorDescription: ApplicationPasswordTutorial.Localization.title)
     }
 }

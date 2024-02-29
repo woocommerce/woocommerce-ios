@@ -120,8 +120,6 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var descriptionLabel: UILabel!
 
-    @IBOutlet private weak var separatorView: UIView!
-
     /// Disabled by default. When active, image is constrained to 24pt
     @IBOutlet private var contentImageViewWidthConstraint: NSLayoutConstraint!
 
@@ -133,7 +131,6 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureImageView()
         configureContentStackView()
         configureTitleAndTextStackView()
-        configureSeparatorView()
         configureDefaultBackgroundConfiguration()
         configureSelectedBackground()
     }
@@ -191,7 +188,11 @@ extension ImageAndTitleAndTextTableViewCell {
 
         contentImageViewWidthConstraint.isActive = false
 
-        separatorView.isHidden = !viewModel.showsSeparator
+        if viewModel.showsSeparator {
+            showSeparator()
+        } else {
+            hideSeparator()
+        }
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {
@@ -303,13 +304,6 @@ private extension ImageAndTitleAndTextTableViewCell {
 
     func configureTitleAndTextStackView() {
         titleAndTextStackView.spacing = 2
-    }
-
-    func configureSeparatorView() {
-        // Hides the `UITableViewCell` separator and uses a custom separator view because the cell's separator inset cannot be
-        // easily adjusted based on layout margins for better tablet support.
-        hideSeparator()
-        separatorView.backgroundColor = .divider
     }
 
     func configureSelectedBackground() {

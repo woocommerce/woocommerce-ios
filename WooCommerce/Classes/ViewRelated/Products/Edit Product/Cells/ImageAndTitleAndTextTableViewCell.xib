@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -62,19 +61,9 @@
                             </stackView>
                         </subviews>
                     </stackView>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vVA-DE-nz2" userLabel="Separator View">
-                        <rect key="frame" x="16" y="89.5" width="288" height="0.5"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="0.5" id="eh2-QG-y5g"/>
-                        </constraints>
-                    </view>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailingMargin" secondItem="vVA-DE-nz2" secondAttribute="trailing" id="2h8-IB-b2e"/>
-                    <constraint firstItem="vVA-DE-nz2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="53e-uk-EbS"/>
                     <constraint firstItem="I1O-4G-30m" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="8IX-hW-PFy"/>
-                    <constraint firstAttribute="bottom" secondItem="vVA-DE-nz2" secondAttribute="bottom" id="IRr-9H-LBc"/>
                     <constraint firstAttribute="bottom" secondItem="I1O-4G-30m" secondAttribute="bottom" priority="998" constant="10" id="KGS-SG-1Y9"/>
                     <constraint firstItem="I1O-4G-30m" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="rNN-Ra-lRW"/>
                     <constraint firstAttribute="trailingMargin" secondItem="I1O-4G-30m" secondAttribute="trailing" priority="999" id="uPB-pm-qaR"/>
@@ -87,16 +76,10 @@
                 <outlet property="contentImageViewWidthConstraint" destination="hrc-Xu-yMN" id="eCJ-2n-6N2"/>
                 <outlet property="contentStackView" destination="I1O-4G-30m" id="ehz-kd-Cf7"/>
                 <outlet property="descriptionLabel" destination="afj-1k-DXC" id="elJ-NR-F1b"/>
-                <outlet property="separatorView" destination="vVA-DE-nz2" id="Dqf-4K-SLA"/>
                 <outlet property="titleAndTextStackView" destination="HHf-VV-Yya" id="PtG-04-hY3"/>
                 <outlet property="titleLabel" destination="6WI-8Q-5Qr" id="hfT-X6-mFX"/>
             </connections>
             <point key="canvasLocation" x="131.8840579710145" y="121.20535714285714"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-    </resources>
 </document>

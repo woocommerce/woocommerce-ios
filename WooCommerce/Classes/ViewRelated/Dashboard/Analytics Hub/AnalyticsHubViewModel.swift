@@ -482,11 +482,11 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newCardSettings in
                 guard let self else { return }
-                // If there are newly enabled cards, refresh the stats data
-                let newEnabledCards = newCardSettings.filter({ $0.enabled }).map({ $0.type })
-                if !newEnabledCards.allSatisfy(self.enabledCards.contains) {
+                // If there are newly enabled cards, fetch their data
+                let newlyEnabledCards = newCardSettings.filter({ $0.enabled && !self.enabledCards.contains($0.type) }).map({ $0.type })
+                if newlyEnabledCards.isNotEmpty {
                     Task {
-                        await self.updateData()
+                        await self.updateData(for: newlyEnabledCards)
                     }
                 }
             }.store(in: &subscriptions)

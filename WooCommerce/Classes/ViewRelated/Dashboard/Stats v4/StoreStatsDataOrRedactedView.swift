@@ -12,6 +12,8 @@ final class StoreStatsDataOrRedactedView: UIView {
         case redacted
         /// Store stats data are unavailable due to Jetpack-the-plugin, and a redacted view with Jetpack logo is shown.
         case redactedDueToJetpack
+        /// Store stats data are unavailable on Custom Date range, and an information icon is shown.
+        case redactedDueToCustomRange
     }
 
     @Published var state: State = .data
@@ -70,6 +72,8 @@ private extension StoreStatsDataOrRedactedView {
         switch state {
         case .redacted, .redactedDueToJetpack:
             redactedView.showJetpackImage = state == .redactedDueToJetpack
+        case .redactedDueToCustomRange:
+            redactedView.showInfoIcon = state == .redactedDueToCustomRange
         default:
             break
         }

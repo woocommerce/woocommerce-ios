@@ -11,6 +11,7 @@ enum SiteVisitStatsMode {
     case `default`
     case redactedDueToJetpack
     case hidden
+    case redactedDueToCustomRange
 }
 
 /// Shows the store stats with v4 API for a time range.

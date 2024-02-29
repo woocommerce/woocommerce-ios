@@ -218,6 +218,8 @@ private extension StoreStatsPeriodViewModel {
             return .redactedDueToJetpack
         case .hidden:
             return .redacted
+        case .redactedDueToCustomRange:
+            return .redactedDueToCustomRange
         }
     }
 
@@ -228,6 +230,8 @@ private extension StoreStatsPeriodViewModel {
         case .redactedDueToJetpack:
             return .redacted
         case .redacted:
+            return .redacted
+        case .redactedDueToCustomRange:
             return .redacted
         }
     }

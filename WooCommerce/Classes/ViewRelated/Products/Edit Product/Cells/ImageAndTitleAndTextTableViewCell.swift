@@ -287,7 +287,7 @@ private extension ImageAndTitleAndTextTableViewCell {
                                   showsSeparator: data.showsSeparator)
         updateUI(viewModel: viewModel)
     }
-    
+
     /// In `UITableViewCell`, the trait collection horizontal size class stays the same for the device regardless of the parent view size.
     /// As a workaround, it responds to `layoutMargins` changes and shows different separator inset based on the left margin.
     func updateSeparatorInset(layoutMargins: UIEdgeInsets) {

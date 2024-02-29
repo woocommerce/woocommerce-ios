@@ -358,16 +358,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
             return
         }
-        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
-            message: (error as NSError).localizedDescription,
-            defaultAction: { [weak self] in
-                guard let self else { return }
-                let webViewController = self.applicationPasswordWebView(for: siteURL)
-                viewController.navigationController?.pushViewController(webViewController, animated: true)
-                self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
-            }
-        )
-        viewController.present(alertController, animated: true)
+
+        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) {
+            presentAppPasswordTutorial(for: siteURL, in: viewController)
+        } else {
+            presentAppPasswordAlert(error: error, for: siteURL, in: viewController)
+        }
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -797,6 +793,28 @@ private extension AuthenticationManager {
             self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
         }
         self.postSiteCredentialLoginChecker = checker
+    }
+
+    /// Presents Application Passwords tutorial before redirecting user to the site login.
+    ///
+    private func presentAppPasswordTutorial(for siteURL: String, in viewController: UIViewController) {
+        let tutorialVC = ApplicationPasswordTutorialViewController()
+        viewController.show(tutorialVC, sender: viewController)
+    }
+
+    /// Presents login alert before redirecting user to the site login.
+    ///
+    private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
+        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: (error as NSError).localizedDescription,
+            defaultAction: { [weak self] in
+                guard let self else { return }
+                let webViewController = self.applicationPasswordWebView(for: siteURL)
+                viewController.navigationController?.pushViewController(webViewController, animated: true)
+                self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
+            }
+        )
+        viewController.present(alertController, animated: true)
     }
 }
 

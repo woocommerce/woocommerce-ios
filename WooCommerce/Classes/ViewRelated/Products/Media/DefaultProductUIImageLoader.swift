@@ -116,21 +116,17 @@ private extension DefaultProductUIImageLoader {
             phAssetImageLoader.requestImage(for: asset,
                                             targetSize: PHImageManagerMaximumSize,
                                             contentMode: .aspectFit,
-                                            options: nil) { (image, info) in
-                guard let image else {
+                                            options: nil) { [weak self] (image, info) in
+                guard let image, let self else {
                     return
                 }
-                Task { [weak self] in
-                    guard let self else { return }
-
+                Task {
                     await self.imageStorage.saveImage(image: image, id: productImage.imageID)
                 }
             }
         case .uiImage(let image, _, _):
-            Task { [weak self] in
-                guard let self else { return }
-
-                await self.imageStorage.saveImage(image: image, id: productImage.imageID)
+            Task {
+                await imageStorage.saveImage(image: image, id: productImage.imageID)
             }
         }
     }

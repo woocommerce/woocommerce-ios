@@ -359,7 +359,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) && error is SiteCredentialLoginError {
+        let isSiteCredentialError = (error as NSError).domain == SiteCredentialLoginError.errorDomain
+        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) && isSiteCredentialError {
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
             presentAppPasswordAlert(error: error, for: siteURL, in: viewController)

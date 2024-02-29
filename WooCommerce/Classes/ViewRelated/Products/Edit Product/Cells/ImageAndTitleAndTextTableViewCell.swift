@@ -123,6 +123,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     /// Disabled by default. When active, image is constrained to 24pt
     @IBOutlet private var contentImageViewWidthConstraint: NSLayoutConstraint!
 
+    private var showsSeparator: Bool = true
+
     private var cancellable: AnyCancellable?
 
     override func awakeFromNib() {
@@ -143,6 +145,11 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     override func updateConfiguration(using state: UICellConfigurationState) {
         super.updateConfiguration(using: state)
         updateDefaultBackgroundConfiguration(using: state)
+    }
+
+    override func layoutMarginsDidChange() {
+        super.layoutMarginsDidChange()
+        updateSeparatorInset(layoutMargins: layoutMargins)
     }
 }
 
@@ -189,10 +196,11 @@ extension ImageAndTitleAndTextTableViewCell {
         contentImageViewWidthConstraint.isActive = false
 
         if viewModel.showsSeparator {
-            showSeparator()
+            updateSeparatorInset(layoutMargins: layoutMargins)
         } else {
             hideSeparator()
         }
+        showsSeparator = viewModel.showsSeparator
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {
@@ -279,6 +287,18 @@ private extension ImageAndTitleAndTextTableViewCell {
                                   showsSeparator: data.showsSeparator)
         updateUI(viewModel: viewModel)
     }
+    
+    /// In `UITableViewCell`, the trait collection horizontal size class stays the same for the device regardless of the parent view size.
+    /// As a workaround, it responds to `layoutMargins` changes and shows different separator inset based on the left margin.
+    func updateSeparatorInset(layoutMargins: UIEdgeInsets) {
+        guard showsSeparator else {
+            return
+        }
+        let inset: UIEdgeInsets = layoutMargins.left > Layout.compactHorizontalSizeClassLayoutMargin ?
+            .init(top: 0, left: layoutMargins.left, bottom: 0, right: layoutMargins.right) :
+            .init(top: 0, left: 16, bottom: 0, right: 0)
+        showSeparator(inset: inset)
+    }
 }
 
 // MARK: Configurations
@@ -336,5 +356,11 @@ private extension ImageAndTitleAndTextTableViewCell.Style {
         default:
             return .firstBaseline
         }
+    }
+}
+
+private extension ImageAndTitleAndTextTableViewCell {
+    enum Layout {
+        static let compactHorizontalSizeClassLayoutMargin: CGFloat = 16
     }
 }

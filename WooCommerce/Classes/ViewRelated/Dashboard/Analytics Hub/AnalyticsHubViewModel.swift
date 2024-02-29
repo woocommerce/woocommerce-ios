@@ -27,10 +27,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
-    /// Whether the `customizeAnalyticsHub` feature flag is enabled
-    ///
-    let canCustomizeAnalytics: Bool
-
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
@@ -38,8 +34,7 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000,
-         canCustomizeAnalytics: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub)) {
+         backendProcessingDelay: UInt64 = 500_000_000) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -56,7 +51,6 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
-        self.canCustomizeAnalytics = canCustomizeAnalytics
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
         let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
@@ -126,8 +120,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// All analytics cards to display in the Analytics Hub.
     ///
     var enabledCards: [AnalyticsCard.CardType] {
-        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
-        return allCards.filter { card in
+        return allCardsWithSettings.filter { card in
             let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
             return card.enabled && canBeDisplayed
         }.map { $0.type }
@@ -668,10 +661,6 @@ extension AnalyticsHubViewModel {
     /// Setting this view model opens the view.
     ///
     func customizeAnalytics() {
-        guard canCustomizeAnalytics else {
-            return
-        }
-
         // Exclude any cards the merchant/store is ineligible for.
         let cardsToExclude: [AnalyticsCard] = [
             isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })

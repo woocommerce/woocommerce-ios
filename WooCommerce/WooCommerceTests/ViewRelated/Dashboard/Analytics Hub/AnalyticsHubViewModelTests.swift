@@ -755,7 +755,6 @@ private extension AnalyticsHubViewModelTests {
                               stores: stores ?? self.stores,
                               analytics: analytics,
                               noticePresenter: noticePresenter,
-                              backendProcessingDelay: 0,
-                              canCustomizeAnalytics: true)
+                              backendProcessingDelay: 0)
     }
 }

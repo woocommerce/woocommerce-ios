@@ -5,6 +5,7 @@
 - Orders: Merchants can now contact their customers through WhatsApp and Telegram apps. [https://github.com/woocommerce/woocommerce-ios/pull/12099]
 - [internal] Blaze: Use v1.1 endpoint to load campaigns list. [https://github.com/woocommerce/woocommerce-ios/pull/12127]
 - Orders: Merchants can filter orders by selecting a product. [https://github.com/woocommerce/woocommerce-ios/pull/12129]
+- [***] Stats: Merchants can now customize their analytics by enabling/disabling and reordering the cards in the Analytics Hub. [https://github.com/woocommerce/woocommerce-ios/pull/12156]
 
 
 17.5

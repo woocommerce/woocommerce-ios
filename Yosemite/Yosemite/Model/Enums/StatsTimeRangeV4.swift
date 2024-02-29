@@ -229,21 +229,11 @@ extension StatsTimeRangeV4 {
             return daysThisMonth?.count ?? 0
         case .thisYear:
             return 12
-        case let .custom(startDate, endDate):
-            let calendar = Calendar.current
-            let quantity: Int? = {
-                switch siteVisitStatsGranularity {
-                case .hour:
-                    calendar.dateComponents([.hour], from: startDate, to: endDate).hour
-                case .day, .week:
-                    calendar.dateComponents([.day], from: startDate, to: endDate).day
-                case .month, .quarter:
-                    calendar.dateComponents([.month], from: startDate, to: endDate).month
-                case .year:
-                    calendar.dateComponents([.year], from: startDate, to: endDate).year
-                }
-            }()
-            return quantity ?? 7
+        case .custom:
+            // Returns maximum value allowed for pagination,
+            // the plugin would return the maximum values available for the required granularity.
+            // https://developer.wordpress.org/rest-api/using-the-rest-api/pagination/
+            return 100
         }
     }
 }

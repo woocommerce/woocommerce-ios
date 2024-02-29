@@ -232,7 +232,7 @@ private extension StoreStatsPeriodViewModel {
         case .redacted:
             return .redacted
         case .redactedDueToCustomRange:
-            return .redacted
+            return .redactedDueToCustomRange
         }
     }
 

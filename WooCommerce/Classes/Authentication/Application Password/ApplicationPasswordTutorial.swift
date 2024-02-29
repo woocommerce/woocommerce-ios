@@ -5,6 +5,28 @@ import SwiftUI
 ///
 final class ApplicationPasswordTutorialViewController: UIHostingController<ApplicationPasswordTutorial> {
 
+    /// Assign it to react when the continue button is tapped.
+    ///
+    var continueButtonTapped: (() -> ())? {
+        get {
+            rootView.continueButtonTapped
+        }
+        set {
+            rootView.continueButtonTapped = newValue
+        }
+    }
+
+    /// Assign it to react when the contact support button is tapped.
+    ///
+    var contactSupportButtonTapped: (() -> ())? {
+        get {
+            rootView.contactSupportButtonTapped
+        }
+        set {
+            rootView.contactSupportButtonTapped = newValue
+        }
+    }
+
     init() {
         let view = ApplicationPasswordTutorial()
         super.init(rootView: view)

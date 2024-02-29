@@ -49,7 +49,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         case .monthly, .quarterly:
             return 60*60*12
         case .yearly:
-            return 60*60*24*15
+            return 60*60*24
         }
     }
 

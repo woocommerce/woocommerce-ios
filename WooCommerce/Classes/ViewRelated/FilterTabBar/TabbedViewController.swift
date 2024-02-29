@@ -120,6 +120,16 @@ class TabbedViewController: UIViewController {
         selection = tabPosition
         updateVisibleChildViewController(at: tabPosition)
     }
+
+    func replaceTab(at index: Int, with newTab: TabbedItem) {
+        let oldTab = items[index]
+        stackView.removeArrangedSubview(oldTab.viewController.view)
+        oldTab.viewController.removeFromParent()
+        oldTab.viewController.view.removeFromSuperview()
+        items.remove(at: index)
+
+        appendToTabBar(newTab)
+    }
 }
 
 private extension TabbedViewController {

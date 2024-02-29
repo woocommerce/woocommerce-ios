@@ -85,8 +85,9 @@ struct ProductSelectorView: View {
     /// Title for the view's navigation
     ///
     private var navigationTitle: String {
+        let narrowView = (horizontalSizeClass == .compact || isViewWidthNarrowerThanConstantRowWidth)
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
-              isViewWidthNarrowerThanConstantRowWidth else {
+              narrowView else {
             return configuration.title
         }
         return viewModel.selectProductsTitle

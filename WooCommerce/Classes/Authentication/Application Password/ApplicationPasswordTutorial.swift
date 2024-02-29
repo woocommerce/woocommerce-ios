@@ -82,12 +82,12 @@ struct ApplicationPasswordTutorial: View {
             VStack {
 
                 Button(Localization.continueTitle) {
-                    print("Continue tapped")
+                    continueButtonTapped?()
                 }
                 .buttonStyle(PrimaryButtonStyle())
 
                 Button(Localization.contactSupportTitle) {
-                    print("Contact support tapped")
+                    contactSupportButtonTapped?()
                 }
                 .buttonStyle(SecondaryButtonStyle())
             }

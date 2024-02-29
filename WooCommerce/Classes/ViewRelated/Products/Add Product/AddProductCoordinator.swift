@@ -114,9 +114,9 @@ final class AddProductCoordinator: Coordinator {
     func start() {
         switch source {
         case .productsTab:
-                analytics.track(event: .ProductsOnboarding
-                    .productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible,
-                                                       horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            analytics.track(event: .ProductsOnboarding
+                .productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible,
+                                                   horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         default:
             break
         }

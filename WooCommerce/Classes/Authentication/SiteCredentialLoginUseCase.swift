@@ -7,7 +7,7 @@ protocol SiteCredentialLoginProtocol {
     func handleLogin(username: String, password: String)
 }
 
-enum SiteCredentialLoginError: Error {
+enum SiteCredentialLoginError: LocalizedError {
     static let errorDomain = "SiteCredentialLogin"
     case loginFailed(message: String)
     case invalidLoginResponse
@@ -61,6 +61,10 @@ enum SiteCredentialLoginError: Error {
         case .genericFailure:
             return ""
         }
+    }
+
+    var errorDescription: String? {
+        underlyingError.localizedDescription
     }
 
     private enum Localization {

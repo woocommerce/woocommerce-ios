@@ -232,7 +232,7 @@ final class AnalyticsHubViewModel: ObservableObject {
             try await remoteEnableJetpackStats()
             // Wait for backend to enable the module (it is not ready for stats to be requested immediately after a success response)
             try await Task.sleep(nanoseconds: backendProcessingDelay)
-            await updateData()
+            await updateData(for: [.sessions])
         } catch {
             noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
             DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")

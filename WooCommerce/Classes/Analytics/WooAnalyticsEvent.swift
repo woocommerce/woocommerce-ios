@@ -401,9 +401,10 @@ extension WooAnalyticsEvent {
             static let hasChangedData = "has_changed_data"
         }
 
-        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
+        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
-                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules])
+                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules,
+                                                                           "horizontal_size_class": horizontalSizeClass.nameForAnalytics])
         }
 
         /// Tracks when the merchant previews a product draft.
@@ -2564,6 +2565,7 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case type
             case templateEligible = "template_eligible"
+            case horizontalSizeClass = "horizontal_size_class"
         }
 
         enum CreationType: String {
@@ -2577,8 +2579,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
         }
 
-        static func productListAddProductButtonTapped(templateEligible: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible])
+        static func productListAddProductButtonTapped(templateEligible: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible,
+                                                                                   Keys.horizontalSizeClass.rawValue: horizontalSizeClass.nameForAnalytics])
         }
     }
 }

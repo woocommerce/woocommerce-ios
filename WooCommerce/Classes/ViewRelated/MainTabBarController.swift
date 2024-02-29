@@ -271,7 +271,8 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Orders.ordersSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .products:
-            ServiceLocator.analytics.track(.productListSelected)
+            ServiceLocator.analytics.track(
+                event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
             break
@@ -288,7 +289,8 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Orders.ordersReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .products:
-            ServiceLocator.analytics.track(.productListReselected)
+            ServiceLocator.analytics.track(
+                event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break

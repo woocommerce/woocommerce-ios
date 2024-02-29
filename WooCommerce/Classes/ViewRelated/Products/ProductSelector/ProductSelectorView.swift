@@ -38,6 +38,11 @@ struct ProductSelectorView: View {
     ///
     @Binding var isPresented: Bool
 
+    /// Defines whether the Product Selector View's width is less than the predefined row's width threshold
+    /// Used so we can render a different style despite the environment's size class
+    ///
+    @State var isViewWidthNarrowerThanConstantRowWidth: Bool = false
+
     /// View model to drive the view.
     ///
     @ObservedObject var viewModel: ProductSelectorViewModel
@@ -71,9 +76,21 @@ struct ProductSelectorView: View {
         guard viewModel.totalSelectedItemsCount > 0 else {
             return Localization.doneButton
         }
-        return String.pluralize(viewModel.totalSelectedItemsCount,
-                                singular: configuration.doneButtonTitleSingularFormat,
-                                plural: configuration.doneButtonTitlePluralFormat)
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return viewModel.selectProductsTitle
+        }
+        return Localization.addProductsText
+    }
+
+    /// Title for the view's navigation
+    ///
+    private var navigationTitle: String {
+        let narrowView = (horizontalSizeClass == .compact || isViewWidthNarrowerThanConstantRowWidth)
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
+              narrowView else {
+            return configuration.title
+        }
+        return viewModel.selectProductsTitle
     }
 
     var body: some View {
@@ -150,7 +167,7 @@ struct ProductSelectorView: View {
             }
         }
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
-        .navigationTitle(configuration.title)
+        .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -339,6 +356,12 @@ private extension ProductSelectorView {
                 .fixedSize()
             }
             .padding(.horizontal, insets: safeAreaInsets)
+            .onAppear(perform: {
+                adjustViewWidthIfNeeded(using: geometry.size.width)
+            })
+            .onChange(of: geometry.size.width) { newViewWidth in
+                adjustViewWidthIfNeeded(using: newViewWidth)
+            }
         }
         .frame(height: Constants.minimumRowHeight * scale)
         .background(Color(.listForeground(modal: false)))
@@ -364,6 +387,16 @@ private extension ProductSelectorView {
         // so we need to set a desired height for this view.
         .frame(height: Constants.minimumRowHeight * scale)
         .background(Color(.listForeground(modal: false)))
+    }
+}
+
+extension ProductSelectorView {
+    func adjustViewWidthIfNeeded(using viewWidth: CGFloat) {
+        if viewWidth <= Constants.headerSearchRowWidth {
+            isViewWidthNarrowerThanConstantRowWidth = true
+        } else {
+            isViewWidthNarrowerThanConstantRowWidth = false
+        }
     }
 }
 
@@ -406,6 +439,10 @@ private extension ProductSelectorView {
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
         static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
+        static let addProductsText = NSLocalizedString(
+            "productselectorview.doneButtonTitle.addProductsText",
+            value: "Add Products",
+            comment: "Button to submit selected products to the order, when some product has been selected.")
     }
 }
 

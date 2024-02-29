@@ -678,7 +678,6 @@ platform :ios do
       distribute_external: true,
       # If there is a build waiting for beta review, we want to reject that so the new build can be submitted instead
       reject_build_waiting_for_review: true,
-      # These three groups are the same for iOS and Mac
       groups: ['Internal a8c beta testers', 'Public Beta Testers']
     )
     sh('cd .. && rm WooCommerce.ipa')

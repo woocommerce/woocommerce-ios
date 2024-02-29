@@ -77,9 +77,7 @@ struct ProductSelectorView: View {
             return Localization.doneButton
         }
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
-            return String.pluralize(viewModel.totalSelectedItemsCount,
-                                    singular: configuration.doneButtonTitleSingularFormat,
-                                    plural: configuration.doneButtonTitlePluralFormat)
+            return viewModel.selectProductsTitle
         }
         return Localization.addProductsText
     }

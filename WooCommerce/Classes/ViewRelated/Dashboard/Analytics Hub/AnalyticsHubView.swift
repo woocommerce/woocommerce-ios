@@ -113,7 +113,6 @@ struct AnalyticsHubView: View {
                 } label: {
                     Text(Localization.editButton)
                 }
-                .renderedIf(viewModel.canCustomizeAnalytics)
             }
         }
         .sheet(item: $viewModel.customizeAnalyticsViewModel) { customizeViewModel in

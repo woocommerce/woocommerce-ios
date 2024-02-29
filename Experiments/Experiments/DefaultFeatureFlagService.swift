@@ -89,8 +89,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .customRangeInMyStoreAnalytics:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .customizeAnalyticsHub:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .useURLSessionInWordPressKit:
             return buildConfig != .appStore
         case .connectivityTool:

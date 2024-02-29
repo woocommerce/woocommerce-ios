@@ -35,24 +35,11 @@ private extension CustomRangeTabCreationCoordinator {
             datesFormatter: DatesFormatter(),
             customApplyButtonTitle: buttonTitle,
             datesSelected: { [weak self] start, end in
-                guard let self else { return }
-                guard start < end else {
-                    self.presentInvalidTimeRangeAlert()
-                    return
-                }
-                self.onDateRangeSelected(start, end)
+                self?.onDateRangeSelected(start, end)
             }
         )
 
         navigationController.present(controller, animated: true)
-    }
-
-    func presentInvalidTimeRangeAlert() {
-        let alert = UIAlertController(title: Localization.InvalidTimeRangeAlert.title,
-                                      message: Localization.InvalidTimeRangeAlert.message,
-                                      preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: Localization.InvalidTimeRangeAlert.action, style: .cancel))
-        navigationController.present(alert, animated: true)
     }
 
     /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
@@ -76,22 +63,5 @@ private extension CustomRangeTabCreationCoordinator {
             value: "Add",
             comment: "Button in date range picker to add a Custom Range tab"
         )
-        enum InvalidTimeRangeAlert {
-            static let title = NSLocalizedString(
-                "customRangeTabCreationCoordinator.invalidTimeRangeAlert.title",
-                value: "Invalid time range",
-                comment: "Title of the alert displayed when selecting an invalid time range for My Store Analytics"
-            )
-            static let message = NSLocalizedString(
-                "customRangeTabCreationCoordinator.invalidTimeRangeAlert.message",
-                value: "The start date should be earlier than the end date. Please select a different time range.",
-                comment: "Message of the alert displayed when selecting an invalid time range for My Store Analytics"
-            )
-            static let action = NSLocalizedString(
-                "customRangeTabCreationCoordinator.invalidTimeRangeAlert.action",
-                value: "Got It",
-                comment: "Button to dismiss the alert displayed when selecting an invalid time range for My Store Analytics"
-            )
-        }
     }
 }

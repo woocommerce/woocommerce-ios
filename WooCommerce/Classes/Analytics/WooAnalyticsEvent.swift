@@ -2642,6 +2642,8 @@ extension WooAnalyticsEvent {
             case report
             case period
             case compare
+            case enabledCards = "enabled_cards"
+            case disabledCards = "disabled_cards"
         }
 
         /// Tracks when the "See more" button is tapped in My Store, to open the Analytics Hub.
@@ -2703,6 +2705,21 @@ extension WooAnalyticsEvent {
                 Keys.report.rawValue: report.rawValue,
                 Keys.period.rawValue: period.tracksIdentifier,
                 Keys.compare.rawValue: "previous_period" // For now this is the only compare option in the app
+            ])
+        }
+
+        /// Tracks when the Analytics Hub settings ("Customize Analytics") are opened.
+        ///
+        static func customizeAnalyticsOpened() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubSettingsOpened, properties: [:])
+        }
+
+        /// Tracks when the Analytics Hub settings ("Customize Analytics) are saved.
+        ///
+        static func customizeAnalyticsSaved(cards: [AnalyticsCard]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubSettingsSaved, properties: [
+                Keys.enabledCards.rawValue: cards.filter { $0.enabled }.map { $0.type.rawValue }.joined(separator: ","),
+                Keys.disabledCards.rawValue: cards.filter { !$0.enabled }.map { $0.type.rawValue }.joined(separator: ",")
             ])
         }
     }

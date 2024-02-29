@@ -4,6 +4,8 @@ import Yosemite
 /// View model for `AnalyticsHubCustomizeView`.
 final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
 
+    private let analytics: Analytics
+
     /// Ordered array of all available analytics cards.
     ///
     @Published var allCards: [AnalyticsCard]
@@ -40,6 +42,7 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
     ///   - onSave: Optional closure to perform when the changes are saved.
     init(allCards: [AnalyticsCard],
          cardsToExclude: [AnalyticsCard] = [],
+         analytics: Analytics = ServiceLocator.analytics,
          onSave: (([AnalyticsCard]) -> Void)? = nil) {
         self.excludedCards = cardsToExclude
         let availableCards = AnalyticsHubCustomizeViewModel.availableCards(from: allCards, excluding: cardsToExclude)
@@ -53,6 +56,7 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
         self.originalSelection = selectedCards
 
         self.onSave = onSave
+        self.analytics = analytics
     }
 
     /// Assembles the new selections and order into an updated set of cards.
@@ -62,6 +66,8 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
         var updatedCards = allCards.map { card in
             card.copy(enabled: selectedCards.contains(card))
         }
+
+        analytics.track(event: .AnalyticsHub.customizeAnalyticsSaved(cards: updatedCards))
 
         // Add back any cards that were excluded
         updatedCards.append(contentsOf: excludedCards)

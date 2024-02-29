@@ -184,6 +184,12 @@ public enum AppSettingsAction: Action {
 
     case loadLastSelectedStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
 
+    // MARK: - Stats custom time range tab
+
+    case setCustomStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    case loadCustomStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
     /// Loads whether the user finished an IPP transaction for the given siteID
     ///
     case loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void)

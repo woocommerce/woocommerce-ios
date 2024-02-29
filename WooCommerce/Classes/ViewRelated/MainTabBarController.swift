@@ -722,7 +722,7 @@ private extension MainTabBarController {
                                                                 siteID: error.siteID,
                                                                 forceReadOnly: false)
         let productNavController = WooNavigationController(rootViewController: productViewController)
-        productsNavigationController.present(productNavController, animated: true)
+        rootTabViewController(tab: .products).present(productNavController, animated: true)
     }
 }
 

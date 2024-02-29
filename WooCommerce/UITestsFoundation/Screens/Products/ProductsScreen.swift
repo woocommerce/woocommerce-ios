@@ -100,7 +100,8 @@ public final class ProductsScreen: ScreenObject {
     public func verifyProductList(products: [ProductData]) throws -> Self {
         app.assertTextVisibilityCount(textToFind: products[0].name, expectedCount: 1)
         app.assertElement(matching: products[0].name, existsOnCellWithIdentifier: products[0].stock_status)
-        XCTAssertEqual(products.count, app.tables.cells.count, "Expected '\(products.count)' products but found '\(app.tables.cells.count)' instead!")
+        let productListTable = app.tables["products-table-view"]
+        XCTAssertEqual(products.count, productListTable.cells.count, "Expected '\(products.count)' products but found '\(productListTable.cells.count)' instead!")
 
         return self
     }

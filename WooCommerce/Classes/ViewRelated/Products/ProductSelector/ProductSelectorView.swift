@@ -355,12 +355,11 @@ private extension ProductSelectorView {
                 .fixedSize()
             }
             .padding(.horizontal, insets: safeAreaInsets)
+            .onAppear(perform: {
+                adjustViewWidthIfNeeded(using: geometry.size.width)
+            })
             .onChange(of: geometry.size.width) { newViewWidth in
-                if newViewWidth <= Constants.headerSearchRowWidth {
-                    isViewWidthNarrowerThanConstantRowWidth = true
-                } else {
-                    isViewWidthNarrowerThanConstantRowWidth = false
-                }
+                adjustViewWidthIfNeeded(using: newViewWidth)
             }
         }
         .frame(height: Constants.minimumRowHeight * scale)
@@ -387,6 +386,16 @@ private extension ProductSelectorView {
         // so we need to set a desired height for this view.
         .frame(height: Constants.minimumRowHeight * scale)
         .background(Color(.listForeground(modal: false)))
+    }
+}
+
+extension ProductSelectorView {
+    func adjustViewWidthIfNeeded(using viewWidth: CGFloat) {
+        if viewWidth <= Constants.headerSearchRowWidth {
+            isViewWidthNarrowerThanConstantRowWidth = true
+        } else {
+            isViewWidthNarrowerThanConstantRowWidth = false
+        }
     }
 }
 

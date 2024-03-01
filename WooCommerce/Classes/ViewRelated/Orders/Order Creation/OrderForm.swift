@@ -245,6 +245,7 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
+                                Divider()
                                 AddOrderComponentsSection(
                                     viewModel: viewModel.paymentDataViewModel,
                                     shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
@@ -254,6 +255,7 @@ struct OrderForm: View {
                                 .sheet(isPresented: $shouldShowShippingLineDetails) {
                                     ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
                                 }
+                                Divider()
                             }
 
                             Spacer(minLength: Layout.sectionSpacing)

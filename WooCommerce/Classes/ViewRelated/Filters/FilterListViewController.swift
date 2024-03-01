@@ -58,6 +58,8 @@ enum FilterListValueSelectorConfig {
     case ordersStatuses(allowedStatuses: [OrderStatus])
     // Filter list selector for date range
     case ordersDateRange
+    // Filter list selector for products
+    case products(siteID: Int64)
 }
 
 /// Contains data for rendering a filter type row.
@@ -248,6 +250,37 @@ private extension FilterListViewController {
                     self.listSelector.reloadData()
                 }
                 self.listSelector.navigationController?.pushViewController(datesFilterVC, animated: true)
+            case .products(let siteID):
+                let selectedProductID: [Int64] = {
+                    guard let filter = selected.selectedValue as? FilterOrdersByProduct else {
+                        return []
+                    }
+                    return [filter.id]
+                }()
+
+                let controller: WooNavigationController = {
+                    let productSelectorViewModel = ProductSelectorViewModel(
+                        siteID: siteID,
+                        selectedItemIDs: selectedProductID,
+                        onProductSelectionStateChanged: { [weak self] product in
+                            guard let self else { return }
+
+                            selected.selectedValue = FilterOrdersByProduct(id: product.productID, name: product.name)
+                            self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                            self.listSelector.reloadData()
+                            self.listSelector.navigationController?.dismiss(animated: true)
+                        },
+                        onCloseButtonTapped: { [weak self] in
+                            guard let self else { return }
+
+                            self.listSelector.navigationController?.dismiss(animated: true)
+                        }
+                    )
+                    return WooNavigationController(rootViewController: ProductSelectorViewController(configuration: .configurationForOrder,
+                                                                                                     source: .orderFilter,
+                                                                                                     viewModel: productSelectorViewModel))
+                }()
+                self.listSelector.navigationController?.present(controller, animated: true)
             }
         }
     }

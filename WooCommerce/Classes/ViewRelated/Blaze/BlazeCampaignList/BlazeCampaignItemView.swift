@@ -1,5 +1,5 @@
 import SwiftUI
-import struct Yosemite.BlazeCampaign
+import struct Yosemite.BlazeCampaignListItem
 import Kingfisher
 
 /// View to display basic details for a Blaze campaign.
@@ -8,10 +8,10 @@ struct BlazeCampaignItemView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    private let campaign: BlazeCampaign
+    private let campaign: BlazeCampaignListItem
     private let showBudget: Bool
 
-    init(campaign: BlazeCampaign,
+    init(campaign: BlazeCampaignListItem,
          showBudget: Bool = true) {
         self.campaign = campaign
         self.showBudget = showBudget
@@ -22,7 +22,7 @@ struct BlazeCampaignItemView: View {
             AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .center, spacing: Layout.contentSpacing) {
                 // campaign image
                 VStack {
-                    KFImage(URL(string: campaign.contentImageURL ?? ""))
+                    KFImage(URL(string: campaign.imageURL ?? ""))
                         .placeholder {
                             Image(uiImage: .productPlaceholderImage)
                         }
@@ -63,7 +63,7 @@ struct BlazeCampaignItemView: View {
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(Localization.impressions)
                         .subheadlineStyle()
-                    Text("\(campaign.totalImpressions)")
+                    Text("\(campaign.impressions)")
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
@@ -75,7 +75,7 @@ struct BlazeCampaignItemView: View {
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(Localization.clicks)
                         .subheadlineStyle()
-                    Text("\(campaign.totalClicks)")
+                    Text("\(campaign.clicks)")
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
@@ -87,7 +87,7 @@ struct BlazeCampaignItemView: View {
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(Localization.budget)
                         .subheadlineStyle()
-                    Text(String(format: "%.0f", campaign.budgetCents / Constants.centsToUnit))
+                    Text(String(format: "%.0f", campaign.totalBudget))
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
@@ -137,16 +137,18 @@ private extension BlazeCampaignItemView {
 }
 
 struct BlazeCampaignItemView_Previews: PreviewProvider {
-    static let campaign: BlazeCampaign = .init(siteID: 123,
-                                               campaignID: 11,
-                                               productID: 33,
-                                               name: "Fluffy bunny pouch",
-                                               uiStatus: BlazeCampaign.Status.finished.rawValue,
-                                               contentImageURL: nil,
-                                               contentClickURL: nil,
-                                               totalImpressions: 112,
-                                               totalClicks: 22,
-                                               budgetCents: 500)
+    static let campaign: BlazeCampaignListItem = .init(siteID: 123,
+                                                        campaignID: "11",
+                                                        productID: 33,
+                                                        name: "Fluffy bunny pouch",
+                                                        textSnippet: "Buy now!",
+                                                        uiStatus: BlazeCampaignListItem.Status.finished.rawValue,
+                                                        imageURL: nil,
+                                                        targetUrl: nil,
+                                                        impressions: 112,
+                                                        clicks: 22,
+                                                        totalBudget: 35,
+                                                        spentBudget: 4)
     static var previews: some View {
         BlazeCampaignItemView(campaign: campaign)
     }

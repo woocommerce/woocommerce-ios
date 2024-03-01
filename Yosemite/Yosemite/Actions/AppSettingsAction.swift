@@ -43,6 +43,7 @@ public enum AppSettingsAction: Action {
     case upsertOrdersSettings(siteID: Int64,
                               orderStatusesFilter: [OrderStatusEnum]?,
                               dateRangeFilter: OrderDateRangeFilter?,
+                              productFilter: FilterOrdersByProduct?,
                               onCompletion: (Error?) -> Void)
 
     /// Clears all the orders settings
@@ -183,6 +184,12 @@ public enum AppSettingsAction: Action {
 
     case loadLastSelectedStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
 
+    // MARK: - Stats custom time range tab
+
+    case setCustomStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    case loadCustomStatsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
     /// Loads whether the user finished an IPP transaction for the given siteID
     ///
     case loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void)
@@ -240,4 +247,14 @@ public enum AppSettingsAction: Action {
 
     /// Loads the selected tax rate to be applied to orders. This is site-specific.
     case loadSelectedTaxRateID(siteID: Int64, onCompletion: (Int64?) -> Void)
+
+    // MARK: - Analytics Hub Cards
+
+    /// Stores an ordered array of cards for the Analytics Hub.
+    ///
+    case setAnalyticsHubCards(siteID: Int64, cards: [AnalyticsCard])
+
+    /// Loads the stored, ordered array of cards for the Analytics Hub.
+    ///
+    case loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void)
 }

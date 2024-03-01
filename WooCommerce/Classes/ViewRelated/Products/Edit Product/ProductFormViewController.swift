@@ -94,13 +94,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     ///
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
 
+    private let onDeleteCompletion: () -> Void
+
     init(viewModel: ViewModel,
          isAIContent: Bool = false,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         onDeleteCompletion: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.isAIContent = isAIContent
         self.eventLogger = eventLogger
@@ -110,6 +113,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.productImageUploader = productImageUploader
+        self.onDeleteCompletion = onDeleteCompletion
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
@@ -282,12 +286,21 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     // MARK: Navigation actions
 
-    @objc func closeNavigationBarButtonTapped() {
+    /// Closes the product form if the product has no unsaved changes or the user chooses to discard the changes.
+    /// - Parameters:
+    ///   - completion: Called when the product form is closed.
+    ///   - onCancel: Called when the user chooses not to close the form from the confirmation alert.
+    func close(completion: @escaping () -> Void = {}, onCancel: @escaping () -> Void = {}) {
         guard viewModel.hasUnsavedChanges() == false else {
-            presentBackNavigationActionSheet()
+            presentBackNavigationActionSheet(onDiscard: completion, onCancel: onCancel)
             return
         }
         exitForm()
+        completion()
+    }
+
+    @objc private func closeNavigationBarButtonTapped() {
+        close()
     }
 
     // MARK: Action Sheet
@@ -560,6 +573,8 @@ private extension ProductFormViewController {
 
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
+        tableView.accessibilityIdentifier = "product-form"
+        tableView.cellLayoutMarginsFollowReadableWidth = true
 
         tableView.backgroundColor = .listForeground(modal: false)
         tableView.removeLastCellSeparator()
@@ -1080,6 +1095,7 @@ private extension ProductFormViewController {
                 self.navigationController?.dismiss(animated: true, completion: nil)
                 // Dismiss or Pop the Product Form
                 self.dismissOrPopViewController()
+                self.onDeleteCompletion()
             case .failure(let error):
                 DDLogError("⛔️ Error deleting Product: \(error)")
 
@@ -1254,18 +1270,27 @@ extension ProductFormViewController: KeyboardScrollable {
 // MARK: - Navigation actions handling
 //
 private extension ProductFormViewController {
-    func presentBackNavigationActionSheet() {
+    func presentBackNavigationActionSheet(onDiscard: @escaping () -> Void = {}, onCancel: @escaping () -> Void = {}) {
+        let exitForm: () -> Void = {
+            presentationStyle.createExitForm(viewController: self, completion: onDiscard)
+        }()
+        let viewControllerToPresentAlert = navigationController?.topViewController ?? self
         switch viewModel.formType {
         case .add:
-            UIAlertController.presentDiscardNewProductActionSheet(viewController: self,
+            UIAlertController.presentDiscardNewProductActionSheet(viewController: viewControllerToPresentAlert,
                                                                   onSaveDraft: { [weak self] in
-                                                                    self?.saveProductAsDraft()
-                }, onDiscard: { [weak self] in
-                    self?.exitForm()
+                self?.saveProductAsDraft()
+            }, onDiscard: {
+                exitForm()
+            }, onCancel: {
+                onCancel()
             })
         case .edit:
-            UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-                self?.exitForm()
+            UIAlertController.presentDiscardChangesActionSheet(viewController: viewControllerToPresentAlert,
+                                                               onDiscard: {
+                exitForm()
+            }, onCancel: {
+                onCancel()
             })
         case .readonly:
             break

@@ -12,32 +12,19 @@ extension UITableViewCell {
         return classNameWithoutNamespaces
     }
 
-    private func defaultBackgroundConfiguration(style: UITableView.Style = .grouped) -> UIBackgroundConfiguration {
-        var backgroundConfiguration: UIBackgroundConfiguration
-
-        if #available(iOS 16.0, *) {
-            backgroundConfiguration = defaultBackgroundConfiguration()
-        } else {
-            if style == .plain {
-                backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
-            }
-            else {
-                backgroundConfiguration = UIBackgroundConfiguration.listGroupedCell()
-            }
-        }
-        return backgroundConfiguration
-    }
-
     /// Configures the default background configuration
-    func configureDefaultBackgroundConfiguration(style: UITableView.Style = .grouped) {
-        var backgroundConfiguration = defaultBackgroundConfiguration(style: style)
+    func configureDefaultBackgroundConfiguration() {
+        var backgroundConfiguration = defaultBackgroundConfiguration()
         backgroundConfiguration.backgroundColor = .listForeground(modal: false)
         self.backgroundConfiguration = backgroundConfiguration
     }
 
     /// Updates the default background configuration
     func updateDefaultBackgroundConfiguration(using state: UICellConfigurationState, style: UITableView.Style = .grouped) {
-        var backgroundConfiguration = defaultBackgroundConfiguration(style: style).updated(for: state)
+        var backgroundConfiguration = defaultBackgroundConfiguration().updated(for: state)
+        if style == .grouped {
+            backgroundConfiguration.backgroundColor = .listForeground(modal: false)
+        }
 
         if state.isSelected || state.isHighlighted {
             backgroundConfiguration.backgroundColor = .listSelectedBackground

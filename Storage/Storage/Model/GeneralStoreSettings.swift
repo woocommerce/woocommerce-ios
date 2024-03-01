@@ -44,11 +44,17 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in store stats.
     public var lastSelectedStatsTimeRange: String
 
+    /// The raw value string of `StatsTimeRangeV4` that indicates the custom time range tab in store stats.
+    public var customStatsTimeRange: String
+
     /// We keep the dates of the first In Person Payments transactions using this phone/store/reader combination for
     public let firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date]
 
     /// The selected tax rate to apply to the orders
     public let selectedTaxRateID: Int64?
+
+    /// The set of cards for the Analytics Hub, with their enabled status and sort order.
+    public let analyticsHubCards: [AnalyticsCard]?
 
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
@@ -57,8 +63,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 preferredInPersonPaymentGateway: String? = nil,
                 skippedCashOnDeliveryOnboardingStep: Bool = false,
                 lastSelectedStatsTimeRange: String = "",
+                customStatsTimeRange: String = "",
                 firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date] = [:],
-                selectedTaxRateID: Int64? = nil) {
+                selectedTaxRateID: Int64? = nil,
+                analyticsHubCards: [AnalyticsCard]? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -66,8 +74,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.preferredInPersonPaymentGateway = preferredInPersonPaymentGateway
         self.skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep
         self.lastSelectedStatsTimeRange = lastSelectedStatsTimeRange
+        self.customStatsTimeRange = customStatsTimeRange
         self.firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType
         self.selectedTaxRateID = selectedTaxRateID
+        self.analyticsHubCards = analyticsHubCards
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -78,8 +88,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              preferredInPersonPaymentGateway: preferredInPersonPaymentGateway,
                              skippedCashOnDeliveryOnboardingStep: skippedCashOnDeliveryOnboardingStep,
                              lastSelectedStatsTimeRange: lastSelectedStatsTimeRange,
+                             customStatsTimeRange: customStatsTimeRange,
                              firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
-                             selectedTaxRateID: nil)
+                             selectedTaxRateID: nil,
+                             analyticsHubCards: analyticsHubCards)
     }
 }
 
@@ -97,9 +109,11 @@ extension GeneralStoreSettings {
         self.preferredInPersonPaymentGateway = try container.decodeIfPresent(String.self, forKey: .preferredInPersonPaymentGateway)
         self.skippedCashOnDeliveryOnboardingStep = try container.decodeIfPresent(Bool.self, forKey: .skippedCashOnDeliveryOnboardingStep) ?? false
         self.lastSelectedStatsTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedStatsTimeRange) ?? ""
+        self.customStatsTimeRange = try container.decodeIfPresent(String.self, forKey: .customStatsTimeRange) ?? ""
         self.firstInPersonPaymentsTransactionsByReaderType = try container.decodeIfPresent([CardReaderType: Date].self,
                                                                                            forKey: .firstInPersonPaymentsTransactionsByReaderType) ?? [:]
         self.selectedTaxRateID = try container.decodeIfPresent(Int64.self, forKey: .selectedTaxRateID)
+        self.analyticsHubCards = try container.decodeIfPresent([AnalyticsCard].self, forKey: .analyticsHubCards)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

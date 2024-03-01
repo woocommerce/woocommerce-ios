@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 17.5
+Our latest update brings under-the-hood improvements to enhance both stability and performance. But that's not all – we're also hard at work on some cool new features that we can't wait to share with you in future releases. Stay tuned for future updates as we continue to fine-tune and elevate your experience!
+
+## 17.4
+We've fine-tuned the loading of orders and polished up the login process to make your experience even smoother in our latest update. While we're all about moving forward and keeping things fresh, please note that we've had to wave goodbye to iOS 15 support. Dive in to enjoy these tweaks and keep your app experience breezy!
+
 ## 17.3
 We've turbocharged your WooCommerce experience! Now, product images load at lightning speed thanks to our new caching magic, making shopping smoother than ever. Dive deep into your business insights with direct links to full analytics reports right from the Analytics Hub! Plus, we're spilling the beans on where your orders are coming from with shiny new attribution info in order details. And guess what? Starting with WooCommerce 8.7.0, every order comes with a printable receipt. Get ready to zoom ahead! 
 

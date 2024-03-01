@@ -47,6 +47,10 @@ struct RangedDatePicker: View {
     ///
     @State private var endDate: Date
 
+    /// Whether to display the alert for invalid date range
+    ///
+    @State private var shouldShowInvalidDateRangeAlert = false
+
     /// Type to format the subtitle range.
     ///
     private let datesFormatter: RangedDateTextFormatter
@@ -114,6 +118,10 @@ struct RangedDatePicker: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
+                        guard startDate < endDate else {
+                            shouldShowInvalidDateRangeAlert = true
+                            return
+                        }
                         presentation.wrappedValue.dismiss()
                         datesSelected?(startDate, endDate)
                     }, label: {
@@ -131,6 +139,14 @@ struct RangedDatePicker: View {
         }
         .navigationViewStyle(.stack)
         .wooNavigationBarStyle()
+        .alert(Localization.InvalidTimeRangeAlert.title, isPresented: $shouldShowInvalidDateRangeAlert) {
+            Button(Localization.InvalidTimeRangeAlert.action) {
+                shouldShowInvalidDateRangeAlert = false
+            }
+        } message: {
+            Text(Localization.InvalidTimeRangeAlert.message)
+        }
+
     }
 }
 
@@ -142,6 +158,24 @@ private extension RangedDatePicker {
         static let apply = NSLocalizedString("Apply", comment: "Apply navigation button in custom range date picker")
         static let startDate = NSLocalizedString("Start Date", comment: "Start Date label in custom range date picker")
         static let endDate = NSLocalizedString("End Date", comment: "End Date label in custom range date picker")
+
+        enum InvalidTimeRangeAlert {
+            static let title = NSLocalizedString(
+                "rangedDatePicker.invalidTimeRangeAlert.title",
+                value: "Invalid time range",
+                comment: "Title of the alert displayed when selecting an invalid time range for analytics"
+            )
+            static let message = NSLocalizedString(
+                "rangedDatePicker.invalidTimeRangeAlert.message",
+                value: "The start date should be earlier than the end date. Please select a different time range.",
+                comment: "Message of the alert displayed when selecting an invalid time range for analytics"
+            )
+            static let action = NSLocalizedString(
+                "rangedDatePicker.invalidTimeRangeAlert.action",
+                value: "Got It",
+                comment: "Button to dismiss the alert displayed when selecting an invalid time range for analytics"
+            )
+        }
     }
     enum Layout {
         static let titleSpacing: CGFloat = 4.0

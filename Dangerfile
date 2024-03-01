@@ -29,7 +29,7 @@ tracks_checker.check_tracks_changes(
   tracks_usage_matchers: [
     /AnalyticsTracker\.track/
   ],
-  tracks_label: 'Tracks'
+  tracks_label: 'category: tracks'
 )
 
 view_changes_checker.check

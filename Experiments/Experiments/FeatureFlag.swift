@@ -18,10 +18,6 @@ public enum FeatureFlag: Int {
     ///
     case inbox
 
-    /// Displays the Orders tab in a split view
-    ///
-    case splitViewInOrdersTab
-
     /// Displays the OrderForm side by side with the Product Selector
     ///
     case sideBySideViewForOrderForm
@@ -204,11 +200,15 @@ public enum FeatureFlag: Int {
     ///
     case customRangeInMyStoreAnalytics
 
-    /// Enables customizing the cards in the Analytics Hub
-    ///
-    case customizeAnalyticsHub
-
     /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
     ///
     case useURLSessionInWordPressKit
+
+    /// Enables the connectivity tool when an order list error happens.
+    ///
+    case connectivityTool
+
+    /// Enables the Application Password tutorial
+    ///
+    case appPasswordTutorial
 }

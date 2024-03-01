@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-06 17:54:03+0000 */
+/* Translation-Revision-Date: 2024-02-26 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ לגבי קבלת תשלומים עם Tap To Pay ב-iPhone.";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ על קבלת תשלומים באמצעות המכשיר הנייד והזמנה של קוראי כרטיסים";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ על קבלת תשלומים באמצעות המכשיר הנייד והזמנה של קוראי כרטיסים.";
@@ -1871,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "מתחבר לוורדפרס.קום";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "התחברות לשרתי WordPress.com";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "מתחבר לאתר ב-WordPress.com";
 
@@ -1883,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "התחברות לחשבונך";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "התחברות לאתר שלך";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "מחבר את החנות שלך";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "בדיקת קישוריות";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "ליצור קשר עם הלקוח";
@@ -1898,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -2209,7 +2214,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "נכון לעכשיו, אנחנו תומכים ביצירה של 100 סוגים לכל היותר. פעולת היצירה של סוגים למוצר הזה תיצור %d סוגים.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "התאמה אישית";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2756,9 +2762,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "שליחת ההערה באימייל ללקוח";
 
-/* No comment provided by engineer. */
-"Email note to customer %@" = "שליחת ההערה באימייל ללקוח %@";
-
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "שליחת קבלה באימייל";
 
@@ -3193,6 +3196,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "טוען סוגים…";
+
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "הבאת הזמנות מהאתר שלך";
 
 /* Country option for a site address. */
 "Fiji" = "פיג'י";
@@ -3935,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "תשלומים בינלאומיים'";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "חיבור לאינטרנט";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "כתובת אימייל לא תקפה";
 
@@ -4025,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "נראה שהשבתת את הנתונים האנליטיים.";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "נראה שהחיבור לאינטרנט לא פעיל אצלך.\n\nיש לוודא שהחיבור ל-Wi-Fi הופעל. אם ברצונך להשתמש בנתונים הניידים, עליך לוודא שהאפשרות הופעלה בהגדרות המכשיר.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "נראה שתפקיד המשתמש שלך לא מאפשר לך להתקין את Jetpack.\nיש ליצור קשר עם מנהל המערכת לקבלת עזרה.";
@@ -4175,9 +4187,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "ללמוד איך לארוז חבילות HAZMAT, להכין תוויות עבורן ולשלוח אותן דרך USPS®‎ בכתובת %1$@.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -5035,9 +5045,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "הזמנות";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "כבוי";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "לא מחובר – שימוש בנתונים מהמטמון";
@@ -5056,9 +5063,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "עומאן";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "מופעל";
 
 /* Display label for the subscription status type */
 "On Hold" = "בהמתנה";
@@ -5079,8 +5083,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "רק בעלי האתר יכולים לנהל את אמצעי התשלום של תוויות המשלוח. יש ליצור קשר עם %1$@ (%2$@) כדי לנהל את אמצעי התשלום.";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "אופס! נראה שאנחנו לא יכולים להתחבר אל WordPress.com כרגע.\n\nאל דאגה, צוות התמיכה שלנו כאן לעזור. ניתן ליצור איתנו קשר ונשמח לסייע.";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "אופס! נראה שאנחנו לא יכולים לאפשר פעילות תקינה עם התגובה של האתר שלך.\n\nאל דאגה, צוות התמיכה שלנו כאן לעזור. ניתן ליצור איתנו קשר ונשמח לסייע.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "אופס! נראה שיש בעיה עם החיבור שלך ל-Jetpack.\n\nאל דאגה, צוות התמיכה שלנו כאן לעזור. ניתן ליצור איתנו קשר ונשמח לסייע.";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "אופס! נראה שיש בעיה באתר שלך.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "אופס! יש לנו פנצ'ר";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "אופס! זמן התגובה של האתר שלך היה ארוך מדי.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "אופס, אירעו כמה שגיאות לא צפויות.";
@@ -5143,9 +5162,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "אופציונלי";
 
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "מידע על מעקב אופציונלי";
-
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "אפשרויות";
 
@@ -5207,6 +5223,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "להצגת הקבלה";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "לא ניתן לאחזר את הקבלה.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "רשימה ממוספרת";
@@ -5419,7 +5438,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "ביצועים";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "תוכנית לביצועים בלבד";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6036,6 +6055,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "יצירת קשר עם נציגי התמיכה שלנו שיכולים לענות על שאלות קשות";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "לקרוא עוד";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "לעיון בעצות שלנו לפתרון בעיות";
@@ -9522,6 +9544,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "הדומיינים באתר שלך";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "זמן התגובה של האתר שלך איטי מדי";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "התוכנית של האתר שלך הסתיימה.";
 
@@ -9595,6 +9620,27 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "יש לבחור את סוג המוצר";
 
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "הזמנות";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "מוצרים";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "רווחים";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "הפעלות";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "לשמור";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "להתאים אישית את הנתונים האנליטיים";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "לערוך";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "להפעיל את Jetpack Stats";
 
@@ -9606,6 +9652,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "הפעלות";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "דוח הזמנות";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "דוח מוצרים";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "להציג את הדוח";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "דוח רווחים";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "ביטול";
@@ -9790,6 +9848,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "מוכן לפעולה!";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "יש בעיה כלשהי.\nלא הצלחנו ליצור את הקמפיין שלך.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "לא הייתה אפשרות להביא את פרטי התמונה של הקמפיין.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "העלאת התמונה של הקמפיין נכשלה.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "לבטל את הקמפיין";
 
@@ -9798,10 +9866,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "לקבל תמיכה";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "יש בעיה כלשהי.\nלא הצלחנו ליצור את הקמפיין שלך.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "לא חויב תשלום.";
@@ -9839,8 +9903,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "מכשירים";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "סיימתי";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "לערוך את הפרסומת";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "עזרה";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "תחומי עניין";
@@ -9902,8 +9972,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "קמפיין של Blaze";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "סיימתי";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "שגיאה בטעינת אמצעי התשלום שלך";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "עזרה";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "למידע נוסף";
@@ -10326,6 +10402,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "לערוך תגובה";
 
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "להוסיף";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "יום";
 
@@ -10468,6 +10547,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "מאוחר יותר היום";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "למידע נוסף";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "%1$@ על קבלת תשלומים באמצעות המכשיר הנייד והזמנה של קוראי כרטיסים";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "חבילה להובלה יבשתית עם כמויות מוגבלות – תרסיסים, חומרי חיטוי במכל התזה, צבע במכל התזה, ספריי לשיער, פרופן, בוטאן, חומרי ניקוי וכו'. - בשמים, לק לציפורניים, מסיר לק לציפורניים, חומרים ממסים, נוזל חיטוי לידיים, אלכוהול רפואי, מוצרים המבוססים על אתנול וכו'. - מוצרים אחרים למשטחים בכמות מוגבלת (קוסמטיקה, חומרי ניקוי, צבעים וכו').";
 
@@ -10566,6 +10654,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "תוצאות חיפוש";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "האפשרות לשליחת ההערה באימייל ללקוח הושבתה";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "האפשרות לשליחת ההערה באימייל ללקוח הופעלה";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "אין תקופה קודמת";
 
@@ -10599,14 +10693,68 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "למידע נוסף.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "מיסי משלוח";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "להוסיף משלוח";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "ישיר";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "אפליקציה לנייד";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "אורגני: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "הפניה: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "מקור: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "לא ידוע";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "מנהל מערכת אינטרנט";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "מידע על מעקב אופציונלי";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "סכומים בהתאמה אישית";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "סכום בהתאמה אישית";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "קמפיין";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "סוג מכשיר";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "בינוני";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "שיוך ההזמנה";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "מוצא";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "צפיות בעמודים במהלך ההפעלה";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "מקור";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "סוג מקור";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "לא ידוע";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "סכומים בהתאמה אישית";
@@ -10631,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "לסרוק ברקוד";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "לסרוק מוצר";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "קופון";
@@ -10746,6 +10897,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "דמי הרשמה";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld מוצרים נבחרו";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "יש לבחור מוצרים";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "מוצר %ld נבחר";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "ביטול";
 
@@ -10766,6 +10926,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "משלוח חד-פעמי";
+
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "לא נבחרו מוצרים";
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "מוצרים";
@@ -10788,6 +10951,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "החזרים של סכומים בהתאמה אישית";
 
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "ביטול";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "התשלום הושלם";
 
@@ -10800,6 +10966,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "ביטול";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "טווח מותאם";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce Stats Today";

@@ -13,8 +13,10 @@ extension StatsTimeRangeV4 {
         case .thisYear:
             return 12
         case .custom:
-            // TODO: 11935 Calculate number of intervals
-            return 7
+            // Returns maximum value allowed for pagination,
+            // the plugin would return the maximum values available for the required granularity.
+            // https://developer.wordpress.org/rest-api/using-the-rest-api/pagination/
+            return 100
         }
     }
 

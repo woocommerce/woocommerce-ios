@@ -49,22 +49,6 @@ final class TopPerformerDataViewController: UIViewController {
         resultsController?.fetchedObjects.first
     }
 
-    private var tabDescription: String {
-        switch granularity {
-        case .day:
-            return NSLocalizedString("Today", comment: "Top Performers section title - today")
-        case .week:
-            return NSLocalizedString("This Week", comment: "Top Performers section title - this week")
-        case .month:
-            return NSLocalizedString("This Month", comment: "Top Performers section title - this month")
-        case .year:
-            return NSLocalizedString("This Year", comment: "Top Performers section title - this year")
-        case .hour, .quarter:
-            // TODO: 11935 I think we should calculate this based on `timeRange: StatsTimeRangeV4`?
-            return NSLocalizedString("Custom", comment: "Top Performers section title - Custom")
-        }
-    }
-
     // MARK: - Initialization
 
     /// Designated Initializer

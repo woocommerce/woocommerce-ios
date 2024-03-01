@@ -176,6 +176,8 @@ public enum WooAnalyticsStat: String {
     case analyticsHubEnableJetpackStatsSuccess = "analytics_hub_enable_jetpack_stats_success"
     case analyticsHubEnableJetpackStatsFailed = "analytics_hub_enable_jetpack_stats_failed"
     case analyticsHubViewFullReportTapped = "analytics_hub_view_full_report_tapped"
+    case analyticsHubSettingsOpened = "analytics_hub_settings_opened"
+    case analyticsHubSettingsSaved = "analytics_hub_settings_saved"
 
     // MARK: Blaze Events
     //
@@ -384,6 +386,8 @@ public enum WooAnalyticsStat: String {
     case orderDetailCustomerPhoneOptionTapped = "order_detail_customer_info_phone_menu_phone_tapped"
     case orderDetailCustomerSMSOptionTapped = "order_detail_customer_info_phone_menu_sms_tapped"
     case orderDetailCustomerCopyNumberOptionTapped = "order_detail_customer_info_phone_menu_copy_tapped"
+    case orderDetailCustomerWhatsappOptionTapped = "order_detail_customer_info_phone_menu_whatsapp_tapped"
+    case orderDetailCustomerTelegramOptionTapped = "order_detail_customer_info_phone_menu_telegram_tapped"
     case orderDetailOrderStatusEditButtonTapped = "order_detail_order_status_edit_button_tapped"
     case orderDetailRefundDetailTapped = "order_detail_refund_detail_tapped"
     case orderDetailAddOnsViewed = "order_detail_addons_viewed"
@@ -442,6 +446,8 @@ public enum WooAnalyticsStat: String {
     case ordersListSearch = "orders_list_search"
     case ordersListLoaded = "orders_list_loaded"
     case ordersListLoadError = "orders_list_load_error"
+    case ordersListAutomaticTimeoutRetry = "orders_list_automatic_timeout_retry"
+    case ordersListTopBannerTroubleshootTapped = "orders_list_top_banner_troubleshoot_tapped"
     case orderProductAdd = "order_product_add"
     case orderProductQuantityChange = "order_product_quantity_change"
     case orderProductRemove = "order_product_remove"
@@ -1152,6 +1158,11 @@ public enum WooAnalyticsStat: String {
     case themePreviewStartWithThemeButtonTapped = "theme_preview_start_with_theme_button_tapped"
     case themeInstallationCompleted = "theme_installation_completed"
     case themeInstallationFailed = "theme_installation_failed"
+
+    // MARK: Connectivity Tool
+    case connectivityToolRequestResponse = "connectivity_tool_request_response"
+    case connectivityToolReadMoreTapped = "connectivity_tool_read_more_tapped"
+    case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
 }
 
 public extension WooAnalyticsStat {

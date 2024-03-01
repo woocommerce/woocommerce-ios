@@ -89,10 +89,6 @@ final class OrdersRootViewController: UIViewController {
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-
-        if !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            configureTabBarItem()
-        }
     }
 
     required init?(coder: NSCoder) {
@@ -121,13 +117,6 @@ final class OrdersRootViewController: UIViewController {
 
         // Clears application icon badge
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
-    }
-
-    override var shouldShowOfflineBanner: Bool {
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            return false
-        }
-        return true
     }
 
     /// Shows `SearchViewController`.
@@ -223,17 +212,12 @@ final class OrdersRootViewController: UIViewController {
             }
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            if featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                viewController.modalPresentationStyle = .overFullScreen
-                navigationController.present(viewController, animated: true)
-            } else {
-                let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
-                navigationController.present(newOrderNavigationController, animated: true)
-            }
+        if featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+            viewController.modalPresentationStyle = .overFullScreen
+            navigationController.present(viewController, animated: true)
         } else {
-            viewController.hidesBottomBarWhenPushed = true
-            navigationController.pushViewController(viewController, animated: true)
+            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNavigationController, animated: true)
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
@@ -314,14 +298,11 @@ final class OrdersRootViewController: UIViewController {
 
         let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
 
-        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
-            let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")
-            let dateRange = filters.dateRange?.analyticsDescription ?? ""
-            self?.analytics.track(.ordersListFilter,
-                                           withProperties: ["status": statuses,
-                                                            "date_range": dateRange])
+
+            self?.analytics.track(event: .OrdersFilter.onFilterOrders(filters: filters))
         }, onClearAction: {
         }, onDismissAction: {
         })
@@ -438,6 +419,7 @@ private extension OrdersRootViewController {
             case .success(let settings):
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
+                                                                 product: settings.productFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure(let error):
                 print("It was not possible to sync local orders settings: \(String(describing: error))")
@@ -451,7 +433,9 @@ private extension OrdersRootViewController {
     ///
     func updateLocalOrdersSettings(filters: FilterOrderListViewModel.Filters) {
         let action = AppSettingsAction.upsertOrdersSettings(siteID: siteID,
-                                                            orderStatusesFilter: filters.orderStatus, dateRangeFilter: filters.dateRange) { error in
+                                                            orderStatusesFilter: filters.orderStatus,
+                                                            dateRangeFilter: filters.dateRange,
+                                                            productFilter: filters.product) { error in
             if error != nil {
                 assertionFailure("It was not possible to store order settings due to an error: \(String(describing: error))")
             }
@@ -510,30 +494,12 @@ private extension OrdersRootViewController {
             order: order,
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
         ))
-        let viewModel = OrderDetailsViewModel(order: order)
-        guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            ordersViewController.showOrderDetails(order)
-            onCompletion?(true)
-            return
-        }
 
-        let orderViewController = OrderDetailsViewController(viewModel: viewModel)
-
-        // Cleanup navigation (remove new order flow views) before navigating to order details
-        if let navigationController = navigationController, let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
-            let viewControllersIncludingSelf = navigationController.viewControllers[0...indexOfSelf]
-            navigationController.setViewControllers(viewControllersIncludingSelf + [orderViewController], animated: true)
-        } else {
-            show(orderViewController, sender: self)
-        }
+        ordersViewController.showOrderDetails(order)
         onCompletion?(true)
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {
-        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return navigationController?.topViewController as? OrderDetailsViewController
-        }
-
         guard let secondaryViewNavigationController = splitViewController?.viewController(for: .secondary) as? UINavigationController else {
             return nil
         }

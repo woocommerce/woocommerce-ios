@@ -210,9 +210,13 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onConfigureProductRow: ((_ product: Product) -> Void)?
 
-    @Published var syncChangesImmediately: Bool
+    @Published var syncApproach: SyncApproach
 
     private var orderSyncState: Published<OrderSyncState>.Publisher?
+
+    @Published var isShowingProductVariationList: Bool = false
+
+    @Published var productVariationListViewModel: ProductVariationSelectorViewModel? = nil
 
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
@@ -226,7 +230,7 @@ final class ProductSelectorViewModel: ObservableObject {
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex,
          pageSize: Int = PaginationTracker.Defaults.pageSize,
-         syncChangesImmediately: Bool = false,
+         syncApproach: SyncApproach = .onButtonTap,
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
@@ -248,7 +252,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.purchasableItemsOnly = purchasableItemsOnly
         self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
-        self.syncChangesImmediately = syncChangesImmediately
+        self.syncApproach = syncApproach
         self.orderSyncState = orderSyncState
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
@@ -297,10 +301,6 @@ final class ProductSelectorViewModel: ObservableObject {
         } else {
             onProductSelectionStateChanged?(selectedProduct)
         }
-
-        if syncChangesImmediately {
-            onMultipleSelectionCompleted?(selectedItemsIDs)
-        }
     }
 
     /// Adds a product or variation ID to the product selector from an external source (e.g. bundle configuration form for bundle products).
@@ -323,12 +323,42 @@ final class ProductSelectorViewModel: ObservableObject {
         }
     }
 
-    /// Get the view model for a list of product variations to add to the order
-    ///
-    func getVariationsViewModel(for productID: Int64) -> ProductVariationSelectorViewModel? {
-        guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
+    func isVariableProduct(productOrVariationID: Int64) -> Bool {
+        return variableProduct(for: productOrVariationID) != nil
+    }
+
+    func variationCheckboxTapped(for productOrVariationID: Int64) {
+        if toggleAllVariationsOnSelection {
+            toggleSelectionForAllVariations(of: productOrVariationID)
+        } else {
+            showVariationList(for: productOrVariationID)
+        }
+    }
+
+    func variationRowTapped(for productOrVariationID: Int64) {
+        showVariationList(for: productOrVariationID)
+    }
+
+    private func showVariationList(for productOrVariationID: Int64) {
+        productVariationListViewModel = getVariationsViewModel(for: productOrVariationID)
+        isShowingProductVariationList = productVariationListViewModel != nil
+    }
+
+    private func variableProduct(for productID: Int64) -> Product? {
+        guard let variableProduct = products.first(where: { $0.productID == productID }),
+                variableProduct.variations.isNotEmpty else {
             return nil
         }
+        return variableProduct
+    }
+
+    /// Get the view model for a list of product variations to add to the order
+    ///
+    private func getVariationsViewModel(for productID: Int64) -> ProductVariationSelectorViewModel? {
+        guard let variableProduct = variableProduct(for: productID) else {
+            return nil
+        }
+
         let selectedItems = selectedItemsIDs.filter { variableProduct.variations.contains($0) }
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
@@ -338,18 +368,10 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  onVariationSelectionStateChanged: { [weak self] productVariation, product in
             guard let self else { return }
             onVariationSelectionStateChanged?(productVariation, product)
-
-            if syncChangesImmediately {
-                onMultipleSelectionCompleted?(selectedItemsIDs)
-            }
         },
                                                  onSelectionsCleared: { [weak self] in
             guard let self else { return }
             onSelectedVariationsCleared?()
-
-            if syncChangesImmediately {
-                onMultipleSelectionCompleted?(selectedItemsIDs)
-            }
         })
     }
 
@@ -419,9 +441,11 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs = []
 
         onAllSelectionsCleared?()
-        if syncChangesImmediately {
-            onMultipleSelectionCompleted?(selectedItemsIDs)
-        }
+    }
+
+    enum SyncApproach {
+        case external
+        case onButtonTap
     }
 }
 

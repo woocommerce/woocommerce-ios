@@ -99,6 +99,7 @@ private extension ProductInventorySettingsViewController {
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.cellLayoutMarginsFollowReadableWidth = true
 
         registerTableViewCells()
         registerTableViewHeaderFooters()

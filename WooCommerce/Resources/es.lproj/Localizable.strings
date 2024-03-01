@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-06 20:54:03+0000 */
+/* Translation-Revision-Date: 2024-02-22 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ sobre la aceptación de pagos con \"Toca para pagar\" en el iPhone";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ sobre cómo aceptar pagos con tu dispositivo móvil y pedir lectores de tarjetas.";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ sobre cómo aceptar pagos con tu dispositivo móvil y pedir lectores de tarjetas.";
@@ -1898,6 +1893,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -2209,7 +2205,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "En este momento, la creación es compatible con un máximo de 100 variaciones. La generación de variaciones para este producto crearía %d variaciones.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "Personalizado";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2755,9 +2752,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Enviar la nota por correo electrónico al cliente";
-
-/* No comment provided by engineer. */
-"Email note to customer %@" = "Enviar la nota por correo electrónico al cliente %@";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Enviar recibo por correo electrónico";
@@ -4175,9 +4169,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Descubre cómo empaquetar, etiquetar y enviar materiales peligrosos de forma segura a través de USPS® en %1$@.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -5035,9 +5027,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "PEDIDOS";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "Apagado";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "Sin conexión: usar los datos en la memoria caché";
@@ -5056,9 +5045,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "Omán";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "Encendido";
 
 /* Display label for the subscription status type */
 "On Hold" = "Suspendido";
@@ -5143,9 +5129,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Opcional";
 
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "Información de seguimiento opcional";
-
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Opciones";
 
@@ -5207,6 +5190,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "Ver recibo";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "No se ha podido recuperar el recibo.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Lista ordenada";
@@ -5419,7 +5405,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Rendimiento";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "Solo el plan de rendimiento";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6036,6 +6022,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Ponte en contacto con nuestros Happiness Engineers y soluciona las cuestiones más complicadas.";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "Leer más";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Lee nuestros consejos para solucionar problemas";
@@ -9522,6 +9511,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Tus dominios de sitio web";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "Tu sitio tarda bastante en responder";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "El plan de tu sitio ha finalizado.";
 
@@ -9606,6 +9598,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "SESIONES";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "Informe de pedidos";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "Informe de productos";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "Ver informe";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "Informe de ingresos";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Cancelar";
@@ -9790,6 +9794,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "¡Todo listo!";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "Algo no va bien.\nNo hemos podido crear tu campaña.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "Error al recuperar los detalles de la imagen de la campaña.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "Error al cargar la imagen de la campaña.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "Cancelar campaña";
 
@@ -9798,10 +9812,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "Obtener soporte";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "Algo no va bien.\nNo hemos podido crear tu campaña.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "No se ha efectuado ningún pago.";
@@ -10326,6 +10336,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Editar cantidad";
 
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "Añadir";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "día";
 
@@ -10468,6 +10481,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "más tarde hoy";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "Más información";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "%1$@ sobre cómo aceptar pagos con tu dispositivo móvil y pedir lectores de tarjetas.";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Paquete de transporte terrestre con cantidad limitada: aerosoles, desinfectantes en pulverizador, pintura en pulverizador, productos capilares en pulverizador, propano, butano, productos de limpieza, etc. - Fragancias, esmalte de uñas, quitaesmalte, disolventes, desinfectante de manos, alcohol isopropílico, productos con base de etanol, etc. - Otros materiales de transporte terrestre con cantidad limitada (cosméticos, productos de limpieza, pinturas, etc.).";
 
@@ -10566,6 +10588,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "Resultados de la búsqueda";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "Envío de nota por correo electrónico al cliente desactivado";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Envío de nota por correo electrónico al cliente activado";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "no hay períodos previos";
 
@@ -10599,14 +10627,68 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "Más información.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "Tasas de envío";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Añadir envío";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "Directo";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "Aplicación móvil";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "Orgánica: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "Recomendación: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "Fuente: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "Desconocido";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Administración web";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "Información de seguimiento opcional";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Cantidades personalizadas";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Cantidad personalizada";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "Campaña";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "Tipo de dispositivo";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "Medio";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "Atribución del pedido";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "Origen";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "Vistas de página de sesión";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "Fuente";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "Tipo de fuente";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "Desconocido";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Cantidades personalizadas";
@@ -10746,6 +10828,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Tarifa de inscripción";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld productos elegidos";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "Elegir productos";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld producto elegido";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Cancelar";
 
@@ -10766,6 +10857,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Envío único";
+
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "No se ha seleccionado ningún producto";
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "Productos";
@@ -10788,6 +10882,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Devolver importes personalizados";
 
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "Cancelar";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Pago completado";
 
@@ -10800,6 +10897,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Cancelar";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "Personalizar rango";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Las estadísticas de hoy de WooCommerce";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-06 17:54:04+0000 */
+/* Translation-Revision-Date: 2024-02-27 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "Tap to Pay on iPhone ile ödeme kabul etme hakkında %1$@.";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "Mobil cihazınızla ödeme kabul etme ve kart okuyucu sipariş etme hakkında %1$@";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "Mobil cihazınızla ödeme kabul etme ve kart okuyucu sipariş etme hakkında %1$@.";
@@ -1871,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com'a bağlanılıyor";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "WordPress.com Sunucularına bağlanma";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "Bir WordPress.com sitesine bağlanıyor";
 
@@ -1883,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Hesabınıza bağlanılıyor";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "Sitenize bağlanma";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Mağazanızı bağlama";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "Bağlantı Testi";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Müşteri İle İletişime Geç";
@@ -1898,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -2209,7 +2214,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Şu anda oluşturma en fazla 100 varyasyon için desteklenmektedir. Bu ürün için varyasyon oluşturmak %d varyasyon oluşturur.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "Özel";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2756,9 +2762,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Notu müşteriye e-posta ile gönderin";
 
-/* No comment provided by engineer. */
-"Email note to customer %@" = "%@ müşterisine notu e-posta ile gönderin";
-
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Makbuzu e-posta ile gönderin";
 
@@ -3193,6 +3196,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Varyasyonlar Getiriliyor…";
+
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "Site siparişleriniz alınıyor";
 
 /* Country option for a site address. */
 "Fiji" = "Fiji";
@@ -3935,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "Uluslararası ödemeler";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "İnternet Bağlantısı";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Geçersiz E-posta Adresi";
 
@@ -4025,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Analytics'i devre dışı bıraktığınız anlaşılıyor.";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "Görünüşe göre internete bağlı değilsiniz.\n\nWi-Fi ağınızın açık olduğundan emin olun. Mobil veri kullanıyorsanız cihazınızın ayarlarında etkinleştirildiğinden emin olun.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "Görünüşe göre kullanıcı rolünüz Jetpack'i yüklemenize izin vermiyor.\nLütfen yardım için site yöneticinizle iletişime geçin.";
@@ -4175,9 +4187,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@ adresinden USPS® yoluyla Tehlikeli Maddelerin nasıl güvenli bir şekilde paketleneceğini, etiketleneceğini ve gönderileceğini öğrenin. ";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -5035,9 +5045,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "SİPARİŞLER";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "Kapalı";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "Çevrimdışı - önbelleğe alınmış veriler kullanılıyor";
@@ -5056,9 +5063,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "Umman";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "Açık";
 
 /* Display label for the subscription status type */
 "On Hold" = "Beklemede";
@@ -5079,8 +5083,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Gönderim etiketi ödeme yöntemlerini yalnızca site sahibi yönetebilir. Ödeme yöntemlerini yönetmek için lütfen %1$@ (%2$@) ile iletişime geçin. ";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Üzgünüz! Görünüşe göre şu anda WordPress.com'a bağlanamıyoruz.\n\nAncak endişelenmeyin, destek ekibimiz yardımcı olmak için burada. Bizimle iletişime geçin, size yardımcı olmaktan memnuniyet duyarız.";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Üzgünüz! Görünüşe göre sitenizin yanıtında düzgün bir çalışamıyoruz.\n\nAncak endişelenmeyin, destek ekibimiz yardımcı olmak için burada. Bizimle iletişime geçin, size yardımcı olmaktan memnuniyet duyarız.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Üzgünüz! Görünüşe göre Jetpack bağlantınızda bir sorun oluştu.\n\nAncak endişelenmeyin, destek ekibimiz yardımcı olmak için burada. Bizimle iletişime geçin, size yardımcı olmaktan memnuniyet duyarız.";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "Üzgünüz! Görünüşe göre sitenizde bir sorun oluştu.\n\nDaha fazla yardım almak için barındırma sağlayıcınızla iletişime geçin.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "Üzgünüz! Bir sorunla karşılaştık";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "Üzgünüz! Görünüşe göre sitenizin yanıt vermesi uzun sürüyor.\n\nDaha fazla yardım almak için barındırma sağlayıcınızla iletişime geçin.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Hay aksi, beklenmeyen bazı hatalar oluştu.";
@@ -5143,9 +5162,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "İsteğe Bağlı";
 
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "İsteğe Bağlı Takip Bilgileri";
-
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Seçenekler";
 
@@ -5207,6 +5223,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "Faturayı Gör";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Fatura alınamıyor.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Sıralanmış Liste";
@@ -5419,7 +5438,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Performans";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "Sadece performans paketi";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6036,6 +6055,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Zor sorulara yanıt verilmesine yardımcı olabilecek mutluluk mühendislerimize ulaşın";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "Devamını oku";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Sorun Giderme İpuçlarımızı okuyun";
@@ -9522,6 +9544,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Sitenizin alan adları";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "Sitenizin yanıt vermesi uzun sürüyor";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "Site planınız sona erdi.";
 
@@ -9595,6 +9620,27 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "Bir ürün türü seç";
 
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "Siparişler";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "Ürünler";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "Kazanç";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "Oturumlar";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "Kaydet";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "Analizleri Özelleştirin";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "Düzenle";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack Stats'i Etkinleştir";
 
@@ -9606,6 +9652,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "OTURUMLAR";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "Siparişler Raporu";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "Ürünler Raporu";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "Raporu Göster";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "Gelir Raporu";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "İptal et";
@@ -9790,6 +9848,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "Her şey hazır!";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "Bir sorun var.\nKampanyanız oluşturulamadı.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "Kampanya görseli detayları alınamadı.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "Kampanya görseli yüklenemedi.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "Kampanyayı İptal Et";
 
@@ -9798,10 +9866,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "Destek al";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "Bir sorun var.\nKampanyanız oluşturulamadı.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "Ödeme alınmadı.";
@@ -9839,8 +9903,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "Cihazlar";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "Tamam";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Reklamı düzenle";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "Yardım";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "ilgi alanı";
@@ -9902,8 +9972,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Kampanyayı öne çıkarın";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "Tamam";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "Ödeme yöntemleriniz yüklenirken hata oluştu";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "Yardım";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "Daha fazla bilgi edinin";
@@ -10326,6 +10402,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Tutarı düzenleyin";
 
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "Ekle";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "gün";
 
@@ -10468,6 +10547,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "bugün daha sonra";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "Daha fazla bilgi edinin";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "Mobil cihazınızla ödeme kabul etme ve kart okuyucu sipariş etme hakkında %1$@";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "SINIRLI MİKTARDA Kara Paketi - Aerosoller, sprey dezenfektanlar, sprey boya, saç spreyi, propan, bütan, temizlik ürünleri vb. - Parfümler, oje, oje çıkarıcı, çözücüler, el dezenfektanı, ispirto, etanol bazlı ürünler vb. - Diğer sınırlı miktardaki yüzey malzemeleri (kozmetikler, temizlik ürünleri, boyalar vb.)";
 
@@ -10566,6 +10654,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "Arama sonuçları";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "Notu müşteriye e-posta ile gönderme Kapalı";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Notu müşteriye e-posta ile gönderme Açık";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "önceki dönem yok";
 
@@ -10599,14 +10693,68 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "Daha Fazla Bilgi Edinin.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "Gönderim Vergisi";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Gönderim Ekle";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "Doğrudan";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "Mobil Uygulama";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "Organik: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "Yönlendirme: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "Kaynak: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "Bilinmiyor";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Web yöneticisi";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "İsteğe Bağlı Takip Bilgileri";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Özel Tutarlar";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Özel Tutar";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "Kampanya";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "Cihaz türü";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "Orta";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "Sipariş niteliği";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "Menşe";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "Oturum sayfa görüntülemeleri";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "Kaynak";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "Kaynak türü";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "Bilinmiyor";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Özel Tutarlar";
@@ -10631,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "Barkodu tarayın";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "Ürünü Tara";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Kupon";
@@ -10746,6 +10897,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Kayıt Ücreti";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld ürün seçildi";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "Ürün seçin";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld ürün seçildi";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "İptal et";
 
@@ -10766,6 +10926,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Tek seferlik kargo";
+
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "Hiçbir ürün seçilmedi";
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "Ürünler";
@@ -10788,6 +10951,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Özel Tutarları İade Edin";
 
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "İptal et";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Ödeme Tamamlandı";
 
@@ -10800,6 +10966,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "İptal et";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "Özel Aralık";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce İstatistikleri Bugün";

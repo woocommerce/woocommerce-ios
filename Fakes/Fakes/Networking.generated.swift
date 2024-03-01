@@ -195,6 +195,26 @@ extension Networking.BlazeCampaign {
         )
     }
 }
+extension Networking.BlazeCampaignListItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeCampaignListItem {
+        .init(
+            siteID: .fake(),
+            campaignID: .fake(),
+            productID: .fake(),
+            name: .fake(),
+            textSnippet: .fake(),
+            uiStatus: .fake(),
+            imageURL: .fake(),
+            targetUrl: .fake(),
+            impressions: .fake(),
+            clicks: .fake(),
+            totalBudget: .fake(),
+            spentBudget: .fake()
+        )
+    }
+}
 extension Networking.BlazeForecastedImpressionsInput {
     /// Returns a "ready to use" type filled with fake values.
     ///

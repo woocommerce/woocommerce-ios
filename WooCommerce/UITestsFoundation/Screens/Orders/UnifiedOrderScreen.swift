@@ -243,13 +243,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Cancels Order Creation process
     /// - Returns: Orders Screen object.
     public func cancelOrderCreation() throws -> OrdersScreen {
-        // This cancel button exists only if the feature flag `.splitViewInOrdersTab` is on.
-        // For taking app store screenshot, the beta feature is turned off so we should pop to get out of this screen.
-        if cancelButton.exists {
-            cancelButton.tap()
-        } else {
-            pop()
-        }
+        cancelButton.tap()
         return try OrdersScreen()
     }
 

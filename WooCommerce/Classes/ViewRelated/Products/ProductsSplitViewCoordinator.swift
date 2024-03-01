@@ -10,6 +10,7 @@ final class ProductsSplitViewCoordinator: NSObject {
         case productForm(product: Product?)
     }
 
+    /// The source of truth of the content shown in the secondary view.
     @Published private var contentTypes: [SecondaryViewContentType] = []
     private var selectedProduct: AnyPublisher<Product?, Never> {
         $contentTypes.map { contentTypes -> Product? in
@@ -57,8 +58,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     func didExpand() {
         // Auto-selects the first product if there is no content to be shown.
         if contentTypes.isEmpty {
-            showEmptyView()
-            productsViewController.selectFirstProductIfAvailable()
+            showEmptyViewOrFirstProduct()
         }
     }
 }
@@ -67,9 +67,9 @@ private extension ProductsSplitViewCoordinator {
     func showFromProductList(content: ProductsViewController.NavigationContentType) {
         switch content {
             case let .productForm(product):
-                showProductForm(product: product)
+                showProductFormIfNoUnsavedChanges(product: product)
             case let .addProduct(sourceView, isFirstProduct):
-                startProductCreation(sourceView: sourceView, isFirstProduct: isFirstProduct)
+                startProductCreationIfNoUnsavedChanges(sourceView: sourceView, isFirstProduct: isFirstProduct)
         }
     }
 }
@@ -84,23 +84,39 @@ private extension ProductsSplitViewCoordinator {
         showSecondaryView(contentType: .empty, viewController: emptyStateViewController, replacesNavigationStack: true)
     }
 
+    func showProductFormIfNoUnsavedChanges(product: Product) {
+        whenSecondaryViewProductHasNoUnsavedChanges { [weak self] in
+            self?.showProductForm(product: product)
+        }
+    }
+
     func showProductForm(product: Product) {
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             forceReadOnly: false) { [weak self] viewController in
+                                             forceReadOnly: false,
+                                             onDeleteCompletion: { [weak self] in
+            self?.onSecondaryProductFormDeletion()
+        }) { [weak self] viewController in
             self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
         }
     }
 
+    func startProductCreationIfNoUnsavedChanges(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {
+        whenSecondaryViewProductHasNoUnsavedChanges { [weak self] in
+            self?.startProductCreation(sourceView: sourceView, isFirstProduct: isFirstProduct)
+        }
+    }
+
     func startProductCreation(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {
-        let replacesNavigationStack = contentTypes.last == .empty
         let addProductCoordinator = AddProductCoordinator(siteID: siteID,
-                                                           source: .productsTab,
-                                                           sourceView: sourceView,
-                                                           sourceNavigationController: primaryNavigationController,
-                                                           isFirstProduct: isFirstProduct,
-                                                           navigateToProductForm: { [weak self] viewController in
-            self?.showSecondaryView(contentType: .productForm(product: nil), viewController: viewController, replacesNavigationStack: replacesNavigationStack)
+                                                          source: .productsTab,
+                                                          sourceView: sourceView,
+                                                          sourceNavigationController: primaryNavigationController,
+                                                          isFirstProduct: isFirstProduct,
+                                                          navigateToProductForm: { [weak self] viewController in
+            self?.showSecondaryView(contentType: .productForm(product: nil), viewController: viewController, replacesNavigationStack: true)
+        }, onDeleteCompletion: { [weak self] in
+            self?.onSecondaryProductFormDeletion()
         })
         addProductCoordinator.onProductCreated = { [weak self] product in
             guard let self, let lastContentType = contentTypes.last, lastContentType == .productForm(product: nil) else { return }
@@ -108,6 +124,24 @@ private extension ProductsSplitViewCoordinator {
         }
         addProductCoordinator.start()
         self.addProductCoordinator = addProductCoordinator
+    }
+
+    func whenSecondaryViewProductHasNoUnsavedChanges(then closure: @escaping () -> Void) {
+        // Closes the product form in the secondary view only if there are no unsaved changes or if the user chooses to discard the changes.
+        // This works based on the assumption that there is only one product form in the secondary navigation stack.
+        if let lastProductFormViewController = secondaryNavigationController.viewControllers
+            .compactMap({ $0 as? ProductFormViewController<ProductFormViewModel> }).last {
+            return lastProductFormViewController.close(completion: {
+                closure()
+            }, onCancel: { [weak self] in
+                guard let self else { return }
+                // Reassigns the secondary content types to trigger product list row selection to re-select the product in the secondary view.
+                // Otherwise, the most recently tapped row is selected in the table view.
+                contentTypes = contentTypes
+            })
+        } else {
+            closure()
+        }
     }
 
     func showSecondaryView(contentType: SecondaryViewContentType, viewController: UIViewController, replacesNavigationStack: Bool) {
@@ -120,6 +154,18 @@ private extension ProductsSplitViewCoordinator {
         }
 
         splitViewController.show(.secondary)
+    }
+
+    func onSecondaryProductFormDeletion() {
+        splitViewController.show(.primary)
+        if !splitViewController.isCollapsed {
+            showEmptyViewOrFirstProduct()
+        }
+    }
+
+    func showEmptyViewOrFirstProduct() {
+        showEmptyView()
+        productsViewController.selectFirstProductIfAvailable()
     }
 }
 
@@ -137,12 +183,15 @@ private extension ProductsSplitViewCoordinator {
 
     func autoSelectProductOnInitialDataLoad() {
         Publishers.CombineLatest(selectedProduct, productsViewController.onDataReloaded)
+            .filter { [weak self] selectedProduct, onDataReloaded in
+                guard let self else {
+                    return false
+                }
+                return selectedProduct == nil && !splitViewController.isCollapsed
+            }
             .first()
             .sink { [weak self] selectedProduct, onDataReloaded in
-                guard let self else { return }
-                if selectedProduct == nil && !splitViewController.isCollapsed {
-                    productsViewController.selectFirstProductIfAvailable()
-                }
+                self?.productsViewController.selectFirstProductIfAvailable()
             }
             .store(in: &subscriptions)
     }
@@ -154,6 +203,10 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
             contentTypes = []
             secondaryNavigationController.viewControllers = []
             return
+        }
+
+        if let tabNavigationController = navigationController as? WooTabNavigationController {
+            tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
         }
 
         // The goal here is to detect when the user pops a view controller in the secondary navigation stack like from tapping the back button,

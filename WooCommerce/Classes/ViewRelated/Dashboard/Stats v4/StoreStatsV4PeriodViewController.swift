@@ -121,6 +121,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     private var cancellables: Set<AnyCancellable> = []
     private let chartValueSelectedEventsSubject = PassthroughSubject<Void, Never>()
+    private let editCustomTimeRangeHandler: (() -> Void)?
 
     // MARK: - Initialization
 
@@ -131,7 +132,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
          currentDate: Date,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+         onEditCustomTimeRange: (() -> Void)?) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.viewModel = StoreStatsPeriodViewModel(siteID: siteID,
@@ -141,6 +143,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                    currencyFormatter: currencyFormatter,
                                                    currencySettings: currencySettings)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.editCustomTimeRangeHandler = onEditCustomTimeRange
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -330,6 +333,7 @@ private extension StoreStatsV4PeriodViewController {
         view.backgroundColor = Constants.containerBackgroundColor
         containerStackView.backgroundColor = Constants.containerBackgroundColor
         timeRangeBarView.backgroundColor = Constants.headerComponentBackgroundColor
+        timeRangeBarView.editCustomTimeRangeHandler = editCustomTimeRangeHandler
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
@@ -499,7 +503,7 @@ extension StoreStatsV4PeriodViewController: AxisValueFormatter {
             if index >= intervalLabels.count {
                 DDLogInfo("🔴 orderStatsIntervals count: \(orderStatsIntervals.count); value: \(value); index: \(index); interval labels: \(intervalLabels)")
             }
-            return intervalLabels[index]
+            return intervalLabels[safe: index] ?? ""
         } else {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis

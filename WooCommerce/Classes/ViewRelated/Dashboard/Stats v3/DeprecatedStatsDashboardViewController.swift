@@ -43,6 +43,13 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
 // MARK: DashboardUI conformance
 // Everything is empty as this deprecated stats screen is static
 extension DeprecatedDashboardStatsViewController: DashboardUI {
+    var onDataReload: () -> Void {
+        get {
+            return {}
+        }
+        set {}
+    }
+    
     var displaySyncingError: (Error) -> Void {
         get {
             return { _ in }

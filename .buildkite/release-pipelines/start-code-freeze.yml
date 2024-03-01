@@ -8,6 +8,9 @@ steps:
     command: |
       .buildkite/commands/configure-environment.sh
 
+      echo '--- :closed_lock_with_key: Access Secrets'
+      bundle exec fastlane run configure_apply
+
       echo '--- :snowflake: Start Code Freeze'
       bundle exec fastlane start_code_freeze skip_confirm:true
 

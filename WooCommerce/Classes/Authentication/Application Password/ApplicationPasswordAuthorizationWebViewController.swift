@@ -68,7 +68,10 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         configureProgressBar()
         configureActivityIndicator()
         fetchAuthorizationURL()
-        handleSwipeBackGesture()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) {
+            handleSwipeBackGesture()
+        }
     }
 }
 

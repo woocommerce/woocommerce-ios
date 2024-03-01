@@ -247,39 +247,37 @@ private extension StoreStatsAndTopPerformersViewController {
                 group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
-            if !vc.timeRange.isCustomTimeRange {
-                group.enter()
-                periodGroup.enter()
-                periodStoreStatsGroup.enter()
+            group.enter()
+            periodGroup.enter()
+            periodStoreStatsGroup.enter()
 
-                self.dashboardViewModel.syncSiteVisitStats(for: siteID,
-                                                           siteTimezone: timezoneForSync,
-                                                           timeRange: vc.timeRange,
-                                                           latestDateToInclude: latestDateToInclude) { result in
-                    if case let .failure(error) = result {
-                        DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                        periodSyncError = error
-                    }
-                    periodGroup.leave()
-                    periodStoreStatsGroup.leave()
-                    group.leave() // Leave this group last so `syncError` is set, if needed
+            self.dashboardViewModel.syncSiteVisitStats(for: siteID,
+                                                       siteTimezone: timezoneForSync,
+                                                       timeRange: vc.timeRange,
+                                                       latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
+                    DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
+                    periodSyncError = error
                 }
+                periodGroup.leave()
+                periodStoreStatsGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
+            }
 
-                group.enter()
-                periodGroup.enter()
-                periodStoreStatsGroup.enter()
-                self.dashboardViewModel.syncSiteSummaryStats(for: siteID,
-                                                             siteTimezone: timezoneForSync,
-                                                             timeRange: vc.timeRange,
-                                                             latestDateToInclude: latestDateToInclude) { result in
-                    if case let .failure(error) = result {
-                        DDLogError("⛔️ Error synchronizing summary stats: \(error)")
-                        periodSyncError = error
-                    }
-                    periodGroup.leave()
-                    periodStoreStatsGroup.leave()
-                    group.leave() // Leave this group last so `syncError` is set, if needed
+            group.enter()
+            periodGroup.enter()
+            periodStoreStatsGroup.enter()
+            self.dashboardViewModel.syncSiteSummaryStats(for: siteID,
+                                                         siteTimezone: timezoneForSync,
+                                                         timeRange: vc.timeRange,
+                                                         latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
+                    DDLogError("⛔️ Error synchronizing summary stats: \(error)")
+                    periodSyncError = error
                 }
+                periodGroup.leave()
+                periodStoreStatsGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()

@@ -77,6 +77,7 @@ private extension ProductSettingsViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+        tableView.cellLayoutMarginsFollowReadableWidth = true
     }
 }
 

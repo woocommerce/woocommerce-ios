@@ -122,7 +122,7 @@ struct OrderFormPresentationWrapper: View {
                         ConfigurableBundleProductView(viewModel: viewModel)
                     }
                 }
-            })
+            }, isShowingSecondaryView: $viewModel.isProductSelectorPresented)
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }

@@ -55,10 +55,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // When, Then
         assertEqual("Select products", viewModel.selectProductsTitle)
 
-        viewModel.changeSelectionStateForProduct(with: product1.productID)
+        viewModel.changeSelectionStateForProduct(with: product1.productID, selected: true)
         assertEqual("1 product selected", viewModel.selectProductsTitle)
 
-        viewModel.changeSelectionStateForProduct(with: product2.productID)
+        viewModel.changeSelectionStateForProduct(with: product2.productID, selected: true)
         assertEqual("2 products selected", viewModel.selectProductsTitle)
     }
 
@@ -497,7 +497,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                    onProductSelectionStateChanged: { selectedProduct = $0.productID })
 
         // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
 
         // Then
         XCTAssertEqual(selectedProduct, product.productID)
@@ -513,7 +513,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  onProductSelectionStateChanged: { selectedProduct = $0.productID })
 
         // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
 
         // Then
         XCTAssertEqual(selectedProduct, product.productID)
@@ -595,7 +595,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  onProductSelectionStateChanged: { _ in })
 
         // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -603,7 +603,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.selectedState, .selected)
     }
 
-    func test_selecting_a_product_sets_its_row_to_notSelected_state_if_it_was_previously_selected() {
+    func test_deselecting_a_product_sets_its_row_to_notSelected_state_if_it_was_previously_selected() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
@@ -611,8 +611,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  storageManager: storageManager)
 
         // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
-        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: false)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -629,8 +629,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  onProductSelectionStateChanged: { _ in })
 
         // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
-        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: false)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -646,8 +646,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  storageManager: storageManager)
 
         // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
-        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: false)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -755,7 +755,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         })
 
         // When
-        viewModel.changeSelectionStateForProduct(with: simpleProduct.productID)
+        viewModel.changeSelectionStateForProduct(with: simpleProduct.productID, selected: true)
         viewModel.updateSelectedVariations(productID: variableProduct.productID, selectedVariationIDs: [12])
         viewModel.completeMultipleSelection()
 
@@ -848,9 +848,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  topProductsProvider: topProductsProvider)
 
         // When
-        viewModel.changeSelectionStateForProduct(with: mostPopularProductId)
+        viewModel.changeSelectionStateForProduct(with: mostPopularProductId, selected: true)
         viewModel.updateSelectedVariations(productID: lastSoldProductId, selectedVariationIDs: [selectedVariationId])
-        viewModel.changeSelectionStateForProduct(with: otherProductId)
+        viewModel.changeSelectionStateForProduct(with: otherProductId, selected: true)
         viewModel.completeMultipleSelection()
 
         // Then
@@ -887,7 +887,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = "test"
-        viewModel.changeSelectionStateForProduct(with: searchProductId)
+        viewModel.changeSelectionStateForProduct(with: searchProductId, selected: true)
         viewModel.completeMultipleSelection()
 
         // Then
@@ -931,9 +931,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  topProductsProvider: topProductsProvider)
 
         // When
-        viewModel.changeSelectionStateForProduct(with: mostPopularProductId)
+        viewModel.changeSelectionStateForProduct(with: mostPopularProductId, selected: true)
         viewModel.updateSelectedVariations(productID: lastSoldProductId, selectedVariationIDs: [selectedVariationId])
-        viewModel.changeSelectionStateForProduct(with: otherProductId)
+        viewModel.changeSelectionStateForProduct(with: otherProductId, selected: true)
         viewModel.completeMultipleSelection()
 
         // Then
@@ -1008,7 +1008,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  storageManager: storageManager)
 
         // When
-        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         // Confidence check
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
         XCTAssertEqual(productRow?.selectedState, .selected)
@@ -1213,11 +1213,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
             })
 
         // When
-        viewModel.changeSelectionStateForProduct(with: products[0].productID)
+        viewModel.changeSelectionStateForProduct(with: products[0].productID, selected: true)
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
-                viewModel.changeSelectionStateForProduct(with: products[1].productID)
+                viewModel.changeSelectionStateForProduct(with: products[1].productID, selected: true)
                 onCompletion(.success(true))
             default:
                 XCTFail("Unsupported Action")
@@ -1461,7 +1461,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             searchProductsPages.isNotEmpty
         }
 
-        viewModel.changeSelectionStateForProduct(with: 3)
+        viewModel.changeSelectionStateForProduct(with: 3, selected: true)
 
         XCTAssertEqual(synchronizeProductsPages, [1])
         XCTAssertEqual(searchProductsPages, [1])

@@ -273,7 +273,8 @@ struct ProductSelectorView: View {
                             break
                     }
                 } else {
-                    viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
+                    viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID, 
+                                                             selected: rowViewModel.selectedState != .selected)
                 }
             }
             .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])

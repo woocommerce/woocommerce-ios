@@ -222,7 +222,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         })
 
         // When
-        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID)
+        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID, selected: true)
 
         // Then
         XCTAssertEqual(selectedVariationID, productVariation.productVariationID)
@@ -240,7 +240,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
                                                           storageManager: storageManager)
 
         // When
-        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID)
+        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID, selected: true)
 
         // Then
         let row = viewModel.productVariationRows.first(where: { $0.productOrVariationID == productVariation.productVariationID })
@@ -259,7 +259,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
                                                           storageManager: storageManager)
 
         // When
-        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID)
+        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID, selected: true)
         // Confidence check
         let row = viewModel.productVariationRows.first(where: { $0.productOrVariationID == productVariation.productVariationID })
         XCTAssertEqual(row?.selectedState, .selected)

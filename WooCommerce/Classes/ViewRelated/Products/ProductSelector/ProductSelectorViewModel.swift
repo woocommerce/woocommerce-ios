@@ -286,13 +286,18 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Selects or unselects a product to add to the order
     ///
-    func changeSelectionStateForProduct(with productID: Int64) {
+    func changeSelectionStateForProduct(with productID: Int64, selected: Bool) {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
 
         tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
-        toggleSelection(id: productID)
+        switch selected {
+        case true:
+            addSelection(id: productID)
+        case false:
+            removeSelection(id: productID)
+        }
 
         // The SKU search gives product variations as products. Here we have to handle that.
         if let productVariation = selectedProduct.toProductVariation() {
@@ -313,14 +318,6 @@ final class ProductSelectorViewModel: ObservableObject {
     /// - Parameter id: Product or variation ID to add to the product selector.
     func removeSelection(id: Int64) {
         selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
-    }
-
-    private func toggleSelection(id: Int64) {
-        if selectedItemsIDs.contains(id) {
-            selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
-        } else {
-            selectedItemsIDs.append(id)
-        }
     }
 
     func isVariableProduct(productOrVariationID: Int64) -> Bool {

@@ -668,7 +668,8 @@ private struct ProductsSection: View {
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }
             .padding(.horizontal, insets: safeAreaInsets)
-            .padding()
+            .padding([.leading, .trailing])
+            .frame(height: Layout.rowHeight)
             .background(Color(.listForeground(modal: true)))
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
@@ -928,6 +929,10 @@ private extension ProductSelectorView.Configuration {
 }
 
 private extension ProductsSection {
+    enum Layout {
+        static let rowHeight: CGFloat = 56.0
+    }
+
     enum Localization {
         static let scanProductRowTitle = NSLocalizedString(
             "orderForm.products.add.scan.row.title",

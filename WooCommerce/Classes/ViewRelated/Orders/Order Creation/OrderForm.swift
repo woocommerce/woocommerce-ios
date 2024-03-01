@@ -200,11 +200,7 @@ struct OrderForm: View {
                 ScrollView {
                     Group {
                         VStack(spacing: Layout.noSpacing) {
-                            Group {
-                                Divider()
-                                Spacer(minLength: Layout.sectionSpacing)
-                                Divider()
-                            }
+                            Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
                                 Divider() // Needed because `NonEditableOrderBanner` does not have a top divider

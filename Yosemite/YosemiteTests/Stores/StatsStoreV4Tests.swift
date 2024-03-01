@@ -318,7 +318,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` makes a network request with the given `force_cache_refresh` parameter if `forceRefresh` is true.
     ///
-    func test_retrieveStats_makes_network_request_with_given_force_cache_rerefresh_parameter_if_forceRefresh_is_true() {
+    func test_retrieveStats_makes_network_request_with_given_force_cache_rerefresh_parameter_if_forceRefresh_is_true() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -337,7 +337,8 @@ final class StatsStoreV4Tests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(network.queryParametersDictionary?["force_cache_refresh"] as? Bool, true)
+        let forceCacheRefreshValue = try XCTUnwrap(network.queryParametersDictionary?["force_cache_refresh"] as? Bool)
+        XCTAssertTrue(forceCacheRefreshValue)
     }
 
     /// Verifies that `StatsActionV4.retrieveStats` makes a network request without the `force_cache_refresh` parameter if `forceRefresh` is false.
@@ -361,7 +362,8 @@ final class StatsStoreV4Tests: XCTestCase {
         }
 
         // Then
-        XCTAssertNil(network.queryParametersDictionary?["force_cache_refresh"])
+        let forceCacheRefreshValue = network.queryParametersDictionary?["force_cache_refresh"]
+        XCTAssertNil(forceCacheRefreshValue)
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.

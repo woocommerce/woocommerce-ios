@@ -49,7 +49,7 @@ extension DeprecatedDashboardStatsViewController: DashboardUI {
         }
         set {}
     }
-    
+
     var displaySyncingError: (Error) -> Void {
         get {
             return { _ in }

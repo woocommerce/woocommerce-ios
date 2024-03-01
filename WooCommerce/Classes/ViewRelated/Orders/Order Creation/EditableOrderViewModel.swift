@@ -1810,7 +1810,10 @@ private extension EditableOrderViewModel {
         $isProductSelectorPresented
             .removeDuplicates()
             .map { [weak self] isPresented in
-                guard let self else { return nil }
+                guard let self,
+                      isPresented else {
+                    return nil
+                }
                 return ProductSelectorViewModel(
                     siteID: siteID,
                     selectedItemIDs: selectedProductsAndVariationsIDs,

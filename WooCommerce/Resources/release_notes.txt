@@ -1,7 +1,1 @@
-- Orders: Merchants can now contact their customers through WhatsApp and Telegram apps. [https://github.com/woocommerce/woocommerce-ios/pull/12099]
-- [internal] Blaze: Use v1.1 endpoint to load campaigns list. [https://github.com/woocommerce/woocommerce-ios/pull/12127]
-- Orders: Merchants can filter orders by selecting a product. [https://github.com/woocommerce/woocommerce-ios/pull/12129]
-- [**] Products tab: split view is now supported in the products tab. [https://github.com/woocommerce/woocommerce-ios/pull/12158]
-- [***] Stats: Merchants can now customize their analytics by enabling/disabling and reordering the cards in the Analytics Hub. [https://github.com/woocommerce/woocommerce-ios/pull/12156]
-
-
+Connect with customers effortlessly using WhatsApp and Telegram directly from their orders! Plus, streamline your workflow with our new product-based order filtering. Experience enhanced multitasking with split view support in the Products tab and tailor your analytics dashboard to your needs in the revamped Analytics Hub. Update now for a smoother, more personalized WooCommerce experience!

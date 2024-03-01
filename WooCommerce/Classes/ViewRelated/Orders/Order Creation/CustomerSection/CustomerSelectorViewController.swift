@@ -93,7 +93,9 @@ private extension CustomerSelectorViewController {
                                 loadResultsWhenSearchTermIsEmpty: true,
                                 showSearchFilters: false,
                                 showGuestLabel: viewModel.configuration.showGuestLabel,
-                                shouldTrackCustomerAdded: viewModel.configuration.shouldTrackCustomerAdded)
+                                shouldTrackCustomerAdded: viewModel.configuration.shouldTrackCustomerAdded,
+                                disallowCreatingCustomer: viewModel.configuration.disallowCreatingCustomer
+                            )
                             self.configureActivityIndicator()
                         } else {
                             if viewModel.configuration.disallowCreatingCustomer {
@@ -114,6 +116,7 @@ private extension CustomerSelectorViewController {
                     showSearchFilters: true,
                     showGuestLabel: self?.viewModel.configuration.showGuestLabel ?? false,
                     shouldTrackCustomerAdded: self?.viewModel.configuration.shouldTrackCustomerAdded ?? true,
+                    disallowCreatingCustomer: self?.viewModel.configuration.disallowCreatingCustomer ?? false,
                     onAddCustomerDetailsManually: {
                         self?.presentNewCustomerDetailsFlow()
                     })
@@ -168,6 +171,7 @@ private extension CustomerSelectorViewController {
                                  showSearchFilters: Bool,
                                  showGuestLabel: Bool,
                                  shouldTrackCustomerAdded: Bool,
+                                 disallowCreatingCustomer: Bool,
                                  onAddCustomerDetailsManually: (() -> Void)? = nil) {
         let searchViewController = SearchViewController(
             storeID: siteID,
@@ -176,6 +180,7 @@ private extension CustomerSelectorViewController {
                                              showSearchFilters: showSearchFilters,
                                              showGuestLabel: showGuestLabel,
                                              shouldTrackCustomerAdded: shouldTrackCustomerAdded,
+                                             disallowCreatingCustomer: disallowCreatingCustomer,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped,
                                              onDidStartSyncingAllCustomersFirstPage: {

@@ -96,7 +96,12 @@ private extension CustomerSelectorViewController {
                                 shouldTrackCustomerAdded: viewModel.configuration.shouldTrackCustomerAdded)
                             self.configureActivityIndicator()
                         } else {
-                            self.showEmptyState(with: self.emptyStateConfiguration())
+                            if viewModel.configuration.disallowCreatingCustomer {
+                                self.showEmptyState(with: self.emptyStateWithNoCreationConfiguration())
+
+                            } else {
+                                self.showEmptyState(with: self.emptyStateConfiguration())
+                            }
                         }
                     case .failure:
                         self.showEmptyState(with: self.errorStateConfiguration())
@@ -211,6 +216,13 @@ private extension CustomerSelectorViewController {
         ) { [weak self] _ in
             self?.presentNewCustomerDetailsFlow()
         }
+    }
+
+    func emptyStateWithNoCreationConfiguration() -> EmptyStateViewController.Config {
+        EmptyStateViewController.Config.simple(
+            message: .init(string: Localization.emptyStateMessage),
+            image: .emptySearchResultsImage
+        )
     }
 
     func errorStateConfiguration() -> EmptyStateViewController.Config {

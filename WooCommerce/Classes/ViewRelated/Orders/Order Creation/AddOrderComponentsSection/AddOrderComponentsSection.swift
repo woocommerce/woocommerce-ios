@@ -45,10 +45,13 @@ struct AddOrderComponentsSection: View {
             // "Add order components" rows
             Group {
                 addShippingRow
+                    .frame(height: Constants.rowHeight)
 
                 addCouponRow
+                    .frame(height: Constants.rowHeight)
 
                 addGiftCardRow
+                    .frame(height: Constants.rowHeight)
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
@@ -224,6 +227,7 @@ private extension AddOrderComponentsSection {
         static let rowMinHeight: CGFloat = 44
         static let infoTooltipCornerRadius: CGFloat = 4
         static let orderTotalBottomPadding: CGFloat = 8
+        static let rowHeight: CGFloat = 56
     }
 }
 

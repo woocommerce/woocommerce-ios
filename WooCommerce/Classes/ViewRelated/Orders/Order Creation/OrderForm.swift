@@ -784,7 +784,7 @@ private extension ProductsSection {
 // MARK: Constants
 private extension OrderForm {
     enum Layout {
-        static let sectionSpacing: CGFloat = 16.0
+        static let sectionSpacing: CGFloat = 8.0
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
         static let storedTaxRateBottomSheetTopSpace: CGFloat = 24.0

@@ -66,8 +66,8 @@ private struct OrderCustomerSectionContent: View {
             .renderedIf(viewModel.isDataAvailable)
 
             if !viewModel.isDataAvailable {
-                Spacer(minLength: Layout.verticalHeadlineSpacing)
                 createCustomerView
+                    .frame(height: Layout.buttonHeight)
             } else {
                 customerDataView
             }
@@ -81,7 +81,7 @@ private struct OrderCustomerSectionContent: View {
             showAddressForm.toggle()
         }
         .buttonStyle(PlusButtonStyle())
-        .padding([.leading, .bottom, .trailing])
+        .padding([.leading, .trailing])
     }
 
     private var customerDataView: some View {
@@ -117,6 +117,7 @@ private extension OrderCustomerSectionContent {
         static let verticalHeadlineSpacing: CGFloat = 22.0
         static let verticalEmailSpacing: CGFloat = 4.0
         static let verticalAddressSpacing: CGFloat = 6.0
+        static let buttonHeight: CGFloat = 56.0
     }
 
     enum Localization {

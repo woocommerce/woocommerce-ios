@@ -486,6 +486,20 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
+
+        // Logic for Custom Range tab:
+        // Redact visitor stats if no bar is selected (because data is inaccurate for the whole custom range),
+        // but show them if a specific bar is selected (because we do have accurate data for it).
+        if timeRange.isCustomTimeRange {
+            if siteVisitStatsMode == .redactedDueToCustomRange {
+                siteVisitStatsMode = .default
+            }
+
+            if selectedIndex == nil && siteVisitStatsMode == .default {
+                siteVisitStatsMode = .redactedDueToCustomRange
+            }
+        }
+
         viewModel.selectedIntervalIndex = selectedIndex
     }
 }

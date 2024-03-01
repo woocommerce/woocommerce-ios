@@ -54,11 +54,15 @@ final class CustomerSearchUICommand: SearchUICommand {
     // Whether to track customer addition
     private let shouldTrackCustomerAdded: Bool
 
+    // Whether to hide button for creating customer in empty state
+    private let disallowCreatingCustomer: Bool
+
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
          showSearchFilters: Bool = false,
          showGuestLabel: Bool = false,
          shouldTrackCustomerAdded: Bool = true,
+         disallowCreatingCustomer: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -71,6 +75,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.showSearchFilters = showSearchFilters
         self.showGuestLabel = showGuestLabel
         self.shouldTrackCustomerAdded = shouldTrackCustomerAdded
+        self.disallowCreatingCustomer = disallowCreatingCustomer
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -142,7 +147,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     func createStarterViewController() -> UIViewController? {
         guard !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) else {
             guard loadResultsWhenSearchTermIsEmpty else {
-                return createStarterViewControllerForEmptySearch()
+                return createStarterViewControllerForEmptySearch(disallowCreatingCustomer: disallowCreatingCustomer)
             }
 
             return nil
@@ -218,15 +223,24 @@ final class CustomerSearchUICommand: SearchUICommand {
 }
 
 private extension CustomerSearchUICommand {
-    func createStarterViewControllerForEmptySearch() -> UIViewController {
-        let configuration = EmptyStateViewController.Config.withButton(
-            message: .init(string: ""),
-            image: .customerSearchImage,
-            details: Localization.emptyDefaultStateMessage,
-            buttonTitle: Localization.emptyDefaultStateActionTitle
-        ) { [weak self] _ in
-            self?.analytics.track(.orderCreationCustomerAddManuallyTapped)
-            self?.onAddCustomerDetailsManually?()
+    func createStarterViewControllerForEmptySearch(disallowCreatingCustomer: Bool) -> UIViewController {
+        let configuration: EmptyStateViewController.Config
+
+        if disallowCreatingCustomer {
+            configuration = .simple(
+                message: .init(string: Localization.emptyDefaultStateNoCreationMessage),
+                image: .customerSearchImage
+            )
+        } else {
+            configuration = .withButton(
+                message: .init(string: ""),
+                image: .customerSearchImage,
+                details: Localization.emptyDefaultStateMessage,
+                buttonTitle: Localization.emptyDefaultStateActionTitle
+            ) { [weak self] _ in
+                self?.analytics.track(.orderCreationCustomerAddManuallyTapped)
+                self?.onAddCustomerDetailsManually?()
+            }
         }
 
         let emptyStateViewController = EmptyStateViewController(style: .list)
@@ -308,6 +322,10 @@ private extension CustomerSearchUICommand {
                                                                 comment: "Message to prompt users to search for customers on the customer search screen")
         static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",
                                                                 comment: "Button title for adding customer details manually on the customer search screen")
+        static let emptyDefaultStateNoCreationMessage = NSLocalizedString(
+            "customerSearchUICommand.emptyDefaultStateNoCreationMessage",
+            value: "Search for an existing customer",
+            comment: "Message to prompt users to search for customers on the customer search screen")
 
         static let guestLabel = NSLocalizedString(
             "customerSearchUICommand.guestLabel",

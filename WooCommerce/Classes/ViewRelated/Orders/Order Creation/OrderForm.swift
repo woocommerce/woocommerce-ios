@@ -666,7 +666,12 @@ private struct ProductsSection: View {
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
             }
-            .sheet(isPresented: $viewModel.isProductSelectorPresented, onDismiss: {
+            .sheet(isPresented: Binding<Bool>(
+                get: { viewModel.isProductSelectorPresented && !viewModel.sideBySideViewFeatureFlagEnabled },
+                set: { newValue in
+                    viewModel.isProductSelectorPresented = newValue
+                }
+            ), onDismiss: {
                 scroll.scrollTo(addProductButton)
             }, content: {
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {

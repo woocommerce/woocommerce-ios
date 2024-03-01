@@ -668,8 +668,8 @@ private struct ProductsSection: View {
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }
             .padding(.horizontal, insets: safeAreaInsets)
-            .padding([.leading, .trailing])
-            .frame(height: Layout.rowHeight)
+            .padding()
+            .if(viewModel.shouldShowAddProductsButton, transform: { $0.frame(height: Layout.rowHeight) })
             .background(Color(.listForeground(modal: true)))
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)

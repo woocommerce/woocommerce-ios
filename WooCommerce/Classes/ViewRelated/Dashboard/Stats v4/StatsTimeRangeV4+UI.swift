@@ -12,21 +12,11 @@ extension StatsTimeRangeV4 {
             return 31
         case .thisYear:
             return 12
-        case let .custom(startDate, endDate):
-            let calendar = Calendar.current
-            let quantity: Int? = {
-                switch intervalGranularity {
-                case .hourly:
-                    calendar.dateComponents([.hour], from: startDate, to: endDate).hour
-                case .daily, .weekly:
-                    calendar.dateComponents([.day], from: startDate, to: endDate).day
-                case .monthly, .quarterly:
-                    calendar.dateComponents([.month], from: startDate, to: endDate).month
-                case .yearly:
-                    calendar.dateComponents([.year], from: startDate, to: endDate).year
-                }
-            }()
-            return quantity ?? 7
+        case .custom:
+            // Returns maximum value allowed for pagination,
+            // the plugin would return the maximum values available for the required granularity.
+            // https://developer.wordpress.org/rest-api/using-the-rest-api/pagination/
+            return 100
         }
     }
 

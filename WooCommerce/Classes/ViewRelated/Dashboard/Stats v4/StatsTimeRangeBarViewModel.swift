@@ -51,18 +51,13 @@ private extension StatsTimeRangeV4 {
     /// Date formatter for a selected date for a time range.
     func timeRangeSelectedDateFormatter(timezone: TimeZone) -> DateFormatter {
         let dateFormatter: DateFormatter
-        switch self {
-        case .today:
+        switch intervalGranularity {
+        case .hourly:
             dateFormatter = DateFormatter.Charts.chartSelectedDateHourFormatter
-        case .thisWeek, .thisMonth:
+        case .daily, .weekly:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
-        case .thisYear:
+        case .monthly, .quarterly, .yearly:
             dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
-        case .custom:
-            let formatter = DateFormatter()
-            formatter.dateStyle = .medium
-            formatter.timeStyle = .none
-            return formatter
         }
         dateFormatter.timeZone = timezone
         return dateFormatter

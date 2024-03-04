@@ -234,10 +234,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Called when an order is shown and the order should be selected in the order list.
     /// - Parameter orderID: ID of the order to be selected in the order list.
-    func onOrderSelected(id orderID: Int64) {
+    /// - Parameter shouldScrollIfNeeded: Boolean flag to turn on scrolling if the newly selected row is not visible
+    func onOrderSelected(id orderID: Int64, shouldScrollIfNeeded: Bool = false) {
         selectedOrderID = orderID
         selectedIndexPath = indexPath(for: orderID)
-        highlightSelectedRowIfNeeded()
+        highlightSelectedRowIfNeeded(shouldScrollIfNeeded: shouldScrollIfNeeded)
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -532,7 +533,7 @@ private extension OrderListViewController {
     /// Highlights the selected row if any row has been selected and the split view is not collapsed.
     /// Removes the selected state otherwise.
     ///
-    func highlightSelectedRowIfNeeded() {
+    func highlightSelectedRowIfNeeded(shouldScrollIfNeeded: Bool = false) {
         guard let selectedOrderID, let orderIndexPath = indexPath(for: selectedOrderID) else {
             return
         }
@@ -540,6 +541,9 @@ private extension OrderListViewController {
             tableView.deselectRow(at: orderIndexPath, animated: false)
         } else {
             tableView.selectRow(at: orderIndexPath, animated: false, scrollPosition: .none)
+            if shouldScrollIfNeeded {
+                tableView.scrollToRow(at: orderIndexPath, at: .none, animated: true)
+            }
         }
     }
 
@@ -607,7 +611,7 @@ extension OrderListViewController {
                     showOrderDetails(detailsViewModel.order)
                 }
                 else {
-                    onOrderSelected(id: orderID)
+                    onOrderSelected(id: orderID, shouldScrollIfNeeded: true)
                 }
                 return true
             }
@@ -620,8 +624,9 @@ extension OrderListViewController {
         switchDetailsHandler([viewModel], 0, true) { [weak self] hasBeenSelected in
             guard let self else { return }
             if hasBeenSelected {
-                onOrderSelected(id: order.orderID)
+                onOrderSelected(id: order.orderID, shouldScrollIfNeeded: true)
             }
+            onCompletion?(hasBeenSelected)
         }
     }
 }

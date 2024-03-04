@@ -126,6 +126,8 @@ protocol SearchUICommand {
     /// - Parameter keyword: search query.
     /// - Returns: predicate that is based on the search keyword. When the keyword is empty, `nil` can be returned as an example use case.
     func searchResultsPredicate(keyword: String) -> NSPredicate?
+
+    func cancel(from viewController: UIViewController)
 }
 
 // MARK: - Default implementation
@@ -162,6 +164,10 @@ extension SearchUICommand {
     func createHeaderView() -> UIView? {
         // If not implemented, returns `nil` to not show the header.
         nil
+    }
+
+    func cancel(from viewController: UIViewController) {
+        viewController.dismiss(animated: true, completion: nil)
     }
 }
 

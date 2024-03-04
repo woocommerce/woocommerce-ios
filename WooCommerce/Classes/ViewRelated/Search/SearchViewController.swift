@@ -241,7 +241,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     @IBAction func dismissWasPressed() {
         view.endEditing(true)
-        dismiss(animated: true, completion: nil)
+        searchUICommand.cancel(from: self)
     }
 
     override func viewSafeAreaInsetsDidChange() {

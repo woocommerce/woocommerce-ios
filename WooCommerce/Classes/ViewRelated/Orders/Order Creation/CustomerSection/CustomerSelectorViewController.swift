@@ -14,6 +14,8 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let viewModel: CustomerSelectorViewModel
     private let addressFormViewModel: CreateOrderAddressFormViewModel?
 
+    let configuration: CustomerSelectorViewController.Configuration
+
     /// Notice presentation handler
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -34,10 +36,10 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(
             siteID: siteID,
-            configuration: configuration,
             onCustomerSelected: onCustomerSelected)
 
         self.siteID = siteID
+        self.configuration = configuration
         self.addressFormViewModel = addressFormViewModel
         self.onCustomerSelected = onCustomerSelected
 
@@ -92,13 +94,13 @@ private extension CustomerSelectorViewController {
                             self.addSearchViewController(
                                 loadResultsWhenSearchTermIsEmpty: true,
                                 showSearchFilters: false,
-                                showGuestLabel: viewModel.configuration.showGuestLabel,
-                                shouldTrackCustomerAdded: viewModel.configuration.shouldTrackCustomerAdded,
-                                disallowCreatingCustomer: viewModel.configuration.disallowCreatingCustomer
+                                showGuestLabel: configuration.showGuestLabel,
+                                shouldTrackCustomerAdded: configuration.shouldTrackCustomerAdded,
+                                disallowCreatingCustomer: configuration.disallowCreatingCustomer
                             )
                             self.configureActivityIndicator()
                         } else {
-                            if viewModel.configuration.disallowCreatingCustomer {
+                            if configuration.disallowCreatingCustomer {
                                 self.showEmptyState(with: self.emptyStateWithNoCreationConfiguration())
 
                             } else {
@@ -114,9 +116,9 @@ private extension CustomerSelectorViewController {
                 self?.addSearchViewController(
                     loadResultsWhenSearchTermIsEmpty: false,
                     showSearchFilters: true,
-                    showGuestLabel: self?.viewModel.configuration.showGuestLabel ?? false,
-                    shouldTrackCustomerAdded: self?.viewModel.configuration.shouldTrackCustomerAdded ?? true,
-                    disallowCreatingCustomer: self?.viewModel.configuration.disallowCreatingCustomer ?? false,
+                    showGuestLabel: self?.configuration.showGuestLabel ?? false,
+                    shouldTrackCustomerAdded: self?.configuration.shouldTrackCustomerAdded ?? true,
+                    disallowCreatingCustomer: self?.configuration.disallowCreatingCustomer ?? false,
                     onAddCustomerDetailsManually: {
                         self?.presentNewCustomerDetailsFlow()
                     })
@@ -127,10 +129,10 @@ private extension CustomerSelectorViewController {
     }
 
     func configureNavigation() {
-        navigationItem.title = viewModel.configuration.title
+        navigationItem.title = configuration.title
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelWasPressed))
 
-        if !viewModel.configuration.disallowCreatingCustomer {
+        if !configuration.disallowCreatingCustomer {
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: .plusBarButtonItemImage,
                                                                 style: .plain,
                                                                 target: self,
@@ -249,7 +251,7 @@ private extension CustomerSelectorViewController {
 
     func onCustomerTapped(_ customer: Customer) {
         // Show alert if selecting guest is disallowed
-        if viewModel.configuration.disallowSelectingGuest && customer.isGuest {
+        if configuration.disallowSelectingGuest && customer.isGuest {
             showGuestSelectionDisallowedNotice()
             return
         }

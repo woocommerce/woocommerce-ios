@@ -5,16 +5,12 @@ final class CustomerSelectorViewModel {
     private let stores: StoresManager
     private let siteID: Int64
 
-    let configuration: CustomerSelectorViewController.Configuration
-
     private let onCustomerSelected: (Customer) -> Void
 
     init(siteID: Int64,
-         configuration: CustomerSelectorViewController.Configuration,
          stores: StoresManager = ServiceLocator.stores,
          onCustomerSelected: @escaping (Customer) -> Void) {
         self.siteID = siteID
-        self.configuration = configuration
         self.stores = stores
         self.onCustomerSelected = onCustomerSelected
     }

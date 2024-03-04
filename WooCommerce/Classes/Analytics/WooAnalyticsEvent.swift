@@ -2821,14 +2821,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordExplanationContinueButtonTapped, properties: [:])
         }
 
-        static func loginSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginSuccess, properties: [:])
-        }
-
-        static func loginFailed(error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginFailed, properties: [:], error: error)
-        }
-
         static func loginExitConfirmation() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginExitConfirmation, properties: [:])
         }

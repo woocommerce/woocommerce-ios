@@ -103,8 +103,6 @@ public enum WooAnalyticsStat: String {
     case loginSiteCredentialsAppPasswordExplanationDismissed = "login_site_credentials_app_password_explanation_dismissed"
     case loginSiteCredentialsAppPasswordExplanationContactSupportTapped = "login_site_credentials_app_password_explanation_contact_support_tapped"
     case loginSiteCredentialsAppPasswordExplanationContinueButtonTapped = "login_site_credentials_app_password_explanation_continue_button_tapped"
-    case loginSiteCredentialsAppPasswordLoginSuccess = "login_site_credentials_app_password_login_success"
-    case loginSiteCredentialsAppPasswordLoginFailed = "login_site_credentials_app_password_login_failed"
     case loginSiteCredentialsAppPasswordLoginExitConfirmation = "login_site_credentials_app_password_login_exit_confirmation"
     case loginSiteCredentialsAppPasswordLoginDismissed = "login_site_credentials_app_password_login_dismissed"
 

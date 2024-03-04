@@ -535,6 +535,7 @@ private extension OrderListViewController {
     ///
     func highlightSelectedRowIfNeeded(shouldScrollIfNeeded: Bool = false) {
         guard let selectedOrderID, let orderIndexPath = indexPath(for: selectedOrderID) else {
+            tableView.deselectSelectedRowWithAnimation(true)
             return
         }
         if splitViewController?.isCollapsed == true {

@@ -59,6 +59,7 @@ struct ProductSelectorView: View {
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.dismiss) var dismiss
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -175,6 +176,7 @@ struct ProductSelectorView: View {
                     Button(cancelButtonTitle) {
                         isPresented = false
                         viewModel.closeButtonTapped()
+                        dismiss()
                     }
                 }
             }

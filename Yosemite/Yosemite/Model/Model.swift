@@ -210,7 +210,6 @@ public typealias WordPressTheme = Networking.WordPressTheme
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
-public typealias StorageBlazeCampaign = Storage.BlazeCampaign
 public typealias StorageBlazeCampaignListItem = Storage.BlazeCampaignListItem
 public typealias StorageBlazeTargetDevice = Storage.BlazeTargetDevice
 public typealias StorageBlazeTargetLanguage = Storage.BlazeTargetLanguage

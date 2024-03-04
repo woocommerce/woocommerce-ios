@@ -34,12 +34,6 @@ final class BlazeStoreTests: XCTestCase {
         return viewStorage.countObjects(ofType: StorageBlazeCampaignListItem.self)
     }
 
-    /// Convenience: returns the number of stored campaigns
-    ///
-    private var storedCampaignCount: Int {
-        return viewStorage.countObjects(ofType: StorageBlazeCampaign.self)
-    }
-
     private var storedTargetDeviceCount: Int {
         return viewStorage.countObjects(ofType: StorageBlazeTargetDevice.self)
     }

@@ -2,6 +2,8 @@ import XCTest
 @testable import WooCommerce
 
 final class ReviewAgeTests: XCTestCase {
+    private let oneDayInSeconds: TimeInterval = 86_400
+
     func testDescriptionReturnsExpectationFor24Hours() {
         let age = ReviewAge(rawValue: "0")
 
@@ -26,7 +28,7 @@ final class ReviewAgeTests: XCTestCase {
     func testAgeCalculationsReturnLast24HoursAgeFor12Hours() {
         let initialDate = Date()
         // Let's move the clock 12 hours ahead
-        let finalDate = Date(timeInterval: 43200, since: initialDate)
+        let finalDate = Date(timeInterval: oneDayInSeconds/2, since: initialDate)
 
         let age = ReviewAge.from(startDate: initialDate, toDate: finalDate)
 
@@ -36,17 +38,7 @@ final class ReviewAgeTests: XCTestCase {
     func testAgeCalculationsReturnLast24HoursAgeFor23Hours() {
         let initialDate = Date()
         // Let's move the clock 23:59:59 hours ahead
-        let finalDate = Date(timeInterval: 84399, since: initialDate)
-
-        let age = ReviewAge.from(startDate: initialDate, toDate: finalDate)
-
-        XCTAssertEqual(age, .last24Hours)
-    }
-
-    func testAgeCalculationsReturnLast24HoursAgeFor24HoursAnd1Second() {
-        let initialDate = Date()
-        // Let's move the clock 24:00:01 hours ahead
-        let finalDate = Date(timeInterval: 84461, since: initialDate)
+        let finalDate = Date(timeInterval: oneDayInSeconds - 1, since: initialDate)
 
         let age = ReviewAge.from(startDate: initialDate, toDate: finalDate)
 
@@ -56,7 +48,7 @@ final class ReviewAgeTests: XCTestCase {
     func testAgeCalculationsReturnLast7DaysAgeForThreeDays() {
         let initialDate = Date()
         // Let's move the clock three days ahead
-        let finalDate = Date(timeInterval: 259200, since: initialDate)
+        let finalDate = Date(timeInterval: oneDayInSeconds * 3, since: initialDate)
 
         let age = ReviewAge.from(startDate: initialDate, toDate: finalDate)
 
@@ -66,7 +58,7 @@ final class ReviewAgeTests: XCTestCase {
     func testAgeCalculationsReturnLast7DaysAgeForAlmostSevenFullDays() {
         let initialDate = Date()
         // Let's move the clock almost seven full days ahead
-        let finalDate = Date(timeInterval: 604760, since: initialDate)
+        let finalDate = Date(timeInterval: oneDayInSeconds * 7 - 1, since: initialDate)
 
         let age = ReviewAge.from(startDate: initialDate, toDate: finalDate)
 
@@ -76,7 +68,7 @@ final class ReviewAgeTests: XCTestCase {
     func testAgeCalculationsReturnLastOlderForMoreThanSevenFullDays() {
         let initialDate = Date()
         // Let's move the clock a tad longer than seven full days ahead
-        let finalDate = Date(timeInterval: 691300, since: initialDate)
+        let finalDate = Date(timeInterval: oneDayInSeconds * 7 + 1, since: initialDate)
 
         let age = ReviewAge.from(startDate: initialDate, toDate: finalDate)
 

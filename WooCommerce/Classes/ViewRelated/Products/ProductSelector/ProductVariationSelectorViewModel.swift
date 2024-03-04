@@ -51,7 +51,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when a product variation is selected
     ///
-    let onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)?
+    let onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)?
 
     /// Closure to be invoked when "Clear Selection" is called.
     ///
@@ -131,7 +131,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
+         onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
          onSelectionsCleared: (() -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
@@ -160,7 +160,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      orderSyncState: Published<OrderSyncState>.Publisher? = nil,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
-                     onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
+                     onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
                      onSelectionsCleared: (() -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
@@ -209,7 +209,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
             removeSelection(variationID)
         }
 
-        onVariationSelectionStateChanged?(selectedVariation, parentProduct)
+        onVariationSelectionStateChanged?(selectedVariation, parentProduct, selected)
     }
 
     /// Unselect all items.

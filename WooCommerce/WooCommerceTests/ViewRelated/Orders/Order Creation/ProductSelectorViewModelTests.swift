@@ -493,8 +493,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                   storageManager: storageManager,
-                                                   onProductSelectionStateChanged: { selectedProduct = $0.productID })
+                                                 storageManager: storageManager,
+                                                 onProductSelectionStateChanged: { updatedProduct, _ in
+            selectedProduct = updatedProduct.productID
+        })
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
@@ -510,7 +512,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 onProductSelectionStateChanged: { selectedProduct = $0.productID })
+                                                 onProductSelectionStateChanged: { updatedProduct, _ in
+            selectedProduct = updatedProduct.productID
+        })
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
@@ -592,7 +596,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 onProductSelectionStateChanged: { _ in })
+                                                 onProductSelectionStateChanged: { _, _ in })
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
@@ -626,7 +630,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 onProductSelectionStateChanged: { _ in })
+                                                 onProductSelectionStateChanged: { _, _ in })
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
@@ -1208,8 +1212,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(
             siteID: sampleSiteID,
             storageManager: storageManager,
-            onProductSelectionStateChanged: {
-                selectedProduct = $0.productID
+            onProductSelectionStateChanged: { updatedProduct, _ in
+                selectedProduct = updatedProduct.productID
             })
 
         // When

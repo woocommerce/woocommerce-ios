@@ -262,7 +262,7 @@ private extension FilterListViewController {
                     let productSelectorViewModel = ProductSelectorViewModel(
                         siteID: siteID,
                         selectedItemIDs: selectedProductID,
-                        onProductSelectionStateChanged: { [weak self] product in
+                        onProductSelectionStateChanged: { [weak self] product, _ in
                             guard let self else { return }
 
                             selected.selectedValue = FilterOrdersByProduct(id: product.productID, name: product.name)

@@ -207,6 +207,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         // Given
         var selectedVariationID: Int64?
         var selectedProductID: Int64?
+        var selectionState: Bool = false
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
         let productVariation = sampleProductVariation.copy(productVariationID: 1)
@@ -214,17 +215,19 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         insert(product)
 
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
-                                                            product: product,
-                                                            storageManager: storageManager,
-                                                            onVariationSelectionStateChanged: { variation, product in
+                                                          product: product,
+                                                          storageManager: storageManager,
+                                                          onVariationSelectionStateChanged: { variation, product, isSelected in
             selectedVariationID = variation.productVariationID
             selectedProductID = product.productID
+            selectionState = isSelected
         })
 
         // When
         viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID, selected: true)
 
         // Then
+        XCTAssertTrue(selectionState)
         XCTAssertEqual(selectedVariationID, productVariation.productVariationID)
         XCTAssertEqual(selectedProductID, product.productID)
     }

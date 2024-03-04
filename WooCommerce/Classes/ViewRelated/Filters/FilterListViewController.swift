@@ -271,19 +271,19 @@ private extension FilterListViewController {
                             selected.selectedValue = FilterOrdersByProduct(id: product.productID, name: product.name)
                             self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
                             self.listSelector.reloadData()
-                            self.listSelector.navigationController?.dismiss(animated: true)
+                            self.listSelector.dismiss(animated: true)
                         },
                         onCloseButtonTapped: { [weak self] in
                             guard let self else { return }
 
-                            self.listSelector.navigationController?.dismiss(animated: true)
+                            self.listSelector.dismiss(animated: true)
                         }
                     )
                     return WooNavigationController(rootViewController: ProductSelectorViewController(configuration: .configurationForOrder,
                                                                                                      source: .orderFilter,
                                                                                                      viewModel: productSelectorViewModel))
                 }()
-                self.listSelector.navigationController?.present(controller, animated: true)
+                self.listSelector.present(controller, animated: true)
 
             case .customer(let siteID):
                 let controller: CustomerSelectorViewController = {
@@ -295,7 +295,7 @@ private extension FilterListViewController {
 
                             self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
                             self?.listSelector.reloadData()
-                            self?.listSelector.navigationController?.dismiss(animated: true)
+                            self?.listSelector.dismiss(animated: true)
                         }
                     )
                 }()

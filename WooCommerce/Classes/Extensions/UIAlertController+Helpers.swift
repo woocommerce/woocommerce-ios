@@ -107,6 +107,18 @@ extension UIAlertController {
         alertController.addAction(action)
         viewController.present(alertController, animated: true)
     }
+
+    /// Unfinished App Password alert.
+    ///
+    static func presentUnfinishedApplicationPasswordAlert(from viewController: UIViewController, onExit: @escaping () -> Void) {
+        let alertController = UIAlertController(title: UnfinishedApplicationPasswordAlert.title, message: nil, preferredStyle: .alert)
+        let action = UIAlertAction(title: UnfinishedApplicationPasswordAlert.exit, style: .destructive) { _ in
+            onExit()
+        }
+        alertController.addAction(action)
+        alertController.addCancelActionWithTitle(ActionSheetStrings.cancel)
+        viewController.present(alertController, animated: true)
+    }
 }
 
 private enum ActionSheetStrings {
@@ -155,4 +167,10 @@ private enum ExpiredWPComPlanAlert {
         comment: "Message on the expired WPCom plan alert"
     )
     static let upgrade = NSLocalizedString("Upgrade", comment: "Button to upgrade a WPCom plan on the expired WPCom plan alert")
+}
+
+private enum UnfinishedApplicationPasswordAlert {
+    static let title = NSLocalizedString("It seems that you have not approved the app connection yet. Are you sure you want to exit?",
+                                         comment: "Title for the unfinished application password alert")
+    static let exit = NSLocalizedString("Exit Anyway", comment: "Button to exit the application password flow.")
 }

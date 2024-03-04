@@ -64,6 +64,7 @@ private extension ProductShippingSettingsViewController {
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.cellLayoutMarginsFollowReadableWidth = true
 
         registerTableViewCells()
 

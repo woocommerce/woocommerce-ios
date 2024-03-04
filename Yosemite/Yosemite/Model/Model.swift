@@ -13,7 +13,6 @@ public typealias Address = Networking.Address
 public typealias AIProduct = Networking.AIProduct
 public typealias Announcement = Networking.Announcement
 public typealias APNSDevice = Networking.APNSDevice
-public typealias BlazeCampaign = Networking.BlazeCampaign
 public typealias BlazeCampaignListItem = Networking.BlazeCampaignListItem
 public typealias BlazeForecastedImpressionsInput = Networking.BlazeForecastedImpressionsInput
 public typealias BlazeImpressions = Networking.BlazeImpressions

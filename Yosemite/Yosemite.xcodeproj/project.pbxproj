@@ -432,7 +432,6 @@
 		DEA493962B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */; };
 		DED91DEE2AD673CF00CDCC53 /* BlazeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DED2AD673CF00CDCC53 /* BlazeAction.swift */; };
 		DED91DF02AD6756600CDCC53 /* BlazeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */; };
-		DED91DF22AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DF12AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift */; };
 		DED91DF42AD67E9400CDCC53 /* BlazeStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DF32AD67E9400CDCC53 /* BlazeStoreTests.swift */; };
 		DED91DF62AD67F8F00CDCC53 /* MockBlazeRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DF52AD67F8F00CDCC53 /* MockBlazeRemote.swift */; };
 		DEDA8DAD2B1846FF0076BF0F /* WordPressThemeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DAC2B1846FF0076BF0F /* WordPressThemeAction.swift */; };
@@ -920,7 +919,6 @@
 		DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeTargetTopic+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
 		DED91DED2AD673CF00CDCC53 /* BlazeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAction.swift; sourceTree = "<group>"; };
 		DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeStore.swift; sourceTree = "<group>"; };
-		DED91DF12AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaign+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		DED91DF32AD67E9400CDCC53 /* BlazeStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeStoreTests.swift; sourceTree = "<group>"; };
 		DED91DF52AD67F8F00CDCC53 /* MockBlazeRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBlazeRemote.swift; sourceTree = "<group>"; };
 		DEDA8DAC2B1846FF0076BF0F /* WordPressThemeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressThemeAction.swift; sourceTree = "<group>"; };
@@ -1386,7 +1384,6 @@
 				B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */,
 				93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */,
 				03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */,
-				DED91DF12AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift */,
 				EE3D1E912B8EACB80016B132 /* BlazeCampaignListItem+ReadOnlyConvertible.swift */,
 				DEA493912B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift */,
 				DEA493932B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift */,
@@ -2320,7 +2317,6 @@
 				022F00BE24725BAF008CD97F /* NotificationCountStore.swift in Sources */,
 				31799AFA27050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift in Sources */,
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
-				DED91DF22AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift in Sources */,
 				EE3D1E922B8EACB80016B132 /* BlazeCampaignListItem+ReadOnlyConvertible.swift in Sources */,
 				DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */,
 				74858DB421C02B5A00754F3E /* OrderNote+ReadOnlyType.swift in Sources */,

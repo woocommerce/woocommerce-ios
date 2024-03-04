@@ -176,7 +176,6 @@ struct ProductSelectorView: View {
                     Button(cancelButtonTitle) {
                         isPresented = false
                         viewModel.closeButtonTapped()
-                        dismiss()
                     }
                 }
             }

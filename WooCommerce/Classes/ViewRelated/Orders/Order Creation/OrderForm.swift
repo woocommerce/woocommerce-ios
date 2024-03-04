@@ -122,6 +122,12 @@ struct OrderFormPresentationWrapper: View {
                         ConfigurableBundleProductView(viewModel: viewModel)
                     }
                 }
+            }, onViewContainerDismiss: {
+                // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
+                // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
+                // but on split views we move this responsibility to the AdaptiveModalContainer
+                viewModel.syncOrderItemSelectionStateOnDismiss()
+                dismissHandler()
             })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
@@ -901,7 +907,7 @@ private extension ProductSelectorView.Configuration {
             doneButtonTitleSingularFormat: "",
             doneButtonTitlePluralFormat: "",
             title: Localization.title,
-            cancelButtonTitle: Localization.close,
+            cancelButtonTitle: nil,
             productRowAccessibilityHint: Localization.productRowAccessibilityHint,
             variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
     }

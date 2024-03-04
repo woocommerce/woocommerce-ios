@@ -107,22 +107,32 @@ struct OrderFormPresentationWrapper: View {
 
     var body: some View {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            AdaptiveModalContainer(primaryView: { presentProductSelector in
-                OrderForm(dismissHandler: dismissHandler,
-                          flow: flow,
-                          viewModel: viewModel,
-                          presentProductSelector: presentProductSelector)
-            }, secondaryView: { isShowingProductSelector in
-                if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
-                                        source: .orderForm(flow: flow),
-                                        isPresented: isShowingProductSelector,
-                                        viewModel: productSelectorViewModel)
-                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                        ConfigurableBundleProductView(viewModel: viewModel)
+            AdaptiveModalContainer(
+                primaryView: { presentProductSelector in
+                    OrderForm(dismissHandler: dismissHandler,
+                              flow: flow,
+                              viewModel: viewModel,
+                              presentProductSelector: presentProductSelector)
+                },
+                secondaryView: { isShowingProductSelector in
+                    if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                        ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
+                                            source: .orderForm(flow: flow),
+                                            isPresented: isShowingProductSelector,
+                                            viewModel: productSelectorViewModel)
+                        .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                            ConfigurableBundleProductView(viewModel: viewModel)
+                        }
                     }
-                }
-            }, isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+                },
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
+                onViewContainerDismiss: {
+                    // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
+                    // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
+                    // but on split views we move this responsibility to the AdaptiveModalContainer
+                    viewModel.syncOrderItemSelectionStateOnDismiss()
+                    dismissHandler()
+                })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }

@@ -286,17 +286,10 @@ private extension FilterListViewController {
                 self.listSelector.navigationController?.present(controller, animated: true)
 
             case .customer(let siteID):
-                let addressFormViewModel = CreateOrderAddressFormViewModel(
-                    siteID: siteID,
-                    addressData: .init(billingAddress: nil, shippingAddress: nil),
-                    onAddressUpdate: nil
-                )
-
                 let controller: CustomerSelectorViewController = {
                     return CustomerSelectorViewController(
                         siteID: siteID,
                         configuration: .configurationForOrderFilter,
-                        addressFormViewModel: addressFormViewModel,
                         onCustomerSelected: { [weak self] customer in
                             selected.selectedValue = CustomerFilter(customer: customer)
 

@@ -12,7 +12,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
-    private let addressFormViewModel: CreateOrderAddressFormViewModel
+    private let addressFormViewModel: CreateOrderAddressFormViewModel?
 
     /// Notice presentation handler
     ///
@@ -30,7 +30,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
     init(siteID: Int64,
          configuration: CustomerSelectorViewController.Configuration,
-         addressFormViewModel: CreateOrderAddressFormViewModel,
+         addressFormViewModel: CreateOrderAddressFormViewModel? = nil,
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(
             siteID: siteID,
@@ -152,6 +152,10 @@ private extension CustomerSelectorViewController {
     }
 
     @objc func presentNewCustomerDetailsFlow() {
+        guard let addressFormViewModel else {
+            return
+        }
+
         let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] action in
                                                             self?.dismiss(animated: true, completion: { [weak self] in
                                                                 // Dismiss this view too

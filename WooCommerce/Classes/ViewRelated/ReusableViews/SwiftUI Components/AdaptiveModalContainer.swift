@@ -56,7 +56,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 }
             }
             .navigationViewStyle(.stack)
-            .task {
+            .onAppear {
                 isShowingSecondaryView = false
             }
         }
@@ -93,7 +93,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 .navigationViewStyle(.stack)
                 .frame(minWidth: 400)
             }
-            .task {
+            .onAppear {
                 isShowingSecondaryView = true
             }
         }

@@ -123,6 +123,7 @@ private extension ProductPriceSettingsViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
         tableView.keyboardDismissMode = .onDragWithAccessory
+        tableView.cellLayoutMarginsFollowReadableWidth = true
 
         registerTableViewHeaderSections()
         registerTableViewCells()

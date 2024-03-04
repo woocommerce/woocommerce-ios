@@ -42,6 +42,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
+    private let stores: StoresManager
+
     // MARK: - Subviews
 
     @IBOutlet private weak var containerStackView: UIStackView!
@@ -134,6 +136,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+         stores: StoresManager = ServiceLocator.stores,
          onEditCustomTimeRange: (() -> Void)?) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
@@ -144,6 +147,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                    currencyFormatter: currencyFormatter,
                                                    currencySettings: currencySettings)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.stores = stores
         self.editCustomTimeRangeHandler = onEditCustomTimeRange
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -487,16 +491,21 @@ private extension StoreStatsV4PeriodViewController {
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
 
-        // Logic for Custom Range tab:
-        // Redact visitor stats if no bar is selected (because data is inaccurate for the whole custom range),
-        // but show them if a specific bar is selected (because we do have accurate data for it).
         if timeRange.isCustomTimeRange {
-            if siteVisitStatsMode == .redactedDueToCustomRange {
-                siteVisitStatsMode = .default
-            }
+            // For WordPress.com sites or fully Jetpack-connected sites, toggle the visibility of visit data based on whether 
+            // a custom range bar value is selected.
+            // If selected, display the visit data, as it's accurate for individual values.
+            // If deselected, hide the data, as it's inaccurate for the entire range.
+            // This doesn't apply to Jetpack CP sites or non-Jetpack self-hosted sites, as they don't have visitor data.
 
-            if selectedIndex == nil && siteVisitStatsMode == .default {
-                siteVisitStatsMode = .redactedDueToCustomRange
+            guard let site = stores.sessionManager.defaultSite else { return }
+
+            if site.isWordPressComStore || (site.isJetpackConnected && !site.isJetpackCPConnected) {
+                if selectedIndex != nil && siteVisitStatsMode == .redactedDueToCustomRange {
+                    siteVisitStatsMode = .default
+                } else if selectedIndex == nil && siteVisitStatsMode == .default {
+                    siteVisitStatsMode = .redactedDueToCustomRange
+                }
             }
         }
 

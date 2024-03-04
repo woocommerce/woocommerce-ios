@@ -500,8 +500,22 @@ private extension StoreStatsAndTopPerformersViewController {
             self?.startCustomRangeTabCreation(startDate: startDate, endDate: endDate)
         })
 
-        // Custom range should not display visitors by default
-        customRangeVC.siteVisitStatsMode = .redactedDueToCustomRange
+        // Set redaction state for the site visit stats.
+        // - .hidden for self-hosted sites without Jetpack
+        // - .redactedDueToJetpack for Jetpack CP Sites
+        // - .redactedDueToCustomRange for WordPress.com sites or Jetpack connected sites
+        guard let site = stores.sessionManager.defaultSite else { return }
+
+        if site.isNonJetpackSite {
+            customRangeVC.siteVisitStatsMode = .hidden
+        } else {
+            if site.isJetpackCPConnected {
+                customRangeVC.siteVisitStatsMode = .redactedDueToJetpack
+            }
+            else {
+                customRangeVC.siteVisitStatsMode = .redactedDueToCustomRange
+            }
+        }
 
         let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,

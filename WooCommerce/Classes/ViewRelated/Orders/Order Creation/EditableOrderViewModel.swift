@@ -82,11 +82,15 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
+    var sideBySideViewFeatureFlagEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
+    }
+
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
         // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
-        guard !featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+        guard !sideBySideViewFeatureFlagEnabled else {
             return false
         }
         return flow == .creation
@@ -1806,7 +1810,10 @@ private extension EditableOrderViewModel {
         $isProductSelectorPresented
             .removeDuplicates()
             .map { [weak self] isPresented in
-                guard let self else { return nil }
+                guard let self,
+                      isPresented else {
+                    return nil
+                }
                 return ProductSelectorViewModel(
                     siteID: siteID,
                     selectedItemIDs: selectedProductsAndVariationsIDs,
@@ -1856,7 +1863,7 @@ private extension EditableOrderViewModel {
     }
 
     func evaluateSelectionSync() {
-        guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+        guard sideBySideViewFeatureFlagEnabled else {
             return
         }
         switch selectionSyncApproach {
@@ -1873,7 +1880,7 @@ private extension EditableOrderViewModel {
         $selectionSyncApproach
             .sink { [weak self] selectionSyncApproach in
                 guard let self,
-                      featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+                      sideBySideViewFeatureFlagEnabled else {
                     return
                 }
                 orderSynchronizer.updateBlockingBehavior(selectionSyncApproach == .immediate ? .allUpdates : .majorUpdates)
@@ -1886,7 +1893,7 @@ private extension EditableOrderViewModel {
             .removeDuplicates()
             .sink { [weak self] selectionSyncApproach in
                 guard let self,
-                      featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+                      sideBySideViewFeatureFlagEnabled else {
                     return
                 }
                 if selectionSyncApproach != .onSelectorButtonTap || syncRequired {

@@ -29,7 +29,7 @@ struct OrderCustomAmountsSection: View {
                 .accessibilityIdentifier(Accessibility.addCustomAmountIdentifier)
                 .buttonStyle(PlusButtonStyle())
             }
-            .frame(height: Layout.rowHeight)
+            .frame(minHeight: Layout.rowHeight)
             .renderedIf(viewModel.customAmountRows.isEmpty)
 
             Group {

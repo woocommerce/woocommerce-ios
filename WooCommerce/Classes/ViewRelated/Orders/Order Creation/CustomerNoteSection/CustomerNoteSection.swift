@@ -77,7 +77,7 @@ private struct CustomerNoteSectionContent: View {
                 showEditNotesView.toggle()
             }
             .buttonStyle(PlusButtonStyle())
-            .frame(height: Layout.buttonHeight)
+            .frame(minHeight: Layout.buttonHeight)
             .padding([.leading, .trailing])
             .accessibilityIdentifier("add-customer-note-button")
         }

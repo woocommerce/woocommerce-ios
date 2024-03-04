@@ -107,28 +107,32 @@ struct OrderFormPresentationWrapper: View {
 
     var body: some View {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            AdaptiveModalContainer(primaryView: { presentProductSelector in
-                OrderForm(dismissHandler: dismissHandler,
-                          flow: flow,
-                          viewModel: viewModel,
-                          presentProductSelector: presentProductSelector)
-            }, secondaryView: { isShowingProductSelector in
-                if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
-                                        source: .orderForm(flow: flow),
-                                        isPresented: isShowingProductSelector,
-                                        viewModel: productSelectorViewModel)
-                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                        ConfigurableBundleProductView(viewModel: viewModel)
+            AdaptiveModalContainer(
+                primaryView: { presentProductSelector in
+                    OrderForm(dismissHandler: dismissHandler,
+                              flow: flow,
+                              viewModel: viewModel,
+                              presentProductSelector: presentProductSelector)
+                },
+                secondaryView: { isShowingProductSelector in
+                    if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                        ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
+                                            source: .orderForm(flow: flow),
+                                            isPresented: isShowingProductSelector,
+                                            viewModel: productSelectorViewModel)
+                        .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                            ConfigurableBundleProductView(viewModel: viewModel)
+                        }
                     }
-                }
-            }, onViewContainerDismiss: {
-                // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
-                // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
-                // but on split views we move this responsibility to the AdaptiveModalContainer
-                viewModel.syncOrderItemSelectionStateOnDismiss()
-                dismissHandler()
-            })
+                },
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
+                onViewContainerDismiss: {
+                    // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
+                    // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
+                    // but on split views we move this responsibility to the AdaptiveModalContainer
+                    viewModel.syncOrderItemSelectionStateOnDismiss()
+                    dismissHandler()
+                })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
@@ -584,7 +588,6 @@ private struct ProductsSection: View {
     var body: some View {
         Group {
             Divider()
-                .renderedIf(presentationStyle == .modalOnModal)
 
             VStack(alignment: .leading, spacing: layoutVerticalSpacing) {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
@@ -671,12 +674,17 @@ private struct ProductsSection: View {
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
-            .if(viewModel.shouldShowAddProductsButton, transform: { $0.frame(height: Layout.rowHeight) })
+            .if(viewModel.shouldShowAddProductsButton, transform: { $0.frame(minHeight: Layout.rowHeight) })
             .background(Color(.listForeground(modal: true)))
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
             }
-            .sheet(isPresented: $viewModel.isProductSelectorPresented, onDismiss: {
+            .sheet(isPresented: Binding<Bool>(
+                get: { viewModel.isProductSelectorPresented && !viewModel.sideBySideViewFeatureFlagEnabled },
+                set: { newValue in
+                    viewModel.isProductSelectorPresented = newValue
+                }
+            ), onDismiss: {
                 scroll.scrollTo(addProductButton)
             }, content: {
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {

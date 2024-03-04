@@ -18,14 +18,15 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
 
     @ViewBuilder let primaryView: (_ presentSecondaryView: (() -> Void)?) -> PrimaryView
     @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
+    @Binding var isShowingSecondaryView: Bool
     var onViewContainerDismiss: (() -> Void)?
 
     var body: some View {
         if horizontalSizeClass == .compact {
-            ModalOnModalView(primaryView: primaryView, secondaryView: secondaryView, onDimissButtonTapped: onViewContainerDismiss)
+            ModalOnModalView(primaryView: primaryView, secondaryView: secondaryView, isShowingSecondaryView: $isShowingSecondaryView, onDimissButtonTapped: onViewContainerDismiss)
                 .environment(\.adaptiveModalContainerPresentationStyle, .modalOnModal)
         } else {
-            SideBySideView(primaryView: primaryView, secondaryView: secondaryView, onDimissButtonTapped: onViewContainerDismiss)
+            SideBySideView(primaryView: primaryView, secondaryView: secondaryView, isShowingSecondaryView: $isShowingSecondaryView, onDimissButtonTapped: onViewContainerDismiss)
                 .environment(\.adaptiveModalContainerPresentationStyle, .sideBySide)
         }
     }
@@ -33,12 +34,12 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
     private struct ModalOnModalView: View {
         @ViewBuilder let primaryView: (_ presentSecondaryView: @escaping () -> Void) -> PrimaryView
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
-        @State var isShowingSecondaryView = false
+        @Binding var isShowingSecondaryView: Bool
         var onDimissButtonTapped: (() -> Void)?
 
         var body: some View {
             NavigationView {
-                primaryView({
+                primaryView({ // presentSecondaryView
                     isShowingSecondaryView = true
                 })
                 .toolbar {
@@ -57,14 +58,17 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 }
             }
             .navigationViewStyle(.stack)
+            .onAppear {
+                isShowingSecondaryView = false
+            }
         }
     }
 
     private struct SideBySideView: View {
         @ViewBuilder let primaryView: (_ presentSecondaryView: (() -> Void)?) -> PrimaryView
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
+        @Binding var isShowingSecondaryView: Bool
         var onDimissButtonTapped: (() -> Void)?
-        @State var isShowingSecondaryView = true
 
         var body: some View {
             HStack(spacing: 0) {
@@ -90,6 +94,9 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 }
                 .navigationViewStyle(.stack)
                 .frame(minWidth: 400)
+            }
+            .onAppear {
+                isShowingSecondaryView = true
             }
         }
     }

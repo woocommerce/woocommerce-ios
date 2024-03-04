@@ -45,14 +45,12 @@ struct AddOrderComponentsSection: View {
             // "Add order components" rows
             Group {
                 addShippingRow
-                    .frame(height: Constants.rowHeight)
 
                 addCouponRow
-                    .frame(height: Constants.rowHeight)
 
                 addGiftCardRow
-                    .frame(height: Constants.rowHeight)
             }
+            .frame(minHeight: Constants.rowHeight)
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))

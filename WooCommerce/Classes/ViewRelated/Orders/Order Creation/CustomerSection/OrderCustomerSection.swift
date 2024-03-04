@@ -67,7 +67,7 @@ private struct OrderCustomerSectionContent: View {
 
             if !viewModel.isDataAvailable {
                 createCustomerView
-                    .frame(height: Layout.buttonHeight)
+                    .frame(minHeight: Layout.buttonHeight)
             } else {
                 customerDataView
             }

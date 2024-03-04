@@ -578,7 +578,6 @@ private struct ProductsSection: View {
     var body: some View {
         Group {
             Divider()
-                .renderedIf(presentationStyle == .modalOnModal)
 
             VStack(alignment: .leading, spacing: layoutVerticalSpacing) {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)

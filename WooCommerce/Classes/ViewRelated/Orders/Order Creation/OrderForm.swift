@@ -901,7 +901,7 @@ private extension ProductSelectorView.Configuration {
             doneButtonTitleSingularFormat: "",
             doneButtonTitlePluralFormat: "",
             title: Localization.title,
-            cancelButtonTitle: nil,
+            cancelButtonTitle: Localization.close,
             productRowAccessibilityHint: Localization.productRowAccessibilityHint,
             variableProductRowAccessibilityHint: Localization.variableProductRowAccessibilityHint)
     }

@@ -1,5 +1,4 @@
 import SwiftUI
-import struct Yosemite.BlazeCampaign
 import struct Yosemite.Product
 import Kingfisher
 

@@ -748,14 +748,6 @@ private extension BlazeStoreTests {
     }
 
     @discardableResult
-    func storeCampaign(_ campaign: Networking.BlazeCampaign, for siteID: Int64) -> Storage.BlazeCampaign {
-        let storedCampaign = storage.insertNewObject(ofType: BlazeCampaign.self)
-        storedCampaign.update(with: campaign)
-        storedCampaign.siteID = siteID
-        return storedCampaign
-    }
-
-    @discardableResult
     func storeTargetDevice(_ device: Networking.BlazeTargetDevice) -> Storage.BlazeTargetDevice {
         let storedDevice = storage.insertNewObject(ofType: BlazeTargetDevice.self)
         storedDevice.update(with: device)

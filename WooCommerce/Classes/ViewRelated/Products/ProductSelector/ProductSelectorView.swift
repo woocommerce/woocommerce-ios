@@ -59,7 +59,6 @@ struct ProductSelectorView: View {
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-    @Environment(\.dismiss) var dismiss
 
     @ScaledMetric private var scale: CGFloat = 1.0
 

@@ -13,13 +13,6 @@ public protocol BlazeRemoteProtocol {
     func createCampaign(_ campaign: CreateBlazeCampaign,
                         siteID: Int64) async throws
 
-    /// Loads campaigns for the site with the provided ID on the given page number.
-    /// - Parameters:
-    ///    - siteID: WPCom ID for the site to load ads campaigns.
-    ///    - pageNumber: the page number of campaign to load.
-    ///
-    func loadCampaigns(for siteID: Int64, pageNumber: Int) async throws -> [BlazeCampaign]
-
     /// Loads list campaign info for the site with the provided ID
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to load ads campaigns.
@@ -104,18 +97,6 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
                                     encoding: JSONEncoding.default)
         let mapper = CreateBlazeCampaignMapper()
         try await enqueue(request, mapper: mapper)
-    }
-
-    public func loadCampaigns(for siteID: Int64, pageNumber: Int) async throws -> [BlazeCampaign] {
-        let path = Paths.campaignSearch(siteID: siteID)
-        let parameters: [String: Any] = [
-            Keys.page: pageNumber,
-            Keys.orderBy: Values.postDate, // change this if we have other options for ordering
-            Keys.order: Values.desc // change this if we have other options for ordering
-        ]
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-        let mapper = BlazeCampaignListMapper(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
     }
 
     /// Loads list of Blaze campaigns.

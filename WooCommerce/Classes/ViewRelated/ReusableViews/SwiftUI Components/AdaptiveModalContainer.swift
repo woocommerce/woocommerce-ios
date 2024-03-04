@@ -1,4 +1,3 @@
-import Foundation
 import SwiftUI
 
 /// `AdaptiveModalContainer` shows two views, primary and secondary

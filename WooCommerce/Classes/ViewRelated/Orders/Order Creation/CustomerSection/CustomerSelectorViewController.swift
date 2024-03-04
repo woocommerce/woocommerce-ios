@@ -245,7 +245,7 @@ private extension CustomerSelectorViewController {
 
     func onCustomerTapped(_ customer: Customer) {
         // Show alert if selecting guest is disallowed
-        if viewModel.configuration.disallowSelectingGuest && customer.customerID == 0 {
+        if viewModel.configuration.disallowSelectingGuest && customer.isGuest {
             showGuestSelectionDisallowedNotice()
             return
         }

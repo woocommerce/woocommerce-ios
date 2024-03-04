@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 
 /// `AdaptiveModalContainer` shows two views, primary and secondary
@@ -44,9 +45,9 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(action: {
                             onDimissButtonTapped?()
-                        }) {
-                            Image(systemName: "xmark")
-                        }
+                        }, label: {
+                            Text(Localization.cancelButtonText)
+                        })
                     }
                 }
                 .sheet(isPresented: $isShowingSecondaryView) {
@@ -73,9 +74,9 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                             ToolbarItem(placement: .navigationBarLeading) {
                                 Button(action: {
                                     onDimissButtonTapped?()
-                                }) {
-                                    Image(systemName: "xmark")
-                                }
+                                }, label: {
+                                    Text(Localization.cancelButtonText)
+                                })
                             }
                         }
                 }
@@ -90,6 +91,16 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 .navigationViewStyle(.stack)
                 .frame(minWidth: 400)
             }
+        }
+    }
+}
+
+private extension AdaptiveModalContainer {
+    enum Localization {
+        static var cancelButtonText: String {
+            NSLocalizedString("adaptiveModalContainer.views.cancelButtonText",
+                              value: "Cancel",
+                              comment: "Text for the 'Cancel' button that appears in the navigation bar, and closes the view")
         }
     }
 }

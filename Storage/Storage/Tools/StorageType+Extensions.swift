@@ -553,22 +553,6 @@ public extension StorageType {
         return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
     }
 
-    // MARK: - BlazeCampaign
-
-    /// Returns a single Blaze campaign given a `siteID` and `campaignID`
-    ///
-    func loadBlazeCampaign(siteID: Int64, campaignID: Int64) -> BlazeCampaign? {
-        let predicate = \BlazeCampaign.siteID == siteID && \BlazeCampaign.campaignID == campaignID
-        return firstObject(ofType: BlazeCampaign.self, matching: predicate)
-    }
-
-    /// Returns all stored Blaze campaigns for a site
-    ///
-    func loadAllBlazeCampaigns(siteID: Int64) -> [BlazeCampaign] {
-        let predicate = \BlazeCampaign.siteID == siteID
-        return allObjects(ofType: BlazeCampaign.self, matching: predicate, sortedBy: nil)
-    }
-
     // MARK: BlazeTargetDevice
 
     /// Returns all Blaze target devices with the given locale.

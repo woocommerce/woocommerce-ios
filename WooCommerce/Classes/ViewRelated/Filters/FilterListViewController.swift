@@ -300,7 +300,7 @@ private extension FilterListViewController {
                     )
                 }()
 
-                self.listSelector.navigationController?.present(
+                self.listSelector.present(
                     WooNavigationController(rootViewController: controller),
                     animated: true
                 )

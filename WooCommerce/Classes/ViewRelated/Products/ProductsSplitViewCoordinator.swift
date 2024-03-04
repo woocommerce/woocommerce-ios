@@ -70,6 +70,18 @@ private extension ProductsSplitViewCoordinator {
                 showProductFormIfNoUnsavedChanges(product: product)
             case let .addProduct(sourceView, isFirstProduct):
                 startProductCreationIfNoUnsavedChanges(sourceView: sourceView, isFirstProduct: isFirstProduct)
+            case .search:
+                let searchCommand = ProductSearchUICommand(siteID: siteID, onProductSelection: { [weak self] product in
+                    self?.showProductFormIfNoUnsavedChanges(product: product)
+                }, onCancel: { [weak self] in
+                    guard let self else { return }
+                    primaryNavigationController.viewControllers = [productsViewController]
+                })
+                let searchViewController = SearchViewController(storeID: siteID,
+                                                                command: searchCommand,
+                                                                cellType: ProductsTabProductTableViewCell.self,
+                                                                cellSeparator: .none)
+                primaryNavigationController.viewControllers = [searchViewController]
         }
     }
 }

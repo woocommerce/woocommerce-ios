@@ -21,15 +21,21 @@ final class ProductSearchUICommand: SearchUICommand {
     private let stores: StoresManager
     private let analytics: Analytics
     private let isSearchProductsBySKUEnabled: Bool
+    private let onProductSelection: (Product) -> Void
+    private let onCancel: () -> Void
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         isSearchProductsBySKUEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsBySKU)) {
+         isSearchProductsBySKUEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsBySKU),
+         onProductSelection: @escaping (Product) -> Void,
+         onCancel: @escaping () -> Void) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
         self.isSearchProductsBySKUEnabled = isSearchProductsBySKUEnabled
+        self.onProductSelection = onProductSelection
+        self.onCancel = onCancel
     }
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
@@ -130,9 +136,7 @@ final class ProductSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        ProductDetailsFactory.productDetails(product: model, presentationStyle: .navigationStack, forceReadOnly: false) { [weak viewController] vc in
-            viewController?.navigationController?.pushViewController(vc, animated: true)
-        }
+        onProductSelection(model)
     }
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {
@@ -144,6 +148,10 @@ final class ProductSearchUICommand: SearchUICommand {
         }
         return NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@ AND $result.filterKey = %@).@count > 0",
                            keyword, filter.rawValue)
+    }
+
+    func cancel(from viewController: UIViewController) {
+        onCancel()
     }
 }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-27 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-02-27 17:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -5084,7 +5084,7 @@ which should be translated separately and considered part of this sentence. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Nur der Website-Betreiber kann die Zahlungsmethoden für Versandetiketten verwalten. Wende dich zur Verwaltung der Zahlungsmethoden bitte an %1$@ (%2$@).";
 
 /* Message when we can't reach WPCom in the recovery tool */
-"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ups! Wir können derzeit scheinbar keine Verbindung zu WordPress.com herstellen.\n\nAber keine Sorge, unser Support-Team wird dir weiterhelfen. Kontaktiere uns und wir helfen dir gerne weiter.";
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ups! Wir können derzeit scheinbar keine Verbindung zu WordPress.com herstellen.\n\nAber keine Sorge, unser Support-Team wird dich unterstützen. Kontaktiere uns und wir helfen dir gerne weiter.";
 
 /* Message when we there is a decoding error in the recovery tool */
 "Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ups! Wir können mit der Antwort deiner Website anscheinend nicht richtig arbeiten.\n\nAber keine Sorge, unser Support-Team wird dich unterstützen. Kontaktiere uns und wir helfen dir gerne weiter.";
@@ -9636,7 +9636,7 @@ which should be translated separately and considered part of this sentence. */
 "analyticsHub.customizeAnalytics.saveButton" = "Speichern";
 
 /* Title for the screen to customize the analytics cards in the Analytics Hub */
-"analyticsHub.customizeAnalytics.title" = "Analytics anpassen";
+"analyticsHub.customizeAnalytics.title" = "Analysen anpassen";
 
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "Bearbeiten";

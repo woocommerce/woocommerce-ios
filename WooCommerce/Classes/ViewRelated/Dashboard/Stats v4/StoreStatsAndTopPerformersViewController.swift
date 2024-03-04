@@ -425,7 +425,7 @@ private extension StoreStatsAndTopPerformersViewController {
                 guard let self, let range = timeRanges[safe: index] else {
                     return
                 }
-                
+
                 if range.isCustomTimeRange {
                     ServiceLocator.analytics.track(event: .DashboardCustomRange.tabSelected())
                 }

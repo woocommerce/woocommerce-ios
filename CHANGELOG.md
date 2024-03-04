@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 17.6
+Connect with customers effortlessly using WhatsApp and Telegram directly from their orders! Plus, streamline your workflow with our new product-based order filtering. Experience enhanced multitasking with split view support in the Products tab and tailor your analytics dashboard to your needs in the revamped Analytics Hub. Update now for a smoother, more personalized WooCommerce experience!
+
 ## 17.5
 Our latest update brings under-the-hood improvements to enhance both stability and performance. But that's not all – we're also hard at work on some cool new features that we can't wait to share with you in future releases. Stay tuned for future updates as we continue to fine-tune and elevate your experience!
 

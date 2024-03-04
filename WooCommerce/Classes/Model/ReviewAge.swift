@@ -25,31 +25,15 @@ extension ReviewAge {
     /// Returns the Age entity that best describes a given timespan.
     ///
     static func from(startDate: Date, toDate: Date) -> ReviewAge {
-        let components = [.day, .weekOfYear, .month] as Set<Calendar.Component>
-        let dateComponents = Calendar.current.dateComponents(components, from: startDate, to: toDate)
+        let timeDifference = toDate.timeIntervalSince(startDate)
+        let oneDayInSeconds: TimeInterval = 86_400
 
-        // Months
-        if let month = dateComponents.month, month >= 1 {
-            return .theRest
-        }
-
-        // Weeks
-        if let week = dateComponents.weekOfYear, week >= 1 {
-            return .theRest
-        }
-
-        // Days
-        if let day = dateComponents.day,
-            let week = dateComponents.weekOfYear,
-            day > 1,
-            week <= 1 {
-            return .last7Days
-        }
-
-        if let day = dateComponents.day, day == 1 {
+        if timeDifference <= oneDayInSeconds { // 24hrs
             return .last24Hours
+        } else if timeDifference <= oneDayInSeconds * 7 { // 7 days
+            return .last7Days
+        } else {
+            return .theRest
         }
-
-        return .last24Hours
     }
 }

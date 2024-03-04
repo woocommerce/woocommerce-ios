@@ -22,13 +22,13 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
 
     var body: some View {
         if horizontalSizeClass == .compact {
-            ModalOnModalView(primaryView: primaryView, 
+            ModalOnModalView(primaryView: primaryView,
                              secondaryView: secondaryView,
                              isShowingSecondaryView: $isShowingSecondaryView,
                              onDimissButtonTapped: onViewContainerDismiss)
                 .environment(\.adaptiveModalContainerPresentationStyle, .modalOnModal)
         } else {
-            SideBySideView(primaryView: primaryView, 
+            SideBySideView(primaryView: primaryView,
                            secondaryView: secondaryView,
                            isShowingSecondaryView: $isShowingSecondaryView,
                            onDimissButtonTapped: onViewContainerDismiss)

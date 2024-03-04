@@ -514,7 +514,7 @@ private extension OrdersRootViewController {
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
         ))
 
-        ordersViewController.showOrderDetails(order) { _ in
+        ordersViewController.showOrderDetails(order, shouldScrollIfNeeded: true) { _ in
             onCompletion?(true)
         }
     }

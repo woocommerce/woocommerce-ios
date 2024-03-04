@@ -612,7 +612,7 @@ extension OrderListViewController {
                     showOrderDetails(detailsViewModel.order)
                 }
                 else {
-                    onOrderSelected(id: orderID, shouldScrollIfNeeded: true)
+                    onOrderSelected(id: orderID)
                 }
                 return true
             }
@@ -620,12 +620,12 @@ extension OrderListViewController {
         return false
     }
 
-    func showOrderDetails(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
+    func showOrderDetails(_ order: Order, shouldScrollIfNeeded: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {
         let viewModel = OrderDetailsViewModel(order: order)
         switchDetailsHandler([viewModel], 0, true) { [weak self] hasBeenSelected in
             guard let self else { return }
             if hasBeenSelected {
-                onOrderSelected(id: order.orderID, shouldScrollIfNeeded: true)
+                onOrderSelected(id: order.orderID, shouldScrollIfNeeded: shouldScrollIfNeeded)
             }
             onCompletion?(hasBeenSelected)
         }

@@ -246,13 +246,13 @@ extension CustomerFilter: FilterType {
             .joined(separator: " ")
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if !fullName.isEmpty {
+        if fullName.isNotEmpty {
             return fullName
-        } else if let email,
-                    !email.isEmpty {
+        } else if let email = email,
+                  email.isNotEmpty {
             return email
-        } else if let username,
-                  !username.isEmpty {
+        } else if let username = username,
+                  username.isNotEmpty {
             return username
         } else {
             return "id: " + String(id)

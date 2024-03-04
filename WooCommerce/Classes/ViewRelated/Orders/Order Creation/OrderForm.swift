@@ -185,9 +185,9 @@ struct OrderForm: View {
             }
     }
 
-    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle) {
+    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle?) {
         switch presentationStyle {
-        case .modalOnModal:
+        case .none, .modalOnModal:
             viewModel.selectionSyncApproach = .onSelectorButtonTap
         case .sideBySide:
             viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -562,7 +562,7 @@ private struct ProductsSection: View {
     /// Environment variable that manages the presentation state of the AdaptiveModalContainer view
     /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size
     ///
-    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle
+    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle?
 
     private var layoutVerticalSpacing: CGFloat {
         if viewModel.shouldShowProductsSectionHeader {
@@ -647,7 +647,7 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .modalOnModal {
+                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
                         Button(OrderForm.Localization.addProducts) {
                             viewModel.toggleProductSelectorVisibility()
                         }
@@ -656,7 +656,7 @@ private struct ProductsSection: View {
                         .buttonStyle(PlusButtonStyle())
                     }
                     scanProductButton
-                        .renderedIf(presentationStyle == .modalOnModal)
+                        .renderedIf(presentationStyle != .sideBySide)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }

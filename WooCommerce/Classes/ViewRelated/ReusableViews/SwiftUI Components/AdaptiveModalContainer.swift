@@ -106,11 +106,11 @@ enum AdaptiveModalContainerPresentationStyle {
 }
 
 struct AdaptiveModalContainerPresentationStyleKey: EnvironmentKey {
-    static let defaultValue: AdaptiveModalContainerPresentationStyle = .modalOnModal
+    static let defaultValue: AdaptiveModalContainerPresentationStyle? = nil
 }
 
 extension EnvironmentValues {
-    var adaptiveModalContainerPresentationStyle: AdaptiveModalContainerPresentationStyle {
+    var adaptiveModalContainerPresentationStyle: AdaptiveModalContainerPresentationStyle? {
         get { self[AdaptiveModalContainerPresentationStyleKey.self] }
         set { self[AdaptiveModalContainerPresentationStyleKey.self] = newValue }
     }

@@ -60,6 +60,8 @@ struct ProductSelectorView: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+
     @ScaledMetric private var scale: CGFloat = 1.0
 
     /// Tracks the state for the 'Clear Selection' button
@@ -203,7 +205,7 @@ struct ProductSelectorView: View {
 
     private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {
         guard let horizontalSizeClass,
-              ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+              let presentationStyle else {
             return
         }
 

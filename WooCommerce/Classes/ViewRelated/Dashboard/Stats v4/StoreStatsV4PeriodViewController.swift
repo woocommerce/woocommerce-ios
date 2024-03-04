@@ -492,7 +492,7 @@ private extension StoreStatsV4PeriodViewController {
     func updateUI(selectedBarIndex selectedIndex: Int?) {
 
         if timeRange.isCustomTimeRange {
-            // For WordPress.com sites or fully Jetpack-connected sites, toggle the visibility of visit data based on whether 
+            // For WordPress.com sites or fully Jetpack-connected sites, toggle the visibility of visit data based on whether
             // a custom range bar value is selected.
             // If selected, display the visit data, as it's accurate for individual values.
             // If deselected, hide the data, as it's inaccurate for the entire range.

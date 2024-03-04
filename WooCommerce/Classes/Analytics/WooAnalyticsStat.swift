@@ -100,9 +100,9 @@ public enum WooAnalyticsStat: String {
     case loginMalformedAppLoginLink = "login_malformed_app_login_link"
 
     case loginSiteCredentialsInvalidLoginPageDetected = "login_site_credentials_invalid_login_page_detected"
-    case loginSiteCredentialsAppPasswordExplanationDismissed = "_login_site_credentials_app_password_explanation_dismissed"
-    case loginSiteCredentialsAppPasswordExplanationContactSupportTapped = "_login_site_credentials_app_password_explanation_contact_support_tapped"
-    case loginSiteCredentialsAppPasswordExplanationContinueButtonTapped = "_login_site_credentials_app_password_explanation_continue_button_tapped"
+    case loginSiteCredentialsAppPasswordExplanationDismissed = "login_site_credentials_app_password_explanation_dismissed"
+    case loginSiteCredentialsAppPasswordExplanationContactSupportTapped = "login_site_credentials_app_password_explanation_contact_support_tapped"
+    case loginSiteCredentialsAppPasswordExplanationContinueButtonTapped = "login_site_credentials_app_password_explanation_continue_button_tapped"
     case loginSiteCredentialsAppPasswordLoginSuccess = "login_site_credentials_app_password_login_success"
     case loginSiteCredentialsAppPasswordLoginFailed = "login_site_credentials_app_password_login_failed"
     case loginSiteCredentialsAppPasswordLoginExitConfirmation = "login_site_credentials_app_password_login_exit_confirmation"

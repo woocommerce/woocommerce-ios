@@ -205,6 +205,10 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
             return
         }
 
+        if let tabNavigationController = navigationController as? WooTabNavigationController {
+            tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
+        }
+
         // The goal here is to detect when the user pops a view controller in the secondary navigation stack like from tapping the back button,
         // so that the secondary content types state can be updated accordingly.
         // There is no proper way that I can find to detect this, as a workaround it checks whether the secondary navigation stack has fewer

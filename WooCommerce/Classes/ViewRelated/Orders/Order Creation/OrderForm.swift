@@ -122,7 +122,7 @@ struct OrderFormPresentationWrapper: View {
                         ConfigurableBundleProductView(viewModel: viewModel)
                     }
                 }
-            })
+            }, isShowingSecondaryView: $viewModel.isProductSelectorPresented)
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
@@ -181,8 +181,17 @@ struct OrderForm: View {
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
-                viewModel.syncChangesImmediately = presentationStyle == .sideBySide
+                updateSelectionSyncApproach(for: presentationStyle)
             }
+    }
+
+    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle) {
+        switch presentationStyle {
+        case .modalOnModal:
+            viewModel.selectionSyncApproach = .onSelectorButtonTap
+        case .sideBySide:
+            viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        }
     }
 
     @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {
@@ -357,6 +366,10 @@ struct OrderForm: View {
                     .disabled(viewModel.disabled)
                 case .loading:
                     ProgressView()
+                case .recalculate:
+                    Button(Localization.recalculateButton) {
+                        viewModel.onRecalculateTapped()
+                    }
                 case .none:
                     EmptyView()
                 }
@@ -427,22 +440,30 @@ struct OrderForm: View {
     }
 
     @ViewBuilder private var completedButton: some View {
-        if flow == .creation {
+        switch viewModel.doneButtonType {
+        case .recalculate(let loading):
+            Button {
+                viewModel.onRecalculateTapped()
+            } label: {
+                Text(Localization.recalculateButton)
+            }
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
+        case .create(let loading):
             Button {
                 viewModel.onCollectPaymentTapped()
             } label: {
                 Text(Localization.collectPaymentButton)
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
             .disabled(viewModel.collectPaymentDisabled)
-        } else {
+        case .done(let loading):
             Button {
                 viewModel.finishEditing()
                 dismissHandler()
             } label: {
                 Text(Localization.doneButton)
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
             .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
         }
     }
@@ -645,7 +666,12 @@ private struct ProductsSection: View {
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
             }
-            .sheet(isPresented: $viewModel.isProductSelectorPresented, onDismiss: {
+            .sheet(isPresented: Binding<Bool>(
+                get: { viewModel.isProductSelectorPresented && !viewModel.sideBySideViewFeatureFlagEnabled },
+                set: { newValue in
+                    viewModel.isProductSelectorPresented = newValue
+                }
+            ), onDismiss: {
                 scroll.scrollTo(addProductButton)
             }, content: {
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
@@ -781,6 +807,11 @@ private extension OrderForm {
             value: "Collect Payment",
             comment: "Title of the primary button on the new order screen to collect payment, likely in-person. " +
             "This button first creates the order, then presents a view for the merchant to choose a payment method.")
+        static let recalculateButton = NSLocalizedString(
+            "orderForm.recalculate.button.title",
+            value: "Recalculate",
+            comment: "Title of the primary button on the new order screen when changes need to be manually synced. " +
+            "Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate.")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")

@@ -844,6 +844,10 @@ private extension DashboardViewController {
         // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
         dashboardUI = updatedDashboardUI
 
+        updatedDashboardUI.onDataReload = { [weak self] in
+            self?.hideTopBannerView()
+        }
+
         updatedDashboardUI.displaySyncingError = { [weak self] error in
             self?.showTopBannerView(for: error)
         }

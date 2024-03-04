@@ -10,6 +10,8 @@ import class WidgetKit.WidgetCenter
 final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     // MARK: - DashboardUI protocol
 
+    var onDataReload: () -> Void = {}
+
     var displaySyncingError: (Error) -> Void = { _ in }
 
     var onPullToRefresh: @MainActor () async -> Void = {}
@@ -174,6 +176,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         var syncError: Error? = nil
 
+        onDataReload()
         ensureGhostContentIsDisplayed(for: viewControllerToSync)
 
         defer {

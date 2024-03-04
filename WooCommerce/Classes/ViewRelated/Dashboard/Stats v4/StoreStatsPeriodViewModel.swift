@@ -194,8 +194,16 @@ private extension StoreStatsPeriodViewModel {
         let orderStatsIntervals = orderStatsData.intervals
         guard let startDate = orderStatsIntervals.first?.dateStart(timeZone: self.siteTimezone),
               let endDate = orderStatsIntervals.last?.dateStart(timeZone: self.siteTimezone) else {
-                  return nil
-              }
+            if case let .custom(start, end) = timeRange {
+                // Ensure the bar is visible for updating the custom range even when no data is available.
+                return StatsTimeRangeBarViewModel(startDate: start,
+                                                  endDate: end,
+                                                  timeRange: timeRange,
+                                                  timezone: siteTimezone)
+            } else {
+                return nil
+            }
+        }
         guard let selectedIndex = selectedIntervalIndex else {
             return StatsTimeRangeBarViewModel(startDate: startDate,
                                               endDate: endDate,

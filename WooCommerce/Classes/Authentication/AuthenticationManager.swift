@@ -343,8 +343,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
             guard let self else { return }
             onLoading(false)
-            onFailure(error.underlyingError, false)
-            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error))
+            onFailure(error, false)
+            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error.underlyingError))
         })
         self.siteCredentialLoginUseCase = useCase
 
@@ -359,8 +359,20 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) {
-            presentAppPasswordTutorial(for: siteURL, in: viewController)
+        let isSiteCredentialError = {
+            switch error {
+            case SiteCredentialLoginError.genericFailure:
+                return false
+            case is SiteCredentialLoginError:
+                return true
+            default:
+                return false
+            }
+        }()
+
+        // Only show the tutorial if the error is a real site credential error
+        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) && isSiteCredentialError {
+            presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
             presentAppPasswordAlert(error: error, for: siteURL, in: viewController)
         }
@@ -795,26 +807,46 @@ private extension AuthenticationManager {
         self.postSiteCredentialLoginChecker = checker
     }
 
-    /// Presents Application Passwords tutorial before redirecting user to the site login.
+    /// Presents Application Passwords tutorial before redirecting user to the site login using a web view.
     ///
-    private func presentAppPasswordTutorial(for siteURL: String, in viewController: UIViewController) {
-        let tutorialVC = ApplicationPasswordTutorialViewController()
+    private func presentAppPasswordTutorial(error: Error, for siteURL: String, in viewController: UIViewController) {
+        let tutorialVC = ApplicationPasswordTutorialViewController(error: error)
+        tutorialVC.continueButtonTapped = { [weak self] in
+            self?.presentApplicationPasswordWebView(for: siteURL, in: viewController)
+        }
+        tutorialVC.contactSupportButtonTapped = {
+            let supportController = SupportFormHostingController(viewModel: .init(sourceTag: WordPressSupportSourceTag.loginUsernamePassword.origin))
+            supportController.show(from: viewController)
+        }
         viewController.show(tutorialVC, sender: viewController)
     }
 
-    /// Presents login alert before redirecting user to the site login.
+    /// Presents login error alert before redirecting user to the site login using a web view.
     ///
     private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
+
+        let isAppPasswordTutorialDisabled = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial)
+        let defaultAction = isAppPasswordTutorialDisabled ? { [weak self] in
+            guard let self else { return }
+            let webViewController = self.applicationPasswordWebView(for: siteURL)
+            viewController.navigationController?.pushViewController(webViewController, animated: true)
+            self.presentApplicationPasswordWebView(for: siteURL, in: viewController)
+            self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
+        } : nil
+
         let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,
-            defaultAction: { [weak self] in
-                guard let self else { return }
-                let webViewController = self.applicationPasswordWebView(for: siteURL)
-                viewController.navigationController?.pushViewController(webViewController, animated: true)
-                self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
-            }
+            defaultAction: defaultAction
         )
+
         viewController.present(alertController, animated: true)
+    }
+
+    /// Presents app password site login using a web view.
+    ///
+    private func presentApplicationPasswordWebView(for siteURL: String, in viewController: UIViewController) {
+        let webViewController = applicationPasswordWebView(for: siteURL)
+        viewController.navigationController?.pushViewController(webViewController, animated: true)
     }
 }
 

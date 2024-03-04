@@ -135,6 +135,7 @@ private extension ProductDownloadListViewController {
         tableView.delegate = self
         tableView.removeLastCellSeparator()
         tableView.dragInteractionEnabled = true
+        tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.dragDelegate = self
         tableView.dropDelegate = self
         tableView.reloadData()

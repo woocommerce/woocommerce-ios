@@ -624,6 +624,7 @@
 		E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettingsTests.swift; sourceTree = "<group>"; };
 		E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorage.swift; sourceTree = "<group>"; };
 		EE319C522B14DCEE001AC211 /* Model 103.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 103.xcdatamodel"; sourceTree = "<group>"; };
+		EE36A1722B96014C00EC0044 /* Model 108.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 108.xcdatamodel"; sourceTree = "<group>"; };
 		EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 107.xcdatamodel"; sourceTree = "<group>"; };
 		EE3D1E8D2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignListItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		EE3D1E8E2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignListItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -1979,6 +1980,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				EE36A1722B96014C00EC0044 /* Model 108.xcdatamodel */,
 				EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */,
 				EE8A30332B734AFA001D7C66 /* Model 106.xcdatamodel */,
 				CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */,

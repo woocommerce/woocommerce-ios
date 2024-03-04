@@ -200,6 +200,7 @@ struct OrderForm: View {
                 ScrollView {
                     Group {
                         VStack(spacing: Layout.noSpacing) {
+                            Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
                                 Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
@@ -245,6 +246,7 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
+                                Divider()
                                 AddOrderComponentsSection(
                                     viewModel: viewModel.paymentDataViewModel,
                                     shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
@@ -254,6 +256,7 @@ struct OrderForm: View {
                                 .sheet(isPresented: $shouldShowShippingLineDetails) {
                                     ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
                                 }
+                                Divider()
                             }
 
                             Spacer(minLength: Layout.sectionSpacing)
@@ -575,7 +578,6 @@ private struct ProductsSection: View {
     var body: some View {
         Group {
             Divider()
-                .renderedIf(presentationStyle == .modalOnModal)
 
             VStack(alignment: .leading, spacing: layoutVerticalSpacing) {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
@@ -662,6 +664,7 @@ private struct ProductsSection: View {
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
+            .if(viewModel.shouldShowAddProductsButton, transform: { $0.frame(minHeight: Layout.rowHeight) })
             .background(Color(.listForeground(modal: true)))
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
@@ -787,7 +790,7 @@ private extension ProductsSection {
 // MARK: Constants
 private extension OrderForm {
     enum Layout {
-        static let sectionSpacing: CGFloat = 16.0
+        static let sectionSpacing: CGFloat = 8.0
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
         static let storedTaxRateBottomSheetTopSpace: CGFloat = 24.0
@@ -926,6 +929,10 @@ private extension ProductSelectorView.Configuration {
 }
 
 private extension ProductsSection {
+    enum Layout {
+        static let rowHeight: CGFloat = 56.0
+    }
+
     enum Localization {
         static let scanProductRowTitle = NSLocalizedString(
             "orderForm.products.add.scan.row.title",

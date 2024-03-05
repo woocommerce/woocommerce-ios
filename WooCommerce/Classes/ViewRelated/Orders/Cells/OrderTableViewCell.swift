@@ -155,7 +155,7 @@ private extension OrderTableViewCell {
         let topBorder = CALayer()
         let bottomBorder = CALayer()
         let borderWidth = 0.5
-        
+
         topBorder.frame = CGRect(x: 0, y: 0, width: frame.width, height: borderWidth)
         bottomBorder.frame = CGRect(x: 0, y: 0, width: frame.width, height: borderWidth)
         topBorder.backgroundColor = UIColor.divider.cgColor

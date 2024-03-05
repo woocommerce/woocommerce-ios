@@ -73,7 +73,7 @@ private extension StoreStatsDataOrRedactedView {
         case .redacted, .redactedDueToJetpack:
             redactedView.showJetpackImage = state == .redactedDueToJetpack
         case .redactedDueToCustomRange:
-            redactedView.showInfoIcon = state == .redactedDueToCustomRange
+            redactedView.showInfoIcon = true
         default:
             break
         }

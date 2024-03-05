@@ -51,7 +51,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when a product variation is selected
     ///
-    let onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)?
+    let onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)?
 
     /// Closure to be invoked when "Clear Selection" is called.
     ///
@@ -131,7 +131,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
+         onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
          onSelectionsCleared: (() -> Void)? = nil) {
         self.siteID = siteID
         self.productID = productID
@@ -160,7 +160,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      orderSyncState: Published<OrderSyncState>.Publisher? = nil,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
-                     onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
+                     onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
                      onSelectionsCleared: (() -> Void)? = nil) {
         self.init(siteID: siteID,
                   productID: product.productID,
@@ -192,7 +192,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     /// Select a product variation to add to the order
     ///
-    func changeSelectionStateForVariation(with variationID: Int64) {
+    func changeSelectionStateForVariation(with variationID: Int64, selected: Bool) {
         // Fetch parent product
         // Needed because the parent product contains the product name & attributes.
         try? productResultsController.performFetch()
@@ -201,13 +201,15 @@ final class ProductVariationSelectorViewModel: ObservableObject {
               let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {
             return
         }
-        guard let onVariationSelectionStateChanged else {
-            toggleSelection(productVariationID: variationID)
-            return
+
+        switch selected {
+        case true:
+            addSelection(variationID)
+        case false:
+            removeSelection(variationID)
         }
-        // The selector supports multiple selection. Toggles the item, and triggers the selection
-        toggleSelection(productVariationID: variationID)
-        onVariationSelectionStateChanged(selectedVariation, parentProduct)
+
+        onVariationSelectionStateChanged?(selectedVariation, parentProduct, selected)
     }
 
     /// Unselect all items.
@@ -330,14 +332,8 @@ private extension ProductVariationSelectorViewModel {
 
 // MARK: - Multiple selection support
 private extension ProductVariationSelectorViewModel {
-    /// Toggle the selection of the specified product variation.
-    ///
-    func toggleSelection(productVariationID: Int64) {
-        if selectedProductVariationIDs.contains(productVariationID) {
-            selectedProductVariationIDs.removeAll(where: { $0 == productVariationID })
-        } else {
-            selectedProductVariationIDs.append(productVariationID)
-        }
+    func addSelection(_ productVariationID: Int64) {
+        selectedProductVariationIDs.append(productVariationID)
     }
 
     /// Observe changes in selections to update product rows

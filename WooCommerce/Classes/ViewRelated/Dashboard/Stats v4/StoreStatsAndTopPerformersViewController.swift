@@ -514,8 +514,7 @@ private extension StoreStatsAndTopPerformersViewController {
         } else {
             if site.isJetpackCPConnected {
                 customRangeVC.siteVisitStatsMode = .redactedDueToJetpack
-            }
-            else {
+            } else {
                 customRangeVC.siteVisitStatsMode = .redactedDueToCustomRange
             }
         }

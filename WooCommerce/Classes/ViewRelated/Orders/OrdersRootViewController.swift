@@ -147,7 +147,7 @@ final class OrdersRootViewController: UIViewController {
         let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
             order: order,
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }

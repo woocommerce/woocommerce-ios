@@ -604,7 +604,8 @@ private extension ProductsViewController {
 
         configureNavigationBarLeftButtonItems()
         configureNavigationBarRightButtonItems()
-        navigationController?.navigationBar.prefersLargeTitles = true
+
+        navigationController?.navigationBar.removeShadow()
     }
 
     func configureNavigationBarLeftButtonItems() {

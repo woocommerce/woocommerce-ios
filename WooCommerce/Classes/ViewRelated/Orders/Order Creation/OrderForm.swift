@@ -125,14 +125,17 @@ struct OrderFormPresentationWrapper: View {
                         }
                     }
                 },
-                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
-                onViewContainerDismiss: {
-                    // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
-                    // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
-                    // but on split views we move this responsibility to the AdaptiveModalContainer
-                    viewModel.syncOrderItemSelectionStateOnDismiss()
-                    dismissHandler()
-                })
+                dismissBarButton: {
+                    Button(OrderForm.Localization.cancelButton) {
+                        // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
+                        // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
+                        // but on split views we move this responsibility to the AdaptiveModalContainer
+                        viewModel.syncOrderItemSelectionStateOnDismiss()
+                        dismissHandler()
+                    }
+                    .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
+                },
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented)
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }

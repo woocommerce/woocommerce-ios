@@ -10,7 +10,7 @@ final class StoreStatsEmptyView: UIView {
     }
 
     /// Whether to show information icon
-    var showInfoIcon: Bool = false {
+    var showInfoIcon = false {
         didSet {
             updateInfoIconVisibility()
         }

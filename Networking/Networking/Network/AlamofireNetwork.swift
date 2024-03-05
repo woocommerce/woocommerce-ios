@@ -11,9 +11,9 @@ extension Alamofire.MultipartFormData: MultipartFormData {
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
-    private lazy var sessionManager: Alamofire.Session = {
+    private lazy var alamofireSession: Alamofire.Session = {
         let sessionConfiguration = URLSessionConfiguration.default
-        let sessionManager = makeSessionManager(configuration: sessionConfiguration)
+        let sessionManager = makeSession(configuration: sessionConfiguration)
         return sessionManager
     }()
 
@@ -33,7 +33,7 @@ public class AlamofireNetwork: Network {
         self.requestConverter = RequestConverter(credentials: credentials)
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
         if let sessionManager {
-            self.sessionManager = sessionManager
+            self.alamofireSession = sessionManager
         }
     }
 
@@ -54,7 +54,7 @@ public class AlamofireNetwork: Network {
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         let request = requestConverter.convert(request)
-        sessionManager.request(request)
+        alamofireSession.request(request)
             .validateIfRestRequest(for: request)
             .responseData { response in
                 completion(response.value, response.networkingError)
@@ -72,7 +72,7 @@ public class AlamofireNetwork: Network {
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         let request = requestConverter.convert(request)
-        sessionManager.request(request)
+        alamofireSession.request(request)
             .validateIfRestRequest(for: request)
             .responseData { response in
                 if let error = response.networkingError {
@@ -94,7 +94,7 @@ public class AlamofireNetwork: Network {
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { promise in
             let request = self.requestConverter.convert(request)
-            self.sessionManager
+            self.alamofireSession
                 .request(request)
                 .validateIfRestRequest(for: request)
                 .responseData { response in
@@ -111,7 +111,7 @@ public class AlamofireNetwork: Network {
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
         let request = requestConverter.convert(request)
-        sessionManager
+        alamofireSession
             .upload(multipartFormData: multipartFormData, with: request)
             .responseData { response in
                 completion(response.value, response.error)
@@ -122,9 +122,8 @@ public class AlamofireNetwork: Network {
 private extension AlamofireNetwork {
     /// Creates a session manager with request retrier and adapter
     ///
-    func makeSessionManager(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
-        let sessionManager = Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
-        return sessionManager
+    func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
+        Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
     }
 }
 

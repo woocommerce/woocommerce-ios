@@ -52,7 +52,7 @@ final class CookieNonceAuthenticator: RequestInterceptor {
 
         requestsToRetry.append(completion)
         if !isAuthenticating {
-            startLoginSequence(manager: session)
+            startLoginSequence(session: session)
         }
     }
 
@@ -67,7 +67,7 @@ final class CookieNonceAuthenticator: RequestInterceptor {
 // MARK: Private helpers
 private extension CookieNonceAuthenticator {
 
-    func startLoginSequence(manager: Session) {
+    func startLoginSequence(session: Session) {
         DDLogInfo("Starting Cookie+Nonce login sequence for \(loginURL)")
         guard let nonceRetrievalURL = buildNonceRequestURL(base: adminURL),
               let nonceRequest = try? URLRequest(url: nonceRetrievalURL, method: .get) else {
@@ -75,8 +75,8 @@ private extension CookieNonceAuthenticator {
         }
         Task(priority: .medium) {
             do {
-                try await handleSiteCredentialLogin(manager: manager)
-                let page = try await handleNonceRetrieval(request: nonceRequest, manager: manager)
+                try await handleSiteCredentialLogin(session: session)
+                let page = try await handleNonceRetrieval(request: nonceRequest, session: session)
                 guard let nonce = readNonceFromAjaxAction(html: page) else {
                     throw CookieNonceAuthenticator.Error.missingNonce
                 }
@@ -94,10 +94,10 @@ private extension CookieNonceAuthenticator {
         }
     }
 
-    func handleSiteCredentialLogin(manager: Session) async throws {
+    func handleSiteCredentialLogin(session: Session) async throws {
         let request = authenticatedRequest()
         return try await withCheckedThrowingContinuation { continuation in
-            manager.request(request)
+            session.request(request)
                 .validate()
                 .response { response in
                     if let error = response.error {
@@ -109,9 +109,9 @@ private extension CookieNonceAuthenticator {
         }
     }
 
-    func handleNonceRetrieval(request: URLRequest, manager: Session) async throws -> String {
+    func handleNonceRetrieval(request: URLRequest, session: Session) async throws -> String {
         try await withCheckedThrowingContinuation { continuation -> Void in
-            manager.request(request)
+            session.request(request)
                 .validate()
                 .responseString { response in
                     switch response.result {

@@ -20,7 +20,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 401, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionManagerWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
             network.responseData(for: request) { data, error in
                 promise(error)
@@ -42,7 +42,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "not_found"], statusCode: 404, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionManagerWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
             network.responseData(for: request) { data, error in
                 promise(error)
@@ -64,7 +64,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 200, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionManagerWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
             network.responseData(for: request) { data, error in
                 promise(error)
@@ -87,7 +87,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 500, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionManagerWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
         let result = waitFor { promise in
             network.responseData(for: request) { result in
                 promise(result)
@@ -109,7 +109,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 200, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionManagerWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
         let result = waitFor { promise in
             network.responseData(for: request) { result in
                 promise(result)
@@ -132,7 +132,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 500, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionManagerWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
         let result = waitFor { promise in
             self.responseDataSubscription = network.responseDataPublisher(for: request)
                 .sink { result in
@@ -155,7 +155,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 200, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionManagerWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
         let result = waitFor { promise in
             self.responseDataSubscription = network.responseDataPublisher(for: request)
                 .sink { result in
@@ -169,7 +169,7 @@ final class AlamofireNetworkTests: XCTestCase {
 }
 
 private extension AlamofireNetworkTests {
-    func createSessionManagerWithMockURLProtocol() -> Session {
+    func createSessionWithMockURLProtocol() -> Session {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         return Session(configuration: configuration)

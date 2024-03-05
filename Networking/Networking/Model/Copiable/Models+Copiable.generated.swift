@@ -193,45 +193,6 @@ extension Networking.BlazeAddPaymentInfo {
     }
 }
 
-extension Networking.BlazeCampaign {
-    public func copy(
-        siteID: CopiableProp<Int64> = .copy,
-        campaignID: CopiableProp<Int64> = .copy,
-        productID: NullableCopiableProp<Int64> = .copy,
-        name: CopiableProp<String> = .copy,
-        uiStatus: CopiableProp<String> = .copy,
-        contentImageURL: NullableCopiableProp<String> = .copy,
-        contentClickURL: NullableCopiableProp<String> = .copy,
-        totalImpressions: CopiableProp<Int64> = .copy,
-        totalClicks: CopiableProp<Int64> = .copy,
-        budgetCents: CopiableProp<Double> = .copy
-    ) -> Networking.BlazeCampaign {
-        let siteID = siteID ?? self.siteID
-        let campaignID = campaignID ?? self.campaignID
-        let productID = productID ?? self.productID
-        let name = name ?? self.name
-        let uiStatus = uiStatus ?? self.uiStatus
-        let contentImageURL = contentImageURL ?? self.contentImageURL
-        let contentClickURL = contentClickURL ?? self.contentClickURL
-        let totalImpressions = totalImpressions ?? self.totalImpressions
-        let totalClicks = totalClicks ?? self.totalClicks
-        let budgetCents = budgetCents ?? self.budgetCents
-
-        return Networking.BlazeCampaign(
-            siteID: siteID,
-            campaignID: campaignID,
-            productID: productID,
-            name: name,
-            uiStatus: uiStatus,
-            contentImageURL: contentImageURL,
-            contentClickURL: contentClickURL,
-            totalImpressions: totalImpressions,
-            totalClicks: totalClicks,
-            budgetCents: budgetCents
-        )
-    }
-}
-
 extension Networking.BlazeCampaignListItem {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

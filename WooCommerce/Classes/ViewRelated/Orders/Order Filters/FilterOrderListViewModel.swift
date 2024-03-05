@@ -11,6 +11,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         let orderStatus: [OrderStatusEnum]?
         let dateRange: OrderDateRangeFilter?
         let product: FilterOrdersByProduct?
+        let customer: CustomerFilter?
 
         let numberOfActiveFilters: Int
 
@@ -18,16 +19,19 @@ final class FilterOrderListViewModel: FilterListViewModel {
             orderStatus = nil
             dateRange = nil
             product = nil
+            customer = nil
             numberOfActiveFilters = 0
         }
 
         init(orderStatus: [OrderStatusEnum]?,
              dateRange: OrderDateRangeFilter?,
              product: FilterOrdersByProduct?,
+             customer: CustomerFilter?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
             self.dateRange = dateRange
             self.product = product
+            self.customer = customer
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
@@ -42,6 +46,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
             if let product = product {
                 readable.append(product.name)
             }
+            if let customer = customer {
+                readable.append(customer.description)
+            }
             return readable.joined(separator: ", ")
         }
     }
@@ -53,6 +60,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     private let orderStatusFilterViewModel: FilterTypeViewModel
     private let dateRangeFilterViewModel: FilterTypeViewModel
     private let productFilterViewModel: FilterTypeViewModel
+    private let customerFilterViewModel: FilterTypeViewModel
     private let featureFlagService: FeatureFlagService
 
     /// - Parameters:
@@ -67,18 +75,22 @@ final class FilterOrderListViewModel: FilterListViewModel {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+
         self.featureFlagService = featureFlagService
-        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, productFilterViewModel]
+        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
     }
 
     var criteria: Filters {
         let orderStatus = orderStatusFilterViewModel.selectedValue as? [OrderStatusEnum] ?? nil
         let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
         let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct ?? nil
+        let customer = customerFilterViewModel.selectedValue as? CustomerFilter ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,
                        product: product,
+                       customer: customer,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
@@ -91,6 +103,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         let clearedProduct: FilterOrdersByProduct? = nil
         productFilterViewModel.selectedValue = clearedProduct
+
+        let clearedCustomer: CustomerFilter? = nil
+        customerFilterViewModel.selectedValue = clearedCustomer
     }
 }
 
@@ -101,6 +116,7 @@ extension FilterOrderListViewModel {
         case orderStatus
         case dateRange
         case product(siteID: Int64)
+        case customer(siteID: Int64)
     }
 }
 
@@ -113,6 +129,8 @@ private extension FilterOrderListViewModel.OrderListFilter {
             return Localization.rowTitleDateRange
         case .product:
             return Localization.rowTitleProduct
+        case .customer:
+            return Localization.rowCustomer
         }
     }
 }
@@ -132,6 +150,10 @@ extension FilterOrderListViewModel.OrderListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .products(siteID: siteID),
                                        selectedValue: filters.product)
+        case .customer(let siteID):
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .customer(siteID: siteID),
+                                       selectedValue: filters.customer)
         }
     }
 }
@@ -210,5 +232,33 @@ private extension FilterOrderListViewModel.OrderListFilter {
         static let rowTitleProduct = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowTitleProduct",
                                                        value: "Product",
                                                        comment: "Row title for filtering orders by Product.")
+        static let rowCustomer = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowCustomer",
+                                                   value: "Customer",
+                                                   comment: "Row title for filtering orders by customer.")
     }
+}
+
+extension CustomerFilter: FilterType {
+    /// The user-facing description of the filter value.
+    var description: String {
+        let fullName = [firstName, lastName]
+            .compactMap { $0 }
+            .joined(separator: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if fullName.isNotEmpty {
+            return fullName
+        } else if let email = email,
+                  email.isNotEmpty {
+            return email
+        } else if let username = username,
+                  username.isNotEmpty {
+            return username
+        } else {
+            return "id: " + String(id)
+        }
+    }
+
+    /// Whether the filter is set to a non-empty value.
+    var isActive: Bool { true }
 }

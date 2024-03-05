@@ -49,6 +49,7 @@ final class OrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: nil,
                                                        product: nil,
+                                                       customer: nil,
                                                        numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
@@ -98,6 +99,7 @@ final class OrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending],
                                                        dateRange: nil,
                                                        product: nil,
+                                                       customer: nil,
                                                        numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
@@ -133,6 +135,7 @@ final class OrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.failed],
                                                        dateRange: nil,
                                                        product: nil,
+                                                       customer: nil,
                                                        numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
@@ -303,6 +306,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.updateFilters(filters: FilterOrderListViewModel.Filters(orderStatus: [.completed],
                                                                           dateRange: nil,
                                                                           product: nil,
+                                                                          customer: nil,
                                                                           numberOfActiveFilters: 1))
 
         // Assert
@@ -314,6 +318,7 @@ final class OrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending],
                                                        dateRange: nil,
                                                        product: nil,
+                                                       customer: nil,
                                                        numberOfActiveFilters: 0)
         let notificationCenter = NotificationCenter()
         let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, filters: filters)

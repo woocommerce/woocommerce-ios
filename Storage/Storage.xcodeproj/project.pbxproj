@@ -244,8 +244,6 @@
 		DEA4938F2B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */; };
 		DEA493902B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */; };
 		DEC51AE0275B41BE009F3DF4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */; };
-		DED91DEA2AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */; };
-		DED91DEC2AD66FCB00CDCC53 /* BlazeCampaign+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */; };
 		DEFD6D422641B70400E51E0D /* SitePlugin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */; };
 		DEFD6D432641B70400E51E0D /* SitePlugin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */; };
 		E16D3741284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3740284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift */; };
@@ -614,8 +612,6 @@
 		DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 47.xcdatamodel"; sourceTree = "<group>"; };
 		DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 19.xcdatamodel"; sourceTree = "<group>"; };
 		DED91DE82AD66AA600CDCC53 /* Model 100.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 100.xcdatamodel"; sourceTree = "<group>"; };
-		DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaign+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaign+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -624,6 +620,7 @@
 		E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettingsTests.swift; sourceTree = "<group>"; };
 		E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorage.swift; sourceTree = "<group>"; };
 		EE319C522B14DCEE001AC211 /* Model 103.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 103.xcdatamodel"; sourceTree = "<group>"; };
+		EE36A1722B96014C00EC0044 /* Model 108.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 108.xcdatamodel"; sourceTree = "<group>"; };
 		EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 107.xcdatamodel"; sourceTree = "<group>"; };
 		EE3D1E8D2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignListItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		EE3D1E8E2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignListItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -1129,8 +1126,6 @@
 			children = (
 				EE3D1E8D2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift */,
 				EE3D1E8E2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift */,
-				DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */,
-				DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */,
 				DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */,
 				DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */,
 				DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */,
@@ -1408,7 +1403,6 @@
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
 				028296F5237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift in Sources */,
 				454005AA24AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel in Sources */,
-				DED91DEA2AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift in Sources */,
 				7471A517216CF0FE00219F7E /* SiteVisitStats+CoreDataProperties.swift in Sources */,
 				DEA4938D2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift in Sources */,
 				26EA01D124EC3AEA00176A57 /* FeedbackType.swift in Sources */,
@@ -1525,7 +1519,6 @@
 				DEFD6D422641B70400E51E0D /* SitePlugin+CoreDataProperties.swift in Sources */,
 				02C254EE2563B12E00A04423 /* ShippingLabel+CoreDataProperties.swift in Sources */,
 				D8550D02230D3F8B00AAC4F8 /* ProductReview+CoreDataProperties.swift in Sources */,
-				DED91DEC2AD66FCB00CDCC53 /* BlazeCampaign+CoreDataProperties.swift in Sources */,
 				9302E3A6220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift in Sources */,
 				D821645E2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift in Sources */,
 				CEF88DB2233EAAF100BED485 /* OrderRefundCondensed+CoreDataClass.swift in Sources */,
@@ -1979,6 +1972,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				EE36A1722B96014C00EC0044 /* Model 108.xcdatamodel */,
 				EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */,
 				EE8A30332B734AFA001D7C66 /* Model 106.xcdatamodel */,
 				CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */,
@@ -2087,7 +2081,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */;
+			currentVersion = EE36A1722B96014C00EC0044 /* Model 108.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

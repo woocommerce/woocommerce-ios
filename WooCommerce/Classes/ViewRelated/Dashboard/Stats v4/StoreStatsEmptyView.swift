@@ -9,7 +9,16 @@ final class StoreStatsEmptyView: UIView {
         }
     }
 
+    /// Whether to show information icon
+    var showInfoIcon = false {
+        didSet {
+            updateInfoIconVisibility()
+        }
+    }
+
     private lazy var jetpackImageView = UIImageView(image: .jetpackLogoImage.withRenderingMode(.alwaysTemplate))
+
+    private lazy var infoIconImageView = UIImageView(image: .infoOutlineImage.withRenderingMode(.alwaysTemplate))
 
     convenience init() {
         self.init(frame: .zero)
@@ -37,8 +46,13 @@ final class StoreStatsEmptyView: UIView {
         jetpackImageView.translatesAutoresizingMaskIntoConstraints = false
         updateJetpackImageVisibility()
 
+        infoIconImageView.contentMode = .scaleAspectFit
+        infoIconImageView.translatesAutoresizingMaskIntoConstraints = false
+        updateInfoIconVisibility()
+
         addSubview(emptyView)
         addSubview(jetpackImageView)
+        addSubview(infoIconImageView)
 
         NSLayoutConstraint.activate([
             emptyView.widthAnchor.constraint(equalToConstant: 32),
@@ -49,7 +63,12 @@ final class StoreStatsEmptyView: UIView {
             jetpackImageView.heightAnchor.constraint(equalToConstant: 14),
             jetpackImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor, constant: 2),
             jetpackImageView.bottomAnchor.constraint(equalTo: emptyView.topAnchor),
-            jetpackImageView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 0)
+            jetpackImageView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 0),
+            infoIconImageView.widthAnchor.constraint(equalToConstant: 14),
+            infoIconImageView.heightAnchor.constraint(equalToConstant: 14),
+            infoIconImageView.leadingAnchor.constraint(equalTo: emptyView.trailingAnchor, constant: 2),
+            infoIconImageView.bottomAnchor.constraint(equalTo: emptyView.topAnchor),
+            infoIconImageView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 0)
         ])
     }
 }
@@ -57,5 +76,9 @@ final class StoreStatsEmptyView: UIView {
 private extension StoreStatsEmptyView {
     func updateJetpackImageVisibility() {
         jetpackImageView.isHidden = showJetpackImage == false
+    }
+
+    func updateInfoIconVisibility() {
+        infoIconImageView.isHidden = showInfoIcon == false
     }
 }

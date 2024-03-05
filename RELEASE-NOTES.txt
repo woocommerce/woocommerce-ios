@@ -3,6 +3,7 @@
 17.7
 -----
 - [***] [internal] Alamofire, which is the HTTP client library used in the app, has been updated to v5. [https://github.com/woocommerce/woocommerce-ios/pull/12125]
+- Orders: Merchants can filter orders by selecting a customer [https://github.com/woocommerce/woocommerce-ios/pull/12100]
 
 
 17.6

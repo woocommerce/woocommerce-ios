@@ -146,7 +146,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                            allowedProductVariationIDs: allowedProductVariationIDs,
                                            selectedProductVariationIDs: selectedVariation.map { [$0.variationID] } ?? [],
                                            orderSyncState: nil,
-                                           onVariationSelectionStateChanged: { [weak self] variation, _ in
+                                           onVariationSelectionStateChanged: { [weak self] variation, _, _ in
             guard let self else { return }
             self.selectedVariation = .init(variationID: variation.productVariationID, attributes: variation.attributes)
             self.variationSelectorViewModel = nil

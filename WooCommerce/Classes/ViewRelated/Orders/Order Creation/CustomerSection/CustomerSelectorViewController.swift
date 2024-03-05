@@ -119,17 +119,18 @@ private extension CustomerSelectorViewController {
                     }
                 })
             } else {
-                self?.removeGhostContent()
-                self?.addSearchViewController(
+                guard let self else { return }
+                self.removeGhostContent()
+                self.addSearchViewController(
                     loadResultsWhenSearchTermIsEmpty: false,
                     showSearchFilters: true,
-                    showGuestLabel: self?.configuration.showGuestLabel ?? false,
-                    shouldTrackCustomerAdded: self?.configuration.shouldTrackCustomerAdded ?? true,
-                    disallowCreatingCustomer: self?.configuration.disallowCreatingCustomer ?? false,
+                    showGuestLabel: self.configuration.showGuestLabel,
+                    shouldTrackCustomerAdded: self.configuration.shouldTrackCustomerAdded,
+                    disallowCreatingCustomer: self.configuration.disallowCreatingCustomer,
                     onAddCustomerDetailsManually: {
-                        self?.presentNewCustomerDetailsFlow()
+                        self.presentNewCustomerDetailsFlow()
                     })
-                self?.configureActivityIndicator()
+                self.configureActivityIndicator()
 
             }
         })

@@ -69,11 +69,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private var hasActiveBlazeCampaign: Bool = false
 
     /// Blaze campaign ResultsController.
-    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", product.siteID)
-        let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
-                                                                        matching: predicate,
-                                                                        sortedBy: [])
+        let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
+                                                                                matching: predicate,
+                                                                                sortedBy: [])
         return resultsController
     }()
 

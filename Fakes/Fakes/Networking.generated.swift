@@ -177,24 +177,6 @@ extension Networking.BlazeAddPaymentInfo {
         )
     }
 }
-extension Networking.BlazeCampaign {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.BlazeCampaign {
-        .init(
-            siteID: .fake(),
-            campaignID: .fake(),
-            productID: .fake(),
-            name: .fake(),
-            uiStatus: .fake(),
-            contentImageURL: .fake(),
-            contentClickURL: .fake(),
-            totalImpressions: .fake(),
-            totalClicks: .fake(),
-            budgetCents: .fake()
-        )
-    }
-}
 extension Networking.BlazeCampaignListItem {
     /// Returns a "ready to use" type filled with fake values.
     ///

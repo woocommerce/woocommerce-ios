@@ -30,9 +30,16 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     lazy var ghostTableViewController = GhostTableViewController(options:
                                                                     GhostTableViewOptions(cellClass: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self))
 
+    /// Inits the view controller.
+    /// Params:
+    ///   - siteID: ID of the current site
+    ///   - configuration: UI configuration for the view controller
+    ///   - addressFormViewModel: Optional, has to be provided if the view has to include new customer creation.
+    ///   - onCustomerSelected: Callback to be called when a customer is selected
+    ///
     init(siteID: Int64,
          configuration: CustomerSelectorViewController.Configuration,
-         addressFormViewModel: CreateOrderAddressFormViewModel? = nil,
+         addressFormViewModel: CreateOrderAddressFormViewModel?,
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(
             siteID: siteID,
@@ -155,6 +162,7 @@ private extension CustomerSelectorViewController {
 
     @objc func presentNewCustomerDetailsFlow() {
         guard let addressFormViewModel else {
+            DDLogWarn("⛔️ Unable to support new customer creation because addressFormViewModel is missing.")
             return
         }
 

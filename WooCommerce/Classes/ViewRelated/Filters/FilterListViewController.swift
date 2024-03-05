@@ -290,6 +290,7 @@ private extension FilterListViewController {
                     return CustomerSelectorViewController(
                         siteID: siteID,
                         configuration: .configurationForOrderFilter,
+                        addressFormViewModel: nil,
                         onCustomerSelected: { [weak self] customer in
                             selected.selectedValue = CustomerFilter(customer: customer)
 

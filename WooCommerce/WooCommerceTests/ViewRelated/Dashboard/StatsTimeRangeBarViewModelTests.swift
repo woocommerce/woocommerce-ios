@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import enum Yosemite.StatsTimeRangeV4
+import enum Yosemite.StatsGranularityV4
 
 final class StatsTimeRangeBarViewModelTests: XCTestCase {
     func test_today_text() {
@@ -214,5 +215,162 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
                                   formatter.string(from: actualStartDate),
                                   formatter.string(from: actualEndDate))
         XCTAssertEqual(viewModel.timeRangeText, expectedText)
+    }
+
+    func test_custom_range_with_selected_date_for_hourly_granularity() {
+        // Given
+        // GMT: March 4 2024 00:00:00 AM
+        let startDate = Date(timeIntervalSince1970: 1709510400)
+        // GMT: March 5 2024 00:00:00 AM
+        let endDate = Date(timeIntervalSince1970: 1709596800)
+        // GMT: March 4 2024 12:00:00 PM
+        let selectedDate = Date(timeIntervalSince1970: 1709553600)
+        let timezone = TimeZone(identifier: "GMT") ?? .current
+
+        // When
+        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                   endDate: endDate,
+                                                   selectedDate: selectedDate,
+                                                   timeRange: .custom(from: startDate, to: endDate),
+                                                   timezone: timezone)
+
+        // Then
+        let formatter = DateFormatter.Charts.chartSelectedDateHourFormatter
+        formatter.timeZone = timezone
+        // "Monday, March 4 12:00 PM"
+        let expectedDate = formatter.string(from: selectedDate)
+        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+    }
+
+    func test_custom_range_with_selected_date_for_daily_granularity() {
+        // Given
+        // GMT: February 28 2024 00:00:00 AM
+        let startDate = Date(timeIntervalSince1970: 1709078400)
+        // GMT: March 5 2024 00:00:00 AM
+        let endDate = Date(timeIntervalSince1970: 1709596800)
+        // GMT: March 4 2024 12:00:00 PM
+        let selectedDate = Date(timeIntervalSince1970: 1709553600)
+        let timezone = TimeZone(identifier: "GMT") ?? .current
+
+        // When
+        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                   endDate: endDate,
+                                                   selectedDate: selectedDate,
+                                                   timeRange: .custom(from: startDate, to: endDate),
+                                                   timezone: timezone)
+
+        // Then
+        let formatter = DateFormatter.Charts.chartAxisDayFormatter
+        formatter.timeZone = timezone
+        // "Mar 4"
+        let expectedDate = formatter.string(from: selectedDate)
+        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+    }
+
+    func test_custom_range_with_selected_date_for_weekly_granularity() {
+        // Given
+        // GMT: December 28 2023 00:00:00 AM
+        let startDate = Date(timeIntervalSince1970: 1703721600)
+        // GMT: March 5 2024 00:00:00 AM
+        let endDate = Date(timeIntervalSince1970: 1709596800)
+        // GMT: March 4 2024 12:00:00 PM
+        let selectedDate = Date(timeIntervalSince1970: 1709553600)
+        let timezone = TimeZone(identifier: "GMT") ?? .current
+
+        // When
+        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                   endDate: endDate,
+                                                   selectedDate: selectedDate,
+                                                   timeRange: .custom(from: startDate, to: endDate),
+                                                   timezone: timezone)
+
+        // Then
+        let formatter = DateFormatter.Charts.chartAxisDayFormatter
+        formatter.timeZone = timezone
+        // "Mar 4"
+        let expectedDate = formatter.string(from: selectedDate)
+        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+    }
+
+    func test_custom_range_with_selected_date_for_monthly_granularity() {
+        // Given
+        // GMT: May 28 2023 00:00:00 AM
+        let startDate = Date(timeIntervalSince1970: 1685232000)
+        // GMT: March 5 2024 00:00:00 AM
+        let endDate = Date(timeIntervalSince1970: 1709596800)
+        // GMT: March 4 2024 12:00:00 PM
+        let selectedDate = Date(timeIntervalSince1970: 1709553600)
+        let timezone = TimeZone(identifier: "GMT") ?? .current
+
+        // When
+        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                   endDate: endDate,
+                                                   selectedDate: selectedDate,
+                                                   timeRange: .custom(from: startDate, to: endDate),
+                                                   timezone: timezone)
+
+        // Then
+        let formatter = DateFormatter.Charts.chartAxisFullMonthFormatter
+        formatter.timeZone = timezone
+        // "March 2024"
+        let expectedDate = formatter.string(from: selectedDate)
+        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+    }
+
+    func test_granularityText_is_non_nil_for_custom_range_without_selected_date() {
+        // Given
+        // GMT: May 28 2023 00:00:00 AM
+        let startDate = Date(timeIntervalSince1970: 1685232000)
+        // GMT: March 5 2024 00:00:00 AM
+        let endDate = Date(timeIntervalSince1970: 1709596800)
+        let timezone = TimeZone(identifier: "GMT") ?? .current
+
+        // When
+        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                   endDate: endDate,
+                                                   timeRange: .custom(from: startDate, to: endDate),
+                                                   timezone: timezone)
+
+        // Then
+        XCTAssertEqual(viewModel.granularityText, StatsGranularityV4.monthly.displayText)
+    }
+
+    func test_granularityText_is_nil_for_custom_range_with_selected_date() {
+        // Given
+        // GMT: May 28 2023 00:00:00 AM
+        let startDate = Date(timeIntervalSince1970: 1685232000)
+        // GMT: March 5 2024 00:00:00 AM
+        let endDate = Date(timeIntervalSince1970: 1709596800)
+        // GMT: March 4 2024 12:00:00 PM
+        let selectedDate = Date(timeIntervalSince1970: 1709553600)
+        let timezone = TimeZone(identifier: "GMT") ?? .current
+
+        // When
+        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                   endDate: endDate,
+                                                   selectedDate: selectedDate,
+                                                   timeRange: .custom(from: startDate, to: endDate),
+                                                   timezone: timezone)
+
+        // Then
+        XCTAssertNil(viewModel.granularityText)
+    }
+
+    func test_granularityText_is_nil_for_today_range() {
+        // Given
+        // GMT: Thursday, August 15, 2019 6:14:35 PM
+        let startDate = Date(timeIntervalSince1970: 1565892875)
+        // GMT: Friday, August 16, 2019 2:14:35 AM
+        let endDate = Date(timeIntervalSince1970: 1565921675)
+        let timezone = TimeZone(identifier: "GMT") ?? .current
+
+        // When
+        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                   endDate: endDate,
+                                                   timeRange: .today,
+                                                   timezone: timezone)
+
+        // Then
+        XCTAssertNil(viewModel.granularityText)
     }
 }

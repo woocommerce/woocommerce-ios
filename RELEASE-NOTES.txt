@@ -2,6 +2,7 @@
 
 17.7
 -----
+- Orders: Merchants can filter orders by selecting a customer [https://github.com/woocommerce/woocommerce-ios/pull/12100]
 
 
 17.6

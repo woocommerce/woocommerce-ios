@@ -27,6 +27,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: nil,
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
+                                                       customer: nil,
                                                        numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
@@ -58,6 +59,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: nil,
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
+                                                       customer: nil,
                                                        numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
@@ -141,6 +143,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending],
                                                        dateRange: nil,
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
+                                                       customer: nil,
                                                        numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
@@ -197,6 +200,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: nil,
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
+                                                       customer: nil,
                                                        numberOfActiveFilters: 1)
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)

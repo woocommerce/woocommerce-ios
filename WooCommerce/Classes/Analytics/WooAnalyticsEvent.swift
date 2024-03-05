@@ -2804,6 +2804,31 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .applicationPasswordAuthorizationWebViewShown,
                               properties: [Key.step.rawValue: step.rawValue])
         }
+
+        static func invalidLoginPageDetected() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsInvalidLoginPageDetected, properties: [:])
+        }
+
+        static func explanationDismissed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordExplanationDismissed, properties: [:])
+        }
+
+        static func explanationContactSupportTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordExplanationContactSupportTapped, properties: [:])
+        }
+
+        static func explanationContinueButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordExplanationContinueButtonTapped, properties: [:])
+        }
+
+        static func loginExitConfirmation() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginExitConfirmation, properties: [:])
+        }
+
+        static func loginDismissed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginDismissed, properties: [:])
+        }
+
     }
 }
 

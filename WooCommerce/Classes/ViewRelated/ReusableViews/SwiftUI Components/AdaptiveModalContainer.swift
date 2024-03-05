@@ -17,13 +17,21 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
 
     @ViewBuilder let primaryView: (_ presentSecondaryView: (() -> Void)?) -> PrimaryView
     @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
+    @Binding var isShowingSecondaryView: Bool
+    var onViewContainerDismiss: (() -> Void)?
 
     var body: some View {
         if horizontalSizeClass == .compact {
-            ModalOnModalView(primaryView: primaryView, secondaryView: secondaryView)
+            ModalOnModalView(primaryView: primaryView,
+                             secondaryView: secondaryView,
+                             isShowingSecondaryView: $isShowingSecondaryView,
+                             onDimissButtonTapped: onViewContainerDismiss)
                 .environment(\.adaptiveModalContainerPresentationStyle, .modalOnModal)
         } else {
-            SideBySideView(primaryView: primaryView, secondaryView: secondaryView)
+            SideBySideView(primaryView: primaryView,
+                           secondaryView: secondaryView,
+                           isShowingSecondaryView: $isShowingSecondaryView,
+                           onDimissButtonTapped: onViewContainerDismiss)
                 .environment(\.adaptiveModalContainerPresentationStyle, .sideBySide)
         }
     }
@@ -31,21 +39,21 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
     private struct ModalOnModalView: View {
         @ViewBuilder let primaryView: (_ presentSecondaryView: @escaping () -> Void) -> PrimaryView
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
-        @State var isShowingSecondaryView = false
-        @Environment(\.dismiss) var dismiss
+        @Binding var isShowingSecondaryView: Bool
+        var onDimissButtonTapped: (() -> Void)?
 
         var body: some View {
             NavigationView {
-                primaryView({
+                primaryView({ // presentSecondaryView
                     isShowingSecondaryView = true
                 })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(action: {
-                            dismiss()
-                        }) {
-                            Image(systemName: "xmark")
-                        }
+                            onDimissButtonTapped?()
+                        }, label: {
+                            Text(Localization.cancelButtonText)
+                        })
                     }
                 }
                 .sheet(isPresented: $isShowingSecondaryView) {
@@ -55,14 +63,17 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 }
             }
             .navigationViewStyle(.stack)
+            .onAppear {
+                isShowingSecondaryView = false
+            }
         }
     }
 
     private struct SideBySideView: View {
         @ViewBuilder let primaryView: (_ presentSecondaryView: (() -> Void)?) -> PrimaryView
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
-        @Environment(\.dismiss) var dismiss
-        @State var isShowingSecondaryView = true
+        @Binding var isShowingSecondaryView: Bool
+        var onDimissButtonTapped: (() -> Void)?
 
         var body: some View {
             HStack(spacing: 0) {
@@ -71,10 +82,10 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
                                 Button(action: {
-                                    dismiss()
-                                }) {
-                                    Image(systemName: "xmark")
-                                }
+                                    onDimissButtonTapped?()
+                                }, label: {
+                                    Text(Localization.cancelButtonText)
+                                })
                             }
                         }
                 }
@@ -89,6 +100,19 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 .navigationViewStyle(.stack)
                 .frame(minWidth: 400)
             }
+            .onAppear {
+                isShowingSecondaryView = true
+            }
+        }
+    }
+}
+
+private extension AdaptiveModalContainer {
+    enum Localization {
+        static var cancelButtonText: String {
+            NSLocalizedString("adaptiveModalContainer.views.cancelButtonText",
+                              value: "Cancel",
+                              comment: "Text for the 'Cancel' button that appears in the navigation bar, and closes the view")
         }
     }
 }

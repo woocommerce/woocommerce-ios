@@ -500,12 +500,8 @@ private extension StoreStatsV4PeriodViewController {
 
             guard let site = stores.sessionManager.defaultSite else { return }
 
-            if site.isWordPressComStore || (site.isJetpackConnected && !site.isJetpackCPConnected) {
-                if selectedIndex != nil && siteVisitStatsMode == .redactedDueToCustomRange {
-                    siteVisitStatsMode = .default
-                } else if selectedIndex == nil && siteVisitStatsMode == .default {
-                    siteVisitStatsMode = .redactedDueToCustomRange
-                }
+            if site.isJetpackConnected && site.isJetpackThePluginInstalled {
+                siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
             }
         }
 

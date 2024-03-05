@@ -9,14 +9,6 @@ final class CustomerSelectorViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
 
-    let configuration: CustomerSelectorViewController.Configuration = .init(
-        title: "Select Customer",
-        disallowSelectingGuest: false,
-        disallowCreatingCustomer: false,
-        showGuestLabel: false,
-        shouldTrackCustomerAdded: false
-    )
-
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -27,7 +19,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         var passedParameters: (Int64, String)?
         let returnedVersion = "7.9.9"
 
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { _ in }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
@@ -60,7 +52,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         // Given
         let returnedVersion = "8.0.0-beta.1"
 
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { _ in }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
@@ -89,7 +81,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         // Given
         let returnedVersion = "14.2.5"
 
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { _ in }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
@@ -118,7 +110,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         // Given
         let returnedVersion = "14.2.5"
 
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { _ in }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
 
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
@@ -145,7 +137,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
 
     func test_loadCustomersListData_calls_to_synchronizeLightCustomersData() {
         // Given
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { _ in }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
 
         var passedSiteID: Int64?
         var passedPageNumber: Int?
@@ -178,7 +170,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
 
     func test_loadCustomersListData_calls_to_synchronizeLightCustomersData_and_passes_error() {
         // Given
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { _ in }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
         let error = NSError(domain: "Test", code: -1001)
 
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in
@@ -209,7 +201,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
     func test_onCustomerSelected_when_customerID_is_0_passes_customer_and_finishes_succesfully() {
         // Given
         var passedCustomer: Customer?
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { customer in
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { customer in
             passedCustomer = customer
         }
 
@@ -236,7 +228,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
     func test_onCustomerSelected_when_customerID_is_not_0_retrieves_customer_full_data_and_finishes_succesfully() {
         // Given
         var passedCustomer: Customer?
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { customer in
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { customer in
             passedCustomer = customer
         }
 
@@ -273,7 +265,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
 
     func test_onCustomerSelected_calls_to_retrieveCustomer_and_passes_error() {
         // Given
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, configuration: configuration, stores: stores) { _ in }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
         let error = NSError(domain: "Test", code: -1001)
 
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in

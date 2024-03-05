@@ -27,6 +27,14 @@ final class ApplicationPasswordTutorialViewController: UIHostingController<Appli
         }
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        if isMovingFromParent {
+            ServiceLocator.analytics.track(event: .ApplicationPasswordAuthorization.explanationDismissed())
+        }
+    }
+
     init(error: Error) {
         let view = ApplicationPasswordTutorial(errorDescription: ApplicationPasswordTutorialViewModel.friendlyErrorMessage(for: error))
         super.init(rootView: view)

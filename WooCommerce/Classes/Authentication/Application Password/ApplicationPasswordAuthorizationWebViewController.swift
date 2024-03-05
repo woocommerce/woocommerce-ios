@@ -88,7 +88,10 @@ extension ApplicationPasswordAuthorizationWebViewController {
     private func presentBackNavigationAlert() {
         UIAlertController.presentUnfinishedApplicationPasswordAlert(from: self) { [weak self] in
             self?.navigationController?.popViewController(animated: true)
+            self?.analytics.track(event: .ApplicationPasswordAuthorization.loginDismissed())
         }
+
+        analytics.track(event: .ApplicationPasswordAuthorization.loginExitConfirmation())
     }
 }
 

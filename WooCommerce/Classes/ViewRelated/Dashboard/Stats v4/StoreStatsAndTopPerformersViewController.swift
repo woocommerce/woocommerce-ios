@@ -253,6 +253,7 @@ private extension StoreStatsAndTopPerformersViewController {
             group.enter()
             periodGroup.enter()
             periodStoreStatsGroup.enter()
+
             self.dashboardViewModel.syncSiteVisitStats(for: siteID,
                                                        siteTimezone: timezoneForSync,
                                                        timeRange: vc.timeRange,
@@ -502,6 +503,22 @@ private extension StoreStatsAndTopPerformersViewController {
             self?.startCustomRangeTabCreation(startDate: startDate, endDate: endDate)
         })
 
+        // Set redaction state for the site visit stats.
+        // - .hidden for self-hosted sites without Jetpack
+        // - .redactedDueToJetpack for Jetpack CP Sites
+        // - .redactedDueToCustomRange for WordPress.com sites or Jetpack connected sites
+        guard let site = stores.sessionManager.defaultSite else { return }
+
+        if site.isNonJetpackSite {
+            customRangeVC.siteVisitStatsMode = .hidden
+        } else {
+            if site.isJetpackCPConnected {
+                customRangeVC.siteVisitStatsMode = .redactedDueToJetpack
+            } else {
+                customRangeVC.siteVisitStatsMode = .redactedDueToCustomRange
+            }
+        }
+
         let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,
                                                accessibilityIdentifier: "period-data-" + range.rawValue + "-tab")
@@ -531,9 +548,11 @@ private extension StoreStatsAndTopPerformersViewController {
 
 private extension StoreStatsAndTopPerformersViewController {
     func updateSiteVisitors(mode: SiteVisitStatsMode) {
-        periodVCs.forEach { vc in
-            vc.siteVisitStatsMode = mode
-        }
+        periodVCs
+            .filter { !$0.timeRange.isCustomTimeRange } // The Custom Range tab should always redact the visitor count.
+            .forEach { vc in
+                vc.siteVisitStatsMode = mode
+            }
     }
 
     func handleSiteStatsStoreError(error: SiteStatsStoreError) {

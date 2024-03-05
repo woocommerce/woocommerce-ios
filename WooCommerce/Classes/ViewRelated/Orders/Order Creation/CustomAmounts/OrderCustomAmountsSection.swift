@@ -29,6 +29,7 @@ struct OrderCustomAmountsSection: View {
                 .accessibilityIdentifier(Accessibility.addCustomAmountIdentifier)
                 .buttonStyle(PlusButtonStyle())
             }
+            .frame(minHeight: Layout.rowHeight)
             .renderedIf(viewModel.customAmountRows.isEmpty)
 
             Group {
@@ -59,7 +60,8 @@ struct OrderCustomAmountsSection: View {
             .renderedIf(viewModel.customAmountRows.isNotEmpty)
         }
         .padding(.horizontal, insets: safeAreaInsets)
-        .padding()
+        .if(viewModel.customAmountRows.isEmpty, transform: { $0.padding([.leading, .trailing]) })
+        .if(!viewModel.customAmountRows.isEmpty, transform: { $0.padding() })
         .background(Color(.listForeground(modal: true)))
         .sheet(isPresented: $showAddCustomAmountOptionsDialog, onDismiss: onDismissOptionsDialog) {
             optionsWithDetentsBottomSheetContent
@@ -156,6 +158,7 @@ private extension OrderCustomAmountsSection {
         static let optionsBottomSheetButtonSymbolWidth: CGFloat = 20
         static let optionsBottomSheetButtonSymbolTrailing: CGFloat = 18
         static let optionsBottomSheetVerticalPadding: CGFloat = 16
+        static let rowHeight: CGFloat = 56
 
     }
     enum Localization {

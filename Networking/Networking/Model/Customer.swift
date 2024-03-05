@@ -29,6 +29,11 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable
     /// List of shipping address data
     public let shipping: Address?
 
+    /// Computed property to check if the customer is a guest
+    public var isGuest: Bool {
+        customerID == 0
+    }
+
     /// Customer struct initializer
     ///
     public init(siteID: Int64,

@@ -813,12 +813,16 @@ private extension AuthenticationManager {
         let tutorialVC = ApplicationPasswordTutorialViewController(error: error)
         tutorialVC.continueButtonTapped = { [weak self] in
             self?.presentApplicationPasswordWebView(for: siteURL, in: viewController)
+            self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContinueButtonTapped())
         }
-        tutorialVC.contactSupportButtonTapped = {
+        tutorialVC.contactSupportButtonTapped = { [weak self] in
             let supportController = SupportFormHostingController(viewModel: .init(sourceTag: WordPressSupportSourceTag.loginUsernamePassword.origin))
             supportController.show(from: viewController)
+            self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContactSupportTapped())
         }
         viewController.show(tutorialVC, sender: viewController)
+
+        analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
     }
 
     /// Presents login error alert before redirecting user to the site login using a web view.

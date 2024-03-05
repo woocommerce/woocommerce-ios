@@ -99,6 +99,14 @@ public enum WooAnalyticsStat: String {
     case loginAppLoginLinkSuccess = "login_app_login_link_success"
     case loginMalformedAppLoginLink = "login_malformed_app_login_link"
 
+    case loginSiteCredentialsInvalidLoginPageDetected = "login_site_credentials_invalid_login_page_detected"
+    case loginSiteCredentialsAppPasswordExplanationDismissed = "login_site_credentials_app_password_explanation_dismissed"
+    case loginSiteCredentialsAppPasswordExplanationContactSupportTapped = "login_site_credentials_app_password_explanation_contact_support_tapped"
+    case loginSiteCredentialsAppPasswordExplanationContinueButtonTapped = "login_site_credentials_app_password_explanation_continue_button_tapped"
+    case loginSiteCredentialsAppPasswordLoginExitConfirmation = "login_site_credentials_app_password_login_exit_confirmation"
+    case loginSiteCredentialsAppPasswordLoginDismissed = "login_site_credentials_app_password_login_dismissed"
+
+
     // MARK: Install/Setup Jetpack (`LoginJetpackSetupView`)
     //
     case loginJetpackSetupScreenViewed = "login_jetpack_setup_screen_viewed"

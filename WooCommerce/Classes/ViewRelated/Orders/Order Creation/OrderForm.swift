@@ -107,22 +107,32 @@ struct OrderFormPresentationWrapper: View {
 
     var body: some View {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            AdaptiveModalContainer(primaryView: { presentProductSelector in
-                OrderForm(dismissHandler: dismissHandler,
-                          flow: flow,
-                          viewModel: viewModel,
-                          presentProductSelector: presentProductSelector)
-            }, secondaryView: { isShowingProductSelector in
-                if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
-                                        source: .orderForm(flow: flow),
-                                        isPresented: isShowingProductSelector,
-                                        viewModel: productSelectorViewModel)
-                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                        ConfigurableBundleProductView(viewModel: viewModel)
+            AdaptiveModalContainer(
+                primaryView: { presentProductSelector in
+                    OrderForm(dismissHandler: dismissHandler,
+                              flow: flow,
+                              viewModel: viewModel,
+                              presentProductSelector: presentProductSelector)
+                },
+                secondaryView: { isShowingProductSelector in
+                    if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                        ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
+                                            source: .orderForm(flow: flow),
+                                            isPresented: isShowingProductSelector,
+                                            viewModel: productSelectorViewModel)
+                        .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                            ConfigurableBundleProductView(viewModel: viewModel)
+                        }
                     }
-                }
-            }, isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+                },
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
+                onViewContainerDismiss: {
+                    // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
+                    // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
+                    // but on split views we move this responsibility to the AdaptiveModalContainer
+                    viewModel.syncOrderItemSelectionStateOnDismiss()
+                    dismissHandler()
+                })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
@@ -185,9 +195,9 @@ struct OrderForm: View {
             }
     }
 
-    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle) {
+    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle?) {
         switch presentationStyle {
-        case .modalOnModal:
+        case .none, .modalOnModal:
             viewModel.selectionSyncApproach = .onSelectorButtonTap
         case .sideBySide:
             viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -200,6 +210,7 @@ struct OrderForm: View {
                 ScrollView {
                     Group {
                         VStack(spacing: Layout.noSpacing) {
+                            Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
                                 Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
@@ -245,6 +256,7 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
+                                Divider()
                                 AddOrderComponentsSection(
                                     viewModel: viewModel.paymentDataViewModel,
                                     shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
@@ -254,6 +266,7 @@ struct OrderForm: View {
                                 .sheet(isPresented: $shouldShowShippingLineDetails) {
                                     ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
                                 }
+                                Divider()
                             }
 
                             Spacer(minLength: Layout.sectionSpacing)
@@ -562,7 +575,7 @@ private struct ProductsSection: View {
     /// Environment variable that manages the presentation state of the AdaptiveModalContainer view
     /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size
     ///
-    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle
+    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle?
 
     private var layoutVerticalSpacing: CGFloat {
         if viewModel.shouldShowProductsSectionHeader {
@@ -575,7 +588,6 @@ private struct ProductsSection: View {
     var body: some View {
         Group {
             Divider()
-                .renderedIf(presentationStyle == .modalOnModal)
 
             VStack(alignment: .leading, spacing: layoutVerticalSpacing) {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
@@ -647,7 +659,7 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .modalOnModal {
+                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
                         Button(OrderForm.Localization.addProducts) {
                             viewModel.toggleProductSelectorVisibility()
                         }
@@ -656,12 +668,13 @@ private struct ProductsSection: View {
                         .buttonStyle(PlusButtonStyle())
                     }
                     scanProductButton
-                        .renderedIf(presentationStyle == .modalOnModal)
+                        .renderedIf(presentationStyle != .sideBySide)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
+            .if(viewModel.shouldShowAddProductsButton, transform: { $0.frame(minHeight: Layout.rowHeight) })
             .background(Color(.listForeground(modal: true)))
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
@@ -787,7 +800,7 @@ private extension ProductsSection {
 // MARK: Constants
 private extension OrderForm {
     enum Layout {
-        static let sectionSpacing: CGFloat = 16.0
+        static let sectionSpacing: CGFloat = 8.0
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
         static let storedTaxRateBottomSheetTopSpace: CGFloat = 24.0
@@ -926,6 +939,10 @@ private extension ProductSelectorView.Configuration {
 }
 
 private extension ProductsSection {
+    enum Layout {
+        static let rowHeight: CGFloat = 56.0
+    }
+
     enum Localization {
         static let scanProductRowTitle = NSLocalizedString(
             "orderForm.products.add.scan.row.title",

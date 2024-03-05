@@ -24,7 +24,10 @@ struct OrderCustomerSection: View {
                                              },
                                              viewModel: addressFormViewModel)
                     case .selector:
-                        CustomerSelectorView(siteID: viewModel.siteID, addressFormViewModel: addressFormViewModel) { customer in
+                        CustomerSelectorView(
+                            siteID: viewModel.siteID,
+                            configuration: .configurationForOrderCustomerSection,
+                            addressFormViewModel: addressFormViewModel) { customer in
                             viewModel.addCustomerAddressToOrder(customer: customer)
                         }
                     }
@@ -37,6 +40,24 @@ struct OrderCustomerSection: View {
             }
     }
 }
+
+private extension CustomerSelectorViewController.Configuration {
+    static let configurationForOrderCustomerSection = CustomerSelectorViewController.Configuration(
+        title: OrderCustomerLocalization.customerSelectorTitle,
+        disallowSelectingGuest: false,
+        disallowCreatingCustomer: false,
+        showGuestLabel: false,
+        shouldTrackCustomerAdded: true
+    )
+
+    enum OrderCustomerLocalization {
+        static let customerSelectorTitle = NSLocalizedString(
+            "configurationForOrderCustomerSection.customerSelectorTitle",
+            value: "Add customer details",
+            comment: "Title of the order customer selection screen.")
+    }
+}
+
 
 private struct OrderCustomerSectionContent: View {
 
@@ -66,8 +87,8 @@ private struct OrderCustomerSectionContent: View {
             .renderedIf(viewModel.isDataAvailable)
 
             if !viewModel.isDataAvailable {
-                Spacer(minLength: Layout.verticalHeadlineSpacing)
                 createCustomerView
+                    .frame(minHeight: Layout.buttonHeight)
             } else {
                 customerDataView
             }
@@ -81,7 +102,7 @@ private struct OrderCustomerSectionContent: View {
             showAddressForm.toggle()
         }
         .buttonStyle(PlusButtonStyle())
-        .padding([.leading, .bottom, .trailing])
+        .padding([.leading, .trailing])
     }
 
     private var customerDataView: some View {
@@ -117,6 +138,7 @@ private extension OrderCustomerSectionContent {
         static let verticalHeadlineSpacing: CGFloat = 22.0
         static let verticalEmailSpacing: CGFloat = 4.0
         static let verticalAddressSpacing: CGFloat = 6.0
+        static let buttonHeight: CGFloat = 56.0
     }
 
     enum Localization {

@@ -60,6 +60,9 @@ enum FilterListValueSelectorConfig {
     case ordersDateRange
     // Filter list selector for products
     case products(siteID: Int64)
+    // Filter list selector for customer
+    case customer(siteID: Int64)
+
 }
 
 /// Contains data for rendering a filter type row.
@@ -268,19 +271,40 @@ private extension FilterListViewController {
                             selected.selectedValue = FilterOrdersByProduct(id: product.productID, name: product.name)
                             self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
                             self.listSelector.reloadData()
-                            self.listSelector.navigationController?.dismiss(animated: true)
+                            self.listSelector.dismiss(animated: true)
                         },
                         onCloseButtonTapped: { [weak self] in
                             guard let self else { return }
 
-                            self.listSelector.navigationController?.dismiss(animated: true)
+                            self.listSelector.dismiss(animated: true)
                         }
                     )
                     return WooNavigationController(rootViewController: ProductSelectorViewController(configuration: .configurationForOrder,
                                                                                                      source: .orderFilter,
                                                                                                      viewModel: productSelectorViewModel))
                 }()
-                self.listSelector.navigationController?.present(controller, animated: true)
+                self.listSelector.present(controller, animated: true)
+
+            case .customer(let siteID):
+                let controller: CustomerSelectorViewController = {
+                    return CustomerSelectorViewController(
+                        siteID: siteID,
+                        configuration: .configurationForOrderFilter,
+                        addressFormViewModel: nil,
+                        onCustomerSelected: { [weak self] customer in
+                            selected.selectedValue = CustomerFilter(customer: customer)
+
+                            self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                            self?.listSelector.reloadData()
+                            self?.listSelector.dismiss(animated: true)
+                        }
+                    )
+                }()
+
+                self.listSelector.present(
+                    WooNavigationController(rootViewController: controller),
+                    animated: true
+                )
             }
         }
     }

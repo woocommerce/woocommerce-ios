@@ -73,12 +73,12 @@ private struct CustomerNoteSectionContent: View {
 
     private func createOrderNotesView() -> some View {
         Group {
-            Spacer(minLength: Layout.verticalHeadlineSpacing)
             Button(Localization.addNotes) {
                 showEditNotesView.toggle()
             }
             .buttonStyle(PlusButtonStyle())
-            .padding([.leading, .bottom, .trailing])
+            .frame(minHeight: Layout.buttonHeight)
+            .padding([.leading, .trailing])
             .accessibilityIdentifier("add-customer-note-button")
         }
     }
@@ -95,6 +95,7 @@ private extension CustomerNoteSectionContent {
         static let verticalHeadlineSpacing: CGFloat = 22.0
         static let verticalEmailSpacing: CGFloat = 4.0
         static let verticalAddressSpacing: CGFloat = 6.0
+        static let buttonHeight: CGFloat = 56.0
     }
 
     enum Localization {

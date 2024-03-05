@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+import enum Yosemite.StatsTimeRangeV4
 
 final class StatsTimeRangeBarViewModelTests: XCTestCase {
     func test_today_text() {
@@ -182,6 +183,36 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
         formatter.timeZone = timezone
         let expectedText = formatter.string(from: startDate) // "July 2019" in en-US locale.
+        XCTAssertEqual(viewModel.timeRangeText, expectedText)
+    }
+
+    func test_custom_range_text_displays_exact_date_from_custom_range() throws {
+        // Given
+        // GMT: Sunday, July 28, 2019 12:00:00 AM
+        let startDate = Date(timeIntervalSince1970: 1564272000)
+        // GMT: Saturday, August 3, 2019 11:59:59 PM
+        let endDate = Date(timeIntervalSince1970: 1564876799)
+        let timezone = TimeZone(identifier: "GMT") ?? .current
+
+        let actualStartDate = try XCTUnwrap(startDate.adding(days: -3))
+        let actualEndDate = try XCTUnwrap(endDate.adding(days: 3))
+        let timeRange = StatsTimeRangeV4.custom(from: actualStartDate, to: actualEndDate)
+
+        // When
+        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                   endDate: endDate,
+                                                   timeRange: timeRange,
+                                                   timezone: timezone)
+
+        // Then
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.timeZone = timezone
+        // "July 25, 2019 - August 6, 2019" in en-US locale.
+        let expectedText = String(format: "%1$@ - %2$@",
+                                  formatter.string(from: actualStartDate),
+                                  formatter.string(from: actualEndDate))
         XCTAssertEqual(viewModel.timeRangeText, expectedText)
     }
 }

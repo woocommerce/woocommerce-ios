@@ -43,7 +43,7 @@ private extension StatsTimeRangeV4 {
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
             formatter.timeStyle = .none
-            return formatter
+            dateFormatter = formatter
         }
         dateFormatter.timeZone = timezone
         return dateFormatter

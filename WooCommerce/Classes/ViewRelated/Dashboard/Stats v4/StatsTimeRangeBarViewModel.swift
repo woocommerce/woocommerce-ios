@@ -57,8 +57,10 @@ private extension StatsTimeRangeV4 {
             dateFormatter = DateFormatter.Charts.chartSelectedDateHourFormatter
         case .daily, .weekly:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
-        case .monthly, .quarterly, .yearly:
+        case .monthly, .quarterly:
             dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
+        case .yearly:
+            dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
         }
         dateFormatter.timeZone = timezone
         return dateFormatter

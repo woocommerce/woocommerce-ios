@@ -172,7 +172,11 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Opens the Customer Note screen.
     /// - Returns: Customer Note screen object.
     public func openCustomerNoteScreen() throws -> CustomerNoteScreen {
+        /// The `scrollintoView` function doesn’t perform any scrolling on the iPad, because `isFullyVisibleOnScreen`
+        /// is returning true, even when the note button is hidden (just) below the expandable totals drawer.
+        /// Unfortunately, the button can't be tapped in this instance.
         app.scrollViews["order-form-scroll-view"].swipeUp()
+        
         addNoteButton.scrollIntoView()
         addNoteButton.tap()
         return try CustomerNoteScreen()

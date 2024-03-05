@@ -386,6 +386,7 @@ struct OrderForm: View {
                     Button(Localization.recalculateButton) {
                         viewModel.onRecalculateTapped()
                     }
+                    .accessibilityIdentifier(Accessibility.recalculateButtonIdentifier)
                 case .none:
                     EmptyView()
                 }
@@ -863,6 +864,7 @@ private extension OrderForm {
     enum Accessibility {
         static let createButtonIdentifier = "new-order-create-button"
         static let cancelButtonIdentifier = "new-order-cancel-button"
+        static let recalculateButtonIdentifier = "new-order-recalculate-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"

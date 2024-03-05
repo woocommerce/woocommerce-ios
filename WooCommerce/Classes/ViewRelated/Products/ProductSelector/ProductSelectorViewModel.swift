@@ -210,9 +210,13 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onConfigureProductRow: ((_ product: Product) -> Void)?
 
-    @Published private(set) var syncApproach: SyncApproach
+    @Published var syncApproach: SyncApproach
 
     private var orderSyncState: Published<OrderSyncState>.Publisher?
+
+    @Published var isShowingProductVariationList: Bool = false
+
+    @Published var productVariationListViewModel: ProductVariationSelectorViewModel? = nil
 
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
@@ -297,10 +301,6 @@ final class ProductSelectorViewModel: ObservableObject {
         } else {
             onProductSelectionStateChanged?(selectedProduct)
         }
-
-        if syncApproach == .immediate {
-            onMultipleSelectionCompleted?(selectedItemsIDs)
-        }
     }
 
     /// Adds a product or variation ID to the product selector from an external source (e.g. bundle configuration form for bundle products).
@@ -323,12 +323,42 @@ final class ProductSelectorViewModel: ObservableObject {
         }
     }
 
-    /// Get the view model for a list of product variations to add to the order
-    ///
-    func getVariationsViewModel(for productID: Int64) -> ProductVariationSelectorViewModel? {
-        guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
+    func isVariableProduct(productOrVariationID: Int64) -> Bool {
+        return variableProduct(for: productOrVariationID) != nil
+    }
+
+    func variationCheckboxTapped(for productOrVariationID: Int64) {
+        if toggleAllVariationsOnSelection {
+            toggleSelectionForAllVariations(of: productOrVariationID)
+        } else {
+            showVariationList(for: productOrVariationID)
+        }
+    }
+
+    func variationRowTapped(for productOrVariationID: Int64) {
+        showVariationList(for: productOrVariationID)
+    }
+
+    private func showVariationList(for productOrVariationID: Int64) {
+        productVariationListViewModel = getVariationsViewModel(for: productOrVariationID)
+        isShowingProductVariationList = productVariationListViewModel != nil
+    }
+
+    private func variableProduct(for productID: Int64) -> Product? {
+        guard let variableProduct = products.first(where: { $0.productID == productID }),
+                variableProduct.variations.isNotEmpty else {
             return nil
         }
+        return variableProduct
+    }
+
+    /// Get the view model for a list of product variations to add to the order
+    ///
+    private func getVariationsViewModel(for productID: Int64) -> ProductVariationSelectorViewModel? {
+        guard let variableProduct = variableProduct(for: productID) else {
+            return nil
+        }
+
         let selectedItems = selectedItemsIDs.filter { variableProduct.variations.contains($0) }
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
@@ -338,18 +368,10 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  onVariationSelectionStateChanged: { [weak self] productVariation, product in
             guard let self else { return }
             onVariationSelectionStateChanged?(productVariation, product)
-
-            if syncApproach == .immediate {
-                onMultipleSelectionCompleted?(selectedItemsIDs)
-            }
         },
                                                  onSelectionsCleared: { [weak self] in
             guard let self else { return }
             onSelectedVariationsCleared?()
-
-            if syncApproach == .immediate {
-                onMultipleSelectionCompleted?(selectedItemsIDs)
-            }
         })
     }
 
@@ -400,18 +422,6 @@ final class ProductSelectorViewModel: ObservableObject {
         updateSelectedVariations(productID: productID, selectedVariationIDs: selectedIDs)
     }
 
-    func updateSyncApproach(to newSyncApproach: SyncApproach) {
-        guard newSyncApproach != syncApproach else {
-            return
-        }
-
-        if newSyncApproach == .immediate {
-            onMultipleSelectionCompleted?(selectedItemsIDs)
-        }
-
-        syncApproach = newSyncApproach
-    }
-
     /// Triggers completion closure when the multiple selection completes.
     ///
     func completeMultipleSelection() {
@@ -431,13 +441,10 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedItemsIDs = []
 
         onAllSelectionsCleared?()
-        if syncApproach == .immediate {
-            onMultipleSelectionCompleted?(selectedItemsIDs)
-        }
     }
 
     enum SyncApproach {
-        case immediate
+        case external
         case onButtonTap
     }
 }

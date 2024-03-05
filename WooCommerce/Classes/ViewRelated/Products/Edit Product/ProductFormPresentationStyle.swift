@@ -13,16 +13,18 @@ enum ProductFormPresentationStyle {
 extension ProductFormPresentationStyle {
     /// Determines how a product form view controller exits.
     /// - Parameter viewController: the product form view controller that is about to exit.
+    /// - Parameter completion: called when the exit logic is complete.
     /// - Returns: a closure to be called that exits the product form.
-    func createExitForm(viewController: UIViewController) -> (() -> Void) {
+    func createExitForm(viewController: UIViewController, completion: @escaping () -> Void = {}) -> (() -> Void) {
         switch self {
         case .contained:
             return {
-                viewController.dismiss(animated: true, completion: nil)
+                viewController.dismiss(animated: true, completion: completion)
             }
         case .navigationStack:
             return {
                 viewController.navigationController?.popViewController(animated: true)
+                completion()
             }
         }
     }

@@ -200,10 +200,6 @@ public enum FeatureFlag: Int {
     ///
     case customRangeInMyStoreAnalytics
 
-    /// Enables customizing the cards in the Analytics Hub
-    ///
-    case customizeAnalyticsHub
-
     /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
     ///
     case useURLSessionInWordPressKit
@@ -211,4 +207,8 @@ public enum FeatureFlag: Int {
     /// Enables the connectivity tool when an order list error happens.
     ///
     case connectivityTool
+
+    /// Enables the Application Password tutorial
+    ///
+    case appPasswordTutorial
 }

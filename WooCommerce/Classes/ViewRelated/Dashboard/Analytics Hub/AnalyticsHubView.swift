@@ -66,19 +66,21 @@ struct AnalyticsHubView: View {
             await viewModel.updateData()
         }) {
             VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                VStack(spacing: Layout.dividerSpacing) {
-                    Divider()
+                AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
+                                       selectionType: $viewModel.timeRangeSelectionType)
+                .padding(.horizontal, insets: safeAreaInsets)
+                .background(Color(uiColor: .listForeground(modal: false)))
+                .addingTopAndBottomDividers()
 
-                    AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
-                                           selectionType: $viewModel.timeRangeSelectionType)
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(uiColor: .listForeground(modal: false)))
-
-                    Divider()
-                }
-
-                ForEach(viewModel.enabledCards, id: \.self) { card in
-                    analyticsCard(type: card)
+                if viewModel.enabledCards.isNotEmpty {
+                    ForEach(viewModel.enabledCards, id: \.self) { card in
+                        analyticsCard(type: card)
+                            .padding(.horizontal, insets: safeAreaInsets)
+                            .background(Color(uiColor: .listForeground(modal: false)))
+                            .addingTopAndBottomDividers()
+                    }
+                } else {
+                    EmptyState(title: Localization.emptyStateTitle, description: Localization.emptyStateDescription, image: .enableAnalyticsImage)
                 }
 
                 Spacer()
@@ -109,7 +111,6 @@ struct AnalyticsHubView: View {
                 } label: {
                     Text(Localization.editButton)
                 }
-                .renderedIf(viewModel.canCustomizeAnalytics)
             }
         }
         .sheet(item: $viewModel.customizeAnalyticsViewModel) { customizeViewModel in
@@ -127,59 +128,24 @@ private extension AnalyticsHubView {
     func analyticsCard(type: AnalyticsCard.CardType) -> some View {
         switch type {
         case .revenue:
-            VStack(spacing: Layout.dividerSpacing) {
-                Divider()
-
-                AnalyticsReportCard(viewModel: viewModel.revenueCard)
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(uiColor: .listForeground(modal: false)))
-
-                Divider()
-            }
+            AnalyticsReportCard(viewModel: viewModel.revenueCard)
         case .orders:
-            VStack(spacing: Layout.dividerSpacing) {
-                Divider()
-
-                AnalyticsReportCard(viewModel: viewModel.ordersCard)
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(uiColor: .listForeground(modal: false)))
-
-                Divider()
-            }
+            AnalyticsReportCard(viewModel: viewModel.ordersCard)
         case .products:
-            VStack(spacing: Layout.dividerSpacing) {
-                Divider()
-
-                AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(uiColor: .listForeground(modal: false)))
-
-                Divider()
-            }
+            AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
         case .sessions:
-            VStack(spacing: Layout.dividerSpacing) {
-                Divider()
-
-                Group {
-                    if viewModel.showJetpackStatsCTA {
-                        AnalyticsCTACard(title: Localization.sessionsCTATitle,
-                                         message: Localization.sessionsCTAMessage,
-                                         buttonLabel: Localization.sessionsCTAButton,
-                                         isLoading: $isEnablingJetpackStats) {
-                            isEnablingJetpackStats = true
-                            await viewModel.enableJetpackStats()
-                            isEnablingJetpackStats = false
-                        }
-                    } else {
-                        AnalyticsReportCard(viewModel: viewModel.sessionsCard)
-                    }
+            if viewModel.showJetpackStatsCTA {
+                AnalyticsCTACard(title: Localization.sessionsCTATitle,
+                                 message: Localization.sessionsCTAMessage,
+                                 buttonLabel: Localization.sessionsCTAButton,
+                                 isLoading: $isEnablingJetpackStats) {
+                    isEnablingJetpackStats = true
+                    await viewModel.enableJetpackStats()
+                    isEnablingJetpackStats = false
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(uiColor: .listForeground(modal: false)))
-
-                Divider()
+            } else {
+                AnalyticsReportCard(viewModel: viewModel.sessionsCard)
             }
-            .renderedIf(viewModel.showSessionsCard)
         }
     }
 }
@@ -203,11 +169,17 @@ private extension AnalyticsHubView {
         static let editButton = NSLocalizedString("analyticsHub.editButton.label",
                                                   value: "Edit",
                                                   comment: "Label for button that opens a screen to customize the Analytics Hub")
+
+        static let emptyStateTitle = NSLocalizedString("analyticsHub.emptyState.title",
+                                                       value: "No analytics available",
+                                                       comment: "Title when there are no analytics to display in the Analytics Hub.")
+        static let emptyStateDescription = NSLocalizedString("analyticsHub.emptyState.description",
+                                                             value: "Please select another date range or tap Edit to enable more analytics.",
+                                                             comment: "Description when there are no analytics to display in the Analytics Hub.")
     }
 
     struct Layout {
         static let verticalSpacing: CGFloat = 24.0
-        static let dividerSpacing: CGFloat = .zero
     }
 }
 

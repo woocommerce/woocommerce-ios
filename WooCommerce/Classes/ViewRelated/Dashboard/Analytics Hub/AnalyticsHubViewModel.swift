@@ -27,10 +27,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
-    /// Whether the `customizeAnalyticsHub` feature flag is enabled
-    ///
-    let canCustomizeAnalytics: Bool
-
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
@@ -38,8 +34,7 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000,
-         canCustomizeAnalytics: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.customizeAnalyticsHub)) {
+         backendProcessingDelay: UInt64 = 500_000_000) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -56,7 +51,6 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
-        self.canCustomizeAnalytics = canCustomizeAnalytics
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
         let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
@@ -87,6 +81,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         bindCardSettingsWithData()
     }
 
+    // MARK: View Models
+
     /// Revenue Card ViewModel
     ///
     @Published var revenueCard: AnalyticsReportCardViewModel
@@ -111,10 +107,29 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
 
+    /// Time Range Selection Type
+    ///
+    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
+
+    /// Time Range ViewModel
+    ///
+    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
+
+    // MARK: Card Display States
+
+    /// All analytics cards to display in the Analytics Hub.
+    ///
+    var enabledCards: [AnalyticsCard.CardType] {
+        return allCardsWithSettings.filter { card in
+            let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
+            return card.enabled && canBeDisplayed
+        }.map { $0.type }
+    }
+
     /// Sessions Card display state
     ///
-    var showSessionsCard: Bool {
-        guard enabledCards.contains(.sessions), isEligibleForSessionsCard else {
+    private var showSessionsCard: Bool {
+        guard isEligibleForSessionsCard else {
             return false
         }
         if case .custom = timeRangeSelectionType {
@@ -142,25 +157,10 @@ final class AnalyticsHubViewModel: ObservableObject {
         isJetpackStatsDisabled && userIsAdmin
     }
 
-    /// Time Range Selection Type
-    ///
-    @Published var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
-
-    /// Time Range ViewModel
-    ///
-    @Published var timeRangeCard: AnalyticsTimeRangeCardViewModel
-
     /// Defines a notice that, when set, dismisses the view and is then displayed.
     /// Defaults to `nil`.
     ///
     @Published var dismissNotice: Notice?
-
-    /// All analytics cards to display in the Analytics Hub.
-    ///
-    var enabledCards: [AnalyticsCard.CardType] {
-        let allCards = canCustomizeAnalytics ? allCardsWithSettings : AnalyticsHubViewModel.defaultCards
-        return allCards.filter { $0.enabled }.map { $0.type }
-    }
 
     // MARK: Private data
 
@@ -190,12 +190,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     private var timeRangeSelection: AnalyticsHubTimeRangeSelection
 
     /// Request stats data from network
+    /// - Parameter cards: Optionally limit the request to only the stats needed for a given set of cards.
     ///
     @MainActor
-    func updateData() async {
+    func updateData(for cards: [AnalyticsCard.CardType]? = nil) async {
+        let cardsNeedingData = cards ?? enabledCards
         do {
             let tracker = WaitingTimeTracker(trackScenario: .analyticsHub, analyticsService: analytics)
-            try await retrieveData()
+            try await retrieveData(for: cardsNeedingData)
             tracker.end()
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
             dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
@@ -223,7 +225,7 @@ final class AnalyticsHubViewModel: ObservableObject {
             try await remoteEnableJetpackStats()
             // Wait for backend to enable the module (it is not ready for stats to be requested immediately after a success response)
             try await Task.sleep(nanoseconds: backendProcessingDelay)
-            await updateData()
+            await updateData(for: [.sessions])
         } catch {
             noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
             DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
@@ -235,20 +237,29 @@ final class AnalyticsHubViewModel: ObservableObject {
 private extension AnalyticsHubViewModel {
 
     @MainActor
-    func retrieveData() async throws {
-        switchToLoadingState()
+    func retrieveData(for cards: [AnalyticsCard.CardType]) async throws {
+        switchToLoadingState(cards)
 
         let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
 
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
+                guard cards.contains(where: [.revenue, .orders, .products, .sessions].contains) else {
+                    return
+                }
                 await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
             }
             group.addTask {
+                guard cards.contains(.products) else {
+                    return
+                }
                 await self.retrieveItemsSoldStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange)
             }
             group.addTask {
+                guard cards.contains(.sessions) else {
+                    return
+                }
                 await self.retrieveSiteStats(currentTimeRange: currentTimeRange)
             }
         }
@@ -323,10 +334,6 @@ private extension AnalyticsHubViewModel {
     /// Retrieves top ItemsSold stats using the `retrieveTopEarnerStats` action but without saving results into storage.
     ///
     func retrieveTopItemsSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> TopEarnerStats? {
-        guard enabledCards.contains(.products) else {
-            return nil
-        }
-
         return try await withCheckedThrowingContinuation { continuation in
             let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                               timeRange: .thisYear, // Only needed for storing purposes, we can ignore it.
@@ -347,7 +354,7 @@ private extension AnalyticsHubViewModel {
     /// Retrieves site summary stats using the `retrieveSiteSummaryStats` action.
     ///
     func retrieveSiteSummaryStats(latestDateToInclude: Date) async throws -> SiteSummaryStats? {
-        guard showSessionsCard, let period = timeRangeSelectionType.period else {
+        guard let period = timeRangeSelectionType.period else {
             return nil
         }
 
@@ -390,12 +397,20 @@ private extension AnalyticsHubViewModel {
 private extension AnalyticsHubViewModel {
 
     @MainActor
-    func switchToLoadingState() {
-        self.revenueCard = revenueCard.redacted
-        self.ordersCard = ordersCard.redacted
-        self.productsStatsCard = productsStatsCard.redacted
-        self.itemsSoldCard = itemsSoldCard.redacted
-        self.sessionsCard = sessionsCard.redacted
+    func switchToLoadingState(_ cards: [AnalyticsCard.CardType]) {
+        cards.forEach { card in
+            switch card {
+            case .revenue:
+                self.revenueCard = revenueCard.redacted
+            case .orders:
+                self.ordersCard = ordersCard.redacted
+            case .products:
+                self.productsStatsCard = productsStatsCard.redacted
+                self.itemsSoldCard = itemsSoldCard.redacted
+            case .sessions:
+                self.sessionsCard = sessionsCard.redacted
+            }
+        }
     }
 
     @MainActor
@@ -460,11 +475,11 @@ private extension AnalyticsHubViewModel {
             .removeDuplicates()
             .sink { [weak self] newCardSettings in
                 guard let self else { return }
-                // If there are newly enabled cards, refresh the stats data
-                let newEnabledCards = newCardSettings.filter({ $0.enabled }).map({ $0.type })
-                if !newEnabledCards.allSatisfy(self.enabledCards.contains) {
+                // If there are newly enabled cards, fetch their data
+                let newlyEnabledCards = newCardSettings.filter({ $0.enabled && !self.enabledCards.contains($0.type) }).map({ $0.type })
+                if newlyEnabledCards.isNotEmpty {
                     Task {
-                        await self.updateData()
+                        await self.updateData(for: newlyEnabledCards)
                     }
                 }
             }.store(in: &subscriptions)
@@ -643,18 +658,15 @@ extension AnalyticsHubViewModel {
     }
 
     /// Sets a view model for `customizeAnalyticsViewModel` when the feature is enabled.
-    /// This allows the view to open
+    /// Setting this view model opens the view.
     ///
     func customizeAnalytics() {
-        guard canCustomizeAnalytics else {
-            return
-        }
-
         // Exclude any cards the merchant/store is ineligible for.
         let cardsToExclude: [AnalyticsCard] = [
             isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })
         ].compactMap({ $0 })
 
+        analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())
         customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings,
                                                                      cardsToExclude: cardsToExclude) { [weak self] updatedCards in
             guard let self else { return }

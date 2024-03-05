@@ -92,6 +92,7 @@ private extension ProductCategoryListViewController {
         tableView.delegate = self
         tableView.removeLastCellSeparator()
         tableView.keyboardDismissMode = .onDrag
+        tableView.cellLayoutMarginsFollowReadableWidth = true
     }
 
     func configureSearchBar() {

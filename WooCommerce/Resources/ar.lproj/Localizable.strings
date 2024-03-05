@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-21 14:54:11+0000 */
+/* Translation-Revision-Date: 2024-02-27 22:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -1866,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "الاتصال بـ WordPress.com";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "الربط بخوادم ووردبريس.كوم";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "الاتصال بموقع ووردبريس.كوم";
 
@@ -1878,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "الربط بحسابك";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "ربط موقعك";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "الاتصال بمتجرك";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "اختبار إمكانية الربط";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "الاتصال بالعميل";
@@ -3188,6 +3197,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "جارٍ إحضار التباينات...";
 
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "إحضار طلبات موقعك";
+
 /* Country option for a site address. */
 "Fiji" = "فيجي";
 
@@ -3929,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "المدفوعات الدولية";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "الاتصال بالإنترنت";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "عنوان بريد إلكتروني غير صالح";
 
@@ -4019,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "يبدو أن التحليلات مُعطلة لديك.";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "يبدو أنك أنتَ غير متصل بالإنترنت.\n\nتأكد من تشغيل شبكة Wi-Fi الخاصة بك. إذا كنت تستخدم بيانات الهاتف المحمول، فتأكد من تمكينها ضمن إعدادات الجهاز لديك.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "يبدو أن دور المستخدم الخاص بك لا يسمح لك بتثبيت Jetpack.\nيرجى الاتصال بالمسؤول لديك للحصول على مساعدة. ";
@@ -5065,8 +5083,23 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "يمكن لمالك الموقع فقط إدارة طرق دفع ملصقات الشحن. يرجى الاتصال بـ %1$@ (%2$@) لإدارة طرق الدفع.";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "عفوًا! يبدو أنه يتعذر علينا الربط بووردبريس.كوم في الوقت الحالي.\n\nلكن لا داعي للقلق، فريق الدعم لدينا موجود هنا لمساعدتك. اتصل بنا وستسعدنا مساعدتك.";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "عفوًا! يبدو أنه يتعذر علينا التعامل بشكل صحيح مع استجابة موقعك. \n\nلكن لا داعي للقلق، فريق الدعم لدينا موجود هنا لمساعدتك. اتصل بنا وستسعدنا مساعدتك.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "عفوًا! يبدو أن هناك مشكلة في الربط بـ Jetpack الخاص بك.\n\nلكن لا داعي للقلق، فريق الدعم لدينا موجود هنا لمساعدتك. اتصل بنا وستسعدنا مساعدتك.";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "عفوًا! يبدو أن هناك مشكلة في موقعك.\n\nاتصل بمزوّد خدمة الاستضافة للحصول على مزيد من المساعدة.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "عذرًا! لقد واجهنا مشكلة";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "عذرًا! يبدو أن موقعك يستغرق وقتًا طويلاً للغاية لكي يستجيب.\n\nاتصل بمزوّد خدمة الاستضافة للحصول على مزيد من المساعدة.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "عذرًا، حدثت بعض الأخطاء غير المتوقعة.";
@@ -9587,6 +9620,27 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "تحديد نوع المنتج";
 
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "الطلبات";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "المنتجات";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "الإيرادات";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "الجلسات";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "حفظ";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "تخصيص التحليلات";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "تحرير";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "تمكين Jetpack Stats";
 
@@ -9849,8 +9903,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "الأجهزة";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "تم";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "تحرير الإعلان";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "مساعدة";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "مجالات الاهتمام";
@@ -9912,8 +9972,14 @@ which should be translated separately and considered part of this sentence. */
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "حملة Blaze";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "تم";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "خطأ في أثناء تحميل طرق الدفع الخاصة بك";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "مساعدة";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "معرفة المزيد";
@@ -10713,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "مسح الكود الشريطي ضوئيًا";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "فحص المنتج";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "القسيمة";

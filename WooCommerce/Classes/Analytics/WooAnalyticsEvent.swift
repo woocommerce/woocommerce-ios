@@ -401,9 +401,10 @@ extension WooAnalyticsEvent {
             static let hasChangedData = "has_changed_data"
         }
 
-        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
+        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
-                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules])
+                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules,
+                                                                           "horizontal_size_class": horizontalSizeClass.nameForAnalytics])
         }
 
         /// Tracks when the merchant previews a product draft.
@@ -2564,6 +2565,7 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case type
             case templateEligible = "template_eligible"
+            case horizontalSizeClass = "horizontal_size_class"
         }
 
         enum CreationType: String {
@@ -2577,8 +2579,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
         }
 
-        static func productListAddProductButtonTapped(templateEligible: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible])
+        static func productListAddProductButtonTapped(templateEligible: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible,
+                                                                                   Keys.horizontalSizeClass.rawValue: horizontalSizeClass.nameForAnalytics])
         }
     }
 }
@@ -2639,6 +2642,8 @@ extension WooAnalyticsEvent {
             case report
             case period
             case compare
+            case enabledCards = "enabled_cards"
+            case disabledCards = "disabled_cards"
         }
 
         /// Tracks when the "See more" button is tapped in My Store, to open the Analytics Hub.
@@ -2700,6 +2705,21 @@ extension WooAnalyticsEvent {
                 Keys.report.rawValue: report.rawValue,
                 Keys.period.rawValue: period.tracksIdentifier,
                 Keys.compare.rawValue: "previous_period" // For now this is the only compare option in the app
+            ])
+        }
+
+        /// Tracks when the Analytics Hub settings ("Customize Analytics") are opened.
+        ///
+        static func customizeAnalyticsOpened() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubSettingsOpened, properties: [:])
+        }
+
+        /// Tracks when the Analytics Hub settings ("Customize Analytics) are saved.
+        ///
+        static func customizeAnalyticsSaved(cards: [AnalyticsCard]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubSettingsSaved, properties: [
+                Keys.enabledCards.rawValue: cards.filter { $0.enabled }.map { $0.type.rawValue }.joined(separator: ","),
+                Keys.disabledCards.rawValue: cards.filter { !$0.enabled }.map { $0.type.rawValue }.joined(separator: ",")
             ])
         }
     }
@@ -2784,6 +2804,31 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .applicationPasswordAuthorizationWebViewShown,
                               properties: [Key.step.rawValue: step.rawValue])
         }
+
+        static func invalidLoginPageDetected() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsInvalidLoginPageDetected, properties: [:])
+        }
+
+        static func explanationDismissed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordExplanationDismissed, properties: [:])
+        }
+
+        static func explanationContactSupportTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordExplanationContactSupportTapped, properties: [:])
+        }
+
+        static func explanationContinueButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordExplanationContinueButtonTapped, properties: [:])
+        }
+
+        static func loginExitConfirmation() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginExitConfirmation, properties: [:])
+        }
+
+        static func loginDismissed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginSiteCredentialsAppPasswordLoginDismissed, properties: [:])
+        }
+
     }
 }
 

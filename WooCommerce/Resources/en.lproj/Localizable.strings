@@ -20,7 +20,8 @@
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld options)";
 
-/* Displays a date range for a stats interval */
+/* Displays a date range for a custom stats interval
+   Displays a date range for a stats interval */
 "%1$@ - %2$@" = "%1$@ - %2$@";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -914,6 +915,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "Edit";
 
+/* Description when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.description" = "Please select another date range or tap Edit to enable more analytics.";
+
+/* Title when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.title" = "No analytics available";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Enable Jetpack Stats";
 
@@ -1241,6 +1248,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "Copy number";
+
+/* Button to send a message to a customer via Telegram */
+"billingInfoViewController.telegram" = "Send Telegram message";
+
+/* Button to send a message to a customer via WhatsApp */
+"billingInfoViewController.whatsapp" = "Send WhatsApp message";
 
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
@@ -2511,6 +2524,18 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variable product in the Add Product screen */
 "configurationForBlaze.variableProductRowAccessibilityHint" = "Opens list of product variations.";
 
+/* Accessibility hint for selecting a product from the order filter screen */
+"configurationForOrder.productRowAccessibilityHint" = "Selects product for filtering order.";
+
+/* Text for the cancel button in the Product selector screen */
+"configurationForOrder.productSelectorCancel" = "Cancel";
+
+/* Title for the screen to select product for filtering orders */
+"configurationForOrder.productSelectorTitle" = "Product";
+
+/* Accessibility hint for selecting a variable product to select product for filtering orders */
+"configurationForOrder.variableProductRowAccessibilityHint" = "Opens list of product variations.";
+
 /* My Store > Settings > Configure section title
    Text in the product row card to configure a bundle product */
 "Configure" = "Configure";
@@ -2700,6 +2725,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
@@ -2728,6 +2754,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the Store Picker screen to select a store
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
+   Continue button in the application password tutorial screen
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
@@ -3018,8 +3045,7 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range
-   Top Performers section title - Custom */
+   Title of the Analytics Hub Custom selection range */
 "Custom" = "Custom";
 
 /* Navigation title on the add custom amount view in orders.
@@ -4024,6 +4050,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "Exclusions";
 
+/* Button to exit the application password flow. */
+"Exit Anyway" = "Exit Anyway";
+
 /* Button to cancel installation on the Jetpack setup interrupted screen */
 "Exit Without Connecting" = "Exit Without Connecting";
 
@@ -4164,6 +4193,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header bar label on top of order list when filters are applied */
 "Filtered Orders" = "Filtered Orders";
+
+/* Row title for filtering orders by Product. */
+"filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Product";
 
 /* Filters button text on header bar on top of order list
    Navigation bar title format for filtering a list of products without filters applied. */
@@ -4685,6 +4717,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
 
+/* Text to contact support in the application password tutorial screen */
+"If you encounter any problem, contact us and we will happily assist you!" = "If you encounter any problem, contact us and we will happily assist you!";
+
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "Important information";
 
@@ -4962,6 +4997,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "It seems like you've entered an incorrect password. Want to give it another try?";
+
+/* Title for the unfinished application password alert */
+"It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "It seems that you have not approved the app connection yet. Are you sure you want to exit?";
 
 /* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
 "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app.";
@@ -6403,6 +6441,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the barcode scanning button to add a product to an order */
 "orderForm.products.add.scan.row.title" = "Scan Product";
 
+/* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
+"orderForm.recalculate.button.title" = "Recalculate";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Coupon";
 
@@ -7240,6 +7281,9 @@ which should be translated separately and considered part of this sentence. */
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Products Refund";
 
+/* Button to submit selected products to the order, when some product has been selected. */
+"productselectorview.doneButtonTitle.addProductsText" = "Add Products";
+
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld products selected";
 
@@ -7369,6 +7413,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Quickly get up and selling with a beautiful online store.";
+
+/* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.action" = "Got It";
+
+/* Message of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.message" = "The start date should be earlier than the end date. Please select a different time range.";
+
+/* Title of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.title" = "Invalid time range";
 
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Rate us";
@@ -9585,6 +9638,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "This field is required";
 
+/* Generic reason for why the user could not login tin the application password tutorial screen */
+"This is because we got an unexpected response from your site." = "This is because we got an unexpected response from your site.";
+
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This is likely because your store has some extra security steps in place." = "This is likely because your store has some extra security steps in place.";
+
 /* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
 
@@ -9600,8 +9659,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "This item is currently in Package %1$d: %2$@. Where would you like to move it?";
 
-/* Tab selector title that shows the statistics for this month
-   Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month */
 "This Month" = "This Month";
 
 /* Accessibility label for the Shipping notice
@@ -9638,8 +9696,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "This user account cannot be closed while it has active subscriptions.";
 
-/* Tab selector title that shows the statistics for this week
-   Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week */
 "This Week" = "This Week";
 
 /* Explanatory text for the tax rate selector */
@@ -9651,8 +9708,7 @@ which should be translated separately and considered part of this sentence. */
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "This will not affect online orders";
 
-/* Tab selector title that shows the statistics for this year
-   Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year */
 "This Year" = "This Year";
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
@@ -9732,8 +9788,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
    Title of the Analytics Hub Today's selection range
-   Today Section Header
-   Top Performers section title - today */
+   Today Section Header */
 "Today" = "Today";
 
 /* Accessibility hint for selecting a product in the Select Products screen */
@@ -10643,6 +10698,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "We couldn't load your site";
 
+/* Title for the application password tutorial screen */
+"We couldn't log in into your site! 😭" = "We couldn't log in into your site! 😭";
+
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "We couldn't process your app login request";
 
@@ -11260,6 +11318,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Log in with Google.";
+
+/* Tutorial steps on the application password tutorial screen */
+"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Keep your business going!";

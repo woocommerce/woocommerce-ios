@@ -86,14 +86,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .backendReceipts:
             return true
         case .splitViewInProductsTab:
-            return false
+            return true
         case .customRangeInMyStoreAnalytics:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .customizeAnalyticsHub:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .useURLSessionInWordPressKit:
             return buildConfig != .appStore
         case .connectivityTool:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .appPasswordTutorial:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

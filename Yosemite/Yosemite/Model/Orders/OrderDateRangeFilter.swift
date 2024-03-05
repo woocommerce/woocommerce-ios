@@ -41,8 +41,3 @@ public enum OrderDateRangeFilterEnum: Codable, Hashable, CaseIterable {
         case custom
     }
 }
-
-public struct ProductFilter: Codable, Hashable {
-    public let id: Int64
-    public let name: String
-}

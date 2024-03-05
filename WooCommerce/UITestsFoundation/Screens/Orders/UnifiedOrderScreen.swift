@@ -172,6 +172,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Opens the Customer Note screen.
     /// - Returns: Customer Note screen object.
     public func openCustomerNoteScreen() throws -> CustomerNoteScreen {
+        app.scrollViews["order-form-scroll-view"].swipeUp()
         addNoteButton.scrollIntoView()
         addNoteButton.tap()
         return try CustomerNoteScreen()

@@ -331,6 +331,7 @@ struct OrderForm: View {
                     }
                     .disabled(viewModel.disabled)
                 }
+                .accessibilityIdentifier(Accessibility.orderFormScrollViewIdentifier)
                 .background(Color(.listBackground).ignoresSafeArea())
                 .ignoresSafeArea(.container, edges: [.horizontal])
             }
@@ -868,6 +869,7 @@ private extension OrderForm {
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
+        static let orderFormScrollViewIdentifier = "order-form-scroll-view"
     }
 }
 

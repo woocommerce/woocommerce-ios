@@ -120,10 +120,10 @@ extension StatsTimeRangeV4 {
                 return .daily
             case .from29To90:
                 return .weekly
-            case .from91to365:
+            case .from91daysTo3Years:
                 return .monthly
-            case .greaterThan365:
-                return .quarterly
+            case .greaterThan3Years:
+                return .yearly
             }
         }
     }
@@ -146,10 +146,10 @@ extension StatsTimeRangeV4 {
                 return .day
             case .from29To90:
                 return .week
-            case .from91to365:
+            case .from91daysTo3Years:
                 return .month
-            case .greaterThan365:
-                return .quarter
+            case .greaterThan3Years:
+                return .year
             }
         }
     }
@@ -176,10 +176,10 @@ extension StatsTimeRangeV4 {
                 return .day
             case .from29To90:
                 return .week
-            case .from91to365:
+            case .from91daysTo3Years:
                 return .month
-            case .greaterThan365:
-                return .quarter
+            case .greaterThan3Years:
+                return .year
             }
         }
     }
@@ -206,10 +206,10 @@ extension StatsTimeRangeV4 {
                 return .day
             case .from29To90:
                 return .week
-            case .from91to365:
+            case .from91daysTo3Years:
                 return .month
-            case .greaterThan365:
-                return .quarter
+            case .greaterThan3Years:
+                return .year
             }
         }
     }
@@ -240,8 +240,8 @@ extension StatsTimeRangeV4 {
 
 private extension StatsTimeRangeV4 {
     enum DifferenceInDays {
-        case greaterThan365
-        case from91to365
+        case greaterThan3Years
+        case from91daysTo3Years
         case from29To90
         case from2To28
         case lessThan2
@@ -261,10 +261,10 @@ private extension StatsTimeRangeV4 {
         }
 
         switch day {
-        case 366...Int.max:
-            return .greaterThan365
-        case 91...365:
-            return .from91to365
+        case 365*3+1...Int.max:
+            return .greaterThan3Years
+        case 91...365*3:
+            return .from91daysTo3Years
         case 29...90:
             return .from29To90
         case 2...28:

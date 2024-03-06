@@ -82,6 +82,19 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
+    // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
+    // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
+    // while Jetpack CP sites has its own redacted for Jetpack state, and non-Jetpack sites simply has them empty.
+    private var isRedactedForCustomRangeShown: Bool {
+        guard timeRange.isCustomTimeRange,
+              let site = stores.sessionManager.defaultSite,
+              site.isJetpackConnected,
+              site.isJetpackThePluginInstalled else {
+            return false
+        }
+        return true
+    }
+
     /// Placeholder: Mockup Charts View
     ///
     private lazy var placeholderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
@@ -360,19 +373,25 @@ private extension StoreStatsV4PeriodViewController {
         updateStatsDataToDefaultStyles()
 
         // Taps
-        if timeRange.isCustomTimeRange {
+        if isRedactedForCustomRangeShown {
             fancyAlert.modalPresentationStyle = .custom
             fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
 
             let visitorsTapRecognizer = UITapGestureRecognizer()
             visitorsTapRecognizer.on { [weak self] _ in
-                guard let self else { return }
+                guard let self,
+                      siteVisitStatsMode == .redactedDueToCustomRange
+                else { return }
+
                 present(fancyAlert, animated: true)
             }
 
             let conversionTapRecognizer = UITapGestureRecognizer()
             conversionTapRecognizer.on { [weak self] _ in
-                guard let self else { return }
+                guard let self,
+                      siteVisitStatsMode == .redactedDueToCustomRange
+                else { return }
+
                 present(fancyAlert, animated: true)
             }
 
@@ -520,18 +539,10 @@ private extension StoreStatsV4PeriodViewController {
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
 
-        if timeRange.isCustomTimeRange {
-            // For WordPress.com sites or fully Jetpack-connected sites, toggle the visibility of visit data based on whether
-            // a custom range bar value is selected.
-            // If selected, display the visit data, as it's accurate for individual values.
-            // If deselected, hide the data, as it's inaccurate for the entire range.
-            // This doesn't apply to Jetpack CP sites or non-Jetpack self-hosted sites, as they don't have visitor data.
-
-            guard let site = stores.sessionManager.defaultSite else { return }
-
-            if site.isJetpackConnected && site.isJetpackThePluginInstalled {
-                siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
-            }
+        if isRedactedForCustomRangeShown {
+            // If selected, we should display the data, since it's accurate for individual values.
+            // If deselected, we should hide the data, as it's inaccurate for the entire range.
+            siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
         }
 
         viewModel.selectedIntervalIndex = selectedIndex

@@ -69,8 +69,8 @@ private extension ProductImagesCollectionViewDataSource {
 
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
-        cell.cancellableTask = Task { @MainActor [weak cell] in
-            guard let image = try? await productUIImageLoader.requestImage(productImage: productImage) else {
+        cell.cancellableTask = Task { @MainActor [weak self, weak cell] in
+            guard let image = try? await self?.productUIImageLoader.requestImage(productImage: productImage) else {
                 return
             }
 

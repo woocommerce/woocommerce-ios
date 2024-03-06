@@ -176,7 +176,7 @@ public final class UnifiedOrderScreen: ScreenObject {
         /// is returning true, even when the note button is hidden (just) below the expandable totals drawer.
         /// Unfortunately, the button can't be tapped in this instance.
         app.scrollViews["order-form-scroll-view"].swipeUp()
-        
+
         addNoteButton.scrollIntoView()
         addNoteButton.tap()
         return try CustomerNoteScreen()

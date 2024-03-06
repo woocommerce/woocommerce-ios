@@ -496,7 +496,7 @@ public extension StatsStoreV4 {
             return DateFormatter.Stats.statsDayFormatter.string(from: date)
         case .week:
             return DateFormatter.Stats.statsWeekFormatter.string(from: date)
-        case .month, .quarter:
+        case .month:
             return DateFormatter.Stats.statsMonthFormatter.string(from: date)
         case .year:
             return DateFormatter.Stats.statsYearFormatter.string(from: date)

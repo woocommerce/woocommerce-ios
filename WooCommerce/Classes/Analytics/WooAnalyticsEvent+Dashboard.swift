@@ -59,7 +59,6 @@ private extension StatsTimeRangeV4 {
         case .thisYear:
             return "years"
         case .custom:
-            // TODO: 11935 Update analytics value
             return "custom"
         }
     }

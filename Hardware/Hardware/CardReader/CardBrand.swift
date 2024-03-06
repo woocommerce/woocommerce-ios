@@ -66,7 +66,9 @@ extension CardBrand {
             return "diners"
         case .interac:
             return "interac"
-        case .unknown, .unionPay, .eftposAu:
+        case .unionPay:
+            return "unionpay"
+        case .unknown, .eftposAu:
             return "unknown"
         }
     }

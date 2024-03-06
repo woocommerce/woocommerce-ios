@@ -304,7 +304,7 @@ private extension EmptyStateViewController {
         switch config {
         case .simple:
             actionButton.isHidden = true
-        case .simpleTextWithDescription:
+        case .simpleImageWithDescription:
             actionButton.isHidden = true
         case .withLink(_, _, _, let title, _, _), .withButton(_, _, _, let title, _, _):
             actionButton.isHidden = false
@@ -325,7 +325,7 @@ private extension EmptyStateViewController {
             switch config {
             case .simple(_, _, let pullToRefreshClosure):
                 return pullToRefreshClosure
-            case .simpleTextWithDescription(_, _, let pullToRefreshClosure):
+            case .simpleImageWithDescription(_, _, let pullToRefreshClosure):
                 return pullToRefreshClosure
             case .withLink(_, _, _, _, _, let pullToRefreshClosure):
                 return pullToRefreshClosure
@@ -396,9 +396,9 @@ extension EmptyStateViewController {
         ///
         case simple(message: NSAttributedString, image: UIImage, onPullToRefresh: PullToRequestActionHandler? = nil)
 
-        /// Show image, and description only.
+        /// Show an image and description only.
         ///
-        case simpleTextWithDescription(image: UIImage,
+        case simpleImageWithDescription(image: UIImage,
                                        details: String,
                                        onPullToRefresh: PullToRequestActionHandler? = nil)
 
@@ -449,7 +449,7 @@ extension EmptyStateViewController {
 
         fileprivate var message: NSAttributedString {
             switch self {
-            case .simpleTextWithDescription:
+            case .simpleImageWithDescription:
                 return NSAttributedString(string: "")
             case .simple(let message, _, _),
                     .withLink(let message, _, _, _, _, _),
@@ -462,7 +462,7 @@ extension EmptyStateViewController {
         fileprivate var image: UIImage {
             switch self {
             case .simple(_, let image, _),
-                    .simpleTextWithDescription(let image, _, _),
+                    .simpleImageWithDescription(let image, _, _),
                     .withLink(_, let image, _, _, _, _),
                     .withButton(_, let image, _, _, _, _),
                     .withSupportRequest(_, let image, _, _, _):
@@ -474,7 +474,7 @@ extension EmptyStateViewController {
             switch self {
             case .simple:
                 return nil
-            case .simpleTextWithDescription( _, let detail, _),
+            case .simpleImageWithDescription( _, let detail, _),
                     .withLink(_, _, let detail, _, _, _),
                     .withButton(_, _, let detail, _, _, _),
                     .withSupportRequest(_, _, let detail, _, _):

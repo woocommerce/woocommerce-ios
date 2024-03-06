@@ -505,7 +505,10 @@ private extension OrdersRootViewController {
                                      target: self,
                                      action: #selector(presentOrderCreationFlowByProductScanning))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Scan product barcode", comment: "Opens barcode scanning screen")
+        button.accessibilityLabel = NSLocalizedString(
+            "orderForm.products.add.scan.button.accessibilityLabel",
+            value: "Scan barcode",
+            comment: "Accessibility label for the barcode scanning button to add product")
         button.accessibilityIdentifier = "create-new-order-by-product-scanning"
         return button
     }

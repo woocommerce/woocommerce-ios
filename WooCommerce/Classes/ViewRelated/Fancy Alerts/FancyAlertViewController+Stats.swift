@@ -34,14 +34,14 @@ private extension FancyAlertViewController {
 
         static let redactionInfoTitle = NSLocalizedString(
             "fancyAlertViewControllerStats.redactionInfoTitle",
-            value: "Visitors and Conversion data not available",
+            value: "Visitors and conversion data not available",
             comment: "Title for redaction information alert in Custom Range stats tab"
         )
 
         static let redactionInfoDescription = NSLocalizedString(
             "fancyAlertViewControllerStats.redactionInfoDescription",
             value: "The stats feature does not support the display of visitors and conversions data for arbitrary date ranges. "
-            + "However, you can tap a value on the graph to see visitors and conversions for that specific range.",
+            + "\n\nHowever, you can tap a value on the graph to see visitors and conversions for that specific range.",
             comment: "Description for redaction information alert in Custom Range stats tab"
         )
     }

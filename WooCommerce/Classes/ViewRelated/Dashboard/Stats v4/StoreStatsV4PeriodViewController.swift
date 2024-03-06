@@ -1,7 +1,7 @@
 import Charts
 import Combine
 import UIKit
-import struct WordPressUI.GhostStyle
+import WordPressUI
 import Yosemite
 import WooFoundation
 
@@ -62,6 +62,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var noRevenueView: UIView!
     @IBOutlet private weak var noRevenueLabel: UILabel!
     @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
+    @IBOutlet private weak var visitorsStackView: UIStackView!
+    @IBOutlet private weak var conversionStackView: UIStackView!
 
     private var currencyCode: String {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
@@ -353,6 +355,25 @@ private extension StoreStatsV4PeriodViewController {
 
         // Data
         updateStatsDataToDefaultStyles()
+
+        // Taps
+        if timeRange.isCustomTimeRange {
+            let visitorsTapRecognizer = UITapGestureRecognizer()
+            visitorsTapRecognizer.on { [weak self] _ in
+                self?.showCustomRangeRedactionInformation()
+            }
+
+            let conversionTapRecognizer = UITapGestureRecognizer()
+            conversionTapRecognizer.on { [weak self] _ in
+                self?.showCustomRangeRedactionInformation()
+            }
+
+            visitorsStackView.addGestureRecognizer(visitorsTapRecognizer)
+            visitorsStackView.isUserInteractionEnabled = true
+
+            conversionStackView.addGestureRecognizer(conversionTapRecognizer)
+            conversionStackView.isUserInteractionEnabled = true
+        }
 
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
@@ -719,6 +740,13 @@ private extension StoreStatsV4PeriodViewController {
         revenueData.textColor = Constants.statsTextColor
         revenueData.adjustsFontSizeToFitWidth = true
         revenueData.accessibilityIdentifier = "revenue-value"
+    }
+
+    @objc func showCustomRangeRedactionInformation() {
+        let fancyAlert = FancyAlertViewController.makeCustomRangeRedactionInformationAlert()
+        fancyAlert.modalPresentationStyle = .custom
+        fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+        present(fancyAlert, animated: true)
     }
 }
 

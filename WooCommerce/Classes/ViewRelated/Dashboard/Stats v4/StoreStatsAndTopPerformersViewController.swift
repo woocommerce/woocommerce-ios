@@ -57,6 +57,7 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     private let pushNotificationsManager: PushNotesManager
     private var localOrdersSubscription: AnyCancellable?
     private var remoteOrdersSubscription: AnyCancellable?
+    private var selectedTabSubscription: AnyCancellable?
 
     private lazy var customRangeButtonView = createCustomRangeButtonView()
 
@@ -253,6 +254,7 @@ private extension StoreStatsAndTopPerformersViewController {
             group.enter()
             periodGroup.enter()
             periodStoreStatsGroup.enter()
+
             self.dashboardViewModel.syncSiteVisitStats(for: siteID,
                                                        siteTimezone: timezoneForSync,
                                                        timeRange: vc.timeRange,
@@ -416,6 +418,19 @@ private extension StoreStatsAndTopPerformersViewController {
         if featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) {
             addCustomViewToTabBar(customRangeButtonView)
         }
+
+        selectedTabSubscription = tabBar.$selectedIndex
+            .print("🍎 tab switched")
+            .dropFirst() // ignore first event to take into account only manual selection
+            .sink { [weak self] index in
+                guard let self, let range = timeRanges[safe: index] else {
+                    return
+                }
+
+                if range.isCustomTimeRange {
+                    ServiceLocator.analytics.track(event: .DashboardCustomRange.tabSelected())
+                }
+            }
     }
 
     @MainActor
@@ -461,6 +476,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         button.on(.touchUpInside) { [weak self] _ in
             self?.startCustomRangeTabCreation()
+            ServiceLocator.analytics.track(event: .DashboardCustomRange.addButtonTapped())
         }
 
         let separator = UIView()
@@ -482,6 +498,8 @@ private extension StoreStatsAndTopPerformersViewController {
                 let range = StatsTimeRangeV4.custom(from: start, to: end)
                 self?.saveTimeRangeForCustomRangeTab(timeRange: range)
                 self?.createCustomRangeTab(range: range)
+                let isEditing = startDate != nil && endDate != nil
+                ServiceLocator.analytics.track(event: .DashboardCustomRange.customRangeConfirmed(isEditing: isEditing))
             }
         )
         customRangeCoordinator?.start()
@@ -499,8 +517,25 @@ private extension StoreStatsAndTopPerformersViewController {
             guard case let .custom(startDate, endDate) = timeRange else {
                 return
             }
+            ServiceLocator.analytics.track(event: .DashboardCustomRange.editButtonTapped())
             self?.startCustomRangeTabCreation(startDate: startDate, endDate: endDate)
         })
+
+        // Set redaction state for the site visit stats.
+        // - .hidden for self-hosted sites without Jetpack
+        // - .redactedDueToJetpack for Jetpack CP Sites
+        // - .redactedDueToCustomRange for WordPress.com sites or Jetpack connected sites
+        guard let site = stores.sessionManager.defaultSite else { return }
+
+        if site.isNonJetpackSite {
+            customRangeVC.siteVisitStatsMode = .hidden
+        } else {
+            if site.isJetpackCPConnected {
+                customRangeVC.siteVisitStatsMode = .redactedDueToJetpack
+            } else {
+                customRangeVC.siteVisitStatsMode = .redactedDueToCustomRange
+            }
+        }
 
         let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,
@@ -531,9 +566,11 @@ private extension StoreStatsAndTopPerformersViewController {
 
 private extension StoreStatsAndTopPerformersViewController {
     func updateSiteVisitors(mode: SiteVisitStatsMode) {
-        periodVCs.forEach { vc in
-            vc.siteVisitStatsMode = mode
-        }
+        periodVCs
+            .filter { !$0.timeRange.isCustomTimeRange } // The Custom Range tab should always redact the visitor count.
+            .forEach { vc in
+                vc.siteVisitStatsMode = mode
+            }
     }
 
     func handleSiteStatsStoreError(error: SiteStatsStoreError) {

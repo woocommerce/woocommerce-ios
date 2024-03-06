@@ -125,13 +125,32 @@ final class OrdersRootViewController: UIViewController {
     @objc private func displaySearchOrders() {
         analytics.track(.ordersListSearchTapped)
 
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: siteID,
-                                                                                                  command: OrderSearchUICommand(siteID: siteID),
-                                                                                                  cellType: OrderTableViewCell.self,
-                                                                                                  cellSeparator: .singleLine)
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(
+            storeID: siteID,
+            command: OrderSearchUICommand(siteID: siteID,
+                                          onSelectSearchResult: { [weak self] order, viewController in
+                                              guard let self else { return }
+                                              guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+                                                  return presentOrder(order, from: viewController)
+                                              }
+                                              navigateToOrderDetail(order)
+                                              viewController.dismiss(animated: true)
+                                          }),
+            cellType: OrderTableViewCell.self,
+            cellSeparator: .singleLine)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
+    }
+
+    private func presentOrder(_ order: Order, from viewController: UIViewController) {
+        let viewModel = OrderDetailsViewModel(order: order)
+        let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
+
+        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+            order: order,
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 
     /// Presents the Details for the Notification with the specified Identifier.
@@ -498,8 +517,9 @@ private extension OrdersRootViewController {
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
         ))
 
-        ordersViewController.showOrderDetails(order)
-        onCompletion?(true)
+        ordersViewController.showOrderDetails(order, shouldScrollIfNeeded: true) { _ in
+            onCompletion?(true)
+        }
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {

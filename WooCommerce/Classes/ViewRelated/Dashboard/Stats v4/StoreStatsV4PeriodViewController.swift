@@ -11,6 +11,7 @@ enum SiteVisitStatsMode {
     case `default`
     case redactedDueToJetpack
     case hidden
+    case redactedDueToCustomRange
 }
 
 /// Shows the store stats with v4 API for a time range.
@@ -40,6 +41,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     private let viewModel: StoreStatsPeriodViewModel
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
+    private let stores: StoresManager
 
     // MARK: - Subviews
 
@@ -133,6 +136,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+         stores: StoresManager = ServiceLocator.stores,
          onEditCustomTimeRange: (() -> Void)?) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
@@ -143,6 +147,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                    currencyFormatter: currencyFormatter,
                                                    currencySettings: currencySettings)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.stores = stores
         self.editCustomTimeRangeHandler = onEditCustomTimeRange
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -475,7 +480,11 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
         chartValueSelectedEventsSubject
             .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.usageTracksEventEmitter.interacted()
+                guard let self else { return }
+                if self.timeRange.isCustomTimeRange {
+                    ServiceLocator.analytics.track(event: .DashboardCustomRange.interacted())
+                }
+                self.usageTracksEventEmitter.interacted()
             }.store(in: &cancellables)
     }
 }
@@ -485,6 +494,21 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
+
+        if timeRange.isCustomTimeRange {
+            // For WordPress.com sites or fully Jetpack-connected sites, toggle the visibility of visit data based on whether
+            // a custom range bar value is selected.
+            // If selected, display the visit data, as it's accurate for individual values.
+            // If deselected, hide the data, as it's inaccurate for the entire range.
+            // This doesn't apply to Jetpack CP sites or non-Jetpack self-hosted sites, as they don't have visitor data.
+
+            guard let site = stores.sessionManager.defaultSite else { return }
+
+            if site.isJetpackConnected && site.isJetpackThePluginInstalled {
+                siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
+            }
+        }
+
         viewModel.selectedIntervalIndex = selectedIndex
     }
 }

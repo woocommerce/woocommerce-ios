@@ -281,7 +281,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -302,7 +302,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
 
         // Then
         XCTAssertTrue(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
@@ -322,7 +322,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
 
         // Then
         switch viewModel.doneButtonType {
@@ -345,7 +345,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         viewModel.selectionSyncApproach = .onSelectorButtonTap
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
 
         XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
                       "Product rows unexpectedly contain product")
@@ -371,8 +371,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
-        productSelectorViewModel.changeSelectionStateForProduct(with: anotherProduct.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
+        productSelectorViewModel.changeSelectionStateForProduct(with: anotherProduct.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
         viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
@@ -451,7 +451,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         viewModel.toggleProductSelectorVisibility()
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // When
@@ -472,8 +472,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // Given products are added to order
-        productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
-        productSelectorViewModel.changeSelectionStateForProduct(with: product1.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID, selected: true)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product1.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // When
@@ -496,8 +496,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // Given products are added to order
-        productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
-        productSelectorViewModel.changeSelectionStateForProduct(with: product1.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID, selected: true)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product1.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // When
@@ -865,7 +865,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowProductsTotal)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -886,7 +886,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When & Then
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.orderTotal, "£8.50")
@@ -915,7 +915,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
@@ -953,7 +953,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
         let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
         addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
@@ -978,7 +978,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         let couponCode = "COUPONCODE"
         viewModel.saveCouponLine(result: .added(newCode: couponCode))
 
@@ -1008,7 +1008,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
                                             methodID: "other",
@@ -1122,7 +1122,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -1189,7 +1189,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -1219,7 +1219,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
         viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
 
@@ -1246,7 +1246,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // Given products are added to order
-        productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // When
@@ -1621,7 +1621,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -1658,7 +1658,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -1750,7 +1750,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -2981,7 +2981,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productSelector.totalSelectedItemsCount, 1)
 
         // When selecting the non-bundle product
-        productSelector.changeSelectionStateForProduct(with: nonBundleProduct.productID)
+        productSelector.changeSelectionStateForProduct(with: nonBundleProduct.productID, selected: true)
 
         XCTAssertEqual(productSelector.totalSelectedItemsCount, 2)
 

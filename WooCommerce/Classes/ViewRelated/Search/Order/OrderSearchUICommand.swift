@@ -26,8 +26,12 @@ final class OrderSearchUICommand: SearchUICommand {
 
     private let siteID: Int64
 
-    init(siteID: Int64) {
+    private let onSelectSearchResult: ((Order, UIViewController) -> Void)
+
+    init(siteID: Int64,
+         onSelectSearchResult: @escaping ((Order, UIViewController) -> Void)) {
         self.siteID = siteID
+        self.onSelectSearchResult = onSelectSearchResult
         configureResultsController()
     }
 
@@ -76,13 +80,7 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Order, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        let viewModel = OrderDetailsViewModel(order: model)
-        let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
-
-        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
-            order: model,
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        onSelectSearchResult(model, viewController)
     }
 
     /// Removes the `#` from the start of the search keyword, if present.

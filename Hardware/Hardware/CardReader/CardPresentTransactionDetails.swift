@@ -32,9 +32,9 @@ public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeab
     public let wallet: Wallet?
 
     /// Identifies which network this charge was processed on.
-    /// Contains SCPCardBrand represented as a nullable NSNumber.
+    /// Contains SCPCardBrand represented as a nullable NSNumber. - https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPCardBrand.html
     /// Only available after confirming the PaymentIntent.
-    public let networkDouble: Double?
+    public let cardBrandAssociatedIdentifier: Double?
 
     public init(last4: String,
                 expMonth: Int,
@@ -55,14 +55,14 @@ public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeab
         self.receipt = receipt
         self.emvAuthData = emvAuthData
         self.wallet = wallet
-        self.networkDouble = network?.doubleValue
+        self.cardBrandAssociatedIdentifier = network?.doubleValue
     }
 
     public var network: NSNumber? {
-        guard let networkDouble else {
+        guard let cardBrandAssociatedIdentifier else {
             return nil
         }
-        return NSNumber(value: networkDouble)
+        return NSNumber(value: cardBrandAssociatedIdentifier)
     }
 }
 
@@ -77,6 +77,6 @@ extension CardPresentTransactionDetails {
         case receipt = "receipt"
         case emvAuthData = "emv_auth_data"
         case wallet = "wallet"
-        case networkDouble = "networkDouble"
+        case cardBrandAssociatedIdentifier = "cardBrandAssociatedIdentifier"
     }
 }

@@ -27,7 +27,7 @@ extension MockStripeCardPresentDetails {
                                      receipt: nil,
                                      emvAuthData: "authdata",
                                      wallet: nil,
-                                     network: nil)
+                                     network: NSNumber(integerLiteral: 1))
     }
 }
 

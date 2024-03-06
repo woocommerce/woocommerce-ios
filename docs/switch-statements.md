@@ -4,7 +4,7 @@
 
 When using switch statements to handle enum cases avoid handling `default` case. If we do not provide a default case and in future we add new cases, app will not build and we will immediately see where we have some API changes.
 
-Enumerating every case requires developers and reviewers have to consider the correctness of every switch statement when new cases are added in the future.
+Enumerating every case requires developers and reviewers to consider the correctness of every switch statement when new cases are added in the future.
 
 **Preferred:**
 

@@ -470,7 +470,6 @@ extension MockObjectGraph {
                 granularity: .day,
                 items: items
             )
-            case .quarter: preconditionFailure("Not implemented")
             case .year: preconditionFailure("Not implemented")
         }
     }

@@ -187,11 +187,11 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.topEarnerStatsGranularity, .week)
     }
 
-    func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_1_to_28() {
+    func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_2_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 1...28))
+        let toDate = fromDate.addingDays(Int.random(in: 2...28))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)

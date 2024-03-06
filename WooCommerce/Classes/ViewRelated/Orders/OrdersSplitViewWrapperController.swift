@@ -59,10 +59,8 @@ final class OrdersSplitViewWrapperController: UIViewController {
 private extension OrdersSplitViewWrapperController {
     func showEmptyView() {
         let emptyStateViewController = EmptyStateViewController(style: .basic)
-        let config = EmptyStateViewController.Config.simple(
-            message: .init(string: Localization.emptyOrderDetails),
-            image: .emptySearchResultsImage
-        )
+        let config = EmptyStateViewController.Config.simpleTextWithDescription(image: .shoppingBagsImage,
+                                                                               details: Localization.emptyOrderDetails)
         emptyStateViewController.configure(config)
         let navigationController = WooNavigationController(rootViewController: emptyStateViewController)
         showSecondaryView(navigationController)

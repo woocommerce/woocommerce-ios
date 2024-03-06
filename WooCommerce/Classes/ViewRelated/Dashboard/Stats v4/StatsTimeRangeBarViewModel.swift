@@ -57,7 +57,7 @@ private extension StatsTimeRangeV4 {
             dateFormatter = DateFormatter.Charts.chartSelectedDateHourFormatter
         case .daily, .weekly:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
-        case .monthly, .quarterly:
+        case .monthly:
             dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
         case .yearly:
             dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
@@ -125,12 +125,6 @@ extension StatsGranularityV4 {
                 "statsGranularityV4.monthly",
                 value: "By month",
                 comment: "Display text for the monthly granularity of store stats on the My Store screen"
-            )
-        case .quarterly:
-            NSLocalizedString(
-                "statsGranularityV4.quarterly",
-                value: "By quarter",
-                comment: "Display text for the quarterly granularity of store stats on the My Store screen"
             )
         case .yearly:
             NSLocalizedString(

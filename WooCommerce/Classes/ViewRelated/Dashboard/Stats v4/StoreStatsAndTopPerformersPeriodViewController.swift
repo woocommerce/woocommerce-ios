@@ -46,7 +46,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
             return 60
         case .daily, .weekly:
             return 60*60
-        case .monthly, .quarterly:
+        case .monthly:
             return 60*60*12
         case .yearly:
             return 60*60*24

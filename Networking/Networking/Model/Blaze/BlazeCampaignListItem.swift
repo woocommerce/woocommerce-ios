@@ -102,14 +102,12 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
 //
 public extension BlazeCampaignListItem {
     enum Status: String {
+        case pending
         case scheduled
-        case created
-        case rejected
-        case approved
         case active
+        case rejected
         case canceled
         case finished
-        case processing
         case unknown
     }
 

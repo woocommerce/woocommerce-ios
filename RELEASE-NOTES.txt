@@ -2,6 +2,7 @@
 
 17.7
 -----
+- [internal] Blaze: Update campaign status values to match v1.1 endpoint. [https://github.com/woocommerce/woocommerce-ios/pull/12207]
 - Orders: Merchants can filter orders by selecting a customer [https://github.com/woocommerce/woocommerce-ios/pull/12100]
 
 

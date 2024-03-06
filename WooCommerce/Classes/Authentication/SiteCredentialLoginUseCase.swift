@@ -59,7 +59,7 @@ enum SiteCredentialLoginError: LocalizedError {
         case .invalidLoginResponse:
             return Localization.invalidLoginResponse
         case .invalidCredentials:
-            return Localization.invalidLoginResponse
+            return Localization.invalidCredentials
         case .loginFailed(let message):
             return message
         case .unacceptableStatusCode(let code):

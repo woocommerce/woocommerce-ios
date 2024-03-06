@@ -113,6 +113,16 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
+    override var shouldShowOfflineBanner: Bool {
+        // Should show the offline banner only when there's no orderDetailsViewController in memory
+        // otherwise, it will be shown within the order details view, so there's no need to duplicate it
+        if let orderDetailsViewController {
+            return false
+        } else {
+            return true
+        }
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 

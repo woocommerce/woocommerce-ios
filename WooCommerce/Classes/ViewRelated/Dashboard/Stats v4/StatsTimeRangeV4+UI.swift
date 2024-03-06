@@ -95,7 +95,7 @@ extension StatsTimeRangeV4 {
         case .monthly:
             dateFormatter = DateFormatter.Charts.chartAxisMonthFormatter
         case .yearly:
-            fatalError("This case is not supported: \(intervalGranularity.rawValue)")
+            dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
         }
         dateFormatter.timeZone = siteTimezone
         return dateFormatter

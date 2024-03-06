@@ -44,7 +44,7 @@ def keychain
 end
 
 def alamofire
-  pod 'Alamofire', '~> 4.8'
+  pod 'Alamofire', '~> 5.0'
 end
 
 def cocoa_lumberjack
@@ -89,9 +89,6 @@ target 'WooCommerce' do
   # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: ''
   # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: ''
   # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
-
-  pod 'WordPressKit', '~> 13.1'
-  # pod 'WordPressKit', git: 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', commit: ''
 
   wordpress_shared
 

@@ -86,6 +86,9 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     ///
     private lazy var placeholderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
 
+    /// Information alert for custom range tab redaction
+    ///
+    private lazy var fancyAlert = FancyAlertViewController.makeCustomRangeRedactionInformationAlert()
 
     // MARK: - Computed Properties
 
@@ -358,14 +361,19 @@ private extension StoreStatsV4PeriodViewController {
 
         // Taps
         if timeRange.isCustomTimeRange {
+            fancyAlert.modalPresentationStyle = .custom
+            fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+
             let visitorsTapRecognizer = UITapGestureRecognizer()
             visitorsTapRecognizer.on { [weak self] _ in
-                self?.showCustomRangeRedactionInformation()
+                guard let self else { return }
+                present(fancyAlert, animated: true)
             }
 
             let conversionTapRecognizer = UITapGestureRecognizer()
             conversionTapRecognizer.on { [weak self] _ in
-                self?.showCustomRangeRedactionInformation()
+                guard let self else { return }
+                present(fancyAlert, animated: true)
             }
 
             visitorsStackView.addGestureRecognizer(visitorsTapRecognizer)
@@ -740,13 +748,6 @@ private extension StoreStatsV4PeriodViewController {
         revenueData.textColor = Constants.statsTextColor
         revenueData.adjustsFontSizeToFitWidth = true
         revenueData.accessibilityIdentifier = "revenue-value"
-    }
-
-    @objc func showCustomRangeRedactionInformation() {
-        let fancyAlert = FancyAlertViewController.makeCustomRangeRedactionInformationAlert()
-        fancyAlert.modalPresentationStyle = .custom
-        fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
-        present(fancyAlert, animated: true)
     }
 }
 

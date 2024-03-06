@@ -304,7 +304,7 @@ private extension EmptyStateViewController {
         switch config {
         case .simple:
             actionButton.isHidden = true
-        case .simpleTextWithDescription(_, _, _):
+        case .simpleTextWithDescription:
             actionButton.isHidden = true
         case .withLink(_, _, _, let title, _, _), .withButton(_, _, _, let title, _, _):
             actionButton.isHidden = false

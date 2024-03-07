@@ -5,6 +5,10 @@
 - [***] [internal] Alamofire, which is the HTTP client library used in the app, has been updated to v5. [https://github.com/woocommerce/woocommerce-ios/pull/12125]
 - [internal] Blaze: Update campaign status values to match v1.1 endpoint. [https://github.com/woocommerce/woocommerce-ios/pull/12207]
 - Orders: Merchants can filter orders by selecting a customer [https://github.com/woocommerce/woocommerce-ios/pull/12100]
+- Login: Adds a small tutorial before presenting the web view application password authentication screen. [https://github.com/woocommerce/woocommerce-ios/pull/12240]
+- Performance: Add a connectivity tool to diagnose possible network failures [https://github.com/woocommerce/woocommerce-ios/pull/12240]
+- [internal] Performance: Retries orders timeout errors [https://github.com/woocommerce/woocommerce-ios/pull/12240]
+
 
 
 17.6

@@ -89,10 +89,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .customRangeInMyStoreAnalytics:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .connectivityTool:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .appPasswordTutorial:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -2077,6 +2077,7 @@
 		CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */; };
 		CEEF742E2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */; };
 		CEEF74302B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */; };
+		CEEF74322B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF74312B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift */; };
 		CEF2DD862B558E3E00A3DD0B /* AnalyticsCTACard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */; };
 		CEF5A28F2A68466E0059CFD3 /* stats_summary_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */; };
 		CEF5A2912A68467C0059CFD3 /* stats_summary_week.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */; };
@@ -4808,6 +4809,7 @@
 		CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsReportCardViewModel.swift; sourceTree = "<group>"; };
 		CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsReportCardViewModelTests.swift; sourceTree = "<group>"; };
+		CEEF74312B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCTACard.swift; sourceTree = "<group>"; };
 		CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_day.json; sourceTree = "<group>"; };
 		CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_week.json; sourceTree = "<group>"; };
@@ -11000,6 +11002,7 @@
 				CEEF74272B99F57A00B03948 /* RevenueReportCardViewModelTests.swift */,
 				CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */,
 				CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */,
+				CEEF74312B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -14830,6 +14833,7 @@
 				26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */,
 				CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */,
 				0277AEAB256CAA5300F45C4A /* MockShippingLabelAddress.swift in Sources */,
+				CEEF74322B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift in Sources */,
 				D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */,
 				CC53FB402759042600C4CA4F /* ProductSelectorViewModelTests.swift in Sources */,
 				DE0A2EB1281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift in Sources */,

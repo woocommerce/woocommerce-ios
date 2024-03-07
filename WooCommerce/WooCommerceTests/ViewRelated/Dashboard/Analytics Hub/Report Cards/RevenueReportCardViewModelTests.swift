@@ -21,12 +21,12 @@ final class RevenueReportCardViewModelTests: XCTestCase {
     func test_it_inits_with_expected_values() {
         // Given
         let vm = RevenueReportCardViewModel(
-            currentOrderStats: OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 60, netRevenue: 45),
+            currentPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 60, netRevenue: 45),
                                                          intervals: [.fake().copy(dateStart: "2024-01-01 00:00:00",
                                                                                   subtotals: .fake().copy(grossRevenue: 45, netRevenue: 40)),
                                                                      .fake().copy(dateStart: "2024-01-02 00:00:00",
                                                                                   subtotals: .fake().copy(grossRevenue: 15, netRevenue: 5))]),
-            previousOrderStats: OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 30, netRevenue: 30)),
+            previousPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 30, netRevenue: 30)),
             timeRange: .today,
             usageTracksEventEmitter: eventEmitter,
             storeAdminURL: sampleAdminURL
@@ -46,11 +46,11 @@ final class RevenueReportCardViewModelTests: XCTestCase {
 
     func test_it_contains_expected_reportURL_elements() throws {
         // When
-        let vm = RevenueReportCardViewModel(currentOrderStats: nil,
-                                   previousOrderStats: nil,
-                                      timeRange: .monthToDate,
-                                      usageTracksEventEmitter: eventEmitter,
-                                   storeAdminURL: sampleAdminURL)
+        let vm = RevenueReportCardViewModel(currentPeriodStats: nil,
+                                            previousPeriodStats: nil,
+                                            timeRange: .monthToDate,
+                                            usageTracksEventEmitter: eventEmitter,
+                                            storeAdminURL: sampleAdminURL)
         let revenueCardReportURL = try XCTUnwrap(vm.reportViewModel?.initialURL)
         let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
 
@@ -62,7 +62,7 @@ final class RevenueReportCardViewModelTests: XCTestCase {
 
     func test_it_shows_sync_error_when_current_stats_are_nil() {
         // Given
-        let vm = RevenueReportCardViewModel(currentOrderStats: nil, previousOrderStats: .fake(), timeRange: .monthToDate, usageTracksEventEmitter: eventEmitter)
+        let vm = RevenueReportCardViewModel(currentPeriodStats: nil, previousPeriodStats: .fake(), timeRange: .monthToDate, usageTracksEventEmitter: eventEmitter)
 
         // Then
         XCTAssertTrue(vm.showSyncError)
@@ -70,7 +70,7 @@ final class RevenueReportCardViewModelTests: XCTestCase {
 
     func test_it_shows_sync_error_when_previous_stats_are_nil() {
         // Given
-        let vm = RevenueReportCardViewModel(currentOrderStats: .fake(), previousOrderStats: nil, timeRange: .monthToDate, usageTracksEventEmitter: eventEmitter)
+        let vm = RevenueReportCardViewModel(currentPeriodStats: .fake(), previousPeriodStats: nil, timeRange: .monthToDate, usageTracksEventEmitter: eventEmitter)
 
         // Then
         XCTAssertTrue(vm.showSyncError)
@@ -78,11 +78,11 @@ final class RevenueReportCardViewModelTests: XCTestCase {
 
     func test_redact_updates_properties_as_expected() {
         // Given
-        var vm = RevenueReportCardViewModel(currentOrderStats: nil,
-                                   previousOrderStats: nil,
-                                   timeRange: .monthToDate,
-                                   usageTracksEventEmitter: eventEmitter,
-                                   storeAdminURL: sampleAdminURL)
+        var vm = RevenueReportCardViewModel(currentPeriodStats: nil,
+                                            previousPeriodStats: nil,
+                                            timeRange: .monthToDate,
+                                            usageTracksEventEmitter: eventEmitter,
+                                            storeAdminURL: sampleAdminURL)
 
         // When
         vm.redact()

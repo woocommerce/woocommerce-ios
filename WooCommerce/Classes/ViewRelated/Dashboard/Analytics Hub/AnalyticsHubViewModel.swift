@@ -481,10 +481,10 @@ private extension AnalyticsHubViewModel {
 
     func revenueCard(currentPeriodStats: OrderStatsV4?,
                      previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardProtocol {
-        RevenueReportCardViewModel(currentOrderStats: currentPeriodStats,
-                          previousOrderStats: previousPeriodStats,
-                          timeRange: timeRangeSelectionType,
-                          usageTracksEventEmitter: usageTracksEventEmitter)
+        RevenueReportCardViewModel(currentPeriodStats: currentPeriodStats,
+                                   previousPeriodStats: previousPeriodStats,
+                                   timeRange: timeRangeSelectionType,
+                                   usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?,

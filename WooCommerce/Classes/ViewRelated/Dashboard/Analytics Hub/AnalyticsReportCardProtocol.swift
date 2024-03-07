@@ -9,13 +9,37 @@ protocol AnalyticsReportCardProtocol {
     ///
     var title: String { get }
 
-    /// First Column Metric
+    /// First Column Title
     ///
-    var leadingMetric: AnalyticsReportCardMetric { get set }
+    var leadingTitle: String { get }
 
-    /// Second Column Metric
+    /// First Column Value
     ///
-    var trailingMetric: AnalyticsReportCardMetric { get set }
+    var leadingValue: String { get }
+
+    /// First Column Delta Percentage
+    ///
+    var leadingDelta: DeltaPercentage? { get }
+
+    /// First Column Chart Data
+    ///
+    var leadingChartData: [Double] { get }
+
+    /// Second Column Title
+    ///
+    var trailingTitle: String { get }
+
+    /// Second Column Value
+    ///
+    var trailingValue: String { get }
+
+    /// Second Column Delta Percentage
+    ///
+    var trailingDelta: DeltaPercentage? { get }
+
+    /// Second Column Chart Data
+    ///
+    var trailingChartData: [Double] { get }
 
     /// Indicates if the values should be hidden (for loading state)
     ///
@@ -23,7 +47,7 @@ protocol AnalyticsReportCardProtocol {
 
     /// Indicates if there was an error loading the data for the card
     ///
-    var showSyncError: Bool { get set }
+    var showSyncError: Bool { get }
 
     /// Message to display if there was an error loading the data for the card
     ///
@@ -31,81 +55,11 @@ protocol AnalyticsReportCardProtocol {
 
     /// View model for the web analytics report link
     ///
-    var reportViewModel: AnalyticsReportLinkViewModel? { get set }
-}
-
-extension AnalyticsReportCardProtocol {
+    var reportViewModel: AnalyticsReportLinkViewModel? { get }
 
     /// Make redacted state of the card, replacing values with hardcoded placeholders
     ///
-    mutating func redact() {
-        isRedacted = true
-        showSyncError = false
-    }
-
-    /// First Column Title
-    ///
-    var leadingTitle: String {
-        leadingMetric.title
-    }
-
-    /// First Column Value
-    ///
-    var leadingValue: String {
-        isRedacted ? "$1000" : leadingMetric.value
-    }
-
-    /// First Column Delta Percentage
-    ///
-    var leadingDelta: DeltaPercentage? {
-        isRedacted ? DeltaPercentage(string: "0%", direction: .zero) : leadingMetric.delta
-    }
-
-    /// First Column Chart Data
-    ///
-    var leadingChartData: [Double] {
-        isRedacted ? [] : leadingMetric.chartData
-    }
-
-    /// Second Column Title
-    ///
-    var trailingTitle: String {
-        trailingMetric.title
-    }
-
-    /// Second Column Value
-    ///
-    var trailingValue: String {
-        isRedacted ? "$1000" : trailingMetric.value
-    }
-
-    /// Second Column Delta Percentage
-    ///
-    var trailingDelta: DeltaPercentage? {
-        isRedacted ? DeltaPercentage(string: "0%", direction: .zero) : trailingMetric.delta
-    }
-
-    /// Second Column Chart Data
-    ///
-    var trailingChartData: [Double] {
-        isRedacted ? [] : trailingMetric.chartData
-    }
-}
-
-/// Represents a metric on an `AnalyticsReportCard`
-///
-struct AnalyticsReportCardMetric {
-    /// Metric title
-    let title: String
-
-    /// Metric value
-    let value: String
-
-    /// Metric delta percentage
-    let delta: DeltaPercentage?
-
-    /// Metric chart data
-    let chartData: [Double]
+    mutating func redact()
 }
 
 /// Convenience extension to create an `AnalyticsReportCard` from a view model.

@@ -2,53 +2,100 @@ import Foundation
 import Yosemite
 
 final class RevenueReportCardViewModel: AnalyticsReportCardProtocol {
-    let title: String = Localization.title
+    /// Order stats for the current period
+    ///
+    private var currentPeriodStats: OrderStatsV4?
 
-    var leadingMetric: AnalyticsReportCardMetric
+    /// Order stats for the previous period
+    ///
+    private var previousPeriodStats: OrderStatsV4?
 
-    var trailingMetric: AnalyticsReportCardMetric
+    /// Selected time range
+    ///
+    private var timeRange: AnalyticsHubTimeRangeSelection.SelectionType
+
+    /// Analytics Usage Tracks Event Emitter
+    ///
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
+    /// Store admin URL
+    ///
+    private let storeAdminURL: String?
 
     var isRedacted: Bool = false
 
-    var showSyncError: Bool
-
-    let syncErrorMessage: String = Localization.noRevenue
-
-    var reportViewModel: AnalyticsReportLinkViewModel?
-
-    init(currentOrderStats: OrderStatsV4?,
-         previousOrderStats: OrderStatsV4?,
+    init(currentPeriodStats: OrderStatsV4?,
+         previousPeriodStats: OrderStatsV4?,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL) {
-        leadingMetric = RevenueReportCardViewModel.createLeadingMetric(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-        trailingMetric = RevenueReportCardViewModel.createTrailingMetric(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-        showSyncError = currentOrderStats == nil || previousOrderStats == nil
-        reportViewModel = RevenueReportCardViewModel.createReportViewModel(timeRange: timeRange,
-                                                                  storeAdminURL: storeAdminURL,
-                                                                  usageTracksEventEmitter: usageTracksEventEmitter)
+        self.currentPeriodStats = currentPeriodStats
+        self.previousPeriodStats = previousPeriodStats
+        self.timeRange = timeRange
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.storeAdminURL = storeAdminURL
+    }
+
+    func redact() {
+        isRedacted = true
     }
 }
 
-private extension RevenueReportCardViewModel {
-    static func createLeadingMetric(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardMetric {
-        AnalyticsReportCardMetric(title: Localization.leadingTitle,
-                                  value: StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats,
-                                                                                       selectedIntervalIndex: nil),
-                                  delta: StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
-                                  chartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats))
+// MARK: AnalyticsReportCardProtocol conformance
+
+extension RevenueReportCardViewModel {
+
+    var title: String {
+        Localization.title
     }
 
-    static func createTrailingMetric(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardMetric {
-        AnalyticsReportCardMetric(title: Localization.trailingTitle,
-                                  value: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
-                                  delta: StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
-                                  chartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats))
+    // MARK: Total Revenue metric
+
+    var leadingTitle: String {
+        Localization.leadingTitle
     }
 
-    static func createReportViewModel(timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
-                                      storeAdminURL: String?,
-                                      usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) -> AnalyticsReportLinkViewModel? {
+    var leadingValue: String {
+        isRedacted ? "$1000" : StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats, selectedIntervalIndex: nil)
+    }
+
+    var leadingDelta: DeltaPercentage? {
+        isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
+        : StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
+    }
+
+    var leadingChartData: [Double] {
+        isRedacted ? [] : StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats)
+    }
+
+    // MARK: Net Revenue metric
+
+    var trailingTitle: String {
+        Localization.trailingTitle
+    }
+
+    var trailingValue: String {
+        isRedacted ? "$1000" : StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats)
+    }
+
+    var trailingDelta: DeltaPercentage? {
+        isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
+        : StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
+    }
+
+    var trailingChartData: [Double] {
+        isRedacted ? [] : StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats)
+    }
+
+    var showSyncError: Bool {
+        isRedacted ? false : currentPeriodStats == nil || previousPeriodStats == nil
+    }
+
+    var syncErrorMessage: String {
+        Localization.noRevenue
+    }
+
+    var reportViewModel: AnalyticsReportLinkViewModel? {
         guard let url = AnalyticsWebReport.getUrl(for: .revenue, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
             return nil
         }

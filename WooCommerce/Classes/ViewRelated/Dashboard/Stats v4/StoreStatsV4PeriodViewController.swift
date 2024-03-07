@@ -552,7 +552,7 @@ private extension StoreStatsV4PeriodViewController {
             }
 
             if differenceInDays == .lessThan2 {
-                siteVisitStatsMode = selectedIndex != nil ? .redactedDueToCustomRange : .default
+                siteVisitStatsMode = selectedIndex != nil ? .hidden : .default
             } else {
                 siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
             }

@@ -359,9 +359,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        let isSiteCredentialError = {
+        let isAppPasswordAuthError = {
             switch error {
-            case SiteCredentialLoginError.genericFailure:
+            case SiteCredentialLoginError.genericFailure, SiteCredentialLoginError.invalidCredentials:
                 return false
             case is SiteCredentialLoginError:
                 return true
@@ -370,8 +370,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             }
         }()
 
-        // Only show the tutorial if the error is a real site credential error
-        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) && isSiteCredentialError {
+        // Only show the tutorial if the error can be solved by the app password flow.
+        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) && isAppPasswordAuthError {
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
             presentAppPasswordAlert(error: error, for: siteURL, in: viewController)

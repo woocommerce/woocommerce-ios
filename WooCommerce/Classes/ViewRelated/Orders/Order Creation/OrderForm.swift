@@ -387,6 +387,7 @@ struct OrderForm: View {
                     Button(Localization.recalculateButton) {
                         viewModel.onRecalculateTapped()
                     }
+                    .disabled(viewModel.shouldShowNonEditableIndicators)
                     .accessibilityIdentifier(Accessibility.recalculateButtonIdentifier)
                 case .none:
                     EmptyView()
@@ -465,6 +466,7 @@ struct OrderForm: View {
             } label: {
                 Text(Localization.recalculateButton)
             }
+            .disabled(viewModel.shouldShowNonEditableIndicators)
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
         case .create(let loading):
             Button {

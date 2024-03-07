@@ -319,6 +319,15 @@ private extension StoreStatsPeriodViewModel {
 //
 private extension StoreStatsPeriodViewModel {
     func updateSiteVisitDataIfNeeded() {
+        /// If granularity of site stats and order stats are not equivalent,
+        /// there can be discrepancy between site visit and order stats.
+        /// Hide all site stats in that case.
+        ///
+        guard timeRange.shouldSupportSelectingVisitStats else {
+            siteStats = nil
+            return
+        }
+
         let siteStats = siteStatsResultsController.fetchedObjects.first
         /// When the number of intervals for site visit stats is larger than order stats,
         /// the index of the stats will mismatch causing a discrepancy in data.

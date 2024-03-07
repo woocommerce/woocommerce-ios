@@ -242,6 +242,19 @@ extension StatsTimeRangeV4 {
             }
         }
     }
+
+    /// If granularity of site stats and order stats are not equivalent,
+    /// there can be discrepancy between site visit and order stats.
+    /// Selecting visit stats is not supported in that case.
+    ///
+    public var shouldSupportSelectingVisitStats: Bool {
+        switch (intervalGranularity, siteVisitStatsGranularity) {
+        case (.daily, .day), (.weekly, .week), (.monthly, .month), (.yearly, .year):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 private extension StatsTimeRangeV4 {

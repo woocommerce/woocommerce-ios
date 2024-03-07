@@ -53,15 +53,6 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
-
-        let ordersWebReportVM = AnalyticsHubViewModel.webReportVM(for: .orders,
-                                                                  timeRange: selectedType,
-                                                                  storeAdminURL: storeAdminURL,
-                                                                  usageTracksEventEmitter: usageTracksEventEmitter)
-        self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: nil,
-                                                           previousPeriodStats: nil,
-                                                           webReportViewModel: ordersWebReportVM)
-
         let productsWebReportVM = AnalyticsHubViewModel.webReportVM(for: .products,
                                                                     timeRange: selectedType,
                                                                     storeAdminURL: storeAdminURL,
@@ -84,7 +75,9 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Orders Card ViewModel
     ///
-    @Published var ordersCard: AnalyticsReportCardViewModel
+    lazy var ordersCard: AnalyticsReportCardProtocol = {
+        ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+    }()
 
     /// Products Stats Card ViewModel
     ///
@@ -398,7 +391,7 @@ private extension AnalyticsHubViewModel {
             case .revenue:
                 self.revenueCard.redact()
             case .orders:
-                self.ordersCard = ordersCard.redacted
+                self.ordersCard.redact()
             case .products:
                 self.productsStatsCard = productsStatsCard.redacted
                 self.itemsSoldCard = itemsSoldCard.redacted
@@ -421,11 +414,8 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
-                self.revenueCard = revenueCard(currentPeriodStats: currentOrderStats,
-                                               previousPeriodStats: previousOrderStats)
-                self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats,
-                                                                   previousPeriodStats: previousOrderStats,
-                                                                   webReportViewModel: webReportVM(for: .orders))
+                self.revenueCard = revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.ordersCard = ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats,
                                                                                  previousPeriodStats: previousOrderStats,
                                                                                  webReportViewModel: webReportVM(for: .products))
@@ -487,26 +477,12 @@ private extension AnalyticsHubViewModel {
                                    usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
-    static func ordersCard(currentPeriodStats: OrderStatsV4?,
-                           previousPeriodStats: OrderStatsV4?,
-                           webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsReportCardViewModel {
-        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
-
-        return AnalyticsReportCardViewModel(title: Localization.OrderCard.title,
-                                            leadingTitle: Localization.OrderCard.leadingTitle,
-                                            leadingValue: StatsDataTextFormatter.createOrderCountText(orderStats: currentPeriodStats,
-                                                                                                      selectedIntervalIndex: nil),
-                                            leadingDelta: StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats),
-                                            leadingChartData: StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats),
-                                            trailingTitle: Localization.OrderCard.trailingTitle,
-                                            trailingValue: StatsDataTextFormatter.createAverageOrderValueText(orderStats: currentPeriodStats),
-                                            trailingDelta: StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats,
-                                                                                                               to: currentPeriodStats),
-                                            trailingChartData: StatsIntervalDataParser.getChartData(for: .averageOrderValue, from: currentPeriodStats),
-                                            isRedacted: false,
-                                            showSyncError: showSyncError,
-                                            syncErrorMessage: Localization.OrderCard.noOrders,
-                                            reportViewModel: webReportViewModel)
+    func ordersCard(currentPeriodStats: OrderStatsV4?,
+                           previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardProtocol {
+        OrdersReportCardViewModel(currentPeriodStats: currentPeriodStats,
+                                  previousPeriodStats: previousPeriodStats,
+                                  timeRange: timeRangeSelectionType,
+                                  usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
     /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
@@ -603,7 +579,7 @@ private extension AnalyticsHubViewModel {
             case .revenue:
                 return ""
             case .orders:
-                return Localization.OrderCard.reportTitle
+                return ""
             case .products:
                 return Localization.ProductCard.reportTitle
             }
@@ -664,18 +640,6 @@ private extension AnalyticsHubViewModel {
     }
 
     enum Localization {
-
-        enum OrderCard {
-            static let title = NSLocalizedString("ORDERS", comment: "Title for order analytics section in the Analytics Hub")
-            static let leadingTitle = NSLocalizedString("Total Orders", comment: "Label for total number of orders in the Analytics Hub")
-            static let trailingTitle = NSLocalizedString("Average Order Value", comment: "Label for average value of orders in the Analytics Hub")
-            static let noOrders = NSLocalizedString("Unable to load order analytics",
-                                                    comment: "Text displayed when there is an error loading order stats data.")
-            static let reportTitle = NSLocalizedString("analyticsHub.orderCard.reportTitle",
-                                                       value: "Orders Report",
-                                                       comment: "Title for the orders analytics report linked in the Analytics Hub")
-        }
-
         enum ProductCard {
             static func netSales(value: String) -> String {
                 String.localizedStringWithFormat(NSLocalizedString("Net sales: %@", comment: "Label for the total sales of a product in the Analytics Hub"),

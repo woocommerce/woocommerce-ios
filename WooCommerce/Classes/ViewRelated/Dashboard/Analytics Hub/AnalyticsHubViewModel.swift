@@ -53,13 +53,6 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
-        let revenueWebReportVM = AnalyticsHubViewModel.webReportVM(for: .revenue,
-                                                                   timeRange: selectedType,
-                                                                   storeAdminURL: storeAdminURL,
-                                                                   usageTracksEventEmitter: usageTracksEventEmitter)
-        self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: nil,
-                                                             previousPeriodStats: nil,
-                                                             webReportViewModel: revenueWebReportVM)
 
         let ordersWebReportVM = AnalyticsHubViewModel.webReportVM(for: .orders,
                                                                   timeRange: selectedType,
@@ -85,7 +78,9 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
-    @Published var revenueCard: AnalyticsReportCardViewModel
+    lazy var revenueCard: AnalyticsReportCardProtocol = {
+        revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+    }()
 
     /// Orders Card ViewModel
     ///
@@ -401,7 +396,7 @@ private extension AnalyticsHubViewModel {
         cards.forEach { card in
             switch card {
             case .revenue:
-                self.revenueCard = revenueCard.redacted
+                self.revenueCard.redact()
             case .orders:
                 self.ordersCard = ordersCard.redacted
             case .products:
@@ -426,9 +421,8 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
-                self.revenueCard = AnalyticsHubViewModel.revenueCard(currentPeriodStats: currentOrderStats,
-                                                                     previousPeriodStats: previousOrderStats,
-                                                                     webReportViewModel: webReportVM(for: .revenue))
+                self.revenueCard = revenueCard(currentPeriodStats: currentOrderStats,
+                                               previousPeriodStats: previousOrderStats)
                 self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats,
                                                                    previousPeriodStats: previousOrderStats,
                                                                    webReportViewModel: webReportVM(for: .orders))
@@ -485,25 +479,12 @@ private extension AnalyticsHubViewModel {
             }.store(in: &subscriptions)
     }
 
-    static func revenueCard(currentPeriodStats: OrderStatsV4?,
-                            previousPeriodStats: OrderStatsV4?,
-                            webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsReportCardViewModel {
-        let showSyncError = currentPeriodStats == nil || previousPeriodStats == nil
-
-        return AnalyticsReportCardViewModel(title: Localization.RevenueCard.title,
-                                            leadingTitle: Localization.RevenueCard.leadingTitle,
-                                            leadingValue: StatsDataTextFormatter.createTotalRevenueText(orderStats: currentPeriodStats,
-                                                                                                        selectedIntervalIndex: nil),
-                                            leadingDelta: StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
-                                            leadingChartData: StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats),
-                                            trailingTitle: Localization.RevenueCard.trailingTitle,
-                                            trailingValue: StatsDataTextFormatter.createNetRevenueText(orderStats: currentPeriodStats),
-                                            trailingDelta: StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats),
-                                            trailingChartData: StatsIntervalDataParser.getChartData(for: .netRevenue, from: currentPeriodStats),
-                                            isRedacted: false,
-                                            showSyncError: showSyncError,
-                                            syncErrorMessage: Localization.RevenueCard.noRevenue,
-                                            reportViewModel: webReportViewModel)
+    func revenueCard(currentPeriodStats: OrderStatsV4?,
+                     previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardProtocol {
+        RevenueReportCardViewModel(currentOrderStats: currentPeriodStats,
+                          previousOrderStats: previousPeriodStats,
+                          timeRange: timeRangeSelectionType,
+                          usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?,
@@ -620,7 +601,7 @@ private extension AnalyticsHubViewModel {
         let title = {
             switch report {
             case .revenue:
-                return Localization.RevenueCard.reportTitle
+                return ""
             case .orders:
                 return Localization.OrderCard.reportTitle
             case .products:
@@ -683,16 +664,6 @@ private extension AnalyticsHubViewModel {
     }
 
     enum Localization {
-        enum RevenueCard {
-            static let title = NSLocalizedString("REVENUE", comment: "Title for revenue analytics section in the Analytics Hub")
-            static let leadingTitle = NSLocalizedString("Total Sales", comment: "Label for total sales (gross revenue) in the Analytics Hub")
-            static let trailingTitle = NSLocalizedString("Net Sales", comment: "Label for net sales (net revenue) in the Analytics Hub")
-            static let noRevenue = NSLocalizedString("Unable to load revenue analytics",
-                                                     comment: "Text displayed when there is an error loading revenue stats data.")
-            static let reportTitle = NSLocalizedString("analyticsHub.revenueCard.reportTitle",
-                                                       value: "Revenue Report",
-                                                       comment: "Title for the revenue analytics report linked in the Analytics Hub")
-        }
 
         enum OrderCard {
             static let title = NSLocalizedString("ORDERS", comment: "Title for order analytics section in the Analytics Hub")

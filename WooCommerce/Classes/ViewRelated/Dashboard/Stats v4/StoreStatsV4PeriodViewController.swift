@@ -544,9 +544,18 @@ private extension StoreStatsV4PeriodViewController {
     func updateUI(selectedBarIndex selectedIndex: Int?) {
 
         if unavailableVisitStatsDueToCustomRange {
-            // If selected, we should display the data, since it's accurate for individual values.
-            // If deselected, we should hide the data, as it's inaccurate for the entire range.
-            siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
+            // If time range is less than 2 days, redact data when selected and show when deselected.
+            // Otherwise, show data when selected and redact when deselected.
+            guard case let .custom(from, to) = timeRange,
+                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
+                return
+            }
+
+            if differenceInDays == .lessThan2 {
+                siteVisitStatsMode = selectedIndex != nil ? .redactedDueToCustomRange : .default
+            } else {
+                siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
+            }
         }
 
         viewModel.selectedIntervalIndex = selectedIndex

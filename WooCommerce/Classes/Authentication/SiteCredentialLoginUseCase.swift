@@ -302,9 +302,9 @@ private extension String {
         }
     }
 
-    /// When logging with with site credentials there is not way to properly tell if an error message is an invalid credentials error.
-    /// However, the server injects this `shake` patten when an invalid credential error is found.
-    /// For the time being we will use that pattern as a guess for an invalid credential error message.
+    /// When logging in with site credentials there is no way to properly tell if an error message is an invalid credentials error.
+    /// However, the server injects this `shake` pattern when an invalid credential error is found.
+    /// For the time being, we will use that pattern as a guess for an invalid credential error message.
     /// ref: https://github.com/WordPress/WordPress/blob/master/wp-login.php#L65-L67
     ///
     func hasInvalidCredentialsPattern() -> Bool {

@@ -2075,6 +2075,8 @@
 		CEEF74222B99EC5800B03948 /* AnalyticsReportCardProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF74212B99EC5800B03948 /* AnalyticsReportCardProtocol.swift */; };
 		CEEF74252B99EF1200B03948 /* RevenueReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF74242B99EF1200B03948 /* RevenueReportCardViewModel.swift */; };
 		CEEF74282B99F57A00B03948 /* RevenueReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF74272B99F57A00B03948 /* RevenueReportCardViewModelTests.swift */; };
+		CEEF742A2B9A02EB00B03948 /* OrdersReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */; };
+		CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */; };
 		CEF2DD862B558E3E00A3DD0B /* AnalyticsCTACard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */; };
 		CEF5A28F2A68466E0059CFD3 /* stats_summary_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */; };
 		CEF5A2912A68467C0059CFD3 /* stats_summary_week.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */; };
@@ -4804,6 +4806,8 @@
 		CEEF74212B99EC5800B03948 /* AnalyticsReportCardProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportCardProtocol.swift; sourceTree = "<group>"; };
 		CEEF74242B99EF1200B03948 /* RevenueReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevenueReportCardViewModel.swift; sourceTree = "<group>"; };
 		CEEF74272B99F57A00B03948 /* RevenueReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevenueReportCardViewModelTests.swift; sourceTree = "<group>"; };
+		CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersReportCardViewModel.swift; sourceTree = "<group>"; };
+		CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCTACard.swift; sourceTree = "<group>"; };
 		CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_day.json; sourceTree = "<group>"; };
 		CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_week.json; sourceTree = "<group>"; };
@@ -10986,6 +10990,7 @@
 			isa = PBXGroup;
 			children = (
 				CEEF74242B99EF1200B03948 /* RevenueReportCardViewModel.swift */,
+				CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -10994,6 +10999,7 @@
 			isa = PBXGroup;
 			children = (
 				CEEF74272B99F57A00B03948 /* RevenueReportCardViewModelTests.swift */,
+				CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -13490,6 +13496,7 @@
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
+				CEEF742A2B9A02EB00B03948 /* OrdersReportCardViewModel.swift in Sources */,
 				DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */,
 				68E952D22875A44B0095A23D /* CardReaderType+Manual.swift in Sources */,
 				035DBA4B292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift in Sources */,
@@ -15082,6 +15089,7 @@
 				0388E1AA29E04715007DF84D /* MockDeepLinkNavigator.swift in Sources */,
 				022C7D7729793ABE0036568D /* PaidDomainSelectorDataProviderTests.swift in Sources */,
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
+				CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */,
 				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,
 				EEC2D27F292CF60E0072132E /* JetpackSetupHostingControllerTests.swift in Sources */,
 				4535EE82281BE726004212B4 /* CouponCodeInputFormatterTests.swift in Sources */,

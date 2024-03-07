@@ -137,12 +137,10 @@ extension StatsTimeRangeV4 {
             return .month
         case .custom(let from, let to):
             guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
-                return .hour
+                return .day
             }
             switch differenceInDays {
-            case .lessThan2:
-                return .hour
-            case .from2To28:
+            case .lessThan2, .from2To28:
                 return .day
             case .from29To90:
                 return .week
@@ -167,12 +165,10 @@ extension StatsTimeRangeV4 {
             return .year
         case .custom(let from, let to):
             guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
-                return .hour
+                return .day
             }
             switch differenceInDays {
-            case .lessThan2:
-                return .hour
-            case .from2To28:
+            case .lessThan2, .from2To28:
                 return .day
             case .from29To90:
                 return .week
@@ -197,12 +193,10 @@ extension StatsTimeRangeV4 {
             return .year
         case .custom(let from, let to):
             guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
-                return .hour
+                return .day
             }
             switch differenceInDays {
-            case .lessThan2:
-                return .hour
-            case .from2To28:
+            case .lessThan2, .from2To28:
                 return .day
             case .from29To90:
                 return .week
@@ -217,23 +211,35 @@ extension StatsTimeRangeV4 {
     /// The number of intervals for site visit stats to fetch given a time range.
     /// The interval unit is in `siteVisitStatsGranularity`.
     func siteVisitStatsQuantity(date: Date, siteTimezone: TimeZone) -> Int {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+
         switch self {
         case .today:
             return 1
         case .thisWeek:
             return 7
         case .thisMonth:
-            var calendar = Calendar.current
-            calendar.timeZone = siteTimezone
             let daysThisMonth = calendar.range(of: .day, in: .month, for: date)
             return daysThisMonth?.count ?? 0
         case .thisYear:
             return 12
-        case .custom:
-            // Returns maximum value allowed for pagination,
-            // the plugin would return the maximum values available for the required granularity.
-            // https://developer.wordpress.org/rest-api/using-the-rest-api/pagination/
-            return 100
+        case let .custom(start, end):
+            switch siteVisitStatsGranularity {
+            case .day:
+                let difference = calendar.dateComponents([.day], from: start, to: end).day ?? 0
+                return difference + 1 // to include stats for both start and end date
+            case .week:
+                let difference = calendar.dateComponents([.day], from: start, to: end).day ?? 0
+                // Using days divided by 7 to calculate week difference because the week components in calendar are not applicable.
+                return difference/7 + 1
+            case .month:
+                let difference = calendar.dateComponents([.month], from: start, to: end).month ?? 0
+                return difference + 1
+            case .year:
+                let difference = calendar.dateComponents([.year], from: start, to: end).year ?? 0
+                return difference + 1
+            }
         }
     }
 }

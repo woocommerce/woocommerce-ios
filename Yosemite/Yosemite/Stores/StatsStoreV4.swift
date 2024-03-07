@@ -487,11 +487,6 @@ public extension StatsStoreV4 {
     ///
     static func buildDateString(from date: Date, with granularity: StatGranularity) -> String {
         switch granularity {
-        case .hour:
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .short
-            dateFormatter.timeStyle = .short
-            return dateFormatter.string(from: date)
         case .day:
             return DateFormatter.Stats.statsDayFormatter.string(from: date)
         case .week:

@@ -120,10 +120,10 @@ extension StatsTimeRangeV4 {
                 return .daily
             case .from29To90:
                 return .weekly
-            case .from91to365:
+            case .from91daysTo3Years:
                 return .monthly
-            case .greaterThan365:
-                return .quarterly
+            case .greaterThan3Years:
+                return .yearly
             }
         }
     }
@@ -137,19 +137,17 @@ extension StatsTimeRangeV4 {
             return .month
         case .custom(let from, let to):
             guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
-                return .hour
+                return .day
             }
             switch differenceInDays {
-            case .lessThan2:
-                return .hour
-            case .from2To28:
+            case .lessThan2, .from2To28:
                 return .day
             case .from29To90:
                 return .week
-            case .from91to365:
+            case .from91daysTo3Years:
                 return .month
-            case .greaterThan365:
-                return .quarter
+            case .greaterThan3Years:
+                return .year
             }
         }
     }
@@ -167,19 +165,17 @@ extension StatsTimeRangeV4 {
             return .year
         case .custom(let from, let to):
             guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
-                return .hour
+                return .day
             }
             switch differenceInDays {
-            case .lessThan2:
-                return .hour
-            case .from2To28:
+            case .lessThan2, .from2To28:
                 return .day
             case .from29To90:
                 return .week
-            case .from91to365:
+            case .from91daysTo3Years:
                 return .month
-            case .greaterThan365:
-                return .quarter
+            case .greaterThan3Years:
+                return .year
             }
         }
     }
@@ -197,19 +193,17 @@ extension StatsTimeRangeV4 {
             return .year
         case .custom(let from, let to):
             guard let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
-                return .hour
+                return .day
             }
             switch differenceInDays {
-            case .lessThan2:
-                return .hour
-            case .from2To28:
+            case .lessThan2, .from2To28:
                 return .day
             case .from29To90:
                 return .week
-            case .from91to365:
+            case .from91daysTo3Years:
                 return .month
-            case .greaterThan365:
-                return .quarter
+            case .greaterThan3Years:
+                return .year
             }
         }
     }
@@ -217,31 +211,56 @@ extension StatsTimeRangeV4 {
     /// The number of intervals for site visit stats to fetch given a time range.
     /// The interval unit is in `siteVisitStatsGranularity`.
     func siteVisitStatsQuantity(date: Date, siteTimezone: TimeZone) -> Int {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+
         switch self {
         case .today:
             return 1
         case .thisWeek:
             return 7
         case .thisMonth:
-            var calendar = Calendar.current
-            calendar.timeZone = siteTimezone
             let daysThisMonth = calendar.range(of: .day, in: .month, for: date)
             return daysThisMonth?.count ?? 0
         case .thisYear:
             return 12
-        case .custom:
-            // Returns maximum value allowed for pagination,
-            // the plugin would return the maximum values available for the required granularity.
-            // https://developer.wordpress.org/rest-api/using-the-rest-api/pagination/
-            return 100
+        case let .custom(start, end):
+            switch siteVisitStatsGranularity {
+            case .day:
+                let difference = calendar.dateComponents([.day], from: start, to: end).day ?? 0
+                return difference + 1 // to include stats for both start and end date
+            case .week:
+                let difference = calendar.dateComponents([.day], from: start, to: end).day ?? 0
+                // Using days divided by 7 to calculate week difference because the week components in calendar are not applicable.
+                return difference/7 + 1
+            case .month:
+                let difference = calendar.dateComponents([.month], from: start, to: end).month ?? 0
+                return difference + 1
+            case .year:
+                let difference = calendar.dateComponents([.year], from: start, to: end).year ?? 0
+                return difference + 1
+            }
+        }
+    }
+
+    /// If granularity of site stats and order stats are not equivalent,
+    /// there can be discrepancy between site visit and order stats.
+    /// Selecting visit stats is not supported in that case.
+    ///
+    public var shouldSupportSelectingVisitStats: Bool {
+        switch (intervalGranularity, siteVisitStatsGranularity) {
+        case (.daily, .day), (.weekly, .week), (.monthly, .month), (.yearly, .year):
+            return true
+        default:
+            return false
         }
     }
 }
 
 private extension StatsTimeRangeV4 {
     enum DifferenceInDays {
-        case greaterThan365
-        case from91to365
+        case greaterThan3Years
+        case from91daysTo3Years
         case from29To90
         case from2To28
         case lessThan2
@@ -261,10 +280,10 @@ private extension StatsTimeRangeV4 {
         }
 
         switch day {
-        case 366...Int.max:
-            return .greaterThan365
-        case 91...365:
-            return .from91to365
+        case 365*3+1...Int.max:
+            return .greaterThan3Years
+        case 91...365*3:
+            return .from91daysTo3Years
         case 29...90:
             return .from29To90
         case 2...28:

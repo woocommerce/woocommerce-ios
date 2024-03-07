@@ -528,7 +528,11 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
         chartValueSelectedEventsSubject
             .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.usageTracksEventEmitter.interacted()
+                guard let self else { return }
+                if self.timeRange.isCustomTimeRange {
+                    ServiceLocator.analytics.track(event: .DashboardCustomRange.interacted())
+                }
+                self.usageTracksEventEmitter.interacted()
             }.store(in: &cancellables)
     }
 }

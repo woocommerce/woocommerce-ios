@@ -817,15 +817,14 @@ private extension ProductFormViewModel {
 //
 private extension ProductFormViewModel {
     /// Check whether there is already an existing campaign for the current Product, that also has one of these statuses:
-    /// - created (in moderation),
-    /// - approved,
+    /// - pending,
     /// - scheduled, or
     /// - active.
     func hasBlazeCampaign() -> Bool {
         let campaigns = blazeCampaignResultsController.fetchedObjects
         return campaigns.contains(where: {
             ($0.productID == product.productID) &&
-            ($0.status == .created || $0.status == .approved || $0.status == .scheduled || $0.status == .active)
+            ($0.status == .pending || $0.status == .scheduled || $0.status == .active)
         })
     }
 }
